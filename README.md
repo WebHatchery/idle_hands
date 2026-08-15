@@ -5,25 +5,32 @@ iPad, desktop browsers, and Windows. Its home screen is a warmly illustrated
 drawer cabinet: each physical object opens a different game, from a deck of
 cards to a dice cup or a little wooden minefield.
 
-Phase 0 defines the product and technical direction. The current executable is
-still the WebHatchery Macroquad template; game implementation begins in Phase 1.
+The current build is a playable 43-game cabinet with persistent sessions,
+records, tutorials, responsive touch layouts, and post-launch refinements.
+TODO.md records the completed launch foundation and ongoing collection work.
 
-## First Collection
+## Current Collection
+
+The original eight-game foundation remains at the center of the cabinet:
 
 | Game | Cabinet object | Primary touch interaction |
 | --- | --- | --- |
 | Solitaire | Worn deck of cards | Tap or drag cards |
 | FreeCell | Four card trays | Tap or drag cards |
 | Sudoku | Pencil and puzzle booklet | Tap a cell, then a number |
-| Minesweeper | Brass minefield board | Tap to reveal; hold or flag-mode to mark |
-| 2048 | Sliding numbered tiles | Swipe the board |
-| Nonogram | Graph-paper pad | Tap or drag to fill; explicit mark mode |
-| Yahtzee | Dice cup and scorecard | Tap dice to hold, then tap Roll |
+| Minesweeper | Brass minefield board | Tap to reveal; use visible flag/chord controls |
+| 2048 | Sliding numbered tiles | Swipe or tap visible directions |
+| Nonogram | Graph-paper pad | Tap or drag to fill or cross |
+| Fivefold | Dice cup and scorecard | Tap dice to hold, then roll and score |
 | Reversi | Black-and-white disc box | Tap a legal square |
 
-The launch collection is deliberately broad: two card games, four compact
-puzzles, one dice score-chaser, and one strategy game against local AI. FreeCell
-reuses the Solitaire card foundation while retaining its own rules and feel.
+The post-launch cabinet adds Lights Out, Tic-Tac-Toe, Memory, Sliding Puzzle,
+Mastermind, Spider, Word Search, Hangman, Connect Four, Checkers, Peg Solitaire,
+Mahjong Solitaire, Snake, Breakout, Higher or Lower, Klondike Golf, Blackjack,
+Spider Solitaire, Dungeon Sweeper, Potion 2048, Tiny Tower Defence, One Room
+Roguelike, Daily Dungeon, Dots & Boxes, Sokoban, Mancala, Hanoi, Number Match,
+Flood It, Color Sort, Battleship, Word Grid, Pipe Loop, Maze Walk, and Match
+Three.
 
 ## Product Principles
 
@@ -65,10 +72,10 @@ reuses the Solitaire card foundation while retaining its own rules and feel.
 - JSON under `assets/data/` for authored game data and presentation settings
 - WebGL as the primary release, with a Windows build from the same codebase
 
-Project code will keep game rules independent of rendering and input so seeded
+Project code keeps game rules independent of rendering and input so seeded
 sessions can be tested without opening a window. Shared collection code owns the
 cabinet, navigation, settings, profile, persistence envelope, and common UI;
-each game owns its rules, state, commands, and board rendering.
+each of the 43 games owns its rules, state, commands, and board rendering.
 
 ## Validation
 

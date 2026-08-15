@@ -3,11 +3,11 @@
   "wasm": "idle_hands",
   "roost_slug": "rust_idle_hands",
   "status": { "text": "In Development", "class": "in-development" },
-  "controls_hint": "Tap the game canvas to begin",
+  "controls_hint": "Tap a cabinet drawer to begin",
   "canvas_rendering": "auto",
   "about": [
-    "A touch-first cabinet of eight classic games for phone, tablet, and desktop: Solitaire, FreeCell, Sudoku, Minesweeper, 2048, Nonogram, Yahtzee, and Reversi.",
-    "Phase 0 defines the collection. The playable cabinet and first game arrive in Phase 1."
+    "A touch-first cabinet of 43 replayable games for phone, tablet, and desktop, from Solitaire and Sudoku to Match Three, Maze Walk, and Dungeon Sweeper.",
+    "Every drawer includes visible touch controls, a replayable tutorial, autosave, and personal records."
   ],
   "controls": [
     { "key": "Tap", "desc": "Choose cabinet objects, controls, cards, cells, dice, and discs" },

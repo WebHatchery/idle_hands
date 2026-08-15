@@ -1,6 +1,6 @@
 # Idle Hands — Game Design Document
 
-Status: Phase 0 product definition  
+Status: Current post-launch product baseline
 Date: 2026-08-15
 
 ## 1. High Concept
@@ -14,6 +14,11 @@ return.
 The primary devices are iPhone and iPad in a browser. Desktop browsers and the
 Windows build retain pointer and optional keyboard support, but the complete
 experience is designed around taps, holds, and swipes.
+
+The shipped cabinet currently contains 43 playable games. The eight titles in
+Section 4 are the launch foundation; the post-launch additions are listed in
+Section 11 and share the same persistence, tutorial, records, and responsive
+touch contracts.
 
 ## 2. Design Pillars
 
@@ -167,44 +172,38 @@ A replay identity includes the game ID, ruleset version, generator version, and
 seed. Saves record enough information to resume exactly rather than regenerate
 from incomplete context.
 
-## 10. Non-Goals for the First Collection
+## 10. Historical Non-Goals for the First Collection
 
 - Online multiplayer, accounts, leaderboards, cloud saves, or social feeds
 - Purchases, ads, stamina, daily chests, streak pressure, or multiple currencies
 - Spider Solitaire, Mahjong Solitaire, Checkers, arcade games, word games, and
-  original mini-games before the first eight are complete and polished
+  original mini-games before the first eight were complete and polished
 - A single rigid landscape canvas scaled down into unreadable phone controls
 - Perfect-solvability proofs for every generated card deal in the first release
 
-## 11. Future Cabinet Candidates
+## 11. Post-Launch Cabinet Additions
 
-Reusable systems make Spider Solitaire, Klondike Golf, Higher or Lower, and
-Blackjack natural card-family additions. Other classic candidates include
-Lights Out, Sliding Puzzle, Snake, Breakout, Mastermind, Memory/Pairs, Word
-Search, Hangman, Connect Four, Tic-Tac-Toe, Checkers, Peg Solitaire, and Mahjong
-Solitaire.
+The current post-launch cabinet includes Lights Out, Tic-Tac-Toe, Memory,
+Sliding Puzzle, Mastermind, Spider, Word Search, Hangman, Connect Four,
+Checkers, Peg Solitaire, Mahjong Solitaire, Snake, Breakout, Higher or Lower,
+Klondike Golf, Blackjack, Spider Solitaire, Dungeon Sweeper, Potion 2048, Tiny
+Tower Defence, One Room Roguelike, Daily Dungeon, Dots & Boxes, Sokoban,
+Mancala, Hanoi, Number Match, Flood It, Color Sort, Battleship, Word Grid,
+Pipe Loop, Maze Walk, and Match Three.
 
-Original objects should eventually give the cabinet its own voice. Leading
-concepts are Dungeon Sweeper, Potion 2048, Tiny Tower Defence, One Room
-Roguelike, and Daily Dungeon. They remain outside launch scope until the eight
-core games establish the collection’s quality bar.
+The former candidate list is now represented in the shipped cabinet. Ongoing
+post-launch work focuses on polish, accessibility, balance, and additional
+cabinet ideas only when they improve the quiet, touch-first collection.
 
-## 12. Phase 0 Decisions and Open Questions
+## 12. Historical Phase 0 Decisions
 
-Decided:
+The original eight-game launch scope established the current product principles:
 
-- The first collection contains exactly the eight games in Section 4.
 - Web on iPhone/iPad is the primary interaction target.
 - Portrait and landscape are both supported; no orientation is mandatory.
-- Progression is cosmetic-only and can launch after the games themselves.
-- Local persistence is sufficient for the first release.
+- Progression is cosmetic-only.
+- Local persistence is sufficient for the current release.
+- Rules, rendering, input, and shared profile state remain separate.
 
-To resolve during prototypes:
-
-- Whether the cabinet uses drawn vector/primitives, generated raster art, or a
-  hybrid asset pipeline
-- The exact Solitaire draw/redeal options exposed at launch
-- Nonogram generation versus a curated validated puzzle catalog
-- The name used publicly for the five-dice scorecard game
-- Whether all games expose an undo, or only games where it does not undermine
-  the intended challenge
+The eight-game scope is retained here as historical context; the current
+playable scope is the 43-game cabinet listed in Sections 1 and 11.

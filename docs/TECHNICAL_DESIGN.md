@@ -1,14 +1,19 @@
 # Idle Hands — Technical Design
 
-Status: Phase 0 architecture baseline  
+Status: Current post-launch architecture baseline
 Date: 2026-08-15
 
 ## 1. Runtime Boundaries
 
-Idle Hands is one Rust/Macroquad executable with a collection shell and eight
+Idle Hands is one Rust/Macroquad executable with a collection shell and 43
 independent game modules. The shell owns app lifecycle and shared services. A
 game module owns rules and presents state through commands; it does not directly
 change the profile, global settings, or another game's save.
+
+The original proposed module tree below documents the architectural intent.
+The current implementation uses named Rust source files under src/ with
+game-specific UI siblings and child test modules; the enum-owned host remains
+the active integration boundary.
 
 Proposed module boundaries:
 
@@ -207,5 +212,8 @@ its command surface is small. Minesweeper then exercises tap modes and seeded
 boards. Sudoku and Nonogram establish dense adaptive grids. Solitaire creates
 the card foundation before FreeCell consumes it. Yahtzee exercises scorecards
 and animated randomness; Reversi closes the set with local AI. Final phases add
-cosmetic progression and collection-wide polish only after all games are fully
-playable without a keyboard.
+cosmetic progression and collection-wide polish only after all foundation games
+are fully playable without a keyboard. The current post-launch implementation
+extends that same contract across 43 games, with collection-wide persistence,
+records, tutorials, rules, and responsive capacity treated as maintained
+systems rather than launch-only scaffolding.

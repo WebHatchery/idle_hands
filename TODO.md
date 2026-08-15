@@ -642,6 +642,16 @@ sizes, covered by rule tests, and passes `publish.ps1`.
     cannot be omitted from the guide.
   - [x] Capture the Rules screen at all documented viewport sizes.
 
+## Phase 48 — Current-state documentation alignment
+
+- [x] Update README, storefront metadata, game design, and technical design to
+  describe the verified 43-game post-launch cabinet instead of the original
+  eight-game/template baseline.
+  - [x] Record the current touch, persistence, tutorial, records, and
+    responsive-runtime state for future development.
+  - [x] Validate storefront JSON and remove stale launch-era claims from the
+    active product documentation.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.
