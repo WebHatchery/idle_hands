@@ -179,4 +179,7 @@ pub enum UiAction {
     WordGridSubmit,
     WordGridUndo,
     WordGridNew,
+    PipeRotate(usize),
+    PipeUndo,
+    PipeNew,
 }

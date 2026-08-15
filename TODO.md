@@ -556,6 +556,18 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Add responsive desktop, portrait, and medium-landscape presentation,
     visible controls, records, and verification captures.
 
+## Phase 40 — Thirty-third post-launch cabinet game
+
+- [x] Add Pipe Loop as a forty-first deterministic, touch-complete cabinet game
+  with a five-by-five rotated path, visible pipe connections, undo, reset, and
+  a complete-path victory.
+  - [x] Cover seeded scrambling, rotation bounds, victory, undo, and reset
+    behavior with focused rule tests.
+  - [x] Add persisted active state and best-move records with snapshot,
+    migration, progression, and tutorial coverage.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, records, and verification captures.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

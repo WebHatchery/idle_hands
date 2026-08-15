@@ -70,6 +70,8 @@ mod one_room_roguelike_ui;
 mod palette_ui;
 mod peg_solitaire;
 mod peg_solitaire_ui;
+mod pipe_loop;
+mod pipe_loop_ui;
 mod potion_2048;
 mod potion_2048_ui;
 mod progression;

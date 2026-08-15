@@ -517,6 +517,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "Green letters are exact; gold letters belong elsewhere in the word.",
             "Use BACKSPACE, UNDO, or NEW WORD with visible controls.",
         ],
+        GameId::PipeLoop => [
+            "Tap a pipe tile to rotate it clockwise.",
+            "Join the full quiet path to match the connected solution.",
+            "Use UNDO or NEW LOOP with visible controls.",
+        ],
     }
 }
 
@@ -570,6 +575,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::ColorSort if state.records.color_sort_best_moves.is_some() => "COMPLETE",
         GameId::Battleship if state.records.battleship_best_moves.is_some() => "COMPLETE",
         GameId::WordGrid if state.records.word_grid_best_moves.is_some() => "COMPLETE",
+        GameId::PipeLoop if state.records.pipe_loop_best_moves.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

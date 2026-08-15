@@ -282,5 +282,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "Green letters are exact; gold letters belong elsewhere in the word.",
             "Use BACKSPACE, UNDO, or NEW WORD with the visible controls.",
         ],
+        GameId::PipeLoop => [
+            "Tap a pipe tile to rotate it clockwise.",
+            "Join the full quiet path to match the connected solution.",
+            "Use UNDO or NEW LOOP with the visible controls.",
+        ],
     }
 }

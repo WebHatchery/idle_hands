@@ -68,6 +68,7 @@ impl AchievementId {
                 GameId::ColorSort => "Sort keeper",
                 GameId::Battleship => "Fleet keeper",
                 GameId::WordGrid => "Word keeper",
+                GameId::PipeLoop => "Pipe keeper",
             },
             Self::FullCabinet => "Full cabinet",
         }
@@ -137,6 +138,7 @@ fn game_complete(records: &CollectionRecords, game: GameId) -> bool {
         GameId::ColorSort => records.color_sort_best_moves.is_some(),
         GameId::Battleship => records.battleship_best_moves.is_some(),
         GameId::WordGrid => records.word_grid_best_moves.is_some(),
+        GameId::PipeLoop => records.pipe_loop_best_moves.is_some(),
     }
 }
 

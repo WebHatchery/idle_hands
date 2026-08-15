@@ -354,6 +354,15 @@ impl Game {
                 |best| best.min(self.state.word_grid.moves.min(u8::MAX as u16) as u8),
             ));
         }
+        if self.state.pipe_loop.won() {
+            records.pipe_loop_best_moves = Some(
+                records
+                    .pipe_loop_best_moves
+                    .map_or(self.state.pipe_loop.moves, |best| {
+                        best.min(self.state.pipe_loop.moves)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

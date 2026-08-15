@@ -10,6 +10,7 @@ use crate::hanoi::Hanoi;
 use crate::mancala::Mancala;
 use crate::number_match::NumberMatch;
 use crate::one_room_roguelike::OneRoomRoguelike;
+use crate::pipe_loop::PipeLoop;
 use crate::potion_2048::Potion2048;
 use crate::state::Game2048;
 use crate::state::{AppState, GameId};
@@ -68,6 +69,7 @@ pub enum GameSnapshot {
     ColorSort(ColorSort),
     Battleship(Battleship),
     WordGrid(WordGrid),
+    PipeLoop(PipeLoop),
 }
 
 impl GameSnapshot {
@@ -113,6 +115,7 @@ impl GameSnapshot {
             GameId::ColorSort => Self::ColorSort(state.color_sort.clone()),
             GameId::Battleship => Self::Battleship(state.battleship.clone()),
             GameId::WordGrid => Self::WordGrid(state.word_grid.clone()),
+            GameId::PipeLoop => Self::PipeLoop(state.pipe_loop.clone()),
         }
     }
 
@@ -158,6 +161,7 @@ impl GameSnapshot {
             Self::ColorSort(game) => state.color_sort = game,
             Self::Battleship(game) => state.battleship = game,
             Self::WordGrid(game) => state.word_grid = game,
+            Self::PipeLoop(game) => state.pipe_loop = game,
         }
     }
 }

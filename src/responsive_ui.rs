@@ -69,6 +69,7 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
                     | GameId::ColorSort
                     | GameId::Battleship
                     | GameId::WordGrid
+                    | GameId::PipeLoop
             ) {
                 8.
             } else {
@@ -720,6 +721,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::ColorSort if state.records.color_sort_best_moves.is_some() => "COMPLETE",
         GameId::Battleship if state.records.battleship_best_moves.is_some() => "COMPLETE",
         GameId::WordGrid if state.records.word_grid_best_moves.is_some() => "COMPLETE",
+        GameId::PipeLoop if state.records.pipe_loop_best_moves.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

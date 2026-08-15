@@ -46,6 +46,7 @@ pub fn status(state: &AppState, game: GameId) -> &'static str {
         GameId::ColorSort => state.records.color_sort_best_moves.is_some(),
         GameId::Battleship => state.records.battleship_best_moves.is_some(),
         GameId::WordGrid => state.records.word_grid_best_moves.is_some(),
+        GameId::PipeLoop => state.records.pipe_loop_best_moves.is_some(),
     };
     if complete {
         "COMPLETE"
@@ -105,6 +106,7 @@ fn has_progress(state: &AppState, game: GameId) -> bool {
         GameId::ColorSort => state.color_sort.moves > 0,
         GameId::Battleship => state.battleship.moves > 0,
         GameId::WordGrid => state.word_grid.moves > 0,
+        GameId::PipeLoop => state.pipe_loop.moves > 0,
     }
 }
 
@@ -158,5 +160,6 @@ pub fn is_active(game: GameId) -> bool {
             | GameId::ColorSort
             | GameId::Battleship
             | GameId::WordGrid
+            | GameId::PipeLoop
     )
 }

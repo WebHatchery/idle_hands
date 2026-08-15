@@ -30,6 +30,7 @@ use crate::number_match_ui;
 use crate::one_room_roguelike_ui;
 use crate::palette_ui;
 use crate::peg_solitaire_ui;
+use crate::pipe_loop_ui;
 use crate::potion_2048_ui;
 use crate::records_ui;
 use crate::responsive_cards;
@@ -211,6 +212,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Game(GameId::ColorSort) => color_sort_ui::clicks(state, p),
         Screen::Game(GameId::Battleship) => battleship_ui::clicks(state, p),
         Screen::Game(GameId::WordGrid) => word_grid_ui::clicks(state, p),
+        Screen::Game(GameId::PipeLoop) => pipe_loop_ui::clicks(state, p),
         Screen::Game(GameId::Mastermind) => mastermind_ui::clicks(state, p),
         Screen::Help => {
             if is_compact_landscape() {
@@ -327,6 +329,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::ColorSort) => color_sort_ui::draw(state),
         Screen::Game(GameId::Battleship) => battleship_ui::draw(state),
         Screen::Game(GameId::WordGrid) => word_grid_ui::draw(state),
+        Screen::Game(GameId::PipeLoop) => pipe_loop_ui::draw(state),
         Screen::Game(GameId::Mastermind) => mastermind_ui::draw(state),
         Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(),
         Screen::Help if is_portrait() => responsive_library::draw_help(),
@@ -438,6 +441,7 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
                     | GameId::ColorSort
                     | GameId::Battleship
                     | GameId::WordGrid
+                    | GameId::PipeLoop
             ) {
                 10.
             } else {

@@ -273,6 +273,16 @@ impl Game {
                 let seed = self.state.word_grid.seed.wrapping_add(1);
                 self.state.word_grid.reset(seed);
             }
+            UiAction::PipeRotate(index) => {
+                self.state.pipe_loop.rotate(*index);
+            }
+            UiAction::PipeUndo => {
+                self.state.pipe_loop.undo();
+            }
+            UiAction::PipeNew => {
+                let seed = self.state.pipe_loop.seed.wrapping_add(1);
+                self.state.pipe_loop.reset(seed);
+            }
             _ => return false,
         }
         true

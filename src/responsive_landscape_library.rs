@@ -184,6 +184,10 @@ pub fn draw_records(state: &AppState) {
             "Word Grid best",
             value(state.records.word_grid_best_moves.map(u32::from)),
         ),
+        (
+            "Pipe Loop best",
+            value(state.records.pipe_loop_best_moves.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
         let col = index / 13;

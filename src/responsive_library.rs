@@ -198,12 +198,16 @@ pub fn draw_records(state: &AppState) {
             "Word Grid best",
             value(state.records.word_grid_best_moves.map(u32::from)),
         ),
+        (
+            "Pipe Loop best",
+            value(state.records.pipe_loop_best_moves.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
-        let column = index / 24;
-        let row = index % 24;
+        let column = index / 25;
+        let row = index % 25;
         let x = 20. + column as f32 * 170.;
-        let y = 140. + row as f32 * 21.;
+        let y = 140. + row as f32 * 20.;
         text(label, x, y, 9., Color::new(0.78, 0.73, 0.86, 1.));
         text(score, x + 145., y, 10., Color::new(0.98, 0.83, 0.45, 1.));
     }

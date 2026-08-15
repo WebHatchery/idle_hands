@@ -26,6 +26,7 @@ use crate::nonogram::Nonogram;
 use crate::number_match::NumberMatch;
 use crate::one_room_roguelike::OneRoomRoguelike;
 use crate::peg_solitaire::PegSolitaire;
+use crate::pipe_loop::PipeLoop;
 use crate::potion_2048::Potion2048;
 use crate::reversi::Reversi;
 use crate::sliding_puzzle::SlidingPuzzle;
@@ -89,9 +90,10 @@ pub enum GameId {
     ColorSort,
     Battleship,
     WordGrid,
+    PipeLoop,
 }
 impl GameId {
-    pub const ALL: [Self; 40] = [
+    pub const ALL: [Self; 41] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -132,6 +134,7 @@ impl GameId {
         Self::ColorSort,
         Self::Battleship,
         Self::WordGrid,
+        Self::PipeLoop,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -175,6 +178,7 @@ impl GameId {
             Self::ColorSort => "Color Sort",
             Self::Battleship => "Battleship",
             Self::WordGrid => "Word Grid",
+            Self::PipeLoop => "Pipe Loop",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -219,6 +223,7 @@ impl GameId {
             Self::ColorSort => "Sort the quiet colors",
             Self::Battleship => "Find the quiet fleet",
             Self::WordGrid => "Solve the quiet word",
+            Self::PipeLoop => "Join the quiet pipes",
         }
     }
     pub fn index(self) -> usize {
@@ -266,6 +271,7 @@ impl GameId {
             Self::ColorSort => "color_sort",
             Self::Battleship => "battleship",
             Self::WordGrid => "word_grid",
+            Self::PipeLoop => "pipe_loop",
         }
     }
 }
@@ -334,6 +340,7 @@ pub struct AppState {
     pub color_sort: ColorSort,
     pub battleship: Battleship,
     pub word_grid: WordGrid,
+    pub pipe_loop: PipeLoop,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -437,6 +444,8 @@ pub struct CollectionSave {
     pub battleship: Battleship,
     #[serde(default)]
     pub word_grid: WordGrid,
+    #[serde(default)]
+    pub pipe_loop: PipeLoop,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -580,6 +589,7 @@ impl CollectionSave {
             color_sort: state.color_sort.clone(),
             battleship: state.battleship.clone(),
             word_grid: state.word_grid.clone(),
+            pipe_loop: state.pipe_loop.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -639,6 +649,7 @@ impl CollectionSave {
         state.color_sort = self.color_sort;
         state.battleship = self.battleship;
         state.word_grid = self.word_grid;
+        state.pipe_loop = self.pipe_loop;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -704,6 +715,7 @@ impl Default for AppState {
             color_sort: ColorSort::default(),
             battleship: Battleship::default(),
             word_grid: WordGrid::default(),
+            pipe_loop: PipeLoop::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,
