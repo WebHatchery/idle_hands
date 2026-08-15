@@ -24,6 +24,7 @@ use crate::potion_2048::Potion2048;
 use crate::reversi::Reversi;
 use crate::sliding_puzzle::SlidingPuzzle;
 use crate::snake::Snake;
+use crate::sokoban::Sokoban;
 use crate::solitaire::Solitaire;
 use crate::spider::Spider;
 use crate::spider_solitaire::SpiderSolitaire;
@@ -71,9 +72,10 @@ pub enum GameId {
     OneRoomRoguelike,
     DailyDungeon,
     DotsBoxes,
+    Sokoban,
 }
 impl GameId {
-    pub const ALL: [Self; 32] = [
+    pub const ALL: [Self; 33] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -106,6 +108,7 @@ impl GameId {
         Self::OneRoomRoguelike,
         Self::DailyDungeon,
         Self::DotsBoxes,
+        Self::Sokoban,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -141,6 +144,7 @@ impl GameId {
             Self::OneRoomRoguelike => "One Room Roguelike",
             Self::DailyDungeon => "Daily Dungeon",
             Self::DotsBoxes => "Dots & Boxes",
+            Self::Sokoban => "Sokoban",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -177,6 +181,7 @@ impl GameId {
             Self::OneRoomRoguelike => "Clear one quiet room",
             Self::DailyDungeon => "Recover the daily runes",
             Self::DotsBoxes => "Draw the quiet squares",
+            Self::Sokoban => "Push the quiet crates",
         }
     }
     pub fn index(self) -> usize {
@@ -216,6 +221,7 @@ impl GameId {
             Self::OneRoomRoguelike => "one_room_roguelike",
             Self::DailyDungeon => "daily_dungeon",
             Self::DotsBoxes => "dots_boxes",
+            Self::Sokoban => "sokoban",
         }
     }
 }
@@ -276,6 +282,7 @@ pub struct AppState {
     pub one_room_roguelike: OneRoomRoguelike,
     pub daily_dungeon: DailyDungeon,
     pub dots_boxes: DotsBoxes,
+    pub sokoban: Sokoban,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -356,6 +363,8 @@ pub struct CollectionRecords {
     pub daily_dungeon_best_score: Option<u32>,
     #[serde(default)]
     pub dots_boxes_best_score: Option<u8>,
+    #[serde(default)]
+    pub sokoban_best_moves: Option<u16>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -423,6 +432,8 @@ pub struct CollectionSave {
     pub daily_dungeon: DailyDungeon,
     #[serde(default)]
     pub dots_boxes: DotsBoxes,
+    #[serde(default)]
+    pub sokoban: Sokoban,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -558,6 +569,7 @@ impl CollectionSave {
             one_room_roguelike: state.one_room_roguelike.clone(),
             daily_dungeon: state.daily_dungeon.clone(),
             dots_boxes: state.dots_boxes.clone(),
+            sokoban: state.sokoban.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -609,6 +621,7 @@ impl CollectionSave {
         state.one_room_roguelike = self.one_room_roguelike;
         state.daily_dungeon = self.daily_dungeon;
         state.dots_boxes = self.dots_boxes;
+        state.sokoban = self.sokoban;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -666,6 +679,7 @@ impl Default for AppState {
             one_room_roguelike: OneRoomRoguelike::default(),
             daily_dungeon: DailyDungeon::default(),
             dots_boxes: DotsBoxes::default(),
+            sokoban: Sokoban::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

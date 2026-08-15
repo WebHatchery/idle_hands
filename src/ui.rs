@@ -38,6 +38,7 @@ use crate::reversi_ui;
 use crate::settings_ui;
 use crate::sliding_puzzle_ui;
 use crate::snake_ui;
+use crate::sokoban_ui;
 use crate::solitaire_ui;
 use crate::spider_solitaire_ui;
 use crate::spider_ui;
@@ -195,6 +196,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Game(GameId::OneRoomRoguelike) => one_room_roguelike_ui::clicks(state, p),
         Screen::Game(GameId::DailyDungeon) => daily_dungeon_ui::clicks(state, p),
         Screen::Game(GameId::DotsBoxes) => dots_boxes_ui::clicks(state, p),
+        Screen::Game(GameId::Sokoban) => sokoban_ui::clicks(state, p),
         Screen::Game(GameId::Mastermind) => mastermind_ui::clicks(state, p),
         Screen::Help => {
             if is_compact_landscape() {
@@ -303,6 +305,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::OneRoomRoguelike) => one_room_roguelike_ui::draw(state),
         Screen::Game(GameId::DailyDungeon) => daily_dungeon_ui::draw(state),
         Screen::Game(GameId::DotsBoxes) => dots_boxes_ui::draw(state),
+        Screen::Game(GameId::Sokoban) => sokoban_ui::draw(state),
         Screen::Game(GameId::Mastermind) => mastermind_ui::draw(state),
         Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(),
         Screen::Help if is_portrait() => responsive_library::draw_help(),
@@ -406,6 +409,7 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
                     | GameId::OneRoomRoguelike
                     | GameId::DailyDungeon
                     | GameId::DotsBoxes
+                    | GameId::Sokoban
             ) {
                 10.
             } else {

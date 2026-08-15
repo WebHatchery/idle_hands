@@ -38,6 +38,7 @@ pub fn status(state: &AppState, game: GameId) -> &'static str {
         GameId::OneRoomRoguelike => state.records.one_room_roguelike_best_score.is_some(),
         GameId::DailyDungeon => state.records.daily_dungeon_best_score.is_some(),
         GameId::DotsBoxes => state.records.dots_boxes_best_score.is_some(),
+        GameId::Sokoban => state.records.sokoban_best_moves.is_some(),
     };
     if complete {
         "COMPLETE"
@@ -89,6 +90,7 @@ fn has_progress(state: &AppState, game: GameId) -> bool {
         }
         GameId::DailyDungeon => state.daily_dungeon.score > 0 || state.daily_dungeon.moves > 0,
         GameId::DotsBoxes => state.dots_boxes.moves > 0,
+        GameId::Sokoban => state.sokoban.moves > 0,
     }
 }
 
@@ -134,5 +136,6 @@ pub fn is_active(game: GameId) -> bool {
             | GameId::OneRoomRoguelike
             | GameId::DailyDungeon
             | GameId::DotsBoxes
+            | GameId::Sokoban
     )
 }

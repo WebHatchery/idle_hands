@@ -176,6 +176,10 @@ pub fn draw_records(state: &AppState) {
             "Dots & Boxes best",
             value(state.records.dots_boxes_best_score.map(u32::from)),
         ),
+        (
+            "Sokoban best moves",
+            value(state.records.sokoban_best_moves.map(u32::from)),
+        ),
     ];
     draw_column(&left, 175., 240.);
     draw_column(&middle, 490., 240.);

@@ -77,6 +77,8 @@ mod sliding_puzzle;
 mod sliding_puzzle_ui;
 mod snake;
 mod snake_ui;
+mod sokoban;
+mod sokoban_ui;
 mod solitaire;
 mod solitaire_ui;
 mod sound;

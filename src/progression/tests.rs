@@ -59,6 +59,7 @@ fn full_cabinet_counts_every_playable_game() {
     records.one_room_roguelike_best_score = Some(50);
     records.daily_dungeon_best_score = Some(50);
     records.dots_boxes_best_score = Some(8);
+    records.sokoban_best_moves = Some(20);
 
     assert_eq!(completed_games(&records), GameId::ALL.len());
     assert!(earned(&records, AchievementId::FullCabinet));

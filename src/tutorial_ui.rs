@@ -242,5 +242,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "Complete a square to claim it and keep your turn.",
             "Claim more squares than the cabinet; use UNDO or NEW BOARD.",
         ],
+        GameId::Sokoban => [
+            "Tap a direction to walk across the quiet room.",
+            "Push every crate onto a marked square; crates cannot be pulled.",
+            "Use UNDO or NEW ROOM with the visible controls.",
+        ],
     }
 }

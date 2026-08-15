@@ -29,9 +29,9 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 
 pub fn cabinet_rect(index: usize) -> Rect {
     Rect::new(
-        6. + (index % 4) as f32 * 98.,
+        4. + (index % 4) as f32 * 89.,
         94. + (index / 4) as f32 * 59.,
-        92.,
+        84.,
         53.,
     )
 }
@@ -61,6 +61,7 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
                     | GameId::OneRoomRoguelike
                     | GameId::DailyDungeon
                     | GameId::DotsBoxes
+                    | GameId::Sokoban
             ) {
                 8.
             } else {
@@ -704,6 +705,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         }
         GameId::DailyDungeon if state.records.daily_dungeon_best_score.is_some() => "COMPLETE",
         GameId::DotsBoxes if state.records.dots_boxes_best_score.is_some() => "COMPLETE",
+        GameId::Sokoban if state.records.sokoban_best_moves.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

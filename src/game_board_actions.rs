@@ -187,6 +187,16 @@ impl Game {
                 let seed = self.state.dots_boxes.seed.wrapping_add(1);
                 self.state.dots_boxes.reset(seed);
             }
+            UiAction::SokobanMove(direction) => {
+                self.state.sokoban.move_in(*direction);
+            }
+            UiAction::SokobanUndo => {
+                self.state.sokoban.undo();
+            }
+            UiAction::SokobanNew => {
+                let seed = self.state.sokoban.seed.wrapping_add(1);
+                self.state.sokoban.reset(seed);
+            }
             _ => return false,
         }
         true

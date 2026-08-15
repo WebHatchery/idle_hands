@@ -153,4 +153,7 @@ pub enum UiAction {
     DotsEdge(crate::dots_boxes::Edge),
     DotsUndo,
     DotsNew,
+    SokobanMove(Direction),
+    SokobanUndo,
+    SokobanNew,
 }

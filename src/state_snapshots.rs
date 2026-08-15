@@ -14,8 +14,8 @@ use crate::{
     klondike_golf::KlondikeGolf, lights_out::LightsOut, mahjong_solitaire::MahjongSolitaire,
     mastermind::Mastermind, memory_pairs::MemoryPairs, minesweeper::Minesweeper,
     nonogram::Nonogram, peg_solitaire::PegSolitaire, reversi::Reversi,
-    sliding_puzzle::SlidingPuzzle, snake::Snake, solitaire::Solitaire, spider::Spider,
-    spider_solitaire::SpiderSolitaire, sudoku::Sudoku, tic_tac_toe::TicTacToe,
+    sliding_puzzle::SlidingPuzzle, snake::Snake, sokoban::Sokoban, solitaire::Solitaire,
+    spider::Spider, spider_solitaire::SpiderSolitaire, sudoku::Sudoku, tic_tac_toe::TicTacToe,
     word_search::WordSearch,
 };
 use serde::{Deserialize, Serialize};
@@ -54,6 +54,7 @@ pub enum GameSnapshot {
     OneRoomRoguelike(OneRoomRoguelike),
     DailyDungeon(DailyDungeon),
     DotsBoxes(DotsBoxes),
+    Sokoban(Sokoban),
 }
 
 impl GameSnapshot {
@@ -91,6 +92,7 @@ impl GameSnapshot {
             GameId::OneRoomRoguelike => Self::OneRoomRoguelike(state.one_room_roguelike.clone()),
             GameId::DailyDungeon => Self::DailyDungeon(state.daily_dungeon.clone()),
             GameId::DotsBoxes => Self::DotsBoxes(state.dots_boxes.clone()),
+            GameId::Sokoban => Self::Sokoban(state.sokoban.clone()),
         }
     }
 
@@ -128,6 +130,7 @@ impl GameSnapshot {
             Self::OneRoomRoguelike(game) => state.one_room_roguelike = game,
             Self::DailyDungeon(game) => state.daily_dungeon = game,
             Self::DotsBoxes(game) => state.dots_boxes = game,
+            Self::Sokoban(game) => state.sokoban = game,
         }
     }
 }

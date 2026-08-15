@@ -285,6 +285,15 @@ impl Game {
                     }),
             );
         }
+        if self.state.sokoban.won() {
+            records.sokoban_best_moves = Some(
+                records
+                    .sokoban_best_moves
+                    .map_or(self.state.sokoban.moves, |best| {
+                        best.min(self.state.sokoban.moves)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,
