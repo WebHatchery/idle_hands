@@ -49,8 +49,11 @@ impl Game {
             "higher_lower" => Screen::Game(GameId::HigherLower),
             "higher_lower_accessible" => Screen::Game(GameId::HigherLower),
             "klondike_golf" => Screen::Game(GameId::KlondikeGolf),
+            "klondike_golf_accessible" => Screen::Game(GameId::KlondikeGolf),
             "blackjack" => Screen::Game(GameId::Blackjack),
+            "blackjack_accessible" => Screen::Game(GameId::Blackjack),
             "spider_solitaire" => Screen::Game(GameId::SpiderSolitaire),
+            "spider_solitaire_accessible" => Screen::Game(GameId::SpiderSolitaire),
             "dungeon_sweeper" | "dungeon_sweeper_accessible" => {
                 Screen::Game(GameId::DungeonSweeper)
             }

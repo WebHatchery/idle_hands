@@ -1,6 +1,8 @@
 //! Responsive touch presentation for standard Spider Solitaire.
 
-use crate::{spider_solitaire::SpiderSolitaireStatus, state::AppState, ui::UiAction};
+use crate::{
+    accessibility, spider_solitaire::SpiderSolitaireStatus, state::AppState, ui::UiAction,
+};
 use macroquad::prelude::*;
 
 #[derive(Clone, Copy)]
@@ -108,8 +110,20 @@ pub fn draw(state: &AppState) {
     } else {
         (30., 58.)
     };
-    text("‹ CABINET", 8., 30., 13., muted());
-    text("SPIDER SOLITAIRE", hx, hy, title_size(), accent());
+    text(
+        "‹ CABINET",
+        8.,
+        30.,
+        accessibility::text_size(13., state.large_text),
+        muted(),
+    );
+    text(
+        "SPIDER SOLITAIRE",
+        hx,
+        hy,
+        accessibility::text_size(title_size(), state.large_text),
+        accent(),
+    );
     let subtitle = if game.status == SpiderSolitaireStatus::Won {
         "Eight suited webs cleared"
     } else {
@@ -119,11 +133,17 @@ pub fn draw(state: &AppState) {
         subtitle,
         if compact { 350. } else { hx },
         if compact { 28. } else { hy + 24. },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
     draw_card_slot(l.stock, game.stock.last().copied(), state);
-    text("STOCK", l.stock.x, l.stock.bottom() + 15., 10., muted());
+    text(
+        "STOCK",
+        l.stock.x,
+        l.stock.bottom() + 15.,
+        accessibility::text_size(10., state.large_text),
+        muted(),
+    );
     for complete in 0..8 {
         let x = if portrait {
             52. + complete as f32 * 34.
@@ -139,10 +159,16 @@ pub fn draw(state: &AppState) {
             rect.w,
             rect.h,
             1.,
-            Color::new(0.35, 0.28, 0.48, 1.),
+            accessibility::grid_line(state.high_contrast),
         );
         if complete < game.completed as usize {
-            text("✓", rect.x + 6., rect.y + rect.h * 0.58, 18., accent());
+            text(
+                "✓",
+                rect.x + 6.,
+                rect.y + rect.h * 0.58,
+                accessibility::text_size(18., state.large_text),
+                accent(),
+            );
         }
     }
     for (column, stack) in game.tableau.iter().enumerate() {
@@ -157,12 +183,14 @@ pub fn draw(state: &AppState) {
             );
         }
         for (depth, card) in stack.iter().enumerate() {
-            crate::card_render::draw_card(
+            crate::card_render::draw_card_accessible(
                 l.card_rect(column, depth),
                 *card,
                 game.selected == Some((column, depth)),
                 state.card_back,
                 state.reduced_motion,
+                state.high_contrast,
+                state.large_text,
             );
         }
     }
@@ -176,11 +204,11 @@ pub fn draw(state: &AppState) {
         } else {
             590.
         },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    button(l.undo, "UNDO");
-    button(l.new_game, "NEW DEAL");
+    button(l.undo, "UNDO", state.large_text);
+    button(l.new_game, "NEW DEAL", state.large_text);
     text(
         "Tap a suited run, then tap its destination.",
         if portrait { 10. } else { hx },
@@ -191,18 +219,26 @@ pub fn draw(state: &AppState) {
         } else {
             615.
         },
-        11.,
+        accessibility::text_size(11., state.large_text),
         muted(),
     );
 }
 fn draw_card_slot(rect: Rect, card: Option<crate::cards::Card>, state: &AppState) {
     if let Some(card) = card {
-        crate::card_render::draw_card(rect, card, false, state.card_back, state.reduced_motion);
+        crate::card_render::draw_card_accessible(
+            rect,
+            card,
+            false,
+            state.card_back,
+            state.reduced_motion,
+            state.high_contrast,
+            state.large_text,
+        );
     } else {
         draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., muted());
     }
 }
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -211,7 +247,13 @@ fn button(rect: Rect, label: &str) {
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
-    text(label, rect.x + 12., rect.y + 26., 11., WHITE);
+    text(
+        label,
+        rect.x + 12.,
+        rect.y + 26.,
+        accessibility::text_size(11., large_text),
+        WHITE,
+    );
 }
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     draw_text(value, x, y, size, color);

@@ -1,9 +1,29 @@
 //! Shared card visuals and low-motion selection feedback.
 
-use crate::{cards::Card, cosmetics};
+use crate::{accessibility, cards::Card, cosmetics};
 use macroquad::prelude::*;
 
 pub fn draw_card(rect: Rect, card: Card, selected: bool, back_style: u8, reduced_motion: bool) {
+    draw_card_accessible(
+        rect,
+        card,
+        selected,
+        back_style,
+        reduced_motion,
+        false,
+        false,
+    );
+}
+
+pub fn draw_card_accessible(
+    rect: Rect,
+    card: Card,
+    selected: bool,
+    back_style: u8,
+    reduced_motion: bool,
+    high_contrast: bool,
+    large_text: bool,
+) {
     let (back, mark) = cosmetics::card_back_colors(back_style);
     draw_rectangle(
         rect.x,
@@ -11,9 +31,17 @@ pub fn draw_card(rect: Rect, card: Card, selected: bool, back_style: u8, reduced
         rect.w,
         rect.h,
         if card.face_up {
-            Color::new(0.94, 0.90, 0.82, 1.)
+            if high_contrast {
+                WHITE
+            } else {
+                Color::new(0.94, 0.90, 0.82, 1.)
+            }
         } else {
-            back
+            if high_contrast {
+                Color::new(0.08, 0.08, 0.12, 1.)
+            } else {
+                back
+            }
         },
     );
     let pulse = selection_pulse(get_time() as f32, selected, reduced_motion);
@@ -26,7 +54,11 @@ pub fn draw_card(rect: Rect, card: Card, selected: bool, back_style: u8, reduced
         if selected {
             Color::new(0.98, 0.75 + pulse * 0.12, 0.30, 1.)
         } else {
-            Color::new(0.55, 0.45, 0.68, 1.)
+            if high_contrast {
+                WHITE
+            } else {
+                Color::new(0.55, 0.45, 0.68, 1.)
+            }
         },
     );
     if !card.face_up {
@@ -40,12 +72,16 @@ pub fn draw_card(rect: Rect, card: Card, selected: bool, back_style: u8, reduced
         return;
     }
     let color = if card.red() {
-        Color::new(0.72, 0.16, 0.22, 1.)
+        if high_contrast {
+            Color::new(0.95, 0.05, 0.10, 1.)
+        } else {
+            Color::new(0.72, 0.16, 0.22, 1.)
+        }
     } else {
-        Color::new(0.10, 0.08, 0.16, 1.)
+        Color::new(0.03, 0.03, 0.05, 1.)
     };
-    let rank_size = (rect.w * 0.27).clamp(12., 25.);
-    let suit_size = (rect.w * 0.30).clamp(13., 28.);
+    let rank_size = accessibility::text_size((rect.w * 0.27).clamp(12., 25.), large_text);
+    let suit_size = accessibility::text_size((rect.w * 0.30).clamp(13., 28.), large_text);
     draw_text(
         rank_label(card.rank),
         rect.x + rect.w * 0.13,

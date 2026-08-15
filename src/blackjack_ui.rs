@@ -1,6 +1,6 @@
 //! Responsive presentation and touch routing for Blackjack.
 
-use crate::{blackjack::BlackjackStatus, state::AppState, ui::UiAction};
+use crate::{accessibility, blackjack::BlackjackStatus, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
 #[derive(Clone, Copy)]
@@ -75,62 +75,96 @@ pub fn draw(state: &AppState) {
     } else {
         60.
     };
-    text("‹ CABINET", 8., 30., 13., muted());
-    text("BLACKJACK", x, y, title_size(), accent());
+    text(
+        "‹ CABINET",
+        8.,
+        30.,
+        accessibility::text_size(13., state.large_text),
+        muted(),
+    );
+    text(
+        "BLACKJACK",
+        x,
+        y,
+        accessibility::text_size(title_size(), state.large_text),
+        accent(),
+    );
     let status_x = if compact {
         430.
     } else if portrait {
-        180.
+        10.
     } else {
         650.
     };
-    let status_y = if compact { 30. } else { 78. };
+    let status_y = if compact {
+        30.
+    } else if portrait {
+        91.
+    } else {
+        78.
+    };
     text(
         &status_text(game.status, game.player_total(), game.dealer_total()),
         status_x,
         status_y,
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
     let origin = if compact {
         vec2(125., 66.)
     } else if portrait {
-        vec2(20., 92.)
+        vec2(20., 112.)
     } else {
         vec2(360., 88.)
     };
-    text("DEALER", origin.x, origin.y, body_size(), muted());
+    text(
+        "DEALER",
+        origin.x,
+        origin.y,
+        accessibility::text_size(body_size(), state.large_text),
+        muted(),
+    );
     draw_hand(
         &game.dealer,
         origin + vec2(0., 12.),
         !matches!(game.status, BlackjackStatus::Playing),
+        state.high_contrast,
+        state.large_text,
     );
     text(
         "PLAYER",
         origin.x,
         origin.y + if portrait { 190. } else { 158. },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
     draw_hand(
         &game.player,
         origin + vec2(0., if portrait { 202. } else { 170. }),
         true,
+        state.high_contrast,
+        state.large_text,
     );
     text(
         &format!("Wins {}  •  Round {}", game.wins, game.rounds),
         origin.x,
         if portrait { 475. } else { 350. },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    button(l.hit, "HIT");
-    button(l.stand, "STAND");
-    button(l.undo, "UNDO");
-    button(l.new_round, "NEW ROUND");
+    button(l.hit, "HIT", state.large_text);
+    button(l.stand, "STAND", state.large_text);
+    button(l.undo, "UNDO", state.large_text);
+    button(l.new_round, "NEW ROUND", state.large_text);
 }
 
-fn draw_hand(hand: &[crate::cards::Card], origin: Vec2, reveal: bool) {
+fn draw_hand(
+    hand: &[crate::cards::Card],
+    origin: Vec2,
+    reveal: bool,
+    high_contrast: bool,
+    large_text: bool,
+) {
     for (index, card) in hand.iter().enumerate() {
         let rect = Rect::new(origin.x + index as f32 * 68., origin.y, 58., 88.);
         draw_rectangle(
@@ -138,7 +172,11 @@ fn draw_hand(hand: &[crate::cards::Card], origin: Vec2, reveal: bool) {
             rect.y,
             rect.w,
             rect.h,
-            Color::new(0.20, 0.13, 0.30, 1.),
+            if high_contrast {
+                WHITE
+            } else {
+                Color::new(0.20, 0.13, 0.30, 1.)
+            },
         );
         draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
         let label = if reveal || index > 0 {
@@ -146,7 +184,13 @@ fn draw_hand(hand: &[crate::cards::Card], origin: Vec2, reveal: bool) {
         } else {
             "?".to_owned()
         };
-        text(&label, rect.x + 10., rect.y + 52., 21., WHITE);
+        text(
+            &label,
+            rect.x + 10.,
+            rect.y + 52.,
+            accessibility::text_size(21., large_text),
+            if high_contrast { BLACK } else { WHITE },
+        );
     }
 }
 
@@ -170,7 +214,7 @@ fn status_text(status: BlackjackStatus, player: u8, dealer: u8) -> String {
         BlackjackStatus::Push => format!("Push — both hold at {}", player),
     }
 }
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -179,7 +223,13 @@ fn button(rect: Rect, label: &str) {
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
-    text(label, rect.x + 12., rect.y + 29., 11., WHITE);
+    text(
+        label,
+        rect.x + 12.,
+        rect.y + 29.,
+        accessibility::text_size(11., large_text),
+        WHITE,
+    );
 }
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     draw_text(value, x, y, size, color);

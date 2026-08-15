@@ -741,6 +741,15 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Capture and verify accessible desktop, portrait, and medium-landscape
     scenes for all three arcade games.
 
+## Phase 59 — Card and strategy accessibility
+
+- [x] Extend the persisted High Contrast and Large Text settings to Klondike
+  Golf, Blackjack, and Spider Solitaire.
+  - [x] Improve card faces, table fills, labels, and touch controls without
+    changing the underlying game rules.
+  - [x] Capture and verify accessible desktop, portrait, and medium-landscape
+    scenes for all three card games.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

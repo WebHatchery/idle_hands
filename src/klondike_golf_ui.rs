@@ -1,6 +1,6 @@
 //! Responsive presentation and touch routing for Klondike Golf.
 
-use crate::{klondike_golf::GolfStatus, state::AppState, ui::UiAction};
+use crate::{accessibility, klondike_golf::GolfStatus, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
 #[derive(Clone, Copy)]
@@ -84,13 +84,25 @@ pub fn draw(state: &AppState) {
     } else {
         60.
     };
-    text("‹ CABINET", 8., 30., 13., muted());
-    text("KLONDIKE GOLF", hx, hy, title_size(), accent());
+    text(
+        "‹ CABINET",
+        8.,
+        30.,
+        accessibility::text_size(13., state.large_text),
+        muted(),
+    );
+    text(
+        "KLONDIKE GOLF",
+        hx,
+        hy,
+        accessibility::text_size(title_size(), state.large_text),
+        accent(),
+    );
     text(
         status_text(game.status),
         if compact { 610. } else { hx },
         if compact { 30. } else { hy + 25. },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
     for (column, stack) in game.tableau.iter().enumerate() {
@@ -101,6 +113,8 @@ pub fn draw(state: &AppState) {
                 card.rank,
                 card.suit,
                 Rect::new(x + 2., y, l.col_w - 5., l.card_h - 3.),
+                state.high_contrast,
+                state.large_text,
             );
         }
     }
@@ -114,22 +128,36 @@ pub fn draw(state: &AppState) {
         l.stock.y,
         l.stock.w,
         l.stock.h,
-        Color::new(0.20, 0.13, 0.30, 1.),
+        accessibility::board_fill(state.high_contrast),
     );
     draw_rectangle_lines(l.stock.x, l.stock.y, l.stock.w, l.stock.h, 1., accent());
-    text("STOCK", l.stock.x + 10., l.stock.y + 20., 10., WHITE);
+    text(
+        "STOCK",
+        l.stock.x + 10.,
+        l.stock.y + 20.,
+        accessibility::text_size(10., state.large_text),
+        WHITE,
+    );
     text(
         &format!("WASTE {}", waste),
         l.stock.x + 10.,
         l.stock.y + 40.,
-        10.,
+        accessibility::text_size(10., state.large_text),
         muted(),
     );
-    text(
-        &format!(
+    let instruction = if portrait {
+        format!(
+            "Moves {}  •  Tap a top card above or below waste",
+            game.moves
+        )
+    } else {
+        format!(
             "Moves {}  •  Tap a top card one rank above or below the waste",
             game.moves
-        ),
+        )
+    };
+    text(
+        &instruction,
         if compact {
             18.
         } else if portrait {
@@ -144,19 +172,23 @@ pub fn draw(state: &AppState) {
         } else {
             460.
         },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    button(l.undo, "UNDO");
-    button(l.new_game, "NEW BOARD");
+    button(l.undo, "UNDO", state.large_text);
+    button(l.new_game, "NEW BOARD", state.large_text);
 }
-fn draw_card(rank: u8, suit: u8, rect: Rect) {
+fn draw_card(rank: u8, suit: u8, rect: Rect, high_contrast: bool, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
         rect.w,
         rect.h,
-        Color::new(0.20, 0.13, 0.30, 1.),
+        if high_contrast {
+            WHITE
+        } else {
+            Color::new(0.20, 0.13, 0.30, 1.)
+        },
     );
     draw_rectangle_lines(
         rect.x,
@@ -164,13 +196,13 @@ fn draw_card(rank: u8, suit: u8, rect: Rect) {
         rect.w,
         rect.h,
         1.,
-        Color::new(0.55, 0.45, 0.70, 1.),
+        accessibility::grid_line(high_contrast),
     );
     text(
         &format!("{}{}", rank, ["♠", "♥", "♦", "♣"][suit as usize]),
         rect.x + 8.,
         rect.y + rect.h * 0.68,
-        11.,
+        accessibility::text_size(11., large_text),
         WHITE,
     );
 }
@@ -181,7 +213,7 @@ fn status_text(status: GolfStatus) -> &'static str {
         GolfStatus::Stuck => "No golf move remains",
     }
 }
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -190,7 +222,13 @@ fn button(rect: Rect, label: &str) {
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
-    text(label, rect.x + 10., rect.y + 28., 10., WHITE);
+    text(
+        label,
+        rect.x + 10.,
+        rect.y + 28.,
+        accessibility::text_size(10., large_text),
+        WHITE,
+    );
 }
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     draw_text(value, x, y, size, color);
