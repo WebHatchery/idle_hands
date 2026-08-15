@@ -62,6 +62,11 @@ impl Sudoku {
             SudokuDifficulty::Medium | SudokuDifficulty::Hard => PUZZLE,
         };
         let puzzle: Vec<u8> = source.bytes().map(|digit| digit - b'0').collect();
+        assert_eq!(
+            count_solutions(&puzzle, 2),
+            1,
+            "Sudoku catalog puzzle is not unique"
+        );
         Self {
             difficulty,
             values: puzzle.clone(),
@@ -178,6 +183,62 @@ impl Sudoku {
             self.moves,
         ));
     }
+}
+
+fn count_solutions(puzzle: &[u8], limit: u8) -> u8 {
+    if puzzle.len() != 81 || limit == 0 {
+        return 0;
+    }
+    let mut board = [0u8; 81];
+    board.copy_from_slice(puzzle);
+    solve_count(&mut board, 0, limit)
+}
+
+fn solve_count(board: &mut [u8; 81], found: u8, limit: u8) -> u8 {
+    if found >= limit {
+        return found;
+    }
+    let mut best_index = None;
+    let mut best_candidates = [0u8; 9];
+    let mut best_count = 10;
+    for index in 0..81 {
+        if board[index] != 0 {
+            continue;
+        }
+        let mut candidates = [0u8; 9];
+        let mut count = 0;
+        for value in 1..=9 {
+            if valid_on_board(board, index, value) {
+                candidates[count] = value;
+                count += 1;
+            }
+        }
+        if count == 0 {
+            return found;
+        }
+        if count < best_count {
+            best_index = Some(index);
+            best_candidates = candidates;
+            best_count = count;
+        }
+    }
+    let Some(index) = best_index else {
+        return found + 1;
+    };
+    let mut found = found;
+    for value in best_candidates.into_iter().take(best_count) {
+        board[index] = value;
+        found = solve_count(board, found, limit);
+        board[index] = 0;
+        if found >= limit {
+            break;
+        }
+    }
+    found
+}
+
+fn valid_on_board(board: &[u8; 81], index: usize, value: u8) -> bool {
+    (0..81).all(|other| other == index || board[other] != value || !Sudoku::peers(index, other))
 }
 
 #[cfg(test)]

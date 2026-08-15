@@ -9,6 +9,14 @@ fn puzzle_has_a_fixed_solution_shape_and_given_cells_cannot_change() {
 }
 
 #[test]
+fn every_catalog_difficulty_has_one_solution() {
+    for difficulty in SudokuDifficulty::ALL {
+        let sudoku = Sudoku::with_difficulty(difficulty);
+        assert_eq!(count_solutions(&sudoku.puzzle, 2), 1);
+    }
+}
+
+#[test]
 fn invalid_peer_value_is_rejected_and_notes_toggle() {
     let mut game = Sudoku::new();
     assert!(game.place(2, 4));
