@@ -156,7 +156,7 @@ sizes, covered by rule tests, and passes `publish.ps1`.
     progression and cosmetic fields.
   - [x] Verify all eight snapshots can be restored sequentially without
     overwriting another game's state.
-- [ ] Audit touch-only completion on iPhone/iPad portrait and landscape sizes.
+- [x] Audit touch-only completion on iPhone/iPad portrait and landscape sizes.
   - [x] Verify touch-sized portrait cabinet, 2048, Sudoku, Nonogram, and
     Settings controls at 390×844.
   - [x] Verify touch-sized portrait Minesweeper, Solitaire, FreeCell, and
@@ -168,7 +168,7 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Verify compact portrait Help, Records, Rules, and Credits screens at
     390×844.
   - [x] Capture the complete landscape baseline at 844×390 for all named
-    game, library, settings, and cabinet scenes; touch-size review remains.
+    game, library, settings, and cabinet scenes; complete touch-size review.
   - [x] Verify touch-sized medium landscape cabinet and 2048 layouts at
     844×390, including cabinet navigation, arrows, undo, and new game.
   - [x] Verify touch-sized medium landscape Minesweeper, Sudoku, Nonogram,
