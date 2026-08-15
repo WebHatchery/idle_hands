@@ -1,6 +1,7 @@
 //! Responsive presentation and touch routing for Higher or Lower.
 
 use crate::{
+    accessibility,
     higher_lower::{Guess, HigherLowerStatus},
     state::AppState,
     ui::UiAction,
@@ -77,13 +78,25 @@ pub fn draw(state: &AppState) {
     } else {
         60.
     };
-    text("‹ CABINET", 8., 30., 13., muted());
-    text("HIGHER OR LOWER", hx, hy, title_size(), accent());
+    text(
+        "‹ CABINET",
+        8.,
+        30.,
+        accessibility::text_size(13., state.large_text),
+        muted(),
+    );
+    text(
+        "HIGHER OR LOWER",
+        hx,
+        hy,
+        accessibility::text_size(title_size(), state.large_text),
+        accent(),
+    );
     text(
         &status_text(game.status, game.score),
         if compact { 430. } else { hx },
         if compact { 30. } else { hy + 25. },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
     let card = if compact {
@@ -98,14 +111,18 @@ pub fn draw(state: &AppState) {
         card.y,
         card.w,
         card.h,
-        Color::new(0.20, 0.13, 0.30, 1.),
+        if state.high_contrast {
+            Color::new(0.12, 0.08, 0.20, 1.)
+        } else {
+            Color::new(0.20, 0.13, 0.30, 1.)
+        },
     );
     draw_rectangle_lines(card.x, card.y, card.w, card.h, 2., accent());
     text(
         &format!("{}", game.current),
         card.x + card.w * 0.43,
         card.y + card.h * 0.58,
-        if portrait { 68. } else { 84. },
+        accessibility::text_size(if portrait { 68. } else { 84. }, state.large_text),
         WHITE,
     );
     text(
@@ -124,7 +141,7 @@ pub fn draw(state: &AppState) {
         } else {
             410.
         },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
     text(
@@ -143,13 +160,13 @@ pub fn draw(state: &AppState) {
         } else {
             435.
         },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    button(l.higher, "HIGHER");
-    button(l.lower, "LOWER");
-    button(l.undo, "UNDO");
-    button(l.new_game, "NEW ROUND");
+    button(l.higher, "HIGHER", state.large_text);
+    button(l.lower, "LOWER", state.large_text);
+    button(l.undo, "UNDO", state.large_text);
+    button(l.new_game, "NEW ROUND", state.large_text);
 }
 fn status_text(status: HigherLowerStatus, score: u16) -> String {
     match status {
@@ -158,7 +175,7 @@ fn status_text(status: HigherLowerStatus, score: u16) -> String {
         HigherLowerStatus::Lost => "The next card slipped away".into(),
     }
 }
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -167,7 +184,13 @@ fn button(rect: Rect, label: &str) {
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
-    text(label, rect.x + 12., rect.y + 29., 11., WHITE);
+    text(
+        label,
+        rect.x + 12.,
+        rect.y + 29.,
+        accessibility::text_size(11., large_text),
+        WHITE,
+    );
 }
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     draw_text(value, x, y, size, color);

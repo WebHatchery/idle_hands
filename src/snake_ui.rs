@@ -1,6 +1,7 @@
 //! Responsive presentation and touch routing for turn-based Snake.
 
 use crate::{
+    accessibility,
     snake::{SnakeDirection, SnakeStatus, HEIGHT, WIDTH},
     state::AppState,
     ui::UiAction,
@@ -100,13 +101,25 @@ pub fn draw(state: &AppState) {
     } else {
         60.
     };
-    text("‹ CABINET", 8., 30., 13., muted());
-    text("SNAKE", header_x, header_y, title_size(), accent());
+    text(
+        "‹ CABINET",
+        8.,
+        30.,
+        accessibility::text_size(13., state.large_text),
+        muted(),
+    );
+    text(
+        "SNAKE",
+        header_x,
+        header_y,
+        accessibility::text_size(title_size(), state.large_text),
+        accent(),
+    );
     text(
         &status_text(game.status, game.score),
         if compact { 435. } else { header_x },
         if compact { 30. } else { header_y + 25. },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
     draw_rectangle(
@@ -114,7 +127,7 @@ pub fn draw(state: &AppState) {
         layout.board.y,
         layout.board.w,
         layout.board.h,
-        Color::new(0.08, 0.12, 0.16, 1.),
+        accessibility::board_fill(state.high_contrast),
     );
     for row in 0..HEIGHT {
         for column in 0..WIDTH {
@@ -124,7 +137,7 @@ pub fn draw(state: &AppState) {
                 layout.cell,
                 layout.cell,
                 1.,
-                Color::new(0.16, 0.22, 0.26, 1.),
+                accessibility::grid_line(state.high_contrast),
             );
         }
     }
@@ -134,7 +147,11 @@ pub fn draw(state: &AppState) {
         layout.board.x + food_column as f32 * layout.cell + layout.cell / 2.,
         layout.board.y + food_row as f32 * layout.cell + layout.cell / 2.,
         layout.cell * 0.28,
-        Color::new(0.98, 0.35, 0.35, 1.),
+        if state.high_contrast {
+            Color::new(1., 0.12, 0.18, 1.)
+        } else {
+            Color::new(0.98, 0.35, 0.35, 1.)
+        },
     );
     for (part, &cell) in game.body.iter().enumerate() {
         let row = i32::from(cell) / WIDTH;
@@ -145,9 +162,17 @@ pub fn draw(state: &AppState) {
             layout.cell - 4.,
             layout.cell - 4.,
             if part == 0 {
-                Color::new(0.98, 0.83, 0.45, 1.)
+                if state.high_contrast {
+                    WHITE
+                } else {
+                    Color::new(0.98, 0.83, 0.45, 1.)
+                }
             } else {
-                Color::new(0.38, 0.82, 0.58, 1.)
+                if state.high_contrast {
+                    Color::new(0.05, 0.95, 0.30, 1.)
+                } else {
+                    Color::new(0.38, 0.82, 0.58, 1.)
+                }
             },
         );
     }
@@ -167,7 +192,7 @@ pub fn draw(state: &AppState) {
         } else {
             600.
         },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
     for (rect, label) in [
@@ -176,10 +201,10 @@ pub fn draw(state: &AppState) {
         (layout.down, "DOWN"),
         (layout.right, "RIGHT"),
     ] {
-        button(rect, label);
+        button(rect, label, state.large_text);
     }
-    button(layout.undo, "UNDO");
-    button(layout.new_game, "NEW BOARD");
+    button(layout.undo, "UNDO", state.large_text);
+    button(layout.new_game, "NEW BOARD", state.large_text);
 }
 
 fn status_text(status: SnakeStatus, score: u16) -> String {
@@ -189,7 +214,7 @@ fn status_text(status: SnakeStatus, score: u16) -> String {
         SnakeStatus::Lost => "The coil touched quiet space".into(),
     }
 }
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -198,7 +223,13 @@ fn button(rect: Rect, label: &str) {
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
-    text(label, rect.x + 10., rect.y + 27., 10., WHITE);
+    text(
+        label,
+        rect.x + 10.,
+        rect.y + 27.,
+        accessibility::text_size(10., large_text),
+        WHITE,
+    );
 }
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     draw_text(value, x, y, size, color);

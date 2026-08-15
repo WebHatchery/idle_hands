@@ -1,6 +1,7 @@
 //! Responsive presentation and touch routing for turn-based Breakout.
 
 use crate::{
+    accessibility,
     breakout::{BreakoutStatus, PaddleMove, HEIGHT, WIDTH},
     state::AppState,
     ui::UiAction,
@@ -92,13 +93,25 @@ pub fn draw(state: &AppState) {
     } else {
         60.
     };
-    text("‹ CABINET", 8., 30., 13., muted());
-    text("BREAKOUT", hx, hy, title_size(), accent());
+    text(
+        "‹ CABINET",
+        8.,
+        30.,
+        accessibility::text_size(13., state.large_text),
+        muted(),
+    );
+    text(
+        "BREAKOUT",
+        hx,
+        hy,
+        accessibility::text_size(title_size(), state.large_text),
+        accent(),
+    );
     text(
         &status_text(game.status, game.score),
         if compact { 435. } else { hx },
         if compact { 30. } else { hy + 25. },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
     draw_rectangle(
@@ -106,7 +119,7 @@ pub fn draw(state: &AppState) {
         l.board.y,
         l.board.w,
         l.board.h,
-        Color::new(0.08, 0.12, 0.16, 1.),
+        accessibility::board_fill(state.high_contrast),
     );
     for row in 0..HEIGHT {
         for column in 0..WIDTH {
@@ -116,7 +129,7 @@ pub fn draw(state: &AppState) {
                 l.cell,
                 l.cell,
                 1.,
-                Color::new(0.16, 0.22, 0.26, 1.),
+                accessibility::grid_line(state.high_contrast),
             );
         }
     }
@@ -129,7 +142,11 @@ pub fn draw(state: &AppState) {
                 l.board.y + (row + 1) as f32 * l.cell + 2.,
                 l.cell - 4.,
                 l.cell - 4.,
-                Color::new(0.78, 0.30 + row as f32 * 0.05, 0.38, 1.),
+                if state.high_contrast {
+                    Color::new(1., 0.12 + row as f32 * 0.04, 0.18, 1.)
+                } else {
+                    Color::new(0.78, 0.30 + row as f32 * 0.05, 0.38, 1.)
+                },
             );
         }
     }
@@ -144,7 +161,11 @@ pub fn draw(state: &AppState) {
         l.board.y + (HEIGHT - 1) as f32 * l.cell,
         l.cell * 5.,
         l.cell * 0.55,
-        Color::new(0.35, 0.82, 0.58, 1.),
+        if state.high_contrast {
+            Color::new(0.05, 0.95, 0.30, 1.)
+        } else {
+            Color::new(0.35, 0.82, 0.58, 1.)
+        },
     );
     text(
         &format!("Score {}  •  Tap LEFT, STAY, or RIGHT", game.score),
@@ -162,14 +183,14 @@ pub fn draw(state: &AppState) {
         } else {
             600.
         },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    button(l.left, "LEFT");
-    button(l.stay, "STAY");
-    button(l.right, "RIGHT");
-    button(l.undo, "UNDO");
-    button(l.new_game, "NEW BOARD");
+    button(l.left, "LEFT", state.large_text);
+    button(l.stay, "STAY", state.large_text);
+    button(l.right, "RIGHT", state.large_text);
+    button(l.undo, "UNDO", state.large_text);
+    button(l.new_game, "NEW BOARD", state.large_text);
 }
 fn status_text(status: BreakoutStatus, score: u16) -> String {
     match status {
@@ -178,7 +199,7 @@ fn status_text(status: BreakoutStatus, score: u16) -> String {
         BreakoutStatus::Lost => "The ball fell quiet".into(),
     }
 }
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -187,7 +208,13 @@ fn button(rect: Rect, label: &str) {
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
-    text(label, rect.x + 8., rect.y + 27., 10., WHITE);
+    text(
+        label,
+        rect.x + 8.,
+        rect.y + 27.,
+        accessibility::text_size(10., large_text),
+        WHITE,
+    );
 }
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     draw_text(value, x, y, size, color);
