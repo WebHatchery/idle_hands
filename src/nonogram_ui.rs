@@ -1,6 +1,7 @@
 //! Nonogram catalog presentation and touch input.
 
 use crate::{
+    accessibility,
     grid::GridLayout,
     nonogram::{NonogramMark, NonogramMode, NonogramStatus},
     state::AppState,
@@ -47,7 +48,7 @@ pub fn draw_nonogram(state: &AppState) {
         text(preset.label(), rect.x + 15., rect.y + 22., 14., WHITE);
     }
     let board = Rect::new(320., 175., 500., 500.);
-    panel(board, Color::new(0.10, 0.07, 0.16, 1.));
+    panel(board, accessibility::board_fill(state.high_contrast));
     let grid = GridLayout::new(
         Rect::new(board.x + 10., board.y + 10., board.w - 20., board.h - 20.),
         game.size,
@@ -63,16 +64,9 @@ pub fn draw_nonogram(state: &AppState) {
             rect.y,
             rect.w,
             rect.h,
-            match game.marks[index] {
-                NonogramMark::Filled => Color::new(0.80, 0.52, 0.26, 1.),
-                NonogramMark::Crossed => Color::new(0.20, 0.14, 0.28, 1.),
-                NonogramMark::Empty => {
-                    if selected {
-                        Color::new(0.30, 0.22, 0.42, 1.)
-                    } else {
-                        Color::new(0.15, 0.11, 0.23, 1.)
-                    }
-                }
+            match (game.marks[index], selected) {
+                (NonogramMark::Empty, true) => Color::new(0.30, 0.22, 0.42, 1.),
+                (mark, _) => accessibility::nonogram_cell(mark as u8, state.high_contrast),
             },
         );
         draw_rectangle_lines(
@@ -81,15 +75,19 @@ pub fn draw_nonogram(state: &AppState) {
             rect.w,
             rect.h,
             1.,
-            Color::new(0.48, 0.40, 0.60, 0.8),
+            accessibility::grid_line(state.high_contrast),
         );
         if game.marks[index] == NonogramMark::Crossed {
             text(
                 "×",
                 rect.x + cell * 0.30,
                 rect.y + cell * 0.70,
-                (cell * 0.55).min(24.),
-                Color::new(0.65, 0.58, 0.76, 1.),
+                accessibility::text_size((cell * 0.55).min(24.), state.large_text),
+                if state.high_contrast {
+                    WHITE
+                } else {
+                    Color::new(0.65, 0.58, 0.76, 1.)
+                },
             );
         }
     }
@@ -147,8 +145,12 @@ pub fn draw_nonogram(state: &AppState) {
                 .join(" "),
             850.,
             400. + index as f32 * 26.,
-            15.,
-            Color::new(0.68, 0.63, 0.78, 1.),
+            accessibility::text_size(15., state.large_text),
+            if state.high_contrast {
+                WHITE
+            } else {
+                Color::new(0.68, 0.63, 0.78, 1.)
+            },
         );
     }
 }

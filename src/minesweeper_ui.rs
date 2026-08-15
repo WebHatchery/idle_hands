@@ -1,6 +1,7 @@
 //! Compact portrait Minesweeper presentation and shared touch mapping.
 
 use crate::{
+    accessibility,
     grid::GridLayout,
     minesweeper::{Cell, MinePreset, MineStatus},
     state::AppState,
@@ -42,7 +43,7 @@ pub fn draw(state: &AppState) {
         Color::new(0.70, 0.64, 0.78, 1.),
     );
     let board = Rect::new(350., 155., 450., 450.);
-    panel(board, Color::new(0.10, 0.07, 0.16, 1.));
+    panel(board, accessibility::board_fill(state.high_contrast));
     let grid = GridLayout::new(
         Rect::new(board.x + 12., board.y + 12., board.w - 24., board.h - 24.),
         game.width,
@@ -61,11 +62,7 @@ pub fn draw(state: &AppState) {
             rect.y,
             rect.w,
             rect.h,
-            if revealed {
-                Color::new(0.24, 0.19, 0.30, 1.)
-            } else {
-                Color::new(0.15, 0.11, 0.23, 1.)
-            },
+            accessibility::mine_cell(revealed, state.high_contrast),
         );
         draw_rectangle_lines(
             rect.x,
@@ -73,29 +70,33 @@ pub fn draw(state: &AppState) {
             rect.w,
             rect.h,
             1.,
-            Color::new(0.48, 0.40, 0.60, 0.7),
+            accessibility::grid_line(state.high_contrast),
         );
         match cell {
             Cell::Flagged | Cell::FlaggedMine => text(
                 "⚑",
                 rect.x + 12.,
                 rect.y + 31.,
-                25.,
+                accessibility::text_size(25., state.large_text),
                 Color::new(0.98, 0.46, 0.38, 1.),
             ),
             Cell::Mine if matches!(game.status, MineStatus::Lost) => text(
                 "✹",
                 rect.x + 11.,
                 rect.y + 31.,
-                24.,
+                accessibility::text_size(24., state.large_text),
                 Color::new(0.98, 0.45, 0.32, 1.),
             ),
             Cell::Revealed(value) if value > 0 && value < 9 => text(
                 &value.to_string(),
                 rect.x + cell_size * 0.35,
                 rect.y + cell_size * 0.68,
-                (cell_size * 0.48).min(23.),
-                Color::new(0.76, 0.90, 1.0, 1.),
+                accessibility::text_size((cell_size * 0.48).min(23.), state.large_text),
+                if state.high_contrast {
+                    BLACK
+                } else {
+                    Color::new(0.76, 0.90, 1.0, 1.)
+                },
             ),
             _ => {}
         }

@@ -1,6 +1,6 @@
 //! Sudoku board presentation and touch input.
 
-use crate::{grid::GridLayout, state::AppState, sudoku::SudokuStatus, ui::UiAction};
+use crate::{accessibility, grid::GridLayout, state::AppState, sudoku::SudokuStatus, ui::UiAction};
 use macroquad::prelude::*;
 
 fn text(s: &str, x: f32, y: f32, size: f32, color: Color) {
@@ -30,7 +30,7 @@ pub fn draw_sudoku(state: &AppState) {
         Color::new(0.70, 0.64, 0.78, 1.),
     );
     let board = Rect::new(300., 150., 504., 504.);
-    panel(board, Color::new(0.10, 0.07, 0.16, 1.));
+    panel(board, accessibility::board_fill(state.high_contrast));
     let grid = GridLayout::new(Rect::new(board.x + 4., board.y + 4., 486., 486.), 9, 9);
     for index in 0..81 {
         let cell = grid.cell_rect(index).unwrap();
@@ -63,7 +63,7 @@ pub fn draw_sudoku(state: &AppState) {
             } else {
                 1.
             },
-            Color::new(0.48, 0.40, 0.60, 0.8),
+            accessibility::grid_line(state.high_contrast),
         );
         let value = game.values[index];
         if value != 0 {
@@ -71,7 +71,7 @@ pub fn draw_sudoku(state: &AppState) {
                 &value.to_string(),
                 rect.x + 19.,
                 rect.y + 36.,
-                28.,
+                accessibility::text_size(28., state.large_text),
                 if game.is_given(index) {
                     WHITE
                 } else {
@@ -83,7 +83,7 @@ pub fn draw_sudoku(state: &AppState) {
                 "· · ·",
                 rect.x + 10.,
                 rect.y + 30.,
-                14.,
+                accessibility::text_size(14., state.large_text),
                 Color::new(0.63, 0.58, 0.72, 1.),
             );
         }
@@ -151,7 +151,7 @@ pub fn draw_sudoku(state: &AppState) {
     text(
         "Given clues are white. Your entries are gold.",
         850.,
-        570.,
+        610.,
         15.,
         Color::new(0.63, 0.58, 0.72, 1.),
     );

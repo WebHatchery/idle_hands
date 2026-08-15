@@ -66,7 +66,9 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   undo, board focus/zoom for small phones, tutorial, and records.
 - [x] Choose Nonogram generation or a validated catalog for 5×5, 10×10, and
   15×15 puzzles.
-- [ ] Add high-contrast and large-text verification for dense grid screens.
+- [x] Add high-contrast and large-text verification for dense grid screens.
+  - [x] Verify accessible expanded desktop Sudoku, Minesweeper, and Nonogram
+    boards at 1280×720 without control overlap.
 
 ## Phase 4 — Solitaire and shared cards
 
