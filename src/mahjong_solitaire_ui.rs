@@ -1,6 +1,7 @@
 //! Responsive presentation and touch routing for Mahjong Solitaire.
 
 use crate::{
+    accessibility,
     mahjong_solitaire::{MahjongStatus, Tile},
     state::AppState,
     ui::UiAction,
@@ -86,24 +87,37 @@ pub fn draw(state: &AppState) {
     } else {
         60.
     };
-    text("‹ CABINET", 8., 30., 13., muted());
+    text(
+        "‹ CABINET",
+        8.,
+        30.,
+        accessibility::text_size(13., state.large_text),
+        muted(),
+    );
     text(
         "MAHJONG SOLITAIRE",
         header_x,
         header_y,
-        title_size(),
+        accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
     text(
         status_text(game.status),
         if compact { 350. } else { header_x },
         if compact { 30. } else { header_y + 25. },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
     for (index, tile) in game.tiles.iter().enumerate() {
         if !tile.removed {
-            draw_tile(*tile, index, game.selected, layout);
+            draw_tile(
+                *tile,
+                index,
+                game.selected,
+                layout,
+                state.high_contrast,
+                state.large_text,
+            );
         }
     }
     text(
@@ -122,7 +136,7 @@ pub fn draw(state: &AppState) {
         } else {
             620.
         },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
     text(
@@ -141,14 +155,21 @@ pub fn draw(state: &AppState) {
         } else {
             650.
         },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    button(layout.undo, "UNDO");
-    button(layout.new_game, "NEW BOARD");
+    button(layout.undo, "UNDO", state.large_text);
+    button(layout.new_game, "NEW BOARD", state.large_text);
 }
 
-fn draw_tile(tile: Tile, index: usize, selected: Option<usize>, layout: Layout) {
+fn draw_tile(
+    tile: Tile,
+    index: usize,
+    selected: Option<usize>,
+    layout: Layout,
+    high_contrast: bool,
+    large_text: bool,
+) {
     let rect = tile_rect(tile, layout);
     let shade = 0.10 + f32::from(tile.layer) * 0.04;
     draw_rectangle(
@@ -156,7 +177,11 @@ fn draw_tile(tile: Tile, index: usize, selected: Option<usize>, layout: Layout) 
         rect.y - f32::from(tile.layer) * 3.,
         rect.w,
         rect.h,
-        Color::new(0.18 + shade, 0.12 + shade, 0.28 + shade, 1.),
+        if high_contrast {
+            Color::new(0.22 + shade, 0.18 + shade, 0.34 + shade, 1.)
+        } else {
+            Color::new(0.18 + shade, 0.12 + shade, 0.28 + shade, 1.)
+        },
     );
     draw_rectangle_lines(
         rect.x,
@@ -167,14 +192,14 @@ fn draw_tile(tile: Tile, index: usize, selected: Option<usize>, layout: Layout) 
         if selected == Some(index) {
             accent()
         } else {
-            Color::new(0.55, 0.45, 0.70, 1.)
+            accessibility::grid_line(high_contrast)
         },
     );
     text(
         &format!("{}", tile.kind + 1),
         rect.x + rect.w * 0.4,
         rect.y + rect.h * 0.62,
-        if crate::ui::is_portrait() { 13. } else { 17. },
+        accessibility::text_size(if crate::ui::is_portrait() { 13. } else { 17. }, large_text),
         WHITE,
     );
 }
@@ -194,7 +219,7 @@ fn status_text(status: MahjongStatus) -> &'static str {
         MahjongStatus::Stuck => "No free pair remains",
     }
 }
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -203,7 +228,13 @@ fn button(rect: Rect, label: &str) {
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
-    text(label, rect.x + 12., rect.y + 28., 11., WHITE);
+    text(
+        label,
+        rect.x + 12.,
+        rect.y + 28.,
+        accessibility::text_size(11., large_text),
+        WHITE,
+    );
 }
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     draw_text(value, x, y, size, color);

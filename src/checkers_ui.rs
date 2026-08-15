@@ -1,6 +1,7 @@
 //! Responsive presentation and touch routing for Checkers.
 
 use crate::{
+    accessibility,
     checkers::{CheckersStatus, Piece, Side},
     state::AppState,
     ui::UiAction,
@@ -81,16 +82,28 @@ pub fn draw(state: &AppState) {
     } else {
         68.
     };
-    text("‹ CABINET", 8., 30., 13., muted());
-    text("CHECKERS", header_x, header_y, title_size(), accent());
+    text(
+        "‹ CABINET",
+        8.,
+        30.,
+        accessibility::text_size(13., state.large_text),
+        muted(),
+    );
+    text(
+        "CHECKERS",
+        header_x,
+        header_y,
+        accessibility::text_size(title_size(), state.large_text),
+        accent(),
+    );
     text(
         status_text(game.status, game.turn),
         if compact { 350. } else { header_x },
         if compact { 30. } else { header_y + 25. },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    draw_board(game, layout);
+    draw_board(game, layout, state.high_contrast);
     text(
         "TAP A PIECE, THEN A DESTINATION",
         if compact {
@@ -107,7 +120,7 @@ pub fn draw(state: &AppState) {
         } else {
             690.
         },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
     text(
@@ -126,20 +139,24 @@ pub fn draw(state: &AppState) {
         } else {
             720.
         },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    button(layout.undo, "UNDO");
-    button(layout.new_game, "NEW BOARD");
+    button(layout.undo, "UNDO", state.large_text);
+    button(layout.new_game, "NEW BOARD", state.large_text);
 }
 
-fn draw_board(game: &crate::checkers::Checkers, layout: Layout) {
+fn draw_board(game: &crate::checkers::Checkers, layout: Layout, high_contrast: bool) {
     draw_rectangle(
         layout.board.x,
         layout.board.y,
         layout.board.w,
         layout.board.h,
-        Color::new(0.12, 0.16, 0.30, 1.),
+        if high_contrast {
+            Color::new(0.04, 0.10, 0.24, 1.)
+        } else {
+            Color::new(0.12, 0.16, 0.30, 1.)
+        },
     );
     for row in 0..8 {
         for column in 0..8 {
@@ -152,9 +169,17 @@ fn draw_board(game: &crate::checkers::Checkers, layout: Layout) {
                 layout.cell,
                 layout.cell,
                 if dark {
-                    Color::new(0.27, 0.18, 0.34, 1.)
+                    if high_contrast {
+                        Color::new(0.20, 0.12, 0.32, 1.)
+                    } else {
+                        Color::new(0.27, 0.18, 0.34, 1.)
+                    }
                 } else {
-                    Color::new(0.72, 0.60, 0.45, 1.)
+                    if high_contrast {
+                        Color::new(0.72, 0.72, 0.72, 1.)
+                    } else {
+                        Color::new(0.72, 0.60, 0.45, 1.)
+                    }
                 },
             );
             let index = row * 8 + column;
@@ -173,18 +198,31 @@ fn draw_board(game: &crate::checkers::Checkers, layout: Layout) {
                 x + layout.cell / 2.,
                 y + layout.cell / 2.,
                 layout.cell * 0.34,
+                high_contrast,
             );
         }
     }
 }
 
-fn draw_piece(piece: Piece, x: f32, y: f32, radius: f32) {
+fn draw_piece(piece: Piece, x: f32, y: f32, radius: f32, high_contrast: bool) {
     if piece == Piece::Empty {
         return;
     }
     let color = match piece {
-        Piece::RedMan | Piece::RedKing => Color::new(0.90, 0.30, 0.35, 1.),
-        Piece::YellowMan | Piece::YellowKing => Color::new(0.98, 0.75, 0.30, 1.),
+        Piece::RedMan | Piece::RedKing => {
+            if high_contrast {
+                Color::new(1., 0.12, 0.18, 1.)
+            } else {
+                Color::new(0.90, 0.30, 0.35, 1.)
+            }
+        }
+        Piece::YellowMan | Piece::YellowKing => {
+            if high_contrast {
+                Color::new(1., 0.85, 0.05, 1.)
+            } else {
+                Color::new(0.98, 0.75, 0.30, 1.)
+            }
+        }
         Piece::Empty => BLACK,
     };
     draw_circle(x, y, radius, color);
@@ -209,7 +247,7 @@ fn status_text(status: CheckersStatus, turn: Side) -> &'static str {
         CheckersStatus::Draw => "The board rests",
     }
 }
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -218,7 +256,13 @@ fn button(rect: Rect, label: &str) {
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
-    text(label, rect.x + 12., rect.y + 28., 11., WHITE);
+    text(
+        label,
+        rect.x + 12.,
+        rect.y + 28.,
+        accessibility::text_size(11., large_text),
+        WHITE,
+    );
 }
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     draw_text(value, x, y, size, color);

@@ -1,6 +1,7 @@
 //! Responsive presentation and touch routing for Peg Solitaire.
 
 use crate::{
+    accessibility,
     peg_solitaire::{Hole, PegSolitaireStatus},
     state::AppState,
     ui::UiAction,
@@ -81,16 +82,28 @@ pub fn draw(state: &AppState) {
     } else {
         60.
     };
-    text("‹ CABINET", 8., 30., 13., muted());
-    text("PEG SOLITAIRE", header_x, header_y, title_size(), accent());
+    text(
+        "‹ CABINET",
+        8.,
+        30.,
+        accessibility::text_size(13., state.large_text),
+        muted(),
+    );
+    text(
+        "PEG SOLITAIRE",
+        header_x,
+        header_y,
+        accessibility::text_size(title_size(), state.large_text),
+        accent(),
+    );
     text(
         status_text(game.status),
         if compact { 350. } else { header_x },
         if compact { 30. } else { header_y + 25. },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    draw_board(game, layout);
+    draw_board(game, layout, state.high_contrast);
     text(
         "TAP A PEG, THEN A TWO-STEP DESTINATION",
         if compact {
@@ -107,7 +120,7 @@ pub fn draw(state: &AppState) {
         } else {
             680.
         },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
     text(
@@ -126,14 +139,14 @@ pub fn draw(state: &AppState) {
         } else {
             710.
         },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    button(layout.undo, "UNDO");
-    button(layout.new_game, "NEW BOARD");
+    button(layout.undo, "UNDO", state.large_text);
+    button(layout.new_game, "NEW BOARD", state.large_text);
 }
 
-fn draw_board(game: &crate::peg_solitaire::PegSolitaire, layout: Layout) {
+fn draw_board(game: &crate::peg_solitaire::PegSolitaire, layout: Layout, high_contrast: bool) {
     for row in 0..7 {
         for column in 0..7 {
             let index = row * 7 + column;
@@ -147,7 +160,11 @@ fn draw_board(game: &crate::peg_solitaire::PegSolitaire, layout: Layout) {
                 y,
                 layout.cell,
                 layout.cell,
-                Color::new(0.27, 0.18, 0.34, 1.),
+                if high_contrast {
+                    Color::new(0.20, 0.14, 0.32, 1.)
+                } else {
+                    Color::new(0.27, 0.18, 0.34, 1.)
+                },
             );
             if game.selected == Some(index) {
                 draw_rectangle_lines(
@@ -164,8 +181,14 @@ fn draw_board(game: &crate::peg_solitaire::PegSolitaire, layout: Layout) {
                 y + layout.cell / 2.,
                 layout.cell * 0.32,
                 match game.cells[index] {
-                    Hole::Peg => Color::new(0.98, 0.75, 0.30, 1.),
-                    Hole::Empty => Color::new(0.04, 0.04, 0.09, 1.),
+                    Hole::Peg => {
+                        if high_contrast {
+                            Color::new(1., 0.85, 0.05, 1.)
+                        } else {
+                            Color::new(0.98, 0.75, 0.30, 1.)
+                        }
+                    }
+                    Hole::Empty => accessibility::board_fill(high_contrast),
                 },
             );
             draw_circle_lines(
@@ -173,7 +196,7 @@ fn draw_board(game: &crate::peg_solitaire::PegSolitaire, layout: Layout) {
                 y + layout.cell / 2.,
                 layout.cell * 0.32,
                 1.,
-                Color::new(0.45, 0.38, 0.65, 1.),
+                accessibility::grid_line(high_contrast),
             );
         }
     }
@@ -186,7 +209,7 @@ fn status_text(status: PegSolitaireStatus) -> &'static str {
         PegSolitaireStatus::Stuck => "No jumps remain",
     }
 }
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -195,7 +218,13 @@ fn button(rect: Rect, label: &str) {
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
-    text(label, rect.x + 12., rect.y + 28., 11., WHITE);
+    text(
+        label,
+        rect.x + 12.,
+        rect.y + 28.,
+        accessibility::text_size(11., large_text),
+        WHITE,
+    );
 }
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     draw_text(value, x, y, size, color);
