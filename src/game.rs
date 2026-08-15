@@ -9,7 +9,10 @@ use crate::{
     data::GameData,
     state::{AppState, CollectionSave, Direction, GameId, GameSnapshot, ProfileSave, Screen},
 };
-use crate::{minesweeper_ui, nonogram_ui, responsive_landscape_games, responsive_puzzles, ui};
+use crate::{
+    freecell_ui, minesweeper_ui, nonogram_ui, responsive_cards, responsive_landscape_cards,
+    responsive_landscape_games, responsive_puzzles, solitaire_ui, ui,
+};
 use macroquad::prelude::*;
 use macroquad_toolkit::assets::AssetManager;
 use macroquad_toolkit::notifications::{
@@ -161,9 +164,13 @@ impl Game {
                             Screen::Game(GameId::Solitaire | GameId::FreeCell)
                         ) =>
                     {
-                        let start_actions = ui::actions_at(&self.state, start);
-                        let end_actions = ui::actions_at(&self.state, end);
-                        for action in start_actions.into_iter().chain(end_actions) {
+                        for action in card_drag_actions(
+                            &self.state,
+                            start,
+                            end,
+                            ui::is_portrait(),
+                            ui::is_compact_landscape(),
+                        ) {
                             self.apply(action);
                         }
                     }
@@ -713,6 +720,54 @@ impl Game {
         )
     }
 }
+
+fn card_drag_actions(
+    state: &crate::state::AppState,
+    start: Vec2,
+    end: Vec2,
+    portrait: bool,
+    compact_landscape: bool,
+) -> Vec<ui::UiAction> {
+    if !matches!(
+        state.screen,
+        Screen::Game(GameId::Solitaire | GameId::FreeCell)
+    ) {
+        return Vec::new();
+    }
+    let actions_at = |point| {
+        if portrait {
+            match state.screen {
+                Screen::Game(GameId::Solitaire) => responsive_cards::solitaire_clicks(state, point),
+                Screen::Game(GameId::FreeCell) => responsive_cards::freecell_clicks(state, point),
+                _ => Vec::new(),
+            }
+        } else if compact_landscape {
+            match state.screen {
+                Screen::Game(GameId::Solitaire) => {
+                    responsive_landscape_cards::solitaire_clicks(state, point)
+                }
+                Screen::Game(GameId::FreeCell) => {
+                    responsive_landscape_cards::freecell_clicks(state, point)
+                }
+                _ => Vec::new(),
+            }
+        } else {
+            match state.screen {
+                Screen::Game(GameId::Solitaire) => solitaire_ui::solitaire_clicks(state, point),
+                Screen::Game(GameId::FreeCell) => freecell_ui::freecell_clicks(state, point),
+                _ => Vec::new(),
+            }
+        }
+    };
+    actions_at(start)
+        .into_iter()
+        .chain(actions_at(end))
+        .collect()
+}
+
+#[cfg(test)]
+mod tests;
+
 fn swipe_direction(delta: Vec2) -> Direction {
     if delta.x.abs() > delta.y.abs() {
         if delta.x > 0.0 {

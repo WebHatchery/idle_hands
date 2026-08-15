@@ -109,3 +109,16 @@ fn rejected_tableau_destination_keeps_the_selected_source() {
     assert!(!game.move_to_tableau(1));
     assert_eq!(game.selected, Some(CardSource::Tableau(0, 0)));
 }
+
+#[test]
+fn invalid_foundation_suit_is_rejected_without_losing_selection() {
+    let mut game = Solitaire::default();
+    game.waste.push(Card {
+        rank: 1,
+        suit: 0,
+        face_up: true,
+    });
+    assert!(game.select_waste());
+    assert!(!game.move_to_foundation(4));
+    assert_eq!(game.selected, Some(CardSource::Waste));
+}

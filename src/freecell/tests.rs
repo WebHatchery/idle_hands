@@ -177,3 +177,16 @@ fn rejected_cascade_destination_keeps_the_selected_source() {
     assert!(!game.move_selected_to_cascade(1));
     assert_eq!(game.selected, Some(FreeSource::Cascade(0, 0)));
 }
+
+#[test]
+fn invalid_foundation_suit_is_rejected_without_losing_selection() {
+    let mut game = FreeCell::new(14);
+    game.cells[0] = Some(Card {
+        rank: 1,
+        suit: 0,
+        face_up: true,
+    });
+    assert!(game.select_cell(0));
+    assert!(!game.move_selected_to_foundation(4));
+    assert_eq!(game.selected, Some(FreeSource::Cell(0)));
+}

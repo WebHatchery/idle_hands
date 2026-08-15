@@ -106,6 +106,9 @@ impl FreeCell {
         true
     }
     pub fn move_selected_to_foundation(&mut self, suit: usize) -> bool {
+        if suit >= self.foundations.len() {
+            return false;
+        }
         let Some(source) = self.selected.take() else {
             return false;
         };

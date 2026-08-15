@@ -110,7 +110,9 @@ sizes, covered by rule tests, and passes `publish.ps1`.
     actions as taps.
   - [x] Explain rejected cascade and foundation moves with short feedback.
 - [x] Add canonical and edge-case move tests, including empty-column capacity.
-- [ ] Verify all actions through both tap selection and drag interaction.
+- [x] Verify all actions through both tap selection and drag interaction.
+  - [x] Cover compact portrait Solitaire and FreeCell tap targets and shared
+    source-to-destination drag dispatch in deterministic routing tests.
 
 ## Phase 6 — Yahtzee-style scorecard and Reversi
 

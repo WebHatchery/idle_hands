@@ -397,6 +397,9 @@ pub fn freecell_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     vec![]
 }
 
+#[cfg(test)]
+mod tests;
+
 fn dice_rect(index: usize) -> Rect {
     Rect::new(9. + index as f32 * 69., 112., 60., 60.)
 }
