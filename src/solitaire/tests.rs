@@ -23,6 +23,26 @@ fn stock_draw_and_undo_restore_the_deal() {
 }
 
 #[test]
+fn launch_ruleset_is_draw_one_with_unlimited_redeals() {
+    let game = Solitaire::default();
+    assert_eq!(game.ruleset, SolitaireRuleset::DrawOneUnlimited);
+    assert_eq!(game.ruleset.label(), "DRAW 1 · UNLIMITED REDEALS");
+}
+
+#[test]
+fn draw_three_ruleset_keeps_the_waste_order_for_redeals() {
+    let mut game = Solitaire::with_ruleset(9, SolitaireRuleset::DrawThreeUnlimited);
+    game.draw_stock();
+    assert_eq!(game.waste.len(), 3);
+    let drawn = game.waste.clone();
+    while !game.stock.is_empty() {
+        game.draw_stock();
+    }
+    game.draw_stock();
+    assert_eq!(game.stock.last(), drawn.first());
+}
+
+#[test]
 fn foundation_requires_the_next_card_of_the_same_suit() {
     let mut game = Solitaire::default();
     game.waste.push(Card {

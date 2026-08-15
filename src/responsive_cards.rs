@@ -91,6 +91,13 @@ pub fn draw_solitaire(state: &AppState) {
         13.,
         Color::new(0.70, 0.64, 0.78, 1.),
     );
+    text(
+        game.ruleset.label(),
+        12.,
+        106.,
+        10.,
+        Color::new(0.63, 0.95, 0.72, 1.),
+    );
     let top_y = 112.;
     let stock = card_rect(8., top_y);
     panel(stock, Color::new(0.20, 0.13, 0.30, 1.));

@@ -108,6 +108,13 @@ pub fn draw_solitaire(state: &AppState) {
         12.,
         Color::new(0.70, 0.64, 0.78, 1.),
     );
+    text(
+        game.ruleset.label(),
+        260.,
+        32.,
+        10.,
+        Color::new(0.63, 0.95, 0.72, 1.),
+    );
     let stock = card_rect(10., 35., 75., 95.);
     panel(stock, Color::new(0.20, 0.13, 0.30, 1.));
     if let Some(card) = game.stock.last() {

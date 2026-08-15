@@ -19,6 +19,26 @@ pub enum SolitaireStatus {
     Playing,
     Won,
 }
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
+pub enum SolitaireRuleset {
+    #[default]
+    DrawOneUnlimited,
+    DrawThreeUnlimited,
+}
+impl SolitaireRuleset {
+    pub fn draw_count(self) -> usize {
+        match self {
+            Self::DrawOneUnlimited => 1,
+            Self::DrawThreeUnlimited => 3,
+        }
+    }
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::DrawOneUnlimited => "DRAW 1 · UNLIMITED REDEALS",
+            Self::DrawThreeUnlimited => "DRAW 3 · UNLIMITED REDEALS",
+        }
+    }
+}
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum CardSource {
     Tableau(usize, usize),
@@ -37,6 +57,8 @@ pub struct Solitaire {
     pub moves: u32,
     pub status: SolitaireStatus,
     pub seed: u64,
+    #[serde(default)]
+    pub ruleset: SolitaireRuleset,
     #[serde(skip)]
     history: Vec<SolitaireSnapshot>,
 }
@@ -48,6 +70,9 @@ impl Default for Solitaire {
 }
 impl Solitaire {
     pub fn new(seed: u64) -> Self {
+        Self::with_ruleset(seed, SolitaireRuleset::default())
+    }
+    pub fn with_ruleset(seed: u64, ruleset: SolitaireRuleset) -> Self {
         let mut deck = (0..4)
             .flat_map(|suit| {
                 (1..=13).map(move |rank| Card {
@@ -83,14 +108,20 @@ impl Solitaire {
             moves: 0,
             status: SolitaireStatus::Playing,
             seed: rng,
+            ruleset,
             history: Vec::new(),
         }
     }
     pub fn draw_stock(&mut self) {
         self.snapshot();
-        if let Some(mut card) = self.stock.pop() {
-            card.face_up = true;
-            self.waste.push(card);
+        if !self.stock.is_empty() {
+            for _ in 0..self.ruleset.draw_count() {
+                let Some(mut card) = self.stock.pop() else {
+                    break;
+                };
+                card.face_up = true;
+                self.waste.push(card);
+            }
         } else if !self.waste.is_empty() {
             self.stock = self.waste.drain(..).rev().collect();
         }
