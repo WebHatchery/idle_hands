@@ -41,6 +41,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     state.records.tic_tac_toe_best_moves = Some(3);
     state.memory_pairs.moves = 5;
     state.records.memory_pairs_best_moves = Some(5);
+    state.sliding_puzzle.moves = 7;
+    state.records.sliding_puzzle_best_moves = Some(7);
     state.achievements[0] = true;
     state.stamps = 3;
     state.card_back = 1;
@@ -64,6 +66,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     assert_eq!(restored.records.tic_tac_toe_best_moves, Some(3));
     assert_eq!(restored.memory_pairs.moves, 5);
     assert_eq!(restored.records.memory_pairs_best_moves, Some(5));
+    assert_eq!(restored.sliding_puzzle.moves, 7);
+    assert_eq!(restored.records.sliding_puzzle_best_moves, Some(7));
     assert!(restored.achievements[0]);
     assert_eq!(restored.stamps, 3);
     assert_eq!(restored.card_back, 1);
@@ -107,6 +111,7 @@ fn every_game_snapshot_round_trips_its_own_state() {
     source.lights_out.moves = 17;
     source.tic_tac_toe.moves = 19;
     source.memory_pairs.moves = 21;
+    source.sliding_puzzle.moves = 23;
 
     for game in GameId::ALL {
         let snapshot = GameSnapshot::from_state(&source, game);
@@ -132,6 +137,7 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
     source.lights_out.moves = 17;
     source.tic_tac_toe.moves = 19;
     source.memory_pairs.moves = 21;
+    source.sliding_puzzle.moves = 23;
 
     let snapshots = GameId::ALL
         .iter()
@@ -153,6 +159,7 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
     assert_eq!(restored.lights_out.moves, 17);
     assert_eq!(restored.tic_tac_toe.moves, 19);
     assert_eq!(restored.memory_pairs.moves, 21);
+    assert_eq!(restored.sliding_puzzle.moves, 23);
 }
 
 #[test]
@@ -172,6 +179,7 @@ fn older_saves_default_new_progression_and_cosmetic_fields() {
         "lights_out",
         "tic_tac_toe",
         "memory_pairs",
+        "sliding_puzzle",
     ] {
         object.remove(field);
     }

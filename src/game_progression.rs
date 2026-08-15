@@ -91,6 +91,15 @@ impl Game {
                     }),
             );
         }
+        if self.state.sliding_puzzle.status == crate::sliding_puzzle::SlidingStatus::Won {
+            records.sliding_puzzle_best_moves = Some(
+                records
+                    .sliding_puzzle_best_moves
+                    .map_or(self.state.sliding_puzzle.moves, |best| {
+                        best.min(self.state.sliding_puzzle.moves)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

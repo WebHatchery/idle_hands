@@ -1,6 +1,6 @@
-//! Responsive presentation and touch routing for Memory/Pairs.
+//! Responsive presentation and touch routing for Sliding Puzzle.
 
-use crate::{memory_pairs::MemoryStatus, state::AppState, ui::UiAction};
+use crate::{sliding_puzzle::SlidingStatus, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
 #[derive(Clone, Copy)]
@@ -28,7 +28,7 @@ fn layout() -> Layout {
         }
     } else {
         Layout {
-            board: Rect::new(380., 120., 520., 520.),
+            board: Rect::new(360., 120., 520., 520.),
             cell: 130.,
             new_board: Rect::new(440., 650., 180., 48.),
             undo: Rect::new(650., 650., 180., 48.),
@@ -42,16 +42,16 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
         return vec![UiAction::Cabinet];
     }
     if layout.new_board.contains(point) {
-        return vec![UiAction::MemoryPairsNew];
+        return vec![UiAction::SlidingPuzzleNew];
     }
     if layout.undo.contains(point) {
-        return vec![UiAction::MemoryPairsUndo];
+        return vec![UiAction::SlidingPuzzleUndo];
     }
-    if layout.board.contains(point) && state.memory_pairs.status != MemoryStatus::Won {
+    if layout.board.contains(point) && state.sliding_puzzle.status != SlidingStatus::Won {
         let column = ((point.x - layout.board.x) / layout.cell) as usize;
         let row = ((point.y - layout.board.y) / layout.cell) as usize;
         if row < 4 && column < 4 {
-            return vec![UiAction::MemoryPairsSelect(row * 4 + column)];
+            return vec![UiAction::SlidingPuzzleMove(row * 4 + column)];
         }
     }
     vec![]
@@ -59,7 +59,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
 
 pub fn draw(state: &AppState) {
     let layout = layout();
-    let game = &state.memory_pairs;
+    let game = &state.sliding_puzzle;
     let header_y = if crate::ui::is_compact_landscape() {
         35.
     } else if crate::ui::is_portrait() {
@@ -91,15 +91,15 @@ pub fn draw(state: &AppState) {
         14.,
         muted(),
     );
-    text("MEMORY / PAIRS", header_x, header_y, title_size(), accent());
+    text("SLIDING PUZZLE", header_x, header_y, title_size(), accent());
     text(
-        &status_text(game.status, game.matched_pairs),
+        status_text(game.status),
         body_x,
         body_y,
         body_size(),
         muted(),
     );
-    for index in 0..game.cards.len() {
+    for index in 0..game.cells.len() {
         let row = index / 4;
         let column = index % 4;
         let rect = Rect::new(
@@ -108,40 +108,31 @@ pub fn draw(state: &AppState) {
             layout.cell - 4.,
             layout.cell - 4.,
         );
-        let card = game.cards[index];
-        let face = card.face_up || card.matched;
+        let value = game.cells[index];
         draw_rectangle(
             rect.x,
             rect.y,
             rect.w,
             rect.h,
-            if face {
-                pair_color(card.pair)
+            if value == 0 {
+                Color::new(0.08, 0.06, 0.15, 1.)
             } else {
-                Color::new(0.16, 0.11, 0.25, 1.)
+                tile_color(value)
             },
         );
         draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., accent());
-        if face {
+        if value != 0 {
             text(
-                &pair_label(card.pair),
-                rect.x + rect.w * 0.38,
-                rect.y + rect.h * 0.62,
-                (rect.w * 0.34).min(40.),
+                &value.to_string(),
+                rect.x + rect.w * 0.40,
+                rect.y + rect.h * 0.61,
+                (rect.w * 0.28).min(34.),
                 WHITE,
-            );
-        } else {
-            draw_circle_lines(
-                rect.center().x,
-                rect.center().y,
-                rect.w * 0.18,
-                2.,
-                Color::new(0.60, 0.48, 0.78, 1.),
             );
         }
     }
     text(
-        &format!("MOVES  {}  •  PAIRS  {}/8", game.moves, game.matched_pairs),
+        &format!("MOVES  {}", game.moves),
         layout.board.x,
         layout.board.bottom() + 28.,
         body_size(),
@@ -151,30 +142,21 @@ pub fn draw(state: &AppState) {
     button(layout.undo, "UNDO");
 }
 
-fn status_text(status: MemoryStatus, pairs: u8) -> String {
+fn status_text(status: SlidingStatus) -> &'static str {
     match status {
-        MemoryStatus::Playing => format!("Find the quiet pairs  •  {} of 8 found", pairs),
-        MemoryStatus::Won => "Every pair is resting. Start another board to play again.".into(),
+        SlidingStatus::Playing => "Tap a tile beside the empty space.",
+        SlidingStatus::Won => "The tiles are in order. Start another board to play again.",
     }
 }
 
-fn pair_label(pair: u8) -> String {
-    char::from(b'A' + pair).to_string()
-}
-
-fn pair_color(pair: u8) -> Color {
-    let palette = [
-        (0.35, 0.55, 0.78),
-        (0.55, 0.38, 0.72),
-        (0.35, 0.68, 0.58),
-        (0.78, 0.48, 0.35),
-        (0.68, 0.55, 0.30),
-        (0.48, 0.65, 0.35),
-        (0.62, 0.42, 0.62),
-        (0.36, 0.62, 0.68),
-    ];
-    let (r, g, b) = palette[pair as usize % palette.len()];
-    Color::new(r, g, b, 1.)
+fn tile_color(value: u8) -> Color {
+    let shade = 0.28 + (value % 5) as f32 * 0.06;
+    Color::new(
+        0.28 + shade * 0.25,
+        0.18 + shade * 0.22,
+        0.42 + shade * 0.35,
+        1.,
+    )
 }
 
 fn back_rect() -> Rect {
@@ -208,23 +190,19 @@ fn button(rect: Rect, label: &str) {
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     draw_text(value, x, y, size, color);
 }
-
 fn accent() -> Color {
     Color::new(0.98, 0.83, 0.45, 1.)
 }
-
 fn muted() -> Color {
     Color::new(0.76, 0.70, 0.86, 1.)
 }
-
 fn title_size() -> f32 {
     if crate::ui::is_portrait() {
-        26.
+        24.
     } else {
-        32.
+        30.
     }
 }
-
 fn body_size() -> f32 {
     if crate::ui::is_portrait() {
         12.

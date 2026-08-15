@@ -372,6 +372,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "Find its matching card before the board goes quiet.",
             "Use UNDO or NEW BOARD whenever you need it.",
         ],
+        GameId::SlidingPuzzle => [
+            "Tap a tile beside the empty space.",
+            "Put every numbered tile back in order.",
+            "Use UNDO or NEW BOARD whenever you need it.",
+        ],
     }
 }
 
@@ -388,6 +393,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::LightsOut if state.records.lights_out_best_moves.is_some() => "COMPLETE",
         GameId::TicTacToe if state.records.tic_tac_toe_best_moves.is_some() => "COMPLETE",
         GameId::MemoryPairs if state.records.memory_pairs_best_moves.is_some() => "COMPLETE",
+        GameId::SlidingPuzzle if state.records.sliding_puzzle_best_moves.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

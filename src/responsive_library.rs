@@ -85,6 +85,10 @@ pub fn draw_records(state: &AppState) {
             "Memory best",
             value(state.records.memory_pairs_best_moves.map(u32::from)),
         ),
+        (
+            "Sliding Puzzle best",
+            value(state.records.sliding_puzzle_best_moves.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
         let y = 155. + index as f32 * 27.;

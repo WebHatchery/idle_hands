@@ -21,6 +21,7 @@ use crate::responsive_puzzles;
 use crate::responsive_ui;
 use crate::reversi_ui;
 use crate::settings_ui;
+use crate::sliding_puzzle_ui;
 use crate::solitaire_ui;
 use crate::sudoku_ui;
 use crate::tic_tac_toe_ui;
@@ -110,6 +111,9 @@ pub enum UiAction {
     MemoryPairsSelect(usize),
     MemoryPairsUndo,
     MemoryPairsNew,
+    SlidingPuzzleMove(usize),
+    SlidingPuzzleUndo,
+    SlidingPuzzleNew,
 }
 pub fn viewport() -> Viewport {
     let (width, height) = layout_size();
@@ -232,6 +236,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Game(GameId::LightsOut) => lights_out_ui::clicks(state, p),
         Screen::Game(GameId::TicTacToe) => tic_tac_toe_ui::clicks(state, p),
         Screen::Game(GameId::MemoryPairs) => memory_pairs_ui::clicks(state, p),
+        Screen::Game(GameId::SlidingPuzzle) => sliding_puzzle_ui::clicks(state, p),
         Screen::Help => {
             if is_compact_landscape() {
                 responsive_landscape_library::help_clicks(p)
@@ -319,6 +324,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::LightsOut) => lights_out_ui::draw(state),
         Screen::Game(GameId::TicTacToe) => tic_tac_toe_ui::draw(state),
         Screen::Game(GameId::MemoryPairs) => memory_pairs_ui::draw(state),
+        Screen::Game(GameId::SlidingPuzzle) => sliding_puzzle_ui::draw(state),
         Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(),
         Screen::Help if is_portrait() => responsive_library::draw_help(),
         Screen::Help => draw_help(),
@@ -347,7 +353,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         } else {
             tutorial_ui::draw_overlay(game);
         }
-    } else if matches!(state.screen, Screen::Game(game) if !matches!(game, GameId::LightsOut | GameId::TicTacToe | GameId::MemoryPairs))
+    } else if matches!(state.screen, Screen::Game(game) if !matches!(game, GameId::LightsOut | GameId::TicTacToe | GameId::MemoryPairs | GameId::SlidingPuzzle))
     {
         if is_compact_landscape() {
             responsive_landscape::draw_replay_button();
@@ -415,6 +421,7 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
                 | GameId::LightsOut
                 | GameId::TicTacToe
                 | GameId::MemoryPairs
+                | GameId::SlidingPuzzle
         );
         panel(
             r,
@@ -503,6 +510,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::LightsOut => state.records.lights_out_best_moves.is_some(),
         GameId::TicTacToe => state.records.tic_tac_toe_best_moves.is_some(),
         GameId::MemoryPairs => state.records.memory_pairs_best_moves.is_some(),
+        GameId::SlidingPuzzle => state.records.sliding_puzzle_best_moves.is_some(),
     };
     if complete {
         "COMPLETE"
@@ -525,6 +533,7 @@ fn cabinet_has_progress(state: &AppState, game: GameId) -> bool {
         GameId::LightsOut => state.lights_out.moves > 0,
         GameId::TicTacToe => state.tic_tac_toe.moves > 0,
         GameId::MemoryPairs => state.memory_pairs.moves > 0,
+        GameId::SlidingPuzzle => state.sliding_puzzle.moves > 0,
     }
 }
 fn cabinet_status_color(status: &str) -> Color {

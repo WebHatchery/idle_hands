@@ -91,6 +91,10 @@ pub fn draw_records(state: &AppState) {
             "Memory best moves",
             value(state.records.memory_pairs_best_moves.map(u32::from)),
         ),
+        (
+            "Sliding Puzzle best moves",
+            value(state.records.sliding_puzzle_best_moves.map(u32::from)),
+        ),
     ];
     draw_column(&left, 175., 240.);
     draw_column(&right, 650., 240.);

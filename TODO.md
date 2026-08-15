@@ -209,6 +209,16 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Add responsive desktop, portrait, and medium-landscape presentation,
     visible controls, and verification captures.
 
+## Phase 11 — Fourth post-launch cabinet game
+
+- [x] Add Sliding Puzzle as a twelfth deterministic, touch-complete cabinet
+  game.
+  - [x] Add a guaranteed-solvable seeded shuffle, adjacent tile moves, win
+    detection, undo, new board reset, and focused rule tests.
+  - [x] Add persisted active state and best-move records with snapshot coverage.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, and verification captures.
+
 ## Phase 9 — Second post-launch cabinet game
 
 - [x] Add Tic-Tac-Toe as a tenth deterministic, touch-complete cabinet game.

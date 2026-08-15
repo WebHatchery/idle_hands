@@ -82,6 +82,7 @@ impl Game {
             "lights_out" => Screen::Game(GameId::LightsOut),
             "tic_tac_toe" => Screen::Game(GameId::TicTacToe),
             "memory_pairs" => Screen::Game(GameId::MemoryPairs),
+            "sliding_puzzle" => Screen::Game(GameId::SlidingPuzzle),
             "help" => Screen::Help,
             "records" => Screen::Records,
             "rules" => Screen::Rules,
@@ -289,11 +290,15 @@ impl Game {
                         | GameId::LightsOut
                         | GameId::TicTacToe
                         | GameId::MemoryPairs
+                        | GameId::SlidingPuzzle
                 ) {
                     self.state.screen = Screen::Game(id);
                     self.state.tutorial = (!matches!(
                         id,
-                        GameId::LightsOut | GameId::TicTacToe | GameId::MemoryPairs
+                        GameId::LightsOut
+                            | GameId::TicTacToe
+                            | GameId::MemoryPairs
+                            | GameId::SlidingPuzzle
                     ) && !self.state.tutorial_seen[id.index()])
                     .then_some(id);
                 } else {
@@ -538,6 +543,16 @@ impl Game {
             ui::UiAction::MemoryPairsNew => {
                 let seed = self.state.memory_pairs.seed.wrapping_add(1);
                 self.state.memory_pairs.reset(seed);
+            }
+            ui::UiAction::SlidingPuzzleMove(index) => {
+                self.state.sliding_puzzle.move_tile(index);
+            }
+            ui::UiAction::SlidingPuzzleUndo => {
+                self.state.sliding_puzzle.undo();
+            }
+            ui::UiAction::SlidingPuzzleNew => {
+                let seed = self.state.sliding_puzzle.seed.wrapping_add(1);
+                self.state.sliding_puzzle.reset(seed);
             }
             ui::UiAction::MineChord(index) => {
                 self.state.minesweeper.chord(index);

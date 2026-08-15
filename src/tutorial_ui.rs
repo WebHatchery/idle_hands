@@ -137,5 +137,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "Find its matching card before the board goes quiet.",
             "Use UNDO or NEW BOARD whenever you need it.",
         ],
+        GameId::SlidingPuzzle => [
+            "Tap a tile beside the empty space.",
+            "Put every numbered tile back in order.",
+            "Use UNDO or NEW BOARD whenever you need it.",
+        ],
     }
 }
