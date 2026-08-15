@@ -502,6 +502,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "Fill every square before the move counter runs out.",
             "Use UNDO or NEW FIELD with visible controls.",
         ],
+        GameId::ColorSort => [
+            "Tap a tube, then tap a matching color or empty tube.",
+            "Sort every color into a full, single-color tube.",
+            "Use UNDO or NEW BOARD with visible controls.",
+        ],
     }
 }
 
@@ -552,6 +557,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::Hanoi if state.records.hanoi_best_moves.is_some() => "COMPLETE",
         GameId::NumberMatch if state.records.number_match_best_moves.is_some() => "COMPLETE",
         GameId::FloodIt if state.records.flood_it_best_moves.is_some() => "COMPLETE",
+        GameId::ColorSort if state.records.color_sort_best_moves.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

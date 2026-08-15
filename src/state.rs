@@ -3,6 +3,7 @@
 use crate::blackjack::Blackjack;
 use crate::breakout::Breakout;
 use crate::checkers::Checkers;
+use crate::color_sort::ColorSort;
 use crate::connect_four::ConnectFour;
 use crate::daily_dungeon::DailyDungeon;
 use crate::dots_boxes::DotsBoxes;
@@ -81,9 +82,10 @@ pub enum GameId {
     Hanoi,
     NumberMatch,
     FloodIt,
+    ColorSort,
 }
 impl GameId {
-    pub const ALL: [Self; 37] = [
+    pub const ALL: [Self; 38] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -121,6 +123,7 @@ impl GameId {
         Self::Hanoi,
         Self::NumberMatch,
         Self::FloodIt,
+        Self::ColorSort,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -161,6 +164,7 @@ impl GameId {
             Self::Hanoi => "Hanoi",
             Self::NumberMatch => "Number Match",
             Self::FloodIt => "Flood It",
+            Self::ColorSort => "Color Sort",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -202,6 +206,7 @@ impl GameId {
             Self::Hanoi => "Move the quiet disks",
             Self::NumberMatch => "Pair the quiet numbers",
             Self::FloodIt => "Fill the quiet field",
+            Self::ColorSort => "Sort the quiet colors",
         }
     }
     pub fn index(self) -> usize {
@@ -246,6 +251,7 @@ impl GameId {
             Self::Hanoi => "hanoi",
             Self::NumberMatch => "number_match",
             Self::FloodIt => "flood_it",
+            Self::ColorSort => "color_sort",
         }
     }
 }
@@ -311,6 +317,7 @@ pub struct AppState {
     pub hanoi: Hanoi,
     pub number_match: NumberMatch,
     pub flood_it: FloodIt,
+    pub color_sort: ColorSort,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -401,6 +408,8 @@ pub struct CollectionRecords {
     pub number_match_best_moves: Option<u16>,
     #[serde(default)]
     pub flood_it_best_moves: Option<u16>,
+    #[serde(default)]
+    pub color_sort_best_moves: Option<u16>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -478,6 +487,8 @@ pub struct CollectionSave {
     pub number_match: NumberMatch,
     #[serde(default)]
     pub flood_it: FloodIt,
+    #[serde(default)]
+    pub color_sort: ColorSort,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -618,6 +629,7 @@ impl CollectionSave {
             hanoi: state.hanoi.clone(),
             number_match: state.number_match.clone(),
             flood_it: state.flood_it.clone(),
+            color_sort: state.color_sort.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -674,6 +686,7 @@ impl CollectionSave {
         state.hanoi = self.hanoi;
         state.number_match = self.number_match;
         state.flood_it = self.flood_it;
+        state.color_sort = self.color_sort;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -736,6 +749,7 @@ impl Default for AppState {
             hanoi: Hanoi::default(),
             number_match: NumberMatch::default(),
             flood_it: FloodIt::default(),
+            color_sort: ColorSort::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

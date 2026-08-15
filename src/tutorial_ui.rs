@@ -267,5 +267,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "Fill every square before the move counter runs out.",
             "Use UNDO or NEW FIELD with the visible controls.",
         ],
+        GameId::ColorSort => [
+            "Tap a tube, then tap a matching color or empty tube.",
+            "Sort every color into a full, single-color tube.",
+            "Use UNDO or NEW BOARD with the visible controls.",
+        ],
     }
 }

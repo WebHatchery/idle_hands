@@ -168,4 +168,7 @@ pub enum UiAction {
     FloodColor(u8),
     FloodUndo,
     FloodNew,
+    ColorSortTap(usize),
+    ColorSortUndo,
+    ColorSortNew,
 }

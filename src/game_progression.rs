@@ -330,6 +330,15 @@ impl Game {
                     }),
             );
         }
+        if self.state.color_sort.won() {
+            records.color_sort_best_moves = Some(
+                records
+                    .color_sort_best_moves
+                    .map_or(self.state.color_sort.moves, |best| {
+                        best.min(self.state.color_sort.moves)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

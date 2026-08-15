@@ -237,6 +237,16 @@ impl Game {
                 let seed = self.state.flood_it.seed.wrapping_add(1);
                 self.state.flood_it.reset(seed);
             }
+            UiAction::ColorSortTap(tube) => {
+                self.state.color_sort.tap_tube(*tube);
+            }
+            UiAction::ColorSortUndo => {
+                self.state.color_sort.undo();
+            }
+            UiAction::ColorSortNew => {
+                let seed = self.state.color_sort.seed.wrapping_add(1);
+                self.state.color_sort.reset(seed);
+            }
             _ => return false,
         }
         true

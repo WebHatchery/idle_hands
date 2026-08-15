@@ -196,6 +196,10 @@ pub fn draw_records(state: &AppState) {
             "Flood It best",
             value(state.records.flood_it_best_moves.map(u32::from)),
         ),
+        (
+            "Color Sort best",
+            value(state.records.color_sort_best_moves.map(u32::from)),
+        ),
     ];
     draw_column(&left, 175., 240.);
     draw_column(&middle, 490., 240.);

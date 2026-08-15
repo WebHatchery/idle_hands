@@ -186,10 +186,14 @@ pub fn draw_records(state: &AppState) {
             "Flood It best",
             value(state.records.flood_it_best_moves.map(u32::from)),
         ),
+        (
+            "Color Sort best",
+            value(state.records.color_sort_best_moves.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
-        let column = index / 22;
-        let row = index % 22;
+        let column = index / 23;
+        let row = index % 23;
         let x = 20. + column as f32 * 170.;
         let y = 140. + row as f32 * 21.;
         text(label, x, y, 9., Color::new(0.78, 0.73, 0.86, 1.));

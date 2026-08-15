@@ -3,6 +3,7 @@
 use crate::blackjack_ui;
 use crate::breakout_ui;
 use crate::checkers_ui;
+use crate::color_sort_ui;
 use crate::connect_four_ui;
 use crate::cosmetics;
 use crate::daily_dungeon_ui;
@@ -205,6 +206,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Game(GameId::Hanoi) => hanoi_ui::clicks(state, p),
         Screen::Game(GameId::NumberMatch) => number_match_ui::clicks(state, p),
         Screen::Game(GameId::FloodIt) => flood_it_ui::clicks(state, p),
+        Screen::Game(GameId::ColorSort) => color_sort_ui::clicks(state, p),
         Screen::Game(GameId::Mastermind) => mastermind_ui::clicks(state, p),
         Screen::Help => {
             if is_compact_landscape() {
@@ -318,6 +320,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::Hanoi) => hanoi_ui::draw(state),
         Screen::Game(GameId::NumberMatch) => number_match_ui::draw(state),
         Screen::Game(GameId::FloodIt) => flood_it_ui::draw(state),
+        Screen::Game(GameId::ColorSort) => color_sort_ui::draw(state),
         Screen::Game(GameId::Mastermind) => mastermind_ui::draw(state),
         Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(),
         Screen::Help if is_portrait() => responsive_library::draw_help(),
@@ -426,6 +429,7 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
                     | GameId::Hanoi
                     | GameId::NumberMatch
                     | GameId::FloodIt
+                    | GameId::ColorSort
             ) {
                 10.
             } else {

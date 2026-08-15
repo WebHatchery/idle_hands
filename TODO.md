@@ -520,6 +520,18 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Add responsive desktop, portrait, and medium-landscape presentation,
     visible controls, records, and verification captures.
 
+## Phase 37 — Thirtieth post-launch cabinet game
+
+- [x] Add Color Sort as a thirty-eighth deterministic, touch-complete cabinet
+  game with six visible tubes, four colors, matching pours, undo, reset, and a
+  single-color tube victory.
+  - [x] Cover seeded layouts, capacity and color validation, grouped pours,
+    victory, undo, and reset behavior with focused rule tests.
+  - [x] Add persisted active state and best-move records with snapshot,
+    migration, progression, and tutorial coverage.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, records, and verification captures.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

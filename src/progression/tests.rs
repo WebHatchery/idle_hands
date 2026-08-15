@@ -64,6 +64,7 @@ fn full_cabinet_counts_every_playable_game() {
     records.hanoi_best_moves = Some(31);
     records.number_match_best_moves = Some(18);
     records.flood_it_best_moves = Some(12);
+    records.color_sort_best_moves = Some(24);
 
     assert_eq!(completed_games(&records), GameId::ALL.len());
     assert!(earned(&records, AchievementId::FullCabinet));
