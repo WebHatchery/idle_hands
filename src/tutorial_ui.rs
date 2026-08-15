@@ -157,5 +157,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "Tap its final letter in a straight line.",
             "Use CLEAR or NEW BOARD with the visible controls.",
         ],
+        GameId::Hangman => [
+            "Tap a visible letter button to guess it.",
+            "Six wrong guesses end the quiet round.",
+            "Tap NEW WORD to begin another word.",
+        ],
     }
 }

@@ -5,6 +5,7 @@ use macroquad_toolkit::capture;
 
 mod accessibility;
 mod cabinet_art;
+mod cabinet_status;
 mod card_hints;
 mod card_render;
 mod cards;
@@ -17,6 +18,8 @@ mod freecell_ui;
 mod game;
 mod game_input;
 mod grid;
+mod hangman;
+mod hangman_ui;
 mod input;
 mod library_ui;
 mod lights_out;

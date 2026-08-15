@@ -49,6 +49,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     state.records.spider_best_moves = Some(9);
     state.word_search.moves = 4;
     state.records.word_search_best_moves = Some(4);
+    state.hangman.moves = 6;
+    state.records.hangman_best_moves = Some(6);
     state.achievements[0] = true;
     state.stamps = 3;
     state.card_back = 1;
@@ -80,6 +82,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     assert_eq!(restored.records.spider_best_moves, Some(9));
     assert_eq!(restored.word_search.moves, 4);
     assert_eq!(restored.records.word_search_best_moves, Some(4));
+    assert_eq!(restored.hangman.moves, 6);
+    assert_eq!(restored.records.hangman_best_moves, Some(6));
     assert!(restored.achievements[0]);
     assert_eq!(restored.stamps, 3);
     assert_eq!(restored.card_back, 1);
@@ -127,6 +131,7 @@ fn every_game_snapshot_round_trips_its_own_state() {
     source.mastermind.row = 3;
     source.spider.moves = 25;
     source.word_search.moves = 26;
+    source.hangman.moves = 27;
 
     for game in GameId::ALL {
         let snapshot = GameSnapshot::from_state(&source, game);
@@ -156,6 +161,7 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
     source.mastermind.row = 3;
     source.spider.moves = 25;
     source.word_search.moves = 26;
+    source.hangman.moves = 27;
 
     let snapshots = GameId::ALL
         .iter()
@@ -181,6 +187,7 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
     assert_eq!(restored.mastermind.row, 3);
     assert_eq!(restored.spider.moves, 25);
     assert_eq!(restored.word_search.moves, 26);
+    assert_eq!(restored.hangman.moves, 27);
 }
 
 #[test]
@@ -204,6 +211,7 @@ fn older_saves_default_new_progression_and_cosmetic_fields() {
         "mastermind",
         "spider",
         "word_search",
+        "hangman",
     ] {
         object.remove(field);
     }

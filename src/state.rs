@@ -2,6 +2,7 @@
 
 use crate::fivefold::Fivefold;
 use crate::freecell::FreeCell;
+use crate::hangman::Hangman;
 use crate::lights_out::LightsOut;
 use crate::mastermind::Mastermind;
 use crate::memory_pairs::MemoryPairs;
@@ -33,9 +34,10 @@ pub enum GameId {
     Mastermind,
     Spider,
     WordSearch,
+    Hangman,
 }
 impl GameId {
-    pub const ALL: [Self; 15] = [
+    pub const ALL: [Self; 16] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -51,6 +53,7 @@ impl GameId {
         Self::Mastermind,
         Self::Spider,
         Self::WordSearch,
+        Self::Hangman,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -69,6 +72,7 @@ impl GameId {
             Self::Mastermind => "Mastermind",
             Self::Spider => "Spider",
             Self::WordSearch => "Word Search",
+            Self::Hangman => "Hangman",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -88,6 +92,7 @@ impl GameId {
             Self::Mastermind => "Read the color code",
             Self::Spider => "Build the quiet webs",
             Self::WordSearch => "Find the hidden words",
+            Self::Hangman => "Keep the quiet word",
         }
     }
     pub fn index(self) -> usize {
@@ -110,6 +115,7 @@ impl GameId {
             Self::Mastermind => "mastermind",
             Self::Spider => "spider",
             Self::WordSearch => "word_search",
+            Self::Hangman => "hangman",
         }
     }
 }
@@ -269,6 +275,7 @@ pub struct AppState {
     pub mastermind: Mastermind,
     pub spider: Spider,
     pub word_search: WordSearch,
+    pub hangman: Hangman,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -315,6 +322,8 @@ pub struct CollectionRecords {
     pub spider_best_moves: Option<u32>,
     #[serde(default)]
     pub word_search_best_moves: Option<u16>,
+    #[serde(default)]
+    pub hangman_best_moves: Option<u16>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -348,6 +357,8 @@ pub struct CollectionSave {
     pub spider: Spider,
     #[serde(default)]
     pub word_search: WordSearch,
+    #[serde(default)]
+    pub hangman: Hangman,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -464,6 +475,7 @@ pub enum GameSnapshot {
     Mastermind(Mastermind),
     Spider(Spider),
     WordSearch(WordSearch),
+    Hangman(Hangman),
 }
 impl GameSnapshot {
     pub fn from_state(state: &AppState, game: GameId) -> Self {
@@ -483,6 +495,7 @@ impl GameSnapshot {
             GameId::Mastermind => Self::Mastermind(state.mastermind.clone()),
             GameId::Spider => Self::Spider(state.spider.clone()),
             GameId::WordSearch => Self::WordSearch(state.word_search.clone()),
+            GameId::Hangman => Self::Hangman(state.hangman.clone()),
         }
     }
     pub fn apply_to(self, state: &mut AppState) {
@@ -502,6 +515,7 @@ impl GameSnapshot {
             Self::Mastermind(game) => state.mastermind = game,
             Self::Spider(game) => state.spider = game,
             Self::WordSearch(game) => state.word_search = game,
+            Self::Hangman(game) => state.hangman = game,
         }
     }
 }
@@ -525,6 +539,7 @@ impl CollectionSave {
             mastermind: state.mastermind.clone(),
             spider: state.spider.clone(),
             word_search: state.word_search.clone(),
+            hangman: state.hangman.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -559,6 +574,7 @@ impl CollectionSave {
         state.mastermind = self.mastermind;
         state.spider = self.spider;
         state.word_search = self.word_search;
+        state.hangman = self.hangman;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -599,6 +615,7 @@ impl Default for AppState {
             mastermind: Mastermind::default(),
             spider: Spider::default(),
             word_search: WordSearch::default(),
+            hangman: Hangman::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

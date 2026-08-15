@@ -84,6 +84,10 @@ pub fn draw_records(state: &AppState) {
             "Word Search best",
             value(state.records.word_search_best_moves.map(u32::from)),
         ),
+        (
+            "Hangman best",
+            value(state.records.hangman_best_moves.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
         let col = index / 7;

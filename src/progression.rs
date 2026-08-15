@@ -43,6 +43,7 @@ impl AchievementId {
                 GameId::Mastermind => "Code keeper",
                 GameId::Spider => "Web keeper",
                 GameId::WordSearch => "Word keeper",
+                GameId::Hangman => "Letter keeper",
             },
             Self::FullCabinet => "Full cabinet",
         }
@@ -103,6 +104,7 @@ pub fn earned(records: &CollectionRecords, achievement: AchievementId) -> bool {
             GameId::Mastermind => records.mastermind_best_rows.is_some(),
             GameId::Spider => records.spider_best_moves.is_some(),
             GameId::WordSearch => records.word_search_best_moves.is_some(),
+            GameId::Hangman => records.hangman_best_moves.is_some(),
         },
         AchievementId::FullCabinet => completed_games(records) == GameId::ALL.len(),
     }

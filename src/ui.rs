@@ -3,6 +3,7 @@
 use crate::cosmetics;
 use crate::fivefold_ui;
 use crate::freecell_ui;
+use crate::hangman_ui;
 use crate::input::Viewport;
 use crate::library_ui;
 use crate::lights_out_ui;
@@ -31,7 +32,6 @@ use crate::tutorial_ui;
 use crate::word_search_ui;
 use crate::{
     data::GameData,
-    minesweeper::MineStatus,
     state::{AppState, Direction, GameId, Screen},
 };
 use macroquad::prelude::*;
@@ -130,6 +130,8 @@ pub enum UiAction {
     WordSearchCell(usize),
     WordSearchClear,
     WordSearchNew,
+    HangmanGuess(u8),
+    HangmanNew,
 }
 pub fn viewport() -> Viewport {
     let (width, height) = layout_size();
@@ -255,6 +257,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Game(GameId::SlidingPuzzle) => sliding_puzzle_ui::clicks(state, p),
         Screen::Game(GameId::Spider) => spider_ui::clicks(state, p),
         Screen::Game(GameId::WordSearch) => word_search_ui::clicks(state, p),
+        Screen::Game(GameId::Hangman) => hangman_ui::clicks(state, p),
         Screen::Game(GameId::Mastermind) => mastermind_ui::clicks(state, p),
         Screen::Help => {
             if is_compact_landscape() {
@@ -346,6 +349,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::SlidingPuzzle) => sliding_puzzle_ui::draw(state),
         Screen::Game(GameId::Spider) => spider_ui::draw(state),
         Screen::Game(GameId::WordSearch) => word_search_ui::draw(state),
+        Screen::Game(GameId::Hangman) => hangman_ui::draw(state),
         Screen::Game(GameId::Mastermind) => mastermind_ui::draw(state),
         Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(),
         Screen::Help if is_portrait() => responsive_library::draw_help(),
@@ -375,7 +379,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         } else {
             tutorial_ui::draw_overlay(game);
         }
-    } else if matches!(state.screen, Screen::Game(game) if !matches!(game, GameId::LightsOut | GameId::TicTacToe | GameId::MemoryPairs | GameId::SlidingPuzzle | GameId::Mastermind | GameId::Spider | GameId::WordSearch))
+    } else if matches!(state.screen, Screen::Game(game) if !matches!(game, GameId::LightsOut | GameId::TicTacToe | GameId::MemoryPairs | GameId::SlidingPuzzle | GameId::Mastermind | GameId::Spider | GameId::WordSearch | GameId::Hangman))
     {
         if is_compact_landscape() {
             responsive_landscape::draw_replay_button();
@@ -447,6 +451,7 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
                 | GameId::Mastermind
                 | GameId::Spider
                 | GameId::WordSearch
+                | GameId::Hangman
         );
         panel(
             r,
@@ -467,13 +472,13 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
                 WHITE
             },
         );
-        let status = cabinet_status(state, GameId::ALL[i]);
+        let status = crate::cabinet_status::status(state, GameId::ALL[i]);
         text(
             status,
             r.x + 18.,
             r.y + 70.,
             14.,
-            cabinet_status_color(status),
+            crate::cabinet_status::color(status),
         );
         text(
             GameId::ALL[i].subtitle(),
@@ -521,58 +526,6 @@ fn cabinet_rect(i: usize) -> Rect {
         190.,
         150.,
     )
-}
-fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
-    let complete = match game {
-        GameId::Game2048 => state.records.best_2048 >= 2048,
-        GameId::Minesweeper => state.records.minesweeper.iter().any(Option::is_some),
-        GameId::Sudoku => state.records.sudoku.iter().any(Option::is_some),
-        GameId::Nonogram => state.records.nonogram.iter().any(Option::is_some),
-        GameId::Solitaire => state.records.solitaire_best_moves.is_some(),
-        GameId::FreeCell => state.records.freecell_best_moves.is_some(),
-        GameId::Yahtzee => state.records.fivefold_best_total > 0,
-        GameId::Reversi => state.records.reversi_best_score > 0,
-        GameId::LightsOut => state.records.lights_out_best_moves.is_some(),
-        GameId::TicTacToe => state.records.tic_tac_toe_best_moves.is_some(),
-        GameId::MemoryPairs => state.records.memory_pairs_best_moves.is_some(),
-        GameId::SlidingPuzzle => state.records.sliding_puzzle_best_moves.is_some(),
-        GameId::Mastermind => state.records.mastermind_best_rows.is_some(),
-        GameId::Spider => state.records.spider_best_moves.is_some(),
-        GameId::WordSearch => state.records.word_search_best_moves.is_some(),
-    };
-    if complete {
-        "COMPLETE"
-    } else if cabinet_has_progress(state, game) {
-        "IN PROGRESS"
-    } else {
-        "PLAY NOW"
-    }
-}
-fn cabinet_has_progress(state: &AppState, game: GameId) -> bool {
-    match game {
-        GameId::Game2048 => state.game.score > 0 || state.game.best > 0,
-        GameId::Minesweeper => state.minesweeper.status != MineStatus::Ready,
-        GameId::Sudoku => state.sudoku.moves > 0,
-        GameId::Nonogram => state.nonogram.moves > 0,
-        GameId::Solitaire => state.solitaire.moves > 0,
-        GameId::FreeCell => state.freecell.moves > 0,
-        GameId::Yahtzee => state.fivefold.roll_number > 0,
-        GameId::Reversi => state.reversi.moves > 0,
-        GameId::LightsOut => state.lights_out.moves > 0,
-        GameId::TicTacToe => state.tic_tac_toe.moves > 0,
-        GameId::MemoryPairs => state.memory_pairs.moves > 0,
-        GameId::SlidingPuzzle => state.sliding_puzzle.moves > 0,
-        GameId::Mastermind => state.mastermind.row > 0,
-        GameId::Spider => state.spider.moves > 0,
-        GameId::WordSearch => state.word_search.moves > 0,
-    }
-}
-fn cabinet_status_color(status: &str) -> Color {
-    match status {
-        "COMPLETE" => Color::new(0.55, 1., 0.72, 1.),
-        "IN PROGRESS" => Color::new(0.98, 0.75, 0.30, 1.),
-        _ => Color::new(0.98, 0.75, 0.30, 1.),
-    }
 }
 fn draw_2048(state: &AppState) {
     let g = &state.game;

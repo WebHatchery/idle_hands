@@ -84,6 +84,7 @@ impl Game {
             "mastermind" => Screen::Game(GameId::Mastermind),
             "spider" => Screen::Game(GameId::Spider),
             "word_search" => Screen::Game(GameId::WordSearch),
+            "hangman" => Screen::Game(GameId::Hangman),
             "help" => Screen::Help,
             "records" => Screen::Records,
             "rules" => Screen::Rules,
@@ -295,6 +296,7 @@ impl Game {
                         | GameId::Mastermind
                         | GameId::Spider
                         | GameId::WordSearch
+                        | GameId::Hangman
                 ) {
                     self.state.screen = Screen::Game(id);
                     self.state.tutorial = (!matches!(
@@ -306,6 +308,7 @@ impl Game {
                             | GameId::Mastermind
                             | GameId::Spider
                             | GameId::WordSearch
+                            | GameId::Hangman
                     ) && !self.state.tutorial_seen[id.index()])
                     .then_some(id);
                 } else {
@@ -602,6 +605,13 @@ impl Game {
             ui::UiAction::WordSearchNew => {
                 let seed = self.state.word_search.seed.wrapping_add(1);
                 self.state.word_search.reset(seed);
+            }
+            ui::UiAction::HangmanGuess(letter) => {
+                self.state.hangman.guess(letter);
+            }
+            ui::UiAction::HangmanNew => {
+                let seed = self.state.hangman.seed.wrapping_add(1);
+                self.state.hangman.reset(seed);
             }
             ui::UiAction::MineChord(index) => {
                 self.state.minesweeper.chord(index);

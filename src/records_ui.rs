@@ -106,6 +106,10 @@ pub fn draw_records(state: &AppState) {
             "Word Search best moves",
             value(state.records.word_search_best_moves.map(u32::from)),
         ),
+        (
+            "Hangman best moves",
+            value(state.records.hangman_best_moves.map(u32::from)),
+        ),
     ];
     draw_column(&left, 175., 240.);
     draw_column(&middle, 490., 240.);

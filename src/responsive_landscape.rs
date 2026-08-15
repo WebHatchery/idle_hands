@@ -392,6 +392,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "Tap its final letter in a straight line.",
             "Use CLEAR or NEW BOARD with the visible controls.",
         ],
+        GameId::Hangman => [
+            "Tap a visible letter button to guess it.",
+            "Six wrong guesses end the quiet round.",
+            "Tap NEW WORD to begin another word.",
+        ],
     }
 }
 
@@ -412,6 +417,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::Mastermind if state.records.mastermind_best_rows.is_some() => "COMPLETE",
         GameId::Spider if state.records.spider_best_moves.is_some() => "COMPLETE",
         GameId::WordSearch if state.records.word_search_best_moves.is_some() => "COMPLETE",
+        GameId::Hangman if state.records.hangman_best_moves.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

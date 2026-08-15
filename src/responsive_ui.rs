@@ -30,9 +30,9 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 pub fn cabinet_rect(index: usize) -> Rect {
     Rect::new(
         6. + (index % 3) as f32 * 118.,
-        94. + (index / 3) as f32 * 105.,
+        94. + (index / 3) as f32 * 84.,
         112.,
-        90.,
+        75.,
     )
 }
 
@@ -54,35 +54,35 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
         text(
             game.title(),
             rect.x + 10.,
-            rect.y + 28.,
-            14.,
+            rect.y + 22.,
+            12.,
             Color::new(0.98, 0.82, 0.42, 1.),
         );
         text(
             cabinet_status(state, *game),
             rect.x + 10.,
-            rect.y + 51.,
-            12.,
+            rect.y + 42.,
+            10.,
             Color::new(0.98, 0.75, 0.30, 1.),
         );
         text(
             game.subtitle(),
             rect.x + 10.,
-            rect.y + 76.,
-            11.,
+            rect.y + 63.,
+            9.,
             Color::new(0.69, 0.65, 0.78, 1.),
         );
         draw_circle(
             rect.right() - 20.,
-            rect.y + 20.,
-            12.,
+            rect.y + 16.,
+            10.,
             cosmetics::cabinet_accent(state.cabinet_decoration),
         );
         text(
             &(index + 1).to_string(),
             rect.right() - 24.,
-            rect.y + 25.,
-            11.,
+            rect.y + 21.,
+            9.,
             Color::new(0.08, 0.05, 0.12, 1.),
         );
     }
@@ -669,6 +669,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::Mastermind if state.records.mastermind_best_rows.is_some() => "COMPLETE",
         GameId::Spider if state.records.spider_best_moves.is_some() => "COMPLETE",
         GameId::WordSearch if state.records.word_search_best_moves.is_some() => "COMPLETE",
+        GameId::Hangman if state.records.hangman_best_moves.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

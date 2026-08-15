@@ -127,6 +127,15 @@ impl Game {
                     }),
             );
         }
+        if self.state.hangman.status == crate::hangman::HangmanStatus::Won {
+            records.hangman_best_moves = Some(
+                records
+                    .hangman_best_moves
+                    .map_or(self.state.hangman.moves, |best| {
+                        best.min(self.state.hangman.moves)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,
