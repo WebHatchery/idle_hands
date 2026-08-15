@@ -78,6 +78,8 @@ pub enum Screen {
     Game(GameId),
     Help,
     Records,
+    Rules,
+    Credits,
     Settings,
 }
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -216,6 +218,7 @@ pub struct AppState {
     pub fivefold: Fivefold,
     pub reversi: Reversi,
     pub confirm_restart: bool,
+    pub confirm_reset: bool,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -414,6 +417,7 @@ impl Default for AppState {
             fivefold: Fivefold::default(),
             reversi: Reversi::default(),
             confirm_restart: false,
+            confirm_reset: false,
             profile_name: "Cabinet Guest".into(),
             sound: true,
             reduced_motion: false,

@@ -4,9 +4,11 @@ use crate::fivefold_ui;
 use crate::freecell_ui;
 use crate::grid::GridLayout;
 use crate::input::Viewport;
+use crate::library_ui;
 use crate::nonogram_ui;
 use crate::records_ui;
 use crate::reversi_ui;
+use crate::settings_ui;
 use crate::solitaire_ui;
 use crate::sudoku_ui;
 use crate::tutorial_ui;
@@ -24,6 +26,11 @@ pub enum UiAction {
     Cabinet,
     Help,
     Records,
+    Rules,
+    Credits,
+    ResetData,
+    ConfirmResetData,
+    CancelResetData,
     TutorialContinue,
     ReplayTutorial,
     Settings,
@@ -125,12 +132,18 @@ pub fn clicks(state: &AppState) -> Vec<UiAction> {
         Screen::Help => {
             if Rect::new(1030., 635., 180., 48.).contains(p) {
                 vec![UiAction::Cabinet]
+            } else if Rect::new(600., 635., 180., 48.).contains(p) {
+                vec![UiAction::Rules]
+            } else if Rect::new(800., 635., 180., 48.).contains(p) {
+                vec![UiAction::Credits]
             } else {
                 vec![]
             }
         }
         Screen::Records => records_ui::records_clicks(p),
-        Screen::Settings => settings_clicks(p),
+        Screen::Rules => library_ui::rules_clicks(p),
+        Screen::Credits => library_ui::credits_clicks(p),
+        Screen::Settings => settings_ui::settings_clicks(state, p),
     }
 }
 pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
@@ -146,7 +159,9 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::Reversi) => reversi_ui::draw_reversi(state),
         Screen::Help => draw_help(),
         Screen::Records => records_ui::draw_records(state),
-        Screen::Settings => draw_settings(state),
+        Screen::Rules => library_ui::draw_rules(),
+        Screen::Credits => library_ui::draw_credits(),
+        Screen::Settings => settings_ui::draw_settings(state),
     }
     if let Some(game) = state.tutorial {
         tutorial_ui::draw_overlay(game);
@@ -494,90 +509,21 @@ fn draw_help() {
         Color::new(0.75, 0.70, 0.84, 1.),
     );
     panel(
+        Rect::new(600., 635., 180., 48.),
+        Color::new(0.20, 0.13, 0.30, 1.),
+    );
+    text("RULES", 660., 666., 18., WHITE);
+    panel(
+        Rect::new(800., 635., 180., 48.),
+        Color::new(0.20, 0.13, 0.30, 1.),
+    );
+    text("CREDITS", 850., 666., 18., WHITE);
+    panel(
         Rect::new(1030., 635., 180., 48.),
         Color::new(0.25, 0.16, 0.32, 1.),
     );
     text("BACK", 1090., 666., 18., WHITE)
 }
-fn draw_settings(state: &AppState) {
-    panel(
-        Rect::new(240., 100., 800., 500.),
-        Color::new(0.08, 0.06, 0.14, 1.),
-    );
-    text(
-        "SETTINGS",
-        290.,
-        170.,
-        42.,
-        Color::new(0.98, 0.83, 0.45, 1.),
-    );
-    text(
-        &format!("Profile: {}", state.profile_name),
-        290.,
-        235.,
-        22.,
-        WHITE,
-    );
-    text(
-        &format!("Sound: {}", if state.sound { "On" } else { "Off" }),
-        290.,
-        295.,
-        20.,
-        WHITE,
-    );
-    text(
-        &format!(
-            "Reduced motion: {}",
-            if state.reduced_motion { "On" } else { "Off" }
-        ),
-        290.,
-        355.,
-        20.,
-        WHITE,
-    );
-    text(
-        "Settings are saved per profile in the collection shell.",
-        290.,
-        430.,
-        17.,
-        Color::new(0.68, 0.63, 0.78, 1.),
-    );
-    panel(
-        Rect::new(290., 490., 150., 48.),
-        Color::new(0.25, 0.16, 0.32, 1.),
-    );
-    text("BACK", 340., 521., 17., WHITE);
-    panel(
-        Rect::new(470., 490., 150., 48.),
-        Color::new(0.18, 0.26, 0.34, 1.),
-    );
-    text("SAVE NOW", 500., 521., 16., WHITE);
-    panel(
-        Rect::new(650., 490., 150., 48.),
-        Color::new(0.22, 0.18, 0.35, 1.),
-    );
-    text("LOAD", 699., 521., 16., WHITE)
-}
-fn settings_clicks(p: Vec2) -> Vec<UiAction> {
-    let mut o = vec![];
-    if Rect::new(290., 490., 150., 48.).contains(p) {
-        o.push(UiAction::Cabinet)
-    }
-    if Rect::new(470., 490., 150., 48.).contains(p) {
-        o.push(UiAction::Save)
-    }
-    if Rect::new(650., 490., 150., 48.).contains(p) {
-        o.push(UiAction::Load)
-    }
-    if Rect::new(290., 270., 250., 45.).contains(p) {
-        o.push(UiAction::ToggleSound)
-    }
-    if Rect::new(290., 330., 300., 45.).contains(p) {
-        o.push(UiAction::ToggleMotion)
-    }
-    o
-}
-
 fn draw_minesweeper(state: &AppState) {
     let game = &state.minesweeper;
     text("‹ CABINET", 40., 55., 20., Color::new(0.78, 0.70, 0.92, 1.));

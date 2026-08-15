@@ -60,3 +60,8 @@ fn profile_and_game_snapshots_round_trip_independently() {
     assert_eq!(restored.game.score, 77);
     assert_eq!(GameId::Yahtzee.save_key(), "fivefold");
 }
+
+#[test]
+fn default_state_has_no_reset_confirmation() {
+    assert!(!AppState::default().confirm_reset);
+}

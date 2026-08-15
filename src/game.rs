@@ -95,6 +95,7 @@ impl Game {
             self.pointer.cancel();
             self.state.screen = Screen::Cabinet;
             self.state.confirm_restart = false;
+            self.state.confirm_reset = false;
             self.state.tutorial = None;
         }
         if self.state.screen == Screen::Game(GameId::Game2048) {
@@ -156,9 +157,12 @@ impl Game {
             ui::UiAction::Cabinet => {
                 self.state.screen = Screen::Cabinet;
                 self.state.tutorial = None;
+                self.state.confirm_reset = false;
             }
             ui::UiAction::Help => self.state.screen = Screen::Help,
             ui::UiAction::Records => self.state.screen = Screen::Records,
+            ui::UiAction::Rules => self.state.screen = Screen::Rules,
+            ui::UiAction::Credits => self.state.screen = Screen::Credits,
             ui::UiAction::Settings => self.state.screen = Screen::Settings,
             ui::UiAction::TutorialContinue => {
                 if let Some(game) = self.state.tutorial {
@@ -336,6 +340,11 @@ impl Game {
             ui::UiAction::Cancel => self.state.confirm_restart = false,
             ui::UiAction::ToggleSound => self.state.sound = !self.state.sound,
             ui::UiAction::ToggleMotion => self.state.reduced_motion = !self.state.reduced_motion,
+            ui::UiAction::ResetData => self.state.confirm_reset = true,
+            ui::UiAction::ConfirmResetData => {
+                self.state = AppState::default();
+            }
+            ui::UiAction::CancelResetData => self.state.confirm_reset = false,
         }
         self.update_records();
         self.save_autosave();
