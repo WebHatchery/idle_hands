@@ -10,6 +10,7 @@ use crate::hanoi::Hanoi;
 use crate::mancala::Mancala;
 use crate::match_three::MatchThree;
 use crate::maze_walk::MazeWalk;
+use crate::nim::Nim;
 use crate::number_match::NumberMatch;
 use crate::one_room_roguelike::OneRoomRoguelike;
 use crate::pipe_loop::PipeLoop;
@@ -78,6 +79,7 @@ pub enum GameSnapshot {
     MatchThree(MatchThree),
     Pyramid(Pyramid),
     TriPeaks(TriPeaks),
+    Nim(Nim),
 }
 
 impl GameSnapshot {
@@ -128,6 +130,7 @@ impl GameSnapshot {
             GameId::MatchThree => Self::MatchThree(state.match_three.clone()),
             GameId::Pyramid => Self::Pyramid(state.pyramid.clone()),
             GameId::TriPeaks => Self::TriPeaks(state.tri_peaks.clone()),
+            GameId::Nim => Self::Nim(state.nim.clone()),
         }
     }
 
@@ -178,6 +181,7 @@ impl GameSnapshot {
             Self::MatchThree(game) => state.match_three = game,
             Self::Pyramid(game) => state.pyramid = game,
             Self::TriPeaks(game) => state.tri_peaks = game,
+            Self::Nim(game) => state.nim = game,
         }
     }
 }

@@ -24,6 +24,7 @@ use crate::match_three::MatchThree;
 use crate::maze_walk::MazeWalk;
 use crate::memory_pairs::MemoryPairs;
 use crate::minesweeper::Minesweeper;
+use crate::nim::Nim;
 use crate::nonogram::Nonogram;
 use crate::number_match::NumberMatch;
 use crate::one_room_roguelike::OneRoomRoguelike;
@@ -45,6 +46,10 @@ use crate::tri_peaks::TriPeaks;
 use crate::word_grid::WordGrid;
 use crate::word_search::WordSearch;
 use serde::{Deserialize, Serialize};
+
+#[path = "state_profile.rs"]
+mod state_profile;
+pub use state_profile::ProfileSave;
 
 pub use crate::state_navigation::{Direction, Screen};
 pub use crate::state_records::CollectionRecords;
@@ -100,9 +105,10 @@ pub enum GameId {
     MatchThree,
     Pyramid,
     TriPeaks,
+    Nim,
 }
 impl GameId {
-    pub const ALL: [Self; 45] = [
+    pub const ALL: [Self; 46] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -148,6 +154,7 @@ impl GameId {
         Self::MatchThree,
         Self::Pyramid,
         Self::TriPeaks,
+        Self::Nim,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -196,6 +203,7 @@ impl GameId {
             Self::MatchThree => "Match Three",
             Self::Pyramid => "Pyramid",
             Self::TriPeaks => "TriPeaks",
+            Self::Nim => "Nim",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -245,6 +253,7 @@ impl GameId {
             Self::MatchThree => "Clear the quiet colors",
             Self::Pyramid => "Pair the quiet thirteen",
             Self::TriPeaks => "Clear the three quiet peaks",
+            Self::Nim => "Take the quiet stones",
         }
     }
     pub fn index(self) -> usize {
@@ -297,6 +306,7 @@ impl GameId {
             Self::MatchThree => "match_three",
             Self::Pyramid => "pyramid",
             Self::TriPeaks => "tri_peaks",
+            Self::Nim => "nim",
         }
     }
 }
@@ -352,6 +362,7 @@ pub struct AppState {
     pub match_three: MatchThree,
     pub pyramid: Pyramid,
     pub tri_peaks: TriPeaks,
+    pub nim: Nim,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -467,6 +478,8 @@ pub struct CollectionSave {
     pub pyramid: Pyramid,
     #[serde(default)]
     pub tri_peaks: TriPeaks,
+    #[serde(default)]
+    pub nim: Nim,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -498,84 +511,6 @@ pub struct CollectionSave {
 
 fn default_selected() -> usize {
     4
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ProfileSave {
-    pub version: String,
-    pub profile_name: String,
-    pub sound: bool,
-    pub reduced_motion: bool,
-    #[serde(default)]
-    pub high_contrast: bool,
-    #[serde(default)]
-    pub large_text: bool,
-    pub mine_flag_mode: bool,
-    pub mine_records: [Option<u32>; 4],
-    pub sudoku_note_mode: bool,
-    pub records: CollectionRecords,
-    #[serde(default)]
-    pub achievements: [bool; 10],
-    #[serde(default)]
-    pub stamps: u16,
-    #[serde(default)]
-    pub card_back: u8,
-    #[serde(default)]
-    pub board_theme: u8,
-    #[serde(default)]
-    pub sound_set: u8,
-    #[serde(default)]
-    pub cabinet_decoration: u8,
-    #[serde(default)]
-    pub tutorial_seen: Vec<bool>,
-}
-
-fn normalize_tutorial_seen(mut tutorial_seen: Vec<bool>) -> Vec<bool> {
-    tutorial_seen.resize(GameId::ALL.len(), false);
-    tutorial_seen.truncate(GameId::ALL.len());
-    tutorial_seen
-}
-
-impl ProfileSave {
-    pub fn from_state(state: &AppState, version: &str) -> Self {
-        Self {
-            version: version.to_owned(),
-            profile_name: state.profile_name.clone(),
-            sound: state.sound,
-            reduced_motion: state.reduced_motion,
-            high_contrast: state.high_contrast,
-            large_text: state.large_text,
-            mine_flag_mode: state.mine_flag_mode,
-            mine_records: state.mine_records,
-            sudoku_note_mode: state.sudoku_note_mode,
-            records: state.records.clone(),
-            achievements: state.achievements,
-            stamps: state.stamps,
-            card_back: state.card_back,
-            board_theme: state.board_theme,
-            sound_set: state.sound_set,
-            cabinet_decoration: state.cabinet_decoration,
-            tutorial_seen: state.tutorial_seen.clone(),
-        }
-    }
-    pub fn apply_to(self, state: &mut AppState) {
-        state.profile_name = self.profile_name;
-        state.sound = self.sound;
-        state.reduced_motion = self.reduced_motion;
-        state.high_contrast = self.high_contrast;
-        state.large_text = self.large_text;
-        state.mine_flag_mode = self.mine_flag_mode;
-        state.mine_records = self.mine_records;
-        state.sudoku_note_mode = self.sudoku_note_mode;
-        state.records = self.records;
-        state.achievements = self.achievements;
-        state.stamps = self.stamps;
-        state.card_back = self.card_back;
-        state.board_theme = self.board_theme;
-        state.sound_set = self.sound_set;
-        state.cabinet_decoration = self.cabinet_decoration;
-        state.tutorial_seen = normalize_tutorial_seen(self.tutorial_seen);
-    }
 }
 
 impl CollectionSave {
@@ -628,6 +563,7 @@ impl CollectionSave {
             match_three: state.match_three.clone(),
             pyramid: state.pyramid.clone(),
             tri_peaks: state.tri_peaks.clone(),
+            nim: state.nim.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -693,6 +629,7 @@ impl CollectionSave {
         state.match_three = self.match_three;
         state.pyramid = self.pyramid;
         state.tri_peaks = self.tri_peaks;
+        state.nim = self.nim;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -708,7 +645,7 @@ impl CollectionSave {
         state.board_theme = self.board_theme;
         state.sound_set = self.sound_set;
         state.cabinet_decoration = self.cabinet_decoration;
-        state.tutorial_seen = normalize_tutorial_seen(self.tutorial_seen);
+        state.tutorial_seen = state_profile::normalize_tutorial_seen(self.tutorial_seen);
     }
 }
 impl Default for AppState {
@@ -763,6 +700,7 @@ impl Default for AppState {
             match_three: MatchThree::default(),
             pyramid: Pyramid::default(),
             tri_peaks: TriPeaks::default(),
+            nim: Nim::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

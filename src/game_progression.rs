@@ -399,6 +399,13 @@ impl Game {
                     }),
             );
         }
+        if self.state.nim.won() {
+            records.nim_best_moves = Some(
+                records
+                    .nim_best_moves
+                    .map_or(self.state.nim.moves, |best| best.min(self.state.nim.moves)),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

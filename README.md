@@ -5,7 +5,7 @@ iPad, desktop browsers, and Windows. Its home screen is a warmly illustrated
 drawer cabinet: each physical object opens a different game, from a deck of
 cards to a dice cup or a little wooden minefield.
 
-The current build is a playable 45-game cabinet with persistent sessions,
+The current build is a playable 46-game cabinet with persistent sessions,
 records, tutorials, responsive touch layouts, and post-launch refinements.
 TODO.md records the completed launch foundation and ongoing collection work.
 
@@ -30,7 +30,7 @@ Mahjong Solitaire, Snake, Breakout, Higher or Lower, Klondike Golf, Blackjack,
 Spider Solitaire, Dungeon Sweeper, Potion 2048, Tiny Tower Defence, One Room
 Roguelike, Daily Dungeon, Dots & Boxes, Sokoban, Mancala, Hanoi, Number Match,
 Flood It, Color Sort, Battleship, Word Grid, Pipe Loop, Maze Walk, Match Three,
-Pyramid, and TriPeaks.
+Pyramid, TriPeaks, and Nim.
 
 ## Product Principles
 
@@ -76,7 +76,7 @@ Pyramid, and TriPeaks.
 Project code keeps game rules independent of rendering and input so seeded
 sessions can be tested without opening a window. Shared collection code owns the
 cabinet, navigation, settings, profile, persistence envelope, and common UI;
-each of the 45 games owns its rules, state, commands, and board rendering.
+each of the 46 games owns its rules, state, commands, and board rendering.
 
 ## Validation
 

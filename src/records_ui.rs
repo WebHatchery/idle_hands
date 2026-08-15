@@ -228,6 +228,10 @@ pub fn draw_records(state: &AppState) {
             "TriPeaks best moves",
             value(state.records.tri_peaks_best_moves.map(u32::from)),
         ),
+        (
+            "Nim best moves",
+            value(state.records.nim_best_moves.map(u32::from)),
+        ),
     ];
     let mut rows = Vec::new();
     rows.extend(left);

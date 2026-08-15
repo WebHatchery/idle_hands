@@ -64,6 +64,7 @@ impl Game {
             "pyramid_accessible" => Screen::Game(GameId::Pyramid),
             "pyramid_hint" | "pyramid_hint_accessible" => Screen::Game(GameId::Pyramid),
             "tri_peaks" | "tri_peaks_accessible" => Screen::Game(GameId::TriPeaks),
+            "nim" | "nim_accessible" => Screen::Game(GameId::Nim),
             "tri_peaks_hint" | "tri_peaks_hint_accessible" => Screen::Game(GameId::TriPeaks),
             "dungeon_sweeper" | "dungeon_sweeper_accessible" => {
                 Screen::Game(GameId::DungeonSweeper)

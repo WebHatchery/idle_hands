@@ -27,6 +27,7 @@ use crate::match_three_ui;
 use crate::maze_walk_ui;
 use crate::memory_pairs_ui;
 use crate::minesweeper_ui;
+use crate::nim_ui;
 use crate::nonogram_ui;
 use crate::number_match_ui;
 use crate::one_room_roguelike_ui;
@@ -207,6 +208,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Game(GameId::SpiderSolitaire) => spider_solitaire_ui::clicks(state, p),
         Screen::Game(GameId::Pyramid) => pyramid_ui::clicks(state, p),
         Screen::Game(GameId::TriPeaks) => tri_peaks_ui::clicks(state, p),
+        Screen::Game(GameId::Nim) => nim_ui::clicks(state, p),
         Screen::Game(GameId::DungeonSweeper) => dungeon_sweeper_ui::clicks(state, p),
         Screen::Game(GameId::Potion2048) => potion_2048_ui::clicks(state, p),
         Screen::Game(GameId::TinyTowerDefence) => tiny_tower_defence_ui::clicks(state, p),
@@ -328,6 +330,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::SpiderSolitaire) => spider_solitaire_ui::draw(state),
         Screen::Game(GameId::Pyramid) => pyramid_ui::draw(state),
         Screen::Game(GameId::TriPeaks) => tri_peaks_ui::draw(state),
+        Screen::Game(GameId::Nim) => nim_ui::draw(state),
         Screen::Game(GameId::DungeonSweeper) => dungeon_sweeper_ui::draw(state),
         Screen::Game(GameId::Potion2048) => potion_2048_ui::draw(state),
         Screen::Game(GameId::TinyTowerDefence) => tiny_tower_defence_ui::draw(state),
@@ -374,7 +377,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         } else {
             tutorial_ui::draw_overlay(game);
         }
-    } else if matches!(state.screen, Screen::Game(game) if !matches!(game, GameId::LightsOut | GameId::TicTacToe | GameId::MemoryPairs | GameId::SlidingPuzzle | GameId::Mastermind | GameId::Spider | GameId::WordSearch | GameId::Hangman | GameId::ConnectFour | GameId::Checkers | GameId::PegSolitaire | GameId::MahjongSolitaire | GameId::Snake | GameId::Breakout | GameId::HigherLower | GameId::KlondikeGolf))
+    } else if matches!(state.screen, Screen::Game(game) if !matches!(game, GameId::LightsOut | GameId::TicTacToe | GameId::MemoryPairs | GameId::SlidingPuzzle | GameId::Mastermind | GameId::Spider | GameId::WordSearch | GameId::Hangman | GameId::ConnectFour | GameId::Checkers | GameId::PegSolitaire | GameId::MahjongSolitaire | GameId::Snake | GameId::Breakout | GameId::HigherLower | GameId::KlondikeGolf | GameId::Nim))
     {
         if is_compact_landscape() {
             responsive_landscape::draw_replay_button();

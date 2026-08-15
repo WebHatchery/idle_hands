@@ -86,6 +86,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     state.records.one_room_roguelike_best_score = Some(23);
     state.daily_dungeon.score = 31;
     state.records.daily_dungeon_best_score = Some(31);
+    state.nim.moves = 6;
+    state.records.nim_best_moves = Some(6);
     state.achievements[0] = true;
     state.stamps = 3;
     state.card_back = 1;
@@ -149,6 +151,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     assert_eq!(restored.records.one_room_roguelike_best_score, Some(23));
     assert_eq!(restored.daily_dungeon.score, 31);
     assert_eq!(restored.records.daily_dungeon_best_score, Some(31));
+    assert_eq!(restored.nim.moves, 6);
+    assert_eq!(restored.records.nim_best_moves, Some(6));
     assert!(restored.achievements[0]);
     assert_eq!(restored.stamps, 3);
     assert_eq!(restored.card_back, 1);
@@ -216,6 +220,7 @@ fn every_game_snapshot_round_trips_its_own_state() {
     source.tiny_tower_defence.wave = 4;
     source.one_room_roguelike.score = 40;
     source.daily_dungeon.score = 42;
+    source.nim.moves = 43;
 
     for game in GameId::ALL {
         let snapshot = GameSnapshot::from_state(&source, game);
@@ -265,6 +270,7 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
     source.tiny_tower_defence.wave = 5;
     source.one_room_roguelike.score = 41;
     source.daily_dungeon.score = 43;
+    source.nim.moves = 44;
 
     let snapshots = GameId::ALL
         .iter()
@@ -306,6 +312,7 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
     assert_eq!(restored.tiny_tower_defence.wave, 5);
     assert_eq!(restored.one_room_roguelike.score, 41);
     assert_eq!(restored.daily_dungeon.score, 43);
+    assert_eq!(restored.nim.moves, 44);
 }
 
 #[test]
@@ -345,6 +352,7 @@ fn older_saves_default_new_progression_and_cosmetic_fields() {
         "tiny_tower_defence",
         "one_room_roguelike",
         "daily_dungeon",
+        "nim",
     ] {
         object.remove(field);
     }

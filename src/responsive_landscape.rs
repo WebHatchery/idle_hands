@@ -558,6 +558,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "Clear all three peaks before the stock runs out.",
             "Tap STOCK when no card can play; use UNDO or NEW TRIPEAKS.",
         ],
+        GameId::Nim => [
+            "Tap a non-empty heap to select it.",
+            "Tap TAKE 1, TAKE 2, or TAKE 3 to remove stones.",
+            "Take the final stone; use UNDO or NEW BOARD when needed.",
+        ],
     }
 }
 

@@ -222,6 +222,10 @@ pub fn draw_records(state: &AppState) {
             "TriPeaks best",
             value(state.records.tri_peaks_best_moves.map(u32::from)),
         ),
+        (
+            "Nim best",
+            value(state.records.nim_best_moves.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
         let column = index / 25;

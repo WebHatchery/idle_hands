@@ -73,6 +73,7 @@ impl AchievementId {
                 GameId::MatchThree => "Color keeper",
                 GameId::Pyramid => "Pyramid keeper",
                 GameId::TriPeaks => "Peak keeper",
+                GameId::Nim => "Stone keeper",
             },
             Self::FullCabinet => "Full cabinet",
         }
@@ -147,6 +148,7 @@ fn game_complete(records: &CollectionRecords, game: GameId) -> bool {
         GameId::MatchThree => records.match_three_best_score.is_some(),
         GameId::Pyramid => records.pyramid_best_moves.is_some(),
         GameId::TriPeaks => records.tri_peaks_best_moves.is_some(),
+        GameId::Nim => records.nim_best_moves.is_some(),
     }
 }
 

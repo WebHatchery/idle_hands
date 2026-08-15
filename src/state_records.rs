@@ -86,4 +86,6 @@ pub struct CollectionRecords {
     pub pyramid_best_moves: Option<u16>,
     #[serde(default)]
     pub tri_peaks_best_moves: Option<u16>,
+    #[serde(default)]
+    pub nim_best_moves: Option<u16>,
 }

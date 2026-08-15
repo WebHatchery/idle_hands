@@ -149,6 +149,19 @@ impl Game {
                 let seed = self.state.tri_peaks.seed.wrapping_add(1);
                 self.state.tri_peaks.reset(seed);
             }
+            UiAction::NimSelect(heap) => {
+                self.state.nim.select_heap(*heap);
+            }
+            UiAction::NimTake(amount) => {
+                self.state.nim.take(*amount);
+            }
+            UiAction::NimUndo => {
+                self.state.nim.undo();
+            }
+            UiAction::NimNew => {
+                let seed = self.state.nim.seed.wrapping_add(1);
+                self.state.nim.reset(seed);
+            }
             UiAction::DungeonCell(index) => {
                 if self.state.mine_flag_mode {
                     self.state.dungeon_sweeper.toggle_flag(*index);

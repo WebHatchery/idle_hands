@@ -15,7 +15,7 @@ The primary devices are iPhone and iPad in a browser. Desktop browsers and the
 Windows build retain pointer and optional keyboard support, but the complete
 experience is designed around taps, holds, and swipes.
 
-The shipped cabinet currently contains 45 playable games. The eight titles in
+The shipped cabinet currently contains 46 playable games. The eight titles in
 Section 4 are the launch foundation; the post-launch additions are listed in
 Section 11 and share the same persistence, tutorial, records, and responsive
 touch contracts.
@@ -189,7 +189,7 @@ Checkers, Peg Solitaire, Mahjong Solitaire, Snake, Breakout, Higher or Lower,
 Klondike Golf, Blackjack, Spider Solitaire, Dungeon Sweeper, Potion 2048, Tiny
 Tower Defence, One Room Roguelike, Daily Dungeon, Dots & Boxes, Sokoban,
 Mancala, Hanoi, Number Match, Flood It, Color Sort, Battleship, Word Grid,
-Pipe Loop, Maze Walk, Match Three, Pyramid, and TriPeaks.
+Pipe Loop, Maze Walk, Match Three, Pyramid, TriPeaks, and Nim.
 
 The former candidate list is now represented in the shipped cabinet. Ongoing
 post-launch work focuses on polish, accessibility, balance, and additional
@@ -206,4 +206,4 @@ The original eight-game launch scope established the current product principles:
 - Rules, rendering, input, and shared profile state remain separate.
 
 The eight-game scope is retained here as historical context; the current
-playable scope is the 45-game cabinet listed in Sections 1 and 11.
+playable scope is the 46-game cabinet listed in Sections 1 and 11.

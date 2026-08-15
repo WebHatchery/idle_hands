@@ -806,6 +806,18 @@ sizes, covered by rule tests, and passes `publish.ps1`.
     layouts with the existing accessible text treatment.
   - [x] Cover hint routing and capture the updated Spider Solitaire scenes.
 
+## Phase 66 — Nim post-launch cabinet addition
+
+- [x] Add Nim as a forty-sixth deterministic, touch-complete cabinet game with
+  three seeded heaps, visible take controls, a bounded local opponent, undo,
+  and new-board reset.
+  - [x] Cover seeded heaps, selection, bounded takes, AI replies, win/loss,
+    undo, and reset behavior with focused rule tests.
+  - [x] Add persisted active state and best-move records without breaking
+    existing saves, tutorial indexing, or collection progression.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, and verification captures.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.
