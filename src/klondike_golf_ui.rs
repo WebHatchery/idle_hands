@@ -9,6 +9,7 @@ struct Layout {
     col_w: f32,
     card_h: f32,
     stock: Rect,
+    hint: Rect,
     undo: Rect,
     new_game: Rect,
 }
@@ -19,6 +20,7 @@ fn layout() -> Layout {
             col_w: 78.,
             card_h: 28.,
             stock: Rect::new(610., 100., 75., 54.),
+            hint: Rect::new(490., 300., 105., 38.),
             undo: Rect::new(610., 180., 80., 38.),
             new_game: Rect::new(700., 180., 105., 38.),
         }
@@ -28,6 +30,7 @@ fn layout() -> Layout {
             col_w: 48.,
             card_h: 30.,
             stock: Rect::new(20., 425., 100., 46.),
+            hint: Rect::new(20., 560., 100., 42.),
             undo: Rect::new(135., 425., 95., 46.),
             new_game: Rect::new(245., 425., 105., 46.),
         }
@@ -37,6 +40,7 @@ fn layout() -> Layout {
             col_w: 78.,
             card_h: 38.,
             stock: Rect::new(950., 120., 100., 58.),
+            hint: Rect::new(830., 220., 105., 44.),
             undo: Rect::new(950., 220., 100., 44.),
             new_game: Rect::new(1070., 220., 140., 44.),
         }
@@ -49,6 +53,9 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if l.stock.contains(point) {
         return vec![UiAction::KlondikeGolfStock];
+    }
+    if l.hint.contains(point) {
+        return vec![UiAction::KlondikeGolfHint];
     }
     if l.undo.contains(point) {
         return vec![UiAction::KlondikeGolfUndo];
@@ -175,6 +182,28 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
+    if let Some(hint) = state.card_hint.as_deref() {
+        text(
+            hint,
+            if compact {
+                18.
+            } else if portrait {
+                10.
+            } else {
+                350.
+            },
+            if compact {
+                340.
+            } else if portrait {
+                525.
+            } else {
+                485.
+            },
+            accessibility::text_size(body_size(), state.large_text),
+            accent(),
+        );
+    }
+    button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW BOARD", state.large_text);
 }

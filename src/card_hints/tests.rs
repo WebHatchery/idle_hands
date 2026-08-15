@@ -45,3 +45,10 @@ fn default_tri_peaks_has_a_deterministic_hint() {
     assert!(!tri_peaks(&state).is_empty());
     assert_eq!(tri_peaks(&state), tri_peaks(&state));
 }
+
+#[test]
+fn default_klondike_golf_has_a_deterministic_hint() {
+    let state = AppState::default();
+    assert!(!klondike_golf(&state).is_empty());
+    assert_eq!(klondike_golf(&state), klondike_golf(&state));
+}

@@ -151,6 +151,29 @@ pub fn tri_peaks(state: &AppState) -> String {
     }
 }
 
+pub fn klondike_golf(state: &AppState) -> String {
+    let game = &state.klondike_golf;
+    if game.status == crate::klondike_golf::GolfStatus::Won {
+        return "The golf columns are already clear.".into();
+    }
+    let Some(waste) = game.waste.last() else {
+        return "Tap STOCK to reveal the first waste card.".into();
+    };
+    if let Some(column) = game.tableau.iter().enumerate().find_map(|(column, stack)| {
+        stack
+            .last()
+            .is_some_and(|card| card.rank.abs_diff(waste.rank) == 1)
+            .then_some(column)
+    }) {
+        return format!("Tap the playable card in column {}.", column + 1);
+    }
+    if !game.stock.is_empty() {
+        "Tap STOCK to reveal another waste card.".into()
+    } else {
+        "No golf card can play — try UNDO or a new board.".into()
+    }
+}
+
 pub fn is_hint(action: crate::ui::UiAction) -> bool {
     matches!(
         action,
@@ -158,6 +181,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::FreeCellHint
             | crate::ui::UiAction::PyramidHint
             | crate::ui::UiAction::TriPeaksHint
+            | crate::ui::UiAction::KlondikeGolfHint
     )
 }
 

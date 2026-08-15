@@ -75,6 +75,9 @@ impl Game {
             UiAction::KlondikeGolfStock => {
                 self.state.klondike_golf.draw_stock();
             }
+            UiAction::KlondikeGolfHint => {
+                self.state.card_hint = Some(crate::card_hints::klondike_golf(&self.state));
+            }
             UiAction::KlondikeGolfUndo => {
                 self.state.klondike_golf.undo();
             }

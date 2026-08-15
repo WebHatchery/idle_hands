@@ -121,6 +121,7 @@ pub enum UiAction {
     HigherLowerNew,
     KlondikeGolfColumn(usize),
     KlondikeGolfStock,
+    KlondikeGolfHint,
     KlondikeGolfUndo,
     KlondikeGolfNew,
     BlackjackHit,
