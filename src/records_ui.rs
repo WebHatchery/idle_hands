@@ -142,6 +142,10 @@ pub fn draw_records(state: &AppState) {
             "Klondike Golf best moves",
             value(state.records.klondike_golf_best_moves.map(u32::from)),
         ),
+        (
+            "Blackjack best wins",
+            value(state.records.blackjack_best_wins.map(u32::from)),
+        ),
     ];
     draw_column(&left, 175., 240.);
     draw_column(&middle, 490., 240.);
@@ -154,9 +158,18 @@ pub fn draw_records(state: &AppState) {
 }
 fn draw_column(entries: &[(&str, String)], x: f32, y: f32) {
     for (index, (label, value)) in entries.iter().enumerate() {
-        let top = y + index as f32 * 48.;
-        draw_text(label, x, top, 17., Color::new(0.78, 0.73, 0.86, 1.));
-        draw_text(value, x + 335., top, 18., Color::new(0.98, 0.83, 0.45, 1.));
+        let column = index / 9;
+        let row = index % 9;
+        let left = x + column as f32 * 175.;
+        let top = y + row as f32 * 42.;
+        draw_text(label, left, top, 13., Color::new(0.78, 0.73, 0.86, 1.));
+        draw_text(
+            value,
+            left + 145.,
+            top,
+            14.,
+            Color::new(0.98, 0.83, 0.45, 1.),
+        );
     }
 }
 pub fn records_clicks(p: Vec2) -> Vec<UiAction> {

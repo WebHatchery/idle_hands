@@ -82,6 +82,19 @@ impl Game {
                 let seed = self.state.klondike_golf.seed.wrapping_add(1);
                 self.state.klondike_golf.reset(seed);
             }
+            UiAction::BlackjackHit => {
+                self.state.blackjack.hit();
+            }
+            UiAction::BlackjackStand => {
+                self.state.blackjack.stand();
+            }
+            UiAction::BlackjackUndo => {
+                self.state.blackjack.undo();
+            }
+            UiAction::BlackjackNew => {
+                let seed = self.state.blackjack.seed.wrapping_add(1);
+                self.state.blackjack.reset(seed);
+            }
             _ => return false,
         }
         true

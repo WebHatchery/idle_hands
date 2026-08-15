@@ -1,5 +1,6 @@
 //! Application state and the deterministic 2048 rules engine.
 
+use crate::blackjack::Blackjack;
 use crate::breakout::Breakout;
 use crate::checkers::Checkers;
 use crate::connect_four::ConnectFour;
@@ -51,9 +52,10 @@ pub enum GameId {
     Breakout,
     HigherLower,
     KlondikeGolf,
+    Blackjack,
 }
 impl GameId {
-    pub const ALL: [Self; 24] = [
+    pub const ALL: [Self; 25] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -78,6 +80,7 @@ impl GameId {
         Self::Breakout,
         Self::HigherLower,
         Self::KlondikeGolf,
+        Self::Blackjack,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -105,6 +108,7 @@ impl GameId {
             Self::Breakout => "Breakout",
             Self::HigherLower => "Higher or Lower",
             Self::KlondikeGolf => "Klondike Golf",
+            Self::Blackjack => "Blackjack",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -133,6 +137,7 @@ impl GameId {
             Self::Breakout => "Bounce the quiet ball",
             Self::HigherLower => "Read the quiet card",
             Self::KlondikeGolf => "Clear the quiet columns",
+            Self::Blackjack => "Hold the quiet hand",
         }
     }
     pub fn index(self) -> usize {
@@ -164,6 +169,7 @@ impl GameId {
             Self::Breakout => "breakout",
             Self::HigherLower => "higher_lower",
             Self::KlondikeGolf => "klondike_golf",
+            Self::Blackjack => "blackjack",
         }
     }
 }
@@ -332,6 +338,7 @@ pub struct AppState {
     pub breakout: Breakout,
     pub higher_lower: HigherLower,
     pub klondike_golf: KlondikeGolf,
+    pub blackjack: Blackjack,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -396,6 +403,8 @@ pub struct CollectionRecords {
     pub higher_lower_best_score: Option<u16>,
     #[serde(default)]
     pub klondike_golf_best_moves: Option<u16>,
+    #[serde(default)]
+    pub blackjack_best_wins: Option<u16>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -447,6 +456,8 @@ pub struct CollectionSave {
     pub higher_lower: HigherLower,
     #[serde(default)]
     pub klondike_golf: KlondikeGolf,
+    #[serde(default)]
+    pub blackjack: Blackjack,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -572,6 +583,7 @@ pub enum GameSnapshot {
     Breakout(Breakout),
     HigherLower(HigherLower),
     KlondikeGolf(KlondikeGolf),
+    Blackjack(Blackjack),
 }
 impl GameSnapshot {
     pub fn from_state(state: &AppState, game: GameId) -> Self {
@@ -600,6 +612,7 @@ impl GameSnapshot {
             GameId::Breakout => Self::Breakout(state.breakout.clone()),
             GameId::HigherLower => Self::HigherLower(state.higher_lower.clone()),
             GameId::KlondikeGolf => Self::KlondikeGolf(state.klondike_golf.clone()),
+            GameId::Blackjack => Self::Blackjack(state.blackjack.clone()),
         }
     }
     pub fn apply_to(self, state: &mut AppState) {
@@ -628,6 +641,7 @@ impl GameSnapshot {
             Self::Breakout(game) => state.breakout = game,
             Self::HigherLower(game) => state.higher_lower = game,
             Self::KlondikeGolf(game) => state.klondike_golf = game,
+            Self::Blackjack(game) => state.blackjack = game,
         }
     }
 }
@@ -660,6 +674,7 @@ impl CollectionSave {
             breakout: state.breakout.clone(),
             higher_lower: state.higher_lower.clone(),
             klondike_golf: state.klondike_golf.clone(),
+            blackjack: state.blackjack.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -703,6 +718,7 @@ impl CollectionSave {
         state.breakout = self.breakout;
         state.higher_lower = self.higher_lower;
         state.klondike_golf = self.klondike_golf;
+        state.blackjack = self.blackjack;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -752,6 +768,7 @@ impl Default for AppState {
             breakout: Breakout::default(),
             higher_lower: HigherLower::default(),
             klondike_golf: KlondikeGolf::default(),
+            blackjack: Blackjack::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

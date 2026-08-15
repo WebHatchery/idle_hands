@@ -212,6 +212,15 @@ impl Game {
                     }),
             );
         }
+        if self.state.blackjack.status == crate::blackjack::BlackjackStatus::Won {
+            records.blackjack_best_wins = Some(
+                records
+                    .blackjack_best_wins
+                    .map_or(self.state.blackjack.wins, |best| {
+                        best.max(self.state.blackjack.wins)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

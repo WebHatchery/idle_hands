@@ -30,9 +30,9 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 pub fn cabinet_rect(index: usize) -> Rect {
     Rect::new(
         6. + (index % 3) as f32 * 118.,
-        94. + (index / 3) as f32 * 65.,
+        94. + (index / 3) as f32 * 59.,
         112.,
-        56.,
+        53.,
     )
 }
 
@@ -680,6 +680,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::Breakout if state.records.breakout_best_score.is_some() => "COMPLETE",
         GameId::HigherLower if state.records.higher_lower_best_score.is_some() => "COMPLETE",
         GameId::KlondikeGolf if state.records.klondike_golf_best_moves.is_some() => "COMPLETE",
+        GameId::Blackjack if state.records.blackjack_best_wins.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

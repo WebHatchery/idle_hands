@@ -368,7 +368,21 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 
 ## Post-launch candidates (not scheduled)
 
-- Card family: Spider Solitaire, Blackjack.
+## Phase 24 — Seventeenth post-launch cabinet game
+
+- [x] Add Blackjack as a twenty-fifth deterministic, touch-complete card
+  cabinet game with seeded deals, ace-aware totals, HIT/STAND resolution,
+  undo, and new-round reset.
+  - [x] Cover seeded deals, soft aces, hit/undo, stand resolution, and finished
+    round boundaries with focused rule tests.
+  - [x] Add persisted active state and best-win records with snapshot,
+    migration, progression, and tutorial coverage.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, records, and verification captures.
+
+## Post-launch candidates (not scheduled)
+
+- Card family: Spider Solitaire.
 - Puzzles/tabletop: no remaining scheduled candidates.
 - Arcade: no remaining scheduled candidates.
 - Original cabinet games: Dungeon Sweeper, Potion 2048, Tiny Tower Defence, One

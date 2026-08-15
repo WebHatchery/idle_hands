@@ -120,25 +120,18 @@ pub fn draw_records(state: &AppState) {
             "Klondike Golf best",
             value(state.records.klondike_golf_best_moves.map(u32::from)),
         ),
+        (
+            "Blackjack wins",
+            value(state.records.blackjack_best_wins.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
-        let col = index / 7;
-        let row = index % 7;
-        let y = 86. + row as f32 * 34.;
-        text(
-            label,
-            40. + col as f32 * 390.,
-            y,
-            12.,
-            Color::new(0.78, 0.73, 0.86, 1.),
-        );
-        text(
-            score,
-            330. + col as f32 * 390.,
-            y,
-            12.,
-            Color::new(0.98, 0.83, 0.45, 1.),
-        );
+        let col = index / 11;
+        let row = index % 11;
+        let y = 86. + row as f32 * 25.;
+        let x = 40. + col as f32 * 265.;
+        text(label, x, y, 10., Color::new(0.78, 0.73, 0.86, 1.));
+        text(score, x + 220., y, 11., Color::new(0.98, 0.83, 0.45, 1.));
     }
     back(Rect::new(700., 330., 110., 38.));
 }

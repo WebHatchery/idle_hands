@@ -437,6 +437,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "Tap STOCK when no column can play; clear every column to win.",
             "Use UNDO or NEW BOARD with the visible controls.",
         ],
+        GameId::Blackjack => [
+            "Tap HIT for another card or STAND to hold.",
+            "Beat the dealer without going over twenty-one.",
+            "Use UNDO or NEW ROUND with the visible controls.",
+        ],
     }
 }
 
@@ -468,6 +473,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::Breakout if state.records.breakout_best_score.is_some() => "COMPLETE",
         GameId::HigherLower if state.records.higher_lower_best_score.is_some() => "COMPLETE",
         GameId::KlondikeGolf if state.records.klondike_golf_best_moves.is_some() => "COMPLETE",
+        GameId::Blackjack if state.records.blackjack_best_wins.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

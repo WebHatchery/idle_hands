@@ -52,6 +52,7 @@ impl AchievementId {
                 GameId::Breakout => "Brick keeper",
                 GameId::HigherLower => "Card keeper",
                 GameId::KlondikeGolf => "Golf keeper",
+                GameId::Blackjack => "Hand keeper",
             },
             Self::FullCabinet => "Full cabinet",
         }
@@ -87,6 +88,7 @@ pub fn completed_games(records: &CollectionRecords) -> usize {
         records.memory_pairs_best_moves.is_some(),
         records.sliding_puzzle_best_moves.is_some(),
         records.mastermind_best_rows.is_some(),
+        records.blackjack_best_wins.is_some(),
     ]
     .into_iter()
     .filter(|complete| *complete)
@@ -121,6 +123,7 @@ pub fn earned(records: &CollectionRecords, achievement: AchievementId) -> bool {
             GameId::Breakout => records.breakout_best_score.is_some(),
             GameId::HigherLower => records.higher_lower_best_score.is_some(),
             GameId::KlondikeGolf => records.klondike_golf_best_moves.is_some(),
+            GameId::Blackjack => records.blackjack_best_wins.is_some(),
         },
         AchievementId::FullCabinet => completed_games(records) == GameId::ALL.len(),
     }

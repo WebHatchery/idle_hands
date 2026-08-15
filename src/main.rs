@@ -4,6 +4,8 @@ use macroquad::prelude::*;
 use macroquad_toolkit::capture;
 
 mod accessibility;
+mod blackjack;
+mod blackjack_ui;
 mod breakout;
 mod breakout_ui;
 mod cabinet_art;

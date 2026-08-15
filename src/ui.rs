@@ -1,5 +1,6 @@
 //! Touch-first cabinet and 2048 presentation.
 
+use crate::blackjack_ui;
 use crate::breakout_ui;
 use crate::checkers_ui;
 use crate::connect_four_ui;
@@ -165,6 +166,10 @@ pub enum UiAction {
     KlondikeGolfStock,
     KlondikeGolfUndo,
     KlondikeGolfNew,
+    BlackjackHit,
+    BlackjackStand,
+    BlackjackUndo,
+    BlackjackNew,
 }
 pub fn viewport() -> Viewport {
     let (width, height) = layout_size();
@@ -299,6 +304,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Game(GameId::Breakout) => breakout_ui::clicks(state, p),
         Screen::Game(GameId::HigherLower) => higher_lower_ui::clicks(state, p),
         Screen::Game(GameId::KlondikeGolf) => klondike_golf_ui::clicks(state, p),
+        Screen::Game(GameId::Blackjack) => blackjack_ui::clicks(state, p),
         Screen::Game(GameId::Mastermind) => mastermind_ui::clicks(state, p),
         Screen::Help => {
             if is_compact_landscape() {
@@ -399,6 +405,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::Breakout) => breakout_ui::draw(state),
         Screen::Game(GameId::HigherLower) => higher_lower_ui::draw(state),
         Screen::Game(GameId::KlondikeGolf) => klondike_golf_ui::draw(state),
+        Screen::Game(GameId::Blackjack) => blackjack_ui::draw(state),
         Screen::Game(GameId::Mastermind) => mastermind_ui::draw(state),
         Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(),
         Screen::Help if is_portrait() => responsive_library::draw_help(),
@@ -450,7 +457,7 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
     let accent = cosmetics::cabinet_accent(state.cabinet_decoration);
     text("IDLE HANDS", 46., 70., 48., accent);
     crate::cabinet_art::draw_header_motif(1160., 108., 24., accent);
-    crate::cabinet_art::draw_shelves(48., 165., 1184., 420., accent);
+    crate::cabinet_art::draw_shelves(48., 165., 1184., 450., accent);
     text(
         "A small collection for quiet minutes",
         48.,
@@ -551,12 +558,7 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
 fn cabinet_rect(i: usize) -> Rect {
     let col = i % 6;
     let row = i / 6;
-    Rect::new(
-        48. + col as f32 * 198.,
-        155. + row as f32 * 110.,
-        190.,
-        100.,
-    )
+    Rect::new(48. + col as f32 * 198., 155. + row as f32 * 100., 190., 90.)
 }
 fn draw_2048(state: &AppState) {
     let g = &state.game;

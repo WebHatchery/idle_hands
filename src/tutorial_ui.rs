@@ -202,5 +202,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "Tap STOCK when no column can play; clear every column to win.",
             "Use UNDO or NEW BOARD with the visible controls.",
         ],
+        GameId::Blackjack => [
+            "Tap HIT to take another card or STAND to hold.",
+            "The dealer draws to seventeen; stay at or below twenty-one.",
+            "Use UNDO or NEW ROUND with the visible controls.",
+        ],
     }
 }

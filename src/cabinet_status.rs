@@ -30,6 +30,7 @@ pub fn status(state: &AppState, game: GameId) -> &'static str {
         GameId::Breakout => state.records.breakout_best_score.is_some(),
         GameId::HigherLower => state.records.higher_lower_best_score.is_some(),
         GameId::KlondikeGolf => state.records.klondike_golf_best_moves.is_some(),
+        GameId::Blackjack => state.records.blackjack_best_wins.is_some(),
     };
     if complete {
         "COMPLETE"
@@ -66,6 +67,10 @@ fn has_progress(state: &AppState, game: GameId) -> bool {
         GameId::Breakout => state.breakout.moves > 0,
         GameId::HigherLower => state.higher_lower.moves > 0,
         GameId::KlondikeGolf => state.klondike_golf.moves > 0,
+        GameId::Blackjack => {
+            state.blackjack.player.len() > 2
+                || state.blackjack.status != crate::blackjack::BlackjackStatus::Playing
+        }
     }
 }
 
@@ -103,5 +108,6 @@ pub fn is_active(game: GameId) -> bool {
             | GameId::Breakout
             | GameId::HigherLower
             | GameId::KlondikeGolf
+            | GameId::Blackjack
     )
 }
