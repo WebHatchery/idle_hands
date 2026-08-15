@@ -27,7 +27,7 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 - [ ] Implement safe viewport handling and compact/medium/expanded layouts.
   - [x] Add an aspect-preserving logical viewport with letterbox edge rejection.
   - [x] Add a full-size compact portrait canvas for the cabinet, 2048, Sudoku,
-    Nonogram, Minesweeper, Solitaire, and Settings flows.
+    Nonogram, Minesweeper, Solitaire, FreeCell, and Settings flows.
 - [ ] Normalize touch/pointer input with tap, drag, swipe, cancel, and edge rules.
   - [x] Normalize pointer taps, drags, cancellations, and logical edge rules.
 - [x] Build 44-point-minimum shared controls, modal sheets, help, and settings.
@@ -79,6 +79,8 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 - [ ] Confirm launch draw/redeal options and encode them as versioned rulesets.
 - [ ] Ensure select-then-select can complete every action without dragging.
 - [ ] Verify readable card ranks and usable stacked-card targets on compact phones.
+  - [x] Verify compact Solitaire and FreeCell selection, foundations, tableau,
+    undo, and new-deal controls at 390×844.
 
 ## Phase 5 — FreeCell
 

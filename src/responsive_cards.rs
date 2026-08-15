@@ -2,6 +2,7 @@
 
 use crate::{
     cosmetics,
+    freecell::FreeSource,
     solitaire::{Card, CardSource, SolitaireStatus},
     state::AppState,
     ui::UiAction,
@@ -210,6 +211,155 @@ pub fn solitaire_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
                     .min(state.solitaire.tableau[column].len() - 1)
             };
             return vec![UiAction::SolitaireTableau(column, depth)];
+        }
+    }
+    vec![]
+}
+
+fn free_card_rect(x: f32, y: f32) -> Rect {
+    Rect::new(x, y, 40., 54.)
+}
+
+fn free_card_x(slot: usize) -> f32 {
+    4. + slot as f32 * 45.
+}
+
+pub fn draw_freecell(state: &AppState) {
+    let game = &state.freecell;
+    text("‹ CABINET", 8., 30., 13., Color::new(0.78, 0.70, 0.92, 1.));
+    text("FREECELL", 10., 72., 29., Color::new(0.98, 0.83, 0.45, 1.));
+    text(
+        if game.status == crate::freecell::FreeCellStatus::Won {
+            "All foundations complete"
+        } else {
+            "Every card stays in view"
+        },
+        12.,
+        94.,
+        13.,
+        Color::new(0.70, 0.64, 0.78, 1.),
+    );
+    for cell in 0..4 {
+        let rect = free_card_rect(free_card_x(cell), 112.);
+        panel(rect, Color::new(0.12, 0.09, 0.20, 1.));
+        if let Some(card) = game.cells[cell] {
+            draw_card(
+                rect,
+                card,
+                game.selected == Some(FreeSource::Cell(cell)),
+                state.card_back,
+            );
+        }
+    }
+    for suit in 0..4 {
+        let rect = free_card_rect(190. + suit as f32 * 45., 112.);
+        panel(rect, Color::new(0.12, 0.09, 0.20, 1.));
+        if game.foundations[suit] > 0 {
+            draw_card(
+                rect,
+                Card {
+                    rank: game.foundations[suit],
+                    suit: suit as u8,
+                    face_up: true,
+                },
+                false,
+                state.card_back,
+            );
+        } else {
+            text(
+                ["C", "D", "H", "S"][suit],
+                rect.x + 15.,
+                rect.y + 35.,
+                18.,
+                Color::new(0.46, 0.37, 0.58, 1.),
+            );
+        }
+    }
+    text("CELLS", 5., 181., 9., Color::new(0.63, 0.58, 0.72, 1.));
+    text(
+        "FOUNDATIONS",
+        190.,
+        181.,
+        9.,
+        Color::new(0.63, 0.58, 0.72, 1.),
+    );
+    for cascade in 0..8 {
+        let x = free_card_x(cascade);
+        text(
+            &(cascade + 1).to_string(),
+            x + 17.,
+            200.,
+            10.,
+            Color::new(0.63, 0.58, 0.72, 1.),
+        );
+        for (depth, card) in game.cascades[cascade].iter().enumerate() {
+            draw_card(
+                free_card_rect(x, 205. + depth as f32 * 17.),
+                *card,
+                game.selected == Some(FreeSource::Cascade(cascade, depth)),
+                state.card_back,
+            );
+        }
+        if game.cascades[cascade].is_empty() {
+            panel(free_card_rect(x, 205.), Color::new(0.12, 0.09, 0.20, 1.));
+        }
+    }
+    text(
+        &format!("Moves: {}", game.moves),
+        10.,
+        680.,
+        13.,
+        Color::new(0.68, 0.63, 0.78, 1.),
+    );
+    panel(
+        Rect::new(120., 650., 105., 38.),
+        Color::new(0.18, 0.26, 0.34, 1.),
+    );
+    text("UNDO", 153., 675., 12., WHITE);
+    panel(
+        Rect::new(235., 650., 115., 38.),
+        Color::new(0.20, 0.13, 0.30, 1.),
+    );
+    text("NEW DEAL", 263., 675., 11., WHITE);
+    text(
+        "Tap a card, then tap a cascade or foundation.",
+        10.,
+        620.,
+        11.,
+        Color::new(0.63, 0.58, 0.72, 1.),
+    );
+}
+
+pub fn freecell_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
+    if Rect::new(0., 0., 100., 42.).contains(p) {
+        return vec![UiAction::Cabinet];
+    }
+    if Rect::new(120., 650., 105., 38.).contains(p) {
+        return vec![UiAction::FreeCellUndo];
+    }
+    if Rect::new(235., 650., 115., 38.).contains(p) {
+        return vec![UiAction::FreeCellNew];
+    }
+    for cell in 0..4 {
+        if free_card_rect(free_card_x(cell), 112.).contains(p) {
+            return vec![UiAction::FreeCellCell(cell)];
+        }
+    }
+    for suit in 0..4 {
+        if free_card_rect(190. + suit as f32 * 45., 112.).contains(p) {
+            return vec![UiAction::FreeCellFoundation(suit)];
+        }
+    }
+    for cascade in 0..8 {
+        let x = free_card_x(cascade);
+        if p.x >= x && p.x <= x + 40. && p.y >= 195. {
+            let depth = if state.freecell.cascades[cascade].is_empty() {
+                0
+            } else {
+                (((p.y - 205.) / 17.).floor().max(0.) as usize)
+                    .min(state.freecell.cascades[cascade].len() - 1)
+            };
+            return vec![UiAction::FreeCellCascade(cascade, depth)];
         }
     }
     vec![]
