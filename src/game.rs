@@ -109,6 +109,7 @@ impl Game {
             "number_match" => Screen::Game(GameId::NumberMatch),
             "flood_it" => Screen::Game(GameId::FloodIt),
             "color_sort" => Screen::Game(GameId::ColorSort),
+            "battleship" => Screen::Game(GameId::Battleship),
             "help" => Screen::Help,
             "records" => Screen::Records,
             "rules" => Screen::Rules,
@@ -341,6 +342,7 @@ impl Game {
                             | GameId::NumberMatch
                             | GameId::FloodIt
                             | GameId::ColorSort
+                            | GameId::Battleship
                     ) && !self.state.tutorial_seen[id.index()])
                     .then_some(id);
                 } else {

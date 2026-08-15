@@ -339,6 +339,15 @@ impl Game {
                     }),
             );
         }
+        if self.state.battleship.won() {
+            records.battleship_best_moves = Some(
+                records
+                    .battleship_best_moves
+                    .map_or(self.state.battleship.moves, |best| {
+                        best.min(self.state.battleship.moves)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

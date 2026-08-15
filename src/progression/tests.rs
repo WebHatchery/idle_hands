@@ -65,6 +65,7 @@ fn full_cabinet_counts_every_playable_game() {
     records.number_match_best_moves = Some(18);
     records.flood_it_best_moves = Some(12);
     records.color_sort_best_moves = Some(24);
+    records.battleship_best_moves = Some(16);
 
     assert_eq!(completed_games(&records), GameId::ALL.len());
     assert!(earned(&records, AchievementId::FullCabinet));

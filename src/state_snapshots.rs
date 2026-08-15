@@ -1,5 +1,6 @@
 //! Independent active-game snapshot storage.
 
+use crate::battleship::Battleship;
 use crate::color_sort::ColorSort;
 use crate::daily_dungeon::DailyDungeon;
 use crate::dots_boxes::DotsBoxes;
@@ -65,6 +66,7 @@ pub enum GameSnapshot {
     NumberMatch(NumberMatch),
     FloodIt(FloodIt),
     ColorSort(ColorSort),
+    Battleship(Battleship),
 }
 
 impl GameSnapshot {
@@ -108,6 +110,7 @@ impl GameSnapshot {
             GameId::NumberMatch => Self::NumberMatch(state.number_match.clone()),
             GameId::FloodIt => Self::FloodIt(state.flood_it.clone()),
             GameId::ColorSort => Self::ColorSort(state.color_sort.clone()),
+            GameId::Battleship => Self::Battleship(state.battleship.clone()),
         }
     }
 
@@ -151,6 +154,7 @@ impl GameSnapshot {
             Self::NumberMatch(game) => state.number_match = game,
             Self::FloodIt(game) => state.flood_it = game,
             Self::ColorSort(game) => state.color_sort = game,
+            Self::Battleship(game) => state.battleship = game,
         }
     }
 }

@@ -507,6 +507,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "Sort every color into a full, single-color tube.",
             "Use UNDO or NEW BOARD with visible controls.",
         ],
+        GameId::Battleship => [
+            "Tap an unknown square to search for the hidden fleet.",
+            "Find all five ship squares; hits show as crosses and misses as dots.",
+            "Use UNDO or NEW FLEET with visible controls.",
+        ],
     }
 }
 
@@ -558,6 +563,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::NumberMatch if state.records.number_match_best_moves.is_some() => "COMPLETE",
         GameId::FloodIt if state.records.flood_it_best_moves.is_some() => "COMPLETE",
         GameId::ColorSort if state.records.color_sort_best_moves.is_some() => "COMPLETE",
+        GameId::Battleship if state.records.battleship_best_moves.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

@@ -66,6 +66,7 @@ impl AchievementId {
                 GameId::NumberMatch => "Number keeper",
                 GameId::FloodIt => "Color keeper",
                 GameId::ColorSort => "Sort keeper",
+                GameId::Battleship => "Fleet keeper",
             },
             Self::FullCabinet => "Full cabinet",
         }
@@ -133,6 +134,7 @@ fn game_complete(records: &CollectionRecords, game: GameId) -> bool {
         GameId::NumberMatch => records.number_match_best_moves.is_some(),
         GameId::FloodIt => records.flood_it_best_moves.is_some(),
         GameId::ColorSort => records.color_sort_best_moves.is_some(),
+        GameId::Battleship => records.battleship_best_moves.is_some(),
     }
 }
 

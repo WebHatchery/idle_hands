@@ -171,4 +171,7 @@ pub enum UiAction {
     ColorSortTap(usize),
     ColorSortUndo,
     ColorSortNew,
+    BattleshipFire(usize),
+    BattleshipUndo,
+    BattleshipNew,
 }

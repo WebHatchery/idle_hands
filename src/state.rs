@@ -1,5 +1,6 @@
 //! Application state and the deterministic 2048 rules engine.
 
+use crate::battleship::Battleship;
 use crate::blackjack::Blackjack;
 use crate::breakout::Breakout;
 use crate::checkers::Checkers;
@@ -83,9 +84,10 @@ pub enum GameId {
     NumberMatch,
     FloodIt,
     ColorSort,
+    Battleship,
 }
 impl GameId {
-    pub const ALL: [Self; 38] = [
+    pub const ALL: [Self; 39] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -124,6 +126,7 @@ impl GameId {
         Self::NumberMatch,
         Self::FloodIt,
         Self::ColorSort,
+        Self::Battleship,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -165,6 +168,7 @@ impl GameId {
             Self::NumberMatch => "Number Match",
             Self::FloodIt => "Flood It",
             Self::ColorSort => "Color Sort",
+            Self::Battleship => "Battleship",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -207,6 +211,7 @@ impl GameId {
             Self::NumberMatch => "Pair the quiet numbers",
             Self::FloodIt => "Fill the quiet field",
             Self::ColorSort => "Sort the quiet colors",
+            Self::Battleship => "Find the quiet fleet",
         }
     }
     pub fn index(self) -> usize {
@@ -252,6 +257,7 @@ impl GameId {
             Self::NumberMatch => "number_match",
             Self::FloodIt => "flood_it",
             Self::ColorSort => "color_sort",
+            Self::Battleship => "battleship",
         }
     }
 }
@@ -318,6 +324,7 @@ pub struct AppState {
     pub number_match: NumberMatch,
     pub flood_it: FloodIt,
     pub color_sort: ColorSort,
+    pub battleship: Battleship,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -410,6 +417,8 @@ pub struct CollectionRecords {
     pub flood_it_best_moves: Option<u16>,
     #[serde(default)]
     pub color_sort_best_moves: Option<u16>,
+    #[serde(default)]
+    pub battleship_best_moves: Option<u16>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -489,6 +498,8 @@ pub struct CollectionSave {
     pub flood_it: FloodIt,
     #[serde(default)]
     pub color_sort: ColorSort,
+    #[serde(default)]
+    pub battleship: Battleship,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -630,6 +641,7 @@ impl CollectionSave {
             number_match: state.number_match.clone(),
             flood_it: state.flood_it.clone(),
             color_sort: state.color_sort.clone(),
+            battleship: state.battleship.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -687,6 +699,7 @@ impl CollectionSave {
         state.number_match = self.number_match;
         state.flood_it = self.flood_it;
         state.color_sort = self.color_sort;
+        state.battleship = self.battleship;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -750,6 +763,7 @@ impl Default for AppState {
             number_match: NumberMatch::default(),
             flood_it: FloodIt::default(),
             color_sort: ColorSort::default(),
+            battleship: Battleship::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

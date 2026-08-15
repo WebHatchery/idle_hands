@@ -247,6 +247,16 @@ impl Game {
                 let seed = self.state.color_sort.seed.wrapping_add(1);
                 self.state.color_sort.reset(seed);
             }
+            UiAction::BattleshipFire(cell) => {
+                self.state.battleship.fire(*cell);
+            }
+            UiAction::BattleshipUndo => {
+                self.state.battleship.undo();
+            }
+            UiAction::BattleshipNew => {
+                let seed = self.state.battleship.seed.wrapping_add(1);
+                self.state.battleship.reset(seed);
+            }
             _ => return false,
         }
         true

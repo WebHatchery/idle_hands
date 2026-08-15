@@ -44,6 +44,7 @@ pub fn status(state: &AppState, game: GameId) -> &'static str {
         GameId::NumberMatch => state.records.number_match_best_moves.is_some(),
         GameId::FloodIt => state.records.flood_it_best_moves.is_some(),
         GameId::ColorSort => state.records.color_sort_best_moves.is_some(),
+        GameId::Battleship => state.records.battleship_best_moves.is_some(),
     };
     if complete {
         "COMPLETE"
@@ -101,6 +102,7 @@ fn has_progress(state: &AppState, game: GameId) -> bool {
         GameId::NumberMatch => state.number_match.moves > 0,
         GameId::FloodIt => state.flood_it.moves > 0,
         GameId::ColorSort => state.color_sort.moves > 0,
+        GameId::Battleship => state.battleship.moves > 0,
     }
 }
 
@@ -152,5 +154,6 @@ pub fn is_active(game: GameId) -> bool {
             | GameId::NumberMatch
             | GameId::FloodIt
             | GameId::ColorSort
+            | GameId::Battleship
     )
 }

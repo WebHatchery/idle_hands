@@ -272,5 +272,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "Sort every color into a full, single-color tube.",
             "Use UNDO or NEW BOARD with the visible controls.",
         ],
+        GameId::Battleship => [
+            "Tap an unknown square to search for the hidden fleet.",
+            "Find all five ship squares; hits show as crosses and misses as dots.",
+            "Use UNDO or NEW FLEET with the visible controls.",
+        ],
     }
 }

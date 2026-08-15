@@ -190,6 +190,10 @@ pub fn draw_records(state: &AppState) {
             "Color Sort best",
             value(state.records.color_sort_best_moves.map(u32::from)),
         ),
+        (
+            "Battleship best",
+            value(state.records.battleship_best_moves.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
         let column = index / 23;
