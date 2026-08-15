@@ -592,11 +592,22 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Add responsive desktop, portrait, and medium-landscape presentation,
     visible controls, records, and verification captures.
 
+## Phase 43 — Dungeon Sweeper post-launch expedition
+
+- [x] Refine Dungeon Sweeper with real trap-aware flags and a Minesweeper-style
+  chord action that opens neighboring rooms when a revealed clue is satisfied.
+  - [x] Cover matching and mismatched flags, revealed-clue taps, chord loss,
+    undo history, and flagged-trap persistence with focused rule tests.
+  - [x] Update the touch presentation, active flag-mode label, tutorial wording,
+    and responsive title/status spacing for desktop, portrait, and landscape.
+  - [x] Capture the refined Dungeon Sweeper layouts and verify the full publish
+    path after the rules and presentation update.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.
 - Arcade: no remaining scheduled candidates.
-- Original cabinet games: Dungeon Sweeper.
+- Original cabinet games: no remaining scheduled candidates.
 
 Do not begin a post-launch candidate until the eight-game first collection is
 touch-complete and the shared system it would reuse is stable.

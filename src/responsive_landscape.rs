@@ -449,7 +449,7 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
         ],
         GameId::DungeonSweeper => [
             "Tap a room to reveal its clue or use FLAG MODE.",
-            "Follow the quiet clues to the EXIT.",
+            "Tap a revealed clue after flags match to chord nearby rooms.",
             "Use UNDO or NEW DUNGEON with visible controls.",
         ],
         GameId::Potion2048 => [

@@ -214,7 +214,7 @@ fn instructions(game: GameId) -> [&'static str; 3] {
         ],
         GameId::DungeonSweeper => [
             "Tap a room to reveal its trap clue.",
-            "Use FLAG MODE for traps and follow the clues to the EXIT.",
+            "Use FLAG MODE, then tap a revealed clue to chord nearby rooms.",
             "Reach EXIT; use UNDO or NEW DUNGEON with visible controls.",
         ],
         GameId::Potion2048 => [

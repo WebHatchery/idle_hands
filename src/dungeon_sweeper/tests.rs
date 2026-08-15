@@ -39,3 +39,64 @@ fn exit_wins_and_traps_lose() {
     assert!(lost.reveal(trap));
     assert_eq!(lost.status, DungeonStatus::Lost);
 }
+
+#[test]
+fn matching_flags_chord_open_adjacent_rooms_and_undo() {
+    let mut game = DungeonSweeper::new(4);
+    game.cells = vec![DungeonCell::Hidden; 64];
+    game.cells[0] = DungeonCell::Revealed(1);
+    game.cells[1] = DungeonCell::FlaggedTrap;
+    game.cells[8] = DungeonCell::Hidden;
+    game.status = DungeonStatus::Playing;
+    game.first_reveal = true;
+    game.seed = 99;
+
+    assert!(game.chord(0));
+    assert!(matches!(game.cells[8], DungeonCell::Revealed(1)));
+    assert_eq!(game.moves, 1);
+    assert!(game.undo());
+    assert!(matches!(game.cells[8], DungeonCell::Hidden));
+    assert_eq!(game.moves, 0);
+}
+
+#[test]
+fn chord_requires_matching_flags_and_revealed_taps_use_it() {
+    let mut game = DungeonSweeper::new(5);
+    game.cells = vec![DungeonCell::Hidden; 64];
+    game.cells[0] = DungeonCell::Revealed(1);
+    game.cells[1] = DungeonCell::Trap;
+    game.cells[8] = DungeonCell::Hidden;
+    game.status = DungeonStatus::Playing;
+    game.first_reveal = true;
+
+    assert!(!game.chord(0));
+    assert_eq!(game.moves, 0);
+    game.cells[1] = DungeonCell::FlaggedTrap;
+    assert!(game.reveal(0));
+    assert!(matches!(game.cells[8], DungeonCell::Revealed(1)));
+}
+
+#[test]
+fn trap_flags_round_trip_and_wrong_chord_can_lose() {
+    let mut flags = DungeonSweeper::new(6);
+    assert!(flags.reveal(0));
+    let trap = flags
+        .cells
+        .iter()
+        .position(|cell| matches!(cell, DungeonCell::Trap))
+        .unwrap();
+    assert!(flags.toggle_flag(trap));
+    assert!(matches!(flags.cells[trap], DungeonCell::FlaggedTrap));
+    assert!(flags.toggle_flag(trap));
+    assert!(matches!(flags.cells[trap], DungeonCell::Trap));
+
+    let mut game = DungeonSweeper::new(7);
+    game.cells = vec![DungeonCell::Hidden; 64];
+    game.cells[0] = DungeonCell::Revealed(1);
+    game.cells[1] = DungeonCell::Flagged;
+    game.cells[8] = DungeonCell::Trap;
+    game.status = DungeonStatus::Playing;
+    game.first_reveal = true;
+    assert!(game.chord(0));
+    assert_eq!(game.status, DungeonStatus::Lost);
+}

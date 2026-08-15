@@ -64,9 +64,9 @@ pub fn draw(state: &AppState) {
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
     let x = if compact {
-        80.
+        430.
     } else if portrait {
-        10.
+        16.
     } else {
         400.
     };
@@ -82,7 +82,7 @@ pub fn draw(state: &AppState) {
     text(
         &status_text(game.status, game.moves),
         if compact { 430. } else { x },
-        if compact { 30. } else { y + 25. },
+        if compact { 52. } else { y + 25. },
         body_size(),
         muted(),
     );
@@ -105,8 +105,8 @@ pub fn draw(state: &AppState) {
             1.,
             Color::new(0.40, 0.33, 0.55, 1.),
         );
-        let show_trap =
-            matches!(game.status, DungeonStatus::Lost) && matches!(cell, DungeonCell::Trap);
+        let show_trap = matches!(game.status, DungeonStatus::Lost)
+            && matches!(cell, DungeonCell::Trap | DungeonCell::FlaggedTrap);
         if show_trap {
             text(
                 "×",
@@ -131,7 +131,7 @@ pub fn draw(state: &AppState) {
                 cell_size(),
                 WHITE,
             );
-        } else if matches!(cell, DungeonCell::Flagged) {
+        } else if matches!(cell, DungeonCell::Flagged | DungeonCell::FlaggedTrap) {
             text(
                 "⚑",
                 rect.x + rect.w * 0.30,
@@ -155,7 +155,14 @@ pub fn draw(state: &AppState) {
         body_size(),
         muted(),
     );
-    button(l.flag, "FLAG MODE");
+    button(
+        l.flag,
+        if state.mine_flag_mode {
+            "FLAG MODE ON"
+        } else {
+            "FLAG MODE"
+        },
+    );
     button(l.undo, "UNDO");
     button(l.new_game, "NEW DUNGEON");
 }
@@ -163,7 +170,7 @@ use crate::grid::GridLayout;
 fn status_text(status: DungeonStatus, moves: u16) -> String {
     match status {
         DungeonStatus::Ready => "Tap a room to enter".into(),
-        DungeonStatus::Playing => format!("Find the exit  •  {} moves", moves),
+        DungeonStatus::Playing => format!("Find EXIT • tap clues to chord • {} moves", moves),
         DungeonStatus::Won => "The quiet exit is found".into(),
         DungeonStatus::Lost => "A trap closed the path".into(),
     }

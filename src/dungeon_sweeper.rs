@@ -11,6 +11,7 @@ pub enum DungeonCell {
     Hidden,
     Trap,
     Flagged,
+    FlaggedTrap,
     Revealed(u8),
 }
 
@@ -64,9 +65,15 @@ impl DungeonSweeper {
     pub fn reveal(&mut self, index: usize) -> bool {
         if index >= self.cells.len()
             || !matches!(self.status, DungeonStatus::Ready | DungeonStatus::Playing)
-            || !matches!(self.cells[index], DungeonCell::Hidden | DungeonCell::Trap)
+            || !matches!(
+                self.cells[index],
+                DungeonCell::Hidden | DungeonCell::Trap | DungeonCell::Revealed(_)
+            )
         {
             return false;
+        }
+        if matches!(self.cells[index], DungeonCell::Revealed(_)) {
+            return self.chord(index);
         }
         if !self.first_reveal {
             self.place_traps(index);
@@ -87,6 +94,59 @@ impl DungeonSweeper {
         true
     }
 
+    pub fn chord(&mut self, index: usize) -> bool {
+        if index >= self.cells.len()
+            || self.status != DungeonStatus::Playing
+            || !matches!(self.cells[index], DungeonCell::Revealed(_))
+        {
+            return false;
+        }
+        let clue = match self.cells[index] {
+            DungeonCell::Revealed(value) => value,
+            _ => unreachable!(),
+        };
+        let neighbors: Vec<_> = self.neighbors(index).collect();
+        let flagged = neighbors
+            .iter()
+            .filter(|&&neighbor| {
+                matches!(
+                    self.cells[neighbor],
+                    DungeonCell::Flagged | DungeonCell::FlaggedTrap
+                )
+            })
+            .count() as u8;
+        if flagged != clue {
+            return false;
+        }
+        let hidden: Vec<_> = neighbors
+            .into_iter()
+            .filter(|&neighbor| {
+                matches!(
+                    self.cells[neighbor],
+                    DungeonCell::Hidden | DungeonCell::Trap
+                )
+            })
+            .collect();
+        if hidden.is_empty() {
+            return false;
+        }
+        self.snapshot();
+        self.moves = self.moves.saturating_add(1);
+        for neighbor in hidden {
+            if matches!(self.cells[neighbor], DungeonCell::Trap) {
+                self.cells[neighbor] = DungeonCell::Revealed(9);
+                self.status = DungeonStatus::Lost;
+                break;
+            }
+            self.cells[neighbor] = DungeonCell::Revealed(self.adjacent_traps(neighbor));
+            if neighbor == self.exit {
+                self.status = DungeonStatus::Won;
+                break;
+            }
+        }
+        true
+    }
+
     pub fn toggle_flag(&mut self, index: usize) -> bool {
         if index >= self.cells.len()
             || !matches!(self.status, DungeonStatus::Ready | DungeonStatus::Playing)
@@ -95,7 +155,9 @@ impl DungeonSweeper {
         }
         match self.cells[index] {
             DungeonCell::Hidden => self.cells[index] = DungeonCell::Flagged,
+            DungeonCell::Trap => self.cells[index] = DungeonCell::FlaggedTrap,
             DungeonCell::Flagged => self.cells[index] = DungeonCell::Hidden,
+            DungeonCell::FlaggedTrap => self.cells[index] = DungeonCell::Trap,
             _ => return false,
         }
         true
@@ -104,13 +166,18 @@ impl DungeonSweeper {
     pub fn flagged_count(&self) -> usize {
         self.cells
             .iter()
-            .filter(|cell| matches!(cell, DungeonCell::Flagged))
+            .filter(|cell| matches!(cell, DungeonCell::Flagged | DungeonCell::FlaggedTrap))
             .count()
     }
 
     pub fn adjacent_traps(&self, index: usize) -> u8 {
         self.neighbors(index)
-            .filter(|&neighbor| matches!(self.cells[neighbor], DungeonCell::Trap))
+            .filter(|&neighbor| {
+                matches!(
+                    self.cells[neighbor],
+                    DungeonCell::Trap | DungeonCell::FlaggedTrap
+                )
+            })
             .count() as u8
     }
 
