@@ -114,7 +114,7 @@ impl Fivefold {
     pub fn toggle_hold(&mut self, index: usize) -> bool {
         if self.roll_number == 0
             || self.roll_number >= 3
-            || self.dice.get(index).map_or(true, |value| *value == 0)
+            || self.dice.get(index).is_none_or(|value| *value == 0)
         {
             return false;
         }

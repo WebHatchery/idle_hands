@@ -72,7 +72,7 @@ impl Nonogram {
             .map(|index| {
                 let x = index % size;
                 let y = index / size;
-                x == y || x + y + 1 == size || (y == size / 2 && x % 3 == 0)
+                x == y || x + y + 1 == size || (y == size / 2 && x.is_multiple_of(3))
             })
             .collect();
         let row_clues = (0..size)

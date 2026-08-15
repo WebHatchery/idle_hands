@@ -25,6 +25,8 @@ pub enum CardSource {
     Waste,
 }
 
+type SolitaireSnapshot = (Vec<Vec<Card>>, Vec<Card>, Vec<Card>, [u8; 4], u32);
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Solitaire {
     pub tableau: Vec<Vec<Card>>,
@@ -36,7 +38,7 @@ pub struct Solitaire {
     pub status: SolitaireStatus,
     pub seed: u64,
     #[serde(skip)]
-    history: Vec<(Vec<Vec<Card>>, Vec<Card>, Vec<Card>, [u8; 4], u32)>,
+    history: Vec<SolitaireSnapshot>,
 }
 
 impl Default for Solitaire {
@@ -62,11 +64,11 @@ impl Solitaire {
         }
         let mut tableau = vec![Vec::new(); 7];
         let mut cursor = 0;
-        for column in 0..7 {
+        for (column, stack) in tableau.iter_mut().enumerate().take(7) {
             for depth in 0..=column {
                 let mut card = deck[cursor];
                 card.face_up = depth == column;
-                tableau[column].push(card);
+                stack.push(card);
                 cursor += 1;
             }
         }

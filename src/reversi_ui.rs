@@ -91,14 +91,14 @@ pub fn draw_reversi(state: &AppState) {
         }
     }
     draw_text(
-        &format!("YOU  {}", game.score(1)),
+        format!("YOU  {}", game.score(1)),
         650.,
         190.,
         26.,
         Color::new(0.98, 0.83, 0.45, 1.),
     );
     draw_text(
-        &format!("OPPONENT  {}", game.score(2)),
+        format!("OPPONENT  {}", game.score(2)),
         650.,
         230.,
         22.,

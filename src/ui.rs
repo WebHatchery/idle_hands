@@ -116,12 +116,11 @@ pub fn clicks(state: &AppState) -> Vec<UiAction> {
         }
         return tutorial_ui::clicks(p);
     }
-    if matches!(state.screen, Screen::Game(_)) {
-        if (is_portrait() && responsive_ui::replay_clicks(p))
-            || (!is_portrait() && tutorial_ui::REPLAY_RECT.contains(p))
-        {
-            return vec![UiAction::ReplayTutorial];
-        }
+    if matches!(state.screen, Screen::Game(_))
+        && ((is_portrait() && responsive_ui::replay_clicks(p))
+            || (!is_portrait() && tutorial_ui::REPLAY_RECT.contains(p)))
+    {
+        return vec![UiAction::ReplayTutorial];
     }
     match state.screen {
         Screen::Cabinet if is_portrait() => responsive_ui::cabinet_clicks(p),

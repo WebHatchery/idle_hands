@@ -2,8 +2,10 @@ use super::*;
 
 #[test]
 fn first_finish_awards_once_and_full_cabinet_is_worth_two() {
-    let mut records = CollectionRecords::default();
-    records.best_2048 = 2048;
+    let records = CollectionRecords {
+        best_2048: 2048,
+        ..Default::default()
+    };
     let mut earned_flags = [false; 10];
     let mut stamps = 0;
     sync(&mut earned_flags, &mut stamps, &records);

@@ -86,7 +86,7 @@ pub fn draw_freecell(state: &AppState) {
             draw_card(rect, card, game.selected == Some(FreeSource::Cell(cell)));
         }
         draw_text(
-            &format!("CELL {}", cell + 1),
+            format!("CELL {}", cell + 1),
             rect.x + 8.,
             300.,
             12.,
@@ -126,7 +126,7 @@ pub fn draw_freecell(state: &AppState) {
     for cascade in 0..8 {
         let x = 28. + cascade as f32 * 122.;
         draw_text(
-            &(cascade + 1).to_string(),
+            (cascade + 1).to_string(),
             x + 38.,
             340.,
             15.,
@@ -144,7 +144,7 @@ pub fn draw_freecell(state: &AppState) {
         }
     }
     draw_text(
-        &format!("Moves: {}", game.moves),
+        format!("Moves: {}", game.moves),
         45.,
         685.,
         17.,

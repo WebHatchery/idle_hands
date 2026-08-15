@@ -27,8 +27,10 @@ fn blocked_board_has_no_available_move() {
 
 #[test]
 fn collection_save_round_trips_game_and_profile_state() {
-    let mut state = AppState::default();
-    state.profile_name = "Quiet Player".into();
+    let mut state = AppState {
+        profile_name: "Quiet Player".into(),
+        ..Default::default()
+    };
     state.game.score = 128;
     state.mine_records[0] = Some(42);
     state.records.best_2048 = 128;
@@ -59,8 +61,10 @@ fn collection_save_round_trips_game_and_profile_state() {
 
 #[test]
 fn profile_and_game_snapshots_round_trip_independently() {
-    let mut state = AppState::default();
-    state.profile_name = "Separate Slots".into();
+    let mut state = AppState {
+        profile_name: "Separate Slots".into(),
+        ..Default::default()
+    };
     state.game.score = 77;
     state.records.best_2048 = 77;
     let profile = ProfileSave::from_state(&state, "1.0.0");

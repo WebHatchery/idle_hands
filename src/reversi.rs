@@ -73,7 +73,7 @@ impl Reversi {
         true
     }
     pub fn pass(&mut self) -> bool {
-        if self.status != ReversiStatus::Playing || self.legal_moves(self.turn).len() != 0 {
+        if self.status != ReversiStatus::Playing || !self.legal_moves(self.turn).is_empty() {
             return false;
         }
         self.passes += 1;

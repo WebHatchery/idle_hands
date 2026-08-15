@@ -38,6 +38,7 @@ pub struct ActionDef {
 #[derive(Debug, Clone)]
 pub struct GameData {
     pub config: GameConfig,
+    #[allow(dead_code)]
     pub actions: DataRegistry<ActionDef>,
     pub texture_manifest: Vec<TextureConfig>,
 }

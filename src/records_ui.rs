@@ -35,7 +35,7 @@ pub fn draw_records(state: &AppState) {
     );
     let earned = state.achievements.iter().filter(|earned| **earned).count();
     draw_text(
-        &format!(
+        format!(
             "STAMPS  {}   •   ACHIEVEMENTS  {}/{}",
             state.stamps,
             earned,

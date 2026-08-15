@@ -13,9 +13,10 @@ pub enum SudokuStatus {
     Won,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
 pub enum SudokuDifficulty {
     Easy,
+    #[default]
     Medium,
     Hard,
 }
@@ -27,11 +28,6 @@ impl SudokuDifficulty {
             Self::Medium => "MEDIUM",
             Self::Hard => "HARD",
         }
-    }
-}
-impl Default for SudokuDifficulty {
-    fn default() -> Self {
-        Self::Medium
     }
 }
 

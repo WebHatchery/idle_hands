@@ -97,21 +97,21 @@ pub fn draw_fivefold(state: &AppState) {
         game.roll_number < 3 && game.status != FivefoldStatus::Complete,
     );
     draw_text(
-        &format!("Roll {}/3", game.roll_number),
+        format!("Roll {}/3", game.roll_number),
         475.,
         433.,
         19.,
         Color::new(0.72, 0.68, 0.82, 1.),
     );
     draw_text(
-        &format!("Total  {}", game.total()),
+        format!("Total  {}", game.total()),
         475.,
         463.,
         19.,
         Color::new(0.98, 0.83, 0.45, 1.),
     );
     draw_text(
-        &format!(
+        format!(
             "Upper  {} / 63   Bonus {}",
             game.upper_total(),
             game.bonus()

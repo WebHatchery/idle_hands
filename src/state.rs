@@ -146,12 +146,12 @@ impl Game2048 {
                     i += 1;
                 }
             }
-            for slot in 0..4 {
+            for (slot, &index) in indices.iter().enumerate() {
                 let value = merged.get(slot).copied().unwrap_or(0);
-                if self.cells[indices[slot]] != value {
+                if self.cells[index] != value {
                     changed = true;
                 }
-                self.cells[indices[slot]] = value;
+                self.cells[index] = value;
             }
         }
         if changed {
@@ -174,8 +174,9 @@ impl Game2048 {
     pub fn can_undo(&self) -> bool {
         self.undo.is_some()
     }
+    #[allow(dead_code)]
     pub fn can_move(&self) -> bool {
-        self.cells.iter().any(|&v| v == 0)
+        self.cells.contains(&0)
             || (0..4).any(|r| (0..3).any(|c| self.cells[r * 4 + c] == self.cells[r * 4 + c + 1]))
             || (0..3).any(|r| (0..4).any(|c| self.cells[r * 4 + c] == self.cells[(r + 1) * 4 + c]))
     }
@@ -236,7 +237,7 @@ pub struct AppState {
     pub tutorial_seen: [bool; 8],
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct CollectionRecords {
     pub best_2048: u32,
     pub minesweeper: [Option<u32>; 4],
@@ -246,20 +247,6 @@ pub struct CollectionRecords {
     pub freecell_best_moves: Option<u32>,
     pub fivefold_best_total: u16,
     pub reversi_best_score: u8,
-}
-impl Default for CollectionRecords {
-    fn default() -> Self {
-        Self {
-            best_2048: 0,
-            minesweeper: [None; 4],
-            sudoku: [None; 3],
-            nonogram: [None; 3],
-            solitaire_best_moves: None,
-            freecell_best_moves: None,
-            fivefold_best_total: 0,
-            reversi_best_score: 0,
-        }
-    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -463,7 +450,7 @@ impl Default for AppState {
             screen: Screen::Cabinet,
             selected: 4,
             game: Game2048::default(),
-            minesweeper: Minesweeper::beginner(0x1D1E_51),
+            minesweeper: Minesweeper::beginner(0x001D_1E51),
             sudoku: Sudoku::new(),
             nonogram: Nonogram::default(),
             solitaire: Solitaire::default(),

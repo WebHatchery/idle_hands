@@ -15,6 +15,8 @@ pub enum FreeSource {
     Cell(usize),
 }
 
+type FreeCellSnapshot = ([Option<Card>; 4], Vec<Vec<Card>>, [u8; 4], u32);
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FreeCell {
     pub cells: [Option<Card>; 4],
@@ -25,7 +27,7 @@ pub struct FreeCell {
     pub status: FreeCellStatus,
     pub seed: u64,
     #[serde(skip)]
-    history: Vec<([Option<Card>; 4], Vec<Vec<Card>>, [u8; 4], u32)>,
+    history: Vec<FreeCellSnapshot>,
 }
 
 impl Default for FreeCell {
