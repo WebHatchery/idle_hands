@@ -237,6 +237,7 @@ pub struct AppState {
     pub records: CollectionRecords,
     pub tutorial: Option<GameId>,
     pub tutorial_seen: [bool; 8],
+    pub card_hint: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
@@ -494,6 +495,7 @@ impl Default for AppState {
             records: CollectionRecords::default(),
             tutorial: None,
             tutorial_seen: [false; 8],
+            card_hint: None,
         }
     }
 }

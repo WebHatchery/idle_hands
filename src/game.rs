@@ -1,5 +1,6 @@
 //! Application lifecycle and input routing.
 
+use crate::card_hints;
 use crate::cosmetics;
 use crate::input::{Gesture, PointerTracker};
 use crate::progression;
@@ -65,7 +66,9 @@ impl Game {
             "nonogram_accessible" => Screen::Game(GameId::Nonogram),
             "minesweeper_accessible" => Screen::Game(GameId::Minesweeper),
             "solitaire" => Screen::Game(GameId::Solitaire),
+            "solitaire_hint" => Screen::Game(GameId::Solitaire),
             "freecell" => Screen::Game(GameId::FreeCell),
+            "freecell_hint" => Screen::Game(GameId::FreeCell),
             "fivefold" => Screen::Game(GameId::Yahtzee),
             "reversi" => Screen::Game(GameId::Reversi),
             "help" => Screen::Help,
@@ -82,6 +85,11 @@ impl Game {
         if scene.ends_with("_accessible") {
             self.state.high_contrast = true;
             self.state.large_text = true;
+        }
+        if scene == "solitaire_hint" {
+            self.state.card_hint = Some(card_hints::solitaire(&self.state));
+        } else if scene == "freecell_hint" {
+            self.state.card_hint = Some(card_hints::freecell(&self.state));
         }
         if scene.starts_with("tutorial_") {
             if let Screen::Game(game) = self.state.screen {
@@ -222,6 +230,9 @@ impl Game {
     }
     fn apply(&mut self, action: ui::UiAction) {
         let previous_screen = self.state.screen;
+        if !card_hints::is_hint(action) {
+            self.state.card_hint = None;
+        }
         match action {
             ui::UiAction::Open(index) => {
                 self.state.selected = index;
@@ -345,6 +356,9 @@ impl Game {
             ui::UiAction::SolitaireUndo => {
                 self.state.solitaire.undo();
             }
+            ui::UiAction::SolitaireHint => {
+                self.state.card_hint = Some(card_hints::solitaire(&self.state));
+            }
             ui::UiAction::SolitaireNew => {
                 self.state.solitaire =
                     crate::solitaire::Solitaire::new(self.state.solitaire.seed.wrapping_add(1));
@@ -368,6 +382,9 @@ impl Game {
             }
             ui::UiAction::FreeCellUndo => {
                 self.state.freecell.undo();
+            }
+            ui::UiAction::FreeCellHint => {
+                self.state.card_hint = Some(card_hints::freecell(&self.state));
             }
             ui::UiAction::FreeCellNew => {
                 self.state.freecell =

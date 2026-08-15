@@ -167,11 +167,22 @@ pub fn draw_freecell(state: &AppState) {
         16.,
         Color::new(0.63, 0.58, 0.72, 1.),
     );
+    if let Some(hint) = state.card_hint.as_deref() {
+        draw_text(hint, 690., 590., 14., Color::new(0.63, 0.95, 0.72, 1.));
+    }
+    panel(
+        Rect::new(690., 620., 140., 44.),
+        Color::new(0.20, 0.13, 0.30, 1.),
+    );
+    draw_text("HINT", 737., 648., 16., WHITE);
 }
 
 pub fn freecell_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if Rect::new(20., 20., 180., 50.).contains(p) {
         return vec![UiAction::Cabinet];
+    }
+    if Rect::new(690., 620., 140., 44.).contains(p) {
+        return vec![UiAction::FreeCellHint];
     }
     if Rect::new(850., 620., 140., 44.).contains(p) {
         return vec![UiAction::FreeCellUndo];

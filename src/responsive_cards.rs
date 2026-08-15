@@ -164,6 +164,11 @@ pub fn draw_solitaire(state: &AppState) {
         Color::new(0.68, 0.63, 0.78, 1.),
     );
     panel(
+        Rect::new(5., 650., 105., 38.),
+        Color::new(0.20, 0.13, 0.30, 1.),
+    );
+    text("HINT", 39., 675., 12., WHITE);
+    panel(
         Rect::new(120., 650., 105., 38.),
         Color::new(0.18, 0.26, 0.34, 1.),
     );
@@ -174,7 +179,10 @@ pub fn draw_solitaire(state: &AppState) {
     );
     text("NEW DEAL", 263., 675., 11., WHITE);
     text(
-        "Tap a card, then tap its destination.",
+        state
+            .card_hint
+            .as_deref()
+            .unwrap_or("Tap a card, then tap its destination."),
         10.,
         620.,
         11.,
@@ -196,6 +204,9 @@ pub fn solitaire_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         if card_rect(158. + suit as f32 * 50., 112.).contains(p) {
             return vec![UiAction::SolitaireFoundation(suit)];
         }
+    }
+    if Rect::new(5., 650., 105., 38.).contains(p) {
+        return vec![UiAction::SolitaireHint];
     }
     if Rect::new(120., 650., 105., 38.).contains(p) {
         return vec![UiAction::SolitaireUndo];
@@ -324,17 +335,28 @@ pub fn draw_freecell(state: &AppState) {
     );
     text("NEW DEAL", 263., 675., 11., WHITE);
     text(
-        "Tap a card, then tap a cascade or foundation.",
+        state
+            .card_hint
+            .as_deref()
+            .unwrap_or("Tap a card, then tap a cascade or foundation."),
         10.,
         620.,
         11.,
         Color::new(0.63, 0.58, 0.72, 1.),
     );
+    panel(
+        Rect::new(5., 650., 105., 38.),
+        Color::new(0.20, 0.13, 0.30, 1.),
+    );
+    text("HINT", 39., 675., 12., WHITE);
 }
 
 pub fn freecell_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if Rect::new(0., 0., 100., 42.).contains(p) {
         return vec![UiAction::Cabinet];
+    }
+    if Rect::new(5., 650., 105., 38.).contains(p) {
+        return vec![UiAction::FreeCellHint];
     }
     if Rect::new(120., 650., 105., 38.).contains(p) {
         return vec![UiAction::FreeCellUndo];

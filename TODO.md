@@ -76,6 +76,8 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   selection, drag/drop, stack layout, and animation.
 - [ ] Implement Klondike tableau, stock/waste, foundations, legal moves, scoring,
   win detection, undo, hint, new deal, tutorial, and records.
+  - [x] Add deterministic visible Hint controls to Solitaire and FreeCell in
+    desktop, portrait, and medium-landscape layouts.
 - [ ] Confirm launch draw/redeal options and encode them as versioned rulesets.
 - [ ] Ensure select-then-select can complete every action without dragging.
 - [ ] Verify readable card ranks and usable stacked-card targets on compact phones.
@@ -87,6 +89,8 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 - [ ] Reuse shared cards while keeping a separate FreeCell rule engine.
 - [ ] Implement cells, foundations, cascades, supermove capacity, legal move
   feedback, undo, hint, seeded deals, win detection, tutorial, and records.
+  - [x] Add deterministic visible Hint controls to Solitaire and FreeCell in
+    desktop, portrait, and medium-landscape layouts.
 - [ ] Add canonical and edge-case move tests, including empty-column capacity.
 - [ ] Verify all actions through both tap selection and drag interaction.
 

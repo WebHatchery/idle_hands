@@ -189,6 +189,14 @@ pub fn draw_solitaire(state: &AppState) {
         13.,
         Color::new(0.68, 0.63, 0.78, 1.),
     );
+    if let Some(hint) = state.card_hint.as_deref() {
+        text(hint, 330., 385., 11., Color::new(0.63, 0.95, 0.72, 1.));
+    }
+    panel(
+        Rect::new(310., 330., 110., 42.),
+        Color::new(0.20, 0.13, 0.30, 1.),
+    );
+    text("HINT", 346., 357., 12., WHITE);
 }
 pub fn solitaire_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if Rect::new(0., 0., 90., 28.).contains(p) {
@@ -204,6 +212,9 @@ pub fn solitaire_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         if card_rect(500. + suit as f32 * 80., 35., 72., 95.).contains(p) {
             return vec![UiAction::SolitaireFoundation(suit)];
         }
+    }
+    if Rect::new(310., 330., 110., 42.).contains(p) {
+        return vec![UiAction::SolitaireHint];
     }
     if Rect::new(10., 330., 125., 42.).contains(p) {
         return vec![UiAction::SolitaireUndo];
@@ -314,10 +325,21 @@ pub fn draw_freecell(state: &AppState) {
         13.,
         Color::new(0.68, 0.63, 0.78, 1.),
     );
+    if let Some(hint) = state.card_hint.as_deref() {
+        text(hint, 330., 385., 11., Color::new(0.63, 0.95, 0.72, 1.));
+    }
+    panel(
+        Rect::new(310., 330., 110., 42.),
+        Color::new(0.20, 0.13, 0.30, 1.),
+    );
+    text("HINT", 346., 357., 12., WHITE);
 }
 pub fn freecell_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if Rect::new(0., 0., 90., 28.).contains(p) {
         return vec![UiAction::Cabinet];
+    }
+    if Rect::new(310., 330., 110., 42.).contains(p) {
+        return vec![UiAction::FreeCellHint];
     }
     if Rect::new(10., 330., 125., 42.).contains(p) {
         return vec![UiAction::FreeCellUndo];
