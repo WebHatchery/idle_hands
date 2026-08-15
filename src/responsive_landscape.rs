@@ -407,6 +407,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "Captures are mandatory; continue tapping for a chained jump.",
             "Reach the far edge to crown a king; use UNDO or NEW BOARD.",
         ],
+        GameId::PegSolitaire => [
+            "Tap a peg, then tap a two-step destination over a neighbor.",
+            "Each jump removes the middle peg; keep clearing the board.",
+            "Leave one peg in the center; use UNDO or NEW BOARD.",
+        ],
     }
 }
 
@@ -430,6 +435,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::Hangman if state.records.hangman_best_moves.is_some() => "COMPLETE",
         GameId::ConnectFour if state.records.connect_four_best_moves.is_some() => "COMPLETE",
         GameId::Checkers if state.records.checkers_best_moves.is_some() => "COMPLETE",
+        GameId::PegSolitaire if state.records.peg_solitaire_best_moves.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

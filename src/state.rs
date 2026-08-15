@@ -10,6 +10,7 @@ use crate::mastermind::Mastermind;
 use crate::memory_pairs::MemoryPairs;
 use crate::minesweeper::Minesweeper;
 use crate::nonogram::Nonogram;
+use crate::peg_solitaire::PegSolitaire;
 use crate::reversi::Reversi;
 use crate::sliding_puzzle::SlidingPuzzle;
 use crate::solitaire::Solitaire;
@@ -39,9 +40,10 @@ pub enum GameId {
     Hangman,
     ConnectFour,
     Checkers,
+    PegSolitaire,
 }
 impl GameId {
-    pub const ALL: [Self; 18] = [
+    pub const ALL: [Self; 19] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -60,6 +62,7 @@ impl GameId {
         Self::Hangman,
         Self::ConnectFour,
         Self::Checkers,
+        Self::PegSolitaire,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -81,6 +84,7 @@ impl GameId {
             Self::Hangman => "Hangman",
             Self::ConnectFour => "Connect Four",
             Self::Checkers => "Checkers",
+            Self::PegSolitaire => "Peg Solitaire",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -103,6 +107,7 @@ impl GameId {
             Self::Hangman => "Keep the quiet word",
             Self::ConnectFour => "Drop the quiet discs",
             Self::Checkers => "Turn the quiet pieces",
+            Self::PegSolitaire => "Leave one quiet peg",
         }
     }
     pub fn index(self) -> usize {
@@ -128,6 +133,7 @@ impl GameId {
             Self::Hangman => "hangman",
             Self::ConnectFour => "connect_four",
             Self::Checkers => "checkers",
+            Self::PegSolitaire => "peg_solitaire",
         }
     }
 }
@@ -290,6 +296,7 @@ pub struct AppState {
     pub hangman: Hangman,
     pub connect_four: ConnectFour,
     pub checkers: Checkers,
+    pub peg_solitaire: PegSolitaire,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -342,6 +349,8 @@ pub struct CollectionRecords {
     pub connect_four_best_moves: Option<u8>,
     #[serde(default)]
     pub checkers_best_moves: Option<u16>,
+    #[serde(default)]
+    pub peg_solitaire_best_moves: Option<u16>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -381,6 +390,8 @@ pub struct CollectionSave {
     pub connect_four: ConnectFour,
     #[serde(default)]
     pub checkers: Checkers,
+    #[serde(default)]
+    pub peg_solitaire: PegSolitaire,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -500,6 +511,7 @@ pub enum GameSnapshot {
     Hangman(Hangman),
     ConnectFour(ConnectFour),
     Checkers(Checkers),
+    PegSolitaire(PegSolitaire),
 }
 impl GameSnapshot {
     pub fn from_state(state: &AppState, game: GameId) -> Self {
@@ -522,6 +534,7 @@ impl GameSnapshot {
             GameId::Hangman => Self::Hangman(state.hangman.clone()),
             GameId::ConnectFour => Self::ConnectFour(state.connect_four.clone()),
             GameId::Checkers => Self::Checkers(state.checkers.clone()),
+            GameId::PegSolitaire => Self::PegSolitaire(state.peg_solitaire.clone()),
         }
     }
     pub fn apply_to(self, state: &mut AppState) {
@@ -544,6 +557,7 @@ impl GameSnapshot {
             Self::Hangman(game) => state.hangman = game,
             Self::ConnectFour(game) => state.connect_four = game,
             Self::Checkers(game) => state.checkers = game,
+            Self::PegSolitaire(game) => state.peg_solitaire = game,
         }
     }
 }
@@ -570,6 +584,7 @@ impl CollectionSave {
             hangman: state.hangman.clone(),
             connect_four: state.connect_four.clone(),
             checkers: state.checkers.clone(),
+            peg_solitaire: state.peg_solitaire.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -607,6 +622,7 @@ impl CollectionSave {
         state.hangman = self.hangman;
         state.connect_four = self.connect_four;
         state.checkers = self.checkers;
+        state.peg_solitaire = self.peg_solitaire;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -650,6 +666,7 @@ impl Default for AppState {
             hangman: Hangman::default(),
             connect_four: ConnectFour::default(),
             checkers: Checkers::default(),
+            peg_solitaire: PegSolitaire::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

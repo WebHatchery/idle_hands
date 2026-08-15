@@ -299,10 +299,21 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Add responsive desktop, portrait, and medium-landscape presentation,
     visible controls, records, and verification captures.
 
+## Phase 18 — Eleventh post-launch cabinet game
+
+- [x] Add Peg Solitaire as a nineteenth deterministic, touch-complete cabinet
+  game on the classic 33-hole cross board.
+  - [x] Cover seeded setup, legal jumps, middle-peg removal, win/stuck states,
+    undo, and reset behavior with focused rule tests.
+  - [x] Add persisted active state and best-move records with snapshot,
+    migration, progression, and tutorial coverage.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, records, and verification captures.
+
 ## Post-launch candidates (not scheduled)
 
 - Card family: Spider Solitaire, Klondike Golf, Higher or Lower, Blackjack.
-- Puzzles/tabletop: Peg Solitaire, Mahjong Solitaire.
+- Puzzles/tabletop: Mahjong Solitaire.
 - Arcade: Snake and Breakout.
 - Original cabinet games: Dungeon Sweeper, Potion 2048, Tiny Tower Defence, One
   Room Roguelike, and Daily Dungeon.

@@ -172,5 +172,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "Captures are mandatory; continue tapping for a chained jump.",
             "Reach the far edge to crown a king; use UNDO or NEW BOARD.",
         ],
+        GameId::PegSolitaire => [
+            "Tap a peg, then tap a two-step destination over a neighbor.",
+            "Each jump removes the middle peg; keep clearing the board.",
+            "Leave one peg in the center; use UNDO or NEW BOARD.",
+        ],
     }
 }

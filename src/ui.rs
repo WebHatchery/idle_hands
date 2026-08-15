@@ -14,6 +14,7 @@ use crate::memory_pairs_ui;
 use crate::minesweeper_ui;
 use crate::nonogram_ui;
 use crate::palette_ui;
+use crate::peg_solitaire_ui;
 use crate::records_ui;
 use crate::responsive_cards;
 use crate::responsive_landscape;
@@ -140,6 +141,9 @@ pub enum UiAction {
     CheckersTap(usize),
     CheckersUndo,
     CheckersNew,
+    PegSolitaireTap(usize),
+    PegSolitaireUndo,
+    PegSolitaireNew,
 }
 pub fn viewport() -> Viewport {
     let (width, height) = layout_size();
@@ -268,6 +272,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Game(GameId::Hangman) => hangman_ui::clicks(state, p),
         Screen::Game(GameId::ConnectFour) => connect_four_ui::clicks(state, p),
         Screen::Game(GameId::Checkers) => checkers_ui::clicks(state, p),
+        Screen::Game(GameId::PegSolitaire) => peg_solitaire_ui::clicks(state, p),
         Screen::Game(GameId::Mastermind) => mastermind_ui::clicks(state, p),
         Screen::Help => {
             if is_compact_landscape() {
@@ -362,6 +367,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::Hangman) => hangman_ui::draw(state),
         Screen::Game(GameId::ConnectFour) => connect_four_ui::draw(state),
         Screen::Game(GameId::Checkers) => checkers_ui::draw(state),
+        Screen::Game(GameId::PegSolitaire) => peg_solitaire_ui::draw(state),
         Screen::Game(GameId::Mastermind) => mastermind_ui::draw(state),
         Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(),
         Screen::Help if is_portrait() => responsive_library::draw_help(),
@@ -391,7 +397,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         } else {
             tutorial_ui::draw_overlay(game);
         }
-    } else if matches!(state.screen, Screen::Game(game) if !matches!(game, GameId::LightsOut | GameId::TicTacToe | GameId::MemoryPairs | GameId::SlidingPuzzle | GameId::Mastermind | GameId::Spider | GameId::WordSearch | GameId::Hangman | GameId::ConnectFour | GameId::Checkers))
+    } else if matches!(state.screen, Screen::Game(game) if !matches!(game, GameId::LightsOut | GameId::TicTacToe | GameId::MemoryPairs | GameId::SlidingPuzzle | GameId::Mastermind | GameId::Spider | GameId::WordSearch | GameId::Hangman | GameId::ConnectFour | GameId::Checkers | GameId::PegSolitaire))
     {
         if is_compact_landscape() {
             responsive_landscape::draw_replay_button();
@@ -466,6 +472,7 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
                 | GameId::Hangman
                 | GameId::ConnectFour
                 | GameId::Checkers
+                | GameId::PegSolitaire
         );
         panel(
             r,
@@ -478,8 +485,8 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
         text(
             GameId::ALL[i].title(),
             r.x + 18.,
-            r.y + 40.,
-            25.,
+            r.y + 28.,
+            18.,
             if active {
                 Color::new(0.98, 0.82, 0.42, 1.)
             } else {
@@ -490,21 +497,21 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
         text(
             status,
             r.x + 18.,
-            r.y + 70.,
-            14.,
+            r.y + 50.,
+            11.,
             crate::cabinet_status::color(status),
         );
         text(
             GameId::ALL[i].subtitle(),
             r.x + 18.,
-            r.y + 102.,
-            15.,
+            r.y + 72.,
+            11.,
             Color::new(0.69, 0.65, 0.78, 1.),
         );
         draw_circle(
             r.right() - 34.,
-            r.y + 40.,
-            18.,
+            r.y + 25.,
+            12.,
             if active {
                 Color::new(0.85, 0.55, 0.28, 1.)
             } else {
@@ -513,9 +520,9 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
         );
         text(
             &format!("{}", i + 1),
-            r.right() - 39.,
-            r.y + 46.,
-            16.,
+            r.right() - 37.,
+            r.y + 29.,
+            11.,
             Color::new(0.08, 0.05, 0.12, 1.),
         );
     }
@@ -536,9 +543,9 @@ fn cabinet_rect(i: usize) -> Rect {
     let row = i / 6;
     Rect::new(
         48. + col as f32 * 198.,
-        155. + row as f32 * 180.,
+        155. + row as f32 * 110.,
         190.,
-        150.,
+        100.,
     )
 }
 fn draw_2048(state: &AppState) {

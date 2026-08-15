@@ -37,6 +37,8 @@ mod minesweeper_ui;
 mod nonogram;
 mod nonogram_ui;
 mod palette_ui;
+mod peg_solitaire;
+mod peg_solitaire_ui;
 mod progression;
 mod records_ui;
 mod responsive_cards;

@@ -55,6 +55,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     state.records.connect_four_best_moves = Some(8);
     state.checkers.moves = 10;
     state.records.checkers_best_moves = Some(10);
+    state.peg_solitaire.moves = 11;
+    state.records.peg_solitaire_best_moves = Some(11);
     state.achievements[0] = true;
     state.stamps = 3;
     state.card_back = 1;
@@ -92,6 +94,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     assert_eq!(restored.records.connect_four_best_moves, Some(8));
     assert_eq!(restored.checkers.moves, 10);
     assert_eq!(restored.records.checkers_best_moves, Some(10));
+    assert_eq!(restored.peg_solitaire.moves, 11);
+    assert_eq!(restored.records.peg_solitaire_best_moves, Some(11));
     assert!(restored.achievements[0]);
     assert_eq!(restored.stamps, 3);
     assert_eq!(restored.card_back, 1);
@@ -142,6 +146,7 @@ fn every_game_snapshot_round_trips_its_own_state() {
     source.hangman.moves = 27;
     source.connect_four.moves = 28;
     source.checkers.moves = 29;
+    source.peg_solitaire.moves = 30;
 
     for game in GameId::ALL {
         let snapshot = GameSnapshot::from_state(&source, game);
@@ -174,6 +179,7 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
     source.hangman.moves = 27;
     source.connect_four.moves = 28;
     source.checkers.moves = 29;
+    source.peg_solitaire.moves = 30;
 
     let snapshots = GameId::ALL
         .iter()
@@ -202,6 +208,7 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
     assert_eq!(restored.hangman.moves, 27);
     assert_eq!(restored.connect_four.moves, 28);
     assert_eq!(restored.checkers.moves, 29);
+    assert_eq!(restored.peg_solitaire.moves, 30);
 }
 
 #[test]
@@ -228,6 +235,7 @@ fn older_saves_default_new_progression_and_cosmetic_fields() {
         "hangman",
         "connect_four",
         "checkers",
+        "peg_solitaire",
     ] {
         object.remove(field);
     }

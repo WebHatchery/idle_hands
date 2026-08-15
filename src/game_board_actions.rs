@@ -19,6 +19,16 @@ impl Game {
             UiAction::CheckersTap(square) => self.apply_checkers_tap(*square),
             UiAction::CheckersUndo => self.apply_checkers_undo(),
             UiAction::CheckersNew => self.apply_checkers_new(),
+            UiAction::PegSolitaireTap(square) => {
+                self.state.peg_solitaire.tap(*square);
+            }
+            UiAction::PegSolitaireUndo => {
+                self.state.peg_solitaire.undo();
+            }
+            UiAction::PegSolitaireNew => {
+                let seed = self.state.peg_solitaire.seed.wrapping_add(1);
+                self.state.peg_solitaire.reset(seed);
+            }
             _ => return false,
         }
         true
