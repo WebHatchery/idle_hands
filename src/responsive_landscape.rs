@@ -29,10 +29,10 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 
 fn cabinet_rect(index: usize) -> Rect {
     Rect::new(
-        8. + (index % 4) as f32 * 210.,
-        54. + (index / 4) as f32 * 130.,
-        200.,
-        112.,
+        8. + (index % 3) as f32 * 280.,
+        46. + (index / 3) as f32 * 92.,
+        268.,
+        82.,
     )
 }
 
@@ -104,7 +104,7 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
 }
 
 pub fn cabinet_clicks(p: Vec2) -> Vec<UiAction> {
-    for index in 0..8 {
+    for index in 0..GameId::ALL.len() {
         if cabinet_rect(index).contains(p) {
             return vec![UiAction::Open(index)];
         }
@@ -357,6 +357,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "The captured line flips after your move.",
             "Tap PASS only when no legal square remains.",
         ],
+        GameId::LightsOut => [
+            "Tap a light to toggle its cross.",
+            "Turn every light off to complete the board.",
+            "Use UNDO or NEW BOARD whenever you need it.",
+        ],
     }
 }
 
@@ -370,6 +375,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::FreeCell if state.records.freecell_best_moves.is_some() => "COMPLETE",
         GameId::Yahtzee if state.records.fivefold_best_total > 0 => "COMPLETE",
         GameId::Reversi if state.records.reversi_best_score > 0 => "COMPLETE",
+        GameId::LightsOut if state.records.lights_out_best_moves.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

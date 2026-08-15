@@ -79,6 +79,10 @@ pub fn draw_records(state: &AppState) {
             "Reversi best score",
             state.records.reversi_best_score.to_string(),
         ),
+        (
+            "Lights Out best moves",
+            value(state.records.lights_out_best_moves.map(u32::from)),
+        ),
     ];
     draw_column(&left, 175., 240.);
     draw_column(&right, 650., 240.);

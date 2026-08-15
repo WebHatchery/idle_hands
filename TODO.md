@@ -187,6 +187,18 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   the catalog thumbnail with the final cabinet.
 - [x] Complete final `cargo fmt`, tests, warning-free Clippy, and `publish.ps1`.
 
+## Phase 8 — First post-launch cabinet game
+
+- [x] Add Lights Out as a ninth deterministic, touch-complete cabinet game.
+  - [x] Add seeded solvable boards, cross toggles, win detection, undo, and
+    new-board reset with focused rule tests.
+  - [x] Add persisted active state and best-move records without breaking
+    existing saves or per-game snapshot isolation.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, and verification captures.
+  - [x] Publish the expanded cabinet and game through the standard validation
+    path.
+
 ## Post-launch candidates (not scheduled)
 
 - Card family: Spider Solitaire, Klondike Golf, Higher or Lower, Blackjack.

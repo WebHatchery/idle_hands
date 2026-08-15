@@ -2,6 +2,7 @@
 
 use crate::fivefold::Fivefold;
 use crate::freecell::FreeCell;
+use crate::lights_out::LightsOut;
 use crate::minesweeper::Minesweeper;
 use crate::nonogram::Nonogram;
 use crate::reversi::Reversi;
@@ -19,9 +20,10 @@ pub enum GameId {
     Nonogram,
     Yahtzee,
     Reversi,
+    LightsOut,
 }
 impl GameId {
-    pub const ALL: [Self; 8] = [
+    pub const ALL: [Self; 9] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -30,6 +32,7 @@ impl GameId {
         Self::Nonogram,
         Self::Yahtzee,
         Self::Reversi,
+        Self::LightsOut,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -41,6 +44,7 @@ impl GameId {
             Self::Sudoku => "Sudoku",
             Self::Yahtzee => "Fivefold",
             Self::Reversi => "Reversi",
+            Self::LightsOut => "Lights Out",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -53,6 +57,7 @@ impl GameId {
             Self::Nonogram => "Paint the hidden picture",
             Self::Yahtzee => "Five dice, thirteen calls",
             Self::Reversi => "Turn the board",
+            Self::LightsOut => "Quiet the lights",
         }
     }
     pub fn index(self) -> usize {
@@ -68,6 +73,7 @@ impl GameId {
             Self::Nonogram => "nonogram",
             Self::Yahtzee => "fivefold",
             Self::Reversi => "reversi",
+            Self::LightsOut => "lights_out",
         }
     }
 }
@@ -220,6 +226,7 @@ pub struct AppState {
     pub freecell: FreeCell,
     pub fivefold: Fivefold,
     pub reversi: Reversi,
+    pub lights_out: LightsOut,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -252,6 +259,8 @@ pub struct CollectionRecords {
     pub freecell_best_moves: Option<u32>,
     pub fivefold_best_total: u16,
     pub reversi_best_score: u8,
+    #[serde(default)]
+    pub lights_out_best_moves: Option<u16>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -271,6 +280,8 @@ pub struct CollectionSave {
     pub fivefold: Fivefold,
     #[serde(default)]
     pub reversi: Reversi,
+    #[serde(default)]
+    pub lights_out: LightsOut,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -380,6 +391,7 @@ pub enum GameSnapshot {
     FreeCell(FreeCell),
     Fivefold(Fivefold),
     Reversi(Reversi),
+    LightsOut(LightsOut),
 }
 impl GameSnapshot {
     pub fn from_state(state: &AppState, game: GameId) -> Self {
@@ -392,6 +404,7 @@ impl GameSnapshot {
             GameId::FreeCell => Self::FreeCell(state.freecell.clone()),
             GameId::Yahtzee => Self::Fivefold(state.fivefold.clone()),
             GameId::Reversi => Self::Reversi(state.reversi.clone()),
+            GameId::LightsOut => Self::LightsOut(state.lights_out.clone()),
         }
     }
     pub fn apply_to(self, state: &mut AppState) {
@@ -404,6 +417,7 @@ impl GameSnapshot {
             Self::FreeCell(game) => state.freecell = game,
             Self::Fivefold(game) => state.fivefold = game,
             Self::Reversi(game) => state.reversi = game,
+            Self::LightsOut(game) => state.lights_out = game,
         }
     }
 }
@@ -420,6 +434,7 @@ impl CollectionSave {
             freecell: state.freecell.clone(),
             fivefold: state.fivefold.clone(),
             reversi: state.reversi.clone(),
+            lights_out: state.lights_out.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -447,6 +462,7 @@ impl CollectionSave {
         state.freecell = self.freecell;
         state.fivefold = self.fivefold;
         state.reversi = self.reversi;
+        state.lights_out = self.lights_out;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -480,6 +496,7 @@ impl Default for AppState {
             freecell: FreeCell::default(),
             fivefold: Fivefold::default(),
             reversi: Reversi::default(),
+            lights_out: LightsOut::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

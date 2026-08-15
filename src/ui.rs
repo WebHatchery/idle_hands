@@ -5,6 +5,7 @@ use crate::fivefold_ui;
 use crate::freecell_ui;
 use crate::input::Viewport;
 use crate::library_ui;
+use crate::lights_out_ui;
 use crate::minesweeper_ui;
 use crate::nonogram_ui;
 use crate::palette_ui;
@@ -98,6 +99,9 @@ pub enum UiAction {
     ReversiPass,
     ReversiNew,
     ReversiLevel(crate::reversi::AiLevel),
+    LightsOutPress(usize),
+    LightsOutUndo,
+    LightsOutNew,
 }
 pub fn viewport() -> Viewport {
     let (width, height) = layout_size();
@@ -149,7 +153,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Cabinet if is_portrait() => responsive_ui::cabinet_clicks(p),
         Screen::Cabinet => {
             let mut out = vec![];
-            for i in 0..8 {
+            for i in 0..GameId::ALL.len() {
                 if cabinet_rect(i).contains(p) {
                     out.push(UiAction::Open(i));
                 }
@@ -217,6 +221,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
             responsive_cards::reversi_clicks(state, p)
         }
         Screen::Game(GameId::Reversi) => reversi_ui::reversi_clicks(state, p),
+        Screen::Game(GameId::LightsOut) => lights_out_ui::clicks(state, p),
         Screen::Help => {
             if is_compact_landscape() {
                 responsive_landscape_library::help_clicks(p)
@@ -301,6 +306,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         }
         Screen::Game(GameId::Reversi) if is_portrait() => responsive_cards::draw_reversi(state),
         Screen::Game(GameId::Reversi) => reversi_ui::draw_reversi(state),
+        Screen::Game(GameId::LightsOut) => lights_out_ui::draw(state),
         Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(),
         Screen::Help if is_portrait() => responsive_library::draw_help(),
         Screen::Help => draw_help(),
@@ -329,7 +335,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         } else {
             tutorial_ui::draw_overlay(game);
         }
-    } else if matches!(state.screen, Screen::Game(_)) {
+    } else if matches!(state.screen, Screen::Game(game) if game != GameId::LightsOut) {
         if is_compact_landscape() {
             responsive_landscape::draw_replay_button();
         } else if is_portrait() {
@@ -381,7 +387,7 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
         15.,
         cosmetics::cabinet_accent(state.cabinet_decoration),
     );
-    for i in 0..8 {
+    for i in 0..GameId::ALL.len() {
         let r = cabinet_rect(i);
         let active = matches!(
             GameId::ALL[i],
@@ -393,6 +399,7 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
                 | GameId::FreeCell
                 | GameId::Yahtzee
                 | GameId::Reversi
+                | GameId::LightsOut
         );
         panel(
             r,
@@ -459,13 +466,13 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
     let _ = data;
 }
 fn cabinet_rect(i: usize) -> Rect {
-    let col = i % 4;
-    let row = i / 4;
+    let col = i % 3;
+    let row = i / 3;
     Rect::new(
-        48. + col as f32 * 300.,
-        165. + row as f32 * 210.,
-        270.,
-        178.,
+        48. + col as f32 * 395.,
+        155. + row as f32 * 145.,
+        370.,
+        125.,
     )
 }
 fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
@@ -478,6 +485,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::FreeCell => state.records.freecell_best_moves.is_some(),
         GameId::Yahtzee => state.records.fivefold_best_total > 0,
         GameId::Reversi => state.records.reversi_best_score > 0,
+        GameId::LightsOut => state.records.lights_out_best_moves.is_some(),
     };
     if complete {
         "COMPLETE"
@@ -497,6 +505,7 @@ fn cabinet_has_progress(state: &AppState, game: GameId) -> bool {
         GameId::FreeCell => state.freecell.moves > 0,
         GameId::Yahtzee => state.fivefold.roll_number > 0,
         GameId::Reversi => state.reversi.moves > 0,
+        GameId::LightsOut => state.lights_out.moves > 0,
     }
 }
 fn cabinet_status_color(status: &str) -> Color {

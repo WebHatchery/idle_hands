@@ -59,6 +59,10 @@ pub fn draw_records(state: &AppState) {
             state.records.fivefold_best_total.to_string(),
         ),
         ("Reversi best", state.records.reversi_best_score.to_string()),
+        (
+            "Lights Out best",
+            value(state.records.lights_out_best_moves.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
         let col = index / 7;

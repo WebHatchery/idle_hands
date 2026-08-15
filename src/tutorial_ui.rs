@@ -122,5 +122,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "The captured line flips visibly after your move.",
             "Tap PASS only when no legal square remains.",
         ],
+        GameId::LightsOut => [
+            "Tap a light to toggle its cross.",
+            "Turn every light off to complete the board.",
+            "Use UNDO or NEW BOARD when you need it.",
+        ],
     }
 }

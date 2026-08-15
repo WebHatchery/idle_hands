@@ -3,7 +3,6 @@
 use crate::card_hints;
 use crate::cosmetics;
 use crate::input::{Gesture, PointerTracker};
-use crate::progression;
 use crate::sound::{SoundBank, SoundCue};
 use crate::{
     data::GameData,
@@ -22,6 +21,9 @@ use macroquad_toolkit::persistence::{
     load_from_slot_with_migration, save_to_slot_with_version, slot_exists,
 };
 use serde::de::DeserializeOwned;
+
+#[path = "game_progression.rs"]
+mod game_progression;
 
 pub struct Game {
     pub data: GameData,
@@ -77,6 +79,7 @@ impl Game {
             "freecell_selected" => Screen::Game(GameId::FreeCell),
             "fivefold" => Screen::Game(GameId::Yahtzee),
             "reversi" => Screen::Game(GameId::Reversi),
+            "lights_out" => Screen::Game(GameId::LightsOut),
             "help" => Screen::Help,
             "records" => Screen::Records,
             "rules" => Screen::Rules,
@@ -281,9 +284,12 @@ impl Game {
                         | GameId::FreeCell
                         | GameId::Yahtzee
                         | GameId::Reversi
+                        | GameId::LightsOut
                 ) {
                     self.state.screen = Screen::Game(id);
-                    self.state.tutorial = (!self.state.tutorial_seen[id.index()]).then_some(id);
+                    self.state.tutorial = (id != GameId::LightsOut
+                        && !self.state.tutorial_seen[id.index()])
+                    .then_some(id);
                 } else {
                     self.notifications
                         .info(format!("{} is coming soon", id.title()));
@@ -497,6 +503,16 @@ impl Game {
             ui::UiAction::ReversiLevel(level) => {
                 self.state.reversi.ai_level = level;
             }
+            ui::UiAction::LightsOutPress(index) => {
+                self.state.lights_out.press(index);
+            }
+            ui::UiAction::LightsOutUndo => {
+                self.state.lights_out.undo();
+            }
+            ui::UiAction::LightsOutNew => {
+                let seed = self.state.lights_out.seed.wrapping_add(1);
+                self.state.lights_out.reset(seed);
+            }
             ui::UiAction::MineChord(index) => {
                 self.state.minesweeper.chord(index);
             }
@@ -561,88 +577,6 @@ impl Game {
                 SoundCue::Tap
             },
         );
-    }
-
-    fn play_feedback(&self, cue: SoundCue) {
-        if self.state.sound {
-            self.sounds.play(self.state.sound_set, cue);
-        }
-    }
-
-    fn update_records(&mut self) {
-        let records = &mut self.state.records;
-        records.best_2048 = records.best_2048.max(self.state.game.best);
-        let sudoku_index = match self.state.sudoku.difficulty {
-            crate::sudoku::SudokuDifficulty::Easy => 0,
-            crate::sudoku::SudokuDifficulty::Medium => 1,
-            crate::sudoku::SudokuDifficulty::Hard => 2,
-        };
-        if self.state.sudoku.status == crate::sudoku::SudokuStatus::Won {
-            if let Some(moves) = self.state.sudoku.best_moves {
-                records.sudoku[sudoku_index] =
-                    Some(records.sudoku[sudoku_index].map_or(moves, |best| best.min(moves)));
-            }
-        }
-        let nonogram_index = match self.state.nonogram.preset {
-            crate::nonogram::NonogramPreset::Small => 0,
-            crate::nonogram::NonogramPreset::Medium => 1,
-            crate::nonogram::NonogramPreset::Large => 2,
-        };
-        if self.state.nonogram.status == crate::nonogram::NonogramStatus::Won {
-            if let Some(moves) = self.state.nonogram.best_moves {
-                records.nonogram[nonogram_index] =
-                    Some(records.nonogram[nonogram_index].map_or(moves, |best| best.min(moves)));
-            }
-        }
-        if self.state.solitaire.status == crate::solitaire::SolitaireStatus::Won {
-            records.solitaire_best_moves = Some(
-                records
-                    .solitaire_best_moves
-                    .map_or(self.state.solitaire.moves, |best| {
-                        best.min(self.state.solitaire.moves)
-                    }),
-            );
-        }
-        if self.state.freecell.status == crate::freecell::FreeCellStatus::Won {
-            records.freecell_best_moves = Some(
-                records
-                    .freecell_best_moves
-                    .map_or(self.state.freecell.moves, |best| {
-                        best.min(self.state.freecell.moves)
-                    }),
-            );
-        }
-        if self.state.fivefold.status == crate::fivefold::FivefoldStatus::Complete {
-            records.fivefold_best_total =
-                records.fivefold_best_total.max(self.state.fivefold.total());
-        }
-        if self.state.reversi.status == crate::reversi::ReversiStatus::Won {
-            records.reversi_best_score = records
-                .reversi_best_score
-                .max(self.state.reversi.score(1) as u8);
-        }
-        let previous_stamps = self.state.stamps;
-        let newly_earned = progression::sync(
-            &mut self.state.achievements,
-            &mut self.state.stamps,
-            records,
-        );
-        if self.state.stamps > previous_stamps {
-            if let Some(achievement) = newly_earned.first() {
-                self.notifications.success(format!(
-                    "{} — {} stamps",
-                    achievement.title(),
-                    self.state.stamps
-                ));
-            }
-        }
-    }
-    fn try_move(&mut self, direction: Direction) {
-        if self.state.game.move_in(direction) && self.state.game.won() {
-            self.notifications
-                .success("2048 reached — keep playing or start a fresh board");
-        }
-        self.save_autosave();
     }
 
     fn save_autosave(&mut self) {

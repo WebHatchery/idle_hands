@@ -35,6 +35,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     state.mine_records[0] = Some(42);
     state.records.best_2048 = 128;
     state.records.fivefold_best_total = 275;
+    state.lights_out.moves = 4;
+    state.records.lights_out_best_moves = Some(4);
     state.achievements[0] = true;
     state.stamps = 3;
     state.card_back = 1;
@@ -52,6 +54,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     assert_eq!(restored.mine_records[0], Some(42));
     assert_eq!(restored.records.best_2048, 128);
     assert_eq!(restored.records.fivefold_best_total, 275);
+    assert_eq!(restored.lights_out.moves, 4);
+    assert_eq!(restored.records.lights_out_best_moves, Some(4));
     assert!(restored.achievements[0]);
     assert_eq!(restored.stamps, 3);
     assert_eq!(restored.card_back, 1);
@@ -92,6 +96,7 @@ fn every_game_snapshot_round_trips_its_own_state() {
     source.freecell.moves = 9;
     source.fivefold.roll_number = 2;
     source.reversi.turn = 2;
+    source.lights_out.moves = 17;
 
     for game in GameId::ALL {
         let snapshot = GameSnapshot::from_state(&source, game);
@@ -114,6 +119,7 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
     source.freecell.moves = 66;
     source.fivefold.roll_number = 2;
     source.reversi.turn = 2;
+    source.lights_out.moves = 17;
 
     let snapshots = GameId::ALL
         .iter()
@@ -132,6 +138,7 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
     assert_eq!(restored.freecell.moves, 66);
     assert_eq!(restored.fivefold.roll_number, 2);
     assert_eq!(restored.reversi.turn, 2);
+    assert_eq!(restored.lights_out.moves, 17);
 }
 
 #[test]
@@ -148,6 +155,7 @@ fn older_saves_default_new_progression_and_cosmetic_fields() {
         "cabinet_decoration",
         "high_contrast",
         "large_text",
+        "lights_out",
     ] {
         object.remove(field);
     }

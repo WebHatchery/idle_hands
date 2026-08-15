@@ -30,9 +30,9 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 pub fn cabinet_rect(index: usize) -> Rect {
     Rect::new(
         8. + (index % 2) as f32 * 172.,
-        115. + (index / 2) as f32 * 128.,
+        100. + (index / 2) as f32 * 106.,
         164.,
-        110.,
+        92.,
     )
 }
 
@@ -40,7 +40,7 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
     let accent = cosmetics::cabinet_accent(state.cabinet_decoration);
     text("IDLE HANDS", 18., 55., 30., accent);
     crate::cabinet_art::draw_header_motif(332., 52., 13., accent);
-    crate::cabinet_art::draw_shelves(8., 115., 344., 512., accent);
+    crate::cabinet_art::draw_shelves(8., 100., 344., 520., accent);
     text(
         "Quiet games for a small screen",
         18.,
@@ -104,7 +104,7 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
 }
 
 pub fn cabinet_clicks(p: Vec2) -> Vec<UiAction> {
-    for index in 0..8 {
+    for index in 0..GameId::ALL.len() {
         if cabinet_rect(index).contains(p) {
             return vec![UiAction::Open(index)];
         }
@@ -662,6 +662,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::FreeCell if state.records.freecell_best_moves.is_some() => "COMPLETE",
         GameId::Yahtzee if state.records.fivefold_best_total > 0 => "COMPLETE",
         GameId::Reversi if state.records.reversi_best_score > 0 => "COMPLETE",
+        GameId::LightsOut if state.records.lights_out_best_moves.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }
