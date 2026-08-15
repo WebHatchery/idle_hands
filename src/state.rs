@@ -58,6 +58,18 @@ impl GameId {
     pub fn index(self) -> usize {
         Self::ALL.iter().position(|game| *game == self).unwrap()
     }
+    pub fn save_key(self) -> &'static str {
+        match self {
+            Self::Solitaire => "solitaire",
+            Self::FreeCell => "freecell",
+            Self::Sudoku => "sudoku",
+            Self::Minesweeper => "minesweeper",
+            Self::Game2048 => "2048",
+            Self::Nonogram => "nonogram",
+            Self::Yahtzee => "fivefold",
+            Self::Reversi => "reversi",
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -269,6 +281,82 @@ pub struct CollectionSave {
     pub records: CollectionRecords,
     #[serde(default)]
     pub tutorial_seen: [bool; 8],
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ProfileSave {
+    pub version: String,
+    pub profile_name: String,
+    pub sound: bool,
+    pub reduced_motion: bool,
+    pub mine_flag_mode: bool,
+    pub mine_records: [Option<u32>; 4],
+    pub sudoku_note_mode: bool,
+    pub records: CollectionRecords,
+    pub tutorial_seen: [bool; 8],
+}
+impl ProfileSave {
+    pub fn from_state(state: &AppState, version: &str) -> Self {
+        Self {
+            version: version.to_owned(),
+            profile_name: state.profile_name.clone(),
+            sound: state.sound,
+            reduced_motion: state.reduced_motion,
+            mine_flag_mode: state.mine_flag_mode,
+            mine_records: state.mine_records,
+            sudoku_note_mode: state.sudoku_note_mode,
+            records: state.records.clone(),
+            tutorial_seen: state.tutorial_seen,
+        }
+    }
+    pub fn apply_to(self, state: &mut AppState) {
+        state.profile_name = self.profile_name;
+        state.sound = self.sound;
+        state.reduced_motion = self.reduced_motion;
+        state.mine_flag_mode = self.mine_flag_mode;
+        state.mine_records = self.mine_records;
+        state.sudoku_note_mode = self.sudoku_note_mode;
+        state.records = self.records;
+        state.tutorial_seen = self.tutorial_seen;
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum GameSnapshot {
+    Game2048(Game2048),
+    Minesweeper(Minesweeper),
+    Sudoku(Sudoku),
+    Nonogram(Nonogram),
+    Solitaire(Solitaire),
+    FreeCell(FreeCell),
+    Fivefold(Fivefold),
+    Reversi(Reversi),
+}
+impl GameSnapshot {
+    pub fn from_state(state: &AppState, game: GameId) -> Self {
+        match game {
+            GameId::Game2048 => Self::Game2048(state.game.clone()),
+            GameId::Minesweeper => Self::Minesweeper(state.minesweeper.clone()),
+            GameId::Sudoku => Self::Sudoku(state.sudoku.clone()),
+            GameId::Nonogram => Self::Nonogram(state.nonogram.clone()),
+            GameId::Solitaire => Self::Solitaire(state.solitaire.clone()),
+            GameId::FreeCell => Self::FreeCell(state.freecell.clone()),
+            GameId::Yahtzee => Self::Fivefold(state.fivefold.clone()),
+            GameId::Reversi => Self::Reversi(state.reversi.clone()),
+        }
+    }
+    pub fn apply_to(self, state: &mut AppState) {
+        match self {
+            Self::Game2048(game) => state.game = game,
+            Self::Minesweeper(game) => state.minesweeper = game,
+            Self::Sudoku(game) => state.sudoku = game,
+            Self::Nonogram(game) => state.nonogram = game,
+            Self::Solitaire(game) => state.solitaire = game,
+            Self::FreeCell(game) => state.freecell = game,
+            Self::Fivefold(game) => state.fivefold = game,
+            Self::Reversi(game) => state.reversi = game,
+        }
+    }
 }
 
 impl CollectionSave {

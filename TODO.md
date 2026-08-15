@@ -32,6 +32,8 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 - [x] Build the responsive cabinet with objects/labels for all eight games;
   unavailable objects clearly say “Coming soon” and remain accessible.
 - [ ] Implement profile settings, per-game save keys, and autosave lifecycle.
+  - [x] Add independent versioned profile and active-game slots alongside the
+    combined migration fallback.
 - [x] Implement seeded 2048 rules, swipe controls, visible direction controls,
   score/best tile, one undo, new-game confirmation, tutorial, and records.
 - [ ] Add portrait/landscape capture scenes and replace the template screenshot.

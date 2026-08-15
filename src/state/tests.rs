@@ -44,3 +44,19 @@ fn collection_save_round_trips_game_and_profile_state() {
     assert_eq!(restored.records.fivefold_best_total, 275);
     assert!(restored.tutorial_seen[6]);
 }
+
+#[test]
+fn profile_and_game_snapshots_round_trip_independently() {
+    let mut state = AppState::default();
+    state.profile_name = "Separate Slots".into();
+    state.game.score = 77;
+    state.records.best_2048 = 77;
+    let profile = ProfileSave::from_state(&state, "1.0.0");
+    let snapshot = GameSnapshot::from_state(&state, GameId::Game2048);
+    let mut restored = AppState::default();
+    profile.apply_to(&mut restored);
+    snapshot.apply_to(&mut restored);
+    assert_eq!(restored.profile_name, "Separate Slots");
+    assert_eq!(restored.game.score, 77);
+    assert_eq!(GameId::Yahtzee.save_key(), "fivefold");
+}
