@@ -26,6 +26,7 @@ pub struct Game {
     notifications: NotificationManager,
     pointer: PointerTracker,
     sounds: SoundBank,
+    transition: f32,
 }
 impl Game {
     pub async fn new() -> Self {
@@ -41,6 +42,7 @@ impl Game {
             notifications: NotificationManager::new(),
             pointer: PointerTracker::default(),
             sounds: SoundBank::load().await,
+            transition: 0.,
         };
         game.load_autosave();
         game
@@ -48,6 +50,11 @@ impl Game {
     pub fn update(&mut self, dt: f32) {
         self.notifications.update(dt);
         self.pointer.tick(dt);
+        if self.state.reduced_motion {
+            self.transition = 0.;
+        } else {
+            self.transition = (self.transition - dt * 3.5).max(0.);
+        }
         self.state.minesweeper.tick(dt);
         if self.state.minesweeper.status == crate::minesweeper::MineStatus::Won {
             let slot = self.state.minesweeper.preset.index();
@@ -102,6 +109,9 @@ impl Game {
             self.state.confirm_restart = false;
             self.state.confirm_reset = false;
             self.state.tutorial = None;
+            if !self.state.reduced_motion {
+                self.transition = 1.;
+            }
         }
         if self.state.screen == Screen::Game(GameId::Game2048) {
             for (key, direction) in [
@@ -129,6 +139,15 @@ impl Game {
             ..Default::default()
         });
         ui::draw(&self.state, &self.data, self.assets.len());
+        if self.transition > 0. {
+            draw_rectangle(
+                0.,
+                0.,
+                ui::LOGICAL_WIDTH,
+                ui::LOGICAL_HEIGHT,
+                Color::new(0.02, 0.015, 0.035, self.transition),
+            );
+        }
         set_default_camera();
         self.notifications
             .draw_with_config(&NotificationRenderConfig {
@@ -137,6 +156,7 @@ impl Game {
             });
     }
     fn apply(&mut self, action: ui::UiAction) {
+        let previous_screen = self.state.screen;
         match action {
             ui::UiAction::Open(index) => {
                 self.state.selected = index;
@@ -368,6 +388,9 @@ impl Game {
                 self.state = AppState::default();
             }
             ui::UiAction::CancelResetData => self.state.confirm_reset = false,
+        }
+        if self.state.screen != previous_screen {
+            self.transition = if self.state.reduced_motion { 0. } else { 1. };
         }
         self.update_records();
         self.save_autosave();

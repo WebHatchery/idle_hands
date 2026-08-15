@@ -7,6 +7,7 @@ use crate::grid::GridLayout;
 use crate::input::Viewport;
 use crate::library_ui;
 use crate::nonogram_ui;
+use crate::palette_ui;
 use crate::records_ui;
 use crate::reversi_ui;
 use crate::settings_ui;
@@ -251,16 +252,13 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
                 WHITE
             },
         );
+        let status = cabinet_status(state, GameId::ALL[i]);
         text(
-            if active { "PLAY NOW" } else { "COMING SOON" },
+            status,
             r.x + 18.,
             r.y + 70.,
             14.,
-            if active {
-                Color::new(0.55, 1., 0.72, 1.)
-            } else {
-                Color::new(0.58, 0.54, 0.66, 1.)
-            },
+            cabinet_status_color(status),
         );
         text(
             GameId::ALL[i].subtitle(),
@@ -309,6 +307,44 @@ fn cabinet_rect(i: usize) -> Rect {
         178.,
     )
 }
+fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
+    let complete = match game {
+        GameId::Game2048 => state.records.best_2048 >= 2048,
+        GameId::Minesweeper => state.records.minesweeper.iter().any(Option::is_some),
+        GameId::Sudoku => state.records.sudoku.iter().any(Option::is_some),
+        GameId::Nonogram => state.records.nonogram.iter().any(Option::is_some),
+        GameId::Solitaire => state.records.solitaire_best_moves.is_some(),
+        GameId::FreeCell => state.records.freecell_best_moves.is_some(),
+        GameId::Yahtzee => state.records.fivefold_best_total > 0,
+        GameId::Reversi => state.records.reversi_best_score > 0,
+    };
+    if complete {
+        "COMPLETE"
+    } else if cabinet_has_progress(state, game) {
+        "IN PROGRESS"
+    } else {
+        "PLAY NOW"
+    }
+}
+fn cabinet_has_progress(state: &AppState, game: GameId) -> bool {
+    match game {
+        GameId::Game2048 => state.game.score > 0 || state.game.best > 0,
+        GameId::Minesweeper => state.minesweeper.status != MineStatus::Ready,
+        GameId::Sudoku => state.sudoku.moves > 0,
+        GameId::Nonogram => state.nonogram.moves > 0,
+        GameId::Solitaire => state.solitaire.moves > 0,
+        GameId::FreeCell => state.freecell.moves > 0,
+        GameId::Yahtzee => state.fivefold.roll_number > 0,
+        GameId::Reversi => state.reversi.moves > 0,
+    }
+}
+fn cabinet_status_color(status: &str) -> Color {
+    match status {
+        "COMPLETE" => Color::new(0.55, 1., 0.72, 1.),
+        "IN PROGRESS" => Color::new(0.98, 0.75, 0.30, 1.),
+        _ => Color::new(0.98, 0.75, 0.30, 1.),
+    }
+}
 fn draw_2048(state: &AppState) {
     let g = &state.game;
     text("‹ CABINET", 40., 55., 20., Color::new(0.78, 0.70, 0.92, 1.));
@@ -334,7 +370,13 @@ fn draw_2048(state: &AppState) {
             76.,
         );
         let v = g.cells[i];
-        draw_rectangle(r.x, r.y, r.w, r.h, tile_color(v, state.board_theme));
+        draw_rectangle(
+            r.x,
+            r.y,
+            r.w,
+            r.h,
+            palette_ui::tile_color(v, state.board_theme),
+        );
         if v > 0 {
             let label = v.to_string();
             let fs = if v < 100 {
@@ -433,52 +475,6 @@ fn score_box(r: Rect, label: &str, value: u32) {
         Color::new(0.62, 0.55, 0.72, 1.),
     );
     text(&value.to_string(), r.x + 14., r.y + 51., 24., WHITE)
-}
-fn tile_color(v: u16, theme: u8) -> Color {
-    match theme % 3 {
-        1 => match v {
-            0 => Color::new(0.08, 0.18, 0.14, 1.),
-            2 => Color::new(0.22, 0.34, 0.25, 1.),
-            4 => Color::new(0.30, 0.45, 0.28, 1.),
-            8 => Color::new(0.42, 0.58, 0.25, 1.),
-            16 => Color::new(0.58, 0.68, 0.25, 1.),
-            32 => Color::new(0.70, 0.48, 0.20, 1.),
-            64 => Color::new(0.72, 0.32, 0.22, 1.),
-            128 => Color::new(0.38, 0.62, 0.42, 1.),
-            256 => Color::new(0.30, 0.52, 0.52, 1.),
-            512 => Color::new(0.25, 0.55, 0.68, 1.),
-            1024 => Color::new(0.30, 0.68, 0.58, 1.),
-            _ => Color::new(0.72, 0.72, 0.34, 1.),
-        },
-        2 => match v {
-            0 => Color::new(0.22, 0.15, 0.11, 1.),
-            2 => Color::new(0.42, 0.29, 0.20, 1.),
-            4 => Color::new(0.55, 0.34, 0.22, 1.),
-            8 => Color::new(0.72, 0.42, 0.20, 1.),
-            16 => Color::new(0.84, 0.56, 0.24, 1.),
-            32 => Color::new(0.78, 0.32, 0.20, 1.),
-            64 => Color::new(0.68, 0.24, 0.22, 1.),
-            128 => Color::new(0.70, 0.46, 0.30, 1.),
-            256 => Color::new(0.58, 0.40, 0.26, 1.),
-            512 => Color::new(0.40, 0.50, 0.54, 1.),
-            1024 => Color::new(0.42, 0.66, 0.64, 1.),
-            _ => Color::new(0.82, 0.68, 0.34, 1.),
-        },
-        _ => match v {
-            0 => Color::new(0.14, 0.10, 0.20, 1.),
-            2 => Color::new(0.35, 0.25, 0.32, 1.),
-            4 => Color::new(0.45, 0.30, 0.29, 1.),
-            8 => Color::new(0.72, 0.40, 0.22, 1.),
-            16 => Color::new(0.83, 0.50, 0.20, 1.),
-            32 => Color::new(0.82, 0.32, 0.20, 1.),
-            64 => Color::new(0.75, 0.20, 0.25, 1.),
-            128 => Color::new(0.65, 0.40, 0.72, 1.),
-            256 => Color::new(0.50, 0.36, 0.78, 1.),
-            512 => Color::new(0.35, 0.45, 0.80, 1.),
-            1024 => Color::new(0.30, 0.65, 0.70, 1.),
-            _ => Color::new(0.72, 0.62, 0.25, 1.),
-        },
-    }
 }
 fn game_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     let mut out = vec![];
