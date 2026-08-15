@@ -146,6 +146,10 @@ pub fn draw_records(state: &AppState) {
             "Blackjack best wins",
             value(state.records.blackjack_best_wins.map(u32::from)),
         ),
+        (
+            "Spider Solitaire best moves",
+            value(state.records.spider_solitaire_best_moves),
+        ),
     ];
     draw_column(&left, 175., 240.);
     draw_column(&middle, 490., 240.);

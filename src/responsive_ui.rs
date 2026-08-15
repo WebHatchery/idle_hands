@@ -681,6 +681,9 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::HigherLower if state.records.higher_lower_best_score.is_some() => "COMPLETE",
         GameId::KlondikeGolf if state.records.klondike_golf_best_moves.is_some() => "COMPLETE",
         GameId::Blackjack if state.records.blackjack_best_wins.is_some() => "COMPLETE",
+        GameId::SpiderSolitaire if state.records.spider_solitaire_best_moves.is_some() => {
+            "COMPLETE"
+        }
         _ => "PLAY NOW",
     }
 }

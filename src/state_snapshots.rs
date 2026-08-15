@@ -1,0 +1,109 @@
+//! Independent active-game snapshot storage.
+
+use crate::state::Game2048;
+use crate::state::{AppState, GameId};
+use crate::{
+    blackjack::Blackjack, breakout::Breakout, checkers::Checkers, connect_four::ConnectFour,
+    fivefold::Fivefold, freecell::FreeCell, hangman::Hangman, higher_lower::HigherLower,
+    klondike_golf::KlondikeGolf, lights_out::LightsOut, mahjong_solitaire::MahjongSolitaire,
+    mastermind::Mastermind, memory_pairs::MemoryPairs, minesweeper::Minesweeper,
+    nonogram::Nonogram, peg_solitaire::PegSolitaire, reversi::Reversi,
+    sliding_puzzle::SlidingPuzzle, snake::Snake, solitaire::Solitaire, spider::Spider,
+    spider_solitaire::SpiderSolitaire, sudoku::Sudoku, tic_tac_toe::TicTacToe,
+    word_search::WordSearch,
+};
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum GameSnapshot {
+    Game2048(Game2048),
+    Minesweeper(Minesweeper),
+    Sudoku(Sudoku),
+    Nonogram(Nonogram),
+    Solitaire(Solitaire),
+    FreeCell(FreeCell),
+    Fivefold(Fivefold),
+    Reversi(Reversi),
+    LightsOut(LightsOut),
+    TicTacToe(TicTacToe),
+    MemoryPairs(MemoryPairs),
+    SlidingPuzzle(SlidingPuzzle),
+    Mastermind(Mastermind),
+    Spider(Spider),
+    WordSearch(WordSearch),
+    Hangman(Hangman),
+    ConnectFour(ConnectFour),
+    Checkers(Checkers),
+    PegSolitaire(PegSolitaire),
+    MahjongSolitaire(MahjongSolitaire),
+    Snake(Snake),
+    Breakout(Breakout),
+    HigherLower(HigherLower),
+    KlondikeGolf(KlondikeGolf),
+    Blackjack(Blackjack),
+    SpiderSolitaire(SpiderSolitaire),
+}
+
+impl GameSnapshot {
+    pub fn from_state(state: &AppState, game: GameId) -> Self {
+        match game {
+            GameId::Game2048 => Self::Game2048(state.game.clone()),
+            GameId::Minesweeper => Self::Minesweeper(state.minesweeper.clone()),
+            GameId::Sudoku => Self::Sudoku(state.sudoku.clone()),
+            GameId::Nonogram => Self::Nonogram(state.nonogram.clone()),
+            GameId::Solitaire => Self::Solitaire(state.solitaire.clone()),
+            GameId::FreeCell => Self::FreeCell(state.freecell.clone()),
+            GameId::Yahtzee => Self::Fivefold(state.fivefold.clone()),
+            GameId::Reversi => Self::Reversi(state.reversi.clone()),
+            GameId::LightsOut => Self::LightsOut(state.lights_out.clone()),
+            GameId::TicTacToe => Self::TicTacToe(state.tic_tac_toe.clone()),
+            GameId::MemoryPairs => Self::MemoryPairs(state.memory_pairs.clone()),
+            GameId::SlidingPuzzle => Self::SlidingPuzzle(state.sliding_puzzle.clone()),
+            GameId::Mastermind => Self::Mastermind(state.mastermind.clone()),
+            GameId::Spider => Self::Spider(state.spider.clone()),
+            GameId::WordSearch => Self::WordSearch(state.word_search.clone()),
+            GameId::Hangman => Self::Hangman(state.hangman.clone()),
+            GameId::ConnectFour => Self::ConnectFour(state.connect_four.clone()),
+            GameId::Checkers => Self::Checkers(state.checkers.clone()),
+            GameId::PegSolitaire => Self::PegSolitaire(state.peg_solitaire.clone()),
+            GameId::MahjongSolitaire => Self::MahjongSolitaire(state.mahjong_solitaire.clone()),
+            GameId::Snake => Self::Snake(state.snake.clone()),
+            GameId::Breakout => Self::Breakout(state.breakout.clone()),
+            GameId::HigherLower => Self::HigherLower(state.higher_lower.clone()),
+            GameId::KlondikeGolf => Self::KlondikeGolf(state.klondike_golf.clone()),
+            GameId::Blackjack => Self::Blackjack(state.blackjack.clone()),
+            GameId::SpiderSolitaire => Self::SpiderSolitaire(state.spider_solitaire.clone()),
+        }
+    }
+
+    pub fn apply_to(self, state: &mut AppState) {
+        match self {
+            Self::Game2048(game) => state.game = game,
+            Self::Minesweeper(game) => state.minesweeper = game,
+            Self::Sudoku(game) => state.sudoku = game,
+            Self::Nonogram(game) => state.nonogram = game,
+            Self::Solitaire(game) => state.solitaire = game,
+            Self::FreeCell(game) => state.freecell = game,
+            Self::Fivefold(game) => state.fivefold = game,
+            Self::Reversi(game) => state.reversi = game,
+            Self::LightsOut(game) => state.lights_out = game,
+            Self::TicTacToe(game) => state.tic_tac_toe = game,
+            Self::MemoryPairs(game) => state.memory_pairs = game,
+            Self::SlidingPuzzle(game) => state.sliding_puzzle = game,
+            Self::Mastermind(game) => state.mastermind = game,
+            Self::Spider(game) => state.spider = game,
+            Self::WordSearch(game) => state.word_search = game,
+            Self::Hangman(game) => state.hangman = game,
+            Self::ConnectFour(game) => state.connect_four = game,
+            Self::Checkers(game) => state.checkers = game,
+            Self::PegSolitaire(game) => state.peg_solitaire = game,
+            Self::MahjongSolitaire(game) => state.mahjong_solitaire = game,
+            Self::Snake(game) => state.snake = game,
+            Self::Breakout(game) => state.breakout = game,
+            Self::HigherLower(game) => state.higher_lower = game,
+            Self::KlondikeGolf(game) => state.klondike_golf = game,
+            Self::Blackjack(game) => state.blackjack = game,
+            Self::SpiderSolitaire(game) => state.spider_solitaire = game,
+        }
+    }
+}

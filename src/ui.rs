@@ -34,6 +34,7 @@ use crate::settings_ui;
 use crate::sliding_puzzle_ui;
 use crate::snake_ui;
 use crate::solitaire_ui;
+use crate::spider_solitaire_ui;
 use crate::spider_ui;
 use crate::sudoku_ui;
 use crate::tic_tac_toe_ui;
@@ -170,6 +171,11 @@ pub enum UiAction {
     BlackjackStand,
     BlackjackUndo,
     BlackjackNew,
+    SpiderSolitaireSelect(usize, usize),
+    SpiderSolitaireMove(usize),
+    SpiderSolitaireDeal,
+    SpiderSolitaireUndo,
+    SpiderSolitaireNew,
 }
 pub fn viewport() -> Viewport {
     let (width, height) = layout_size();
@@ -305,6 +311,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Game(GameId::HigherLower) => higher_lower_ui::clicks(state, p),
         Screen::Game(GameId::KlondikeGolf) => klondike_golf_ui::clicks(state, p),
         Screen::Game(GameId::Blackjack) => blackjack_ui::clicks(state, p),
+        Screen::Game(GameId::SpiderSolitaire) => spider_solitaire_ui::clicks(state, p),
         Screen::Game(GameId::Mastermind) => mastermind_ui::clicks(state, p),
         Screen::Help => {
             if is_compact_landscape() {
@@ -406,6 +413,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::HigherLower) => higher_lower_ui::draw(state),
         Screen::Game(GameId::KlondikeGolf) => klondike_golf_ui::draw(state),
         Screen::Game(GameId::Blackjack) => blackjack_ui::draw(state),
+        Screen::Game(GameId::SpiderSolitaire) => spider_solitaire_ui::draw(state),
         Screen::Game(GameId::Mastermind) => mastermind_ui::draw(state),
         Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(),
         Screen::Help if is_portrait() => responsive_library::draw_help(),

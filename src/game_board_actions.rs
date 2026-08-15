@@ -95,6 +95,22 @@ impl Game {
                 let seed = self.state.blackjack.seed.wrapping_add(1);
                 self.state.blackjack.reset(seed);
             }
+            UiAction::SpiderSolitaireSelect(column, depth) => {
+                self.state.spider_solitaire.select_column(*column, *depth);
+            }
+            UiAction::SpiderSolitaireMove(column) => {
+                self.state.spider_solitaire.move_selected(*column);
+            }
+            UiAction::SpiderSolitaireDeal => {
+                self.state.spider_solitaire.deal_stock();
+            }
+            UiAction::SpiderSolitaireUndo => {
+                self.state.spider_solitaire.undo();
+            }
+            UiAction::SpiderSolitaireNew => {
+                let seed = self.state.spider_solitaire.seed.wrapping_add(1);
+                self.state.spider_solitaire.reset(seed);
+            }
             _ => return false,
         }
         true

@@ -442,6 +442,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "Beat the dealer without going over twenty-one.",
             "Use UNDO or NEW ROUND with the visible controls.",
         ],
+        GameId::SpiderSolitaire => [
+            "Tap a suited descending run, then tap its destination.",
+            "Tap STOCK to deal one card to every column.",
+            "Clear eight runs; use UNDO or NEW DEAL visibly.",
+        ],
     }
 }
 
@@ -474,6 +479,9 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::HigherLower if state.records.higher_lower_best_score.is_some() => "COMPLETE",
         GameId::KlondikeGolf if state.records.klondike_golf_best_moves.is_some() => "COMPLETE",
         GameId::Blackjack if state.records.blackjack_best_wins.is_some() => "COMPLETE",
+        GameId::SpiderSolitaire if state.records.spider_solitaire_best_moves.is_some() => {
+            "COMPLETE"
+        }
         _ => "PLAY NOW",
     }
 }

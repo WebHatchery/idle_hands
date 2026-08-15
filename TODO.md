@@ -380,6 +380,17 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Add responsive desktop, portrait, and medium-landscape presentation,
     visible controls, records, and verification captures.
 
+## Phase 25 — Eighteenth post-launch cabinet game
+
+- [x] Add Spider Solitaire as a twenty-sixth deterministic, touch-complete
+  card cabinet game with the standard four-suit, ten-column ruleset.
+  - [x] Cover 104-card seeded deals, same-suit descending runs, stock deals,
+    completed-run removal, undo, and reset behavior with focused rule tests.
+  - [x] Add persisted active state and best-move records with snapshot,
+    migration, progression, and tutorial coverage.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, records, and verification captures.
+
 ## Post-launch candidates (not scheduled)
 
 - Card family: Spider Solitaire.

@@ -207,5 +207,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "The dealer draws to seventeen; stay at or below twenty-one.",
             "Use UNDO or NEW ROUND with the visible controls.",
         ],
+        GameId::SpiderSolitaire => [
+            "Tap a same-suit descending run to select it.",
+            "Tap a destination column; deal STOCK when every column is filled.",
+            "Clear eight suited runs; use UNDO or NEW DEAL visibly.",
+        ],
     }
 }

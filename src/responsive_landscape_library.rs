@@ -124,6 +124,10 @@ pub fn draw_records(state: &AppState) {
             "Blackjack wins",
             value(state.records.blackjack_best_wins.map(u32::from)),
         ),
+        (
+            "Spider Solitaire best",
+            value(state.records.spider_solitaire_best_moves),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
         let col = index / 11;

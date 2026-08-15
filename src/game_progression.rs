@@ -221,6 +221,16 @@ impl Game {
                     }),
             );
         }
+        if self.state.spider_solitaire.status == crate::spider_solitaire::SpiderSolitaireStatus::Won
+        {
+            records.spider_solitaire_best_moves = Some(
+                records
+                    .spider_solitaire_best_moves
+                    .map_or(self.state.spider_solitaire.moves, |best| {
+                        best.min(self.state.spider_solitaire.moves)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

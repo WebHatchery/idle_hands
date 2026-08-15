@@ -21,10 +21,13 @@ use crate::sliding_puzzle::SlidingPuzzle;
 use crate::snake::Snake;
 use crate::solitaire::Solitaire;
 use crate::spider::Spider;
+use crate::spider_solitaire::SpiderSolitaire;
 use crate::sudoku::Sudoku;
 use crate::tic_tac_toe::TicTacToe;
 use crate::word_search::WordSearch;
 use serde::{Deserialize, Serialize};
+
+pub use crate::state_snapshots::GameSnapshot;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum GameId {
@@ -53,9 +56,10 @@ pub enum GameId {
     HigherLower,
     KlondikeGolf,
     Blackjack,
+    SpiderSolitaire,
 }
 impl GameId {
-    pub const ALL: [Self; 25] = [
+    pub const ALL: [Self; 26] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -81,6 +85,7 @@ impl GameId {
         Self::HigherLower,
         Self::KlondikeGolf,
         Self::Blackjack,
+        Self::SpiderSolitaire,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -109,6 +114,7 @@ impl GameId {
             Self::HigherLower => "Higher or Lower",
             Self::KlondikeGolf => "Klondike Golf",
             Self::Blackjack => "Blackjack",
+            Self::SpiderSolitaire => "Spider Solitaire",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -138,6 +144,7 @@ impl GameId {
             Self::HigherLower => "Read the quiet card",
             Self::KlondikeGolf => "Clear the quiet columns",
             Self::Blackjack => "Hold the quiet hand",
+            Self::SpiderSolitaire => "Build suited webs",
         }
     }
     pub fn index(self) -> usize {
@@ -170,6 +177,7 @@ impl GameId {
             Self::HigherLower => "higher_lower",
             Self::KlondikeGolf => "klondike_golf",
             Self::Blackjack => "blackjack",
+            Self::SpiderSolitaire => "spider_solitaire",
         }
     }
 }
@@ -339,6 +347,7 @@ pub struct AppState {
     pub higher_lower: HigherLower,
     pub klondike_golf: KlondikeGolf,
     pub blackjack: Blackjack,
+    pub spider_solitaire: SpiderSolitaire,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -405,6 +414,8 @@ pub struct CollectionRecords {
     pub klondike_golf_best_moves: Option<u16>,
     #[serde(default)]
     pub blackjack_best_wins: Option<u16>,
+    #[serde(default)]
+    pub spider_solitaire_best_moves: Option<u32>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -458,6 +469,8 @@ pub struct CollectionSave {
     pub klondike_golf: KlondikeGolf,
     #[serde(default)]
     pub blackjack: Blackjack,
+    #[serde(default)]
+    pub spider_solitaire: SpiderSolitaire,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -557,95 +570,6 @@ impl ProfileSave {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum GameSnapshot {
-    Game2048(Game2048),
-    Minesweeper(Minesweeper),
-    Sudoku(Sudoku),
-    Nonogram(Nonogram),
-    Solitaire(Solitaire),
-    FreeCell(FreeCell),
-    Fivefold(Fivefold),
-    Reversi(Reversi),
-    LightsOut(LightsOut),
-    TicTacToe(TicTacToe),
-    MemoryPairs(MemoryPairs),
-    SlidingPuzzle(SlidingPuzzle),
-    Mastermind(Mastermind),
-    Spider(Spider),
-    WordSearch(WordSearch),
-    Hangman(Hangman),
-    ConnectFour(ConnectFour),
-    Checkers(Checkers),
-    PegSolitaire(PegSolitaire),
-    MahjongSolitaire(MahjongSolitaire),
-    Snake(Snake),
-    Breakout(Breakout),
-    HigherLower(HigherLower),
-    KlondikeGolf(KlondikeGolf),
-    Blackjack(Blackjack),
-}
-impl GameSnapshot {
-    pub fn from_state(state: &AppState, game: GameId) -> Self {
-        match game {
-            GameId::Game2048 => Self::Game2048(state.game.clone()),
-            GameId::Minesweeper => Self::Minesweeper(state.minesweeper.clone()),
-            GameId::Sudoku => Self::Sudoku(state.sudoku.clone()),
-            GameId::Nonogram => Self::Nonogram(state.nonogram.clone()),
-            GameId::Solitaire => Self::Solitaire(state.solitaire.clone()),
-            GameId::FreeCell => Self::FreeCell(state.freecell.clone()),
-            GameId::Yahtzee => Self::Fivefold(state.fivefold.clone()),
-            GameId::Reversi => Self::Reversi(state.reversi.clone()),
-            GameId::LightsOut => Self::LightsOut(state.lights_out.clone()),
-            GameId::TicTacToe => Self::TicTacToe(state.tic_tac_toe.clone()),
-            GameId::MemoryPairs => Self::MemoryPairs(state.memory_pairs.clone()),
-            GameId::SlidingPuzzle => Self::SlidingPuzzle(state.sliding_puzzle.clone()),
-            GameId::Mastermind => Self::Mastermind(state.mastermind.clone()),
-            GameId::Spider => Self::Spider(state.spider.clone()),
-            GameId::WordSearch => Self::WordSearch(state.word_search.clone()),
-            GameId::Hangman => Self::Hangman(state.hangman.clone()),
-            GameId::ConnectFour => Self::ConnectFour(state.connect_four.clone()),
-            GameId::Checkers => Self::Checkers(state.checkers.clone()),
-            GameId::PegSolitaire => Self::PegSolitaire(state.peg_solitaire.clone()),
-            GameId::MahjongSolitaire => Self::MahjongSolitaire(state.mahjong_solitaire.clone()),
-            GameId::Snake => Self::Snake(state.snake.clone()),
-            GameId::Breakout => Self::Breakout(state.breakout.clone()),
-            GameId::HigherLower => Self::HigherLower(state.higher_lower.clone()),
-            GameId::KlondikeGolf => Self::KlondikeGolf(state.klondike_golf.clone()),
-            GameId::Blackjack => Self::Blackjack(state.blackjack.clone()),
-        }
-    }
-    pub fn apply_to(self, state: &mut AppState) {
-        match self {
-            Self::Game2048(game) => state.game = game,
-            Self::Minesweeper(game) => state.minesweeper = game,
-            Self::Sudoku(game) => state.sudoku = game,
-            Self::Nonogram(game) => state.nonogram = game,
-            Self::Solitaire(game) => state.solitaire = game,
-            Self::FreeCell(game) => state.freecell = game,
-            Self::Fivefold(game) => state.fivefold = game,
-            Self::Reversi(game) => state.reversi = game,
-            Self::LightsOut(game) => state.lights_out = game,
-            Self::TicTacToe(game) => state.tic_tac_toe = game,
-            Self::MemoryPairs(game) => state.memory_pairs = game,
-            Self::SlidingPuzzle(game) => state.sliding_puzzle = game,
-            Self::Mastermind(game) => state.mastermind = game,
-            Self::Spider(game) => state.spider = game,
-            Self::WordSearch(game) => state.word_search = game,
-            Self::Hangman(game) => state.hangman = game,
-            Self::ConnectFour(game) => state.connect_four = game,
-            Self::Checkers(game) => state.checkers = game,
-            Self::PegSolitaire(game) => state.peg_solitaire = game,
-            Self::MahjongSolitaire(game) => state.mahjong_solitaire = game,
-            Self::Snake(game) => state.snake = game,
-            Self::Breakout(game) => state.breakout = game,
-            Self::HigherLower(game) => state.higher_lower = game,
-            Self::KlondikeGolf(game) => state.klondike_golf = game,
-            Self::Blackjack(game) => state.blackjack = game,
-        }
-    }
-}
-
 impl CollectionSave {
     pub fn from_state(state: &AppState, version: &str) -> Self {
         Self {
@@ -675,6 +599,7 @@ impl CollectionSave {
             higher_lower: state.higher_lower.clone(),
             klondike_golf: state.klondike_golf.clone(),
             blackjack: state.blackjack.clone(),
+            spider_solitaire: state.spider_solitaire.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -719,6 +644,7 @@ impl CollectionSave {
         state.higher_lower = self.higher_lower;
         state.klondike_golf = self.klondike_golf;
         state.blackjack = self.blackjack;
+        state.spider_solitaire = self.spider_solitaire;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -769,6 +695,7 @@ impl Default for AppState {
             higher_lower: HigherLower::default(),
             klondike_golf: KlondikeGolf::default(),
             blackjack: Blackjack::default(),
+            spider_solitaire: SpiderSolitaire::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

@@ -74,6 +74,8 @@ fn collection_save_round_trips_game_and_profile_state() {
         face_up: true,
     });
     state.records.blackjack_best_wins = Some(2);
+    state.spider_solitaire.moves = 17;
+    state.records.spider_solitaire_best_moves = Some(17);
     state.achievements[0] = true;
     state.stamps = 3;
     state.card_back = 1;
@@ -125,6 +127,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     assert_eq!(restored.records.klondike_golf_best_moves, Some(16));
     assert_eq!(restored.blackjack.player.len(), 3);
     assert_eq!(restored.records.blackjack_best_wins, Some(2));
+    assert_eq!(restored.spider_solitaire.moves, 17);
+    assert_eq!(restored.records.spider_solitaire_best_moves, Some(17));
     assert!(restored.achievements[0]);
     assert_eq!(restored.stamps, 3);
     assert_eq!(restored.card_back, 1);
@@ -186,6 +190,7 @@ fn every_game_snapshot_round_trips_its_own_state() {
         suit: 1,
         face_up: true,
     });
+    source.spider_solitaire.moves = 36;
 
     for game in GameId::ALL {
         let snapshot = GameSnapshot::from_state(&source, game);
@@ -229,6 +234,7 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
         suit: 2,
         face_up: true,
     });
+    source.spider_solitaire.moves = 37;
 
     let snapshots = GameId::ALL
         .iter()
@@ -264,6 +270,7 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
     assert_eq!(restored.higher_lower.moves, 34);
     assert_eq!(restored.klondike_golf.moves, 35);
     assert_eq!(restored.blackjack.player.len(), 3);
+    assert_eq!(restored.spider_solitaire.moves, 37);
 }
 
 #[test]
@@ -297,6 +304,7 @@ fn older_saves_default_new_progression_and_cosmetic_fields() {
         "higher_lower",
         "klondike_golf",
         "blackjack",
+        "spider_solitaire",
     ] {
         object.remove(field);
     }
