@@ -1,6 +1,7 @@
 //! Independent active-game snapshot storage.
 
 use crate::dungeon_sweeper::DungeonSweeper;
+use crate::one_room_roguelike::OneRoomRoguelike;
 use crate::potion_2048::Potion2048;
 use crate::state::Game2048;
 use crate::state::{AppState, GameId};
@@ -48,6 +49,7 @@ pub enum GameSnapshot {
     DungeonSweeper(DungeonSweeper),
     Potion2048(Potion2048),
     TinyTowerDefence(TinyTowerDefence),
+    OneRoomRoguelike(OneRoomRoguelike),
 }
 
 impl GameSnapshot {
@@ -82,6 +84,7 @@ impl GameSnapshot {
             GameId::DungeonSweeper => Self::DungeonSweeper(state.dungeon_sweeper.clone()),
             GameId::Potion2048 => Self::Potion2048(state.potion_2048.clone()),
             GameId::TinyTowerDefence => Self::TinyTowerDefence(state.tiny_tower_defence.clone()),
+            GameId::OneRoomRoguelike => Self::OneRoomRoguelike(state.one_room_roguelike.clone()),
         }
     }
 
@@ -116,6 +119,7 @@ impl GameSnapshot {
             Self::DungeonSweeper(game) => state.dungeon_sweeper = game,
             Self::Potion2048(game) => state.potion_2048 = game,
             Self::TinyTowerDefence(game) => state.tiny_tower_defence = game,
+            Self::OneRoomRoguelike(game) => state.one_room_roguelike = game,
         }
     }
 }

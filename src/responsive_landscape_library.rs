@@ -140,11 +140,15 @@ pub fn draw_records(state: &AppState) {
             "Tower Defence wave",
             value(state.records.tiny_tower_defence_best_wave.map(u32::from)),
         ),
+        (
+            "Room Roguelike best",
+            value(state.records.one_room_roguelike_best_score),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
-        let col = index / 12;
-        let row = index % 12;
-        let y = 86. + row as f32 * 23.;
+        let col = index / 13;
+        let row = index % 13;
+        let y = 86. + row as f32 * 22.;
         let x = 40. + col as f32 * 265.;
         text(label, x, y, 10., Color::new(0.78, 0.73, 0.86, 1.));
         text(score, x + 220., y, 11., Color::new(0.98, 0.83, 0.45, 1.));

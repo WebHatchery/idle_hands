@@ -48,6 +48,8 @@ mod minesweeper;
 mod minesweeper_ui;
 mod nonogram;
 mod nonogram_ui;
+mod one_room_roguelike;
+mod one_room_roguelike_ui;
 mod palette_ui;
 mod peg_solitaire;
 mod peg_solitaire_ui;

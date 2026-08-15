@@ -162,6 +162,10 @@ pub fn draw_records(state: &AppState) {
             "Tower Defence wave",
             value(state.records.tiny_tower_defence_best_wave.map(u32::from)),
         ),
+        (
+            "Room Roguelike best",
+            value(state.records.one_room_roguelike_best_score),
+        ),
     ];
     draw_column(&left, 175., 240.);
     draw_column(&middle, 490., 240.);

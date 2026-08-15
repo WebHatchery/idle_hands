@@ -151,6 +151,22 @@ impl Game {
                 let seed = self.state.tiny_tower_defence.seed.wrapping_add(1);
                 self.state.tiny_tower_defence.reset(seed);
             }
+            UiAction::RogueMove(direction) => {
+                self.state.one_room_roguelike.move_in(*direction);
+            }
+            UiAction::RogueStrike => {
+                self.state.one_room_roguelike.strike();
+            }
+            UiAction::RoguePotion => {
+                self.state.one_room_roguelike.drink_potion();
+            }
+            UiAction::RogueUndo => {
+                self.state.one_room_roguelike.undo();
+            }
+            UiAction::RogueNew => {
+                let seed = self.state.one_room_roguelike.seed.wrapping_add(1);
+                self.state.one_room_roguelike.reset(seed);
+            }
             _ => return false,
         }
         true

@@ -689,6 +689,9 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::TinyTowerDefence if state.records.tiny_tower_defence_best_wave.is_some() => {
             "COMPLETE"
         }
+        GameId::OneRoomRoguelike if state.records.one_room_roguelike_best_score.is_some() => {
+            "COMPLETE"
+        }
         _ => "PLAY NOW",
     }
 }

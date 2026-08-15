@@ -258,6 +258,15 @@ impl Game {
                     }),
             );
         }
+        if self.state.one_room_roguelike.won() {
+            records.one_room_roguelike_best_score = Some(
+                records
+                    .one_room_roguelike_best_score
+                    .map_or(self.state.one_room_roguelike.score, |best| {
+                        best.max(self.state.one_room_roguelike.score)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

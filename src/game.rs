@@ -100,6 +100,7 @@ impl Game {
             "dungeon_sweeper" => Screen::Game(GameId::DungeonSweeper),
             "potion_2048" => Screen::Game(GameId::Potion2048),
             "tiny_tower_defence" => Screen::Game(GameId::TinyTowerDefence),
+            "one_room_roguelike" => Screen::Game(GameId::OneRoomRoguelike),
             "help" => Screen::Help,
             "records" => Screen::Records,
             "rules" => Screen::Rules,
@@ -323,6 +324,7 @@ impl Game {
                             | GameId::DungeonSweeper
                             | GameId::Potion2048
                             | GameId::TinyTowerDefence
+                            | GameId::OneRoomRoguelike
                     ) && !self.state.tutorial_seen[id.index()])
                     .then_some(id);
                 } else {

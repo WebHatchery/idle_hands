@@ -227,5 +227,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "Tap START WAVE, then ADVANCE to stop enemies at the quiet gate.",
             "Reach wave 8; use UNDO or NEW TOWER with visible controls.",
         ],
+        GameId::OneRoomRoguelike => [
+            "Tap a direction to explore; tap STRIKE when an enemy is beside you.",
+            "Collect the cache, defeat every enemy, then reach the EXIT.",
+            "Use POTION, UNDO, or NEW ROOM with the visible controls.",
+        ],
     }
 }

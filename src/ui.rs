@@ -19,6 +19,7 @@ use crate::mastermind_ui;
 use crate::memory_pairs_ui;
 use crate::minesweeper_ui;
 use crate::nonogram_ui;
+use crate::one_room_roguelike_ui;
 use crate::palette_ui;
 use crate::peg_solitaire_ui;
 use crate::potion_2048_ui;
@@ -189,6 +190,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Game(GameId::DungeonSweeper) => dungeon_sweeper_ui::clicks(state, p),
         Screen::Game(GameId::Potion2048) => potion_2048_ui::clicks(state, p),
         Screen::Game(GameId::TinyTowerDefence) => tiny_tower_defence_ui::clicks(state, p),
+        Screen::Game(GameId::OneRoomRoguelike) => one_room_roguelike_ui::clicks(state, p),
         Screen::Game(GameId::Mastermind) => mastermind_ui::clicks(state, p),
         Screen::Help => {
             if is_compact_landscape() {
@@ -294,6 +296,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::DungeonSweeper) => dungeon_sweeper_ui::draw(state),
         Screen::Game(GameId::Potion2048) => potion_2048_ui::draw(state),
         Screen::Game(GameId::TinyTowerDefence) => tiny_tower_defence_ui::draw(state),
+        Screen::Game(GameId::OneRoomRoguelike) => one_room_roguelike_ui::draw(state),
         Screen::Game(GameId::Mastermind) => mastermind_ui::draw(state),
         Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(),
         Screen::Help if is_portrait() => responsive_library::draw_help(),

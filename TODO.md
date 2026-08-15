@@ -425,12 +425,23 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Add responsive desktop, portrait, and medium-landscape presentation,
     visible controls, records, and verification captures.
 
+## Phase 29 — Twenty-second post-launch cabinet game
+
+- [x] Add One Room Roguelike as a thirtieth deterministic, touch-complete
+  cabinet game with a seven-by-seven room, adjacent strikes, enemy turns,
+  treasure, potions, undo, reset, and an exit-clear victory.
+  - [x] Cover seeded rooms, combat damage, potion recovery, loss, victory,
+    undo, and reset behavior with focused rule tests.
+  - [x] Add persisted active state and best-score records with snapshot,
+    migration, progression, and tutorial coverage.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, records, and verification captures.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.
 - Arcade: no remaining scheduled candidates.
-- Original cabinet games: Dungeon Sweeper, One
-  Room Roguelike, and Daily Dungeon.
+- Original cabinet games: Dungeon Sweeper and Daily Dungeon.
 
 Do not begin a post-launch candidate until the eight-game first collection is
 touch-complete and the shared system it would reuse is stable.

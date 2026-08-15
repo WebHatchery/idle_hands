@@ -142,4 +142,9 @@ pub enum UiAction {
     TowerWave,
     TowerUndo,
     TowerNew,
+    RogueMove(Direction),
+    RogueStrike,
+    RoguePotion,
+    RogueUndo,
+    RogueNew,
 }
