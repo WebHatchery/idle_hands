@@ -10,6 +10,7 @@ use crate::nonogram_ui;
 use crate::palette_ui;
 use crate::records_ui;
 use crate::responsive_cards;
+use crate::responsive_landscape;
 use crate::responsive_library;
 use crate::responsive_puzzles;
 use crate::responsive_ui;
@@ -94,7 +95,9 @@ pub fn viewport() -> Viewport {
     Viewport::new(screen_width(), screen_height(), width, height)
 }
 pub fn layout_size() -> (f32, f32) {
-    if is_portrait() {
+    if is_compact_landscape() {
+        (responsive_landscape::WIDTH, responsive_landscape::HEIGHT)
+    } else if is_portrait() {
         (responsive_ui::WIDTH, responsive_ui::HEIGHT)
     } else {
         (LOGICAL_WIDTH, LOGICAL_HEIGHT)
@@ -102,6 +105,9 @@ pub fn layout_size() -> (f32, f32) {
 }
 pub fn is_portrait() -> bool {
     screen_height() > screen_width() * 1.15
+}
+pub fn is_compact_landscape() -> bool {
+    screen_width() <= 900. && screen_width() > screen_height() * 1.15
 }
 pub fn mouse() -> Vec2 {
     viewport()
@@ -123,6 +129,7 @@ pub fn clicks(state: &AppState) -> Vec<UiAction> {
         return vec![UiAction::ReplayTutorial];
     }
     match state.screen {
+        Screen::Cabinet if is_compact_landscape() => responsive_landscape::cabinet_clicks(p),
         Screen::Cabinet if is_portrait() => responsive_ui::cabinet_clicks(p),
         Screen::Cabinet => {
             let mut out = vec![];
@@ -141,6 +148,9 @@ pub fn clicks(state: &AppState) -> Vec<UiAction> {
                 out.push(UiAction::Settings)
             }
             out
+        }
+        Screen::Game(GameId::Game2048) if is_compact_landscape() => {
+            responsive_landscape::game2048_clicks(state, p)
         }
         Screen::Game(GameId::Game2048) if is_portrait() => responsive_ui::game2048_clicks(state, p),
         Screen::Game(GameId::Game2048) => game_clicks(state, p),
@@ -195,8 +205,14 @@ pub fn clicks(state: &AppState) -> Vec<UiAction> {
 }
 pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
     match state.screen {
+        Screen::Cabinet if is_compact_landscape() => {
+            responsive_landscape::draw_cabinet(state, data, loaded_assets)
+        }
         Screen::Cabinet if is_portrait() => responsive_ui::draw_cabinet(state, data, loaded_assets),
         Screen::Cabinet => draw_cabinet(state, data, loaded_assets),
+        Screen::Game(GameId::Game2048) if is_compact_landscape() => {
+            responsive_landscape::draw_2048(state)
+        }
         Screen::Game(GameId::Game2048) if is_portrait() => responsive_ui::draw_2048(state),
         Screen::Game(GameId::Game2048) => draw_2048(state),
         Screen::Game(GameId::Minesweeper) if is_portrait() => {

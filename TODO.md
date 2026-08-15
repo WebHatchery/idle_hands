@@ -129,6 +129,8 @@ sizes, covered by rule tests, and passes `publish.ps1`.
     390×844.
   - [x] Capture the complete landscape baseline at 844×390 for all named
     game, library, settings, and cabinet scenes; touch-size review remains.
+  - [x] Verify touch-sized medium landscape cabinet and 2048 layouts at
+    844×390, including cabinet navigation, arrows, undo, and new game.
 - [x] Run the complete capture matrix, replace duplicate-state images, and update
   the catalog thumbnail with the final cabinet.
 - [x] Complete final `cargo fmt`, tests, warning-free Clippy, and `publish.ps1`.
