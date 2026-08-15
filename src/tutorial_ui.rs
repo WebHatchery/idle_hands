@@ -217,5 +217,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "Use FLAG MODE for traps and follow the clues to the EXIT.",
             "Reach EXIT; use UNDO or NEW DUNGEON with visible controls.",
         ],
+        GameId::Potion2048 => [
+            "Tap a visible direction to slide the potions.",
+            "Matching potions merge; brew a 4096 tile to finish.",
+            "Use UNDO or NEW BREW with the visible controls.",
+        ],
     }
 }

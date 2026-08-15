@@ -154,6 +154,10 @@ pub fn draw_records(state: &AppState) {
             "Dungeon best",
             value(state.records.dungeon_sweeper_best_moves.map(u32::from)),
         ),
+        (
+            "Potion 2048 best",
+            value(state.records.potion_2048_best_score),
+        ),
     ];
     draw_column(&left, 175., 240.);
     draw_column(&middle, 490., 240.);

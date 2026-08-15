@@ -17,6 +17,7 @@ use crate::memory_pairs::MemoryPairs;
 use crate::minesweeper::Minesweeper;
 use crate::nonogram::Nonogram;
 use crate::peg_solitaire::PegSolitaire;
+use crate::potion_2048::Potion2048;
 use crate::reversi::Reversi;
 use crate::sliding_puzzle::SlidingPuzzle;
 use crate::snake::Snake;
@@ -59,9 +60,10 @@ pub enum GameId {
     Blackjack,
     SpiderSolitaire,
     DungeonSweeper,
+    Potion2048,
 }
 impl GameId {
-    pub const ALL: [Self; 27] = [
+    pub const ALL: [Self; 28] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -89,6 +91,7 @@ impl GameId {
         Self::Blackjack,
         Self::SpiderSolitaire,
         Self::DungeonSweeper,
+        Self::Potion2048,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -119,6 +122,7 @@ impl GameId {
             Self::Blackjack => "Blackjack",
             Self::SpiderSolitaire => "Spider Solitaire",
             Self::DungeonSweeper => "Dungeon Sweeper",
+            Self::Potion2048 => "Potion 2048",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -150,6 +154,7 @@ impl GameId {
             Self::Blackjack => "Hold the quiet hand",
             Self::SpiderSolitaire => "Build suited webs",
             Self::DungeonSweeper => "Find the quiet exit",
+            Self::Potion2048 => "Brew the next tile",
         }
     }
     pub fn index(self) -> usize {
@@ -184,6 +189,7 @@ impl GameId {
             Self::Blackjack => "blackjack",
             Self::SpiderSolitaire => "spider_solitaire",
             Self::DungeonSweeper => "dungeon_sweeper",
+            Self::Potion2048 => "potion_2048",
         }
     }
 }
@@ -355,6 +361,7 @@ pub struct AppState {
     pub blackjack: Blackjack,
     pub spider_solitaire: SpiderSolitaire,
     pub dungeon_sweeper: DungeonSweeper,
+    pub potion_2048: Potion2048,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -425,6 +432,8 @@ pub struct CollectionRecords {
     pub spider_solitaire_best_moves: Option<u32>,
     #[serde(default)]
     pub dungeon_sweeper_best_moves: Option<u16>,
+    #[serde(default)]
+    pub potion_2048_best_score: Option<u32>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -482,6 +491,8 @@ pub struct CollectionSave {
     pub spider_solitaire: SpiderSolitaire,
     #[serde(default)]
     pub dungeon_sweeper: DungeonSweeper,
+    #[serde(default)]
+    pub potion_2048: Potion2048,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -612,6 +623,7 @@ impl CollectionSave {
             blackjack: state.blackjack.clone(),
             spider_solitaire: state.spider_solitaire.clone(),
             dungeon_sweeper: state.dungeon_sweeper.clone(),
+            potion_2048: state.potion_2048.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -658,6 +670,7 @@ impl CollectionSave {
         state.blackjack = self.blackjack;
         state.spider_solitaire = self.spider_solitaire;
         state.dungeon_sweeper = self.dungeon_sweeper;
+        state.potion_2048 = self.potion_2048;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -710,6 +723,7 @@ impl Default for AppState {
             blackjack: Blackjack::default(),
             spider_solitaire: SpiderSolitaire::default(),
             dungeon_sweeper: DungeonSweeper::default(),
+            potion_2048: Potion2048::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

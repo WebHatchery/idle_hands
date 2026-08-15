@@ -98,6 +98,7 @@ impl Game {
             "blackjack" => Screen::Game(GameId::Blackjack),
             "spider_solitaire" => Screen::Game(GameId::SpiderSolitaire),
             "dungeon_sweeper" => Screen::Game(GameId::DungeonSweeper),
+            "potion_2048" => Screen::Game(GameId::Potion2048),
             "help" => Screen::Help,
             "records" => Screen::Records,
             "rules" => Screen::Rules,
@@ -296,36 +297,7 @@ impl Game {
             ui::UiAction::Open(index) => {
                 self.state.selected = index;
                 let id = GameId::ALL[index];
-                if matches!(
-                    id,
-                    GameId::Game2048
-                        | GameId::Minesweeper
-                        | GameId::Sudoku
-                        | GameId::Nonogram
-                        | GameId::Solitaire
-                        | GameId::FreeCell
-                        | GameId::Yahtzee
-                        | GameId::Reversi
-                        | GameId::LightsOut
-                        | GameId::TicTacToe
-                        | GameId::MemoryPairs
-                        | GameId::SlidingPuzzle
-                        | GameId::Mastermind
-                        | GameId::Spider
-                        | GameId::WordSearch
-                        | GameId::Hangman
-                        | GameId::ConnectFour
-                        | GameId::Checkers
-                        | GameId::PegSolitaire
-                        | GameId::MahjongSolitaire
-                        | GameId::Snake
-                        | GameId::Breakout
-                        | GameId::HigherLower
-                        | GameId::KlondikeGolf
-                        | GameId::Blackjack
-                        | GameId::SpiderSolitaire
-                        | GameId::DungeonSweeper
-                ) {
+                if crate::cabinet_status::is_active(id) {
                     self.state.screen = Screen::Game(id);
                     self.state.tutorial = (!matches!(
                         id,
@@ -348,6 +320,7 @@ impl Game {
                             | GameId::Blackjack
                             | GameId::SpiderSolitaire
                             | GameId::DungeonSweeper
+                            | GameId::Potion2048
                     ) && !self.state.tutorial_seen[id.index()])
                     .then_some(id);
                 } else {

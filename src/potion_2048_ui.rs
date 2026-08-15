@@ -1,0 +1,189 @@
+//! Responsive presentation and touch routing for Potion 2048.
+
+use crate::{
+    state::{AppState, Direction},
+    ui::UiAction,
+};
+use macroquad::prelude::*;
+
+#[derive(Clone, Copy)]
+struct Layout {
+    board: Rect,
+    arrows: [Rect; 4],
+    undo: Rect,
+    new_game: Rect,
+}
+fn layout() -> Layout {
+    if crate::ui::is_compact_landscape() {
+        Layout {
+            board: Rect::new(270., 60., 300., 300.),
+            arrows: [
+                Rect::new(610., 70., 52., 42.),
+                Rect::new(610., 120., 52., 42.),
+                Rect::new(610., 170., 52., 42.),
+                Rect::new(610., 220., 52., 42.),
+            ],
+            undo: Rect::new(680., 155., 105., 40.),
+            new_game: Rect::new(680., 210., 130., 40.),
+        }
+    } else if crate::ui::is_portrait() {
+        Layout {
+            board: Rect::new(20., 135., 320., 320.),
+            arrows: [
+                Rect::new(20., 480., 74., 44.),
+                Rect::new(102., 480., 74., 44.),
+                Rect::new(184., 480., 74., 44.),
+                Rect::new(266., 480., 74., 44.),
+            ],
+            undo: Rect::new(20., 555., 145., 42.),
+            new_game: Rect::new(185., 555., 155., 42.),
+        }
+    } else {
+        Layout {
+            board: Rect::new(360., 115., 420., 420.),
+            arrows: [
+                Rect::new(840., 150., 62., 46.),
+                Rect::new(910., 150., 62., 46.),
+                Rect::new(980., 150., 62., 46.),
+                Rect::new(1050., 150., 62., 46.),
+            ],
+            undo: Rect::new(840., 250., 120., 44.),
+            new_game: Rect::new(980., 250., 150., 44.),
+        }
+    }
+}
+pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
+    let l = layout();
+    if Rect::new(0., 0., 110., 42.).contains(point) {
+        return vec![UiAction::Cabinet];
+    }
+    for (index, rect) in l.arrows.iter().enumerate() {
+        if rect.contains(point) {
+            return vec![UiAction::PotionMove(
+                [
+                    Direction::Up,
+                    Direction::Left,
+                    Direction::Down,
+                    Direction::Right,
+                ][index],
+            )];
+        }
+    }
+    if l.undo.contains(point) {
+        return vec![UiAction::PotionUndo];
+    }
+    if l.new_game.contains(point) {
+        return vec![UiAction::PotionNew];
+    }
+    vec![]
+}
+pub fn draw(state: &AppState) {
+    let l = layout();
+    let game = &state.potion_2048;
+    let compact = crate::ui::is_compact_landscape();
+    let portrait = crate::ui::is_portrait();
+    let x = if compact {
+        80.
+    } else if portrait {
+        10.
+    } else {
+        400.
+    };
+    let y = if compact {
+        30.
+    } else if portrait {
+        68.
+    } else {
+        60.
+    };
+    text("‹ CABINET", 8., 30., 13., muted());
+    text("POTION 2048", x, y, title_size(), accent());
+    text(
+        &format!("Score {}  •  Best {}  •  Reach 4096", game.score, game.best),
+        if compact { 430. } else { x },
+        if compact { 30. } else { y + 25. },
+        body_size(),
+        muted(),
+    );
+    let grid = crate::grid::GridLayout::new(l.board, 4, 4);
+    for index in 0..16 {
+        let rect = grid.cell_rect(index).unwrap();
+        let value = game.cells[index];
+        draw_rectangle(rect.x, rect.y, rect.w, rect.h, tile_color(value));
+        draw_rectangle_lines(
+            rect.x,
+            rect.y,
+            rect.w,
+            rect.h,
+            2.,
+            Color::new(0.45, 0.38, 0.65, 0.75),
+        );
+        if value > 0 {
+            let label = value.to_string();
+            let size = if value < 100 { 29. } else { 21. };
+            text(
+                &label,
+                rect.x + rect.w * 0.5 - measure_text(&label, None, size as u16, 1.).width * 0.5,
+                rect.y + rect.h * 0.60,
+                size,
+                WHITE,
+            );
+        }
+    }
+    for (index, rect) in l.arrows.iter().enumerate() {
+        button(*rect, ["UP", "LEFT", "DOWN", "RIGHT"][index]);
+    }
+    button(l.undo, "UNDO");
+    button(l.new_game, "NEW BREW");
+}
+fn tile_color(value: u16) -> Color {
+    match value {
+        0 => Color::new(0.10, 0.07, 0.16, 1.),
+        2 => Color::new(0.22, 0.30, 0.35, 1.),
+        4 => Color::new(0.25, 0.40, 0.38, 1.),
+        8 => Color::new(0.34, 0.45, 0.25, 1.),
+        16 => Color::new(0.48, 0.40, 0.20, 1.),
+        32 => Color::new(0.50, 0.25, 0.25, 1.),
+        _ => Color::new(0.36, 0.22, 0.48, 1.),
+    }
+}
+fn button(rect: Rect, label: &str) {
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        Color::new(0.20, 0.13, 0.30, 1.),
+    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
+    text(
+        label,
+        rect.x + rect.w * 0.5 - measure_text(label, None, 11, 1.).width * 0.5,
+        rect.y + rect.h * 0.63,
+        11.,
+        WHITE,
+    );
+}
+fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+    draw_text(value, x, y, size, color);
+}
+fn title_size() -> f32 {
+    if crate::ui::is_portrait() {
+        23.
+    } else {
+        29.
+    }
+}
+fn body_size() -> f32 {
+    if crate::ui::is_portrait() {
+        11.
+    } else {
+        13.
+    }
+}
+fn accent() -> Color {
+    Color::new(0.98, 0.83, 0.45, 1.)
+}
+fn muted() -> Color {
+    Color::new(0.70, 0.64, 0.78, 1.)
+}

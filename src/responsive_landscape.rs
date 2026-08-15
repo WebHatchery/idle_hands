@@ -452,6 +452,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "Follow the quiet clues to the EXIT.",
             "Use UNDO or NEW DUNGEON with visible controls.",
         ],
+        GameId::Potion2048 => [
+            "Tap a visible direction to slide the potions.",
+            "Merge matching potions until 4096 appears.",
+            "Use UNDO or NEW BREW with visible controls.",
+        ],
     }
 }
 
@@ -488,6 +493,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
             "COMPLETE"
         }
         GameId::DungeonSweeper if state.records.dungeon_sweeper_best_moves.is_some() => "COMPLETE",
+        GameId::Potion2048 if state.records.potion_2048_best_score.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

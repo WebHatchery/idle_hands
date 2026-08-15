@@ -128,6 +128,16 @@ impl Game {
                 let seed = self.state.dungeon_sweeper.seed.wrapping_add(1);
                 self.state.dungeon_sweeper.reset(seed);
             }
+            UiAction::PotionMove(direction) => {
+                self.state.potion_2048.move_in(*direction);
+            }
+            UiAction::PotionUndo => {
+                self.state.potion_2048.undo();
+            }
+            UiAction::PotionNew => {
+                let seed = self.state.potion_2048.seed.wrapping_add(1);
+                self.state.potion_2048.reset(seed);
+            }
             _ => return false,
         }
         true

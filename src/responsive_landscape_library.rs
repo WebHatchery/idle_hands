@@ -132,11 +132,15 @@ pub fn draw_records(state: &AppState) {
             "Dungeon Sweeper best",
             value(state.records.dungeon_sweeper_best_moves.map(u32::from)),
         ),
+        (
+            "Potion 2048 best",
+            value(state.records.potion_2048_best_score),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
-        let col = index / 11;
-        let row = index % 11;
-        let y = 86. + row as f32 * 25.;
+        let col = index / 12;
+        let row = index % 12;
+        let y = 86. + row as f32 * 23.;
         let x = 40. + col as f32 * 265.;
         text(label, x, y, 10., Color::new(0.78, 0.73, 0.86, 1.));
         text(score, x + 220., y, 11., Color::new(0.98, 0.83, 0.45, 1.));

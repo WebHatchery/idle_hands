@@ -240,6 +240,15 @@ impl Game {
                     }),
             );
         }
+        if self.state.potion_2048.won() {
+            records.potion_2048_best_score = Some(
+                records
+                    .potion_2048_best_score
+                    .map_or(self.state.potion_2048.best, |best| {
+                        best.max(self.state.potion_2048.best)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

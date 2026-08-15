@@ -401,11 +401,23 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Add responsive desktop, portrait, and medium-landscape presentation,
     visible controls, records, and verification captures.
 
+## Phase 27 — Twentieth post-launch cabinet game
+
+- [x] Add Potion 2048 as a twenty-eighth deterministic, touch-complete cabinet
+  game with potion-themed tiles, visible direction controls, a 4096 target,
+  undo, and new-brew reset.
+  - [x] Cover seeded starts, merges, undo, and the higher target boundary with
+    focused rule tests.
+  - [x] Add persisted active state and best-score records with snapshot,
+    migration, progression, and tutorial coverage.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, records, and verification captures.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.
 - Arcade: no remaining scheduled candidates.
-- Original cabinet games: Dungeon Sweeper, Potion 2048, Tiny Tower Defence, One
+- Original cabinet games: Dungeon Sweeper, Tiny Tower Defence, One
   Room Roguelike, and Daily Dungeon.
 
 Do not begin a post-launch candidate until the eight-game first collection is

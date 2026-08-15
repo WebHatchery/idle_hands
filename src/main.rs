@@ -51,6 +51,8 @@ mod nonogram_ui;
 mod palette_ui;
 mod peg_solitaire;
 mod peg_solitaire_ui;
+mod potion_2048;
+mod potion_2048_ui;
 mod progression;
 mod records_ui;
 mod responsive_cards;
@@ -83,6 +85,7 @@ mod tic_tac_toe;
 mod tic_tac_toe_ui;
 mod tutorial_ui;
 mod ui;
+mod ui_action;
 mod word_search;
 mod word_search_ui;
 
