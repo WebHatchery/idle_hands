@@ -53,19 +53,22 @@ fn take_rect(amount: usize) -> Rect {
     Rect::new(x, y, width, 48.)
 }
 
-fn bottom_rects() -> (Rect, Rect) {
+fn bottom_rects() -> (Rect, Rect, Rect) {
     if portrait() {
         (
-            Rect::new(55., 650., 120., 42.),
-            Rect::new(205., 650., 130., 42.),
+            Rect::new(5., 650., 80., 42.),
+            Rect::new(95., 650., 105., 42.),
+            Rect::new(210., 650., 125., 42.),
         )
     } else if compact() {
         (
+            Rect::new(385., 335., 105., 40.),
             Rect::new(505., 335., 105., 40.),
             Rect::new(625., 335., 105., 40.),
         )
     } else {
         (
+            Rect::new(740., 625., 120., 42.),
             Rect::new(880., 625., 120., 42.),
             Rect::new(1020., 625., 140., 42.),
         )
@@ -86,7 +89,10 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
             return vec![UiAction::NimTake(amount as u8 + 1)];
         }
     }
-    let (undo, new_board) = bottom_rects();
+    let (hint, undo, new_board) = bottom_rects();
+    if hint.contains(point) {
+        return vec![UiAction::NimHint];
+    }
     if undo.contains(point) {
         return vec![UiAction::NimUndo];
     }
@@ -175,11 +181,16 @@ pub fn draw(state: &AppState) {
             state.large_text,
         );
     }
-    let (undo, new_board) = bottom_rects();
+    let (hint, undo, new_board) = bottom_rects();
+    button(hint, "HINT", state.large_text);
     button(undo, "UNDO", state.large_text);
     button(new_board, "NEW BOARD", state.large_text);
+    let detail = state
+        .card_hint
+        .as_deref()
+        .unwrap_or_else(|| instruction(game.status));
     text(
-        &format!("Moves {}  •  {}", game.moves, instruction(game.status)),
+        &format!("Moves {}  •  {}", game.moves, detail),
         if portrait() || compact() { 12. } else { 30. },
         if portrait() {
             625.

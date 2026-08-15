@@ -146,6 +146,7 @@ pub enum UiAction {
     TriPeaksNew,
     NimSelect(usize),
     NimTake(u8),
+    NimHint,
     NimUndo,
     NimNew,
     DungeonCell(usize),

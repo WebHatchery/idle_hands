@@ -155,6 +155,9 @@ impl Game {
             UiAction::NimTake(amount) => {
                 self.state.nim.take(*amount);
             }
+            UiAction::NimHint => {
+                self.state.card_hint = Some(crate::card_hints::nim(&self.state));
+            }
             UiAction::NimUndo => {
                 self.state.nim.undo();
             }

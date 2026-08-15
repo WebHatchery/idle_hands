@@ -818,6 +818,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Add responsive desktop, portrait, and medium-landscape presentation,
     visible controls, and verification captures.
 
+## Phase 67 — Nim discoverability polish
+
+- [x] Add a visible deterministic HINT action to Nim that recommends a bounded
+  heap and TAKE control without changing the rules.
+  - [x] Show hint feedback across desktop, portrait, and medium-landscape
+    layouts with the existing accessible text treatment.
+  - [x] Cover hint routing and capture the updated Nim scenes.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

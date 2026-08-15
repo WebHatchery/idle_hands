@@ -214,6 +214,35 @@ pub fn spider_solitaire(state: &AppState) -> String {
     }
 }
 
+pub fn nim(state: &AppState) -> String {
+    let game = &state.nim;
+    match game.status {
+        crate::nim::NimStatus::Won => return "The final stone is already yours.".into(),
+        crate::nim::NimStatus::Lost => return "Tap NEW BOARD to begin another heap set.".into(),
+        crate::nim::NimStatus::Playing => {}
+    }
+    let xor = game.heaps.iter().fold(0, |total, heap| total ^ heap);
+    let best = game
+        .heaps
+        .iter()
+        .enumerate()
+        .find_map(|(heap, &stones)| {
+            let target = stones ^ xor;
+            (target < stones && stones - target <= 3).then_some((heap, stones - target))
+        })
+        .or_else(|| {
+            game.heaps
+                .iter()
+                .enumerate()
+                .find(|(_, stones)| **stones > 0)
+                .map(|(heap, stones)| (heap, (*stones).min(3)))
+        });
+    best.map_or_else(
+        || "No stones remain — tap NEW BOARD to begin again.".into(),
+        |(heap, amount)| format!("Select heap {} and tap TAKE {}.", heap + 1, amount),
+    )
+}
+
 pub fn is_hint(action: crate::ui::UiAction) -> bool {
     matches!(
         action,
@@ -223,6 +252,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::TriPeaksHint
             | crate::ui::UiAction::KlondikeGolfHint
             | crate::ui::UiAction::SpiderSolitaireHint
+            | crate::ui::UiAction::NimHint
     )
 }
 

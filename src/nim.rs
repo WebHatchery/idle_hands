@@ -101,7 +101,7 @@ impl Nim {
         let mut choice = None;
         for (index, &heap) in self.heaps.iter().enumerate() {
             let target = heap ^ xor;
-            if target < heap {
+            if target < heap && heap - target <= 3 {
                 choice = Some((index, heap - target));
                 break;
             }

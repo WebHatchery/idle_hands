@@ -59,3 +59,10 @@ fn default_spider_solitaire_has_a_deterministic_hint() {
     assert!(!spider_solitaire(&state).is_empty());
     assert_eq!(spider_solitaire(&state), spider_solitaire(&state));
 }
+
+#[test]
+fn default_nim_has_a_deterministic_hint() {
+    let state = AppState::default();
+    assert_eq!(nim(&state), "Select heap 1 and tap TAKE 3.");
+    assert_eq!(nim(&state), nim(&state));
+}
