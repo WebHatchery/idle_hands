@@ -57,6 +57,8 @@ mod mancala;
 mod mancala_ui;
 mod mastermind;
 mod mastermind_ui;
+mod match_three;
+mod match_three_ui;
 mod maze_walk;
 mod maze_walk_ui;
 mod memory_pairs;

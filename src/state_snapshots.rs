@@ -8,6 +8,7 @@ use crate::dungeon_sweeper::DungeonSweeper;
 use crate::flood_it::FloodIt;
 use crate::hanoi::Hanoi;
 use crate::mancala::Mancala;
+use crate::match_three::MatchThree;
 use crate::maze_walk::MazeWalk;
 use crate::number_match::NumberMatch;
 use crate::one_room_roguelike::OneRoomRoguelike;
@@ -72,6 +73,7 @@ pub enum GameSnapshot {
     WordGrid(WordGrid),
     PipeLoop(PipeLoop),
     MazeWalk(MazeWalk),
+    MatchThree(MatchThree),
 }
 
 impl GameSnapshot {
@@ -119,6 +121,7 @@ impl GameSnapshot {
             GameId::WordGrid => Self::WordGrid(state.word_grid.clone()),
             GameId::PipeLoop => Self::PipeLoop(state.pipe_loop.clone()),
             GameId::MazeWalk => Self::MazeWalk(state.maze_walk.clone()),
+            GameId::MatchThree => Self::MatchThree(state.match_three.clone()),
         }
     }
 
@@ -166,6 +169,7 @@ impl GameSnapshot {
             Self::WordGrid(game) => state.word_grid = game,
             Self::PipeLoop(game) => state.pipe_loop = game,
             Self::MazeWalk(game) => state.maze_walk = game,
+            Self::MatchThree(game) => state.match_three = game,
         }
     }
 }

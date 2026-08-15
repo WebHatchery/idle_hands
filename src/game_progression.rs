@@ -372,6 +372,15 @@ impl Game {
                     }),
             );
         }
+        if self.state.match_three.won() {
+            records.match_three_best_score = Some(
+                records
+                    .match_three_best_score
+                    .map_or(self.state.match_three.score, |best| {
+                        best.max(self.state.match_three.score)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

@@ -113,6 +113,7 @@ impl Game {
             "word_grid" => Screen::Game(GameId::WordGrid),
             "pipe_loop" => Screen::Game(GameId::PipeLoop),
             "maze_walk" => Screen::Game(GameId::MazeWalk),
+            "match_three" => Screen::Game(GameId::MatchThree),
             "help" => Screen::Help,
             "records" => Screen::Records,
             "rules" => Screen::Rules,
@@ -349,6 +350,7 @@ impl Game {
                             | GameId::WordGrid
                             | GameId::PipeLoop
                             | GameId::MazeWalk
+                            | GameId::MatchThree
                     ) && !self.state.tutorial_seen[id.index()])
                     .then_some(id);
                 } else {

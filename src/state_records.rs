@@ -80,4 +80,6 @@ pub struct CollectionRecords {
     pub pipe_loop_best_moves: Option<u16>,
     #[serde(default)]
     pub maze_walk_best_moves: Option<u16>,
+    #[serde(default)]
+    pub match_three_best_score: Option<u16>,
 }

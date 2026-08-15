@@ -192,6 +192,10 @@ pub fn draw_records(state: &AppState) {
             "Maze Walk best",
             value(state.records.maze_walk_best_moves.map(u32::from)),
         ),
+        (
+            "Match Three best",
+            value(state.records.match_three_best_score.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
         let col = index / 13;

@@ -292,5 +292,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "Follow the open path to the glowing exit square.",
             "Use UNDO or NEW MAZE with the visible controls.",
         ],
+        GameId::MatchThree => [
+            "Tap two adjacent tiles to swap their positions.",
+            "Clear groups of three or more matching colors to reach the target.",
+            "Use UNDO or NEW BOARD with the visible controls.",
+        ],
     }
 }

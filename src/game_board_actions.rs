@@ -293,6 +293,16 @@ impl Game {
                 let seed = self.state.maze_walk.seed.wrapping_add(1);
                 self.state.maze_walk.reset(seed);
             }
+            UiAction::MatchThreeTap(index) => {
+                self.state.match_three.tap(*index);
+            }
+            UiAction::MatchThreeUndo => {
+                self.state.match_three.undo();
+            }
+            UiAction::MatchThreeNew => {
+                let seed = self.state.match_three.seed.wrapping_add(1);
+                self.state.match_three.reset(seed);
+            }
             _ => return false,
         }
         true

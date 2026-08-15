@@ -48,6 +48,7 @@ pub fn status(state: &AppState, game: GameId) -> &'static str {
         GameId::WordGrid => state.records.word_grid_best_moves.is_some(),
         GameId::PipeLoop => state.records.pipe_loop_best_moves.is_some(),
         GameId::MazeWalk => state.records.maze_walk_best_moves.is_some(),
+        GameId::MatchThree => state.records.match_three_best_score.is_some(),
     };
     if complete {
         "COMPLETE"
@@ -109,6 +110,7 @@ fn has_progress(state: &AppState, game: GameId) -> bool {
         GameId::WordGrid => state.word_grid.moves > 0,
         GameId::PipeLoop => state.pipe_loop.moves > 0,
         GameId::MazeWalk => state.maze_walk.moves > 0,
+        GameId::MatchThree => state.match_three.moves > 0,
     }
 }
 
@@ -164,5 +166,6 @@ pub fn is_active(game: GameId) -> bool {
             | GameId::WordGrid
             | GameId::PipeLoop
             | GameId::MazeWalk
+            | GameId::MatchThree
     )
 }

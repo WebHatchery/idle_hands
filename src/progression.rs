@@ -70,6 +70,7 @@ impl AchievementId {
                 GameId::WordGrid => "Word keeper",
                 GameId::PipeLoop => "Pipe keeper",
                 GameId::MazeWalk => "Maze keeper",
+                GameId::MatchThree => "Color keeper",
             },
             Self::FullCabinet => "Full cabinet",
         }
@@ -141,6 +142,7 @@ fn game_complete(records: &CollectionRecords, game: GameId) -> bool {
         GameId::WordGrid => records.word_grid_best_moves.is_some(),
         GameId::PipeLoop => records.pipe_loop_best_moves.is_some(),
         GameId::MazeWalk => records.maze_walk_best_moves.is_some(),
+        GameId::MatchThree => records.match_three_best_score.is_some(),
     }
 }
 

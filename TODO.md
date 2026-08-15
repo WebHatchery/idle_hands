@@ -580,6 +580,18 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Add responsive desktop, portrait, and medium-landscape presentation,
     visible controls, records, and verification captures.
 
+## Phase 42 — Thirty-fifth post-launch cabinet game
+
+- [x] Add Match Three as a forty-third deterministic, touch-complete cabinet
+  game with a seven-by-seven colored tile field, adjacent swaps, cascades,
+  scoring, undo, reset, and a target-score victory.
+  - [x] Cover seeded boards, swap validation, match removal, cascades, score,
+    undo, victory, and reset behavior with focused rule tests.
+  - [x] Add persisted active state and best-score records with snapshot,
+    migration, progression, and tutorial coverage.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, records, and verification captures.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.
