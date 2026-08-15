@@ -12,6 +12,8 @@ mod game;
 mod minesweeper;
 mod nonogram;
 mod nonogram_ui;
+mod reversi;
+mod reversi_ui;
 mod solitaire;
 mod solitaire_ui;
 mod state;

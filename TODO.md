@@ -82,7 +82,7 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   score previews, bonus/total calculation, tutorial, and records.
 - [ ] Implement Reversi legal moves, flips, pass/end rules, score, same-device
   play, tutorial, and records.
-- [ ] Add at least two deterministic local-AI levels with bounded frame work.
+- [x] Add at least two deterministic local-AI levels with bounded frame work.
 - [ ] Test every score category and Reversi direction/pass/end edge case.
 
 ## Phase 7 — Progression and collection polish

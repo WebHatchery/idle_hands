@@ -110,6 +110,8 @@ impl Game {
                         | GameId::Nonogram
                         | GameId::Solitaire
                         | GameId::FreeCell
+                        | GameId::Yahtzee
+                        | GameId::Reversi
                 ) {
                     self.state.screen = Screen::Game(id);
                 } else {
@@ -240,6 +242,25 @@ impl Game {
             ui::UiAction::FivefoldNew => {
                 self.state.fivefold =
                     crate::fivefold::Fivefold::new(self.state.fivefold.seed.wrapping_add(1));
+            }
+            ui::UiAction::ReversiPlace(index) => {
+                if self.state.reversi.place(index) {
+                    self.state.reversi.ai_move();
+                }
+            }
+            ui::UiAction::ReversiPass => {
+                if self.state.reversi.pass() {
+                    self.state.reversi.ai_move();
+                }
+            }
+            ui::UiAction::ReversiNew => {
+                self.state.reversi = crate::reversi::Reversi::new(
+                    self.state.reversi.seed.wrapping_add(1),
+                    self.state.reversi.ai_level,
+                );
+            }
+            ui::UiAction::ReversiLevel(level) => {
+                self.state.reversi.ai_level = level;
             }
             ui::UiAction::MineChord(index) => {
                 self.state.minesweeper.chord(index);

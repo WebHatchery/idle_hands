@@ -4,6 +4,7 @@ use crate::fivefold::Fivefold;
 use crate::freecell::FreeCell;
 use crate::minesweeper::Minesweeper;
 use crate::nonogram::Nonogram;
+use crate::reversi::Reversi;
 use crate::solitaire::Solitaire;
 use crate::sudoku::Sudoku;
 use serde::{Deserialize, Serialize};
@@ -197,6 +198,7 @@ pub struct AppState {
     pub solitaire: Solitaire,
     pub freecell: FreeCell,
     pub fivefold: Fivefold,
+    pub reversi: Reversi,
     pub confirm_restart: bool,
     pub profile_name: String,
     pub sound: bool,
@@ -221,6 +223,8 @@ pub struct CollectionSave {
     pub freecell: FreeCell,
     #[serde(default)]
     pub fivefold: Fivefold,
+    #[serde(default)]
+    pub reversi: Reversi,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -241,6 +245,7 @@ impl CollectionSave {
             solitaire: state.solitaire.clone(),
             freecell: state.freecell.clone(),
             fivefold: state.fivefold.clone(),
+            reversi: state.reversi.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -257,6 +262,7 @@ impl CollectionSave {
         state.solitaire = self.solitaire;
         state.freecell = self.freecell;
         state.fivefold = self.fivefold;
+        state.reversi = self.reversi;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -277,6 +283,7 @@ impl Default for AppState {
             solitaire: Solitaire::default(),
             freecell: FreeCell::default(),
             fivefold: Fivefold::default(),
+            reversi: Reversi::default(),
             confirm_restart: false,
             profile_name: "Cabinet Guest".into(),
             sound: true,

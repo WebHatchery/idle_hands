@@ -3,6 +3,7 @@
 use crate::fivefold_ui;
 use crate::freecell_ui;
 use crate::nonogram_ui;
+use crate::reversi_ui;
 use crate::solitaire_ui;
 use crate::sudoku_ui;
 use crate::{
@@ -59,6 +60,10 @@ pub enum UiAction {
     FivefoldHold(usize),
     FivefoldCategory(crate::fivefold::Category),
     FivefoldNew,
+    ReversiPlace(usize),
+    ReversiPass,
+    ReversiNew,
+    ReversiLevel(crate::reversi::AiLevel),
 }
 pub fn mouse() -> Vec2 {
     vec2(
@@ -91,6 +96,7 @@ pub fn clicks(state: &AppState) -> Vec<UiAction> {
         Screen::Game(GameId::Solitaire) => solitaire_ui::solitaire_clicks(state, p),
         Screen::Game(GameId::FreeCell) => freecell_ui::freecell_clicks(state, p),
         Screen::Game(GameId::Yahtzee) => fivefold_ui::fivefold_clicks(state, p),
+        Screen::Game(GameId::Reversi) => reversi_ui::reversi_clicks(state, p),
         Screen::Help => {
             if Rect::new(1030., 635., 180., 48.).contains(p) {
                 vec![UiAction::Cabinet]
@@ -99,7 +105,6 @@ pub fn clicks(state: &AppState) -> Vec<UiAction> {
             }
         }
         Screen::Settings => settings_clicks(p),
-        Screen::Game(_) => vec![],
     }
 }
 pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
@@ -112,9 +117,9 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::Solitaire) => solitaire_ui::draw_solitaire(state),
         Screen::Game(GameId::FreeCell) => freecell_ui::draw_freecell(state),
         Screen::Game(GameId::Yahtzee) => fivefold_ui::draw_fivefold(state),
+        Screen::Game(GameId::Reversi) => reversi_ui::draw_reversi(state),
         Screen::Help => draw_help(),
         Screen::Settings => draw_settings(state),
-        Screen::Game(_) => draw_cabinet(state, data, loaded_assets),
     }
 }
 fn text(s: &str, x: f32, y: f32, size: f32, color: Color) {
@@ -161,6 +166,7 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
                 | GameId::Solitaire
                 | GameId::FreeCell
                 | GameId::Yahtzee
+                | GameId::Reversi
         );
         panel(
             r,
