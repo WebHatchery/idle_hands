@@ -29,10 +29,10 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 
 fn cabinet_rect(index: usize) -> Rect {
     Rect::new(
-        8. + (index % 6) as f32 * 140.,
-        38. + (index / 6) as f32 * 44.,
-        132.,
-        44.,
+        8. + (index % 7) as f32 * 120.,
+        38. + (index / 7) as f32 * 40.,
+        114.,
+        36.,
     )
 }
 

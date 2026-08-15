@@ -30,9 +30,9 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 pub fn cabinet_rect(index: usize) -> Rect {
     Rect::new(
         4. + (index % 4) as f32 * 89.,
-        94. + (index / 4) as f32 * 59.,
+        94. + (index / 4) as f32 * 50.,
         84.,
-        53.,
+        45.,
     )
 }
 
@@ -40,7 +40,7 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
     let accent = cosmetics::cabinet_accent(state.cabinet_decoration);
     text("IDLE HANDS", 18., 55., 30., accent);
     crate::cabinet_art::draw_header_motif(332., 52., 13., accent);
-    crate::cabinet_art::draw_shelves(8., 100., 344., 520., accent);
+    crate::cabinet_art::draw_shelves(8., 100., 344., 540., accent);
     text(
         "Quiet games for a small screen",
         18.,
@@ -54,7 +54,7 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
         text(
             game.title(),
             rect.x + 10.,
-            rect.y + 15.,
+            rect.y + 14.,
             if matches!(
                 game,
                 GameId::TinyTowerDefence
@@ -82,35 +82,35 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
         text(
             cabinet_status(state, *game),
             rect.x + 10.,
-            rect.y + 31.,
+            rect.y + 28.,
             8.,
             Color::new(0.98, 0.75, 0.30, 1.),
         );
         text(
             game.subtitle(),
             rect.x + 10.,
-            rect.y + 47.,
+            rect.y + 41.,
             7.,
             Color::new(0.69, 0.65, 0.78, 1.),
         );
         draw_circle(
             rect.right() - 20.,
-            rect.y + 12.,
+            rect.y + 11.,
             8.,
             cosmetics::cabinet_accent(state.cabinet_decoration),
         );
         text(
             &(index + 1).to_string(),
             rect.right() - 22.,
-            rect.y + 16.,
+            rect.y + 15.,
             8.,
             Color::new(0.08, 0.05, 0.12, 1.),
         );
     }
     for (rect, label) in [
-        (Rect::new(8., 665., 108., 40.), "HELP"),
-        (Rect::new(126., 665., 108., 40.), "RECORDS"),
-        (Rect::new(244., 665., 108., 40.), "SETTINGS"),
+        (Rect::new(8., 700., 108., 40.), "HELP"),
+        (Rect::new(126., 700., 108., 40.), "RECORDS"),
+        (Rect::new(244., 700., 108., 40.), "SETTINGS"),
     ] {
         panel(rect, Color::new(0.12, 0.08, 0.20, 1.));
         text(label, rect.x + 12., rect.y + 26., 11., WHITE);
@@ -118,7 +118,7 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
     text(
         &format!("{} stamps  •  {} textures", state.stamps, loaded),
         18.,
-        640.,
+        650.,
         12.,
         Color::new(0.52, 0.48, 0.64, 1.),
     );
@@ -131,9 +131,9 @@ pub fn cabinet_clicks(p: Vec2) -> Vec<UiAction> {
         }
     }
     for (rect, action) in [
-        (Rect::new(8., 665., 108., 40.), UiAction::Help),
-        (Rect::new(126., 665., 108., 40.), UiAction::Records),
-        (Rect::new(244., 665., 108., 40.), UiAction::Settings),
+        (Rect::new(8., 700., 108., 40.), UiAction::Help),
+        (Rect::new(126., 700., 108., 40.), UiAction::Records),
+        (Rect::new(244., 700., 108., 40.), UiAction::Settings),
     ] {
         if rect.contains(p) {
             return vec![action];

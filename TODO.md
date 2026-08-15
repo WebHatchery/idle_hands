@@ -603,6 +603,17 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Capture the refined Dungeon Sweeper layouts and verify the full publish
     path after the rules and presentation update.
 
+## Phase 44 — Forty-three-game cabinet capacity polish
+
+- [x] Reflow the desktop, portrait, and medium-landscape cabinet grids so all
+  forty-three games remain visible, individually tappable, and separated from
+  footer controls.
+  - [x] Fit the final game row without clipping or shelf-rail collisions.
+  - [x] Keep HELP, RECORDS, and SETTINGS touch targets clear at each documented
+    viewport size.
+  - [x] Recapture the cabinet matrix and refresh the catalog thumbnail after the
+    layout correction.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

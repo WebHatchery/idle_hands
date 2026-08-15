@@ -387,7 +387,7 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
     let accent = cosmetics::cabinet_accent(state.cabinet_decoration);
     text("IDLE HANDS", 46., 70., 48., accent);
     crate::cabinet_art::draw_header_motif(1160., 108., 24., accent);
-    crate::cabinet_art::draw_shelves(48., 165., 1184., 480., accent);
+    crate::cabinet_art::draw_shelves(48., 165., 1184., 510., accent);
     text(
         "A small collection for quiet minutes",
         48.,
@@ -432,7 +432,7 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
         text(
             GameId::ALL[i].title(),
             r.x + 18.,
-            r.y + 28.,
+            r.y + 21.,
             if matches!(
                 GameId::ALL[i],
                 GameId::TinyTowerDefence
@@ -465,20 +465,20 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
         text(
             status,
             r.x + 18.,
-            r.y + 50.,
+            r.y + 39.,
             11.,
             crate::cabinet_status::color(status),
         );
         text(
             GameId::ALL[i].subtitle(),
             r.x + 18.,
-            r.y + 72.,
+            r.y + 56.,
             11.,
             Color::new(0.69, 0.65, 0.78, 1.),
         );
         draw_circle(
             r.right() - 34.,
-            r.y + 25.,
+            r.y + 20.,
             12.,
             if active {
                 Color::new(0.85, 0.55, 0.28, 1.)
@@ -489,7 +489,7 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
         text(
             &format!("{}", i + 1),
             r.right() - 37.,
-            r.y + 29.,
+            r.y + 24.,
             11.,
             Color::new(0.08, 0.05, 0.12, 1.),
         );
@@ -509,7 +509,7 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
 fn cabinet_rect(i: usize) -> Rect {
     let col = i % 7;
     let row = i / 7;
-    Rect::new(48. + col as f32 * 170., 155. + row as f32 * 100., 160., 80.)
+    Rect::new(48. + col as f32 * 170., 150. + row as f32 * 76., 160., 62.)
 }
 fn draw_2048(state: &AppState) {
     let g = &state.game;
