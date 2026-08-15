@@ -78,4 +78,6 @@ pub struct CollectionRecords {
     pub word_grid_best_moves: Option<u8>,
     #[serde(default)]
     pub pipe_loop_best_moves: Option<u16>,
+    #[serde(default)]
+    pub maze_walk_best_moves: Option<u16>,
 }

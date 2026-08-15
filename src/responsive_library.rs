@@ -202,10 +202,14 @@ pub fn draw_records(state: &AppState) {
             "Pipe Loop best",
             value(state.records.pipe_loop_best_moves.map(u32::from)),
         ),
+        (
+            "Maze Walk best",
+            value(state.records.maze_walk_best_moves.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
-        let column = index / 25;
-        let row = index % 25;
+        let column = index / 26;
+        let row = index % 26;
         let x = 20. + column as f32 * 170.;
         let y = 140. + row as f32 * 20.;
         text(label, x, y, 9., Color::new(0.78, 0.73, 0.86, 1.));

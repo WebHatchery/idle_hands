@@ -363,6 +363,15 @@ impl Game {
                     }),
             );
         }
+        if self.state.maze_walk.won() {
+            records.maze_walk_best_moves = Some(
+                records
+                    .maze_walk_best_moves
+                    .map_or(self.state.maze_walk.moves, |best| {
+                        best.min(self.state.maze_walk.moves)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

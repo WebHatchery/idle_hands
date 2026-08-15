@@ -2,7 +2,7 @@
 
 use crate::{
     freecell_ui, responsive_cards, responsive_landscape_cards, solitaire_ui,
-    state::{AppState, GameId, Screen},
+    state::{AppState, Direction, GameId, Screen},
     ui,
 };
 use macroquad::prelude::Vec2;
@@ -49,4 +49,18 @@ pub fn card_drag_actions(
         .into_iter()
         .chain(actions_at(end))
         .collect()
+}
+
+pub fn swipe_direction(delta: Vec2) -> Direction {
+    if delta.x.abs() > delta.y.abs() {
+        if delta.x > 0.0 {
+            Direction::Right
+        } else {
+            Direction::Left
+        }
+    } else if delta.y > 0.0 {
+        Direction::Down
+    } else {
+        Direction::Up
+    }
 }

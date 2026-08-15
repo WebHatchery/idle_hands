@@ -283,6 +283,16 @@ impl Game {
                 let seed = self.state.pipe_loop.seed.wrapping_add(1);
                 self.state.pipe_loop.reset(seed);
             }
+            UiAction::MazeStep(direction) => {
+                self.state.maze_walk.step(*direction);
+            }
+            UiAction::MazeUndo => {
+                self.state.maze_walk.undo();
+            }
+            UiAction::MazeNew => {
+                let seed = self.state.maze_walk.seed.wrapping_add(1);
+                self.state.maze_walk.reset(seed);
+            }
             _ => return false,
         }
         true

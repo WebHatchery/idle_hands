@@ -2,7 +2,7 @@
 
 use crate::card_hints;
 use crate::cosmetics;
-use crate::game_input::card_drag_actions;
+use crate::game_input::{card_drag_actions, swipe_direction};
 use crate::input::{Gesture, PointerTracker};
 use crate::sound::SoundBank;
 use crate::{
@@ -112,6 +112,7 @@ impl Game {
             "battleship" => Screen::Game(GameId::Battleship),
             "word_grid" => Screen::Game(GameId::WordGrid),
             "pipe_loop" => Screen::Game(GameId::PipeLoop),
+            "maze_walk" => Screen::Game(GameId::MazeWalk),
             "help" => Screen::Help,
             "records" => Screen::Records,
             "rules" => Screen::Rules,
@@ -347,6 +348,7 @@ impl Game {
                             | GameId::Battleship
                             | GameId::WordGrid
                             | GameId::PipeLoop
+                            | GameId::MazeWalk
                     ) && !self.state.tutorial_seen[id.index()])
                     .then_some(id);
                 } else {
@@ -783,17 +785,3 @@ impl Game {
 
 #[cfg(test)]
 mod tests;
-
-fn swipe_direction(delta: Vec2) -> Direction {
-    if delta.x.abs() > delta.y.abs() {
-        if delta.x > 0.0 {
-            Direction::Right
-        } else {
-            Direction::Left
-        }
-    } else if delta.y > 0.0 {
-        Direction::Down
-    } else {
-        Direction::Up
-    }
-}

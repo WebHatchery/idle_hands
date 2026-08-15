@@ -568,6 +568,18 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Add responsive desktop, portrait, and medium-landscape presentation,
     visible controls, records, and verification captures.
 
+## Phase 41 — Thirty-fourth post-launch cabinet game
+
+- [x] Add Maze Walk as a forty-second deterministic, touch-complete cabinet
+  game with a seven-by-seven walled route, visible directional controls, undo,
+  reset, and an exit victory.
+  - [x] Cover seeded walls, blocked moves, route completion, undo, and reset
+    behavior with focused rule tests.
+  - [x] Add persisted active state and best-move records with snapshot,
+    migration, progression, and tutorial coverage.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, records, and verification captures.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

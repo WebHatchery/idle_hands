@@ -182,4 +182,7 @@ pub enum UiAction {
     PipeRotate(usize),
     PipeUndo,
     PipeNew,
+    MazeStep(crate::state::Direction),
+    MazeUndo,
+    MazeNew,
 }

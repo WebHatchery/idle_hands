@@ -23,6 +23,7 @@ use crate::lights_out_ui;
 use crate::mahjong_solitaire_ui;
 use crate::mancala_ui;
 use crate::mastermind_ui;
+use crate::maze_walk_ui;
 use crate::memory_pairs_ui;
 use crate::minesweeper_ui;
 use crate::nonogram_ui;
@@ -213,6 +214,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Game(GameId::Battleship) => battleship_ui::clicks(state, p),
         Screen::Game(GameId::WordGrid) => word_grid_ui::clicks(state, p),
         Screen::Game(GameId::PipeLoop) => pipe_loop_ui::clicks(state, p),
+        Screen::Game(GameId::MazeWalk) => maze_walk_ui::clicks(state, p),
         Screen::Game(GameId::Mastermind) => mastermind_ui::clicks(state, p),
         Screen::Help => {
             if is_compact_landscape() {
@@ -330,6 +332,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::Battleship) => battleship_ui::draw(state),
         Screen::Game(GameId::WordGrid) => word_grid_ui::draw(state),
         Screen::Game(GameId::PipeLoop) => pipe_loop_ui::draw(state),
+        Screen::Game(GameId::MazeWalk) => maze_walk_ui::draw(state),
         Screen::Game(GameId::Mastermind) => mastermind_ui::draw(state),
         Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(),
         Screen::Help if is_portrait() => responsive_library::draw_help(),
@@ -442,6 +445,7 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
                     | GameId::Battleship
                     | GameId::WordGrid
                     | GameId::PipeLoop
+                    | GameId::MazeWalk
             ) {
                 10.
             } else {

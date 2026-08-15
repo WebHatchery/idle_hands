@@ -212,6 +212,10 @@ pub fn draw_records(state: &AppState) {
             "Pipe Loop best",
             value(state.records.pipe_loop_best_moves.map(u32::from)),
         ),
+        (
+            "Maze Walk best",
+            value(state.records.maze_walk_best_moves.map(u32::from)),
+        ),
     ];
     draw_column(&left, 175., 240.);
     draw_column(&middle, 490., 240.);

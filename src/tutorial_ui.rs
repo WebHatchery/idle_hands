@@ -287,5 +287,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "Join the full quiet path to match the connected solution.",
             "Use UNDO or NEW LOOP with the visible controls.",
         ],
+        GameId::MazeWalk => [
+            "Tap a visible direction to move the quiet traveler.",
+            "Follow the open path to the glowing exit square.",
+            "Use UNDO or NEW MAZE with the visible controls.",
+        ],
     }
 }

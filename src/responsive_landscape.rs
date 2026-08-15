@@ -522,6 +522,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "Join the full quiet path to match the connected solution.",
             "Use UNDO or NEW LOOP with visible controls.",
         ],
+        GameId::MazeWalk => [
+            "Tap a visible direction to move the quiet traveler.",
+            "Follow the open path to the glowing exit square.",
+            "Use UNDO or NEW MAZE with visible controls.",
+        ],
     }
 }
 
@@ -576,6 +581,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::Battleship if state.records.battleship_best_moves.is_some() => "COMPLETE",
         GameId::WordGrid if state.records.word_grid_best_moves.is_some() => "COMPLETE",
         GameId::PipeLoop if state.records.pipe_loop_best_moves.is_some() => "COMPLETE",
+        GameId::MazeWalk if state.records.maze_walk_best_moves.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

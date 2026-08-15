@@ -20,6 +20,7 @@ use crate::lights_out::LightsOut;
 use crate::mahjong_solitaire::MahjongSolitaire;
 use crate::mancala::Mancala;
 use crate::mastermind::Mastermind;
+use crate::maze_walk::MazeWalk;
 use crate::memory_pairs::MemoryPairs;
 use crate::minesweeper::Minesweeper;
 use crate::nonogram::Nonogram;
@@ -91,9 +92,10 @@ pub enum GameId {
     Battleship,
     WordGrid,
     PipeLoop,
+    MazeWalk,
 }
 impl GameId {
-    pub const ALL: [Self; 41] = [
+    pub const ALL: [Self; 42] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -135,6 +137,7 @@ impl GameId {
         Self::Battleship,
         Self::WordGrid,
         Self::PipeLoop,
+        Self::MazeWalk,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -179,6 +182,7 @@ impl GameId {
             Self::Battleship => "Battleship",
             Self::WordGrid => "Word Grid",
             Self::PipeLoop => "Pipe Loop",
+            Self::MazeWalk => "Maze Walk",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -224,6 +228,7 @@ impl GameId {
             Self::Battleship => "Find the quiet fleet",
             Self::WordGrid => "Solve the quiet word",
             Self::PipeLoop => "Join the quiet pipes",
+            Self::MazeWalk => "Find the quiet exit",
         }
     }
     pub fn index(self) -> usize {
@@ -272,6 +277,7 @@ impl GameId {
             Self::Battleship => "battleship",
             Self::WordGrid => "word_grid",
             Self::PipeLoop => "pipe_loop",
+            Self::MazeWalk => "maze_walk",
         }
     }
 }
@@ -341,6 +347,7 @@ pub struct AppState {
     pub battleship: Battleship,
     pub word_grid: WordGrid,
     pub pipe_loop: PipeLoop,
+    pub maze_walk: MazeWalk,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -446,6 +453,8 @@ pub struct CollectionSave {
     pub word_grid: WordGrid,
     #[serde(default)]
     pub pipe_loop: PipeLoop,
+    #[serde(default)]
+    pub maze_walk: MazeWalk,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -590,6 +599,7 @@ impl CollectionSave {
             battleship: state.battleship.clone(),
             word_grid: state.word_grid.clone(),
             pipe_loop: state.pipe_loop.clone(),
+            maze_walk: state.maze_walk.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -650,6 +660,7 @@ impl CollectionSave {
         state.battleship = self.battleship;
         state.word_grid = self.word_grid;
         state.pipe_loop = self.pipe_loop;
+        state.maze_walk = self.maze_walk;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -716,6 +727,7 @@ impl Default for AppState {
             battleship: Battleship::default(),
             word_grid: WordGrid::default(),
             pipe_loop: PipeLoop::default(),
+            maze_walk: MazeWalk::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,
