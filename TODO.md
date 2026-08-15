@@ -131,6 +131,8 @@ sizes, covered by rule tests, and passes `publish.ps1`.
     game, library, settings, and cabinet scenes; touch-size review remains.
   - [x] Verify touch-sized medium landscape cabinet and 2048 layouts at
     844×390, including cabinet navigation, arrows, undo, and new game.
+  - [x] Verify touch-sized medium landscape Minesweeper, Sudoku, Nonogram,
+    and Reversi boards with their primary controls at 844×390.
 - [x] Run the complete capture matrix, replace duplicate-state images, and update
   the catalog thumbnail with the final cabinet.
 - [x] Complete final `cargo fmt`, tests, warning-free Clippy, and `publish.ps1`.

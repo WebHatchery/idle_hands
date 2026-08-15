@@ -22,6 +22,7 @@ mod progression;
 mod records_ui;
 mod responsive_cards;
 mod responsive_landscape;
+mod responsive_landscape_games;
 mod responsive_library;
 mod responsive_puzzles;
 mod responsive_ui;

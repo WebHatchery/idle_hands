@@ -11,6 +11,7 @@ use crate::palette_ui;
 use crate::records_ui;
 use crate::responsive_cards;
 use crate::responsive_landscape;
+use crate::responsive_landscape_games;
 use crate::responsive_library;
 use crate::responsive_puzzles;
 use crate::responsive_ui;
@@ -154,12 +155,21 @@ pub fn clicks(state: &AppState) -> Vec<UiAction> {
         }
         Screen::Game(GameId::Game2048) if is_portrait() => responsive_ui::game2048_clicks(state, p),
         Screen::Game(GameId::Game2048) => game_clicks(state, p),
+        Screen::Game(GameId::Minesweeper) if is_compact_landscape() => {
+            responsive_landscape_games::minesweeper_clicks(state, p)
+        }
         Screen::Game(GameId::Minesweeper) if is_portrait() => {
             responsive_puzzles::minesweeper_clicks(state, p)
         }
         Screen::Game(GameId::Minesweeper) => minesweeper_ui::clicks(state, p),
+        Screen::Game(GameId::Sudoku) if is_compact_landscape() => {
+            responsive_landscape_games::sudoku_clicks(state, p)
+        }
         Screen::Game(GameId::Sudoku) if is_portrait() => responsive_ui::sudoku_clicks(state, p),
         Screen::Game(GameId::Sudoku) => sudoku_ui::sudoku_clicks(state, p),
+        Screen::Game(GameId::Nonogram) if is_compact_landscape() => {
+            responsive_landscape_games::nonogram_clicks(state, p)
+        }
         Screen::Game(GameId::Nonogram) if is_portrait() => {
             responsive_puzzles::nonogram_clicks(state, p)
         }
@@ -176,6 +186,9 @@ pub fn clicks(state: &AppState) -> Vec<UiAction> {
             responsive_cards::fivefold_clicks(state, p)
         }
         Screen::Game(GameId::Yahtzee) => fivefold_ui::fivefold_clicks(state, p),
+        Screen::Game(GameId::Reversi) if is_compact_landscape() => {
+            responsive_landscape_games::reversi_clicks(state, p)
+        }
         Screen::Game(GameId::Reversi) if is_portrait() => {
             responsive_cards::reversi_clicks(state, p)
         }
@@ -208,6 +221,9 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Cabinet if is_compact_landscape() => {
             responsive_landscape::draw_cabinet(state, data, loaded_assets)
         }
+        Screen::Cabinet if is_compact_landscape() => {
+            responsive_landscape::draw_cabinet(state, data, loaded_assets)
+        }
         Screen::Cabinet if is_portrait() => responsive_ui::draw_cabinet(state, data, loaded_assets),
         Screen::Cabinet => draw_cabinet(state, data, loaded_assets),
         Screen::Game(GameId::Game2048) if is_compact_landscape() => {
@@ -215,12 +231,21 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         }
         Screen::Game(GameId::Game2048) if is_portrait() => responsive_ui::draw_2048(state),
         Screen::Game(GameId::Game2048) => draw_2048(state),
+        Screen::Game(GameId::Minesweeper) if is_compact_landscape() => {
+            responsive_landscape_games::draw_minesweeper(state)
+        }
         Screen::Game(GameId::Minesweeper) if is_portrait() => {
             responsive_puzzles::draw_minesweeper(state)
         }
         Screen::Game(GameId::Minesweeper) => minesweeper_ui::draw(state),
+        Screen::Game(GameId::Sudoku) if is_compact_landscape() => {
+            responsive_landscape_games::draw_sudoku(state)
+        }
         Screen::Game(GameId::Sudoku) if is_portrait() => responsive_ui::draw_sudoku(state),
         Screen::Game(GameId::Sudoku) => sudoku_ui::draw_sudoku(state),
+        Screen::Game(GameId::Nonogram) if is_compact_landscape() => {
+            responsive_landscape_games::draw_nonogram(state)
+        }
         Screen::Game(GameId::Nonogram) if is_portrait() => responsive_puzzles::draw_nonogram(state),
         Screen::Game(GameId::Nonogram) => nonogram_ui::draw_nonogram(state),
         Screen::Game(GameId::Solitaire) if is_portrait() => responsive_cards::draw_solitaire(state),
@@ -229,6 +254,9 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::FreeCell) => freecell_ui::draw_freecell(state),
         Screen::Game(GameId::Yahtzee) if is_portrait() => responsive_cards::draw_fivefold(state),
         Screen::Game(GameId::Yahtzee) => fivefold_ui::draw_fivefold(state),
+        Screen::Game(GameId::Reversi) if is_compact_landscape() => {
+            responsive_landscape_games::draw_reversi(state)
+        }
         Screen::Game(GameId::Reversi) if is_portrait() => responsive_cards::draw_reversi(state),
         Screen::Game(GameId::Reversi) => reversi_ui::draw_reversi(state),
         Screen::Help if is_portrait() => responsive_library::draw_help(),
