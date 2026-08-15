@@ -139,6 +139,8 @@ sizes, covered by rule tests, and passes `publish.ps1`.
     and Settings controls at 844×390, including reset confirmation.
   - [x] Route first-run and replayable tutorials through a visible medium
     landscape overlay with an explicit CONTINUE touch target.
+  - [x] Route medium-landscape Nonogram strokes and Minesweeper long-press
+    flags through their responsive board coordinates.
 - [x] Run the complete capture matrix, replace duplicate-state images, and update
   the catalog thumbnail with the final cabinet.
 - [x] Complete final `cargo fmt`, tests, warning-free Clippy, and `publish.ps1`.

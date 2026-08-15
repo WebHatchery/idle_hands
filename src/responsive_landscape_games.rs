@@ -484,6 +484,27 @@ pub fn nonogram_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     vec![]
 }
 
+pub fn nonogram_drag_actions(state: &AppState, start: Vec2, end: Vec2) -> Vec<UiAction> {
+    let layout = GridLayout::new(
+        Rect::new(70., 88., 280., 280.),
+        state.nonogram.size,
+        state.nonogram.size,
+    );
+    let (Some(start), Some(end)) = (layout.coordinate_at(start), layout.coordinate_at(end)) else {
+        return vec![];
+    };
+    crate::nonogram::stroke_indices(state.nonogram.size, start, end)
+        .into_iter()
+        .map(UiAction::NonogramCell)
+        .collect()
+}
+
+pub fn minesweeper_long_press(state: &AppState, p: Vec2) -> Vec<UiAction> {
+    mine_grid(state)
+        .index_at(p)
+        .map_or_else(Vec::new, |index| vec![UiAction::MineFlag(index)])
+}
+
 const REV_BOARD: Rect = Rect {
     x: 10.,
     y: 20.,
