@@ -38,3 +38,10 @@ fn pyramid_hint_finds_an_exposed_pair() {
     state.pyramid.stock.clear();
     assert_eq!(pyramid(&state), "Pair exposed cards 27 and 28.");
 }
+
+#[test]
+fn default_tri_peaks_has_a_deterministic_hint() {
+    let state = AppState::default();
+    assert!(!tri_peaks(&state).is_empty());
+    assert_eq!(tri_peaks(&state), tri_peaks(&state));
+}

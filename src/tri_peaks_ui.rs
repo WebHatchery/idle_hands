@@ -13,6 +13,7 @@ struct Layout {
     gap: f32,
     stock: Rect,
     waste: Rect,
+    hint: Rect,
     undo: Rect,
     new_game: Rect,
 }
@@ -55,6 +56,7 @@ fn layout() -> Layout {
             gap: 4.,
             stock: Rect::new(650., 72., 62., 62.),
             waste: Rect::new(722., 72., 62., 62.),
+            hint: Rect::new(530., 280., 105., 40.),
             undo: Rect::new(650., 280., 105., 40.),
             new_game: Rect::new(765., 280., 105., 40.),
         }
@@ -68,6 +70,7 @@ fn layout() -> Layout {
             gap: 3.,
             stock: Rect::new(18., 78., 46., 64.),
             waste: Rect::new(72., 78., 46., 64.),
+            hint: Rect::new(126., 78., 100., 64.),
             undo: Rect::new(20., 650., 145., 42.),
             new_game: Rect::new(185., 650., 145., 42.),
         }
@@ -81,6 +84,7 @@ fn layout() -> Layout {
             gap: 5.,
             stock: Rect::new(930., 120., 82., 100.),
             waste: Rect::new(1030., 120., 82., 100.),
+            hint: Rect::new(810., 250., 105., 44.),
             undo: Rect::new(930., 250., 100., 44.),
             new_game: Rect::new(1045., 250., 125., 44.),
         }
@@ -97,6 +101,9 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if l.waste.contains(point) {
         return vec![];
+    }
+    if l.hint.contains(point) {
+        return vec![UiAction::TriPeaksHint];
     }
     if l.undo.contains(point) {
         return vec![UiAction::TriPeaksUndo];
@@ -191,8 +198,12 @@ pub fn draw(state: &AppState) {
         scaled(12., state),
         muted(),
     );
+    let detail = state
+        .card_hint
+        .as_deref()
+        .unwrap_or("Clear all three peaks before the stock runs out.");
     text(
-        "Clear all three peaks before the stock runs out.",
+        detail,
         if portrait { 10. } else { title_x },
         if portrait {
             610.
@@ -202,8 +213,13 @@ pub fn draw(state: &AppState) {
             595.
         },
         scaled(11., state),
-        muted(),
+        if state.card_hint.is_some() {
+            accent()
+        } else {
+            muted()
+        },
     );
+    button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW TRIPEAKS", state.large_text);
 }

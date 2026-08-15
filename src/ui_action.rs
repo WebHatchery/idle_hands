@@ -139,6 +139,7 @@ pub enum UiAction {
     PyramidNew,
     TriPeaksTap(usize),
     TriPeaksStock,
+    TriPeaksHint,
     TriPeaksUndo,
     TriPeaksNew,
     DungeonCell(usize),

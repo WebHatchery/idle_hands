@@ -136,12 +136,28 @@ pub fn pyramid(state: &AppState) -> String {
     }
 }
 
+pub fn tri_peaks(state: &AppState) -> String {
+    let game = &state.tri_peaks;
+    if game.status == crate::tri_peaks::TriPeaksStatus::Won {
+        return "The three peaks are already clear.".into();
+    }
+    if let Some(index) = (0..28).find(|&index| game.can_play(index)) {
+        return format!("Try the playable peak card at position {}.", index + 1);
+    }
+    if !game.stock.is_empty() {
+        "Tap STOCK to reveal another card.".into()
+    } else {
+        "No peak card can play — try UNDO or a new deal.".into()
+    }
+}
+
 pub fn is_hint(action: crate::ui::UiAction) -> bool {
     matches!(
         action,
         crate::ui::UiAction::SolitaireHint
             | crate::ui::UiAction::FreeCellHint
             | crate::ui::UiAction::PyramidHint
+            | crate::ui::UiAction::TriPeaksHint
     )
 }
 

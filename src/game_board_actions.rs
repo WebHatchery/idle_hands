@@ -133,6 +133,9 @@ impl Game {
             UiAction::TriPeaksStock => {
                 self.state.tri_peaks.draw_stock();
             }
+            UiAction::TriPeaksHint => {
+                self.state.card_hint = Some(crate::card_hints::tri_peaks(&self.state));
+            }
             UiAction::TriPeaksUndo => {
                 self.state.tri_peaks.undo();
             }

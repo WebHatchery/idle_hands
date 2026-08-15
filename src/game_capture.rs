@@ -58,6 +58,7 @@ impl Game {
             "pyramid_accessible" => Screen::Game(GameId::Pyramid),
             "pyramid_hint" | "pyramid_hint_accessible" => Screen::Game(GameId::Pyramid),
             "tri_peaks" | "tri_peaks_accessible" => Screen::Game(GameId::TriPeaks),
+            "tri_peaks_hint" | "tri_peaks_hint_accessible" => Screen::Game(GameId::TriPeaks),
             "dungeon_sweeper" | "dungeon_sweeper_accessible" => {
                 Screen::Game(GameId::DungeonSweeper)
             }
@@ -121,6 +122,8 @@ impl Game {
             self.state.card_hint = Some(card_hints::freecell(&self.state));
         } else if scene == "pyramid_hint" || scene == "pyramid_hint_accessible" {
             self.state.card_hint = Some(card_hints::pyramid(&self.state));
+        } else if scene == "tri_peaks_hint" || scene == "tri_peaks_hint_accessible" {
+            self.state.card_hint = Some(card_hints::tri_peaks(&self.state));
         }
         if scene.starts_with("tutorial_") {
             if let Screen::Game(game) = self.state.screen {

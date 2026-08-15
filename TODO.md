@@ -782,6 +782,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Add responsive desktop, portrait, and medium-landscape presentation,
     visible controls, and verification captures.
 
+## Phase 63 — TriPeaks discoverability polish
+
+- [x] Add a visible deterministic HINT action to TriPeaks so players can find
+  a playable peak card or stock recovery without changing rules.
+  - [x] Show hint feedback across desktop, portrait, and medium-landscape
+    layouts with the existing accessible text treatment.
+  - [x] Cover hint routing and capture the updated TriPeaks scenes.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.
