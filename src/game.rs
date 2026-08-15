@@ -96,7 +96,10 @@ impl Game {
             ui::UiAction::Open(index) => {
                 self.state.selected = index;
                 let id = GameId::ALL[index];
-                if matches!(id, GameId::Game2048 | GameId::Minesweeper | GameId::Sudoku) {
+                if matches!(
+                    id,
+                    GameId::Game2048 | GameId::Minesweeper | GameId::Sudoku | GameId::Nonogram
+                ) {
                     self.state.screen = Screen::Game(id);
                 } else {
                     self.notifications
@@ -153,6 +156,19 @@ impl Game {
             }
             ui::UiAction::SudokuUndo => {
                 self.state.sudoku.undo();
+            }
+            ui::UiAction::NonogramCell(index) => {
+                self.state.nonogram.select(index);
+                self.state.nonogram.toggle(index);
+            }
+            ui::UiAction::NonogramMode => {
+                self.state.nonogram.toggle_mode();
+            }
+            ui::UiAction::NonogramUndo => {
+                self.state.nonogram.undo();
+            }
+            ui::UiAction::NonogramPreset(preset) => {
+                self.state.nonogram = crate::nonogram::Nonogram::new(preset);
             }
             ui::UiAction::MineChord(index) => {
                 self.state.minesweeper.chord(index);

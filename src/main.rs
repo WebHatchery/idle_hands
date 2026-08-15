@@ -6,6 +6,8 @@ use macroquad_toolkit::capture;
 mod data;
 mod game;
 mod minesweeper;
+mod nonogram;
+mod nonogram_ui;
 mod state;
 mod sudoku;
 mod sudoku_ui;

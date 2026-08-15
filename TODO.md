@@ -52,7 +52,7 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 - [ ] Choose Sudoku generation or validated puzzle data; guarantee one solution.
 - [ ] Implement Nonogram clues, fill/cross modes, tap and axis-locked drag strokes,
   undo, board focus/zoom for small phones, tutorial, and records.
-- [ ] Choose Nonogram generation or a validated catalog for 5×5, 10×10, and
+- [x] Choose Nonogram generation or a validated catalog for 5×5, 10×10, and
   15×15 puzzles.
 - [ ] Add high-contrast and large-text verification for dense grid screens.
 

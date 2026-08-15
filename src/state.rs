@@ -1,6 +1,7 @@
 //! Application state and the deterministic 2048 rules engine.
 
 use crate::minesweeper::Minesweeper;
+use crate::nonogram::Nonogram;
 use crate::sudoku::Sudoku;
 use serde::{Deserialize, Serialize};
 
@@ -189,6 +190,7 @@ pub struct AppState {
     pub game: Game2048,
     pub minesweeper: Minesweeper,
     pub sudoku: Sudoku,
+    pub nonogram: Nonogram,
     pub confirm_restart: bool,
     pub profile_name: String,
     pub sound: bool,
@@ -205,6 +207,8 @@ pub struct CollectionSave {
     pub minesweeper: Minesweeper,
     #[serde(default)]
     pub sudoku: Sudoku,
+    #[serde(default)]
+    pub nonogram: Nonogram,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -221,6 +225,7 @@ impl CollectionSave {
             game: state.game.clone(),
             minesweeper: state.minesweeper.clone(),
             sudoku: state.sudoku.clone(),
+            nonogram: state.nonogram.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -233,6 +238,7 @@ impl CollectionSave {
         state.game = self.game;
         state.minesweeper = self.minesweeper;
         state.sudoku = self.sudoku;
+        state.nonogram = self.nonogram;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -249,6 +255,7 @@ impl Default for AppState {
             game: Game2048::default(),
             minesweeper: Minesweeper::beginner(0x1D1E_51),
             sudoku: Sudoku::new(),
+            nonogram: Nonogram::default(),
             confirm_restart: false,
             profile_name: "Cabinet Guest".into(),
             sound: true,
