@@ -1,6 +1,7 @@
 //! Nonogram catalog presentation and touch input.
 
 use crate::{
+    grid::GridLayout,
     nonogram::{NonogramMark, NonogramMode, NonogramStatus},
     state::AppState,
     ui::UiAction,
@@ -47,14 +48,15 @@ pub fn draw_nonogram(state: &AppState) {
     }
     let board = Rect::new(320., 175., 500., 500.);
     panel(board, Color::new(0.10, 0.07, 0.16, 1.));
-    let cell = (board.w - 20.) / game.size as f32;
+    let grid = GridLayout::new(
+        Rect::new(board.x + 10., board.y + 10., board.w - 20., board.h - 20.),
+        game.size,
+        game.size,
+    );
+    let cell = grid.cell_width;
     for index in 0..game.marks.len() {
-        let rect = Rect::new(
-            board.x + 10. + (index % game.size) as f32 * cell,
-            board.y + 10. + (index / game.size) as f32 * cell,
-            cell - 2.,
-            cell - 2.,
-        );
+        let cell_rect = grid.cell_rect(index).unwrap();
+        let rect = Rect::new(cell_rect.x, cell_rect.y, cell_rect.w - 2., cell_rect.h - 2.);
         let selected = game.selected == Some(index);
         draw_rectangle(
             rect.x,
@@ -167,30 +169,23 @@ pub fn nonogram_clicks(_state: &AppState, p: Vec2) -> Vec<UiAction> {
         return vec![UiAction::NonogramUndo];
     }
     let board = Rect::new(320., 175., 500., 500.);
-    if !board.contains(p) {
-        return vec![];
-    }
-    let cell = (board.w - 20.) / _state.nonogram.size as f32;
-    let column = ((p.x - board.x - 10.) / cell) as usize;
-    let row = ((p.y - board.y - 10.) / cell) as usize;
-    if column < _state.nonogram.size && row < _state.nonogram.size {
-        vec![UiAction::NonogramCell(row * _state.nonogram.size + column)]
-    } else {
-        vec![]
-    }
+    let grid = GridLayout::new(
+        Rect::new(board.x + 10., board.y + 10., board.w - 20., board.h - 20.),
+        _state.nonogram.size,
+        _state.nonogram.size,
+    );
+    grid.index_at(p)
+        .map_or_else(Vec::new, |index| vec![UiAction::NonogramCell(index)])
 }
 
 pub fn drag_actions(state: &AppState, start: Vec2, end: Vec2) -> Vec<UiAction> {
     let board = Rect::new(320., 175., 500., 500.);
-    let cell = (board.w - 20.) / state.nonogram.size as f32;
-    let to_cell = |point: Vec2| -> Option<(usize, usize)> {
-        if !board.contains(point) {
-            return None;
-        }
-        let x = ((point.x - board.x - 10.) / cell) as usize;
-        let y = ((point.y - board.y - 10.) / cell) as usize;
-        (x < state.nonogram.size && y < state.nonogram.size).then_some((x, y))
-    };
+    let grid = GridLayout::new(
+        Rect::new(board.x + 10., board.y + 10., board.w - 20., board.h - 20.),
+        state.nonogram.size,
+        state.nonogram.size,
+    );
+    let to_cell = |point: Vec2| -> Option<(usize, usize)> { grid.coordinate_at(point) };
     let (start, end) = match (to_cell(start), to_cell(end)) {
         (Some(start), Some(end)) => (start, end),
         _ => return Vec::new(),

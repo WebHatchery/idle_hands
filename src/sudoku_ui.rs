@@ -1,6 +1,6 @@
 //! Sudoku board presentation and touch input.
 
-use crate::{state::AppState, sudoku::SudokuStatus, ui::UiAction};
+use crate::{grid::GridLayout, state::AppState, sudoku::SudokuStatus, ui::UiAction};
 use macroquad::prelude::*;
 
 fn text(s: &str, x: f32, y: f32, size: f32, color: Color) {
@@ -31,13 +31,10 @@ pub fn draw_sudoku(state: &AppState) {
     );
     let board = Rect::new(300., 150., 504., 504.);
     panel(board, Color::new(0.10, 0.07, 0.16, 1.));
+    let grid = GridLayout::new(Rect::new(board.x + 4., board.y + 4., 486., 486.), 9, 9);
     for index in 0..81 {
-        let rect = Rect::new(
-            board.x + 4. + (index % 9) as f32 * 54.,
-            board.y + 4. + (index / 9) as f32 * 54.,
-            52.,
-            52.,
-        );
+        let cell = grid.cell_rect(index).unwrap();
+        let rect = Rect::new(cell.x, cell.y, cell.w - 2., cell.h - 2.);
         let selected = game.selected == Some(index);
         let conflict = game
             .selected
@@ -177,12 +174,9 @@ pub fn sudoku_clicks(_state: &AppState, p: Vec2) -> Vec<UiAction> {
         return vec![UiAction::Cabinet];
     }
     let board = Rect::new(300., 150., 504., 504.);
-    if board.contains(p) {
-        let column = ((p.x - board.x - 4.) / 54.) as usize;
-        let row = ((p.y - board.y - 4.) / 54.) as usize;
-        if column < 9 && row < 9 {
-            return vec![UiAction::SudokuCell(row * 9 + column)];
-        }
+    let grid = GridLayout::new(Rect::new(board.x + 4., board.y + 4., 486., 486.), 9, 9);
+    if let Some(index) = grid.index_at(p) {
+        return vec![UiAction::SudokuCell(index)];
     }
     for number in 1..=9 {
         let col = (number - 1) % 3;

@@ -2,6 +2,7 @@
 
 use crate::fivefold_ui;
 use crate::freecell_ui;
+use crate::grid::GridLayout;
 use crate::input::Viewport;
 use crate::nonogram_ui;
 use crate::records_ui;
@@ -596,14 +597,15 @@ fn draw_minesweeper(state: &AppState) {
     );
     let board = Rect::new(350., 155., 450., 450.);
     panel(board, Color::new(0.10, 0.07, 0.16, 1.));
-    let cell_size = (board.w - 24.) / game.width as f32;
+    let grid = GridLayout::new(
+        Rect::new(board.x + 12., board.y + 12., board.w - 24., board.h - 24.),
+        game.width,
+        game.height,
+    );
+    let cell_size = grid.cell_width;
     for index in 0..game.cells.len() {
-        let rect = Rect::new(
-            board.x + 12. + (index % game.width) as f32 * cell_size,
-            board.y + 12. + (index / game.width) as f32 * cell_size,
-            cell_size - 2.,
-            cell_size - 2.,
-        );
+        let cell = grid.cell_rect(index).unwrap();
+        let rect = Rect::new(cell.x, cell.y, cell.w - 2., cell.h - 2.);
         let cell = game.cells[index];
         let revealed = matches!(cell, Cell::Revealed(value) if value < 9)
             || matches!(game.status, MineStatus::Lost)
@@ -746,16 +748,14 @@ fn mine_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         }
     }
     let board = Rect::new(350., 155., 450., 450.);
-    if !board.contains(p) {
+    let grid = GridLayout::new(
+        Rect::new(board.x + 12., board.y + 12., board.w - 24., board.h - 24.),
+        state.minesweeper.width,
+        state.minesweeper.height,
+    );
+    let Some(index) = grid.index_at(p) else {
         return vec![];
-    }
-    let cell_size = (board.w - 24.) / state.minesweeper.width as f32;
-    let column = ((p.x - board.x - 12.) / cell_size) as usize;
-    let row = ((p.y - board.y - 12.) / cell_size) as usize;
-    if column >= state.minesweeper.width || row >= state.minesweeper.height {
-        return vec![];
-    }
-    let index = row * state.minesweeper.width + column;
+    };
     if state.mine_flag_mode {
         vec![UiAction::MineFlag(index)]
     } else if matches!(state.minesweeper.cells[index], Cell::Revealed(_)) {

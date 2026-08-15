@@ -46,8 +46,10 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 - [ ] Add Reveal/Flag modes, optional long-press shortcut, visible chord action,
   restart, timer, mine count, win/loss, tutorial, and records.
 - [ ] Extract only proven shared grid geometry/stroke helpers from the two games.
+  - [x] Share responsive grid sizing and half-open hit-testing across the grid drawers.
 - [ ] Test touch cancellation, safe-first-reveal, flood reveal, marking, chording,
   save/resume, and responsive cell sizing.
+  - [x] Cover shared grid boundaries and independent row/column sizing in rule tests.
 
 ## Phase 3 — Sudoku and Nonogram
 
