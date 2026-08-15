@@ -42,6 +42,7 @@ impl Game {
     }
     pub fn update(&mut self, dt: f32) {
         self.notifications.update(dt);
+        self.pointer.tick(dt);
         self.state.minesweeper.tick(dt);
         if self.state.minesweeper.status == crate::minesweeper::MineStatus::Won {
             let slot = self.state.minesweeper.preset.index();
@@ -78,7 +79,15 @@ impl Game {
                             self.apply(action);
                         }
                     }
+                    Gesture::LongPress(position)
+                        if self.state.screen == Screen::Game(GameId::Minesweeper) =>
+                    {
+                        for action in ui::mine_long_press(&self.state, position) {
+                            self.apply(action);
+                        }
+                    }
                     Gesture::Drag { .. } => {}
+                    Gesture::LongPress(_) => {}
                 }
             }
         }

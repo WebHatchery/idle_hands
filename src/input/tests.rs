@@ -31,3 +31,26 @@ fn pointer_tracker_distinguishes_taps_drags_and_cancelled_releases() {
     tracker.cancel();
     assert_eq!(tracker.release(Some(Vec2::new(40., 10.))), None);
 }
+
+#[test]
+fn long_press_requires_the_threshold_and_does_not_override_a_drag() {
+    let mut tracker = PointerTracker::default();
+    tracker.press(Some(Vec2::new(10., 10.)));
+    tracker.tick(LONG_PRESS_SECONDS - 0.01);
+    assert_eq!(
+        tracker.release(Some(Vec2::new(10., 10.))),
+        Some(Gesture::Tap(Vec2::new(10., 10.)))
+    );
+    tracker.press(Some(Vec2::new(10., 10.)));
+    tracker.tick(LONG_PRESS_SECONDS);
+    assert_eq!(
+        tracker.release(Some(Vec2::new(10., 10.))),
+        Some(Gesture::LongPress(Vec2::new(10., 10.)))
+    );
+    tracker.press(Some(Vec2::new(10., 10.)));
+    tracker.tick(LONG_PRESS_SECONDS * 2.);
+    assert!(matches!(
+        tracker.release(Some(Vec2::new(40., 10.))),
+        Some(Gesture::Drag { .. })
+    ));
+}

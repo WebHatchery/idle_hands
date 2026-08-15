@@ -764,3 +764,14 @@ fn mine_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         vec![UiAction::MineReveal(index)]
     }
 }
+
+pub fn mine_long_press(state: &AppState, p: Vec2) -> Vec<UiAction> {
+    let board = Rect::new(350., 155., 450., 450.);
+    let grid = GridLayout::new(
+        Rect::new(board.x + 12., board.y + 12., board.w - 24., board.h - 24.),
+        state.minesweeper.width,
+        state.minesweeper.height,
+    );
+    grid.index_at(p)
+        .map_or_else(Vec::new, |index| vec![UiAction::MineFlag(index)])
+}
