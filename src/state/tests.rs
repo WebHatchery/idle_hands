@@ -383,7 +383,12 @@ fn default_state_has_no_reset_confirmation() {
 fn tutorial_state_covers_late_games_and_migrates_short_saves() {
     let mut state = AppState::default();
     let late_game = GameId::MatchThree;
+    state.selected = late_game.index();
     state.tutorial_seen[late_game.index()] = true;
+    let collection = CollectionSave::from_state(&state, "1.0.0");
+    let mut collection_state = AppState::default();
+    collection.apply_to(&mut collection_state);
+    assert_eq!(collection_state.selected, late_game.index());
     let profile = ProfileSave::from_state(&state, "1.0.0");
     let mut restored = AppState::default();
     profile.apply_to(&mut restored);

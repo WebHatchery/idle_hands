@@ -120,6 +120,9 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
                     out.push(UiAction::Open(i));
                 }
             }
+            if Rect::new(720., 28., 190., 42.).contains(p) {
+                out.push(UiAction::ContinueGame);
+            }
             if Rect::new(940., 28., 90., 42.).contains(p) {
                 out.push(UiAction::Help)
             }
@@ -494,6 +497,19 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
             Color::new(0.08, 0.05, 0.12, 1.),
         );
     }
+    let selected = GameId::ALL[state.selected.min(GameId::ALL.len() - 1)];
+    panel(
+        Rect::new(720., 28., 190., 42.),
+        Color::new(0.20, 0.13, 0.30, 1.),
+    );
+    text("CONTINUE", 735., 47., 12., WHITE);
+    text(
+        selected.title(),
+        735.,
+        62.,
+        9.,
+        Color::new(0.98, 0.83, 0.45, 1.),
+    );
     text("HELP", 954., 55., 17., WHITE);
     text("RECORDS", 1048., 55., 17., WHITE);
     text("SETTINGS", 1151., 55., 17., WHITE);

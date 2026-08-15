@@ -299,6 +299,58 @@ impl Game {
                 ..Default::default()
             });
     }
+    fn open_game(&mut self, index: usize) {
+        let Some(id) = GameId::ALL.get(index).copied() else {
+            return;
+        };
+        self.state.selected = index;
+        if crate::cabinet_status::is_active(id) {
+            self.state.screen = Screen::Game(id);
+            self.state.tutorial = (!matches!(
+                id,
+                GameId::LightsOut
+                    | GameId::TicTacToe
+                    | GameId::MemoryPairs
+                    | GameId::SlidingPuzzle
+                    | GameId::Mastermind
+                    | GameId::Spider
+                    | GameId::WordSearch
+                    | GameId::Hangman
+                    | GameId::ConnectFour
+                    | GameId::Checkers
+                    | GameId::PegSolitaire
+                    | GameId::MahjongSolitaire
+                    | GameId::Snake
+                    | GameId::Breakout
+                    | GameId::HigherLower
+                    | GameId::KlondikeGolf
+                    | GameId::Blackjack
+                    | GameId::SpiderSolitaire
+                    | GameId::DungeonSweeper
+                    | GameId::Potion2048
+                    | GameId::TinyTowerDefence
+                    | GameId::OneRoomRoguelike
+                    | GameId::DailyDungeon
+                    | GameId::DotsBoxes
+                    | GameId::Sokoban
+                    | GameId::Mancala
+                    | GameId::Hanoi
+                    | GameId::NumberMatch
+                    | GameId::FloodIt
+                    | GameId::ColorSort
+                    | GameId::Battleship
+                    | GameId::WordGrid
+                    | GameId::PipeLoop
+                    | GameId::MazeWalk
+                    | GameId::MatchThree
+            ) && !self.state.tutorial_seen[id.index()])
+            .then_some(id);
+        } else {
+            self.notifications
+                .info(format!("{} is coming soon", id.title()));
+        }
+    }
+
     fn apply(&mut self, action: ui::UiAction) {
         let previous_screen = self.state.screen;
         if !card_hints::is_hint(action) {
@@ -309,54 +361,10 @@ impl Game {
             return;
         }
         match action {
-            ui::UiAction::Open(index) => {
-                self.state.selected = index;
-                let id = GameId::ALL[index];
-                if crate::cabinet_status::is_active(id) {
-                    self.state.screen = Screen::Game(id);
-                    self.state.tutorial = (!matches!(
-                        id,
-                        GameId::LightsOut
-                            | GameId::TicTacToe
-                            | GameId::MemoryPairs
-                            | GameId::SlidingPuzzle
-                            | GameId::Mastermind
-                            | GameId::Spider
-                            | GameId::WordSearch
-                            | GameId::Hangman
-                            | GameId::ConnectFour
-                            | GameId::Checkers
-                            | GameId::PegSolitaire
-                            | GameId::MahjongSolitaire
-                            | GameId::Snake
-                            | GameId::Breakout
-                            | GameId::HigherLower
-                            | GameId::KlondikeGolf
-                            | GameId::Blackjack
-                            | GameId::SpiderSolitaire
-                            | GameId::DungeonSweeper
-                            | GameId::Potion2048
-                            | GameId::TinyTowerDefence
-                            | GameId::OneRoomRoguelike
-                            | GameId::DailyDungeon
-                            | GameId::DotsBoxes
-                            | GameId::Sokoban
-                            | GameId::Mancala
-                            | GameId::Hanoi
-                            | GameId::NumberMatch
-                            | GameId::FloodIt
-                            | GameId::ColorSort
-                            | GameId::Battleship
-                            | GameId::WordGrid
-                            | GameId::PipeLoop
-                            | GameId::MazeWalk
-                            | GameId::MatchThree
-                    ) && !self.state.tutorial_seen[id.index()])
-                    .then_some(id);
-                } else {
-                    self.notifications
-                        .info(format!("{} is coming soon", id.title()));
-                }
+            ui::UiAction::Open(index) => self.open_game(index),
+            ui::UiAction::ContinueGame => {
+                let index = self.state.selected;
+                self.open_game(index);
             }
             ui::UiAction::Cabinet => {
                 self.state.screen = Screen::Cabinet;

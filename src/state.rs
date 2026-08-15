@@ -380,6 +380,8 @@ pub struct AppState {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CollectionSave {
     pub version: String,
+    #[serde(default = "default_selected")]
+    pub selected: usize,
     pub game: Game2048,
     pub minesweeper: Minesweeper,
     #[serde(default)]
@@ -493,6 +495,10 @@ pub struct CollectionSave {
     pub tutorial_seen: Vec<bool>,
 }
 
+fn default_selected() -> usize {
+    4
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProfileSave {
     pub version: String,
@@ -575,6 +581,7 @@ impl CollectionSave {
     pub fn from_state(state: &AppState, version: &str) -> Self {
         Self {
             version: version.to_owned(),
+            selected: state.selected,
             game: state.game.clone(),
             minesweeper: state.minesweeper.clone(),
             sudoku: state.sudoku.clone(),
@@ -637,6 +644,7 @@ impl CollectionSave {
         }
     }
     pub fn apply_to(self, state: &mut AppState) {
+        state.selected = self.selected.min(GameId::ALL.len().saturating_sub(1));
         state.game = self.game;
         state.minesweeper = self.minesweeper;
         state.sudoku = self.sudoku;

@@ -41,8 +41,9 @@ Three.
   landscape screens, safe areas, and coarse pointers. Important targets are at
   least 44 logical points and do not depend on hover.
 - **Fast to enter and leave.** The cabinet restores each game's unfinished
-  session locally. A player can reach a game in one tap and return home without
-  losing progress.
+  session locally and exposes a visible CONTINUE action for the last-opened
+  drawer. A player can reach a game in one tap and return home without losing
+  progress.
 - **Calm progression.** Play may earn stamps that unlock cosmetic card backs,
   board themes, sounds, and cabinet decorations. There are no purchases,
   stamina, streak pressure, nested currencies, or claim screens.

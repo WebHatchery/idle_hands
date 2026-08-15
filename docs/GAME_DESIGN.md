@@ -42,9 +42,9 @@ touch contracts.
 5. Finish, abandon, or return to the cabinet; progress is saved automatically.
 6. Optionally inspect records, rules, or cosmetic stamps.
 
-The cabinet remembers the last-opened game but always exposes a visible Home
-control. A first-time player sees a short, game-specific touch tutorial that can
-be replayed from Help.
+The cabinet remembers the last-opened game and exposes a visible CONTINUE action
+alongside Home, Help, Records, and Settings. A first-time player sees a short,
+game-specific touch tutorial that can be replayed from Help.
 
 ## 4. Launch Games
 

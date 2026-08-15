@@ -652,6 +652,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Validate storefront JSON and remove stale launch-era claims from the
     active product documentation.
 
+## Phase 49 — Persisted continue flow
+
+- [x] Persist the last-opened cabinet drawer and expose a visible CONTINUE
+  action in desktop, portrait, and medium-landscape cabinet layouts.
+  - [x] Normalize legacy saves and bound restored selection indices.
+  - [x] Cover collection round-trip persistence and verify all three responsive
+    cabinet captures with the resume control visible.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

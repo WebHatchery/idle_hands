@@ -5,6 +5,7 @@ use crate::state::Direction;
 #[derive(Debug, Clone, Copy)]
 pub enum UiAction {
     Open(usize),
+    ContinueGame,
     Cabinet,
     Help,
     Records,

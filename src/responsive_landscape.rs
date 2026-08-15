@@ -48,6 +48,19 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
         13.,
         Color::new(0.72, 0.68, 0.82, 1.),
     );
+    let selected = GameId::ALL[state.selected.min(GameId::ALL.len() - 1)];
+    panel(
+        Rect::new(560., 2., 130., 30.),
+        Color::new(0.20, 0.13, 0.30, 1.),
+    );
+    text("CONTINUE", 570., 14., 8., WHITE);
+    text(
+        selected.title(),
+        570.,
+        25.,
+        6.,
+        Color::new(0.98, 0.83, 0.45, 1.),
+    );
     for (index, game) in GameId::ALL.iter().enumerate() {
         let rect = cabinet_rect(index);
         panel(rect, Color::new(0.17, 0.12, 0.27, 1.));
@@ -104,6 +117,9 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
 }
 
 pub fn cabinet_clicks(p: Vec2) -> Vec<UiAction> {
+    if Rect::new(560., 2., 130., 30.).contains(p) {
+        return vec![UiAction::ContinueGame];
+    }
     for index in 0..GameId::ALL.len() {
         if cabinet_rect(index).contains(p) {
             return vec![UiAction::Open(index)];
