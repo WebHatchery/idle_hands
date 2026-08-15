@@ -562,7 +562,7 @@ fn draw_minesweeper(state: &AppState) {
         Color::new(0.82, 0.75, 0.90, 1.),
     );
     for (index, preset) in MinePreset::ALL.iter().enumerate() {
-        let rect = Rect::new(850. + index as f32 * 118., 285., 108., 32.);
+        let rect = Rect::new(820. + index as f32 * 110., 285., 100., 32.);
         panel(
             rect,
             if *preset == game.preset {
@@ -636,7 +636,7 @@ fn mine_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         return vec![UiAction::MineRestart];
     }
     for (index, preset) in MinePreset::ALL.iter().enumerate() {
-        if Rect::new(850. + index as f32 * 118., 285., 108., 32.).contains(p) {
+        if Rect::new(820. + index as f32 * 110., 285., 100., 32.).contains(p) {
             return vec![UiAction::MinePreset(*preset)];
         }
     }

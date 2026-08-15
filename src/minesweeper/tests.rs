@@ -74,3 +74,11 @@ fn presets_have_expected_dimensions_and_timer_only_runs_in_play() {
     game.tick(2.2);
     assert_eq!(game.elapsed_whole_seconds(), 2);
 }
+
+#[test]
+fn custom_board_clamps_to_touchable_safe_bounds() {
+    let game = Minesweeper::custom(2, 99, 999, 3);
+    assert_eq!((game.width, game.height), (5, 24));
+    assert_eq!(game.mines, 111);
+    assert_eq!(game.cells.len(), 120);
+}

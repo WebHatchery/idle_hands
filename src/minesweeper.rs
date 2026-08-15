@@ -24,15 +24,22 @@ pub enum MinePreset {
     Beginner,
     Intermediate,
     Expert,
+    Custom,
 }
 
 impl MinePreset {
-    pub const ALL: [Self; 3] = [Self::Beginner, Self::Intermediate, Self::Expert];
+    pub const ALL: [Self; 4] = [
+        Self::Beginner,
+        Self::Intermediate,
+        Self::Expert,
+        Self::Custom,
+    ];
     pub fn label(self) -> &'static str {
         match self {
             Self::Beginner => "BEGINNER",
             Self::Intermediate => "INTERMEDIATE",
             Self::Expert => "EXPERT",
+            Self::Custom => "CUSTOM",
         }
     }
     pub fn dimensions(self) -> (usize, usize, usize) {
@@ -40,6 +47,7 @@ impl MinePreset {
             Self::Beginner => (9, 9, 10),
             Self::Intermediate => (16, 16, 40),
             Self::Expert => (30, 16, 99),
+            Self::Custom => (12, 12, 20),
         }
     }
     pub fn index(self) -> usize {
@@ -47,6 +55,7 @@ impl MinePreset {
             Self::Beginner => 0,
             Self::Intermediate => 1,
             Self::Expert => 2,
+            Self::Custom => 3,
         }
     }
 }
@@ -67,6 +76,22 @@ pub struct Minesweeper {
 impl Minesweeper {
     pub fn beginner(seed: u64) -> Self {
         Self::new(MinePreset::Beginner, seed)
+    }
+    pub fn custom(width: usize, height: usize, mines: usize, seed: u64) -> Self {
+        let width = width.clamp(5, 30);
+        let height = height.clamp(5, 24);
+        let mines = mines.clamp(1, width * height - 9);
+        Self {
+            preset: MinePreset::Custom,
+            width,
+            height,
+            mines,
+            cells: vec![Cell::Hidden; width * height],
+            seed,
+            first_reveal: false,
+            status: MineStatus::Ready,
+            elapsed_seconds: 0.0,
+        }
     }
     pub fn new(preset: MinePreset, seed: u64) -> Self {
         let (width, height, mines) = preset.dimensions();

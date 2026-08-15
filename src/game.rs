@@ -112,10 +112,12 @@ impl Game {
                 self.state.mine_flag_mode = !self.state.mine_flag_mode;
             }
             ui::UiAction::MinePreset(preset) => {
-                self.state.minesweeper = crate::minesweeper::Minesweeper::new(
-                    preset,
-                    self.state.minesweeper.seed.wrapping_add(1),
-                );
+                let seed = self.state.minesweeper.seed.wrapping_add(1);
+                self.state.minesweeper = if preset == crate::minesweeper::MinePreset::Custom {
+                    crate::minesweeper::Minesweeper::custom(12, 12, 20, seed)
+                } else {
+                    crate::minesweeper::Minesweeper::new(preset, seed)
+                };
                 self.state.mine_flag_mode = false;
             }
             ui::UiAction::MineChord(index) => {

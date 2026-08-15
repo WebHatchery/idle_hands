@@ -192,7 +192,7 @@ pub struct AppState {
     pub sound: bool,
     pub reduced_motion: bool,
     pub mine_flag_mode: bool,
-    pub mine_records: [Option<u32>; 3],
+    pub mine_records: [Option<u32>; 4],
 }
 impl Default for AppState {
     fn default() -> Self {
@@ -206,7 +206,7 @@ impl Default for AppState {
             sound: true,
             reduced_motion: false,
             mine_flag_mode: false,
-            mine_records: [None, None, None],
+            mine_records: [None, None, None, None],
         }
     }
 }
