@@ -169,6 +169,8 @@ sizes, covered by rule tests, and passes `publish.ps1`.
     844×390, including cabinet navigation, arrows, undo, and new game.
   - [x] Verify touch-sized medium landscape Minesweeper, Sudoku, Nonogram,
     and Reversi boards with their primary controls at 844×390.
+  - [x] Verify the touch-sized medium landscape 15 × 15 Nonogram focus window
+    and pan controls at 844×390.
   - [x] Verify touch-sized medium landscape Solitaire, FreeCell, and Fivefold
     card/scorecard controls at 844×390.
   - [x] Verify touch-sized medium landscape Help, Records, Rules, Credits,
