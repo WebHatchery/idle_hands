@@ -219,6 +219,10 @@ pub struct AppState {
     pub reversi: Reversi,
     pub achievements: [bool; 10],
     pub stamps: u16,
+    pub card_back: u8,
+    pub board_theme: u8,
+    pub sound_set: u8,
+    pub cabinet_decoration: u8,
     pub confirm_restart: bool,
     pub confirm_reset: bool,
     pub profile_name: String,
@@ -289,6 +293,14 @@ pub struct CollectionSave {
     #[serde(default)]
     pub stamps: u16,
     #[serde(default)]
+    pub card_back: u8,
+    #[serde(default)]
+    pub board_theme: u8,
+    #[serde(default)]
+    pub sound_set: u8,
+    #[serde(default)]
+    pub cabinet_decoration: u8,
+    #[serde(default)]
     pub tutorial_seen: [bool; 8],
 }
 
@@ -306,6 +318,14 @@ pub struct ProfileSave {
     pub achievements: [bool; 10],
     #[serde(default)]
     pub stamps: u16,
+    #[serde(default)]
+    pub card_back: u8,
+    #[serde(default)]
+    pub board_theme: u8,
+    #[serde(default)]
+    pub sound_set: u8,
+    #[serde(default)]
+    pub cabinet_decoration: u8,
     pub tutorial_seen: [bool; 8],
 }
 impl ProfileSave {
@@ -321,6 +341,10 @@ impl ProfileSave {
             records: state.records.clone(),
             achievements: state.achievements,
             stamps: state.stamps,
+            card_back: state.card_back,
+            board_theme: state.board_theme,
+            sound_set: state.sound_set,
+            cabinet_decoration: state.cabinet_decoration,
             tutorial_seen: state.tutorial_seen,
         }
     }
@@ -334,6 +358,10 @@ impl ProfileSave {
         state.records = self.records;
         state.achievements = self.achievements;
         state.stamps = self.stamps;
+        state.card_back = self.card_back;
+        state.board_theme = self.board_theme;
+        state.sound_set = self.sound_set;
+        state.cabinet_decoration = self.cabinet_decoration;
         state.tutorial_seen = self.tutorial_seen;
     }
 }
@@ -397,6 +425,10 @@ impl CollectionSave {
             records: state.records.clone(),
             achievements: state.achievements,
             stamps: state.stamps,
+            card_back: state.card_back,
+            board_theme: state.board_theme,
+            sound_set: state.sound_set,
+            cabinet_decoration: state.cabinet_decoration,
             tutorial_seen: state.tutorial_seen,
         }
     }
@@ -418,6 +450,10 @@ impl CollectionSave {
         state.records = self.records;
         state.achievements = self.achievements;
         state.stamps = self.stamps;
+        state.card_back = self.card_back;
+        state.board_theme = self.board_theme;
+        state.sound_set = self.sound_set;
+        state.cabinet_decoration = self.cabinet_decoration;
         state.tutorial_seen = self.tutorial_seen;
     }
 }
@@ -436,6 +472,10 @@ impl Default for AppState {
             reversi: Reversi::default(),
             achievements: [false; 10],
             stamps: 0,
+            card_back: 0,
+            board_theme: 0,
+            sound_set: 0,
+            cabinet_decoration: 0,
             confirm_restart: false,
             confirm_reset: false,
             profile_name: "Cabinet Guest".into(),

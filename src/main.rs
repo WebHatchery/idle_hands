@@ -3,6 +3,7 @@
 use macroquad::prelude::*;
 use macroquad_toolkit::capture;
 
+mod cosmetics;
 mod data;
 mod fivefold;
 mod fivefold_ui;

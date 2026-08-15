@@ -1,6 +1,7 @@
 //! Touch-first Klondike presentation.
 
 use crate::{
+    cosmetics,
     solitaire::{Card, CardSource},
     state::AppState,
     ui::UiAction,
@@ -13,7 +14,8 @@ fn text(s: &str, x: f32, y: f32, size: f32, color: Color) {
 fn card_rect(x: f32, y: f32) -> Rect {
     Rect::new(x, y, 92., 116.)
 }
-fn draw_card(rect: Rect, card: Card, selected: bool) {
+fn draw_card(rect: Rect, card: Card, selected: bool, back_style: u8) {
+    let (back, mark) = cosmetics::card_back_colors(back_style);
     draw_rectangle(
         rect.x,
         rect.y,
@@ -22,7 +24,7 @@ fn draw_card(rect: Rect, card: Card, selected: bool) {
         if card.face_up {
             Color::new(0.94, 0.90, 0.82, 1.)
         } else {
-            Color::new(0.20, 0.13, 0.30, 1.)
+            back
         },
     );
     draw_rectangle_lines(
@@ -64,13 +66,7 @@ fn draw_card(rect: Rect, card: Card, selected: bool) {
             },
         );
     } else {
-        text(
-            "✦",
-            rect.x + 32.,
-            rect.y + 70.,
-            30.,
-            Color::new(0.75, 0.55, 0.90, 1.),
-        );
+        text("✦", rect.x + 32., rect.y + 70., 30., mark);
     }
 }
 
@@ -97,7 +93,7 @@ pub fn draw_solitaire(state: &AppState) {
     );
     panel(card_rect(60., 80.), Color::new(0.20, 0.13, 0.30, 1.));
     if let Some(card) = game.stock.last() {
-        draw_card(card_rect(60., 80.), *card, false);
+        draw_card(card_rect(60., 80.), *card, false, state.card_back);
     }
     text("STOCK", 68., 214., 13., Color::new(0.63, 0.58, 0.72, 1.));
     if let Some(card) = game.waste.last() {
@@ -105,6 +101,7 @@ pub fn draw_solitaire(state: &AppState) {
             card_rect(170., 80.),
             *card,
             game.selected == Some(CardSource::Waste),
+            state.card_back,
         );
     } else {
         panel(card_rect(170., 80.), Color::new(0.12, 0.09, 0.20, 1.));
@@ -119,7 +116,7 @@ pub fn draw_solitaire(state: &AppState) {
                 suit: suit as u8,
                 face_up: true,
             };
-            draw_card(rect, card, false);
+            draw_card(rect, card, false, state.card_back);
         } else {
             text(
                 ["♣", "♦", "♥", "♠"][suit],
@@ -142,7 +139,7 @@ pub fn draw_solitaire(state: &AppState) {
         for (depth, card) in game.tableau[column].iter().enumerate() {
             let rect = card_rect(x, 250. + depth as f32 * 30.);
             let selected = game.selected == Some(CardSource::Tableau(column, depth));
-            draw_card(rect, *card, selected);
+            draw_card(rect, *card, selected, state.card_back);
         }
         if game.tableau[column].is_empty() {
             panel(card_rect(x, 250.), Color::new(0.12, 0.09, 0.20, 1.));

@@ -1,5 +1,6 @@
 //! Application lifecycle and input routing.
 
+use crate::cosmetics;
 use crate::input::{Gesture, PointerTracker};
 use crate::progression;
 use crate::{
@@ -114,7 +115,7 @@ impl Game {
         let _ = dt;
     }
     pub fn draw(&mut self) {
-        clear_background(Color::new(0.035, 0.028, 0.055, 1.0));
+        clear_background(cosmetics::background(self.state.board_theme));
         let viewport = ui::viewport();
         set_camera(&Camera2D {
             target: vec2(ui::LOGICAL_WIDTH / 2., ui::LOGICAL_HEIGHT / 2.),
@@ -341,6 +342,24 @@ impl Game {
             ui::UiAction::Cancel => self.state.confirm_restart = false,
             ui::UiAction::ToggleSound => self.state.sound = !self.state.sound,
             ui::UiAction::ToggleMotion => self.state.reduced_motion = !self.state.reduced_motion,
+            ui::UiAction::CycleCardBack => {
+                self.state.card_back =
+                    cosmetics::next_card_back(self.state.card_back, self.state.stamps)
+            }
+            ui::UiAction::CycleBoardTheme => {
+                self.state.board_theme =
+                    cosmetics::next_board_theme(self.state.board_theme, self.state.stamps)
+            }
+            ui::UiAction::CycleSoundSet => {
+                self.state.sound_set =
+                    cosmetics::next_sound_set(self.state.sound_set, self.state.stamps)
+            }
+            ui::UiAction::CycleCabinetDecoration => {
+                self.state.cabinet_decoration = cosmetics::next_cabinet_decoration(
+                    self.state.cabinet_decoration,
+                    self.state.stamps,
+                )
+            }
             ui::UiAction::ResetData => self.state.confirm_reset = true,
             ui::UiAction::ConfirmResetData => {
                 self.state = AppState::default();

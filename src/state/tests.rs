@@ -35,6 +35,10 @@ fn collection_save_round_trips_game_and_profile_state() {
     state.records.fivefold_best_total = 275;
     state.achievements[0] = true;
     state.stamps = 3;
+    state.card_back = 1;
+    state.board_theme = 1;
+    state.sound_set = 1;
+    state.cabinet_decoration = 1;
     state.tutorial_seen[6] = true;
     let save = CollectionSave::from_state(&state, "1.0.0");
     let mut restored = AppState::default();
@@ -46,6 +50,10 @@ fn collection_save_round_trips_game_and_profile_state() {
     assert_eq!(restored.records.fivefold_best_total, 275);
     assert!(restored.achievements[0]);
     assert_eq!(restored.stamps, 3);
+    assert_eq!(restored.card_back, 1);
+    assert_eq!(restored.board_theme, 1);
+    assert_eq!(restored.sound_set, 1);
+    assert_eq!(restored.cabinet_decoration, 1);
     assert!(restored.tutorial_seen[6]);
 }
 
