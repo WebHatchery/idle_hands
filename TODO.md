@@ -59,8 +59,10 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 
 ## Phase 3 — Sudoku and Nonogram
 
-- [ ] Implement Sudoku rule state, conflicts, pencil marks, undo/erase, number
+- [x] Implement Sudoku rule state, conflicts, pencil marks, undo/erase, number
   pad, difficulty selection, assistance settings, tutorial, and records.
+  - [x] Keep Easy, Medium, and Hard as separate catalog puzzles with distinct
+    validated boards.
 - [x] Choose Sudoku generation or validated puzzle data; guarantee one solution.
   - [x] Validate every authored Sudoku difficulty with a bounded unique-solution check.
 - [ ] Implement Nonogram clues, fill/cross modes, tap and axis-locked drag strokes,

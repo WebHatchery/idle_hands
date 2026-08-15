@@ -6,6 +6,8 @@ const PUZZLE: &str =
     "530070000600195000098000060800060003400803001700020006060000280000419005000080079";
 const EASY: &str =
     "534678912672195348198342567859761423426853791713924856961537284287419000000000000";
+const HARD: &str =
+    "005300000800000020070010500400005300010070006003200080060500009004000030000009700";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum SudokuStatus {
@@ -59,7 +61,8 @@ impl Sudoku {
     pub fn with_difficulty(difficulty: SudokuDifficulty) -> Self {
         let source = match difficulty {
             SudokuDifficulty::Easy => EASY,
-            SudokuDifficulty::Medium | SudokuDifficulty::Hard => PUZZLE,
+            SudokuDifficulty::Medium => PUZZLE,
+            SudokuDifficulty::Hard => HARD,
         };
         let puzzle: Vec<u8> = source.bytes().map(|digit| digit - b'0').collect();
         assert_eq!(

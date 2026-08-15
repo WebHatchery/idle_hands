@@ -10,10 +10,14 @@ fn puzzle_has_a_fixed_solution_shape_and_given_cells_cannot_change() {
 
 #[test]
 fn every_catalog_difficulty_has_one_solution() {
+    let mut puzzles = Vec::new();
     for difficulty in SudokuDifficulty::ALL {
         let sudoku = Sudoku::with_difficulty(difficulty);
         assert_eq!(count_solutions(&sudoku.puzzle, 2), 1);
+        puzzles.push(sudoku.puzzle);
     }
+    assert_ne!(puzzles[0], puzzles[1]);
+    assert_ne!(puzzles[1], puzzles[2]);
 }
 
 #[test]
