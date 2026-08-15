@@ -74,6 +74,54 @@ fn profile_and_game_snapshots_round_trip_independently() {
 }
 
 #[test]
+fn every_game_snapshot_round_trips_its_own_state() {
+    let mut source = AppState::default();
+    source.game.score = 77;
+    source.minesweeper.seed = 91;
+    source.sudoku.selected = Some(4);
+    source.nonogram.moves = 12;
+    source.solitaire.moves = 8;
+    source.freecell.moves = 9;
+    source.fivefold.roll_number = 2;
+    source.reversi.turn = 2;
+
+    for game in GameId::ALL {
+        let snapshot = GameSnapshot::from_state(&source, game);
+        let before = serde_json::to_value(&snapshot).unwrap();
+        let mut restored = AppState::default();
+        snapshot.apply_to(&mut restored);
+        let after = serde_json::to_value(GameSnapshot::from_state(&restored, game)).unwrap();
+        assert_eq!(before, after, "snapshot changed for {}", game.title());
+    }
+}
+
+#[test]
+fn older_saves_default_new_progression_and_cosmetic_fields() {
+    let save = CollectionSave::from_state(&AppState::default(), "1.0.0");
+    let mut value = serde_json::to_value(save).unwrap();
+    let object = value.as_object_mut().unwrap();
+    for field in [
+        "achievements",
+        "stamps",
+        "card_back",
+        "board_theme",
+        "sound_set",
+        "cabinet_decoration",
+    ] {
+        object.remove(field);
+    }
+    let migrated: CollectionSave = serde_json::from_value(value).unwrap();
+    let mut restored = AppState::default();
+    migrated.apply_to(&mut restored);
+    assert_eq!(restored.stamps, 0);
+    assert_eq!(restored.achievements, [false; 10]);
+    assert_eq!(restored.card_back, 0);
+    assert_eq!(restored.board_theme, 0);
+    assert_eq!(restored.sound_set, 0);
+    assert_eq!(restored.cabinet_decoration, 0);
+}
+
+#[test]
 fn default_state_has_no_reset_confirmation() {
     assert!(!AppState::default().confirm_reset);
 }
