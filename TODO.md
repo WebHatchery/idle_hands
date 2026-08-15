@@ -24,21 +24,21 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 
 - [x] Replace the template session with app-level screen/navigation state.
 - [x] Add `GameId`, collection descriptors, game host lifecycle, and navigation.
-- [ ] Implement safe viewport handling and compact/medium/expanded layouts.
+- [x] Implement safe viewport handling and compact/medium/expanded layouts.
   - [x] Add an aspect-preserving logical viewport with letterbox edge rejection.
   - [x] Add a full-size compact portrait canvas for the cabinet, 2048, Sudoku,
     Nonogram, Minesweeper, Solitaire, FreeCell, Fivefold, Reversi, and Settings flows.
-- [ ] Normalize touch/pointer input with tap, drag, swipe, cancel, and edge rules.
+- [x] Normalize touch/pointer input with tap, drag, swipe, cancel, and edge rules.
   - [x] Normalize pointer taps, drags, cancellations, and logical edge rules.
 - [x] Build 44-point-minimum shared controls, modal sheets, help, and settings.
 - [x] Build the responsive cabinet with objects/labels for all eight games;
   unavailable objects clearly say “Coming soon” and remain accessible.
-- [ ] Implement profile settings, per-game save keys, and autosave lifecycle.
+- [x] Implement profile settings, per-game save keys, and autosave lifecycle.
   - [x] Add independent versioned profile and active-game slots alongside the
     combined migration fallback.
 - [x] Implement seeded 2048 rules, swipe controls, visible direction controls,
   score/best tile, one undo, new-game confirmation, tutorial, and records.
-- [ ] Add portrait/landscape capture scenes and replace the template screenshot.
+- [x] Add portrait/landscape capture scenes and replace the template screenshot.
   - [x] Route named cabinet, game, library, and settings scenes through the
     capture harness and verify desktop plus portrait captures.
 - [x] Create the first real title-screen `catalog_thumbnail.png`.
@@ -49,9 +49,9 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 - [x] Add beginner/intermediate/expert/custom board presets.
 - [x] Add Reveal/Flag modes, optional long-press shortcut, visible chord action,
   restart, timer, mine count, win/loss, tutorial, and records.
-- [ ] Extract only proven shared grid geometry/stroke helpers from the two games.
+- [x] Extract only proven shared grid geometry/stroke helpers from the two games.
   - [x] Share responsive grid sizing and half-open hit-testing across the grid drawers.
-- [ ] Test touch cancellation, safe-first-reveal, flood reveal, marking, chording,
+- [x] Test touch cancellation, safe-first-reveal, flood reveal, marking, chording,
   save/resume, and responsive cell sizing.
   - [x] Cover shared grid boundaries and independent row/column sizing in rule tests.
   - [x] Verify the compact Minesweeper board, presets, mode toggle, restart,
@@ -81,7 +81,7 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   selection, drag/drop, stack layout, and animation.
   - [x] Share card identity and seeded deck construction between Solitaire and
     FreeCell.
-- [ ] Implement Klondike tableau, stock/waste, foundations, legal moves, scoring,
+- [x] Implement Klondike tableau, stock/waste, foundations, legal moves, scoring,
   win detection, undo, hint, new deal, tutorial, and records.
   - [x] Add deterministic visible Hint controls to Solitaire and FreeCell in
     desktop, portrait, and medium-landscape layouts.
@@ -94,15 +94,15 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 - [x] Ensure select-then-select can complete every action without dragging.
   - [x] Cover legal tableau, cascade, foundation, and rejected-destination
     selection behavior in rule tests.
-- [ ] Verify readable card ranks and usable stacked-card targets on compact phones.
+- [x] Verify readable card ranks and usable stacked-card targets on compact phones.
   - [x] Verify compact Solitaire and FreeCell selection, foundations, tableau,
     undo, and new-deal controls at 390×844.
 
 ## Phase 5 — FreeCell
 
-- [ ] Reuse shared cards while keeping a separate FreeCell rule engine.
+- [x] Reuse shared cards while keeping a separate FreeCell rule engine.
   - [x] Use the shared card identity and seeded deck for FreeCell deals.
-- [ ] Implement cells, foundations, cascades, supermove capacity, legal move
+- [x] Implement cells, foundations, cascades, supermove capacity, legal move
   feedback, undo, hint, seeded deals, win detection, tutorial, and records.
   - [x] Add deterministic visible Hint controls to Solitaire and FreeCell in
     desktop, portrait, and medium-landscape layouts.
@@ -137,7 +137,7 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   motion substitutions.
   - [x] Add cabinet completion/in-progress states and a reduced-motion-safe fade
     transition between screens.
-- [ ] Add complete Rules, Records, Help, Settings, credits, and reset-data flows.
+- [x] Add complete Rules, Records, Help, Settings, credits, and reset-data flows.
   - [x] Add a persisted Records screen covering current best scores and solves.
   - [x] Add first-run and replayable tutorials with exact visible touch instructions.
   - [x] Add dedicated Rules and Credits screens plus a confirmed reset-data flow.
