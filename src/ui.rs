@@ -162,6 +162,9 @@ pub fn clicks(state: &AppState) -> Vec<UiAction> {
             responsive_cards::freecell_clicks(state, p)
         }
         Screen::Game(GameId::FreeCell) => freecell_ui::freecell_clicks(state, p),
+        Screen::Game(GameId::Yahtzee) if is_portrait() => {
+            responsive_cards::fivefold_clicks(state, p)
+        }
         Screen::Game(GameId::Yahtzee) => fivefold_ui::fivefold_clicks(state, p),
         Screen::Game(GameId::Reversi) => reversi_ui::reversi_clicks(state, p),
         Screen::Help => {
@@ -200,6 +203,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::Solitaire) => solitaire_ui::draw_solitaire(state),
         Screen::Game(GameId::FreeCell) if is_portrait() => responsive_cards::draw_freecell(state),
         Screen::Game(GameId::FreeCell) => freecell_ui::draw_freecell(state),
+        Screen::Game(GameId::Yahtzee) if is_portrait() => responsive_cards::draw_fivefold(state),
         Screen::Game(GameId::Yahtzee) => fivefold_ui::draw_fivefold(state),
         Screen::Game(GameId::Reversi) => reversi_ui::draw_reversi(state),
         Screen::Help => draw_help(),

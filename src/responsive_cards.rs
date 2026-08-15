@@ -2,6 +2,7 @@
 
 use crate::{
     cosmetics,
+    fivefold::{Category, FivefoldStatus},
     freecell::FreeSource,
     solitaire::{Card, CardSource, SolitaireStatus},
     state::AppState,
@@ -360,6 +361,175 @@ pub fn freecell_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
                     .min(state.freecell.cascades[cascade].len() - 1)
             };
             return vec![UiAction::FreeCellCascade(cascade, depth)];
+        }
+    }
+    vec![]
+}
+
+fn dice_rect(index: usize) -> Rect {
+    Rect::new(9. + index as f32 * 69., 112., 60., 60.)
+}
+
+pub fn draw_fivefold(state: &AppState) {
+    let game = &state.fivefold;
+    text("‹ CABINET", 8., 30., 13., Color::new(0.78, 0.70, 0.92, 1.));
+    text("FIVEFOLD", 10., 72., 29., Color::new(0.98, 0.83, 0.45, 1.));
+    text(
+        "Five dice, thirteen calls",
+        12.,
+        94.,
+        13.,
+        Color::new(0.70, 0.64, 0.78, 1.),
+    );
+    for index in 0..5 {
+        let rect = dice_rect(index);
+        panel(
+            rect,
+            if game.held[index] {
+                Color::new(0.45, 0.25, 0.42, 1.)
+            } else {
+                Color::new(0.20, 0.14, 0.30, 1.)
+            },
+        );
+        let value = if game.dice[index] == 0 {
+            "-".to_owned()
+        } else {
+            game.dice[index].to_string()
+        };
+        let width = measure_text(&value, None, 30, 1.).width;
+        text(
+            &value,
+            rect.x + (rect.w - width) / 2.,
+            rect.y + 39.,
+            30.,
+            Color::new(0.98, 0.83, 0.45, 1.),
+        );
+        text(
+            if game.held[index] { "HELD" } else { "HOLD" },
+            rect.x + 15.,
+            rect.y + 53.,
+            8.,
+            Color::new(0.68, 0.63, 0.78, 1.),
+        );
+    }
+    panel(
+        Rect::new(10., 190., 150., 42.),
+        if game.roll_number < 3 && game.status != FivefoldStatus::Complete {
+            Color::new(0.45, 0.25, 0.42, 1.)
+        } else {
+            Color::new(0.16, 0.11, 0.24, 1.)
+        },
+    );
+    text(
+        if game.roll_number == 0 {
+            "ROLL DICE"
+        } else {
+            "ROLL AGAIN"
+        },
+        47.,
+        217.,
+        13.,
+        WHITE,
+    );
+    text(
+        &format!("Roll {}/3", game.roll_number),
+        180.,
+        211.,
+        14.,
+        Color::new(0.72, 0.68, 0.82, 1.),
+    );
+    text(
+        &format!("Total {}", game.total()),
+        180.,
+        232.,
+        14.,
+        Color::new(0.98, 0.83, 0.45, 1.),
+    );
+    panel(
+        Rect::new(8., 255., 344., 345.),
+        Color::new(0.08, 0.06, 0.14, 1.),
+    );
+    text(
+        "SCORECARD",
+        18.,
+        280.,
+        20.,
+        Color::new(0.98, 0.83, 0.45, 1.),
+    );
+    for (index, category) in Category::ALL.iter().enumerate() {
+        let y = 302. + index as f32 * 23.;
+        let rect = Rect::new(15., y - 18., 330., 21.);
+        let score = game.scores[index].map_or_else(
+            || {
+                if game.roll_number > 0 {
+                    game.score_for(*category).to_string()
+                } else {
+                    "-".to_owned()
+                }
+            },
+            |value| value.to_string(),
+        );
+        if game.scores[index].is_none() && game.roll_number > 0 {
+            panel(
+                rect,
+                if game.selected_category == Some(*category) {
+                    Color::new(0.35, 0.24, 0.38, 1.)
+                } else {
+                    Color::new(0.14, 0.10, 0.22, 1.)
+                },
+            );
+        }
+        text(
+            category.label(),
+            rect.x + 9.,
+            y,
+            11.,
+            if game.scores[index].is_some() {
+                Color::new(0.52, 0.48, 0.60, 1.)
+            } else {
+                WHITE
+            },
+        );
+        text(&score, 314., y, 11., Color::new(0.98, 0.83, 0.45, 1.));
+    }
+    text(
+        match game.status {
+            FivefoldStatus::Ready => "Roll, hold, then choose a call",
+            FivefoldStatus::Rolling => "Tap a score to record this roll",
+            FivefoldStatus::Complete => "Scorecard complete",
+        },
+        10.,
+        625.,
+        11.,
+        Color::new(0.63, 0.95, 0.72, 1.),
+    );
+    panel(
+        Rect::new(10., 650., 150., 38.),
+        Color::new(0.20, 0.13, 0.30, 1.),
+    );
+    text("NEW SCORECARD", 31., 675., 11., WHITE);
+}
+
+pub fn fivefold_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
+    if Rect::new(0., 0., 100., 42.).contains(p) {
+        return vec![UiAction::Cabinet];
+    }
+    if Rect::new(10., 190., 150., 42.).contains(p) {
+        return vec![UiAction::FivefoldRoll];
+    }
+    if Rect::new(10., 650., 150., 38.).contains(p) {
+        return vec![UiAction::FivefoldNew];
+    }
+    for index in 0..5 {
+        if dice_rect(index).contains(p) {
+            return vec![UiAction::FivefoldHold(index)];
+        }
+    }
+    for (index, category) in Category::ALL.iter().enumerate() {
+        if Rect::new(15., 284. + index as f32 * 23., 330., 21.).contains(p)
+            && state.fivefold.scores[index].is_none()
+        {
+            return vec![UiAction::FivefoldCategory(*category)];
         }
     }
     vec![]
