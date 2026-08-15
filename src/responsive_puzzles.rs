@@ -194,3 +194,195 @@ pub fn nonogram_drag_actions(state: &AppState, start: Vec2, end: Vec2) -> Vec<Ui
         .map(UiAction::NonogramCell)
         .collect()
 }
+
+const MINE_BOARD: Rect = Rect {
+    x: 5.,
+    y: 155.,
+    w: 350.,
+    h: 350.,
+};
+
+fn mine_grid(state: &AppState) -> GridLayout {
+    GridLayout::new(
+        Rect::new(MINE_BOARD.x + 5., MINE_BOARD.y + 5., 340., 340.),
+        state.minesweeper.width,
+        state.minesweeper.height,
+    )
+}
+
+pub fn draw_minesweeper(state: &AppState) {
+    let game = &state.minesweeper;
+    text("‹ CABINET", 10., 30., 14., Color::new(0.78, 0.70, 0.92, 1.));
+    text(
+        "MINESWEEPER",
+        12.,
+        72.,
+        29.,
+        Color::new(0.98, 0.83, 0.45, 1.),
+    );
+    for (index, preset) in crate::minesweeper::MinePreset::ALL.iter().enumerate() {
+        let rect = Rect::new(5. + index as f32 * 88., 88., 82., 28.);
+        panel(
+            rect,
+            if *preset == game.preset {
+                Color::new(0.45, 0.25, 0.42, 1.)
+            } else {
+                Color::new(0.16, 0.11, 0.24, 1.)
+            },
+        );
+        text(preset.label(), rect.x + 7., rect.y + 19., 9., WHITE);
+    }
+    panel(MINE_BOARD, Color::new(0.10, 0.07, 0.16, 1.));
+    let layout = mine_grid(state);
+    for index in 0..game.cells.len() {
+        let cell_rect = layout.cell_rect(index).unwrap();
+        let rect = Rect::new(cell_rect.x, cell_rect.y, cell_rect.w - 1., cell_rect.h - 1.);
+        let cell = game.cells[index];
+        let revealed = matches!(cell, crate::minesweeper::Cell::Revealed(value) if value < 9)
+            || matches!(game.status, crate::minesweeper::MineStatus::Lost)
+                && matches!(
+                    cell,
+                    crate::minesweeper::Cell::Mine
+                        | crate::minesweeper::Cell::FlaggedMine
+                        | crate::minesweeper::Cell::Revealed(9)
+                );
+        draw_rectangle(
+            rect.x,
+            rect.y,
+            rect.w,
+            rect.h,
+            if revealed {
+                Color::new(0.24, 0.19, 0.30, 1.)
+            } else {
+                Color::new(0.15, 0.11, 0.23, 1.)
+            },
+        );
+        draw_rectangle_lines(
+            rect.x,
+            rect.y,
+            rect.w,
+            rect.h,
+            1.,
+            Color::new(0.48, 0.40, 0.60, 0.7),
+        );
+        match cell {
+            crate::minesweeper::Cell::Flagged | crate::minesweeper::Cell::FlaggedMine => text(
+                "⚑",
+                rect.x + rect.w * 0.20,
+                rect.y + rect.h * 0.72,
+                (rect.w * 0.7).min(20.),
+                Color::new(0.98, 0.46, 0.38, 1.),
+            ),
+            crate::minesweeper::Cell::Mine
+                if matches!(game.status, crate::minesweeper::MineStatus::Lost) =>
+            {
+                text(
+                    "✹",
+                    rect.x + rect.w * 0.20,
+                    rect.y + rect.h * 0.72,
+                    (rect.w * 0.7).min(20.),
+                    Color::new(0.98, 0.45, 0.32, 1.),
+                )
+            }
+            crate::minesweeper::Cell::Revealed(value) if value > 0 && value < 9 => text(
+                &value.to_string(),
+                rect.x + rect.w * 0.35,
+                rect.y + rect.h * 0.72,
+                (rect.w * 0.6).min(19.),
+                Color::new(0.76, 0.90, 1.0, 1.),
+            ),
+            _ => {}
+        }
+    }
+    text(
+        &format!(
+            "Mines {} / {}  •  {:03}s",
+            game.flagged_count(),
+            game.mines,
+            game.elapsed_whole_seconds()
+        ),
+        10.,
+        535.,
+        13.,
+        Color::new(0.82, 0.75, 0.90, 1.),
+    );
+    text(
+        match game.status {
+            crate::minesweeper::MineStatus::Ready => "First reveal is safe",
+            crate::minesweeper::MineStatus::Playing => "Find every safe square",
+            crate::minesweeper::MineStatus::Won => "Field cleared",
+            crate::minesweeper::MineStatus::Lost => "A mine was found",
+        },
+        10.,
+        560.,
+        13.,
+        Color::new(0.63, 0.95, 0.72, 1.),
+    );
+    panel(
+        Rect::new(8., 580., 165., 44.),
+        if state.mine_flag_mode {
+            Color::new(0.45, 0.20, 0.27, 1.)
+        } else {
+            Color::new(0.20, 0.13, 0.30, 1.)
+        },
+    );
+    text(
+        if state.mine_flag_mode {
+            "FLAG MODE"
+        } else {
+            "REVEAL MODE"
+        },
+        42.,
+        608.,
+        13.,
+        WHITE,
+    );
+    panel(
+        Rect::new(187., 580., 165., 44.),
+        Color::new(0.20, 0.13, 0.30, 1.),
+    );
+    text("RESTART", 241., 608., 13., WHITE);
+    text(
+        "Tap numbers to chord; hold to flag.",
+        10.,
+        665.,
+        12.,
+        Color::new(0.68, 0.63, 0.78, 1.),
+    );
+}
+
+pub fn minesweeper_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
+    if Rect::new(0., 0., 110., 42.).contains(p) {
+        return vec![UiAction::Cabinet];
+    }
+    for (index, preset) in crate::minesweeper::MinePreset::ALL.iter().enumerate() {
+        if Rect::new(5. + index as f32 * 88., 88., 82., 28.).contains(p) {
+            return vec![UiAction::MinePreset(*preset)];
+        }
+    }
+    if Rect::new(8., 580., 165., 44.).contains(p) {
+        return vec![UiAction::MineFlagMode];
+    }
+    if Rect::new(187., 580., 165., 44.).contains(p) {
+        return vec![UiAction::MineRestart];
+    }
+    let Some(index) = mine_grid(state).index_at(p) else {
+        return vec![];
+    };
+    if state.mine_flag_mode {
+        vec![UiAction::MineFlag(index)]
+    } else if matches!(
+        state.minesweeper.cells[index],
+        crate::minesweeper::Cell::Revealed(_)
+    ) {
+        vec![UiAction::MineChord(index)]
+    } else {
+        vec![UiAction::MineReveal(index)]
+    }
+}
+
+pub fn minesweeper_long_press(state: &AppState, p: Vec2) -> Vec<UiAction> {
+    mine_grid(state)
+        .index_at(p)
+        .map_or_else(Vec::new, |index| vec![UiAction::MineFlag(index)])
+}

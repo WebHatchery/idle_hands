@@ -27,7 +27,7 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 - [ ] Implement safe viewport handling and compact/medium/expanded layouts.
   - [x] Add an aspect-preserving logical viewport with letterbox edge rejection.
   - [x] Add a full-size compact portrait canvas for the cabinet, 2048, Sudoku,
-    Nonogram, and Settings flows.
+    Nonogram, Minesweeper, and Settings flows.
 - [ ] Normalize touch/pointer input with tap, drag, swipe, cancel, and edge rules.
   - [x] Normalize pointer taps, drags, cancellations, and logical edge rules.
 - [x] Build 44-point-minimum shared controls, modal sheets, help, and settings.
@@ -54,6 +54,8 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 - [ ] Test touch cancellation, safe-first-reveal, flood reveal, marking, chording,
   save/resume, and responsive cell sizing.
   - [x] Cover shared grid boundaries and independent row/column sizing in rule tests.
+  - [x] Verify the compact Minesweeper board, presets, mode toggle, restart,
+    and long-press flagging at 390×844.
 
 ## Phase 3 — Sudoku and Nonogram
 

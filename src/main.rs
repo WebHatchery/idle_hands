@@ -14,6 +14,7 @@ mod grid;
 mod input;
 mod library_ui;
 mod minesweeper;
+mod minesweeper_ui;
 mod nonogram;
 mod nonogram_ui;
 mod palette_ui;

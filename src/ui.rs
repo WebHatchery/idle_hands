@@ -6,6 +6,7 @@ use crate::freecell_ui;
 use crate::grid::GridLayout;
 use crate::input::Viewport;
 use crate::library_ui;
+use crate::minesweeper_ui;
 use crate::nonogram_ui;
 use crate::palette_ui;
 use crate::records_ui;
@@ -143,7 +144,10 @@ pub fn clicks(state: &AppState) -> Vec<UiAction> {
         }
         Screen::Game(GameId::Game2048) if is_portrait() => responsive_ui::game2048_clicks(state, p),
         Screen::Game(GameId::Game2048) => game_clicks(state, p),
-        Screen::Game(GameId::Minesweeper) => mine_clicks(state, p),
+        Screen::Game(GameId::Minesweeper) if is_portrait() => {
+            responsive_puzzles::minesweeper_clicks(state, p)
+        }
+        Screen::Game(GameId::Minesweeper) => minesweeper_ui::clicks(state, p),
         Screen::Game(GameId::Sudoku) if is_portrait() => responsive_ui::sudoku_clicks(state, p),
         Screen::Game(GameId::Sudoku) => sudoku_ui::sudoku_clicks(state, p),
         Screen::Game(GameId::Nonogram) if is_portrait() => {
@@ -178,7 +182,10 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Cabinet => draw_cabinet(state, data, loaded_assets),
         Screen::Game(GameId::Game2048) if is_portrait() => responsive_ui::draw_2048(state),
         Screen::Game(GameId::Game2048) => draw_2048(state),
-        Screen::Game(GameId::Minesweeper) => draw_minesweeper(state),
+        Screen::Game(GameId::Minesweeper) if is_portrait() => {
+            responsive_puzzles::draw_minesweeper(state)
+        }
+        Screen::Game(GameId::Minesweeper) => minesweeper_ui::draw(state),
         Screen::Game(GameId::Sudoku) if is_portrait() => responsive_ui::draw_sudoku(state),
         Screen::Game(GameId::Sudoku) => sudoku_ui::draw_sudoku(state),
         Screen::Game(GameId::Nonogram) if is_portrait() => responsive_puzzles::draw_nonogram(state),
@@ -785,15 +792,4 @@ fn mine_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     } else {
         vec![UiAction::MineReveal(index)]
     }
-}
-
-pub fn mine_long_press(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    let board = Rect::new(350., 155., 450., 450.);
-    let grid = GridLayout::new(
-        Rect::new(board.x + 12., board.y + 12., board.w - 24., board.h - 24.),
-        state.minesweeper.width,
-        state.minesweeper.height,
-    );
-    grid.index_at(p)
-        .map_or_else(Vec::new, |index| vec![UiAction::MineFlag(index)])
 }

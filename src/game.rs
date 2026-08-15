@@ -8,7 +8,7 @@ use crate::{
     data::GameData,
     state::{AppState, CollectionSave, Direction, GameId, GameSnapshot, ProfileSave, Screen},
 };
-use crate::{nonogram_ui, responsive_puzzles, ui};
+use crate::{minesweeper_ui, nonogram_ui, responsive_puzzles, ui};
 use macroquad::prelude::*;
 use macroquad_toolkit::assets::AssetManager;
 use macroquad_toolkit::notifications::{
@@ -124,7 +124,12 @@ impl Game {
                     Gesture::LongPress(position)
                         if self.state.screen == Screen::Game(GameId::Minesweeper) =>
                     {
-                        for action in ui::mine_long_press(&self.state, position) {
+                        let actions = if ui::is_portrait() {
+                            responsive_puzzles::minesweeper_long_press(&self.state, position)
+                        } else {
+                            minesweeper_ui::long_press(&self.state, position)
+                        };
+                        for action in actions {
                             self.apply(action);
                         }
                     }
