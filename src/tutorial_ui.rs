@@ -247,5 +247,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "Push every crate onto a marked square; crates cannot be pulled.",
             "Use UNDO or NEW ROOM with the visible controls.",
         ],
+        GameId::Mancala => [
+            "Tap one of your six stone pits to sow its stones.",
+            "A final stone in your store grants another turn.",
+            "Gather more stones than the cabinet; use UNDO or NEW BOARD.",
+        ],
     }
 }

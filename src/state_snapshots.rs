@@ -3,6 +3,7 @@
 use crate::daily_dungeon::DailyDungeon;
 use crate::dots_boxes::DotsBoxes;
 use crate::dungeon_sweeper::DungeonSweeper;
+use crate::mancala::Mancala;
 use crate::one_room_roguelike::OneRoomRoguelike;
 use crate::potion_2048::Potion2048;
 use crate::state::Game2048;
@@ -55,6 +56,7 @@ pub enum GameSnapshot {
     DailyDungeon(DailyDungeon),
     DotsBoxes(DotsBoxes),
     Sokoban(Sokoban),
+    Mancala(Mancala),
 }
 
 impl GameSnapshot {
@@ -93,6 +95,7 @@ impl GameSnapshot {
             GameId::DailyDungeon => Self::DailyDungeon(state.daily_dungeon.clone()),
             GameId::DotsBoxes => Self::DotsBoxes(state.dots_boxes.clone()),
             GameId::Sokoban => Self::Sokoban(state.sokoban.clone()),
+            GameId::Mancala => Self::Mancala(state.mancala.clone()),
         }
     }
 
@@ -131,6 +134,7 @@ impl GameSnapshot {
             Self::DailyDungeon(game) => state.daily_dungeon = game,
             Self::DotsBoxes(game) => state.dots_boxes = game,
             Self::Sokoban(game) => state.sokoban = game,
+            Self::Mancala(game) => state.mancala = game,
         }
     }
 }

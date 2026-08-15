@@ -61,6 +61,7 @@ impl AchievementId {
                 GameId::DailyDungeon => "Daily keeper",
                 GameId::DotsBoxes => "Square keeper",
                 GameId::Sokoban => "Crate keeper",
+                GameId::Mancala => "Stone keeper",
             },
             Self::FullCabinet => "Full cabinet",
         }
@@ -123,6 +124,7 @@ fn game_complete(records: &CollectionRecords, game: GameId) -> bool {
         GameId::DailyDungeon => records.daily_dungeon_best_score.is_some(),
         GameId::DotsBoxes => records.dots_boxes_best_score.is_some(),
         GameId::Sokoban => records.sokoban_best_moves.is_some(),
+        GameId::Mancala => records.mancala_best_score.is_some(),
     }
 }
 

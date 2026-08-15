@@ -472,6 +472,18 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Add responsive desktop, portrait, and medium-landscape presentation,
     visible controls, records, and verification captures.
 
+## Phase 33 — Twenty-sixth post-launch cabinet game
+
+- [x] Add Mancala as a thirty-fourth deterministic, touch-complete cabinet
+  game with six sowing pits, store capture, a bounded local opponent, undo,
+  reset, and a majority victory.
+  - [x] Cover sowing, captures, extra turns, opponent turns, win/loss,
+    undo, and reset behavior with focused rule tests.
+  - [x] Add persisted active state and best-store records with snapshot,
+    migration, progression, and tutorial coverage.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, records, and verification captures.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

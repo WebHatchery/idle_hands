@@ -156,4 +156,7 @@ pub enum UiAction {
     SokobanMove(Direction),
     SokobanUndo,
     SokobanNew,
+    MancalaPit(usize),
+    MancalaUndo,
+    MancalaNew,
 }

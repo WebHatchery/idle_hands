@@ -197,6 +197,16 @@ impl Game {
                 let seed = self.state.sokoban.seed.wrapping_add(1);
                 self.state.sokoban.reset(seed);
             }
+            UiAction::MancalaPit(pit) => {
+                self.state.mancala.play(*pit);
+            }
+            UiAction::MancalaUndo => {
+                self.state.mancala.undo();
+            }
+            UiAction::MancalaNew => {
+                let seed = self.state.mancala.seed.wrapping_add(1);
+                self.state.mancala.reset(seed);
+            }
             _ => return false,
         }
         true

@@ -294,6 +294,15 @@ impl Game {
                     }),
             );
         }
+        if self.state.mancala.won() {
+            records.mancala_best_score = Some(
+                records
+                    .mancala_best_score
+                    .map_or(self.state.mancala.pits[6], |best| {
+                        best.max(self.state.mancala.pits[6])
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

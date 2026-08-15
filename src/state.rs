@@ -14,6 +14,7 @@ use crate::higher_lower::HigherLower;
 use crate::klondike_golf::KlondikeGolf;
 use crate::lights_out::LightsOut;
 use crate::mahjong_solitaire::MahjongSolitaire;
+use crate::mancala::Mancala;
 use crate::mastermind::Mastermind;
 use crate::memory_pairs::MemoryPairs;
 use crate::minesweeper::Minesweeper;
@@ -73,9 +74,10 @@ pub enum GameId {
     DailyDungeon,
     DotsBoxes,
     Sokoban,
+    Mancala,
 }
 impl GameId {
-    pub const ALL: [Self; 33] = [
+    pub const ALL: [Self; 34] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -109,6 +111,7 @@ impl GameId {
         Self::DailyDungeon,
         Self::DotsBoxes,
         Self::Sokoban,
+        Self::Mancala,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -145,6 +148,7 @@ impl GameId {
             Self::DailyDungeon => "Daily Dungeon",
             Self::DotsBoxes => "Dots & Boxes",
             Self::Sokoban => "Sokoban",
+            Self::Mancala => "Mancala",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -182,6 +186,7 @@ impl GameId {
             Self::DailyDungeon => "Recover the daily runes",
             Self::DotsBoxes => "Draw the quiet squares",
             Self::Sokoban => "Push the quiet crates",
+            Self::Mancala => "Sow the quiet stones",
         }
     }
     pub fn index(self) -> usize {
@@ -222,6 +227,7 @@ impl GameId {
             Self::DailyDungeon => "daily_dungeon",
             Self::DotsBoxes => "dots_boxes",
             Self::Sokoban => "sokoban",
+            Self::Mancala => "mancala",
         }
     }
 }
@@ -283,6 +289,7 @@ pub struct AppState {
     pub daily_dungeon: DailyDungeon,
     pub dots_boxes: DotsBoxes,
     pub sokoban: Sokoban,
+    pub mancala: Mancala,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -365,6 +372,8 @@ pub struct CollectionRecords {
     pub dots_boxes_best_score: Option<u8>,
     #[serde(default)]
     pub sokoban_best_moves: Option<u16>,
+    #[serde(default)]
+    pub mancala_best_score: Option<u8>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -434,6 +443,8 @@ pub struct CollectionSave {
     pub dots_boxes: DotsBoxes,
     #[serde(default)]
     pub sokoban: Sokoban,
+    #[serde(default)]
+    pub mancala: Mancala,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -570,6 +581,7 @@ impl CollectionSave {
             daily_dungeon: state.daily_dungeon.clone(),
             dots_boxes: state.dots_boxes.clone(),
             sokoban: state.sokoban.clone(),
+            mancala: state.mancala.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -622,6 +634,7 @@ impl CollectionSave {
         state.daily_dungeon = self.daily_dungeon;
         state.dots_boxes = self.dots_boxes;
         state.sokoban = self.sokoban;
+        state.mancala = self.mancala;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -680,6 +693,7 @@ impl Default for AppState {
             daily_dungeon: DailyDungeon::default(),
             dots_boxes: DotsBoxes::default(),
             sokoban: Sokoban::default(),
+            mancala: Mancala::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

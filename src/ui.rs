@@ -17,6 +17,7 @@ use crate::klondike_golf_ui;
 use crate::library_ui;
 use crate::lights_out_ui;
 use crate::mahjong_solitaire_ui;
+use crate::mancala_ui;
 use crate::mastermind_ui;
 use crate::memory_pairs_ui;
 use crate::minesweeper_ui;
@@ -197,6 +198,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Game(GameId::DailyDungeon) => daily_dungeon_ui::clicks(state, p),
         Screen::Game(GameId::DotsBoxes) => dots_boxes_ui::clicks(state, p),
         Screen::Game(GameId::Sokoban) => sokoban_ui::clicks(state, p),
+        Screen::Game(GameId::Mancala) => mancala_ui::clicks(state, p),
         Screen::Game(GameId::Mastermind) => mastermind_ui::clicks(state, p),
         Screen::Help => {
             if is_compact_landscape() {
@@ -306,6 +308,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::DailyDungeon) => daily_dungeon_ui::draw(state),
         Screen::Game(GameId::DotsBoxes) => dots_boxes_ui::draw(state),
         Screen::Game(GameId::Sokoban) => sokoban_ui::draw(state),
+        Screen::Game(GameId::Mancala) => mancala_ui::draw(state),
         Screen::Game(GameId::Mastermind) => mastermind_ui::draw(state),
         Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(),
         Screen::Help if is_portrait() => responsive_library::draw_help(),
@@ -410,6 +413,7 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
                     | GameId::DailyDungeon
                     | GameId::DotsBoxes
                     | GameId::Sokoban
+                    | GameId::Mancala
             ) {
                 10.
             } else {
