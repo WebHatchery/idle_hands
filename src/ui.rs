@@ -2,7 +2,7 @@
 
 use crate::{
     data::GameData,
-    minesweeper::{Cell, MineStatus},
+    minesweeper::{Cell, MinePreset, MineStatus},
     state::{AppState, Direction, GameId, Screen},
 };
 use macroquad::prelude::*;
@@ -26,6 +26,7 @@ pub enum UiAction {
     MineChord(usize),
     MineRestart,
     MineFlagMode,
+    MinePreset(crate::minesweeper::MinePreset),
 }
 pub fn mouse() -> Vec2 {
     vec2(
@@ -490,13 +491,13 @@ fn draw_minesweeper(state: &AppState) {
     );
     let board = Rect::new(350., 155., 450., 450.);
     panel(board, Color::new(0.10, 0.07, 0.16, 1.));
-    let cell_size = 46.;
+    let cell_size = (board.w - 24.) / game.width as f32;
     for index in 0..game.cells.len() {
         let rect = Rect::new(
             board.x + 12. + (index % game.width) as f32 * cell_size,
             board.y + 12. + (index / game.width) as f32 * cell_size,
-            42.,
-            42.,
+            cell_size - 2.,
+            cell_size - 2.,
         );
         let cell = game.cells[index];
         let revealed = matches!(cell, Cell::Revealed(value) if value < 9)
@@ -538,9 +539,9 @@ fn draw_minesweeper(state: &AppState) {
             ),
             Cell::Revealed(value) if value > 0 && value < 9 => text(
                 &value.to_string(),
-                rect.x + 16.,
-                rect.y + 31.,
-                23.,
+                rect.x + cell_size * 0.35,
+                rect.y + cell_size * 0.68,
+                (cell_size * 0.48).min(23.),
                 Color::new(0.76, 0.90, 1.0, 1.),
             ),
             _ => {}
@@ -553,6 +554,25 @@ fn draw_minesweeper(state: &AppState) {
         22.,
         Color::new(0.82, 0.75, 0.90, 1.),
     );
+    text(
+        &format!("Time: {:03}s", game.elapsed_whole_seconds()),
+        850.,
+        175.,
+        22.,
+        Color::new(0.82, 0.75, 0.90, 1.),
+    );
+    for (index, preset) in MinePreset::ALL.iter().enumerate() {
+        let rect = Rect::new(850. + index as f32 * 118., 285., 108., 32.);
+        panel(
+            rect,
+            if *preset == game.preset {
+                Color::new(0.45, 0.25, 0.42, 1.)
+            } else {
+                Color::new(0.16, 0.11, 0.24, 1.)
+            },
+        );
+        text(preset.label(), rect.x + 8., rect.y + 21., 11., WHITE);
+    }
     text(
         match game.status {
             MineStatus::Ready => "First reveal is safe",
@@ -615,16 +635,22 @@ fn mine_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if Rect::new(850., 390., 170., 52.).contains(p) {
         return vec![UiAction::MineRestart];
     }
+    for (index, preset) in MinePreset::ALL.iter().enumerate() {
+        if Rect::new(850. + index as f32 * 118., 285., 108., 32.).contains(p) {
+            return vec![UiAction::MinePreset(*preset)];
+        }
+    }
     let board = Rect::new(350., 155., 450., 450.);
     if !board.contains(p) {
         return vec![];
     }
-    let column = ((p.x - board.x - 12.) / 46.) as usize;
-    let row = ((p.y - board.y - 12.) / 46.) as usize;
-    if column >= 9 || row >= 9 {
+    let cell_size = (board.w - 24.) / state.minesweeper.width as f32;
+    let column = ((p.x - board.x - 12.) / cell_size) as usize;
+    let row = ((p.y - board.y - 12.) / cell_size) as usize;
+    if column >= state.minesweeper.width || row >= state.minesweeper.height {
         return vec![];
     }
-    let index = row * 9 + column;
+    let index = row * state.minesweeper.width + column;
     if state.mine_flag_mode {
         vec![UiAction::MineFlag(index)]
     } else if matches!(state.minesweeper.cells[index], Cell::Revealed(_)) {

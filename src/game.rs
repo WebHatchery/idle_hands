@@ -35,6 +35,13 @@ impl Game {
     }
     pub fn update(&mut self, dt: f32) {
         self.notifications.update(dt);
+        self.state.minesweeper.tick(dt);
+        if self.state.minesweeper.status == crate::minesweeper::MineStatus::Won {
+            let slot = self.state.minesweeper.preset.index();
+            let time = self.state.minesweeper.elapsed_whole_seconds();
+            self.state.mine_records[slot] =
+                Some(self.state.mine_records[slot].map_or(time, |best| best.min(time)));
+        }
         if is_mouse_button_pressed(MouseButton::Left) {
             self.drag_start = Some(ui::mouse());
         }
@@ -103,6 +110,13 @@ impl Game {
             }
             ui::UiAction::MineFlagMode => {
                 self.state.mine_flag_mode = !self.state.mine_flag_mode;
+            }
+            ui::UiAction::MinePreset(preset) => {
+                self.state.minesweeper = crate::minesweeper::Minesweeper::new(
+                    preset,
+                    self.state.minesweeper.seed.wrapping_add(1),
+                );
+                self.state.mine_flag_mode = false;
             }
             ui::UiAction::MineChord(index) => {
                 self.state.minesweeper.chord(index);

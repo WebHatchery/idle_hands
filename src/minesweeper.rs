@@ -19,8 +19,41 @@ pub enum MineStatus {
     Lost,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum MinePreset {
+    Beginner,
+    Intermediate,
+    Expert,
+}
+
+impl MinePreset {
+    pub const ALL: [Self; 3] = [Self::Beginner, Self::Intermediate, Self::Expert];
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::Beginner => "BEGINNER",
+            Self::Intermediate => "INTERMEDIATE",
+            Self::Expert => "EXPERT",
+        }
+    }
+    pub fn dimensions(self) -> (usize, usize, usize) {
+        match self {
+            Self::Beginner => (9, 9, 10),
+            Self::Intermediate => (16, 16, 40),
+            Self::Expert => (30, 16, 99),
+        }
+    }
+    pub fn index(self) -> usize {
+        match self {
+            Self::Beginner => 0,
+            Self::Intermediate => 1,
+            Self::Expert => 2,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Minesweeper {
+    pub preset: MinePreset,
     pub width: usize,
     pub height: usize,
     pub mines: usize,
@@ -28,19 +61,34 @@ pub struct Minesweeper {
     pub seed: u64,
     pub first_reveal: bool,
     pub status: MineStatus,
+    pub elapsed_seconds: f32,
 }
 
 impl Minesweeper {
     pub fn beginner(seed: u64) -> Self {
+        Self::new(MinePreset::Beginner, seed)
+    }
+    pub fn new(preset: MinePreset, seed: u64) -> Self {
+        let (width, height, mines) = preset.dimensions();
         Self {
-            width: 9,
-            height: 9,
-            mines: 10,
-            cells: vec![Cell::Hidden; 81],
+            preset,
+            cells: vec![Cell::Hidden; width * height],
+            width,
+            height,
+            mines,
             seed,
             first_reveal: false,
             status: MineStatus::Ready,
+            elapsed_seconds: 0.0,
         }
+    }
+    pub fn tick(&mut self, dt: f32) {
+        if matches!(self.status, MineStatus::Playing) {
+            self.elapsed_seconds = (self.elapsed_seconds + dt).min(9999.0);
+        }
+    }
+    pub fn elapsed_whole_seconds(&self) -> u32 {
+        self.elapsed_seconds.floor() as u32
     }
     pub fn reveal(&mut self, index: usize) -> bool {
         if index >= self.cells.len()
