@@ -41,10 +41,12 @@ use crate::spider_solitaire::SpiderSolitaire;
 use crate::sudoku::Sudoku;
 use crate::tic_tac_toe::TicTacToe;
 use crate::tiny_tower_defence::TinyTowerDefence;
+use crate::tri_peaks::TriPeaks;
 use crate::word_grid::WordGrid;
 use crate::word_search::WordSearch;
 use serde::{Deserialize, Serialize};
 
+pub use crate::state_navigation::{Direction, Screen};
 pub use crate::state_records::CollectionRecords;
 
 pub use crate::game_2048::Game2048;
@@ -97,9 +99,10 @@ pub enum GameId {
     MazeWalk,
     MatchThree,
     Pyramid,
+    TriPeaks,
 }
 impl GameId {
-    pub const ALL: [Self; 44] = [
+    pub const ALL: [Self; 45] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -144,6 +147,7 @@ impl GameId {
         Self::MazeWalk,
         Self::MatchThree,
         Self::Pyramid,
+        Self::TriPeaks,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -191,6 +195,7 @@ impl GameId {
             Self::MazeWalk => "Maze Walk",
             Self::MatchThree => "Match Three",
             Self::Pyramid => "Pyramid",
+            Self::TriPeaks => "TriPeaks",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -239,6 +244,7 @@ impl GameId {
             Self::MazeWalk => "Find the quiet exit",
             Self::MatchThree => "Clear the quiet colors",
             Self::Pyramid => "Pair the quiet thirteen",
+            Self::TriPeaks => "Clear the three quiet peaks",
         }
     }
     pub fn index(self) -> usize {
@@ -290,26 +296,9 @@ impl GameId {
             Self::MazeWalk => "maze_walk",
             Self::MatchThree => "match_three",
             Self::Pyramid => "pyramid",
+            Self::TriPeaks => "tri_peaks",
         }
     }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Screen {
-    Cabinet,
-    Game(GameId),
-    Help,
-    Records,
-    Rules,
-    Credits,
-    Settings,
-}
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Direction {
-    Up,
-    Right,
-    Down,
-    Left,
 }
 
 #[derive(Debug, Clone)]
@@ -362,6 +351,7 @@ pub struct AppState {
     pub maze_walk: MazeWalk,
     pub match_three: MatchThree,
     pub pyramid: Pyramid,
+    pub tri_peaks: TriPeaks,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -475,6 +465,8 @@ pub struct CollectionSave {
     pub match_three: MatchThree,
     #[serde(default)]
     pub pyramid: Pyramid,
+    #[serde(default)]
+    pub tri_peaks: TriPeaks,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -635,6 +627,7 @@ impl CollectionSave {
             maze_walk: state.maze_walk.clone(),
             match_three: state.match_three.clone(),
             pyramid: state.pyramid.clone(),
+            tri_peaks: state.tri_peaks.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -699,6 +692,7 @@ impl CollectionSave {
         state.maze_walk = self.maze_walk;
         state.match_three = self.match_three;
         state.pyramid = self.pyramid;
+        state.tri_peaks = self.tri_peaks;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -768,6 +762,7 @@ impl Default for AppState {
             maze_walk: MazeWalk::default(),
             match_three: MatchThree::default(),
             pyramid: Pyramid::default(),
+            tri_peaks: TriPeaks::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

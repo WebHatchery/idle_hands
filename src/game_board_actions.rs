@@ -127,6 +127,19 @@ impl Game {
                 let seed = self.state.pyramid.seed.wrapping_add(1);
                 self.state.pyramid.reset(seed);
             }
+            UiAction::TriPeaksTap(index) => {
+                self.state.tri_peaks.tap(*index);
+            }
+            UiAction::TriPeaksStock => {
+                self.state.tri_peaks.draw_stock();
+            }
+            UiAction::TriPeaksUndo => {
+                self.state.tri_peaks.undo();
+            }
+            UiAction::TriPeaksNew => {
+                let seed = self.state.tri_peaks.seed.wrapping_add(1);
+                self.state.tri_peaks.reset(seed);
+            }
             UiAction::DungeonCell(index) => {
                 if self.state.mine_flag_mode {
                     self.state.dungeon_sweeper.toggle_flag(*index);

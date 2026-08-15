@@ -205,6 +205,10 @@ pub fn draw_records(state: &AppState) {
             "Pyramid best",
             value(state.records.pyramid_best_moves.map(u32::from)),
         ),
+        (
+            "TriPeaks best",
+            value(state.records.tri_peaks_best_moves.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
         let col = index / 10;

@@ -553,6 +553,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "Pair two exposed cards whose ranks total thirteen.",
             "Tap STOCK for another card; use UNDO or NEW PYRAMID visibly.",
         ],
+        GameId::TriPeaks => [
+            "Tap an exposed card one rank above or below the waste.",
+            "Clear all three peaks before the stock runs out.",
+            "Tap STOCK when no card can play; use UNDO or NEW TRIPEAKS.",
+        ],
     }
 }
 

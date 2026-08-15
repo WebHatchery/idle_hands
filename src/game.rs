@@ -247,6 +247,7 @@ impl Game {
                     | GameId::MazeWalk
                     | GameId::MatchThree
                     | GameId::Pyramid
+                    | GameId::TriPeaks
             ) && !self.state.tutorial_seen[id.index()])
             .then_some(id);
         } else {

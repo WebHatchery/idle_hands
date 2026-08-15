@@ -390,6 +390,15 @@ impl Game {
                     }),
             );
         }
+        if self.state.tri_peaks.status == crate::tri_peaks::TriPeaksStatus::Won {
+            records.tri_peaks_best_moves = Some(
+                records
+                    .tri_peaks_best_moves
+                    .map_or(self.state.tri_peaks.moves, |best| {
+                        best.min(self.state.tri_peaks.moves)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

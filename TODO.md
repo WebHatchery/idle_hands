@@ -770,6 +770,18 @@ sizes, covered by rule tests, and passes `publish.ps1`.
     layouts with the existing accessible text treatment.
   - [x] Cover hint routing and capture the updated Pyramid scenes.
 
+## Phase 62 — TriPeaks post-launch cabinet addition
+
+- [x] Add TriPeaks as a forty-fifth deterministic, touch-complete cabinet game
+  with a seeded three-peak tableau, rank-adjacent waste play, stock, undo, and
+  win/stuck states.
+  - [x] Cover deterministic deals, exposure geometry, legal rank play, stock
+    draws, undo, and blocked-tableau detection with focused rule tests.
+  - [x] Add persisted active state and best-move records with snapshot,
+    migration, progression, and tutorial coverage.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, and verification captures.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.
