@@ -39,6 +39,16 @@ impl Game {
                 let seed = self.state.mahjong_solitaire.seed.wrapping_add(1);
                 self.state.mahjong_solitaire.reset(seed);
             }
+            UiAction::SnakeStep(direction) => {
+                self.state.snake.step(*direction);
+            }
+            UiAction::SnakeUndo => {
+                self.state.snake.undo();
+            }
+            UiAction::SnakeNew => {
+                let seed = self.state.snake.seed.wrapping_add(1);
+                self.state.snake.reset(seed);
+            }
             _ => return false,
         }
         true

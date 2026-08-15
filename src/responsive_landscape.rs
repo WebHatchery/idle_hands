@@ -417,6 +417,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "A tile is free when one side is open and no tile covers it.",
             "Clear every pair; use UNDO or NEW BOARD with the visible controls.",
         ],
+        GameId::Snake => [
+            "Tap a visible direction button to move the coil one step.",
+            "Eat red food, avoid the walls, and grow toward twenty points.",
+            "Use UNDO or NEW BOARD with the visible controls.",
+        ],
     }
 }
 
@@ -444,6 +449,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::MahjongSolitaire if state.records.mahjong_solitaire_best_moves.is_some() => {
             "COMPLETE"
         }
+        GameId::Snake if state.records.snake_best_score.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

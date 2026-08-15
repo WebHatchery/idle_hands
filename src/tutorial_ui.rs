@@ -182,5 +182,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "A tile is free when one side is open and no tile covers it.",
             "Clear every pair; use UNDO or NEW BOARD with the visible controls.",
         ],
+        GameId::Snake => [
+            "Tap a visible direction button to move the coil one step.",
+            "Eat red food, avoid the walls, and grow toward twenty points.",
+            "Use UNDO or NEW BOARD with the visible controls.",
+        ],
     }
 }

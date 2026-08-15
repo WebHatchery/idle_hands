@@ -91,6 +91,7 @@ impl Game {
             "checkers" => Screen::Game(GameId::Checkers),
             "peg_solitaire" => Screen::Game(GameId::PegSolitaire),
             "mahjong_solitaire" => Screen::Game(GameId::MahjongSolitaire),
+            "snake" => Screen::Game(GameId::Snake),
             "help" => Screen::Help,
             "records" => Screen::Records,
             "rules" => Screen::Rules,
@@ -311,6 +312,7 @@ impl Game {
                         | GameId::Checkers
                         | GameId::PegSolitaire
                         | GameId::MahjongSolitaire
+                        | GameId::Snake
                 ) {
                     self.state.screen = Screen::Game(id);
                     self.state.tutorial = (!matches!(
@@ -327,6 +329,7 @@ impl Game {
                             | GameId::Checkers
                             | GameId::PegSolitaire
                             | GameId::MahjongSolitaire
+                            | GameId::Snake
                     ) && !self.state.tutorial_seen[id.index()])
                     .then_some(id);
                 } else {
@@ -685,7 +688,10 @@ impl Game {
             | ui::UiAction::PegSolitaireNew
             | ui::UiAction::MahjongSolitaireTap(_)
             | ui::UiAction::MahjongSolitaireUndo
-            | ui::UiAction::MahjongSolitaireNew => unreachable!("board action was already handled"),
+            | ui::UiAction::MahjongSolitaireNew
+            | ui::UiAction::SnakeStep(_)
+            | ui::UiAction::SnakeUndo
+            | ui::UiAction::SnakeNew => unreachable!("board action was already handled"),
         }
         self.finish_action(previous_screen, action);
     }

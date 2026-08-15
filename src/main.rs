@@ -56,6 +56,8 @@ mod reversi_ui;
 mod settings_ui;
 mod sliding_puzzle;
 mod sliding_puzzle_ui;
+mod snake;
+mod snake_ui;
 mod solitaire;
 mod solitaire_ui;
 mod sound;
