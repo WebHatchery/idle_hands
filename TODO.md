@@ -127,9 +127,9 @@ sizes, covered by rule tests, and passes `publish.ps1`.
     new-board, and AI mode controls at 390×844.
   - [x] Verify compact portrait Help, Records, Rules, and Credits screens at
     390×844.
-- [ ] Run the complete capture matrix, replace duplicate-state images, and update
+- [x] Run the complete capture matrix, replace duplicate-state images, and update
   the catalog thumbnail with the final cabinet.
-- [ ] Complete final `cargo fmt`, tests, warning-free Clippy, and `publish.ps1`.
+- [x] Complete final `cargo fmt`, tests, warning-free Clippy, and `publish.ps1`.
 
 ## Post-launch candidates (not scheduled)
 
