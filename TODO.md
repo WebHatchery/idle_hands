@@ -286,10 +286,23 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Publish the expanded cabinet and game through the standard validation
     path.
 
+## Phase 17 — Tenth post-launch cabinet game
+
+- [x] Add Checkers as an eighteenth deterministic, touch-complete cabinet game
+  with mandatory captures, king promotion, chained jumps, and a bounded local
+  opponent.
+  - [x] Cover seeded setup, legal movement, mandatory captures, promotion,
+    bounded replies, chained jumps, undo, and reset behavior with focused rule
+    tests.
+  - [x] Add persisted active state and best-move records with snapshot,
+    migration, progression, and tutorial coverage.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, records, and verification captures.
+
 ## Post-launch candidates (not scheduled)
 
 - Card family: Spider Solitaire, Klondike Golf, Higher or Lower, Blackjack.
-- Puzzles/tabletop: Checkers, Peg Solitaire, Mahjong Solitaire.
+- Puzzles/tabletop: Peg Solitaire, Mahjong Solitaire.
 - Arcade: Snake and Breakout.
 - Original cabinet games: Dungeon Sweeper, Potion 2048, Tiny Tower Defence, One
   Room Roguelike, and Daily Dungeon.

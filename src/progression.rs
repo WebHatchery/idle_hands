@@ -45,6 +45,7 @@ impl AchievementId {
                 GameId::WordSearch => "Word keeper",
                 GameId::Hangman => "Letter keeper",
                 GameId::ConnectFour => "Disc keeper",
+                GameId::Checkers => "Piece keeper",
             },
             Self::FullCabinet => "Full cabinet",
         }
@@ -107,6 +108,7 @@ pub fn earned(records: &CollectionRecords, achievement: AchievementId) -> bool {
             GameId::WordSearch => records.word_search_best_moves.is_some(),
             GameId::Hangman => records.hangman_best_moves.is_some(),
             GameId::ConnectFour => records.connect_four_best_moves.is_some(),
+            GameId::Checkers => records.checkers_best_moves.is_some(),
         },
         AchievementId::FullCabinet => completed_games(records) == GameId::ALL.len(),
     }

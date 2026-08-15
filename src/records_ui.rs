@@ -114,6 +114,10 @@ pub fn draw_records(state: &AppState) {
             "Connect Four best moves",
             value(state.records.connect_four_best_moves.map(u32::from)),
         ),
+        (
+            "Checkers best moves",
+            value(state.records.checkers_best_moves.map(u32::from)),
+        ),
     ];
     draw_column(&left, 175., 240.);
     draw_column(&middle, 490., 240.);

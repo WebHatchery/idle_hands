@@ -106,6 +106,10 @@ pub fn draw_records(state: &AppState) {
             "Connect Four best",
             value(state.records.connect_four_best_moves.map(u32::from)),
         ),
+        (
+            "Checkers best",
+            value(state.records.checkers_best_moves.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
         let y = 155. + index as f32 * 27.;

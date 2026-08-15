@@ -4,7 +4,7 @@ use crate::card_hints;
 use crate::cosmetics;
 use crate::game_input::card_drag_actions;
 use crate::input::{Gesture, PointerTracker};
-use crate::sound::{SoundBank, SoundCue};
+use crate::sound::SoundBank;
 use crate::{
     data::GameData,
     state::{AppState, CollectionSave, Direction, GameId, GameSnapshot, ProfileSave, Screen},
@@ -20,6 +20,8 @@ use macroquad_toolkit::persistence::{
 };
 use serde::de::DeserializeOwned;
 
+#[path = "game_board_actions.rs"]
+mod game_board_actions;
 #[path = "game_progression.rs"]
 mod game_progression;
 
@@ -86,6 +88,7 @@ impl Game {
             "word_search" => Screen::Game(GameId::WordSearch),
             "hangman" => Screen::Game(GameId::Hangman),
             "connect_four" => Screen::Game(GameId::ConnectFour),
+            "checkers" => Screen::Game(GameId::Checkers),
             "help" => Screen::Help,
             "records" => Screen::Records,
             "rules" => Screen::Rules,
@@ -276,6 +279,10 @@ impl Game {
         if !card_hints::is_hint(action) {
             self.state.card_hint = None;
         }
+        if self.apply_board_action(&action) {
+            self.finish_action(previous_screen, action);
+            return;
+        }
         match action {
             ui::UiAction::Open(index) => {
                 self.state.selected = index;
@@ -299,6 +306,7 @@ impl Game {
                         | GameId::WordSearch
                         | GameId::Hangman
                         | GameId::ConnectFour
+                        | GameId::Checkers
                 ) {
                     self.state.screen = Screen::Game(id);
                     self.state.tutorial = (!matches!(
@@ -312,6 +320,7 @@ impl Game {
                             | GameId::WordSearch
                             | GameId::Hangman
                             | GameId::ConnectFour
+                            | GameId::Checkers
                     ) && !self.state.tutorial_seen[id.index()])
                     .then_some(id);
                 } else {
@@ -609,23 +618,6 @@ impl Game {
                 let seed = self.state.word_search.seed.wrapping_add(1);
                 self.state.word_search.reset(seed);
             }
-            ui::UiAction::HangmanGuess(letter) => {
-                self.state.hangman.guess(letter);
-            }
-            ui::UiAction::HangmanNew => {
-                let seed = self.state.hangman.seed.wrapping_add(1);
-                self.state.hangman.reset(seed);
-            }
-            ui::UiAction::ConnectFourDrop(column) => {
-                self.state.connect_four.drop(column);
-            }
-            ui::UiAction::ConnectFourUndo => {
-                self.state.connect_four.undo();
-            }
-            ui::UiAction::ConnectFourNew => {
-                let seed = self.state.connect_four.seed.wrapping_add(1);
-                self.state.connect_four.reset(seed);
-            }
             ui::UiAction::MineChord(index) => {
                 self.state.minesweeper.chord(index);
             }
@@ -674,22 +666,16 @@ impl Game {
                 self.state = AppState::default();
             }
             ui::UiAction::CancelResetData => self.state.confirm_reset = false,
+            ui::UiAction::HangmanGuess(_)
+            | ui::UiAction::HangmanNew
+            | ui::UiAction::ConnectFourDrop(_)
+            | ui::UiAction::ConnectFourUndo
+            | ui::UiAction::ConnectFourNew
+            | ui::UiAction::CheckersTap(_)
+            | ui::UiAction::CheckersUndo
+            | ui::UiAction::CheckersNew => unreachable!("board action was already handled"),
         }
-        if self.state.screen != previous_screen {
-            self.transition = if self.state.reduced_motion { 0. } else { 1. };
-        }
-        self.update_records();
-        self.save_autosave();
-        self.play_feedback(
-            if matches!(
-                action,
-                ui::UiAction::ConfirmRestart | ui::UiAction::ConfirmResetData
-            ) {
-                SoundCue::Success
-            } else {
-                SoundCue::Tap
-            },
-        );
+        self.finish_action(previous_screen, action);
     }
 
     fn save_autosave(&mut self) {

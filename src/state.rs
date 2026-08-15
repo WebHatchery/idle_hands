@@ -1,5 +1,6 @@
 //! Application state and the deterministic 2048 rules engine.
 
+use crate::checkers::Checkers;
 use crate::connect_four::ConnectFour;
 use crate::fivefold::Fivefold;
 use crate::freecell::FreeCell;
@@ -37,9 +38,10 @@ pub enum GameId {
     WordSearch,
     Hangman,
     ConnectFour,
+    Checkers,
 }
 impl GameId {
-    pub const ALL: [Self; 17] = [
+    pub const ALL: [Self; 18] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -57,6 +59,7 @@ impl GameId {
         Self::WordSearch,
         Self::Hangman,
         Self::ConnectFour,
+        Self::Checkers,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -77,6 +80,7 @@ impl GameId {
             Self::WordSearch => "Word Search",
             Self::Hangman => "Hangman",
             Self::ConnectFour => "Connect Four",
+            Self::Checkers => "Checkers",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -98,6 +102,7 @@ impl GameId {
             Self::WordSearch => "Find the hidden words",
             Self::Hangman => "Keep the quiet word",
             Self::ConnectFour => "Drop the quiet discs",
+            Self::Checkers => "Turn the quiet pieces",
         }
     }
     pub fn index(self) -> usize {
@@ -122,6 +127,7 @@ impl GameId {
             Self::WordSearch => "word_search",
             Self::Hangman => "hangman",
             Self::ConnectFour => "connect_four",
+            Self::Checkers => "checkers",
         }
     }
 }
@@ -283,6 +289,7 @@ pub struct AppState {
     pub word_search: WordSearch,
     pub hangman: Hangman,
     pub connect_four: ConnectFour,
+    pub checkers: Checkers,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -333,6 +340,8 @@ pub struct CollectionRecords {
     pub hangman_best_moves: Option<u16>,
     #[serde(default)]
     pub connect_four_best_moves: Option<u8>,
+    #[serde(default)]
+    pub checkers_best_moves: Option<u16>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -370,6 +379,8 @@ pub struct CollectionSave {
     pub hangman: Hangman,
     #[serde(default)]
     pub connect_four: ConnectFour,
+    #[serde(default)]
+    pub checkers: Checkers,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -488,6 +499,7 @@ pub enum GameSnapshot {
     WordSearch(WordSearch),
     Hangman(Hangman),
     ConnectFour(ConnectFour),
+    Checkers(Checkers),
 }
 impl GameSnapshot {
     pub fn from_state(state: &AppState, game: GameId) -> Self {
@@ -509,6 +521,7 @@ impl GameSnapshot {
             GameId::WordSearch => Self::WordSearch(state.word_search.clone()),
             GameId::Hangman => Self::Hangman(state.hangman.clone()),
             GameId::ConnectFour => Self::ConnectFour(state.connect_four.clone()),
+            GameId::Checkers => Self::Checkers(state.checkers.clone()),
         }
     }
     pub fn apply_to(self, state: &mut AppState) {
@@ -530,6 +543,7 @@ impl GameSnapshot {
             Self::WordSearch(game) => state.word_search = game,
             Self::Hangman(game) => state.hangman = game,
             Self::ConnectFour(game) => state.connect_four = game,
+            Self::Checkers(game) => state.checkers = game,
         }
     }
 }
@@ -555,6 +569,7 @@ impl CollectionSave {
             word_search: state.word_search.clone(),
             hangman: state.hangman.clone(),
             connect_four: state.connect_four.clone(),
+            checkers: state.checkers.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -591,6 +606,7 @@ impl CollectionSave {
         state.word_search = self.word_search;
         state.hangman = self.hangman;
         state.connect_four = self.connect_four;
+        state.checkers = self.checkers;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -633,6 +649,7 @@ impl Default for AppState {
             word_search: WordSearch::default(),
             hangman: Hangman::default(),
             connect_four: ConnectFour::default(),
+            checkers: Checkers::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

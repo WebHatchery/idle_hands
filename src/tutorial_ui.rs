@@ -167,5 +167,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "The cabinet answers with a yellow disc.",
             "Make four in a row; use UNDO or NEW BOARD visibly.",
         ],
+        GameId::Checkers => [
+            "Tap a red piece, then tap a diagonal destination.",
+            "Captures are mandatory; continue tapping for a chained jump.",
+            "Reach the far edge to crown a king; use UNDO or NEW BOARD.",
+        ],
     }
 }

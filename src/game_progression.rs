@@ -147,6 +147,17 @@ impl Game {
                     }),
             );
         }
+        if self.state.checkers.status
+            == crate::checkers::CheckersStatus::Won(crate::checkers::Side::Red)
+        {
+            records.checkers_best_moves = Some(
+                records
+                    .checkers_best_moves
+                    .map_or(self.state.checkers.moves, |best| {
+                        best.min(self.state.checkers.moves)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,
