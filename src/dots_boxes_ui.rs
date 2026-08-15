@@ -1,6 +1,7 @@
 //! Responsive touch presentation for Dots and Boxes.
 
 use crate::{
+    accessibility,
     dots_boxes::{DotsBoxes, DotsPhase, Edge, SIDE},
     state::AppState,
     ui::UiAction,
@@ -69,7 +70,13 @@ pub fn draw(state: &AppState) {
     } else {
         58.
     };
-    text("‹ CABINET", 8., 30., 13., muted());
+    text(
+        "‹ CABINET",
+        8.,
+        30.,
+        accessibility::text_size(13., state.large_text),
+        muted(),
+    );
     text(
         if compact {
             "DOTS & BOXES"
@@ -78,7 +85,7 @@ pub fn draw(state: &AppState) {
         },
         title_x,
         title_y,
-        title_size(),
+        accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
     text(
@@ -95,10 +102,10 @@ pub fn draw(state: &AppState) {
         ),
         if compact { 420. } else { title_x },
         if compact { 28. } else { title_y + 24. },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    draw_board(l.board, game);
+    draw_board(l.board, game, state.high_contrast, state.large_text);
     text(
         status_text(game.phase),
         if compact { 250. } else { title_x },
@@ -109,14 +116,14 @@ pub fn draw(state: &AppState) {
         } else {
             555.
         },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    button(l.undo, "UNDO");
-    button(l.new_game, "NEW BOARD");
+    button(l.undo, "UNDO", state.large_text);
+    button(l.new_game, "NEW BOARD", state.large_text);
 }
 
-fn draw_board(board: Rect, game: &DotsBoxes) {
+fn draw_board(board: Rect, game: &DotsBoxes, high_contrast: bool, large_text: bool) {
     let step = board.w / SIDE as f32;
     for row in 0..=SIDE {
         for col in 0..SIDE {
@@ -126,7 +133,7 @@ fn draw_board(board: Rect, game: &DotsBoxes) {
                 board.x + (col + 1) as f32 * step,
                 board.y + row as f32 * step,
                 2.,
-                Color::new(0.35, 0.28, 0.48, 0.45),
+                accessibility::grid_line(high_contrast),
             );
         }
     }
@@ -138,7 +145,7 @@ fn draw_board(board: Rect, game: &DotsBoxes) {
                 board.x + col as f32 * step,
                 board.y + (row + 1) as f32 * step,
                 2.,
-                Color::new(0.35, 0.28, 0.48, 0.45),
+                accessibility::grid_line(high_contrast),
             );
         }
     }
@@ -152,9 +159,17 @@ fn draw_board(board: Rect, game: &DotsBoxes) {
                     step - 10.,
                     step - 10.,
                     if owner == 1 {
-                        Color::new(0.37, 0.18, 0.22, 1.)
+                        if high_contrast {
+                            Color::new(0.95, 0.10, 0.18, 1.)
+                        } else {
+                            Color::new(0.37, 0.18, 0.22, 1.)
+                        }
                     } else {
-                        Color::new(0.18, 0.24, 0.40, 1.)
+                        if high_contrast {
+                            Color::new(0.08, 0.45, 1., 1.)
+                        } else {
+                            Color::new(0.18, 0.24, 0.40, 1.)
+                        }
                     },
                 );
                 center_text(
@@ -165,7 +180,10 @@ fn draw_board(board: Rect, game: &DotsBoxes) {
                         step,
                         step,
                     ),
-                    if crate::ui::is_portrait() { 18. } else { 24. },
+                    accessibility::text_size(
+                        if crate::ui::is_portrait() { 18. } else { 24. },
+                        large_text,
+                    ),
                     WHITE,
                 );
             }
@@ -181,7 +199,7 @@ fn draw_board(board: Rect, game: &DotsBoxes) {
                     board.x + (col + 1) as f32 * step,
                     board.y + row as f32 * step,
                     6.,
-                    edge_color(index, true, game),
+                    edge_color(index, true, game, high_contrast),
                 );
             }
         }
@@ -196,7 +214,7 @@ fn draw_board(board: Rect, game: &DotsBoxes) {
                     board.x + col as f32 * step,
                     board.y + (row + 1) as f32 * step,
                     6.,
-                    edge_color(index, false, game),
+                    edge_color(index, false, game, high_contrast),
                 );
             }
         }
@@ -207,7 +225,7 @@ fn draw_board(board: Rect, game: &DotsBoxes) {
                 board.x + col as f32 * step,
                 board.y + row as f32 * step,
                 7.,
-                accent(),
+                if high_contrast { WHITE } else { accent() },
             );
         }
     }
@@ -234,16 +252,24 @@ fn edge_at(board: Rect, point: Vec2) -> Option<Edge> {
     }
 }
 
-fn edge_color(index: usize, horizontal: bool, game: &DotsBoxes) -> Color {
+fn edge_color(index: usize, horizontal: bool, game: &DotsBoxes, high_contrast: bool) -> Color {
     let owner = if horizontal {
         edge_owner_horizontal(index, game)
     } else {
         edge_owner_vertical(index, game)
     };
     if owner == 1 {
-        Color::new(0.96, 0.36, 0.45, 1.)
+        if high_contrast {
+            Color::new(1., 0.12, 0.18, 1.)
+        } else {
+            Color::new(0.96, 0.36, 0.45, 1.)
+        }
     } else if owner == 2 {
-        Color::new(0.40, 0.67, 1., 1.)
+        if high_contrast {
+            Color::new(0.10, 0.65, 1., 1.)
+        } else {
+            Color::new(0.40, 0.67, 1., 1.)
+        }
     } else {
         WHITE
     }
@@ -291,7 +317,7 @@ fn status_text(phase: DotsPhase) -> &'static str {
     }
 }
 
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -300,7 +326,12 @@ fn button(rect: Rect, label: &str) {
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
-    center_text(label, rect, 11., WHITE);
+    center_text(
+        label,
+        rect,
+        accessibility::text_size(11., large_text),
+        WHITE,
+    );
 }
 
 fn center_text(label: &str, rect: Rect, size: f32, color: Color) {

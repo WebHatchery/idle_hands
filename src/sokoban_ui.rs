@@ -1,6 +1,7 @@
 //! Responsive touch presentation for Sokoban.
 
 use crate::{
+    accessibility,
     sokoban::{Sokoban, SokobanPhase, HEIGHT, WIDTH},
     state::{AppState, Direction},
     ui::UiAction,
@@ -100,8 +101,20 @@ pub fn draw(state: &AppState) {
     } else {
         55.
     };
-    text("‹ CABINET", 8., 30., 13., muted());
-    text("SOKOBAN", title_x, title_y, title_size(), accent());
+    text(
+        "‹ CABINET",
+        8.,
+        30.,
+        accessibility::text_size(13., state.large_text),
+        muted(),
+    );
+    text(
+        "SOKOBAN",
+        title_x,
+        title_y,
+        accessibility::text_size(title_size(), state.large_text),
+        accent(),
+    );
     text(
         &format!(
             "Crates {}  •  {} moves  •  {}",
@@ -115,10 +128,10 @@ pub fn draw(state: &AppState) {
         ),
         if compact { 420. } else { title_x },
         if compact { 28. } else { title_y + 24. },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    draw_board(l.board, game);
+    draw_board(l.board, game, state.high_contrast, state.large_text);
     text(
         status_text(game.phase),
         if compact { 270. } else { title_x },
@@ -129,17 +142,17 @@ pub fn draw(state: &AppState) {
         } else {
             545.
         },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
     for (rect, label) in l.directions.iter().zip(["UP", "LEFT", "DOWN", "RIGHT"]) {
-        button(*rect, label);
+        button(*rect, label, state.large_text);
     }
-    button(l.undo, "UNDO");
-    button(l.new_game, "NEW ROOM");
+    button(l.undo, "UNDO", state.large_text);
+    button(l.new_game, "NEW ROOM", state.large_text);
 }
 
-fn draw_board(board: Rect, game: &Sokoban) {
+fn draw_board(board: Rect, game: &Sokoban, high_contrast: bool, large_text: bool) {
     let cell = board.w / WIDTH as f32;
     for row in 0..HEIGHT {
         for col in 0..WIDTH {
@@ -151,34 +164,69 @@ fn draw_board(board: Rect, game: &Sokoban) {
                 cell,
             );
             let tile = game.tiles[index];
-            draw_rectangle(rect.x, rect.y, rect.w, rect.h, tile_color(tile));
-            draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., line_color());
+            draw_rectangle(
+                rect.x,
+                rect.y,
+                rect.w,
+                rect.h,
+                tile_color(tile, high_contrast),
+            );
+            draw_rectangle_lines(
+                rect.x,
+                rect.y,
+                rect.w,
+                rect.h,
+                1.,
+                line_color(high_contrast),
+            );
             if tile == 2 || tile == 4 {
-                center_text("○", rect, cell_size(), accent());
+                center_text(
+                    "○",
+                    rect,
+                    cell_size(large_text),
+                    if high_contrast { WHITE } else { accent() },
+                );
             }
             if tile == 3 || tile == 4 {
-                center_text("■", rect, cell_size(), crate_color(tile));
+                center_text(
+                    "■",
+                    rect,
+                    cell_size(large_text),
+                    crate_color(tile, high_contrast),
+                );
             }
             if index == game.player {
-                center_text("@", rect, cell_size(), WHITE);
+                center_text("@", rect, cell_size(large_text), WHITE);
             }
         }
     }
 }
 
-fn tile_color(tile: u8) -> Color {
+fn tile_color(tile: u8, high_contrast: bool) -> Color {
     if tile == 0 {
-        Color::new(0.10, 0.07, 0.16, 1.)
+        accessibility::board_fill(high_contrast)
     } else {
-        Color::new(0.18, 0.13, 0.27, 1.)
+        if high_contrast {
+            Color::new(0.18, 0.16, 0.24, 1.)
+        } else {
+            Color::new(0.18, 0.13, 0.27, 1.)
+        }
     }
 }
 
-fn crate_color(tile: u8) -> Color {
+fn crate_color(tile: u8, high_contrast: bool) -> Color {
     if tile == 4 {
-        Color::new(0.42, 0.82, 0.58, 1.)
+        if high_contrast {
+            Color::new(0.05, 1., 0.30, 1.)
+        } else {
+            Color::new(0.42, 0.82, 0.58, 1.)
+        }
     } else {
-        Color::new(0.92, 0.46, 0.46, 1.)
+        if high_contrast {
+            Color::new(1., 0.15, 0.20, 1.)
+        } else {
+            Color::new(0.92, 0.46, 0.46, 1.)
+        }
     }
 }
 
@@ -189,7 +237,7 @@ fn status_text(phase: SokobanPhase) -> &'static str {
     }
 }
 
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -198,7 +246,12 @@ fn button(rect: Rect, label: &str) {
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
-    center_text(label, rect, 11., WHITE);
+    center_text(
+        label,
+        rect,
+        accessibility::text_size(11., large_text),
+        WHITE,
+    );
 }
 
 fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
@@ -234,11 +287,11 @@ fn body_size() -> f32 {
     }
 }
 
-fn cell_size() -> f32 {
+fn cell_size(large_text: bool) -> f32 {
     if crate::ui::is_portrait() {
-        17.
+        accessibility::text_size(17., large_text).min(21.)
     } else {
-        22.
+        accessibility::text_size(22., large_text).min(27.)
     }
 }
 
@@ -248,6 +301,6 @@ fn accent() -> Color {
 fn muted() -> Color {
     Color::new(0.70, 0.64, 0.78, 1.)
 }
-fn line_color() -> Color {
-    Color::new(0.45, 0.38, 0.65, 0.8)
+fn line_color(high_contrast: bool) -> Color {
+    accessibility::grid_line(high_contrast)
 }

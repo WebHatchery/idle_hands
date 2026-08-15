@@ -1,6 +1,7 @@
 //! Responsive touch presentation for Battleship.
 
 use crate::{
+    accessibility,
     battleship::{Battleship, BattleshipPhase, Shot, SIDE},
     state::AppState,
     ui::UiAction,
@@ -77,18 +78,30 @@ pub fn draw(state: &AppState) {
     } else {
         58.
     };
-    draw_text("‹ CABINET", 8., 30., 13., muted());
-    draw_text("BATTLESHIP", title_x, title_y, title_size(), accent());
+    draw_text(
+        "‹ CABINET",
+        8.,
+        30.,
+        accessibility::text_size(13., state.large_text),
+        muted(),
+    );
+    draw_text(
+        "BATTLESHIP",
+        title_x,
+        title_y,
+        accessibility::text_size(title_size(), state.large_text),
+        accent(),
+    );
     draw_text(
         format!("{} / 5 hits  •  {}", game.hits(), status(game.phase)),
         if compact { 430. } else { title_x },
         if compact { 28. } else { title_y + 24. },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    draw_board(l.board, game);
-    button(l.undo, "UNDO");
-    button(l.new_game, "NEW FLEET");
+    draw_board(l.board, game, state.high_contrast, state.large_text);
+    button(l.undo, "UNDO", state.large_text);
+    button(l.new_game, "NEW FLEET", state.large_text);
     let status_y = if portrait {
         535.
     } else if compact {
@@ -100,12 +113,12 @@ pub fn draw(state: &AppState) {
         "Tap unknown waters to search for the fleet",
         if compact { 270. } else { title_x },
         status_y,
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
 }
 
-fn draw_board(board: Rect, game: &Battleship) {
+fn draw_board(board: Rect, game: &Battleship, high_contrast: bool, large_text: bool) {
     let cell = board.w / SIDE as f32;
     for index in 0..SIDE * SIDE {
         let rect = Rect::new(
@@ -116,9 +129,21 @@ fn draw_board(board: Rect, game: &Battleship) {
         );
         let shot = game.shots[index];
         let fill = match shot {
-            Shot::Unknown => Color::new(0.11, 0.18, 0.30, 1.),
-            Shot::Miss => Color::new(0.12, 0.10, 0.20, 1.),
-            Shot::Hit => Color::new(0.75, 0.25, 0.30, 1.),
+            Shot::Unknown => {
+                if high_contrast {
+                    Color::new(0.05, 0.24, 0.42, 1.)
+                } else {
+                    Color::new(0.11, 0.18, 0.30, 1.)
+                }
+            }
+            Shot::Miss => accessibility::board_fill(high_contrast),
+            Shot::Hit => {
+                if high_contrast {
+                    Color::new(1., 0.15, 0.20, 1.)
+                } else {
+                    Color::new(0.75, 0.25, 0.30, 1.)
+                }
+            }
         };
         draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
         draw_rectangle_lines(
@@ -130,12 +155,17 @@ fn draw_board(board: Rect, game: &Battleship) {
             if shot == Shot::Hit {
                 accent()
             } else {
-                line_color()
+                line_color(high_contrast)
             },
         );
         match shot {
-            Shot::Miss => center_text("·", rect, 30., muted()),
-            Shot::Hit => center_text("×", rect, 24., WHITE),
+            Shot::Miss => center_text(
+                "·",
+                rect,
+                accessibility::text_size(30., large_text),
+                muted(),
+            ),
+            Shot::Hit => center_text("×", rect, accessibility::text_size(24., large_text), WHITE),
             Shot::Unknown => {}
         }
     }
@@ -147,7 +177,7 @@ fn status(phase: BattleshipPhase) -> &'static str {
         BattleshipPhase::Won => "FLEET FOUND",
     }
 }
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -156,7 +186,12 @@ fn button(rect: Rect, label: &str) {
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
-    center_text(label, rect, 11., WHITE);
+    center_text(
+        label,
+        rect,
+        accessibility::text_size(11., large_text),
+        WHITE,
+    );
 }
 fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
     let measured = measure_text(label, None, size as u16, 1.);
@@ -190,6 +225,6 @@ fn accent() -> Color {
 fn muted() -> Color {
     Color::new(0.70, 0.64, 0.78, 1.)
 }
-fn line_color() -> Color {
-    Color::new(0.45, 0.38, 0.65, 0.8)
+fn line_color(high_contrast: bool) -> Color {
+    accessibility::grid_line(high_contrast)
 }
