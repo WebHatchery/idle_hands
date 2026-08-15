@@ -29,9 +29,9 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 
 pub fn cabinet_rect(index: usize) -> Rect {
     Rect::new(
-        6. + (index % 3) as f32 * 118.,
-        94. + (index / 3) as f32 * 59.,
-        112.,
+        6. + (index % 4) as f32 * 98.,
+        94. + (index / 4) as f32 * 59.,
+        92.,
         53.,
     )
 }
@@ -55,7 +55,14 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
             game.title(),
             rect.x + 10.,
             rect.y + 15.,
-            10.,
+            if matches!(
+                game,
+                GameId::TinyTowerDefence | GameId::OneRoomRoguelike | GameId::DailyDungeon
+            ) {
+                8.
+            } else {
+                9.
+            },
             Color::new(0.98, 0.82, 0.42, 1.),
         );
         text(

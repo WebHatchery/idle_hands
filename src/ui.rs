@@ -351,7 +351,7 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
     let accent = cosmetics::cabinet_accent(state.cabinet_decoration);
     text("IDLE HANDS", 46., 70., 48., accent);
     crate::cabinet_art::draw_header_motif(1160., 108., 24., accent);
-    crate::cabinet_art::draw_shelves(48., 165., 1184., 450., accent);
+    crate::cabinet_art::draw_shelves(48., 165., 1184., 480., accent);
     text(
         "A small collection for quiet minutes",
         48.,
@@ -397,8 +397,11 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
             GameId::ALL[i].title(),
             r.x + 18.,
             r.y + 28.,
-            if GameId::ALL[i] == GameId::TinyTowerDefence {
-                14.
+            if matches!(
+                GameId::ALL[i],
+                GameId::TinyTowerDefence | GameId::OneRoomRoguelike | GameId::DailyDungeon
+            ) {
+                10.
             } else {
                 18.
             },
@@ -454,9 +457,9 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
     let _ = data;
 }
 fn cabinet_rect(i: usize) -> Rect {
-    let col = i % 6;
-    let row = i / 6;
-    Rect::new(48. + col as f32 * 198., 155. + row as f32 * 100., 190., 90.)
+    let col = i % 7;
+    let row = i / 7;
+    Rect::new(48. + col as f32 * 170., 155. + row as f32 * 100., 160., 80.)
 }
 fn draw_2048(state: &AppState) {
     let g = &state.game;
