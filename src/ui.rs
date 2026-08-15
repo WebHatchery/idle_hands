@@ -120,13 +120,17 @@ pub fn mouse() -> Vec2 {
 pub fn clicks(state: &AppState) -> Vec<UiAction> {
     let p = mouse();
     if state.tutorial.is_some() {
+        if is_compact_landscape() {
+            return responsive_landscape::tutorial_clicks(p);
+        }
         if is_portrait() {
             return responsive_ui::tutorial_clicks(p);
         }
         return tutorial_ui::clicks(p);
     }
     if matches!(state.screen, Screen::Game(_))
-        && ((is_portrait() && responsive_ui::replay_clicks(p))
+        && ((is_compact_landscape() && responsive_landscape::replay_clicks(p))
+            || (is_portrait() && responsive_ui::replay_clicks(p))
             || (!is_portrait() && tutorial_ui::REPLAY_RECT.contains(p)))
     {
         return vec![UiAction::ReplayTutorial];
@@ -244,9 +248,6 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Cabinet if is_compact_landscape() => {
             responsive_landscape::draw_cabinet(state, data, loaded_assets)
         }
-        Screen::Cabinet if is_compact_landscape() => {
-            responsive_landscape::draw_cabinet(state, data, loaded_assets)
-        }
         Screen::Cabinet if is_portrait() => responsive_ui::draw_cabinet(state, data, loaded_assets),
         Screen::Cabinet => draw_cabinet(state, data, loaded_assets),
         Screen::Game(GameId::Game2048) if is_compact_landscape() => {
@@ -312,13 +313,17 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Settings => settings_ui::draw_settings(state),
     }
     if let Some(game) = state.tutorial {
-        if is_portrait() {
+        if is_compact_landscape() {
+            responsive_landscape::draw_tutorial(game);
+        } else if is_portrait() {
             responsive_ui::draw_tutorial(game);
         } else {
             tutorial_ui::draw_overlay(game);
         }
     } else if matches!(state.screen, Screen::Game(_)) {
-        if is_portrait() {
+        if is_compact_landscape() {
+            responsive_landscape::draw_replay_button();
+        } else if is_portrait() {
             responsive_ui::draw_replay_button();
         } else {
             tutorial_ui::draw_replay_button();

@@ -268,6 +268,101 @@ pub fn game2048_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     vec![]
 }
 
+const TUTORIAL_RECT: Rect = Rect::new(88., 48., 668., 292.);
+const CONTINUE_RECT: Rect = Rect::new(584., 272., 150., 48.);
+const REPLAY_RECT: Rect = Rect::new(220., 20., 150., 50.);
+
+pub fn tutorial_clicks(p: Vec2) -> Vec<UiAction> {
+    if CONTINUE_RECT.contains(p) {
+        vec![UiAction::TutorialContinue]
+    } else {
+        vec![]
+    }
+}
+
+pub fn replay_clicks(p: Vec2) -> bool {
+    REPLAY_RECT.contains(p)
+}
+
+pub fn draw_replay_button() {
+    panel(REPLAY_RECT, Color::new(0.16, 0.11, 0.25, 0.96));
+    text(
+        "TUTORIAL",
+        REPLAY_RECT.x + 22.,
+        REPLAY_RECT.y + 31.,
+        16.,
+        WHITE,
+    );
+}
+
+pub fn draw_tutorial(game: GameId) {
+    panel(TUTORIAL_RECT, Color::new(0.07, 0.045, 0.13, 0.98));
+    text(
+        "HOW TO PLAY",
+        122.,
+        93.,
+        30.,
+        Color::new(0.98, 0.83, 0.45, 1.),
+    );
+    text(game.title(), 122., 130., 21., WHITE);
+    for (index, line) in tutorial_lines(game).iter().enumerate() {
+        text(
+            line,
+            122.,
+            174. + index as f32 * 31.,
+            16.,
+            Color::new(0.78, 0.73, 0.86, 1.),
+        );
+    }
+    panel(CONTINUE_RECT, Color::new(0.25, 0.45, 0.34, 1.));
+    text("CONTINUE", 618., 302., 15., WHITE);
+}
+
+fn tutorial_lines(game: GameId) -> [&'static str; 3] {
+    match game {
+        GameId::Game2048 => [
+            "Swipe the board or tap a visible direction.",
+            "Use UNDO when you want to step back.",
+            "Tap TUTORIAL above to see this again.",
+        ],
+        GameId::Minesweeper => [
+            "Tap hidden squares to reveal them.",
+            "Use REVEAL MODE / FLAG MODE to mark squares.",
+            "Tap a number to use the visible chord action.",
+        ],
+        GameId::Sudoku => [
+            "Tap a cell, then tap a number on the pad.",
+            "Use ERASE or NOTES when you need another mark.",
+            "Use UNDO to step back through your entries.",
+        ],
+        GameId::Nonogram => [
+            "Tap a cell to fill or cross it.",
+            "Use FILL / CROSS to change the visible mode.",
+            "Drag across a row or column for a straight stroke.",
+        ],
+        GameId::Solitaire => [
+            "Tap a face-up card to select it.",
+            "Tap a legal tableau or foundation destination.",
+            "Tap STOCK to deal; use the visible UNDO button.",
+        ],
+        GameId::FreeCell => [
+            "Tap a card, then a legal destination.",
+            "Every card stays visible while you build sequences.",
+            "Use UNDO when you want to step back.",
+        ],
+        GameId::Yahtzee => [
+            "Tap ROLL DICE for the first roll.",
+            "Tap dice to hold them, then ROLL AGAIN.",
+            "Tap a score row to record the preview.",
+        ],
+        GameId::Reversi => [
+            "Tap a glowing square to place a disc.",
+            "The captured line flips after your move.",
+            "Tap PASS only when no legal square remains.",
+        ],
+    }
+}
+
 fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
     match game {
         GameId::Game2048 if state.records.best_2048 >= 2048 => "COMPLETE",

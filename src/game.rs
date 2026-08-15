@@ -57,6 +57,7 @@ impl Game {
             .unwrap_or(scene);
         self.state.screen = match scene {
             "2048" | "gameplay" => Screen::Game(GameId::Game2048),
+            "tutorial_2048" => Screen::Game(GameId::Game2048),
             "minesweeper" => Screen::Game(GameId::Minesweeper),
             "sudoku" => Screen::Game(GameId::Sudoku),
             "nonogram" => Screen::Game(GameId::Nonogram),
@@ -71,6 +72,11 @@ impl Game {
             "settings" => Screen::Settings,
             _ => Screen::Cabinet,
         };
+        if scene.starts_with("tutorial_") {
+            if let Screen::Game(game) = self.state.screen {
+                self.state.tutorial = Some(game);
+            }
+        }
         self.transition = 0.;
     }
     pub fn update(&mut self, dt: f32) {
