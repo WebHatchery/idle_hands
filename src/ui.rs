@@ -10,6 +10,7 @@ use crate::minesweeper_ui;
 use crate::nonogram_ui;
 use crate::palette_ui;
 use crate::records_ui;
+use crate::responsive_cards;
 use crate::responsive_puzzles;
 use crate::responsive_ui;
 use crate::reversi_ui;
@@ -154,6 +155,9 @@ pub fn clicks(state: &AppState) -> Vec<UiAction> {
             responsive_puzzles::nonogram_clicks(state, p)
         }
         Screen::Game(GameId::Nonogram) => nonogram_ui::nonogram_clicks(state, p),
+        Screen::Game(GameId::Solitaire) if is_portrait() => {
+            responsive_cards::solitaire_clicks(state, p)
+        }
         Screen::Game(GameId::Solitaire) => solitaire_ui::solitaire_clicks(state, p),
         Screen::Game(GameId::FreeCell) => freecell_ui::freecell_clicks(state, p),
         Screen::Game(GameId::Yahtzee) => fivefold_ui::fivefold_clicks(state, p),
@@ -190,6 +194,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::Sudoku) => sudoku_ui::draw_sudoku(state),
         Screen::Game(GameId::Nonogram) if is_portrait() => responsive_puzzles::draw_nonogram(state),
         Screen::Game(GameId::Nonogram) => nonogram_ui::draw_nonogram(state),
+        Screen::Game(GameId::Solitaire) if is_portrait() => responsive_cards::draw_solitaire(state),
         Screen::Game(GameId::Solitaire) => solitaire_ui::draw_solitaire(state),
         Screen::Game(GameId::FreeCell) => freecell_ui::draw_freecell(state),
         Screen::Game(GameId::Yahtzee) => fivefold_ui::draw_fivefold(state),
