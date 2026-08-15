@@ -150,8 +150,8 @@ impl Pyramid {
             return true;
         }
         let position = index - row_start(row);
-        self.pyramid[row_start(row + 1) + position * 2].is_none()
-            && self.pyramid[row_start(row + 1) + position * 2 + 1].is_none()
+        self.pyramid[row_start(row + 1) + position].is_none()
+            && self.pyramid[row_start(row + 1) + position + 1].is_none()
     }
 
     fn card_at(&self, index: usize) -> Option<Card> {

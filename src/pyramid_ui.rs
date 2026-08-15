@@ -13,6 +13,7 @@ struct Layout {
     card_gap: f32,
     stock: Rect,
     waste: Rect,
+    hint: Rect,
     undo: Rect,
     new_game: Rect,
 }
@@ -47,6 +48,7 @@ fn layout() -> Layout {
             card_gap: 4.,
             stock: Rect::new(650., 72., 62., 62.),
             waste: Rect::new(722., 72., 62., 62.),
+            hint: Rect::new(530., 280., 105., 40.),
             undo: Rect::new(650., 280., 105., 40.),
             new_game: Rect::new(765., 280., 105., 40.),
         }
@@ -60,6 +62,7 @@ fn layout() -> Layout {
             card_gap: 3.,
             stock: Rect::new(18., 90., 58., 64.),
             waste: Rect::new(86., 90., 58., 64.),
+            hint: Rect::new(154., 90., 100., 64.),
             undo: Rect::new(20., 650., 145., 42.),
             new_game: Rect::new(185., 650., 145., 42.),
         }
@@ -73,6 +76,7 @@ fn layout() -> Layout {
             card_gap: 5.,
             stock: Rect::new(930., 120., 82., 100.),
             waste: Rect::new(1030., 120., 82., 100.),
+            hint: Rect::new(810., 250., 105., 44.),
             undo: Rect::new(930., 250., 100., 44.),
             new_game: Rect::new(1045., 250., 125., 44.),
         }
@@ -89,6 +93,9 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if l.waste.contains(point) {
         return vec![UiAction::PyramidTap(crate::pyramid::WASTE_INDEX)];
+    }
+    if l.hint.contains(point) {
+        return vec![UiAction::PyramidHint];
     }
     if l.undo.contains(point) {
         return vec![UiAction::PyramidUndo];
@@ -186,12 +193,13 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(12., state.large_text),
         muted(),
     );
+    let detail = state.card_hint.as_deref().unwrap_or(if portrait {
+        "Tap a king, or tap two exposed cards that total 13."
+    } else {
+        "Tap a king, or select two exposed cards that total 13."
+    });
     text(
-        if portrait {
-            "Tap a king, or tap two exposed cards that total 13."
-        } else {
-            "Tap a king, or select two exposed cards that total 13."
-        },
+        detail,
         if portrait { 10. } else { title_x },
         if portrait {
             620.
@@ -201,8 +209,13 @@ pub fn draw(state: &AppState) {
             595.
         },
         accessibility::text_size(11., state.large_text),
-        muted(),
+        if state.card_hint.is_some() {
+            accent()
+        } else {
+            muted()
+        },
     );
+    button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW PYRAMID", state.large_text);
 }

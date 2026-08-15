@@ -117,6 +117,9 @@ impl Game {
             UiAction::PyramidStock => {
                 self.state.pyramid.draw_stock();
             }
+            UiAction::PyramidHint => {
+                self.state.card_hint = Some(crate::card_hints::pyramid(&self.state));
+            }
             UiAction::PyramidUndo => {
                 self.state.pyramid.undo();
             }

@@ -97,10 +97,51 @@ pub fn freecell(state: &AppState) -> String {
     "No obvious move — try UNDO and keep every card visible.".into()
 }
 
+pub fn pyramid(state: &AppState) -> String {
+    let game = &state.pyramid;
+    if game.status == crate::pyramid::PyramidStatus::Won {
+        return "The pyramid is already clear.".into();
+    }
+    let exposed = (0..28).filter(|&index| game.available(index));
+    if let Some(index) = exposed
+        .clone()
+        .find(|&index| game.pyramid[index].is_some_and(|card| card.rank == 13))
+    {
+        return format!("Tap the king in pyramid position {}.", index + 1);
+    }
+    let cards = exposed
+        .filter_map(|index| game.pyramid[index].map(|card| (index, card)))
+        .collect::<Vec<_>>();
+    if let Some(waste) = game.waste.last() {
+        if let Some((index, _)) = cards
+            .iter()
+            .find(|(_, card)| card.rank.saturating_add(waste.rank) == 13)
+        {
+            return format!("Tap WASTE, then exposed card {}.", index + 1);
+        }
+    }
+    if let Some((left, right)) = cards.iter().enumerate().find_map(|(index, (_, card))| {
+        cards
+            .iter()
+            .skip(index + 1)
+            .find(|(_, other)| card.rank.saturating_add(other.rank) == 13)
+            .map(|(right, _)| (cards[index].0, *right))
+    }) {
+        return format!("Pair exposed cards {} and {}.", left + 1, right + 1);
+    }
+    if !game.stock.is_empty() {
+        "Tap STOCK to reveal another card.".into()
+    } else {
+        "No obvious move — try UNDO or inspect the waste.".into()
+    }
+}
+
 pub fn is_hint(action: crate::ui::UiAction) -> bool {
     matches!(
         action,
-        crate::ui::UiAction::SolitaireHint | crate::ui::UiAction::FreeCellHint
+        crate::ui::UiAction::SolitaireHint
+            | crate::ui::UiAction::FreeCellHint
+            | crate::ui::UiAction::PyramidHint
     )
 }
 

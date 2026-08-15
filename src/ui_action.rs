@@ -134,6 +134,7 @@ pub enum UiAction {
     SpiderSolitaireNew,
     PyramidTap(usize),
     PyramidStock,
+    PyramidHint,
     PyramidUndo,
     PyramidNew,
     DungeonCell(usize),
