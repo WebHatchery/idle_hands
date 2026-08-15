@@ -78,6 +78,8 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   win detection, undo, hint, new deal, tutorial, and records.
   - [x] Add deterministic visible Hint controls to Solitaire and FreeCell in
     desktop, portrait, and medium-landscape layouts.
+  - [x] Route logical card drags through the same select-then-destination
+    actions as taps.
 - [ ] Confirm launch draw/redeal options and encode them as versioned rulesets.
 - [ ] Ensure select-then-select can complete every action without dragging.
 - [ ] Verify readable card ranks and usable stacked-card targets on compact phones.
@@ -91,6 +93,8 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   feedback, undo, hint, seeded deals, win detection, tutorial, and records.
   - [x] Add deterministic visible Hint controls to Solitaire and FreeCell in
     desktop, portrait, and medium-landscape layouts.
+  - [x] Route logical card drags through the same select-then-destination
+    actions as taps.
 - [ ] Add canonical and edge-case move tests, including empty-column capacity.
 - [ ] Verify all actions through both tap selection and drag interaction.
 

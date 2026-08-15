@@ -122,7 +122,10 @@ pub fn mouse() -> Vec2 {
         .unwrap_or(vec2(-1000., -1000.))
 }
 pub fn clicks(state: &AppState) -> Vec<UiAction> {
-    let p = mouse();
+    actions_at(state, mouse())
+}
+
+pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if state.tutorial.is_some() {
         if is_compact_landscape() {
             return responsive_landscape::tutorial_clicks(p);

@@ -148,6 +148,18 @@ impl Game {
                             self.apply(action);
                         }
                     }
+                    Gesture::Drag { start, end }
+                        if matches!(
+                            self.state.screen,
+                            Screen::Game(GameId::Solitaire | GameId::FreeCell)
+                        ) =>
+                    {
+                        let start_actions = ui::actions_at(&self.state, start);
+                        let end_actions = ui::actions_at(&self.state, end);
+                        for action in start_actions.into_iter().chain(end_actions) {
+                            self.apply(action);
+                        }
+                    }
                     Gesture::Tap(_) => {
                         for action in ui::clicks(&self.state) {
                             self.apply(action);
