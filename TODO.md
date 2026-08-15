@@ -76,7 +76,8 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 
 ## Phase 6 — Yahtzee-style scorecard and Reversi
 
-- [ ] Resolve the public/storefront name for the five-dice scorecard game.
+- [x] Resolve the public/storefront name for the five-dice scorecard game as
+  Fivefold.
 - [ ] Implement seeded dice, holds, three-roll turn flow, thirteen categories,
   score previews, bonus/total calculation, tutorial, and records.
 - [ ] Implement Reversi legal moves, flips, pass/end rules, score, same-device

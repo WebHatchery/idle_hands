@@ -1,5 +1,6 @@
 //! Touch-first cabinet and 2048 presentation.
 
+use crate::fivefold_ui;
 use crate::freecell_ui;
 use crate::nonogram_ui;
 use crate::solitaire_ui;
@@ -54,6 +55,10 @@ pub enum UiAction {
     FreeCellFoundation(usize),
     FreeCellUndo,
     FreeCellNew,
+    FivefoldRoll,
+    FivefoldHold(usize),
+    FivefoldCategory(crate::fivefold::Category),
+    FivefoldNew,
 }
 pub fn mouse() -> Vec2 {
     vec2(
@@ -85,6 +90,7 @@ pub fn clicks(state: &AppState) -> Vec<UiAction> {
         Screen::Game(GameId::Nonogram) => nonogram_ui::nonogram_clicks(state, p),
         Screen::Game(GameId::Solitaire) => solitaire_ui::solitaire_clicks(state, p),
         Screen::Game(GameId::FreeCell) => freecell_ui::freecell_clicks(state, p),
+        Screen::Game(GameId::Yahtzee) => fivefold_ui::fivefold_clicks(state, p),
         Screen::Help => {
             if Rect::new(1030., 635., 180., 48.).contains(p) {
                 vec![UiAction::Cabinet]
@@ -105,6 +111,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::Nonogram) => nonogram_ui::draw_nonogram(state),
         Screen::Game(GameId::Solitaire) => solitaire_ui::draw_solitaire(state),
         Screen::Game(GameId::FreeCell) => freecell_ui::draw_freecell(state),
+        Screen::Game(GameId::Yahtzee) => fivefold_ui::draw_fivefold(state),
         Screen::Help => draw_help(),
         Screen::Settings => draw_settings(state),
         Screen::Game(_) => draw_cabinet(state, data, loaded_assets),
@@ -145,7 +152,16 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
     );
     for i in 0..8 {
         let r = cabinet_rect(i);
-        let active = i == 4;
+        let active = matches!(
+            GameId::ALL[i],
+            GameId::Game2048
+                | GameId::Minesweeper
+                | GameId::Sudoku
+                | GameId::Nonogram
+                | GameId::Solitaire
+                | GameId::FreeCell
+                | GameId::Yahtzee
+        );
         panel(
             r,
             if active {

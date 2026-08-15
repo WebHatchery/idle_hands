@@ -228,6 +228,19 @@ impl Game {
                 self.state.freecell =
                     crate::freecell::FreeCell::new(self.state.freecell.seed.wrapping_add(1));
             }
+            ui::UiAction::FivefoldRoll => {
+                self.state.fivefold.roll();
+            }
+            ui::UiAction::FivefoldHold(index) => {
+                self.state.fivefold.toggle_hold(index);
+            }
+            ui::UiAction::FivefoldCategory(category) => {
+                self.state.fivefold.choose_category(category);
+            }
+            ui::UiAction::FivefoldNew => {
+                self.state.fivefold =
+                    crate::fivefold::Fivefold::new(self.state.fivefold.seed.wrapping_add(1));
+            }
             ui::UiAction::MineChord(index) => {
                 self.state.minesweeper.chord(index);
             }

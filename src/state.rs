@@ -1,5 +1,6 @@
 //! Application state and the deterministic 2048 rules engine.
 
+use crate::fivefold::Fivefold;
 use crate::freecell::FreeCell;
 use crate::minesweeper::Minesweeper;
 use crate::nonogram::Nonogram;
@@ -37,7 +38,7 @@ impl GameId {
             Self::Nonogram => "Nonogram",
             Self::Solitaire => "Solitaire",
             Self::Sudoku => "Sudoku",
-            Self::Yahtzee => "Yahtzee",
+            Self::Yahtzee => "Fivefold",
             Self::Reversi => "Reversi",
         }
     }
@@ -195,6 +196,7 @@ pub struct AppState {
     pub nonogram: Nonogram,
     pub solitaire: Solitaire,
     pub freecell: FreeCell,
+    pub fivefold: Fivefold,
     pub confirm_restart: bool,
     pub profile_name: String,
     pub sound: bool,
@@ -217,6 +219,8 @@ pub struct CollectionSave {
     pub solitaire: Solitaire,
     #[serde(default)]
     pub freecell: FreeCell,
+    #[serde(default)]
+    pub fivefold: Fivefold,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -236,6 +240,7 @@ impl CollectionSave {
             nonogram: state.nonogram.clone(),
             solitaire: state.solitaire.clone(),
             freecell: state.freecell.clone(),
+            fivefold: state.fivefold.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -251,6 +256,7 @@ impl CollectionSave {
         state.nonogram = self.nonogram;
         state.solitaire = self.solitaire;
         state.freecell = self.freecell;
+        state.fivefold = self.fivefold;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -270,6 +276,7 @@ impl Default for AppState {
             nonogram: Nonogram::default(),
             solitaire: Solitaire::default(),
             freecell: FreeCell::default(),
+            fivefold: Fivefold::default(),
             confirm_restart: false,
             profile_name: "Cabinet Guest".into(),
             sound: true,

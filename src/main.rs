@@ -4,6 +4,8 @@ use macroquad::prelude::*;
 use macroquad_toolkit::capture;
 
 mod data;
+mod fivefold;
+mod fivefold_ui;
 mod freecell;
 mod freecell_ui;
 mod game;
