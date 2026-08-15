@@ -143,9 +143,11 @@ sizes, covered by rule tests, and passes `publish.ps1`.
     Settings.
 - [x] Add persisted High Contrast and Large Text settings and apply them to
   dense portrait and medium-landscape puzzle boards.
-- [ ] Audit autosave/resume and save migration independently for all eight games.
+- [x] Audit autosave/resume and save migration independently for all eight games.
   - [x] Cover all eight independent game snapshots and migration defaults for
     progression and cosmetic fields.
+  - [x] Verify all eight snapshots can be restored sequentially without
+    overwriting another game's state.
 - [ ] Audit touch-only completion on iPhone/iPad portrait and landscape sizes.
   - [x] Verify touch-sized portrait cabinet, 2048, Sudoku, Nonogram, and
     Settings controls at 390×844.

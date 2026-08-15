@@ -104,6 +104,37 @@ fn every_game_snapshot_round_trips_its_own_state() {
 }
 
 #[test]
+fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
+    let mut source = AppState::default();
+    source.game.score = 11;
+    source.minesweeper.seed = 22;
+    source.sudoku.moves = 33;
+    source.nonogram.moves = 44;
+    source.solitaire.moves = 55;
+    source.freecell.moves = 66;
+    source.fivefold.roll_number = 2;
+    source.reversi.turn = 2;
+
+    let snapshots = GameId::ALL
+        .iter()
+        .map(|&game| GameSnapshot::from_state(&source, game))
+        .collect::<Vec<_>>();
+    let mut restored = AppState::default();
+    for snapshot in snapshots {
+        snapshot.apply_to(&mut restored);
+    }
+
+    assert_eq!(restored.game.score, 11);
+    assert_eq!(restored.minesweeper.seed, 22);
+    assert_eq!(restored.sudoku.moves, 33);
+    assert_eq!(restored.nonogram.moves, 44);
+    assert_eq!(restored.solitaire.moves, 55);
+    assert_eq!(restored.freecell.moves, 66);
+    assert_eq!(restored.fivefold.roll_number, 2);
+    assert_eq!(restored.reversi.turn, 2);
+}
+
+#[test]
 fn older_saves_default_new_progression_and_cosmetic_fields() {
     let save = CollectionSave::from_state(&AppState::default(), "1.0.0");
     let mut value = serde_json::to_value(save).unwrap();
