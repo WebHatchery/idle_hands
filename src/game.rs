@@ -1,10 +1,10 @@
 //! Application lifecycle and input routing.
 
-use crate::ui;
 use crate::{
     data::GameData,
     state::{AppState, CollectionSave, Direction, GameId, Screen},
 };
+use crate::{nonogram_ui, ui};
 use macroquad::prelude::*;
 use macroquad_toolkit::assets::AssetManager;
 use macroquad_toolkit::notifications::{
@@ -57,6 +57,12 @@ impl Game {
                     && (end - start).length() > 32.0
                 {
                     self.try_move(swipe_direction(end - start));
+                } else if self.state.screen == Screen::Game(GameId::Nonogram)
+                    && (end - start).length() > 16.0
+                {
+                    for action in nonogram_ui::drag_actions(&self.state, start, end) {
+                        self.apply(action);
+                    }
                 } else {
                     for action in ui::clicks(&self.state) {
                         self.apply(action);

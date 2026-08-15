@@ -54,9 +54,10 @@ pub struct Nonogram {
     pub mode: NonogramMode,
     pub selected: Option<usize>,
     pub moves: u32,
+    pub best_moves: Option<u32>,
     pub status: NonogramStatus,
     #[serde(skip)]
-    history: Vec<Vec<NonogramMark>>,
+    history: Vec<(Vec<NonogramMark>, u32, NonogramStatus)>,
 }
 
 impl Default for Nonogram {
@@ -90,6 +91,7 @@ impl Nonogram {
             mode: NonogramMode::Fill,
             selected: None,
             moves: 0,
+            best_moves: None,
             status: NonogramStatus::Playing,
             history: Vec::new(),
         }
@@ -106,7 +108,8 @@ impl Nonogram {
         if index >= self.marks.len() || self.status == NonogramStatus::Won {
             return false;
         }
-        self.history.push(self.marks.clone());
+        self.history
+            .push((self.marks.clone(), self.moves, self.status));
         self.marks[index] = match (self.mode, self.marks[index]) {
             (NonogramMode::Fill, NonogramMark::Filled)
             | (NonogramMode::Cross, NonogramMark::Crossed) => NonogramMark::Empty,
@@ -118,9 +121,10 @@ impl Nonogram {
         true
     }
     pub fn undo(&mut self) -> bool {
-        if let Some(marks) = self.history.pop() {
+        if let Some((marks, moves, status)) = self.history.pop() {
             self.marks = marks;
-            self.status = NonogramStatus::Playing;
+            self.moves = moves;
+            self.status = status;
             true
         } else {
             false
@@ -140,7 +144,32 @@ impl Nonogram {
             .all(|(index, mark)| (*mark == NonogramMark::Filled) == self.solution[index])
         {
             self.status = NonogramStatus::Won;
+            self.best_moves = Some(
+                self.best_moves
+                    .map_or(self.moves, |best| best.min(self.moves)),
+            );
         }
+    }
+}
+
+pub fn stroke_indices(size: usize, start: (usize, usize), end: (usize, usize)) -> Vec<usize> {
+    if size == 0 || start.0 >= size || start.1 >= size || end.0 >= size || end.1 >= size {
+        return Vec::new();
+    }
+    if start.0.abs_diff(end.0) >= start.1.abs_diff(end.1) {
+        let (from, to) = if start.0 <= end.0 {
+            (start.0, end.0)
+        } else {
+            (end.0, start.0)
+        };
+        (from..=to).map(|x| start.1 * size + x).collect()
+    } else {
+        let (from, to) = if start.1 <= end.1 {
+            (start.1, end.1)
+        } else {
+            (end.1, start.1)
+        };
+        (from..=to).map(|y| y * size + start.0).collect()
     }
 }
 

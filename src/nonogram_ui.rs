@@ -103,7 +103,12 @@ pub fn draw_nonogram(state: &AppState) {
         Color::new(0.63, 0.95, 0.72, 1.),
     );
     text(
-        &format!("Moves: {}", game.moves),
+        &format!(
+            "Moves: {}  Best: {}",
+            game.moves,
+            game.best_moves
+                .map_or("—".to_owned(), |best| best.to_string())
+        ),
         850.,
         215.,
         17.,
@@ -173,4 +178,25 @@ pub fn nonogram_clicks(_state: &AppState, p: Vec2) -> Vec<UiAction> {
     } else {
         vec![]
     }
+}
+
+pub fn drag_actions(state: &AppState, start: Vec2, end: Vec2) -> Vec<UiAction> {
+    let board = Rect::new(320., 175., 500., 500.);
+    let cell = (board.w - 20.) / state.nonogram.size as f32;
+    let to_cell = |point: Vec2| -> Option<(usize, usize)> {
+        if !board.contains(point) {
+            return None;
+        }
+        let x = ((point.x - board.x - 10.) / cell) as usize;
+        let y = ((point.y - board.y - 10.) / cell) as usize;
+        (x < state.nonogram.size && y < state.nonogram.size).then_some((x, y))
+    };
+    let (start, end) = match (to_cell(start), to_cell(end)) {
+        (Some(start), Some(end)) => (start, end),
+        _ => return Vec::new(),
+    };
+    crate::nonogram::stroke_indices(state.nonogram.size, start, end)
+        .into_iter()
+        .map(UiAction::NonogramCell)
+        .collect()
 }
