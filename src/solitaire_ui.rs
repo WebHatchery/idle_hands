@@ -1,6 +1,6 @@
 //! Touch-first Klondike presentation.
 
-use crate::{cards::Card, cosmetics, solitaire::CardSource, state::AppState, ui::UiAction};
+use crate::{cards::Card, solitaire::CardSource, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
 fn text(s: &str, x: f32, y: f32, size: f32, color: Color) {
@@ -9,60 +9,8 @@ fn text(s: &str, x: f32, y: f32, size: f32, color: Color) {
 fn card_rect(x: f32, y: f32) -> Rect {
     Rect::new(x, y, 92., 116.)
 }
-fn draw_card(rect: Rect, card: Card, selected: bool, back_style: u8) {
-    let (back, mark) = cosmetics::card_back_colors(back_style);
-    draw_rectangle(
-        rect.x,
-        rect.y,
-        rect.w,
-        rect.h,
-        if card.face_up {
-            Color::new(0.94, 0.90, 0.82, 1.)
-        } else {
-            back
-        },
-    );
-    draw_rectangle_lines(
-        rect.x,
-        rect.y,
-        rect.w,
-        rect.h,
-        if selected { 4. } else { 2. },
-        if selected {
-            Color::new(0.98, 0.75, 0.30, 1.)
-        } else {
-            Color::new(0.55, 0.45, 0.68, 1.)
-        },
-    );
-    if card.face_up {
-        let ranks = [
-            "", "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K",
-        ];
-        text(
-            ranks[card.rank as usize],
-            rect.x + 12.,
-            rect.y + 31.,
-            25.,
-            if card.red() {
-                Color::new(0.72, 0.16, 0.22, 1.)
-            } else {
-                Color::new(0.10, 0.08, 0.16, 1.)
-            },
-        );
-        text(
-            ["♣", "♦", "♥", "♠"][card.suit as usize],
-            rect.x + 62.,
-            rect.y + 92.,
-            28.,
-            if card.red() {
-                Color::new(0.72, 0.16, 0.22, 1.)
-            } else {
-                Color::new(0.10, 0.08, 0.16, 1.)
-            },
-        );
-    } else {
-        text("✦", rect.x + 32., rect.y + 70., 30., mark);
-    }
+fn draw_card(rect: Rect, card: Card, selected: bool, back_style: u8, reduced_motion: bool) {
+    crate::card_render::draw_card(rect, card, selected, back_style, reduced_motion);
 }
 
 pub fn draw_solitaire(state: &AppState) {
@@ -95,7 +43,13 @@ pub fn draw_solitaire(state: &AppState) {
     );
     panel(card_rect(60., 80.), Color::new(0.20, 0.13, 0.30, 1.));
     if let Some(card) = game.stock.last() {
-        draw_card(card_rect(60., 80.), *card, false, state.card_back);
+        draw_card(
+            card_rect(60., 80.),
+            *card,
+            false,
+            state.card_back,
+            state.reduced_motion,
+        );
     }
     text("STOCK", 68., 214., 13., Color::new(0.63, 0.58, 0.72, 1.));
     if let Some(card) = game.waste.last() {
@@ -104,6 +58,7 @@ pub fn draw_solitaire(state: &AppState) {
             *card,
             game.selected == Some(CardSource::Waste),
             state.card_back,
+            state.reduced_motion,
         );
     } else {
         panel(card_rect(170., 80.), Color::new(0.12, 0.09, 0.20, 1.));
@@ -118,7 +73,7 @@ pub fn draw_solitaire(state: &AppState) {
                 suit: suit as u8,
                 face_up: true,
             };
-            draw_card(rect, card, false, state.card_back);
+            draw_card(rect, card, false, state.card_back, state.reduced_motion);
         } else {
             text(
                 ["♣", "♦", "♥", "♠"][suit],
@@ -141,7 +96,7 @@ pub fn draw_solitaire(state: &AppState) {
         for (depth, card) in game.tableau[column].iter().enumerate() {
             let rect = card_rect(x, 250. + depth as f32 * 30.);
             let selected = game.selected == Some(CardSource::Tableau(column, depth));
-            draw_card(rect, *card, selected, state.card_back);
+            draw_card(rect, *card, selected, state.card_back, state.reduced_motion);
         }
         if game.tableau[column].is_empty() {
             panel(card_rect(x, 250.), Color::new(0.12, 0.09, 0.20, 1.));

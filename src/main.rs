@@ -5,6 +5,7 @@ use macroquad_toolkit::capture;
 
 mod accessibility;
 mod card_hints;
+mod card_render;
 mod cards;
 mod cosmetics;
 mod data;

@@ -71,8 +71,10 @@ impl Game {
             "minesweeper_accessible" => Screen::Game(GameId::Minesweeper),
             "solitaire" => Screen::Game(GameId::Solitaire),
             "solitaire_hint" => Screen::Game(GameId::Solitaire),
+            "solitaire_selected" => Screen::Game(GameId::Solitaire),
             "freecell" => Screen::Game(GameId::FreeCell),
             "freecell_hint" => Screen::Game(GameId::FreeCell),
+            "freecell_selected" => Screen::Game(GameId::FreeCell),
             "fivefold" => Screen::Game(GameId::Yahtzee),
             "reversi" => Screen::Game(GameId::Reversi),
             "help" => Screen::Help,
@@ -91,6 +93,12 @@ impl Game {
                 crate::nonogram::Nonogram::new(crate::nonogram::NonogramPreset::Large);
             self.state.nonogram_zoomed = true;
             self.state.nonogram_focus = (6, 6);
+        }
+        if scene == "solitaire_selected" {
+            self.state.solitaire.select_tableau(0, 0);
+        }
+        if scene == "freecell_selected" {
+            self.state.freecell.select_cascade(0, 0);
         }
         if scene.ends_with("_accessible") {
             self.state.high_contrast = true;

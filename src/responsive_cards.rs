@@ -2,7 +2,6 @@
 
 use crate::{
     cards::Card,
-    cosmetics,
     fivefold::{Category, FivefoldStatus},
     freecell::FreeSource,
     reversi::{AiLevel, ReversiStatus},
@@ -40,41 +39,8 @@ fn card_x(column: usize) -> f32 {
     4. + column as f32 * (CARD_W + COL_GAP)
 }
 
-fn draw_card(rect: Rect, card: Card, selected: bool, back_style: u8) {
-    let (back, mark) = cosmetics::card_back_colors(back_style);
-    let face = if card.face_up {
-        Color::new(0.94, 0.90, 0.82, 1.)
-    } else {
-        back
-    };
-    draw_rectangle(rect.x, rect.y, rect.w, rect.h, face);
-    draw_rectangle_lines(
-        rect.x,
-        rect.y,
-        rect.w,
-        rect.h,
-        if selected { 3. } else { 1. },
-        if selected {
-            Color::new(0.98, 0.75, 0.30, 1.)
-        } else {
-            Color::new(0.55, 0.45, 0.68, 1.)
-        },
-    );
-    if !card.face_up {
-        text("*", rect.x + 17., rect.y + 38., 22., mark);
-        return;
-    }
-    let rank = [
-        "", "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K",
-    ][card.rank as usize];
-    let suit = ["C", "D", "H", "S"][card.suit as usize];
-    let color = if card.red() {
-        Color::new(0.72, 0.16, 0.22, 1.)
-    } else {
-        Color::new(0.10, 0.08, 0.16, 1.)
-    };
-    text(rank, rect.x + 4., rect.y + 17., 13., color);
-    text(suit, rect.x + 15., rect.y + 43., 19., color);
+fn draw_card(rect: Rect, card: Card, selected: bool, back_style: u8, reduced_motion: bool) {
+    crate::card_render::draw_card(rect, card, selected, back_style, reduced_motion);
 }
 
 pub fn draw_solitaire(state: &AppState) {
@@ -103,7 +69,7 @@ pub fn draw_solitaire(state: &AppState) {
     let stock = card_rect(8., top_y);
     panel(stock, Color::new(0.20, 0.13, 0.30, 1.));
     if let Some(card) = game.stock.last() {
-        draw_card(stock, *card, false, state.card_back);
+        draw_card(stock, *card, false, state.card_back, state.reduced_motion);
     }
     let waste = card_rect(58., top_y);
     if let Some(card) = game.waste.last() {
@@ -112,6 +78,7 @@ pub fn draw_solitaire(state: &AppState) {
             *card,
             game.selected == Some(CardSource::Waste),
             state.card_back,
+            state.reduced_motion,
         );
     } else {
         panel(waste, Color::new(0.12, 0.09, 0.20, 1.));
@@ -129,6 +96,7 @@ pub fn draw_solitaire(state: &AppState) {
                 },
                 false,
                 state.card_back,
+                state.reduced_motion,
             );
         } else {
             text(
@@ -158,6 +126,7 @@ pub fn draw_solitaire(state: &AppState) {
                 *card,
                 game.selected == Some(CardSource::Tableau(column, depth)),
                 state.card_back,
+                state.reduced_motion,
             );
         }
         if game.tableau[column].is_empty() {
@@ -269,6 +238,7 @@ pub fn draw_freecell(state: &AppState) {
                 card,
                 game.selected == Some(FreeSource::Cell(cell)),
                 state.card_back,
+                state.reduced_motion,
             );
         }
     }
@@ -285,6 +255,7 @@ pub fn draw_freecell(state: &AppState) {
                 },
                 false,
                 state.card_back,
+                state.reduced_motion,
             );
         } else {
             text(
@@ -319,6 +290,7 @@ pub fn draw_freecell(state: &AppState) {
                 *card,
                 game.selected == Some(FreeSource::Cascade(cascade, depth)),
                 state.card_back,
+                state.reduced_motion,
             );
         }
         if game.cascades[cascade].is_empty() {

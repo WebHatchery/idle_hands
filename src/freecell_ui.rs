@@ -17,51 +17,8 @@ fn panel(rect: Rect, fill: Color) {
         Color::new(0.45, 0.38, 0.65, 0.65),
     );
 }
-fn draw_card(rect: Rect, card: Card, selected: bool) {
-    draw_rectangle(
-        rect.x,
-        rect.y,
-        rect.w,
-        rect.h,
-        Color::new(0.94, 0.90, 0.82, 1.),
-    );
-    draw_rectangle_lines(
-        rect.x,
-        rect.y,
-        rect.w,
-        rect.h,
-        if selected { 4. } else { 2. },
-        if selected {
-            Color::new(0.98, 0.75, 0.30, 1.)
-        } else {
-            Color::new(0.55, 0.45, 0.68, 1.)
-        },
-    );
-    let ranks = [
-        "", "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K",
-    ];
-    draw_text(
-        ranks[card.rank as usize],
-        rect.x + 12.,
-        rect.y + 31.,
-        25.,
-        if card.red() {
-            Color::new(0.72, 0.16, 0.22, 1.)
-        } else {
-            Color::new(0.10, 0.08, 0.16, 1.)
-        },
-    );
-    draw_text(
-        ["♣", "♦", "♥", "♠"][card.suit as usize],
-        rect.x + 62.,
-        rect.y + 92.,
-        28.,
-        if card.red() {
-            Color::new(0.72, 0.16, 0.22, 1.)
-        } else {
-            Color::new(0.10, 0.08, 0.16, 1.)
-        },
-    );
+fn draw_card(rect: Rect, card: Card, selected: bool, reduced_motion: bool) {
+    crate::card_render::draw_card(rect, card, selected, 0, reduced_motion);
 }
 
 pub fn draw_freecell(state: &AppState) {
@@ -83,7 +40,12 @@ pub fn draw_freecell(state: &AppState) {
         let rect = card_rect(45. + cell as f32 * 105., 165.);
         panel(rect, Color::new(0.12, 0.09, 0.20, 1.));
         if let Some(card) = game.cells[cell] {
-            draw_card(rect, card, game.selected == Some(FreeSource::Cell(cell)));
+            draw_card(
+                rect,
+                card,
+                game.selected == Some(FreeSource::Cell(cell)),
+                state.reduced_motion,
+            );
         }
         draw_text(
             format!("CELL {}", cell + 1),
@@ -105,6 +67,7 @@ pub fn draw_freecell(state: &AppState) {
                     face_up: true,
                 },
                 false,
+                state.reduced_motion,
             );
         } else {
             draw_text(
@@ -137,6 +100,7 @@ pub fn draw_freecell(state: &AppState) {
                 card_rect(x, 350. + depth as f32 * 28.),
                 *card,
                 game.selected == Some(FreeSource::Cascade(cascade, depth)),
+                state.reduced_motion,
             );
         }
         if game.cascades[cascade].is_empty() {

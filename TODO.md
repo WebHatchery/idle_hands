@@ -77,10 +77,12 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 
 ## Phase 4 — Solitaire and shared cards
 
-- [ ] Build shared card identity, deck, seeded shuffle, visuals, hit regions,
+- [x] Build shared card identity, deck, seeded shuffle, visuals, hit regions,
   selection, drag/drop, stack layout, and animation.
   - [x] Share card identity and seeded deck construction between Solitaire and
     FreeCell.
+  - [x] Centralize card faces, backs, labels, selection glow, and reduced-motion
+    behavior across desktop, portrait, and landscape card layouts.
 - [x] Implement Klondike tableau, stock/waste, foundations, legal moves, scoring,
   win detection, undo, hint, new deal, tutorial, and records.
   - [x] Add deterministic visible Hint controls to Solitaire and FreeCell in
