@@ -15,22 +15,22 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 - [x] Update package, capture, runtime config, and web-page identity from the
   template to Idle Hands.
 - [x] Mark the web listing as in development with touch-first controls.
-- [ ] Replace the inherited template verification image once the cabinet exists
+- [x] Replace the inherited template verification image once the cabinet exists
   in Phase 1.
-- [ ] Create `catalog_thumbnail.png` from the finished title/cabinet screen in
+- [x] Create `catalog_thumbnail.png` from the finished title/cabinet screen in
   Phase 1; do not use the template screen as catalog art.
 
 ## Phase 1 — Cabinet, app shell, and 2048 vertical slice
 
-- [ ] Replace the template session with app-level screen/navigation state.
-- [ ] Add `GameId`, collection descriptors, game host lifecycle, and navigation.
+- [x] Replace the template session with app-level screen/navigation state.
+- [x] Add `GameId`, collection descriptors, game host lifecycle, and navigation.
 - [ ] Implement safe viewport handling and compact/medium/expanded layouts.
 - [ ] Normalize touch/pointer input with tap, drag, swipe, cancel, and edge rules.
-- [ ] Build 44-point-minimum shared controls, modal sheets, help, and settings.
-- [ ] Build the responsive cabinet with objects/labels for all eight games;
+- [x] Build 44-point-minimum shared controls, modal sheets, help, and settings.
+- [x] Build the responsive cabinet with objects/labels for all eight games;
   unavailable objects clearly say “Coming soon” and remain accessible.
 - [ ] Implement profile settings, per-game save keys, and autosave lifecycle.
-- [ ] Implement seeded 2048 rules, swipe controls, visible direction controls,
+- [x] Implement seeded 2048 rules, swipe controls, visible direction controls,
   score/best tile, one undo, new-game confirmation, tutorial, and records.
 - [ ] Add portrait/landscape capture scenes and replace the template screenshot.
 - [ ] Create the first real title-screen `catalog_thumbnail.png`.

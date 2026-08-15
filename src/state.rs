@@ -1,159 +1,207 @@
-//! Runtime state, save data, and save migration helpers.
+//! Application state and the deterministic 2048 rules engine.
 
-use crate::data::{ActionDef, GameConfig};
-use macroquad_toolkit::grid::{
-    calculate_visible_tiles, update_flat_fog_states, FlatGrid, FogState, TilePos,
-};
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
-use std::collections::HashSet;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PlayerState {
-    pub points: i64,
-    pub energy: f32,
-    pub selected_tile: TilePos,
-    pub turn: u32,
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum GameId {
+    Solitaire,
+    FreeCell,
+    Sudoku,
+    Minesweeper,
+    Game2048,
+    Nonogram,
+    Yahtzee,
+    Reversi,
+}
+impl GameId {
+    pub const ALL: [Self; 8] = [
+        Self::Solitaire,
+        Self::FreeCell,
+        Self::Sudoku,
+        Self::Minesweeper,
+        Self::Game2048,
+        Self::Nonogram,
+        Self::Yahtzee,
+        Self::Reversi,
+    ];
+    pub fn title(self) -> &'static str {
+        match self {
+            Self::Game2048 => "2048",
+            Self::FreeCell => "FreeCell",
+            Self::Minesweeper => "Minesweeper",
+            Self::Nonogram => "Nonogram",
+            Self::Solitaire => "Solitaire",
+            Self::Sudoku => "Sudoku",
+            Self::Yahtzee => "Yahtzee",
+            Self::Reversi => "Reversi",
+        }
+    }
+    pub fn subtitle(self) -> &'static str {
+        match self {
+            Self::Game2048 => "Slide the cabinet tiles",
+            Self::Solitaire => "Classic card table",
+            Self::FreeCell => "Four open cells",
+            Self::Sudoku => "Numbers in every nook",
+            Self::Minesweeper => "Read the quiet field",
+            Self::Nonogram => "Paint the hidden picture",
+            Self::Yahtzee => "Five dice, thirteen calls",
+            Self::Reversi => "Turn the board",
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Screen {
+    Cabinet,
+    Game(GameId),
+    Help,
+    Settings,
+}
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Direction {
+    Up,
+    Right,
+    Down,
+    Left,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WorldState {
-    pub fog: FlatGrid<FogState>,
-    pub reachable: HashSet<TilePos>,
+pub struct Game2048 {
+    pub cells: [u16; 16],
+    pub score: u32,
+    pub best: u32,
+    pub seed: u64,
+    #[serde(skip)]
+    undo: Option<([u16; 16], u32, u64)>,
 }
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct SaveData {
-    pub version: String,
-    pub player: PlayerState,
-    pub world: WorldState,
+impl Default for Game2048 {
+    fn default() -> Self {
+        Self::new(0x1D1E_2048)
+    }
+}
+impl Game2048 {
+    pub fn new(seed: u64) -> Self {
+        let mut game = Self {
+            cells: [0; 16],
+            score: 0,
+            best: 0,
+            seed,
+            undo: None,
+        };
+        game.spawn();
+        game.spawn();
+        game
+    }
+    pub fn move_in(&mut self, direction: Direction) -> bool {
+        let before = self.cells;
+        let before_score = self.score;
+        let before_seed = self.seed;
+        let mut changed = false;
+        for line in 0..4 {
+            let indices = match direction {
+                Direction::Left => [line * 4, line * 4 + 1, line * 4 + 2, line * 4 + 3],
+                Direction::Right => [line * 4 + 3, line * 4 + 2, line * 4 + 1, line * 4],
+                Direction::Up => [line, line + 4, line + 8, line + 12],
+                Direction::Down => [line + 12, line + 8, line + 4, line],
+            };
+            let values: Vec<u16> = indices
+                .iter()
+                .map(|&i| self.cells[i])
+                .filter(|&v| v != 0)
+                .collect();
+            let mut merged = Vec::with_capacity(4);
+            let mut i = 0;
+            while i < values.len() {
+                if i + 1 < values.len() && values[i] == values[i + 1] {
+                    merged.push(values[i] * 2);
+                    self.score += values[i] as u32 * 2;
+                    i += 2;
+                } else {
+                    merged.push(values[i]);
+                    i += 1;
+                }
+            }
+            for slot in 0..4 {
+                let value = merged.get(slot).copied().unwrap_or(0);
+                if self.cells[indices[slot]] != value {
+                    changed = true;
+                }
+                self.cells[indices[slot]] = value;
+            }
+        }
+        if changed {
+            self.undo = Some((before, before_score, before_seed));
+            self.spawn();
+            self.best = self.best.max(self.score);
+        }
+        changed
+    }
+    pub fn undo(&mut self) -> bool {
+        if let Some((cells, score, seed)) = self.undo.take() {
+            self.cells = cells;
+            self.score = score;
+            self.seed = seed;
+            true
+        } else {
+            false
+        }
+    }
+    pub fn can_undo(&self) -> bool {
+        self.undo.is_some()
+    }
+    pub fn can_move(&self) -> bool {
+        self.cells.iter().any(|&v| v == 0)
+            || (0..4).any(|r| (0..3).any(|c| self.cells[r * 4 + c] == self.cells[r * 4 + c + 1]))
+            || (0..3).any(|r| (0..4).any(|c| self.cells[r * 4 + c] == self.cells[(r + 1) * 4 + c]))
+    }
+    pub fn won(&self) -> bool {
+        self.cells.iter().any(|&v| v >= 2048)
+    }
+    fn spawn(&mut self) {
+        let empty: Vec<usize> = self
+            .cells
+            .iter()
+            .enumerate()
+            .filter_map(|(i, &v)| (v == 0).then_some(i))
+            .collect();
+        if empty.is_empty() {
+            return;
+        }
+        self.seed = self
+            .seed
+            .wrapping_mul(6364136223846793005)
+            .wrapping_add(1442690888963407);
+        let index = empty[(self.seed as usize) % empty.len()];
+        self.seed = self
+            .seed
+            .wrapping_mul(6364136223846793005)
+            .wrapping_add(1442690888963407);
+        self.cells[index] = if self.seed & 7 == 0 { 4 } else { 2 };
+    }
 }
 
 #[derive(Debug, Clone)]
-pub struct GameSession {
-    pub player: PlayerState,
-    pub world: WorldState,
+pub struct AppState {
+    pub screen: Screen,
+    pub selected: usize,
+    pub game: Game2048,
+    pub confirm_restart: bool,
+    pub profile_name: String,
+    pub sound: bool,
+    pub reduced_motion: bool,
 }
-
-impl GameSession {
-    pub fn new(config: &GameConfig) -> Self {
-        let start = TilePos::new(
-            (config.world_width / 2) as i32,
-            (config.world_height / 2) as i32,
-        );
-        let mut session = Self {
-            player: PlayerState {
-                points: config.starting_points,
-                energy: config.starting_energy,
-                selected_tile: start,
-                turn: 1,
-            },
-            world: WorldState {
-                fog: FlatGrid::new(config.world_width, config.world_height, FogState::Hidden),
-                reachable: HashSet::new(),
-            },
-        };
-        session.refresh_visibility();
-        session
-    }
-
-    pub fn from_save(save: SaveData) -> Self {
+impl Default for AppState {
+    fn default() -> Self {
         Self {
-            player: save.player,
-            world: save.world,
+            screen: Screen::Cabinet,
+            selected: 4,
+            game: Game2048::default(),
+            confirm_restart: false,
+            profile_name: "Cabinet Guest".into(),
+            sound: true,
+            reduced_motion: false,
         }
     }
-
-    pub fn to_save(&self, version: &str) -> SaveData {
-        SaveData {
-            version: version.to_owned(),
-            player: self.player.clone(),
-            world: self.world.clone(),
-        }
-    }
-
-    pub fn update_energy(&mut self, config: &GameConfig, dt: f32) {
-        self.player.energy =
-            (self.player.energy + config.energy_per_second * dt).min(config.max_energy);
-    }
-
-    pub fn can_run_action(&self, action: &ActionDef) -> bool {
-        self.player.energy >= action.energy_cost
-    }
-
-    pub fn apply_action(&mut self, action: &ActionDef) -> bool {
-        if !self.can_run_action(action) {
-            return false;
-        }
-
-        self.player.energy -= action.energy_cost;
-        self.player.points += action.points_reward;
-        self.player.turn += 1;
-        self.refresh_visibility();
-        true
-    }
-
-    pub fn move_selection(&mut self, dx: i32, dy: i32) {
-        let next = TilePos::new(
-            self.player.selected_tile.x + dx,
-            self.player.selected_tile.y + dy,
-        );
-        self.select_tile(next);
-    }
-
-    pub fn select_tile(&mut self, next: TilePos) {
-        if self.world.fog.is_valid(next) {
-            self.player.selected_tile = next;
-            self.refresh_visibility();
-        }
-    }
-
-    fn refresh_visibility(&mut self) {
-        let visible = calculate_visible_tiles(self.player.selected_tile, 4, |_| false);
-        update_flat_fog_states(&mut self.world.fog, &visible);
-        self.world.reachable =
-            self.world
-                .fog
-                .flood_fill(self.player.selected_tile, false, |_, fog| {
-                    *fog != FogState::Hidden
-                });
-    }
-}
-
-#[derive(Debug, Deserialize)]
-struct LegacySave {
-    points: Option<i64>,
-    energy: Option<f32>,
-    turn: Option<u32>,
-}
-
-pub fn migrate_save_value(
-    detected_version: Option<String>,
-    value: Value,
-    config: &GameConfig,
-) -> Result<SaveData, String> {
-    let payload = value.get("data").cloned().unwrap_or(value);
-
-    if let Ok(mut current) = serde_json::from_value::<SaveData>(payload.clone()) {
-        current.version = config.version.clone();
-        return Ok(current);
-    }
-
-    let legacy: LegacySave = serde_json::from_value(payload)
-        .map_err(|err| format!("Unsupported save format {:?}: {}", detected_version, err))?;
-
-    let mut session = GameSession::new(config);
-    if let Some(points) = legacy.points {
-        session.player.points = points;
-    }
-    if let Some(energy) = legacy.energy {
-        session.player.energy = energy.clamp(0.0, config.max_energy);
-    }
-    if let Some(turn) = legacy.turn {
-        session.player.turn = turn.max(1);
-    }
-
-    Ok(session.to_save(&config.version))
 }
 
 #[cfg(test)]
