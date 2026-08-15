@@ -382,6 +382,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "GUESS shows exact and partial matches.",
             "Use CLEAR, UNDO, or NEW BOARD visibly below.",
         ],
+        GameId::Spider => [
+            "Tap a face-up descending run to select it.",
+            "Tap a destination column to move the run.",
+            "Tap STOCK to deal one card to every column.",
+        ],
     }
 }
 
@@ -399,6 +404,8 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::TicTacToe if state.records.tic_tac_toe_best_moves.is_some() => "COMPLETE",
         GameId::MemoryPairs if state.records.memory_pairs_best_moves.is_some() => "COMPLETE",
         GameId::SlidingPuzzle if state.records.sliding_puzzle_best_moves.is_some() => "COMPLETE",
+        GameId::Mastermind if state.records.mastermind_best_rows.is_some() => "COMPLETE",
+        GameId::Spider if state.records.spider_best_moves.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

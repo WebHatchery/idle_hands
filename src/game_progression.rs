@@ -109,6 +109,15 @@ impl Game {
                     }),
             );
         }
+        if self.state.spider.status == crate::spider::SpiderStatus::Won {
+            records.spider_best_moves = Some(
+                records
+                    .spider_best_moves
+                    .map_or(self.state.spider.moves, |best| {
+                        best.min(self.state.spider.moves)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

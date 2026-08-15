@@ -45,6 +45,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     state.records.sliding_puzzle_best_moves = Some(7);
     state.mastermind.row = 2;
     state.records.mastermind_best_rows = Some(2);
+    state.spider.moves = 9;
+    state.records.spider_best_moves = Some(9);
     state.achievements[0] = true;
     state.stamps = 3;
     state.card_back = 1;
@@ -72,6 +74,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     assert_eq!(restored.records.sliding_puzzle_best_moves, Some(7));
     assert_eq!(restored.mastermind.row, 2);
     assert_eq!(restored.records.mastermind_best_rows, Some(2));
+    assert_eq!(restored.spider.moves, 9);
+    assert_eq!(restored.records.spider_best_moves, Some(9));
     assert!(restored.achievements[0]);
     assert_eq!(restored.stamps, 3);
     assert_eq!(restored.card_back, 1);
@@ -117,6 +121,7 @@ fn every_game_snapshot_round_trips_its_own_state() {
     source.memory_pairs.moves = 21;
     source.sliding_puzzle.moves = 23;
     source.mastermind.row = 3;
+    source.spider.moves = 25;
 
     for game in GameId::ALL {
         let snapshot = GameSnapshot::from_state(&source, game);
@@ -144,6 +149,7 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
     source.memory_pairs.moves = 21;
     source.sliding_puzzle.moves = 23;
     source.mastermind.row = 3;
+    source.spider.moves = 25;
 
     let snapshots = GameId::ALL
         .iter()
@@ -167,6 +173,7 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
     assert_eq!(restored.memory_pairs.moves, 21);
     assert_eq!(restored.sliding_puzzle.moves, 23);
     assert_eq!(restored.mastermind.row, 3);
+    assert_eq!(restored.spider.moves, 25);
 }
 
 #[test]
@@ -188,6 +195,7 @@ fn older_saves_default_new_progression_and_cosmetic_fields() {
         "memory_pairs",
         "sliding_puzzle",
         "mastermind",
+        "spider",
     ] {
         object.remove(field);
     }

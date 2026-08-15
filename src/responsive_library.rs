@@ -93,6 +93,7 @@ pub fn draw_records(state: &AppState) {
             "Mastermind best",
             value(state.records.mastermind_best_rows.map(u32::from)),
         ),
+        ("Spider best", value(state.records.spider_best_moves)),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
         let y = 155. + index as f32 * 27.;

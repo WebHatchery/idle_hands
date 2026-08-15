@@ -147,5 +147,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "GUESS shows exact and partial matches.",
             "Use CLEAR, UNDO, or NEW BOARD visibly below.",
         ],
+        GameId::Spider => [
+            "Tap a face-up descending run to select it.",
+            "Tap a destination column to move the run.",
+            "Tap STOCK to deal one card to every column.",
+        ],
     }
 }

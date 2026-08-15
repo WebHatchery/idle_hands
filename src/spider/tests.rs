@@ -1,0 +1,67 @@
+use super::*;
+
+#[test]
+fn seeded_deals_repeat_and_have_a_stock() {
+    let first = Spider::new(42);
+    let second = Spider::new(42);
+    assert_eq!(first.tableau, second.tableau);
+    assert_eq!(first.stock, second.stock);
+    assert_eq!(first.stock.len(), 50);
+    assert!(first
+        .tableau
+        .iter()
+        .all(|stack| stack.last().unwrap().face_up));
+}
+
+#[test]
+fn ordered_runs_move_and_undo_reveals_the_source() {
+    let mut game = Spider::new(42);
+    game.tableau[0] = vec![
+        Card {
+            rank: 2,
+            suit: 0,
+            face_up: false,
+        },
+        Card {
+            rank: 12,
+            suit: 0,
+            face_up: true,
+        },
+        Card {
+            rank: 11,
+            suit: 0,
+            face_up: true,
+        },
+    ];
+    game.tableau[1] = vec![Card {
+        rank: 13,
+        suit: 0,
+        face_up: true,
+    }];
+    assert!(game.select_column(0, 1));
+    assert!(game.move_selected(1));
+    assert_eq!(game.tableau[1].len(), 3);
+    assert!(game.tableau[0][0].face_up);
+    assert!(game.undo());
+    assert_eq!(game.tableau[1].len(), 1);
+    assert_eq!(game.moves, 0);
+}
+
+#[test]
+fn complete_run_is_removed_and_counts_toward_win() {
+    let mut game = Spider::new(42);
+    game.tableau[0] = (1..=13)
+        .rev()
+        .map(|rank| Card {
+            rank,
+            suit: 0,
+            face_up: true,
+        })
+        .collect();
+    game.tableau[1] = Vec::new();
+    assert!(is_complete_run(&game.tableau[0]));
+    game.selected = Some((0, 0));
+    assert!(game.move_selected(1));
+    assert_eq!(game.completed, 1);
+    assert!(game.tableau[1].is_empty());
+}

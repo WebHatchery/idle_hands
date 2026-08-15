@@ -41,6 +41,7 @@ impl AchievementId {
                 GameId::MemoryPairs => "Pair keeper",
                 GameId::SlidingPuzzle => "Tile keeper",
                 GameId::Mastermind => "Code keeper",
+                GameId::Spider => "Web keeper",
             },
             Self::FullCabinet => "Full cabinet",
         }
@@ -99,6 +100,7 @@ pub fn earned(records: &CollectionRecords, achievement: AchievementId) -> bool {
             GameId::MemoryPairs => records.memory_pairs_best_moves.is_some(),
             GameId::SlidingPuzzle => records.sliding_puzzle_best_moves.is_some(),
             GameId::Mastermind => records.mastermind_best_rows.is_some(),
+            GameId::Spider => records.spider_best_moves.is_some(),
         },
         AchievementId::FullCabinet => completed_games(records) == GameId::ALL.len(),
     }

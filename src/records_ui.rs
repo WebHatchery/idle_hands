@@ -58,7 +58,7 @@ pub fn draw_records(state: &AppState) {
         ("Sudoku easy moves", value(state.records.sudoku[0])),
         ("Sudoku medium moves", value(state.records.sudoku[1])),
     ];
-    let right = [
+    let middle = [
         ("Sudoku hard moves", value(state.records.sudoku[2])),
         ("Nonogram 5 × 5 moves", value(state.records.nonogram[0])),
         ("Nonogram 10 × 10 moves", value(state.records.nonogram[1])),
@@ -79,6 +79,8 @@ pub fn draw_records(state: &AppState) {
             "Reversi best score",
             state.records.reversi_best_score.to_string(),
         ),
+    ];
+    let right = [
         (
             "Lights Out best moves",
             value(state.records.lights_out_best_moves.map(u32::from)),
@@ -99,9 +101,11 @@ pub fn draw_records(state: &AppState) {
             "Mastermind best guesses",
             value(state.records.mastermind_best_rows.map(u32::from)),
         ),
+        ("Spider best moves", value(state.records.spider_best_moves)),
     ];
     draw_column(&left, 175., 240.);
-    draw_column(&right, 650., 240.);
+    draw_column(&middle, 490., 240.);
+    draw_column(&right, 805., 240.);
     panel(
         Rect::new(930., 590., 180., 48.),
         Color::new(0.25, 0.16, 0.32, 1.),

@@ -231,6 +231,17 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Add responsive desktop, portrait, and medium-landscape presentation,
     visible controls, and verification captures.
 
+## Phase 13 — Sixth post-launch cabinet game
+
+- [x] Add Spider as a fourteenth deterministic, touch-complete cabinet game
+  using a one-suit ruleset with eight tableau columns and eight quiet webs.
+  - [x] Cover seeded 104-card deals, descending run moves, stock dealing,
+    completed-run removal, undo, and win detection with focused rule tests.
+  - [x] Add persisted active state and best-move records with snapshot,
+    migration, progression, and tutorial coverage.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, records, and verification captures.
+
 ## Phase 9 — Second post-launch cabinet game
 
 - [x] Add Tic-Tac-Toe as a tenth deterministic, touch-complete cabinet game.
@@ -245,9 +256,8 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 ## Post-launch candidates (not scheduled)
 
 - Card family: Spider Solitaire, Klondike Golf, Higher or Lower, Blackjack.
-- Puzzles/tabletop: Lights Out, Sliding Puzzle, Mastermind, Memory/Pairs, Word
-  Search, Hangman, Connect Four, Tic-Tac-Toe, Checkers, Peg Solitaire, Mahjong
-  Solitaire.
+- Puzzles/tabletop: Word Search, Hangman, Connect Four, Checkers, Peg
+  Solitaire, Mahjong Solitaire.
 - Arcade: Snake and Breakout.
 - Original cabinet games: Dungeon Sweeper, Potion 2048, Tiny Tower Defence, One
   Room Roguelike, and Daily Dungeon.

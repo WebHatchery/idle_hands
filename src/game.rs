@@ -2,16 +2,14 @@
 
 use crate::card_hints;
 use crate::cosmetics;
+use crate::game_input::card_drag_actions;
 use crate::input::{Gesture, PointerTracker};
 use crate::sound::{SoundBank, SoundCue};
 use crate::{
     data::GameData,
     state::{AppState, CollectionSave, Direction, GameId, GameSnapshot, ProfileSave, Screen},
 };
-use crate::{
-    freecell_ui, minesweeper_ui, nonogram_ui, responsive_cards, responsive_landscape_cards,
-    responsive_landscape_games, responsive_puzzles, solitaire_ui, ui,
-};
+use crate::{minesweeper_ui, nonogram_ui, responsive_landscape_games, responsive_puzzles, ui};
 use macroquad::prelude::*;
 use macroquad_toolkit::assets::AssetManager;
 use macroquad_toolkit::notifications::{
@@ -84,6 +82,7 @@ impl Game {
             "memory_pairs" => Screen::Game(GameId::MemoryPairs),
             "sliding_puzzle" => Screen::Game(GameId::SlidingPuzzle),
             "mastermind" => Screen::Game(GameId::Mastermind),
+            "spider" => Screen::Game(GameId::Spider),
             "help" => Screen::Help,
             "records" => Screen::Records,
             "rules" => Screen::Rules,
@@ -293,6 +292,7 @@ impl Game {
                         | GameId::MemoryPairs
                         | GameId::SlidingPuzzle
                         | GameId::Mastermind
+                        | GameId::Spider
                 ) {
                     self.state.screen = Screen::Game(id);
                     self.state.tutorial = (!matches!(
@@ -302,6 +302,7 @@ impl Game {
                             | GameId::MemoryPairs
                             | GameId::SlidingPuzzle
                             | GameId::Mastermind
+                            | GameId::Spider
                     ) && !self.state.tutorial_seen[id.index()])
                     .then_some(id);
                 } else {
@@ -573,6 +574,22 @@ impl Game {
                 let seed = self.state.mastermind.seed.wrapping_add(1);
                 self.state.mastermind.reset(seed);
             }
+            ui::UiAction::SpiderSelect(column, depth) => {
+                self.state.spider.select_column(column, depth);
+            }
+            ui::UiAction::SpiderMove(column) => {
+                self.state.spider.move_selected(column);
+            }
+            ui::UiAction::SpiderDeal => {
+                self.state.spider.deal_stock();
+            }
+            ui::UiAction::SpiderUndo => {
+                self.state.spider.undo();
+            }
+            ui::UiAction::SpiderNew => {
+                let seed = self.state.spider.seed.wrapping_add(1);
+                self.state.spider.reset(seed);
+            }
             ui::UiAction::MineChord(index) => {
                 self.state.minesweeper.chord(index);
             }
@@ -721,50 +738,6 @@ impl Game {
             },
         )
     }
-}
-
-fn card_drag_actions(
-    state: &crate::state::AppState,
-    start: Vec2,
-    end: Vec2,
-    portrait: bool,
-    compact_landscape: bool,
-) -> Vec<ui::UiAction> {
-    if !matches!(
-        state.screen,
-        Screen::Game(GameId::Solitaire | GameId::FreeCell)
-    ) {
-        return Vec::new();
-    }
-    let actions_at = |point| {
-        if portrait {
-            match state.screen {
-                Screen::Game(GameId::Solitaire) => responsive_cards::solitaire_clicks(state, point),
-                Screen::Game(GameId::FreeCell) => responsive_cards::freecell_clicks(state, point),
-                _ => Vec::new(),
-            }
-        } else if compact_landscape {
-            match state.screen {
-                Screen::Game(GameId::Solitaire) => {
-                    responsive_landscape_cards::solitaire_clicks(state, point)
-                }
-                Screen::Game(GameId::FreeCell) => {
-                    responsive_landscape_cards::freecell_clicks(state, point)
-                }
-                _ => Vec::new(),
-            }
-        } else {
-            match state.screen {
-                Screen::Game(GameId::Solitaire) => solitaire_ui::solitaire_clicks(state, point),
-                Screen::Game(GameId::FreeCell) => freecell_ui::freecell_clicks(state, point),
-                _ => Vec::new(),
-            }
-        }
-    };
-    actions_at(start)
-        .into_iter()
-        .chain(actions_at(end))
-        .collect()
 }
 
 #[cfg(test)]
