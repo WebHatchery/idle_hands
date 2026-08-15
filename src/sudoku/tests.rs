@@ -28,3 +28,14 @@ fn erase_clears_player_entry_but_not_given() {
     let given = game.puzzle.iter().position(|&value| value != 0).unwrap();
     assert!(!game.erase(given));
 }
+
+#[test]
+fn difficulty_and_undo_restore_the_previous_entry() {
+    let mut game = Sudoku::with_difficulty(SudokuDifficulty::Easy);
+    assert_eq!(game.difficulty, SudokuDifficulty::Easy);
+    assert!(game.place(69, 6));
+    assert_eq!(game.moves, 1);
+    assert!(game.undo());
+    assert_eq!(game.values[69], 0);
+    assert_eq!(game.moves, 0);
+}

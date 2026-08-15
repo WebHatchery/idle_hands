@@ -147,6 +147,13 @@ impl Game {
             ui::UiAction::SudokuNoteMode => {
                 self.state.sudoku_note_mode = !self.state.sudoku_note_mode;
             }
+            ui::UiAction::SudokuDifficulty(difficulty) => {
+                self.state.sudoku = crate::sudoku::Sudoku::with_difficulty(difficulty);
+                self.state.sudoku_note_mode = false;
+            }
+            ui::UiAction::SudokuUndo => {
+                self.state.sudoku.undo();
+            }
             ui::UiAction::MineChord(index) => {
                 self.state.minesweeper.chord(index);
             }

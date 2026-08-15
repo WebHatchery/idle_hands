@@ -103,13 +103,25 @@ pub fn draw_sudoku(state: &AppState) {
         Color::new(0.63, 0.95, 0.72, 1.),
     );
     text(
+        &format!(
+            "Moves: {}  Best: {}",
+            game.moves,
+            game.best_moves
+                .map_or("—".to_owned(), |best| best.to_string())
+        ),
+        850.,
+        215.,
+        17.,
+        Color::new(0.82, 0.75, 0.90, 1.),
+    );
+    text(
         if state.sudoku_note_mode {
             "PENCIL MARKS"
         } else {
             "ENTER NUMBERS"
         },
         850.,
-        225.,
+        245.,
         18.,
         Color::new(0.82, 0.75, 0.90, 1.),
     );
@@ -134,6 +146,11 @@ pub fn draw_sudoku(state: &AppState) {
         Color::new(0.28, 0.16, 0.30, 1.),
     );
     text("ERASE", 1108., 496., 16., WHITE);
+    panel(
+        Rect::new(850., 530., 140., 44.),
+        Color::new(0.18, 0.26, 0.34, 1.),
+    );
+    text("UNDO", 900., 558., 16., WHITE);
     text(
         "Given clues are white. Your entries are gold.",
         850.,
@@ -141,6 +158,18 @@ pub fn draw_sudoku(state: &AppState) {
         15.,
         Color::new(0.63, 0.58, 0.72, 1.),
     );
+    for (index, difficulty) in crate::sudoku::SudokuDifficulty::ALL.iter().enumerate() {
+        let rect = Rect::new(850. + index as f32 * 110., 105., 100., 32.);
+        panel(
+            rect,
+            if *difficulty == game.difficulty {
+                Color::new(0.45, 0.25, 0.42, 1.)
+            } else {
+                Color::new(0.16, 0.11, 0.24, 1.)
+            },
+        );
+        text(difficulty.label(), rect.x + 14., rect.y + 21., 12., WHITE);
+    }
 }
 
 pub fn sudoku_clicks(_state: &AppState, p: Vec2) -> Vec<UiAction> {
@@ -162,11 +191,19 @@ pub fn sudoku_clicks(_state: &AppState, p: Vec2) -> Vec<UiAction> {
             return vec![UiAction::SudokuNumber(number as u8)];
         }
     }
+    for (index, difficulty) in crate::sudoku::SudokuDifficulty::ALL.iter().enumerate() {
+        if Rect::new(850. + index as f32 * 110., 105., 100., 32.).contains(p) {
+            return vec![UiAction::SudokuDifficulty(*difficulty)];
+        }
+    }
     if Rect::new(850., 465., 210., 48.).contains(p) {
         return vec![UiAction::SudokuNoteMode];
     }
     if Rect::new(1080., 465., 110., 48.).contains(p) {
         return vec![UiAction::SudokuErase];
+    }
+    if Rect::new(850., 530., 140., 44.).contains(p) {
+        return vec![UiAction::SudokuUndo];
     }
     vec![]
 }

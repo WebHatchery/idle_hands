@@ -34,6 +34,8 @@ pub enum UiAction {
     SudokuNumber(u8),
     SudokuErase,
     SudokuNoteMode,
+    SudokuDifficulty(crate::sudoku::SudokuDifficulty),
+    SudokuUndo,
 }
 pub fn mouse() -> Vec2 {
     vec2(
