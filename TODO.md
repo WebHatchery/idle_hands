@@ -135,10 +135,12 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Add stamp-gated card backs, board themes, and cabinet decorations with
     persisted touch-selectable choices.
   - [x] Connect the sound-set choices to generated audio cues.
-- [ ] Finish coherent cabinet art, object states, transitions, audio, and reduced
+- [x] Finish coherent cabinet art, object states, transitions, audio, and reduced
   motion substitutions.
   - [x] Add cabinet completion/in-progress states and a reduced-motion-safe fade
     transition between screens.
+  - [x] Add shared shelf rails and an accent motif to desktop, portrait, and
+    medium-landscape cabinet scenes.
 - [x] Add complete Rules, Records, Help, Settings, credits, and reset-data flows.
   - [x] Add a persisted Records screen covering current best scores and solves.
   - [x] Add first-run and replayable tutorials with exact visible touch instructions.

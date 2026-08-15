@@ -347,13 +347,10 @@ fn panel(r: Rect, fill: Color) {
     draw_rectangle_lines(r.x, r.y, r.w, r.h, 2., Color::new(0.45, 0.38, 0.65, 0.65))
 }
 fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
-    text(
-        "IDLE HANDS",
-        46.,
-        70.,
-        48.,
-        cosmetics::cabinet_accent(state.cabinet_decoration),
-    );
+    let accent = cosmetics::cabinet_accent(state.cabinet_decoration);
+    text("IDLE HANDS", 46., 70., 48., accent);
+    crate::cabinet_art::draw_header_motif(1160., 108., 24., accent);
+    crate::cabinet_art::draw_shelves(48., 165., 1184., 420., accent);
     text(
         "A small collection for quiet minutes",
         48.,

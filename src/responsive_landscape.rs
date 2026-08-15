@@ -37,13 +37,10 @@ fn cabinet_rect(index: usize) -> Rect {
 }
 
 pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
-    text(
-        "IDLE HANDS",
-        12.,
-        30.,
-        25.,
-        cosmetics::cabinet_accent(state.cabinet_decoration),
-    );
+    let accent = cosmetics::cabinet_accent(state.cabinet_decoration);
+    text("IDLE HANDS", 12., 30., 25., accent);
+    crate::cabinet_art::draw_header_motif(812., 28., 13., accent);
+    crate::cabinet_art::draw_shelves(8., 54., 828., 242., accent);
     text(
         "Quiet games for a wider pause",
         190.,
