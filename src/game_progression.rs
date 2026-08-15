@@ -276,6 +276,15 @@ impl Game {
                     }),
             );
         }
+        if self.state.dots_boxes.won() {
+            records.dots_boxes_best_score = Some(
+                records
+                    .dots_boxes_best_score
+                    .map_or(self.state.dots_boxes.scores[0], |best| {
+                        best.max(self.state.dots_boxes.scores[0])
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

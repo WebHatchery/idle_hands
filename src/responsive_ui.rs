@@ -57,7 +57,10 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
             rect.y + 15.,
             if matches!(
                 game,
-                GameId::TinyTowerDefence | GameId::OneRoomRoguelike | GameId::DailyDungeon
+                GameId::TinyTowerDefence
+                    | GameId::OneRoomRoguelike
+                    | GameId::DailyDungeon
+                    | GameId::DotsBoxes
             ) {
                 8.
             } else {
@@ -700,6 +703,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
             "COMPLETE"
         }
         GameId::DailyDungeon if state.records.daily_dungeon_best_score.is_some() => "COMPLETE",
+        GameId::DotsBoxes if state.records.dots_boxes_best_score.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

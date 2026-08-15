@@ -148,6 +148,10 @@ pub fn draw_records(state: &AppState) {
             "Daily Dungeon best",
             value(state.records.daily_dungeon_best_score),
         ),
+        (
+            "Dots & Boxes best",
+            value(state.records.dots_boxes_best_score.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
         let col = index / 13;

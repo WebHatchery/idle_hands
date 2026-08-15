@@ -472,6 +472,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "Traps are one-use; reach EXIT after the runes are gathered.",
             "Use UNDO or NEW DAY with visible controls.",
         ],
+        GameId::DotsBoxes => [
+            "Tap a gap between dots to draw an edge.",
+            "Complete a square to keep your turn and claim it.",
+            "Claim more squares than the cabinet; use UNDO or NEW BOARD.",
+        ],
     }
 }
 
@@ -516,6 +521,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
             "COMPLETE"
         }
         GameId::DailyDungeon if state.records.daily_dungeon_best_score.is_some() => "COMPLETE",
+        GameId::DotsBoxes if state.records.dots_boxes_best_score.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

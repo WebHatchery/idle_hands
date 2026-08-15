@@ -449,6 +449,18 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Add responsive desktop, portrait, and medium-landscape presentation,
     visible controls, records, and verification captures.
 
+## Phase 31 — Twenty-fourth post-launch cabinet game
+
+- [x] Add Dots & Boxes as a thirty-second deterministic, touch-complete
+  cabinet game with a four-by-four square board, box claiming, a bounded
+  local opponent, undo, and reset.
+  - [x] Cover edge validation, box scoring, deterministic opponent turns,
+    win/loss boundaries, undo, and reset behavior with focused rule tests.
+  - [x] Add persisted active state and best-score records with snapshot,
+    migration, progression, and tutorial coverage.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, records, and verification captures.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

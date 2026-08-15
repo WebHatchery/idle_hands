@@ -5,6 +5,7 @@ use crate::breakout::Breakout;
 use crate::checkers::Checkers;
 use crate::connect_four::ConnectFour;
 use crate::daily_dungeon::DailyDungeon;
+use crate::dots_boxes::DotsBoxes;
 use crate::dungeon_sweeper::DungeonSweeper;
 use crate::fivefold::Fivefold;
 use crate::freecell::FreeCell;
@@ -31,6 +32,8 @@ use crate::tic_tac_toe::TicTacToe;
 use crate::tiny_tower_defence::TinyTowerDefence;
 use crate::word_search::WordSearch;
 use serde::{Deserialize, Serialize};
+
+pub use crate::game_2048::Game2048;
 
 pub use crate::state_snapshots::GameSnapshot;
 
@@ -67,9 +70,10 @@ pub enum GameId {
     TinyTowerDefence,
     OneRoomRoguelike,
     DailyDungeon,
+    DotsBoxes,
 }
 impl GameId {
-    pub const ALL: [Self; 31] = [
+    pub const ALL: [Self; 32] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -101,6 +105,7 @@ impl GameId {
         Self::TinyTowerDefence,
         Self::OneRoomRoguelike,
         Self::DailyDungeon,
+        Self::DotsBoxes,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -135,6 +140,7 @@ impl GameId {
             Self::TinyTowerDefence => "Tiny Tower Defence",
             Self::OneRoomRoguelike => "One Room Roguelike",
             Self::DailyDungeon => "Daily Dungeon",
+            Self::DotsBoxes => "Dots & Boxes",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -170,6 +176,7 @@ impl GameId {
             Self::TinyTowerDefence => "Keep the quiet lanes",
             Self::OneRoomRoguelike => "Clear one quiet room",
             Self::DailyDungeon => "Recover the daily runes",
+            Self::DotsBoxes => "Draw the quiet squares",
         }
     }
     pub fn index(self) -> usize {
@@ -208,6 +215,7 @@ impl GameId {
             Self::TinyTowerDefence => "tiny_tower_defence",
             Self::OneRoomRoguelike => "one_room_roguelike",
             Self::DailyDungeon => "daily_dungeon",
+            Self::DotsBoxes => "dots_boxes",
         }
     }
 }
@@ -228,122 +236,6 @@ pub enum Direction {
     Right,
     Down,
     Left,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Game2048 {
-    pub cells: [u16; 16],
-    pub score: u32,
-    pub best: u32,
-    pub seed: u64,
-    #[serde(skip)]
-    undo: Option<([u16; 16], u32, u64)>,
-}
-impl Default for Game2048 {
-    fn default() -> Self {
-        Self::new(0x1D1E_2048)
-    }
-}
-impl Game2048 {
-    pub fn new(seed: u64) -> Self {
-        let mut game = Self {
-            cells: [0; 16],
-            score: 0,
-            best: 0,
-            seed,
-            undo: None,
-        };
-        game.spawn();
-        game.spawn();
-        game
-    }
-    pub fn move_in(&mut self, direction: Direction) -> bool {
-        let before = self.cells;
-        let before_score = self.score;
-        let before_seed = self.seed;
-        let mut changed = false;
-        for line in 0..4 {
-            let indices = match direction {
-                Direction::Left => [line * 4, line * 4 + 1, line * 4 + 2, line * 4 + 3],
-                Direction::Right => [line * 4 + 3, line * 4 + 2, line * 4 + 1, line * 4],
-                Direction::Up => [line, line + 4, line + 8, line + 12],
-                Direction::Down => [line + 12, line + 8, line + 4, line],
-            };
-            let values: Vec<u16> = indices
-                .iter()
-                .map(|&i| self.cells[i])
-                .filter(|&v| v != 0)
-                .collect();
-            let mut merged = Vec::with_capacity(4);
-            let mut i = 0;
-            while i < values.len() {
-                if i + 1 < values.len() && values[i] == values[i + 1] {
-                    merged.push(values[i] * 2);
-                    self.score += values[i] as u32 * 2;
-                    i += 2;
-                } else {
-                    merged.push(values[i]);
-                    i += 1;
-                }
-            }
-            for (slot, &index) in indices.iter().enumerate() {
-                let value = merged.get(slot).copied().unwrap_or(0);
-                if self.cells[index] != value {
-                    changed = true;
-                }
-                self.cells[index] = value;
-            }
-        }
-        if changed {
-            self.undo = Some((before, before_score, before_seed));
-            self.spawn();
-            self.best = self.best.max(self.score);
-        }
-        changed
-    }
-    pub fn undo(&mut self) -> bool {
-        if let Some((cells, score, seed)) = self.undo.take() {
-            self.cells = cells;
-            self.score = score;
-            self.seed = seed;
-            true
-        } else {
-            false
-        }
-    }
-    pub fn can_undo(&self) -> bool {
-        self.undo.is_some()
-    }
-    #[allow(dead_code)]
-    pub fn can_move(&self) -> bool {
-        self.cells.contains(&0)
-            || (0..4).any(|r| (0..3).any(|c| self.cells[r * 4 + c] == self.cells[r * 4 + c + 1]))
-            || (0..3).any(|r| (0..4).any(|c| self.cells[r * 4 + c] == self.cells[(r + 1) * 4 + c]))
-    }
-    pub fn won(&self) -> bool {
-        self.cells.iter().any(|&v| v >= 2048)
-    }
-    fn spawn(&mut self) {
-        let empty: Vec<usize> = self
-            .cells
-            .iter()
-            .enumerate()
-            .filter_map(|(i, &v)| (v == 0).then_some(i))
-            .collect();
-        if empty.is_empty() {
-            return;
-        }
-        self.seed = self
-            .seed
-            .wrapping_mul(6364136223846793005)
-            .wrapping_add(1442690888963407);
-        let index = empty[(self.seed as usize) % empty.len()];
-        self.seed = self
-            .seed
-            .wrapping_mul(6364136223846793005)
-            .wrapping_add(1442690888963407);
-        self.cells[index] = if self.seed & 7 == 0 { 4 } else { 2 };
-    }
 }
 
 #[derive(Debug, Clone)]
@@ -383,6 +275,7 @@ pub struct AppState {
     pub tiny_tower_defence: TinyTowerDefence,
     pub one_room_roguelike: OneRoomRoguelike,
     pub daily_dungeon: DailyDungeon,
+    pub dots_boxes: DotsBoxes,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -461,6 +354,8 @@ pub struct CollectionRecords {
     pub one_room_roguelike_best_score: Option<u32>,
     #[serde(default)]
     pub daily_dungeon_best_score: Option<u32>,
+    #[serde(default)]
+    pub dots_boxes_best_score: Option<u8>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -526,6 +421,8 @@ pub struct CollectionSave {
     pub one_room_roguelike: OneRoomRoguelike,
     #[serde(default)]
     pub daily_dungeon: DailyDungeon,
+    #[serde(default)]
+    pub dots_boxes: DotsBoxes,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -660,6 +557,7 @@ impl CollectionSave {
             tiny_tower_defence: state.tiny_tower_defence.clone(),
             one_room_roguelike: state.one_room_roguelike.clone(),
             daily_dungeon: state.daily_dungeon.clone(),
+            dots_boxes: state.dots_boxes.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -710,6 +608,7 @@ impl CollectionSave {
         state.tiny_tower_defence = self.tiny_tower_defence;
         state.one_room_roguelike = self.one_room_roguelike;
         state.daily_dungeon = self.daily_dungeon;
+        state.dots_boxes = self.dots_boxes;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -766,6 +665,7 @@ impl Default for AppState {
             tiny_tower_defence: TinyTowerDefence::default(),
             one_room_roguelike: OneRoomRoguelike::default(),
             daily_dungeon: DailyDungeon::default(),
+            dots_boxes: DotsBoxes::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

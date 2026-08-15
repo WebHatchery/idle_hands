@@ -150,4 +150,7 @@ pub enum UiAction {
     DailyMove(Direction),
     DailyUndo,
     DailyNew,
+    DotsEdge(crate::dots_boxes::Edge),
+    DotsUndo,
+    DotsNew,
 }

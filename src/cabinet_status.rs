@@ -37,6 +37,7 @@ pub fn status(state: &AppState, game: GameId) -> &'static str {
         GameId::TinyTowerDefence => state.records.tiny_tower_defence_best_wave.is_some(),
         GameId::OneRoomRoguelike => state.records.one_room_roguelike_best_score.is_some(),
         GameId::DailyDungeon => state.records.daily_dungeon_best_score.is_some(),
+        GameId::DotsBoxes => state.records.dots_boxes_best_score.is_some(),
     };
     if complete {
         "COMPLETE"
@@ -87,6 +88,7 @@ fn has_progress(state: &AppState, game: GameId) -> bool {
             state.one_room_roguelike.score > 0 || state.one_room_roguelike.turns > 0
         }
         GameId::DailyDungeon => state.daily_dungeon.score > 0 || state.daily_dungeon.moves > 0,
+        GameId::DotsBoxes => state.dots_boxes.moves > 0,
     }
 }
 
@@ -131,5 +133,6 @@ pub fn is_active(game: GameId) -> bool {
             | GameId::TinyTowerDefence
             | GameId::OneRoomRoguelike
             | GameId::DailyDungeon
+            | GameId::DotsBoxes
     )
 }

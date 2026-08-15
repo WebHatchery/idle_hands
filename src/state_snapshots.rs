@@ -1,6 +1,7 @@
 //! Independent active-game snapshot storage.
 
 use crate::daily_dungeon::DailyDungeon;
+use crate::dots_boxes::DotsBoxes;
 use crate::dungeon_sweeper::DungeonSweeper;
 use crate::one_room_roguelike::OneRoomRoguelike;
 use crate::potion_2048::Potion2048;
@@ -52,6 +53,7 @@ pub enum GameSnapshot {
     TinyTowerDefence(TinyTowerDefence),
     OneRoomRoguelike(OneRoomRoguelike),
     DailyDungeon(DailyDungeon),
+    DotsBoxes(DotsBoxes),
 }
 
 impl GameSnapshot {
@@ -88,6 +90,7 @@ impl GameSnapshot {
             GameId::TinyTowerDefence => Self::TinyTowerDefence(state.tiny_tower_defence.clone()),
             GameId::OneRoomRoguelike => Self::OneRoomRoguelike(state.one_room_roguelike.clone()),
             GameId::DailyDungeon => Self::DailyDungeon(state.daily_dungeon.clone()),
+            GameId::DotsBoxes => Self::DotsBoxes(state.dots_boxes.clone()),
         }
     }
 
@@ -124,6 +127,7 @@ impl GameSnapshot {
             Self::TinyTowerDefence(game) => state.tiny_tower_defence = game,
             Self::OneRoomRoguelike(game) => state.one_room_roguelike = game,
             Self::DailyDungeon(game) => state.daily_dungeon = game,
+            Self::DotsBoxes(game) => state.dots_boxes = game,
         }
     }
 }

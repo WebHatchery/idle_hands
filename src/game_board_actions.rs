@@ -177,6 +177,16 @@ impl Game {
                 let seed = self.state.daily_dungeon.seed.wrapping_add(1);
                 self.state.daily_dungeon.reset(seed);
             }
+            UiAction::DotsEdge(edge) => {
+                self.state.dots_boxes.play(*edge);
+            }
+            UiAction::DotsUndo => {
+                self.state.dots_boxes.undo();
+            }
+            UiAction::DotsNew => {
+                let seed = self.state.dots_boxes.seed.wrapping_add(1);
+                self.state.dots_boxes.reset(seed);
+            }
             _ => return false,
         }
         true

@@ -237,5 +237,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "Recover three runes, avoid the one-use traps, then reach EXIT.",
             "Use UNDO or NEW DAY with the visible controls.",
         ],
+        GameId::DotsBoxes => [
+            "Tap a gap between two dots to draw one edge.",
+            "Complete a square to claim it and keep your turn.",
+            "Claim more squares than the cabinet; use UNDO or NEW BOARD.",
+        ],
     }
 }

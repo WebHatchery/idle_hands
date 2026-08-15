@@ -110,6 +110,8 @@ pub fn draw_records(state: &AppState) {
             "Hangman best moves",
             value(state.records.hangman_best_moves.map(u32::from)),
         ),
+    ];
+    let far_right = [
         (
             "Connect Four best moves",
             value(state.records.connect_four_best_moves.map(u32::from)),
@@ -170,10 +172,15 @@ pub fn draw_records(state: &AppState) {
             "Daily Dungeon best",
             value(state.records.daily_dungeon_best_score),
         ),
+        (
+            "Dots & Boxes best",
+            value(state.records.dots_boxes_best_score.map(u32::from)),
+        ),
     ];
     draw_column(&left, 175., 240.);
     draw_column(&middle, 490., 240.);
     draw_column(&right, 805., 240.);
+    draw_column(&far_right, 980., 240.);
     panel(
         Rect::new(930., 590., 180., 48.),
         Color::new(0.25, 0.16, 0.32, 1.),

@@ -59,6 +59,7 @@ impl AchievementId {
                 GameId::TinyTowerDefence => "Tower keeper",
                 GameId::OneRoomRoguelike => "Room keeper",
                 GameId::DailyDungeon => "Daily keeper",
+                GameId::DotsBoxes => "Square keeper",
             },
             Self::FullCabinet => "Full cabinet",
         }
@@ -119,6 +120,7 @@ fn game_complete(records: &CollectionRecords, game: GameId) -> bool {
         GameId::TinyTowerDefence => records.tiny_tower_defence_best_wave.is_some(),
         GameId::OneRoomRoguelike => records.one_room_roguelike_best_score.is_some(),
         GameId::DailyDungeon => records.daily_dungeon_best_score.is_some(),
+        GameId::DotsBoxes => records.dots_boxes_best_score.is_some(),
     }
 }
 
