@@ -55,6 +55,9 @@ impl GameId {
             Self::Reversi => "Turn the board",
         }
     }
+    pub fn index(self) -> usize {
+        Self::ALL.iter().position(|game| *game == self).unwrap()
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -208,6 +211,8 @@ pub struct AppState {
     pub mine_records: [Option<u32>; 4],
     pub sudoku_note_mode: bool,
     pub records: CollectionRecords,
+    pub tutorial: Option<GameId>,
+    pub tutorial_seen: [bool; 8],
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -262,6 +267,8 @@ pub struct CollectionSave {
     pub sudoku_note_mode: bool,
     #[serde(default)]
     pub records: CollectionRecords,
+    #[serde(default)]
+    pub tutorial_seen: [bool; 8],
 }
 
 impl CollectionSave {
@@ -283,6 +290,7 @@ impl CollectionSave {
             mine_records: state.mine_records,
             sudoku_note_mode: state.sudoku_note_mode,
             records: state.records.clone(),
+            tutorial_seen: state.tutorial_seen,
         }
     }
     pub fn apply_to(self, state: &mut AppState) {
@@ -301,6 +309,7 @@ impl CollectionSave {
         state.mine_records = self.mine_records;
         state.sudoku_note_mode = self.sudoku_note_mode;
         state.records = self.records;
+        state.tutorial_seen = self.tutorial_seen;
     }
 }
 impl Default for AppState {
@@ -324,6 +333,8 @@ impl Default for AppState {
             mine_records: [None, None, None, None],
             sudoku_note_mode: false,
             records: CollectionRecords::default(),
+            tutorial: None,
+            tutorial_seen: [false; 8],
         }
     }
 }

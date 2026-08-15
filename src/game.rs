@@ -85,6 +85,7 @@ impl Game {
             self.pointer.cancel();
             self.state.screen = Screen::Cabinet;
             self.state.confirm_restart = false;
+            self.state.tutorial = None;
         }
         if self.state.screen == Screen::Game(GameId::Game2048) {
             for (key, direction) in [
@@ -136,15 +137,30 @@ impl Game {
                         | GameId::Reversi
                 ) {
                     self.state.screen = Screen::Game(id);
+                    self.state.tutorial = (!self.state.tutorial_seen[id.index()]).then_some(id);
                 } else {
                     self.notifications
                         .info(format!("{} is coming soon", id.title()));
                 }
             }
-            ui::UiAction::Cabinet => self.state.screen = Screen::Cabinet,
+            ui::UiAction::Cabinet => {
+                self.state.screen = Screen::Cabinet;
+                self.state.tutorial = None;
+            }
             ui::UiAction::Help => self.state.screen = Screen::Help,
             ui::UiAction::Records => self.state.screen = Screen::Records,
             ui::UiAction::Settings => self.state.screen = Screen::Settings,
+            ui::UiAction::TutorialContinue => {
+                if let Some(game) = self.state.tutorial {
+                    self.state.tutorial_seen[game.index()] = true;
+                    self.state.tutorial = None;
+                }
+            }
+            ui::UiAction::ReplayTutorial => {
+                if let Screen::Game(game) = self.state.screen {
+                    self.state.tutorial = Some(game);
+                }
+            }
             ui::UiAction::Save => self.save_autosave(),
             ui::UiAction::Load => self.load_autosave(),
             ui::UiAction::Move(direction) => self.try_move(direction),

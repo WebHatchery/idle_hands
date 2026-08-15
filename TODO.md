@@ -96,6 +96,7 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   motion substitutions.
 - [ ] Add complete Rules, Records, Help, Settings, credits, and reset-data flows.
   - [x] Add a persisted Records screen covering current best scores and solves.
+  - [x] Add first-run and replayable tutorials with exact visible touch instructions.
 - [ ] Audit autosave/resume and save migration independently for all eight games.
 - [ ] Audit touch-only completion on iPhone/iPad portrait and landscape sizes.
 - [ ] Run the complete capture matrix, replace duplicate-state images, and update

@@ -21,6 +21,7 @@ mod solitaire_ui;
 mod state;
 mod sudoku;
 mod sudoku_ui;
+mod tutorial_ui;
 mod ui;
 
 use game::Game;

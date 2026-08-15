@@ -8,6 +8,7 @@ use crate::records_ui;
 use crate::reversi_ui;
 use crate::solitaire_ui;
 use crate::sudoku_ui;
+use crate::tutorial_ui;
 use crate::{
     data::GameData,
     minesweeper::{Cell, MinePreset, MineStatus},
@@ -22,6 +23,8 @@ pub enum UiAction {
     Cabinet,
     Help,
     Records,
+    TutorialContinue,
+    ReplayTutorial,
     Settings,
     Save,
     Load,
@@ -83,6 +86,14 @@ pub fn mouse() -> Vec2 {
 }
 pub fn clicks(state: &AppState) -> Vec<UiAction> {
     let p = mouse();
+    if state.tutorial.is_some() {
+        return tutorial_ui::clicks(p);
+    }
+    if matches!(state.screen, Screen::Game(_)) {
+        if tutorial_ui::REPLAY_RECT.contains(p) {
+            return vec![UiAction::ReplayTutorial];
+        }
+    }
     match state.screen {
         Screen::Cabinet => {
             let mut out = vec![];
@@ -135,6 +146,11 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Help => draw_help(),
         Screen::Records => records_ui::draw_records(state),
         Screen::Settings => draw_settings(state),
+    }
+    if let Some(game) = state.tutorial {
+        tutorial_ui::draw_overlay(game);
+    } else if matches!(state.screen, Screen::Game(_)) {
+        tutorial_ui::draw_replay_button();
     }
 }
 fn text(s: &str, x: f32, y: f32, size: f32, color: Color) {
