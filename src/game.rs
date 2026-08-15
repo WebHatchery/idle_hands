@@ -47,6 +47,31 @@ impl Game {
         game.load_autosave();
         game
     }
+
+    pub fn begin_capture_scene(&mut self, scene: &str) {
+        self.state = AppState::default();
+        self.notifications = NotificationManager::new();
+        let scene = scene
+            .strip_prefix("portrait_")
+            .or_else(|| scene.strip_prefix("landscape_"))
+            .unwrap_or(scene);
+        self.state.screen = match scene {
+            "2048" | "gameplay" => Screen::Game(GameId::Game2048),
+            "minesweeper" => Screen::Game(GameId::Minesweeper),
+            "sudoku" => Screen::Game(GameId::Sudoku),
+            "nonogram" => Screen::Game(GameId::Nonogram),
+            "solitaire" => Screen::Game(GameId::Solitaire),
+            "freecell" => Screen::Game(GameId::FreeCell),
+            "fivefold" => Screen::Game(GameId::Yahtzee),
+            "reversi" => Screen::Game(GameId::Reversi),
+            "records" => Screen::Records,
+            "rules" => Screen::Rules,
+            "credits" => Screen::Credits,
+            "settings" => Screen::Settings,
+            _ => Screen::Cabinet,
+        };
+        self.transition = 0.;
+    }
     pub fn update(&mut self, dt: f32) {
         self.notifications.update(dt);
         self.pointer.tick(dt);
@@ -130,11 +155,12 @@ impl Game {
     pub fn draw(&mut self) {
         clear_background(cosmetics::background(self.state.board_theme));
         let viewport = ui::viewport();
+        let (layout_width, layout_height) = ui::layout_size();
         set_camera(&Camera2D {
-            target: vec2(ui::LOGICAL_WIDTH / 2., ui::LOGICAL_HEIGHT / 2.),
+            target: vec2(layout_width / 2., layout_height / 2.),
             zoom: vec2(
-                2. * viewport.scale / screen_width(),
-                -2. * viewport.scale / screen_height(),
+                2. * viewport.scale / layout_width,
+                2. * viewport.scale / layout_height,
             ),
             ..Default::default()
         });
@@ -143,8 +169,8 @@ impl Game {
             draw_rectangle(
                 0.,
                 0.,
-                ui::LOGICAL_WIDTH,
-                ui::LOGICAL_HEIGHT,
+                layout_width,
+                layout_height,
                 Color::new(0.02, 0.015, 0.035, self.transition),
             );
         }

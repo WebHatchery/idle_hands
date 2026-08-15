@@ -19,6 +19,7 @@ mod nonogram_ui;
 mod palette_ui;
 mod progression;
 mod records_ui;
+mod responsive_ui;
 mod reversi;
 mod reversi_ui;
 mod settings_ui;
@@ -52,6 +53,7 @@ async fn main() {
     // whatever the boot flow lands on.
     if let Some(configs) = capture::CaptureConfig::all_from_env("IDLE_HANDS") {
         for config in configs {
+            game.begin_capture_scene(&config.scene);
             capture::run_capture_once(&config, |dt| {
                 game.update(dt);
                 game.draw();

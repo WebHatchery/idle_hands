@@ -9,6 +9,7 @@ use crate::library_ui;
 use crate::nonogram_ui;
 use crate::palette_ui;
 use crate::records_ui;
+use crate::responsive_ui;
 use crate::reversi_ui;
 use crate::settings_ui;
 use crate::solitaire_ui;
@@ -86,12 +87,18 @@ pub enum UiAction {
     ReversiLevel(crate::reversi::AiLevel),
 }
 pub fn viewport() -> Viewport {
-    Viewport::new(
-        screen_width(),
-        screen_height(),
-        LOGICAL_WIDTH,
-        LOGICAL_HEIGHT,
-    )
+    let (width, height) = layout_size();
+    Viewport::new(screen_width(), screen_height(), width, height)
+}
+pub fn layout_size() -> (f32, f32) {
+    if is_portrait() {
+        (responsive_ui::WIDTH, responsive_ui::HEIGHT)
+    } else {
+        (LOGICAL_WIDTH, LOGICAL_HEIGHT)
+    }
+}
+pub fn is_portrait() -> bool {
+    screen_height() > screen_width() * 1.15
 }
 pub fn mouse() -> Vec2 {
     viewport()
@@ -109,6 +116,7 @@ pub fn clicks(state: &AppState) -> Vec<UiAction> {
         }
     }
     match state.screen {
+        Screen::Cabinet if is_portrait() => responsive_ui::cabinet_clicks(p),
         Screen::Cabinet => {
             let mut out = vec![];
             for i in 0..8 {
@@ -127,6 +135,7 @@ pub fn clicks(state: &AppState) -> Vec<UiAction> {
             }
             out
         }
+        Screen::Game(GameId::Game2048) if is_portrait() => responsive_ui::game2048_clicks(state, p),
         Screen::Game(GameId::Game2048) => game_clicks(state, p),
         Screen::Game(GameId::Minesweeper) => mine_clicks(state, p),
         Screen::Game(GameId::Sudoku) => sudoku_ui::sudoku_clicks(state, p),
@@ -149,12 +158,15 @@ pub fn clicks(state: &AppState) -> Vec<UiAction> {
         Screen::Records => records_ui::records_clicks(p),
         Screen::Rules => library_ui::rules_clicks(p),
         Screen::Credits => library_ui::credits_clicks(p),
+        Screen::Settings if is_portrait() => responsive_ui::settings_clicks(state, p),
         Screen::Settings => settings_ui::settings_clicks(state, p),
     }
 }
 pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
     match state.screen {
+        Screen::Cabinet if is_portrait() => responsive_ui::draw_cabinet(state, data, loaded_assets),
         Screen::Cabinet => draw_cabinet(state, data, loaded_assets),
+        Screen::Game(GameId::Game2048) if is_portrait() => responsive_ui::draw_2048(state),
         Screen::Game(GameId::Game2048) => draw_2048(state),
         Screen::Game(GameId::Minesweeper) => draw_minesweeper(state),
         Screen::Game(GameId::Sudoku) => sudoku_ui::draw_sudoku(state),
@@ -167,6 +179,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Records => records_ui::draw_records(state),
         Screen::Rules => library_ui::draw_rules(),
         Screen::Credits => library_ui::draw_credits(),
+        Screen::Settings if is_portrait() => responsive_ui::draw_settings(state),
         Screen::Settings => settings_ui::draw_settings(state),
     }
     if let Some(game) = state.tutorial {
