@@ -7,6 +7,7 @@ use crate::fivefold::Fivefold;
 use crate::freecell::FreeCell;
 use crate::hangman::Hangman;
 use crate::higher_lower::HigherLower;
+use crate::klondike_golf::KlondikeGolf;
 use crate::lights_out::LightsOut;
 use crate::mahjong_solitaire::MahjongSolitaire;
 use crate::mastermind::Mastermind;
@@ -49,9 +50,10 @@ pub enum GameId {
     Snake,
     Breakout,
     HigherLower,
+    KlondikeGolf,
 }
 impl GameId {
-    pub const ALL: [Self; 23] = [
+    pub const ALL: [Self; 24] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -75,6 +77,7 @@ impl GameId {
         Self::Snake,
         Self::Breakout,
         Self::HigherLower,
+        Self::KlondikeGolf,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -101,6 +104,7 @@ impl GameId {
             Self::Snake => "Snake",
             Self::Breakout => "Breakout",
             Self::HigherLower => "Higher or Lower",
+            Self::KlondikeGolf => "Klondike Golf",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -128,6 +132,7 @@ impl GameId {
             Self::Snake => "Guide the quiet coil",
             Self::Breakout => "Bounce the quiet ball",
             Self::HigherLower => "Read the quiet card",
+            Self::KlondikeGolf => "Clear the quiet columns",
         }
     }
     pub fn index(self) -> usize {
@@ -158,6 +163,7 @@ impl GameId {
             Self::Snake => "snake",
             Self::Breakout => "breakout",
             Self::HigherLower => "higher_lower",
+            Self::KlondikeGolf => "klondike_golf",
         }
     }
 }
@@ -325,6 +331,7 @@ pub struct AppState {
     pub snake: Snake,
     pub breakout: Breakout,
     pub higher_lower: HigherLower,
+    pub klondike_golf: KlondikeGolf,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -387,6 +394,8 @@ pub struct CollectionRecords {
     pub breakout_best_score: Option<u16>,
     #[serde(default)]
     pub higher_lower_best_score: Option<u16>,
+    #[serde(default)]
+    pub klondike_golf_best_moves: Option<u16>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -436,6 +445,8 @@ pub struct CollectionSave {
     pub breakout: Breakout,
     #[serde(default)]
     pub higher_lower: HigherLower,
+    #[serde(default)]
+    pub klondike_golf: KlondikeGolf,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -560,6 +571,7 @@ pub enum GameSnapshot {
     Snake(Snake),
     Breakout(Breakout),
     HigherLower(HigherLower),
+    KlondikeGolf(KlondikeGolf),
 }
 impl GameSnapshot {
     pub fn from_state(state: &AppState, game: GameId) -> Self {
@@ -587,6 +599,7 @@ impl GameSnapshot {
             GameId::Snake => Self::Snake(state.snake.clone()),
             GameId::Breakout => Self::Breakout(state.breakout.clone()),
             GameId::HigherLower => Self::HigherLower(state.higher_lower.clone()),
+            GameId::KlondikeGolf => Self::KlondikeGolf(state.klondike_golf.clone()),
         }
     }
     pub fn apply_to(self, state: &mut AppState) {
@@ -614,6 +627,7 @@ impl GameSnapshot {
             Self::Snake(game) => state.snake = game,
             Self::Breakout(game) => state.breakout = game,
             Self::HigherLower(game) => state.higher_lower = game,
+            Self::KlondikeGolf(game) => state.klondike_golf = game,
         }
     }
 }
@@ -645,6 +659,7 @@ impl CollectionSave {
             snake: state.snake.clone(),
             breakout: state.breakout.clone(),
             higher_lower: state.higher_lower.clone(),
+            klondike_golf: state.klondike_golf.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -687,6 +702,7 @@ impl CollectionSave {
         state.snake = self.snake;
         state.breakout = self.breakout;
         state.higher_lower = self.higher_lower;
+        state.klondike_golf = self.klondike_golf;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -735,6 +751,7 @@ impl Default for AppState {
             snake: Snake::default(),
             breakout: Breakout::default(),
             higher_lower: HigherLower::default(),
+            klondike_golf: KlondikeGolf::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

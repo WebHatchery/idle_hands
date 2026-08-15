@@ -29,6 +29,8 @@ mod hangman_ui;
 mod higher_lower;
 mod higher_lower_ui;
 mod input;
+mod klondike_golf;
+mod klondike_golf_ui;
 mod library_ui;
 mod lights_out;
 mod lights_out_ui;

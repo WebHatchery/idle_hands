@@ -354,9 +354,21 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Add responsive desktop, portrait, and medium-landscape presentation,
     visible controls, records, and verification captures.
 
+## Phase 23 — Sixteenth post-launch cabinet game
+
+- [x] Add Klondike Golf as a twenty-fourth deterministic, touch-complete card
+  cabinet game with seven tableau columns, rank-adjacent clears, stock draws,
+  undo, and reset.
+  - [x] Cover seeded deals, adjacent-rank moves, stock draws, undo, and reset
+    behavior with focused rule tests.
+  - [x] Add persisted active state and best-move records with snapshot,
+    migration, progression, and tutorial coverage.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, records, and verification captures.
+
 ## Post-launch candidates (not scheduled)
 
-- Card family: Spider Solitaire, Klondike Golf, Blackjack.
+- Card family: Spider Solitaire, Blackjack.
 - Puzzles/tabletop: no remaining scheduled candidates.
 - Arcade: no remaining scheduled candidates.
 - Original cabinet games: Dungeon Sweeper, Potion 2048, Tiny Tower Defence, One

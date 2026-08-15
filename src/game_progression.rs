@@ -203,6 +203,15 @@ impl Game {
                     }),
             );
         }
+        if self.state.klondike_golf.status == crate::klondike_golf::GolfStatus::Won {
+            records.klondike_golf_best_moves = Some(
+                records
+                    .klondike_golf_best_moves
+                    .map_or(self.state.klondike_golf.moves, |best| {
+                        best.min(self.state.klondike_golf.moves)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

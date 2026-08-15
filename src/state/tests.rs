@@ -65,6 +65,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     state.records.breakout_best_score = Some(5);
     state.higher_lower.moves = 15;
     state.records.higher_lower_best_score = Some(6);
+    state.klondike_golf.moves = 16;
+    state.records.klondike_golf_best_moves = Some(16);
     state.achievements[0] = true;
     state.stamps = 3;
     state.card_back = 1;
@@ -112,6 +114,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     assert_eq!(restored.records.breakout_best_score, Some(5));
     assert_eq!(restored.higher_lower.moves, 15);
     assert_eq!(restored.records.higher_lower_best_score, Some(6));
+    assert_eq!(restored.klondike_golf.moves, 16);
+    assert_eq!(restored.records.klondike_golf_best_moves, Some(16));
     assert!(restored.achievements[0]);
     assert_eq!(restored.stamps, 3);
     assert_eq!(restored.card_back, 1);
@@ -167,6 +171,7 @@ fn every_game_snapshot_round_trips_its_own_state() {
     source.snake.moves = 32;
     source.breakout.moves = 33;
     source.higher_lower.moves = 34;
+    source.klondike_golf.moves = 35;
 
     for game in GameId::ALL {
         let snapshot = GameSnapshot::from_state(&source, game);
@@ -204,6 +209,7 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
     source.snake.moves = 32;
     source.breakout.moves = 33;
     source.higher_lower.moves = 34;
+    source.klondike_golf.moves = 35;
 
     let snapshots = GameId::ALL
         .iter()
@@ -237,6 +243,7 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
     assert_eq!(restored.snake.moves, 32);
     assert_eq!(restored.breakout.moves, 33);
     assert_eq!(restored.higher_lower.moves, 34);
+    assert_eq!(restored.klondike_golf.moves, 35);
 }
 
 #[test]
@@ -268,6 +275,7 @@ fn older_saves_default_new_progression_and_cosmetic_fields() {
         "snake",
         "breakout",
         "higher_lower",
+        "klondike_golf",
     ] {
         object.remove(field);
     }

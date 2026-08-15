@@ -69,6 +69,19 @@ impl Game {
                 let seed = self.state.higher_lower.seed.wrapping_add(1);
                 self.state.higher_lower.reset(seed);
             }
+            UiAction::KlondikeGolfColumn(column) => {
+                self.state.klondike_golf.tap_column(*column);
+            }
+            UiAction::KlondikeGolfStock => {
+                self.state.klondike_golf.draw_stock();
+            }
+            UiAction::KlondikeGolfUndo => {
+                self.state.klondike_golf.undo();
+            }
+            UiAction::KlondikeGolfNew => {
+                let seed = self.state.klondike_golf.seed.wrapping_add(1);
+                self.state.klondike_golf.reset(seed);
+            }
             _ => return false,
         }
         true

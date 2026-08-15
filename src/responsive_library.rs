@@ -130,6 +130,10 @@ pub fn draw_records(state: &AppState) {
             "Higher or Lower best",
             value(state.records.higher_lower_best_score.map(u32::from)),
         ),
+        (
+            "Klondike Golf best",
+            value(state.records.klondike_golf_best_moves.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
         let y = 155. + index as f32 * 27.;

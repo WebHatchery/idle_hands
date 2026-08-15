@@ -94,6 +94,7 @@ impl Game {
             "snake" => Screen::Game(GameId::Snake),
             "breakout" => Screen::Game(GameId::Breakout),
             "higher_lower" => Screen::Game(GameId::HigherLower),
+            "klondike_golf" => Screen::Game(GameId::KlondikeGolf),
             "help" => Screen::Help,
             "records" => Screen::Records,
             "rules" => Screen::Rules,
@@ -317,6 +318,7 @@ impl Game {
                         | GameId::Snake
                         | GameId::Breakout
                         | GameId::HigherLower
+                        | GameId::KlondikeGolf
                 ) {
                     self.state.screen = Screen::Game(id);
                     self.state.tutorial = (!matches!(
@@ -336,6 +338,7 @@ impl Game {
                             | GameId::Snake
                             | GameId::Breakout
                             | GameId::HigherLower
+                            | GameId::KlondikeGolf
                     ) && !self.state.tutorial_seen[id.index()])
                     .then_some(id);
                 } else {

@@ -29,6 +29,7 @@ pub fn status(state: &AppState, game: GameId) -> &'static str {
         GameId::Snake => state.records.snake_best_score.is_some(),
         GameId::Breakout => state.records.breakout_best_score.is_some(),
         GameId::HigherLower => state.records.higher_lower_best_score.is_some(),
+        GameId::KlondikeGolf => state.records.klondike_golf_best_moves.is_some(),
     };
     if complete {
         "COMPLETE"
@@ -64,6 +65,7 @@ fn has_progress(state: &AppState, game: GameId) -> bool {
         GameId::Snake => state.snake.moves > 0,
         GameId::Breakout => state.breakout.moves > 0,
         GameId::HigherLower => state.higher_lower.moves > 0,
+        GameId::KlondikeGolf => state.klondike_golf.moves > 0,
     }
 }
 
@@ -72,4 +74,34 @@ pub fn color(status: &str) -> Color {
         "COMPLETE" => Color::new(0.55, 1., 0.72, 1.),
         _ => Color::new(0.98, 0.75, 0.30, 1.),
     }
+}
+
+pub fn is_active(game: GameId) -> bool {
+    matches!(
+        game,
+        GameId::Game2048
+            | GameId::Minesweeper
+            | GameId::Sudoku
+            | GameId::Nonogram
+            | GameId::Solitaire
+            | GameId::FreeCell
+            | GameId::Yahtzee
+            | GameId::Reversi
+            | GameId::LightsOut
+            | GameId::TicTacToe
+            | GameId::MemoryPairs
+            | GameId::SlidingPuzzle
+            | GameId::Mastermind
+            | GameId::Spider
+            | GameId::WordSearch
+            | GameId::Hangman
+            | GameId::ConnectFour
+            | GameId::Checkers
+            | GameId::PegSolitaire
+            | GameId::MahjongSolitaire
+            | GameId::Snake
+            | GameId::Breakout
+            | GameId::HigherLower
+            | GameId::KlondikeGolf
+    )
 }

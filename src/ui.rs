@@ -9,6 +9,7 @@ use crate::freecell_ui;
 use crate::hangman_ui;
 use crate::higher_lower_ui;
 use crate::input::Viewport;
+use crate::klondike_golf_ui;
 use crate::library_ui;
 use crate::lights_out_ui;
 use crate::mahjong_solitaire_ui;
@@ -160,6 +161,10 @@ pub enum UiAction {
     HigherLowerGuess(crate::higher_lower::Guess),
     HigherLowerUndo,
     HigherLowerNew,
+    KlondikeGolfColumn(usize),
+    KlondikeGolfStock,
+    KlondikeGolfUndo,
+    KlondikeGolfNew,
 }
 pub fn viewport() -> Viewport {
     let (width, height) = layout_size();
@@ -293,6 +298,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Game(GameId::Snake) => snake_ui::clicks(state, p),
         Screen::Game(GameId::Breakout) => breakout_ui::clicks(state, p),
         Screen::Game(GameId::HigherLower) => higher_lower_ui::clicks(state, p),
+        Screen::Game(GameId::KlondikeGolf) => klondike_golf_ui::clicks(state, p),
         Screen::Game(GameId::Mastermind) => mastermind_ui::clicks(state, p),
         Screen::Help => {
             if is_compact_landscape() {
@@ -392,6 +398,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::Snake) => snake_ui::draw(state),
         Screen::Game(GameId::Breakout) => breakout_ui::draw(state),
         Screen::Game(GameId::HigherLower) => higher_lower_ui::draw(state),
+        Screen::Game(GameId::KlondikeGolf) => klondike_golf_ui::draw(state),
         Screen::Game(GameId::Mastermind) => mastermind_ui::draw(state),
         Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(),
         Screen::Help if is_portrait() => responsive_library::draw_help(),
@@ -421,7 +428,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         } else {
             tutorial_ui::draw_overlay(game);
         }
-    } else if matches!(state.screen, Screen::Game(game) if !matches!(game, GameId::LightsOut | GameId::TicTacToe | GameId::MemoryPairs | GameId::SlidingPuzzle | GameId::Mastermind | GameId::Spider | GameId::WordSearch | GameId::Hangman | GameId::ConnectFour | GameId::Checkers | GameId::PegSolitaire | GameId::MahjongSolitaire | GameId::Snake | GameId::Breakout | GameId::HigherLower))
+    } else if matches!(state.screen, Screen::Game(game) if !matches!(game, GameId::LightsOut | GameId::TicTacToe | GameId::MemoryPairs | GameId::SlidingPuzzle | GameId::Mastermind | GameId::Spider | GameId::WordSearch | GameId::Hangman | GameId::ConnectFour | GameId::Checkers | GameId::PegSolitaire | GameId::MahjongSolitaire | GameId::Snake | GameId::Breakout | GameId::HigherLower | GameId::KlondikeGolf))
     {
         if is_compact_landscape() {
             responsive_landscape::draw_replay_button();
@@ -476,32 +483,7 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
     );
     for i in 0..GameId::ALL.len() {
         let r = cabinet_rect(i);
-        let active = matches!(
-            GameId::ALL[i],
-            GameId::Game2048
-                | GameId::Minesweeper
-                | GameId::Sudoku
-                | GameId::Nonogram
-                | GameId::Solitaire
-                | GameId::FreeCell
-                | GameId::Yahtzee
-                | GameId::Reversi
-                | GameId::LightsOut
-                | GameId::TicTacToe
-                | GameId::MemoryPairs
-                | GameId::SlidingPuzzle
-                | GameId::Mastermind
-                | GameId::Spider
-                | GameId::WordSearch
-                | GameId::Hangman
-                | GameId::ConnectFour
-                | GameId::Checkers
-                | GameId::PegSolitaire
-                | GameId::MahjongSolitaire
-                | GameId::Snake
-                | GameId::Breakout
-                | GameId::HigherLower
-        );
+        let active = crate::cabinet_status::is_active(GameId::ALL[i]);
         panel(
             r,
             if active {

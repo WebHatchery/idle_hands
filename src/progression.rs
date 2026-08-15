@@ -51,6 +51,7 @@ impl AchievementId {
                 GameId::Snake => "Coil keeper",
                 GameId::Breakout => "Brick keeper",
                 GameId::HigherLower => "Card keeper",
+                GameId::KlondikeGolf => "Golf keeper",
             },
             Self::FullCabinet => "Full cabinet",
         }
@@ -119,6 +120,7 @@ pub fn earned(records: &CollectionRecords, achievement: AchievementId) -> bool {
             GameId::Snake => records.snake_best_score.is_some(),
             GameId::Breakout => records.breakout_best_score.is_some(),
             GameId::HigherLower => records.higher_lower_best_score.is_some(),
+            GameId::KlondikeGolf => records.klondike_golf_best_moves.is_some(),
         },
         AchievementId::FullCabinet => completed_games(records) == GameId::ALL.len(),
     }
