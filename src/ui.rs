@@ -14,6 +14,8 @@ pub enum UiAction {
     Cabinet,
     Help,
     Settings,
+    Save,
+    Load,
     Move(Direction),
     Undo,
     Restart,
@@ -456,12 +458,28 @@ fn draw_settings(state: &AppState) {
         Rect::new(290., 490., 150., 48.),
         Color::new(0.25, 0.16, 0.32, 1.),
     );
-    text("BACK", 340., 521., 17., WHITE)
+    text("BACK", 340., 521., 17., WHITE);
+    panel(
+        Rect::new(470., 490., 150., 48.),
+        Color::new(0.18, 0.26, 0.34, 1.),
+    );
+    text("SAVE NOW", 500., 521., 16., WHITE);
+    panel(
+        Rect::new(650., 490., 150., 48.),
+        Color::new(0.22, 0.18, 0.35, 1.),
+    );
+    text("LOAD", 699., 521., 16., WHITE)
 }
 fn settings_clicks(p: Vec2) -> Vec<UiAction> {
     let mut o = vec![];
     if Rect::new(290., 490., 150., 48.).contains(p) {
         o.push(UiAction::Cabinet)
+    }
+    if Rect::new(470., 490., 150., 48.).contains(p) {
+        o.push(UiAction::Save)
+    }
+    if Rect::new(650., 490., 150., 48.).contains(p) {
+        o.push(UiAction::Load)
     }
     if Rect::new(290., 270., 250., 45.).contains(p) {
         o.push(UiAction::ToggleSound)

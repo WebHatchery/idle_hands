@@ -194,6 +194,42 @@ pub struct AppState {
     pub mine_flag_mode: bool,
     pub mine_records: [Option<u32>; 4],
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CollectionSave {
+    pub version: String,
+    pub game: Game2048,
+    pub minesweeper: Minesweeper,
+    pub profile_name: String,
+    pub sound: bool,
+    pub reduced_motion: bool,
+    pub mine_flag_mode: bool,
+    pub mine_records: [Option<u32>; 4],
+}
+
+impl CollectionSave {
+    pub fn from_state(state: &AppState, version: &str) -> Self {
+        Self {
+            version: version.to_owned(),
+            game: state.game.clone(),
+            minesweeper: state.minesweeper.clone(),
+            profile_name: state.profile_name.clone(),
+            sound: state.sound,
+            reduced_motion: state.reduced_motion,
+            mine_flag_mode: state.mine_flag_mode,
+            mine_records: state.mine_records,
+        }
+    }
+    pub fn apply_to(self, state: &mut AppState) {
+        state.game = self.game;
+        state.minesweeper = self.minesweeper;
+        state.profile_name = self.profile_name;
+        state.sound = self.sound;
+        state.reduced_motion = self.reduced_motion;
+        state.mine_flag_mode = self.mine_flag_mode;
+        state.mine_records = self.mine_records;
+    }
+}
 impl Default for AppState {
     fn default() -> Self {
         Self {

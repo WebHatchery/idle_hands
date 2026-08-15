@@ -3,12 +3,15 @@
 use crate::ui;
 use crate::{
     data::GameData,
-    state::{AppState, Direction, GameId, Screen},
+    state::{AppState, CollectionSave, Direction, GameId, Screen},
 };
 use macroquad::prelude::*;
 use macroquad_toolkit::assets::AssetManager;
 use macroquad_toolkit::notifications::{
     NotificationAnchor, NotificationManager, NotificationRenderConfig,
+};
+use macroquad_toolkit::persistence::{
+    load_from_slot_with_migration, save_to_slot_with_version, slot_exists,
 };
 
 pub struct Game {
@@ -25,13 +28,15 @@ impl Game {
         let placeholder = Image::gen_image_color(16, 16, Color::new(0.25, 0.18, 0.35, 1.0));
         assets.set_placeholder_texture_direct(Texture2D::from_image(&placeholder));
         assets.load_texture_configs(&data.texture_manifest).await;
-        Self {
+        let mut game = Self {
             data,
             state: AppState::default(),
             assets,
             notifications: NotificationManager::new(),
             drag_start: None,
-        }
+        };
+        game.load_autosave();
+        game
     }
     pub fn update(&mut self, dt: f32) {
         self.notifications.update(dt);
@@ -101,6 +106,8 @@ impl Game {
             ui::UiAction::Cabinet => self.state.screen = Screen::Cabinet,
             ui::UiAction::Help => self.state.screen = Screen::Help,
             ui::UiAction::Settings => self.state.screen = Screen::Settings,
+            ui::UiAction::Save => self.save_autosave(),
+            ui::UiAction::Load => self.load_autosave(),
             ui::UiAction::Move(direction) => self.try_move(direction),
             ui::UiAction::MineReveal(index) => {
                 self.state.minesweeper.reveal(index);
@@ -142,11 +149,51 @@ impl Game {
             ui::UiAction::ToggleSound => self.state.sound = !self.state.sound,
             ui::UiAction::ToggleMotion => self.state.reduced_motion = !self.state.reduced_motion,
         }
+        self.save_autosave();
     }
     fn try_move(&mut self, direction: Direction) {
         if self.state.game.move_in(direction) && self.state.game.won() {
             self.notifications
                 .success("2048 reached — keep playing or start a fresh board");
+        }
+        self.save_autosave();
+    }
+
+    fn save_autosave(&mut self) {
+        let save = CollectionSave::from_state(&self.state, &self.data.config.version);
+        if let Err(error) = save_to_slot_with_version(
+            &self.data.config.game_name,
+            &self.data.config.save_slot,
+            &save,
+            &self.data.config.version,
+        ) {
+            self.notifications
+                .warning(format!("Autosave failed: {}", error));
+        }
+    }
+
+    fn load_autosave(&mut self) {
+        if !slot_exists(&self.data.config.game_name, &self.data.config.save_slot) {
+            return;
+        }
+        let loaded: Result<CollectionSave, String> = load_from_slot_with_migration(
+            &self.data.config.game_name,
+            &self.data.config.save_slot,
+            &self.data.config.version,
+            |_, value| {
+                let payload = value.get("data").cloned().unwrap_or(value);
+                serde_json::from_value(payload)
+                    .map_err(|error| format!("Unsupported collection save: {}", error))
+            },
+        );
+        match loaded {
+            Ok(save) => {
+                save.apply_to(&mut self.state);
+                self.notifications.info("Restored the cabinet autosave");
+            }
+            Err(error) => self
+                .notifications
+                .warning(format!("Autosave could not be loaded: {}", error)),
         }
     }
 }

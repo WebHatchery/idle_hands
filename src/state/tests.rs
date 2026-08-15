@@ -24,3 +24,17 @@ fn blocked_board_has_no_available_move() {
     game.cells = [2, 4, 2, 4, 4, 2, 4, 2, 2, 4, 2, 4, 4, 2, 4, 2];
     assert!(!game.can_move());
 }
+
+#[test]
+fn collection_save_round_trips_game_and_profile_state() {
+    let mut state = AppState::default();
+    state.profile_name = "Quiet Player".into();
+    state.game.score = 128;
+    state.mine_records[0] = Some(42);
+    let save = CollectionSave::from_state(&state, "1.0.0");
+    let mut restored = AppState::default();
+    save.apply_to(&mut restored);
+    assert_eq!(restored.profile_name, "Quiet Player");
+    assert_eq!(restored.game.score, 128);
+    assert_eq!(restored.mine_records[0], Some(42));
+}
