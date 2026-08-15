@@ -28,6 +28,8 @@ mod input;
 mod library_ui;
 mod lights_out;
 mod lights_out_ui;
+mod mahjong_solitaire;
+mod mahjong_solitaire_ui;
 mod mastermind;
 mod mastermind_ui;
 mod memory_pairs;

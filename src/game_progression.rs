@@ -167,6 +167,15 @@ impl Game {
                     }),
             );
         }
+        if self.state.mahjong_solitaire.status == crate::mahjong_solitaire::MahjongStatus::Won {
+            records.mahjong_solitaire_best_moves = Some(
+                records
+                    .mahjong_solitaire_best_moves
+                    .map_or(self.state.mahjong_solitaire.moves, |best| {
+                        best.min(self.state.mahjong_solitaire.moves)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

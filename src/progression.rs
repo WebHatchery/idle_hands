@@ -47,6 +47,7 @@ impl AchievementId {
                 GameId::ConnectFour => "Disc keeper",
                 GameId::Checkers => "Piece keeper",
                 GameId::PegSolitaire => "Peg keeper",
+                GameId::MahjongSolitaire => "Tile keeper",
             },
             Self::FullCabinet => "Full cabinet",
         }
@@ -111,6 +112,7 @@ pub fn earned(records: &CollectionRecords, achievement: AchievementId) -> bool {
             GameId::ConnectFour => records.connect_four_best_moves.is_some(),
             GameId::Checkers => records.checkers_best_moves.is_some(),
             GameId::PegSolitaire => records.peg_solitaire_best_moves.is_some(),
+            GameId::MahjongSolitaire => records.mahjong_solitaire_best_moves.is_some(),
         },
         AchievementId::FullCabinet => completed_games(records) == GameId::ALL.len(),
     }

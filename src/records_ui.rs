@@ -122,6 +122,10 @@ pub fn draw_records(state: &AppState) {
             "Peg Solitaire best moves",
             value(state.records.peg_solitaire_best_moves.map(u32::from)),
         ),
+        (
+            "Mahjong Solitaire best moves",
+            value(state.records.mahjong_solitaire_best_moves.map(u32::from)),
+        ),
     ];
     draw_column(&left, 175., 240.);
     draw_column(&middle, 490., 240.);

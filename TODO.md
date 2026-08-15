@@ -310,10 +310,21 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Add responsive desktop, portrait, and medium-landscape presentation,
     visible controls, records, and verification captures.
 
+## Phase 19 — Twelfth post-launch cabinet game
+
+- [x] Add Mahjong Solitaire as a twentieth deterministic, touch-complete
+  cabinet game with layered tiles, free-pair matching, undo, and reset.
+  - [x] Cover seeded layouts, tile availability, pair removal, undo, and stuck
+    state behavior with focused rule tests.
+  - [x] Add persisted active state and best-move records with snapshot,
+    migration, progression, and tutorial coverage.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, records, and verification captures.
+
 ## Post-launch candidates (not scheduled)
 
 - Card family: Spider Solitaire, Klondike Golf, Higher or Lower, Blackjack.
-- Puzzles/tabletop: Mahjong Solitaire.
+- Puzzles/tabletop: no remaining scheduled candidates.
 - Arcade: Snake and Breakout.
 - Original cabinet games: Dungeon Sweeper, Potion 2048, Tiny Tower Defence, One
   Room Roguelike, and Daily Dungeon.

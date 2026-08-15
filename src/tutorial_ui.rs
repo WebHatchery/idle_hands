@@ -177,5 +177,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "Each jump removes the middle peg; keep clearing the board.",
             "Leave one peg in the center; use UNDO or NEW BOARD.",
         ],
+        GameId::MahjongSolitaire => [
+            "Tap a free tile, then tap its matching free partner.",
+            "A tile is free when one side is open and no tile covers it.",
+            "Clear every pair; use UNDO or NEW BOARD with the visible controls.",
+        ],
     }
 }

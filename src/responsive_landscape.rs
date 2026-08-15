@@ -412,6 +412,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "Each jump removes the middle peg; keep clearing the board.",
             "Leave one peg in the center; use UNDO or NEW BOARD.",
         ],
+        GameId::MahjongSolitaire => [
+            "Tap a free tile, then tap its matching free partner.",
+            "A tile is free when one side is open and no tile covers it.",
+            "Clear every pair; use UNDO or NEW BOARD with the visible controls.",
+        ],
     }
 }
 
@@ -436,6 +441,9 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::ConnectFour if state.records.connect_four_best_moves.is_some() => "COMPLETE",
         GameId::Checkers if state.records.checkers_best_moves.is_some() => "COMPLETE",
         GameId::PegSolitaire if state.records.peg_solitaire_best_moves.is_some() => "COMPLETE",
+        GameId::MahjongSolitaire if state.records.mahjong_solitaire_best_moves.is_some() => {
+            "COMPLETE"
+        }
         _ => "PLAY NOW",
     }
 }

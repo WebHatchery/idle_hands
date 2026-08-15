@@ -57,6 +57,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     state.records.checkers_best_moves = Some(10);
     state.peg_solitaire.moves = 11;
     state.records.peg_solitaire_best_moves = Some(11);
+    state.mahjong_solitaire.moves = 12;
+    state.records.mahjong_solitaire_best_moves = Some(12);
     state.achievements[0] = true;
     state.stamps = 3;
     state.card_back = 1;
@@ -96,6 +98,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     assert_eq!(restored.records.checkers_best_moves, Some(10));
     assert_eq!(restored.peg_solitaire.moves, 11);
     assert_eq!(restored.records.peg_solitaire_best_moves, Some(11));
+    assert_eq!(restored.mahjong_solitaire.moves, 12);
+    assert_eq!(restored.records.mahjong_solitaire_best_moves, Some(12));
     assert!(restored.achievements[0]);
     assert_eq!(restored.stamps, 3);
     assert_eq!(restored.card_back, 1);
@@ -147,6 +151,7 @@ fn every_game_snapshot_round_trips_its_own_state() {
     source.connect_four.moves = 28;
     source.checkers.moves = 29;
     source.peg_solitaire.moves = 30;
+    source.mahjong_solitaire.moves = 31;
 
     for game in GameId::ALL {
         let snapshot = GameSnapshot::from_state(&source, game);
@@ -180,6 +185,7 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
     source.connect_four.moves = 28;
     source.checkers.moves = 29;
     source.peg_solitaire.moves = 30;
+    source.mahjong_solitaire.moves = 31;
 
     let snapshots = GameId::ALL
         .iter()
@@ -209,6 +215,7 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
     assert_eq!(restored.connect_four.moves, 28);
     assert_eq!(restored.checkers.moves, 29);
     assert_eq!(restored.peg_solitaire.moves, 30);
+    assert_eq!(restored.mahjong_solitaire.moves, 31);
 }
 
 #[test]
@@ -236,6 +243,7 @@ fn older_saves_default_new_progression_and_cosmetic_fields() {
         "connect_four",
         "checkers",
         "peg_solitaire",
+        "mahjong_solitaire",
     ] {
         object.remove(field);
     }

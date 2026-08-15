@@ -29,6 +29,16 @@ impl Game {
                 let seed = self.state.peg_solitaire.seed.wrapping_add(1);
                 self.state.peg_solitaire.reset(seed);
             }
+            UiAction::MahjongSolitaireTap(index) => {
+                self.state.mahjong_solitaire.tap(*index);
+            }
+            UiAction::MahjongSolitaireUndo => {
+                self.state.mahjong_solitaire.undo();
+            }
+            UiAction::MahjongSolitaireNew => {
+                let seed = self.state.mahjong_solitaire.seed.wrapping_add(1);
+                self.state.mahjong_solitaire.reset(seed);
+            }
             _ => return false,
         }
         true

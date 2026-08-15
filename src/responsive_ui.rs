@@ -673,6 +673,9 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::ConnectFour if state.records.connect_four_best_moves.is_some() => "COMPLETE",
         GameId::Checkers if state.records.checkers_best_moves.is_some() => "COMPLETE",
         GameId::PegSolitaire if state.records.peg_solitaire_best_moves.is_some() => "COMPLETE",
+        GameId::MahjongSolitaire if state.records.mahjong_solitaire_best_moves.is_some() => {
+            "COMPLETE"
+        }
         _ => "PLAY NOW",
     }
 }

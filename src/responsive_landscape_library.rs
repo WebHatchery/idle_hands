@@ -100,6 +100,10 @@ pub fn draw_records(state: &AppState) {
             "Peg Solitaire best",
             value(state.records.peg_solitaire_best_moves.map(u32::from)),
         ),
+        (
+            "Mahjong Solitaire best",
+            value(state.records.mahjong_solitaire_best_moves.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
         let col = index / 7;
