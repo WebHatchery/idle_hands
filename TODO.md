@@ -119,6 +119,8 @@ sizes, covered by rule tests, and passes `publish.ps1`.
     and Reset actions at 390×844.
   - [x] Expose the shared Load action alongside Save on compact portrait
     Settings.
+- [x] Add persisted High Contrast and Large Text settings and apply them to
+  dense portrait and medium-landscape puzzle boards.
 - [ ] Audit autosave/resume and save migration independently for all eight games.
   - [x] Cover all eight independent game snapshots and migration defaults for
     progression and cosmetic fields.

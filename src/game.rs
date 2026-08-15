@@ -60,7 +60,10 @@ impl Game {
             "tutorial_2048" => Screen::Game(GameId::Game2048),
             "minesweeper" => Screen::Game(GameId::Minesweeper),
             "sudoku" => Screen::Game(GameId::Sudoku),
+            "sudoku_accessible" => Screen::Game(GameId::Sudoku),
             "nonogram" => Screen::Game(GameId::Nonogram),
+            "nonogram_accessible" => Screen::Game(GameId::Nonogram),
+            "minesweeper_accessible" => Screen::Game(GameId::Minesweeper),
             "solitaire" => Screen::Game(GameId::Solitaire),
             "freecell" => Screen::Game(GameId::FreeCell),
             "fivefold" => Screen::Game(GameId::Yahtzee),
@@ -75,6 +78,10 @@ impl Game {
         };
         if scene == "settings_reset" {
             self.state.confirm_reset = true;
+        }
+        if scene.ends_with("_accessible") {
+            self.state.high_contrast = true;
+            self.state.large_text = true;
         }
         if scene.starts_with("tutorial_") {
             if let Screen::Game(game) = self.state.screen {
@@ -423,6 +430,10 @@ impl Game {
             ui::UiAction::Cancel => self.state.confirm_restart = false,
             ui::UiAction::ToggleSound => self.state.sound = !self.state.sound,
             ui::UiAction::ToggleMotion => self.state.reduced_motion = !self.state.reduced_motion,
+            ui::UiAction::ToggleHighContrast => {
+                self.state.high_contrast = !self.state.high_contrast
+            }
+            ui::UiAction::ToggleLargeText => self.state.large_text = !self.state.large_text,
             ui::UiAction::CycleCardBack => {
                 self.state.card_back =
                     cosmetics::next_card_back(self.state.card_back, self.state.stamps)

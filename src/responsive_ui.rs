@@ -136,7 +136,7 @@ pub fn draw_2048(state: &AppState) {
         WHITE,
     );
     let board = Rect::new(20., 130., 320., 320.);
-    panel(board, Color::new(0.10, 0.07, 0.16, 1.));
+    panel(board, crate::accessibility::board_fill(state.high_contrast));
     for index in 0..16 {
         let rect = Rect::new(
             board.x + 8. + (index % 4) as f32 * 78.,
@@ -328,6 +328,34 @@ pub fn draw_settings(state: &AppState) {
         13.,
         WHITE,
     );
+    panel(
+        Rect::new(22., 465., 150., 42.),
+        Color::new(0.16, 0.11, 0.24, 1.),
+    );
+    text(
+        &format!(
+            "Contrast: {}",
+            if state.high_contrast { "On" } else { "Off" }
+        ),
+        35.,
+        492.,
+        12.,
+        WHITE,
+    );
+    panel(
+        Rect::new(186., 465., 152., 42.),
+        Color::new(0.16, 0.11, 0.24, 1.),
+    );
+    text(
+        &format!(
+            "Text: {}",
+            if state.large_text { "Large" } else { "Normal" }
+        ),
+        200.,
+        492.,
+        12.,
+        WHITE,
+    );
     text(
         "Tap a row to cycle unlocked cosmetics.",
         22.,
@@ -409,6 +437,11 @@ pub fn settings_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         ),
         (Rect::new(22., 360., 150., 42.), UiAction::ToggleSound),
         (Rect::new(186., 360., 152., 42.), UiAction::ToggleMotion),
+        (
+            Rect::new(22., 465., 150., 42.),
+            UiAction::ToggleHighContrast,
+        ),
+        (Rect::new(186., 465., 152., 42.), UiAction::ToggleLargeText),
     ] {
         if rect.contains(p) {
             return vec![action];
@@ -434,7 +467,7 @@ pub fn draw_sudoku(state: &AppState) {
         text(difficulty.label(), rect.x + 8., rect.y + 19., 10., WHITE);
     }
     let board = Rect::new(10., 100., 340., 340.);
-    panel(board, Color::new(0.10, 0.07, 0.16, 1.));
+    panel(board, crate::accessibility::board_fill(state.high_contrast));
     let cell = 36.8;
     for index in 0..81 {
         let row = index / 9;
@@ -469,14 +502,14 @@ pub fn draw_sudoku(state: &AppState) {
             rect.w,
             rect.h,
             if col % 3 == 0 || row % 3 == 0 { 2. } else { 1. },
-            Color::new(0.48, 0.40, 0.60, 0.8),
+            crate::accessibility::grid_line(state.high_contrast),
         );
         if game.values[index] != 0 {
             text(
                 &game.values[index].to_string(),
                 rect.x + 12.,
                 rect.y + 26.,
-                21.,
+                crate::accessibility::text_size(21., state.large_text),
                 if game.is_given(index) {
                     WHITE
                 } else {

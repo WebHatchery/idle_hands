@@ -41,6 +41,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     state.board_theme = 1;
     state.sound_set = 1;
     state.cabinet_decoration = 1;
+    state.high_contrast = true;
+    state.large_text = true;
     state.tutorial_seen[6] = true;
     let save = CollectionSave::from_state(&state, "1.0.0");
     let mut restored = AppState::default();
@@ -56,6 +58,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     assert_eq!(restored.board_theme, 1);
     assert_eq!(restored.sound_set, 1);
     assert_eq!(restored.cabinet_decoration, 1);
+    assert!(restored.high_contrast);
+    assert!(restored.large_text);
     assert!(restored.tutorial_seen[6]);
 }
 
@@ -111,6 +115,8 @@ fn older_saves_default_new_progression_and_cosmetic_fields() {
         "board_theme",
         "sound_set",
         "cabinet_decoration",
+        "high_contrast",
+        "large_text",
     ] {
         object.remove(field);
     }
@@ -123,6 +129,8 @@ fn older_saves_default_new_progression_and_cosmetic_fields() {
     assert_eq!(restored.board_theme, 0);
     assert_eq!(restored.sound_set, 0);
     assert_eq!(restored.cabinet_decoration, 0);
+    assert!(!restored.high_contrast);
+    assert!(!restored.large_text);
 }
 
 #[test]

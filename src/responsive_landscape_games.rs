@@ -1,6 +1,7 @@
 //! Medium landscape layouts for the dense game boards.
 
 use crate::{
+    accessibility,
     grid::GridLayout,
     minesweeper::{Cell, MinePreset, MineStatus},
     nonogram::{NonogramMark, NonogramMode, NonogramPreset, NonogramStatus},
@@ -53,7 +54,7 @@ pub fn draw_minesweeper(state: &AppState) {
         19.,
         Color::new(0.98, 0.83, 0.45, 1.),
     );
-    panel(MINE_BOARD, Color::new(0.10, 0.07, 0.16, 1.));
+    panel(MINE_BOARD, accessibility::board_fill(state.high_contrast));
     let layout = mine_grid(state);
     for index in 0..game.cells.len() {
         let cell_rect = layout.cell_rect(index).unwrap();
@@ -67,11 +68,7 @@ pub fn draw_minesweeper(state: &AppState) {
             rect.y,
             rect.w,
             rect.h,
-            if revealed {
-                Color::new(0.24, 0.19, 0.30, 1.)
-            } else {
-                Color::new(0.15, 0.11, 0.23, 1.)
-            },
+            accessibility::mine_cell(revealed, state.high_contrast),
         );
         draw_rectangle_lines(
             rect.x,
@@ -79,7 +76,7 @@ pub fn draw_minesweeper(state: &AppState) {
             rect.w,
             rect.h,
             1.,
-            Color::new(0.48, 0.40, 0.60, 0.7),
+            accessibility::grid_line(state.high_contrast),
         );
         match cell {
             Cell::Flagged | Cell::FlaggedMine => text(
@@ -212,7 +209,7 @@ pub fn draw_sudoku(state: &AppState) {
     let game = &state.sudoku;
     back();
     text("SUDOKU", 100., 20., 19., Color::new(0.98, 0.83, 0.45, 1.));
-    panel(SUDOKU_BOARD, Color::new(0.10, 0.07, 0.16, 1.));
+    panel(SUDOKU_BOARD, accessibility::board_fill(state.high_contrast));
     let cell = 40.;
     for index in 0..81 {
         let row = index / 9;
@@ -224,7 +221,7 @@ pub fn draw_sudoku(state: &AppState) {
             rect.w,
             rect.h,
             if row % 3 == 0 || col % 3 == 0 { 2. } else { 1. },
-            Color::new(0.48, 0.40, 0.60, 0.8),
+            accessibility::grid_line(state.high_contrast),
         );
         let value = game.values[index];
         if value > 0 {
@@ -233,7 +230,13 @@ pub fn draw_sudoku(state: &AppState) {
             } else {
                 Color::new(0.98, 0.83, 0.45, 1.)
             };
-            text(&value.to_string(), rect.x + 14., rect.y + 28., 22., color);
+            text(
+                &value.to_string(),
+                rect.x + 14.,
+                rect.y + 28.,
+                accessibility::text_size(22., state.large_text),
+                if state.high_contrast { WHITE } else { color },
+            );
         }
         if game.selected == Some(index) {
             draw_rectangle_lines(
@@ -361,15 +364,11 @@ pub fn draw_nonogram(state: &AppState) {
     let game = &state.nonogram;
     back();
     text("NONOGRAM", 100., 20., 19., Color::new(0.98, 0.83, 0.45, 1.));
-    panel(NONO_BOARD, Color::new(0.10, 0.07, 0.16, 1.));
+    panel(NONO_BOARD, accessibility::board_fill(state.high_contrast));
     let layout = GridLayout::new(Rect::new(70., 88., 280., 280.), game.size, game.size);
     for index in 0..game.marks.len() {
         let cell = layout.cell_rect(index).unwrap();
-        let fill = match game.marks[index] {
-            NonogramMark::Filled => Color::new(0.80, 0.52, 0.26, 1.),
-            NonogramMark::Crossed => Color::new(0.20, 0.14, 0.28, 1.),
-            NonogramMark::Empty => Color::new(0.15, 0.11, 0.23, 1.),
-        };
+        let fill = accessibility::nonogram_cell(game.marks[index] as u8, state.high_contrast);
         draw_rectangle(cell.x, cell.y, cell.w - 1., cell.h - 1., fill);
         draw_rectangle_lines(
             cell.x,
@@ -377,7 +376,7 @@ pub fn draw_nonogram(state: &AppState) {
             cell.w - 1.,
             cell.h - 1.,
             1.,
-            Color::new(0.48, 0.40, 0.60, 0.8),
+            accessibility::grid_line(state.high_contrast),
         );
         if game.marks[index] == NonogramMark::Crossed {
             text(

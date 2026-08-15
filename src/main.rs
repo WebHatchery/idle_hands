@@ -3,6 +3,7 @@
 use macroquad::prelude::*;
 use macroquad_toolkit::capture;
 
+mod accessibility;
 mod cosmetics;
 mod data;
 mod fivefold;

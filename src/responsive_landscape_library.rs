@@ -287,10 +287,40 @@ pub fn draw_settings(state: &AppState) {
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     text("LOAD", 690., 142., 11., WHITE);
+    panel(
+        Rect::new(450., 165., 160., 34.),
+        Color::new(0.16, 0.11, 0.24, 1.),
+    );
+    text(
+        if state.high_contrast {
+            "CONTRAST ON"
+        } else {
+            "CONTRAST OFF"
+        },
+        475.,
+        187.,
+        10.,
+        WHITE,
+    );
+    panel(
+        Rect::new(630., 165., 160., 34.),
+        Color::new(0.16, 0.11, 0.24, 1.),
+    );
+    text(
+        if state.large_text {
+            "LARGE TEXT ON"
+        } else {
+            "LARGE TEXT OFF"
+        },
+        650.,
+        187.,
+        10.,
+        WHITE,
+    );
     text(
         "Tap a cosmetic row to cycle unlocked items.",
         450.,
-        205.,
+        220.,
         12.,
         Color::new(0.68, 0.63, 0.78, 1.),
     );
@@ -356,6 +386,12 @@ pub fn settings_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     if Rect::new(630., 68., 160., 34.).contains(p) {
         return vec![UiAction::ToggleMotion];
+    }
+    if Rect::new(450., 165., 160., 34.).contains(p) {
+        return vec![UiAction::ToggleHighContrast];
+    }
+    if Rect::new(630., 165., 160., 34.).contains(p) {
+        return vec![UiAction::ToggleLargeText];
     }
     if Rect::new(450., 120., 160., 34.).contains(p) {
         return vec![UiAction::Save];

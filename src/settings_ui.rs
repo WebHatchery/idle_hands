@@ -85,10 +85,38 @@ pub fn draw_settings(state: &AppState) {
         18.,
         WHITE,
     );
+    panel(
+        Rect::new(230., 470., 350., 40.),
+        Color::new(0.16, 0.11, 0.24, 1.),
+    );
+    text(
+        &format!(
+            "High contrast: {}",
+            if state.high_contrast { "On" } else { "Off" }
+        ),
+        250.,
+        496.,
+        15.,
+        WHITE,
+    );
+    panel(
+        Rect::new(580., 470., 350., 40.),
+        Color::new(0.16, 0.11, 0.24, 1.),
+    );
+    text(
+        &format!(
+            "Large text: {}",
+            if state.large_text { "On" } else { "Off" }
+        ),
+        600.,
+        496.,
+        15.,
+        WHITE,
+    );
     text(
         "Tap a cosmetic row to cycle through the items your stamps have opened.",
         230.,
-        480.,
+        530.,
         17.,
         Color::new(0.68, 0.63, 0.78, 1.),
     );
@@ -175,6 +203,12 @@ pub fn settings_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     if Rect::new(580., 415., 350., 45.).contains(p) {
         actions.push(UiAction::ToggleMotion);
+    }
+    if Rect::new(230., 470., 350., 40.).contains(p) {
+        actions.push(UiAction::ToggleHighContrast);
+    }
+    if Rect::new(580., 470., 350., 40.).contains(p) {
+        actions.push(UiAction::ToggleLargeText);
     }
     if Rect::new(770., 560., 210., 48.).contains(p) {
         actions.push(UiAction::ResetData);

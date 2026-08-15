@@ -229,6 +229,8 @@ pub struct AppState {
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
+    pub high_contrast: bool,
+    pub large_text: bool,
     pub mine_flag_mode: bool,
     pub mine_records: [Option<u32>; 4],
     pub sudoku_note_mode: bool,
@@ -269,6 +271,10 @@ pub struct CollectionSave {
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
+    #[serde(default)]
+    pub high_contrast: bool,
+    #[serde(default)]
+    pub large_text: bool,
     pub mine_flag_mode: bool,
     pub mine_records: [Option<u32>; 4],
     #[serde(default)]
@@ -297,6 +303,10 @@ pub struct ProfileSave {
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
+    #[serde(default)]
+    pub high_contrast: bool,
+    #[serde(default)]
+    pub large_text: bool,
     pub mine_flag_mode: bool,
     pub mine_records: [Option<u32>; 4],
     pub sudoku_note_mode: bool,
@@ -322,6 +332,8 @@ impl ProfileSave {
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
+            high_contrast: state.high_contrast,
+            large_text: state.large_text,
             mine_flag_mode: state.mine_flag_mode,
             mine_records: state.mine_records,
             sudoku_note_mode: state.sudoku_note_mode,
@@ -339,6 +351,8 @@ impl ProfileSave {
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
+        state.high_contrast = self.high_contrast;
+        state.large_text = self.large_text;
         state.mine_flag_mode = self.mine_flag_mode;
         state.mine_records = self.mine_records;
         state.sudoku_note_mode = self.sudoku_note_mode;
@@ -406,6 +420,8 @@ impl CollectionSave {
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
+            high_contrast: state.high_contrast,
+            large_text: state.large_text,
             mine_flag_mode: state.mine_flag_mode,
             mine_records: state.mine_records,
             sudoku_note_mode: state.sudoku_note_mode,
@@ -431,6 +447,8 @@ impl CollectionSave {
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
+        state.high_contrast = self.high_contrast;
+        state.large_text = self.large_text;
         state.mine_flag_mode = self.mine_flag_mode;
         state.mine_records = self.mine_records;
         state.sudoku_note_mode = self.sudoku_note_mode;
@@ -468,6 +486,8 @@ impl Default for AppState {
             profile_name: "Cabinet Guest".into(),
             sound: true,
             reduced_motion: false,
+            high_contrast: false,
+            large_text: false,
             mine_flag_mode: false,
             mine_records: [None, None, None, None],
             sudoku_note_mode: false,

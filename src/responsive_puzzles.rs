@@ -1,6 +1,7 @@
 //! Compact portrait layouts for dense grid puzzles.
 
 use crate::{
+    accessibility,
     grid::GridLayout,
     nonogram::{NonogramMark, NonogramMode, NonogramStatus},
     state::AppState,
@@ -54,17 +55,15 @@ pub fn draw_nonogram(state: &AppState) {
         );
         text(preset.label(), rect.x + 12., rect.y + 20., 11., WHITE);
     }
-    panel(BOARD, Color::new(0.10, 0.07, 0.16, 1.));
+    panel(BOARD, accessibility::board_fill(state.high_contrast));
     let layout = grid(state);
     for index in 0..game.marks.len() {
         let cell = layout.cell_rect(index).unwrap();
         let rect = Rect::new(cell.x, cell.y, cell.w - 1., cell.h - 1.);
         let selected = game.selected == Some(index);
-        let fill = match game.marks[index] {
-            NonogramMark::Filled => Color::new(0.80, 0.52, 0.26, 1.),
-            NonogramMark::Crossed => Color::new(0.20, 0.14, 0.28, 1.),
-            NonogramMark::Empty if selected => Color::new(0.30, 0.22, 0.42, 1.),
-            NonogramMark::Empty => Color::new(0.15, 0.11, 0.23, 1.),
+        let fill = match (game.marks[index], selected) {
+            (NonogramMark::Empty, true) => Color::new(0.30, 0.22, 0.42, 1.),
+            (mark, _) => accessibility::nonogram_cell(mark as u8, state.high_contrast),
         };
         draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
         draw_rectangle_lines(
@@ -73,15 +72,19 @@ pub fn draw_nonogram(state: &AppState) {
             rect.w,
             rect.h,
             1.,
-            Color::new(0.48, 0.40, 0.60, 0.8),
+            accessibility::grid_line(state.high_contrast),
         );
         if game.marks[index] == NonogramMark::Crossed {
             text(
                 "×",
                 rect.x + rect.w * 0.28,
                 rect.y + rect.h * 0.70,
-                (rect.w * 0.7).min(20.),
-                Color::new(0.65, 0.58, 0.76, 1.),
+                accessibility::text_size((rect.w * 0.7).min(20.), state.large_text),
+                if state.high_contrast {
+                    WHITE
+                } else {
+                    Color::new(0.65, 0.58, 0.76, 1.)
+                },
             );
         }
     }
@@ -95,8 +98,12 @@ pub fn draw_nonogram(state: &AppState) {
             &label,
             7.,
             190. + index as f32 * layout.cell_height + layout.cell_height * 0.62,
-            (layout.cell_height * 0.30).min(11.),
-            Color::new(0.78, 0.73, 0.86, 1.),
+            accessibility::text_size((layout.cell_height * 0.30).min(11.), state.large_text),
+            if state.high_contrast {
+                WHITE
+            } else {
+                Color::new(0.78, 0.73, 0.86, 1.)
+            },
         );
     }
     for (index, clue) in game.column_clues.iter().enumerate() {
@@ -109,8 +116,12 @@ pub fn draw_nonogram(state: &AppState) {
             &label,
             46. + index as f32 * layout.cell_width,
             178.,
-            (layout.cell_width * 0.28).min(10.),
-            Color::new(0.78, 0.73, 0.86, 1.),
+            accessibility::text_size((layout.cell_width * 0.28).min(10.), state.large_text),
+            if state.high_contrast {
+                WHITE
+            } else {
+                Color::new(0.78, 0.73, 0.86, 1.)
+            },
         );
     }
     text(
@@ -232,7 +243,7 @@ pub fn draw_minesweeper(state: &AppState) {
         );
         text(preset.label(), rect.x + 7., rect.y + 19., 9., WHITE);
     }
-    panel(MINE_BOARD, Color::new(0.10, 0.07, 0.16, 1.));
+    panel(MINE_BOARD, accessibility::board_fill(state.high_contrast));
     let layout = mine_grid(state);
     for index in 0..game.cells.len() {
         let cell_rect = layout.cell_rect(index).unwrap();
@@ -251,11 +262,7 @@ pub fn draw_minesweeper(state: &AppState) {
             rect.y,
             rect.w,
             rect.h,
-            if revealed {
-                Color::new(0.24, 0.19, 0.30, 1.)
-            } else {
-                Color::new(0.15, 0.11, 0.23, 1.)
-            },
+            accessibility::mine_cell(revealed, state.high_contrast),
         );
         draw_rectangle_lines(
             rect.x,
@@ -263,14 +270,14 @@ pub fn draw_minesweeper(state: &AppState) {
             rect.w,
             rect.h,
             1.,
-            Color::new(0.48, 0.40, 0.60, 0.7),
+            accessibility::grid_line(state.high_contrast),
         );
         match cell {
             crate::minesweeper::Cell::Flagged | crate::minesweeper::Cell::FlaggedMine => text(
                 "⚑",
                 rect.x + rect.w * 0.20,
                 rect.y + rect.h * 0.72,
-                (rect.w * 0.7).min(20.),
+                accessibility::text_size((rect.w * 0.7).min(20.), state.large_text),
                 Color::new(0.98, 0.46, 0.38, 1.),
             ),
             crate::minesweeper::Cell::Mine
@@ -280,7 +287,7 @@ pub fn draw_minesweeper(state: &AppState) {
                     "✹",
                     rect.x + rect.w * 0.20,
                     rect.y + rect.h * 0.72,
-                    (rect.w * 0.7).min(20.),
+                    accessibility::text_size((rect.w * 0.7).min(20.), state.large_text),
                     Color::new(0.98, 0.45, 0.32, 1.),
                 )
             }
@@ -288,8 +295,12 @@ pub fn draw_minesweeper(state: &AppState) {
                 &value.to_string(),
                 rect.x + rect.w * 0.35,
                 rect.y + rect.h * 0.72,
-                (rect.w * 0.6).min(19.),
-                Color::new(0.76, 0.90, 1.0, 1.),
+                accessibility::text_size((rect.w * 0.6).min(19.), state.large_text),
+                if state.high_contrast {
+                    BLACK
+                } else {
+                    Color::new(0.76, 0.90, 1.0, 1.)
+                },
             ),
             _ => {}
         }

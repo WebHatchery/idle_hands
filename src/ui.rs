@@ -53,6 +53,8 @@ pub enum UiAction {
     Cancel,
     ToggleSound,
     ToggleMotion,
+    ToggleHighContrast,
+    ToggleLargeText,
     CycleCardBack,
     CycleBoardTheme,
     CycleSoundSet,
