@@ -108,10 +108,15 @@ pub fn mouse() -> Vec2 {
 pub fn clicks(state: &AppState) -> Vec<UiAction> {
     let p = mouse();
     if state.tutorial.is_some() {
+        if is_portrait() {
+            return responsive_ui::tutorial_clicks(p);
+        }
         return tutorial_ui::clicks(p);
     }
     if matches!(state.screen, Screen::Game(_)) {
-        if tutorial_ui::REPLAY_RECT.contains(p) {
+        if (is_portrait() && responsive_ui::replay_clicks(p))
+            || (!is_portrait() && tutorial_ui::REPLAY_RECT.contains(p))
+        {
             return vec![UiAction::ReplayTutorial];
         }
     }
@@ -138,6 +143,7 @@ pub fn clicks(state: &AppState) -> Vec<UiAction> {
         Screen::Game(GameId::Game2048) if is_portrait() => responsive_ui::game2048_clicks(state, p),
         Screen::Game(GameId::Game2048) => game_clicks(state, p),
         Screen::Game(GameId::Minesweeper) => mine_clicks(state, p),
+        Screen::Game(GameId::Sudoku) if is_portrait() => responsive_ui::sudoku_clicks(state, p),
         Screen::Game(GameId::Sudoku) => sudoku_ui::sudoku_clicks(state, p),
         Screen::Game(GameId::Nonogram) => nonogram_ui::nonogram_clicks(state, p),
         Screen::Game(GameId::Solitaire) => solitaire_ui::solitaire_clicks(state, p),
@@ -169,6 +175,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::Game2048) if is_portrait() => responsive_ui::draw_2048(state),
         Screen::Game(GameId::Game2048) => draw_2048(state),
         Screen::Game(GameId::Minesweeper) => draw_minesweeper(state),
+        Screen::Game(GameId::Sudoku) if is_portrait() => responsive_ui::draw_sudoku(state),
         Screen::Game(GameId::Sudoku) => sudoku_ui::draw_sudoku(state),
         Screen::Game(GameId::Nonogram) => nonogram_ui::draw_nonogram(state),
         Screen::Game(GameId::Solitaire) => solitaire_ui::draw_solitaire(state),
@@ -183,9 +190,17 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Settings => settings_ui::draw_settings(state),
     }
     if let Some(game) = state.tutorial {
-        tutorial_ui::draw_overlay(game);
+        if is_portrait() {
+            responsive_ui::draw_tutorial(game);
+        } else {
+            tutorial_ui::draw_overlay(game);
+        }
     } else if matches!(state.screen, Screen::Game(_)) {
-        tutorial_ui::draw_replay_button();
+        if is_portrait() {
+            responsive_ui::draw_replay_button();
+        } else {
+            tutorial_ui::draw_replay_button();
+        }
     }
 }
 fn text(s: &str, x: f32, y: f32, size: f32, color: Color) {
