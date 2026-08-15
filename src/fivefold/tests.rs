@@ -37,3 +37,31 @@ fn choosing_each_category_advances_until_the_scorecard_is_complete() {
     assert_eq!(game.status, FivefoldStatus::Complete);
     assert!(game.total() > 0);
 }
+
+#[test]
+fn every_score_category_uses_the_expected_preview_value() {
+    let mut game = Fivefold::new(8);
+    game.dice = [1, 1, 1, 4, 6];
+    assert_eq!(game.score_for(Category::Ones), 3);
+    assert_eq!(game.score_for(Category::Twos), 0);
+    assert_eq!(game.score_for(Category::Threes), 0);
+    assert_eq!(game.score_for(Category::Fours), 4);
+    assert_eq!(game.score_for(Category::Fives), 0);
+    assert_eq!(game.score_for(Category::Sixes), 6);
+    assert_eq!(game.score_for(Category::Chance), 13);
+    assert_eq!(game.score_for(Category::ThreeKind), 13);
+    assert_eq!(game.score_for(Category::FourKind), 0);
+    game.dice = [1, 2, 3, 4, 5];
+    assert_eq!(game.score_for(Category::LargeStraight), 40);
+    game.dice = [2, 2, 2, 2, 5];
+    assert_eq!(game.score_for(Category::FourKind), 13);
+}
+
+#[test]
+fn a_turn_stops_after_three_rolls() {
+    let mut game = Fivefold::new(3);
+    assert!(game.roll());
+    assert!(game.roll());
+    assert!(game.roll());
+    assert!(!game.roll());
+}

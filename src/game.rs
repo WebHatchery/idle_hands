@@ -283,12 +283,16 @@ impl Game {
                     crate::fivefold::Fivefold::new(self.state.fivefold.seed.wrapping_add(1));
             }
             ui::UiAction::ReversiPlace(index) => {
-                if self.state.reversi.place(index) {
+                if self.state.reversi.ai_level == crate::reversi::AiLevel::TwoPlayer {
+                    self.state.reversi.place_current(index);
+                } else if self.state.reversi.place(index) {
                     self.state.reversi.ai_move();
                 }
             }
             ui::UiAction::ReversiPass => {
-                if self.state.reversi.pass() {
+                if self.state.reversi.pass()
+                    && self.state.reversi.ai_level != crate::reversi::AiLevel::TwoPlayer
+                {
                     self.state.reversi.ai_move();
                 }
             }

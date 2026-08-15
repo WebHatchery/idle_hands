@@ -59,7 +59,10 @@ pub fn draw_reversi(state: &AppState) {
             1.,
             Color::new(0.48, 0.75, 0.55, 0.7),
         );
-        if game.board[index] == 0 && game.turn == 1 && game.legal_moves(1).contains(&index) {
+        if game.board[index] == 0
+            && game.status == ReversiStatus::Playing
+            && game.legal_moves(game.turn).contains(&index)
+        {
             draw_circle(
                 rect.center().x,
                 rect.center().y,
@@ -103,6 +106,12 @@ pub fn draw_reversi(state: &AppState) {
     );
     draw_text(
         match game.status {
+            ReversiStatus::Playing if game.ai_level == AiLevel::TwoPlayer && game.turn == 1 => {
+                "Player 1 — tap a glowing square"
+            }
+            ReversiStatus::Playing if game.ai_level == AiLevel::TwoPlayer => {
+                "Player 2 — tap a glowing square"
+            }
             ReversiStatus::Playing if game.turn == 1 => "Your turn — tap a glowing square",
             ReversiStatus::Playing => "Opponent is thinking",
             ReversiStatus::Won => match game.winner {
@@ -120,6 +129,7 @@ pub fn draw_reversi(state: &AppState) {
         match game.ai_level {
             AiLevel::Gentle => "Opponent: Gentle",
             AiLevel::Sharp => "Opponent: Sharp",
+            AiLevel::TwoPlayer => "Same-device two player",
         },
         650.,
         325.,
@@ -130,17 +140,18 @@ pub fn draw_reversi(state: &AppState) {
     button(Rect::new(650., 455., 180., 48.), "NEW BOARD");
     button(Rect::new(850., 390., 180., 48.), "GENTLE AI");
     button(Rect::new(850., 455., 180., 48.), "SHARP AI");
+    button(Rect::new(850., 520., 180., 48.), "TWO PLAYER");
     draw_text(
         "A pass is available when no legal move remains.",
         650.,
-        560.,
+        600.,
         15.,
         Color::new(0.63, 0.58, 0.72, 1.),
     );
     draw_text(
         "Your dark discs face the light opponent discs.",
         650.,
-        585.,
+        625.,
         15.,
         Color::new(0.63, 0.58, 0.72, 1.),
     );
@@ -161,6 +172,9 @@ pub fn reversi_clicks(_state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     if Rect::new(850., 455., 180., 48.).contains(p) {
         return vec![UiAction::ReversiLevel(AiLevel::Sharp)];
+    }
+    if Rect::new(850., 520., 180., 48.).contains(p) {
+        return vec![UiAction::ReversiLevel(AiLevel::TwoPlayer)];
     }
     if !BOARD.contains(p) {
         return vec![];

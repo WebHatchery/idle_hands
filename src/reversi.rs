@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 pub enum AiLevel {
     Gentle,
     Sharp,
+    TwoPlayer,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -56,10 +57,16 @@ impl Reversi {
             .collect()
     }
     pub fn place(&mut self, index: usize) -> bool {
-        if self.status != ReversiStatus::Playing || self.turn != 1 || !self.apply_move(index, 1) {
+        self.turn == 1 && self.place_current(index)
+    }
+    pub fn place_current(&mut self, index: usize) -> bool {
+        if self.status != ReversiStatus::Playing
+            || !matches!(self.turn, 1 | 2)
+            || !self.apply_move(index, self.turn)
+        {
             return false;
         }
-        self.turn = 2;
+        self.turn = 3 - self.turn;
         self.passes = 0;
         self.moves += 1;
         self.finish_or_continue();
@@ -75,7 +82,10 @@ impl Reversi {
         true
     }
     pub fn ai_move(&mut self) -> bool {
-        if self.status != ReversiStatus::Playing || self.turn != 2 {
+        if self.status != ReversiStatus::Playing
+            || self.turn != 2
+            || self.ai_level == AiLevel::TwoPlayer
+        {
             return false;
         }
         let moves = self.legal_moves(2);
@@ -88,6 +98,7 @@ impl Reversi {
                 .into_iter()
                 .max_by_key(|index| self.move_value(*index))
                 .unwrap(),
+            AiLevel::TwoPlayer => return false,
         };
         self.apply_move(chosen, 2);
         self.turn = 1;

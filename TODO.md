@@ -80,12 +80,12 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 
 - [x] Resolve the public/storefront name for the five-dice scorecard game as
   Fivefold.
-- [ ] Implement seeded dice, holds, three-roll turn flow, thirteen categories,
+- [x] Implement seeded dice, holds, three-roll turn flow, thirteen categories,
   score previews, bonus/total calculation, tutorial, and records.
-- [ ] Implement Reversi legal moves, flips, pass/end rules, score, same-device
+- [x] Implement Reversi legal moves, flips, pass/end rules, score, same-device
   play, tutorial, and records.
 - [x] Add at least two deterministic local-AI levels with bounded frame work.
-- [ ] Test every score category and Reversi direction/pass/end edge case.
+- [x] Test every score category and Reversi direction/pass/end edge case.
 
 ## Phase 7 — Progression and collection polish
 
