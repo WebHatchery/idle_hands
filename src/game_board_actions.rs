@@ -257,6 +257,22 @@ impl Game {
                 let seed = self.state.battleship.seed.wrapping_add(1);
                 self.state.battleship.reset(seed);
             }
+            UiAction::WordGridLetter(letter) => {
+                self.state.word_grid.tap_letter(*letter);
+            }
+            UiAction::WordGridBackspace => {
+                self.state.word_grid.backspace();
+            }
+            UiAction::WordGridSubmit => {
+                self.state.word_grid.submit();
+            }
+            UiAction::WordGridUndo => {
+                self.state.word_grid.undo();
+            }
+            UiAction::WordGridNew => {
+                let seed = self.state.word_grid.seed.wrapping_add(1);
+                self.state.word_grid.reset(seed);
+            }
             _ => return false,
         }
         true

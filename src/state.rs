@@ -37,8 +37,11 @@ use crate::spider_solitaire::SpiderSolitaire;
 use crate::sudoku::Sudoku;
 use crate::tic_tac_toe::TicTacToe;
 use crate::tiny_tower_defence::TinyTowerDefence;
+use crate::word_grid::WordGrid;
 use crate::word_search::WordSearch;
 use serde::{Deserialize, Serialize};
+
+pub use crate::state_records::CollectionRecords;
 
 pub use crate::game_2048::Game2048;
 
@@ -85,9 +88,10 @@ pub enum GameId {
     FloodIt,
     ColorSort,
     Battleship,
+    WordGrid,
 }
 impl GameId {
-    pub const ALL: [Self; 39] = [
+    pub const ALL: [Self; 40] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -127,6 +131,7 @@ impl GameId {
         Self::FloodIt,
         Self::ColorSort,
         Self::Battleship,
+        Self::WordGrid,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -169,6 +174,7 @@ impl GameId {
             Self::FloodIt => "Flood It",
             Self::ColorSort => "Color Sort",
             Self::Battleship => "Battleship",
+            Self::WordGrid => "Word Grid",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -212,6 +218,7 @@ impl GameId {
             Self::FloodIt => "Fill the quiet field",
             Self::ColorSort => "Sort the quiet colors",
             Self::Battleship => "Find the quiet fleet",
+            Self::WordGrid => "Solve the quiet word",
         }
     }
     pub fn index(self) -> usize {
@@ -258,6 +265,7 @@ impl GameId {
             Self::FloodIt => "flood_it",
             Self::ColorSort => "color_sort",
             Self::Battleship => "battleship",
+            Self::WordGrid => "word_grid",
         }
     }
 }
@@ -325,6 +333,7 @@ pub struct AppState {
     pub flood_it: FloodIt,
     pub color_sort: ColorSort,
     pub battleship: Battleship,
+    pub word_grid: WordGrid,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -345,80 +354,6 @@ pub struct AppState {
     pub tutorial: Option<GameId>,
     pub tutorial_seen: [bool; 8],
     pub card_hint: Option<String>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct CollectionRecords {
-    pub best_2048: u32,
-    pub minesweeper: [Option<u32>; 4],
-    pub sudoku: [Option<u32>; 3],
-    pub nonogram: [Option<u32>; 3],
-    pub solitaire_best_moves: Option<u32>,
-    pub freecell_best_moves: Option<u32>,
-    pub fivefold_best_total: u16,
-    pub reversi_best_score: u8,
-    #[serde(default)]
-    pub lights_out_best_moves: Option<u16>,
-    #[serde(default)]
-    pub tic_tac_toe_best_moves: Option<u8>,
-    #[serde(default)]
-    pub memory_pairs_best_moves: Option<u16>,
-    #[serde(default)]
-    pub sliding_puzzle_best_moves: Option<u16>,
-    #[serde(default)]
-    pub mastermind_best_rows: Option<u8>,
-    #[serde(default)]
-    pub spider_best_moves: Option<u32>,
-    #[serde(default)]
-    pub word_search_best_moves: Option<u16>,
-    #[serde(default)]
-    pub hangman_best_moves: Option<u16>,
-    #[serde(default)]
-    pub connect_four_best_moves: Option<u8>,
-    #[serde(default)]
-    pub checkers_best_moves: Option<u16>,
-    #[serde(default)]
-    pub peg_solitaire_best_moves: Option<u16>,
-    #[serde(default)]
-    pub mahjong_solitaire_best_moves: Option<u16>,
-    #[serde(default)]
-    pub snake_best_score: Option<u16>,
-    #[serde(default)]
-    pub breakout_best_score: Option<u16>,
-    #[serde(default)]
-    pub higher_lower_best_score: Option<u16>,
-    #[serde(default)]
-    pub klondike_golf_best_moves: Option<u16>,
-    #[serde(default)]
-    pub blackjack_best_wins: Option<u16>,
-    #[serde(default)]
-    pub spider_solitaire_best_moves: Option<u32>,
-    #[serde(default)]
-    pub dungeon_sweeper_best_moves: Option<u16>,
-    #[serde(default)]
-    pub potion_2048_best_score: Option<u32>,
-    #[serde(default)]
-    pub tiny_tower_defence_best_wave: Option<u8>,
-    #[serde(default)]
-    pub one_room_roguelike_best_score: Option<u32>,
-    #[serde(default)]
-    pub daily_dungeon_best_score: Option<u32>,
-    #[serde(default)]
-    pub dots_boxes_best_score: Option<u8>,
-    #[serde(default)]
-    pub sokoban_best_moves: Option<u16>,
-    #[serde(default)]
-    pub mancala_best_score: Option<u8>,
-    #[serde(default)]
-    pub hanoi_best_moves: Option<u16>,
-    #[serde(default)]
-    pub number_match_best_moves: Option<u16>,
-    #[serde(default)]
-    pub flood_it_best_moves: Option<u16>,
-    #[serde(default)]
-    pub color_sort_best_moves: Option<u16>,
-    #[serde(default)]
-    pub battleship_best_moves: Option<u16>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -500,6 +435,8 @@ pub struct CollectionSave {
     pub color_sort: ColorSort,
     #[serde(default)]
     pub battleship: Battleship,
+    #[serde(default)]
+    pub word_grid: WordGrid,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -642,6 +579,7 @@ impl CollectionSave {
             flood_it: state.flood_it.clone(),
             color_sort: state.color_sort.clone(),
             battleship: state.battleship.clone(),
+            word_grid: state.word_grid.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -700,6 +638,7 @@ impl CollectionSave {
         state.flood_it = self.flood_it;
         state.color_sort = self.color_sort;
         state.battleship = self.battleship;
+        state.word_grid = self.word_grid;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -764,6 +703,7 @@ impl Default for AppState {
             flood_it: FloodIt::default(),
             color_sort: ColorSort::default(),
             battleship: Battleship::default(),
+            word_grid: WordGrid::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

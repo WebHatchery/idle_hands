@@ -53,6 +53,7 @@ use crate::tic_tac_toe_ui;
 use crate::tiny_tower_defence_ui;
 use crate::tutorial_ui;
 pub use crate::ui_action::UiAction;
+use crate::word_grid_ui;
 use crate::word_search_ui;
 use crate::{
     data::GameData,
@@ -209,6 +210,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Game(GameId::FloodIt) => flood_it_ui::clicks(state, p),
         Screen::Game(GameId::ColorSort) => color_sort_ui::clicks(state, p),
         Screen::Game(GameId::Battleship) => battleship_ui::clicks(state, p),
+        Screen::Game(GameId::WordGrid) => word_grid_ui::clicks(state, p),
         Screen::Game(GameId::Mastermind) => mastermind_ui::clicks(state, p),
         Screen::Help => {
             if is_compact_landscape() {
@@ -324,6 +326,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::FloodIt) => flood_it_ui::draw(state),
         Screen::Game(GameId::ColorSort) => color_sort_ui::draw(state),
         Screen::Game(GameId::Battleship) => battleship_ui::draw(state),
+        Screen::Game(GameId::WordGrid) => word_grid_ui::draw(state),
         Screen::Game(GameId::Mastermind) => mastermind_ui::draw(state),
         Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(),
         Screen::Help if is_portrait() => responsive_library::draw_help(),
@@ -434,6 +437,7 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
                     | GameId::FloodIt
                     | GameId::ColorSort
                     | GameId::Battleship
+                    | GameId::WordGrid
             ) {
                 10.
             } else {

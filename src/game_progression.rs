@@ -348,6 +348,12 @@ impl Game {
                     }),
             );
         }
+        if self.state.word_grid.won() {
+            records.word_grid_best_moves = Some(records.word_grid_best_moves.map_or(
+                self.state.word_grid.moves.min(u8::MAX as u16) as u8,
+                |best| best.min(self.state.word_grid.moves.min(u8::MAX as u16) as u8),
+            ));
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

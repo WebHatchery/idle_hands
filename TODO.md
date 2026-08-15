@@ -544,6 +544,18 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Add responsive desktop, portrait, and medium-landscape presentation,
     visible controls, records, and verification captures.
 
+## Phase 39 — Thirty-second post-launch cabinet game
+
+- [x] Add Word Grid as a fortieth deterministic, touch-complete cabinet game
+  with five-letter guesses, duplicate-aware feedback, six rows, on-screen
+  keyboard controls, undo, reset, and a word-solving victory.
+  - [x] Cover input bounds, duplicate scoring, win/loss boundaries, undo, and
+    reset behavior with focused rule tests.
+  - [x] Add persisted active state and best-move records with snapshot,
+    migration, progression, and tutorial coverage.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, records, and verification captures.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

@@ -277,5 +277,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "Find all five ship squares; hits show as crosses and misses as dots.",
             "Use UNDO or NEW FLEET with the visible controls.",
         ],
+        GameId::WordGrid => [
+            "Tap letters to build a five-letter guess, then tap SUBMIT.",
+            "Green letters are exact; gold letters belong elsewhere in the word.",
+            "Use BACKSPACE, UNDO, or NEW WORD with the visible controls.",
+        ],
     }
 }

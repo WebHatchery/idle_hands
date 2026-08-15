@@ -180,6 +180,10 @@ pub fn draw_records(state: &AppState) {
             "Battleship best",
             value(state.records.battleship_best_moves.map(u32::from)),
         ),
+        (
+            "Word Grid best",
+            value(state.records.word_grid_best_moves.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
         let col = index / 13;

@@ -174,4 +174,9 @@ pub enum UiAction {
     BattleshipFire(usize),
     BattleshipUndo,
     BattleshipNew,
+    WordGridLetter(u8),
+    WordGridBackspace,
+    WordGridSubmit,
+    WordGridUndo,
+    WordGridNew,
 }

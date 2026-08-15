@@ -204,6 +204,10 @@ pub fn draw_records(state: &AppState) {
             "Battleship best",
             value(state.records.battleship_best_moves.map(u32::from)),
         ),
+        (
+            "Word Grid best",
+            value(state.records.word_grid_best_moves.map(u32::from)),
+        ),
     ];
     draw_column(&left, 175., 240.);
     draw_column(&middle, 490., 240.);

@@ -512,6 +512,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "Find all five ship squares; hits show as crosses and misses as dots.",
             "Use UNDO or NEW FLEET with visible controls.",
         ],
+        GameId::WordGrid => [
+            "Tap letters to build a five-letter guess, then tap SUBMIT.",
+            "Green letters are exact; gold letters belong elsewhere in the word.",
+            "Use BACKSPACE, UNDO, or NEW WORD with visible controls.",
+        ],
     }
 }
 
@@ -564,6 +569,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::FloodIt if state.records.flood_it_best_moves.is_some() => "COMPLETE",
         GameId::ColorSort if state.records.color_sort_best_moves.is_some() => "COMPLETE",
         GameId::Battleship if state.records.battleship_best_moves.is_some() => "COMPLETE",
+        GameId::WordGrid if state.records.word_grid_best_moves.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

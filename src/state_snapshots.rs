@@ -22,7 +22,7 @@ use crate::{
     nonogram::Nonogram, peg_solitaire::PegSolitaire, reversi::Reversi,
     sliding_puzzle::SlidingPuzzle, snake::Snake, sokoban::Sokoban, solitaire::Solitaire,
     spider::Spider, spider_solitaire::SpiderSolitaire, sudoku::Sudoku, tic_tac_toe::TicTacToe,
-    word_search::WordSearch,
+    word_grid::WordGrid, word_search::WordSearch,
 };
 use serde::{Deserialize, Serialize};
 
@@ -67,6 +67,7 @@ pub enum GameSnapshot {
     FloodIt(FloodIt),
     ColorSort(ColorSort),
     Battleship(Battleship),
+    WordGrid(WordGrid),
 }
 
 impl GameSnapshot {
@@ -111,6 +112,7 @@ impl GameSnapshot {
             GameId::FloodIt => Self::FloodIt(state.flood_it.clone()),
             GameId::ColorSort => Self::ColorSort(state.color_sort.clone()),
             GameId::Battleship => Self::Battleship(state.battleship.clone()),
+            GameId::WordGrid => Self::WordGrid(state.word_grid.clone()),
         }
     }
 
@@ -155,6 +157,7 @@ impl GameSnapshot {
             Self::FloodIt(game) => state.flood_it = game,
             Self::ColorSort(game) => state.color_sort = game,
             Self::Battleship(game) => state.battleship = game,
+            Self::WordGrid(game) => state.word_grid = game,
         }
     }
 }

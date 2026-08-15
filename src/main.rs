@@ -99,6 +99,7 @@ mod spider_solitaire;
 mod spider_solitaire_ui;
 mod spider_ui;
 mod state;
+mod state_records;
 mod state_snapshots;
 mod sudoku;
 mod sudoku_ui;
@@ -109,6 +110,8 @@ mod tiny_tower_defence_ui;
 mod tutorial_ui;
 mod ui;
 mod ui_action;
+mod word_grid;
+mod word_grid_ui;
 mod word_search;
 mod word_search_ui;
 
