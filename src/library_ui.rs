@@ -1,6 +1,6 @@
 //! Static collection Rules and Credits screens.
 
-use crate::ui::UiAction;
+use crate::{state::GameId, ui::UiAction};
 use macroquad::prelude::*;
 
 fn panel(rect: Rect) {
@@ -48,13 +48,17 @@ pub fn draw_rules() {
         19.,
         Color::new(0.72, 0.68, 0.82, 1.),
     );
-    let lines = ["2048 — swipe or tap an arrow to merge matching tiles.", "Minesweeper — reveal safely, flag with FLAG MODE or a long press, and chord marked numbers.", "Sudoku — select a cell, then use the number pad; pencil marks and erase are optional.", "Nonogram — fill or cross cells from the clues; drag in a straight row or column.", "Solitaire / FreeCell — tap a card, then tap a legal destination.", "Fivefold — roll up to three times, hold dice, then choose one score row.", "Reversi — place on a glowing legal square; pass only when no move exists."];
-    for (index, line) in lines.iter().enumerate() {
+    for (index, game) in GameId::ALL.iter().enumerate() {
+        let column = index / 11;
+        let row = index % 11;
+        let x = 160. + column as f32 * 245.;
+        let y = 215. + row as f32 * 38.;
+        draw_text(game.title(), x, y, 12., Color::new(0.98, 0.83, 0.45, 1.));
         draw_text(
-            line,
-            174.,
-            215. + index as f32 * 42.,
-            17.,
+            game.subtitle(),
+            x,
+            y + 15.,
+            9.,
             Color::new(0.78, 0.73, 0.86, 1.),
         );
     }

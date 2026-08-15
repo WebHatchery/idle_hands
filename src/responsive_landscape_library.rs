@@ -1,6 +1,11 @@
 //! Medium landscape layouts for library and settings screens.
 
-use crate::{cosmetics, progression::AchievementId, state::AppState, ui::UiAction};
+use crate::{
+    cosmetics,
+    progression::AchievementId,
+    state::{AppState, GameId},
+    ui::UiAction,
+};
 use macroquad::prelude::*;
 
 fn panel(rect: Rect, fill: Color) {
@@ -224,21 +229,17 @@ pub fn draw_rules() {
         Color::new(0.08, 0.06, 0.14, 1.),
     );
     text("RULES", 40., 48., 25., Color::new(0.98, 0.83, 0.45, 1.));
-    let lines = [
-        "2048  Swipe or tap a direction to merge matching tiles.",
-        "Minesweeper  Reveal safely, flag mines, then chord marked numbers.",
-        "Sudoku  Select a cell, then use the number pad; notes are optional.",
-        "Nonogram  Fill or cross cells from the clues.",
-        "Solitaire / FreeCell  Tap a card, then tap a legal destination.",
-        "Fivefold  Roll up to three times, hold dice, then choose a score.",
-        "Reversi  Place on a glowing legal square; pass only when blocked.",
-    ];
-    for (index, line) in lines.iter().enumerate() {
+    for (index, game) in GameId::ALL.iter().enumerate() {
+        let column = index / 9;
+        let row = index % 9;
+        let x = 35. + column as f32 * 155.;
+        let y = 88. + row as f32 * 27.;
+        text(game.title(), x, y, 8., Color::new(0.98, 0.83, 0.45, 1.));
         text(
-            line,
-            40.,
-            88. + index as f32 * 35.,
-            12.,
+            game.subtitle(),
+            x,
+            y + 10.,
+            6.,
             Color::new(0.78, 0.73, 0.86, 1.),
         );
     }

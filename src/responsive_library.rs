@@ -1,6 +1,10 @@
 //! Compact portrait layouts for collection-wide library screens.
 
-use crate::{progression::AchievementId, state::AppState, ui::UiAction};
+use crate::{
+    progression::AchievementId,
+    state::{AppState, GameId},
+    ui::UiAction,
+};
 use macroquad::prelude::*;
 
 fn panel(rect: Rect, fill: Color) {
@@ -242,24 +246,17 @@ pub fn draw_rules() {
         12.,
         Color::new(0.72, 0.68, 0.82, 1.),
     );
-    let lines = [
-        "2048  Swipe or tap arrows.",
-        "Mines  Reveal, flag, then chord.",
-        "Sudoku  Select a cell and number.",
-        "Nonogram  Fill or cross from clues.",
-        "Solitaire  Tap card, then target.",
-        "FreeCell  Move cards to cascades.",
-        "Fivefold  Roll, hold, choose a call.",
-        "Reversi  Place on glowing squares.",
-        "",
-        "All games support visible touch controls.",
-    ];
-    for (index, line) in lines.iter().enumerate() {
+    for (index, game) in GameId::ALL.iter().enumerate() {
+        let column = index / 15;
+        let row = index % 15;
+        let x = 20. + column as f32 * 110.;
+        let y = 145. + row as f32 * 31.;
+        text(game.title(), x, y, 8., Color::new(0.98, 0.83, 0.45, 1.));
         text(
-            line,
-            20.,
-            145. + index as f32 * 36.,
-            12.,
+            game.subtitle(),
+            x,
+            y + 11.,
+            6.,
             Color::new(0.78, 0.73, 0.86, 1.),
         );
     }

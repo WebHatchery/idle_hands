@@ -632,6 +632,16 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Preserve the portrait two-column layout and clear BACK targets.
   - [x] Recapture records at desktop, portrait, and landscape sizes.
 
+## Phase 47 — Full-cabinet rules guide
+
+- [x] Replace the launch-only Rules copy with a responsive, data-driven guide
+  that lists every game in the forty-three-game cabinet.
+  - [x] Keep desktop, portrait, and medium-landscape entries inside their
+    panels with readable objectives and clear BACK controls.
+  - [x] Derive titles and objectives from GameId::ALL so future cabinet games
+    cannot be omitted from the guide.
+  - [x] Capture the Rules screen at all documented viewport sizes.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.
