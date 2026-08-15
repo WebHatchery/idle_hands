@@ -26,6 +26,27 @@ impl NonogramPreset {
     }
 }
 
+pub const FOCUS_WINDOW: usize = 9;
+
+pub fn visible_size(size: usize, zoomed: bool) -> usize {
+    if zoomed {
+        size.min(FOCUS_WINDOW)
+    } else {
+        size
+    }
+}
+
+pub fn focus_origin(size: usize, zoomed: bool, focus: (usize, usize)) -> (usize, usize) {
+    if !zoomed {
+        return (0, 0);
+    }
+    let window = visible_size(size, true);
+    (
+        focus.0.min(size.saturating_sub(window)),
+        focus.1.min(size.saturating_sub(window)),
+    )
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum NonogramMark {
     Empty,

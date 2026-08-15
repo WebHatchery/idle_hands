@@ -65,8 +65,10 @@ sizes, covered by rule tests, and passes `publish.ps1`.
     validated boards.
 - [x] Choose Sudoku generation or validated puzzle data; guarantee one solution.
   - [x] Validate every authored Sudoku difficulty with a bounded unique-solution check.
-- [ ] Implement Nonogram clues, fill/cross modes, tap and axis-locked drag strokes,
-  undo, board focus/zoom for small phones, tutorial, and records.
+- [x] Implement Nonogram clues, fill/cross modes, tap and axis-locked drag
+  strokes, undo, board focus/zoom for small phones, tutorial, and records.
+  - [x] Add a touch-sized 9 × 9 focus window with explicit portrait pan controls
+    for the 15 × 15 catalog board.
 - [x] Choose Nonogram generation or a validated catalog for 5×5, 10×10, and
   15×15 puzzles.
 - [x] Add high-contrast and large-text verification for dense grid screens.
@@ -155,6 +157,8 @@ sizes, covered by rule tests, and passes `publish.ps1`.
     Fivefold controls at 390×844.
   - [x] Verify touch-sized portrait Reversi board, legal-move markers, pass,
     new-board, and AI mode controls at 390×844.
+  - [x] Verify the touch-sized portrait 15 × 15 Nonogram focus window and pan
+    controls at 390×844.
   - [x] Verify compact portrait Help, Records, Rules, and Credits screens at
     390×844.
   - [x] Capture the complete landscape baseline at 844×390 for all named

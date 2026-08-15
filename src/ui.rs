@@ -75,6 +75,8 @@ pub enum UiAction {
     NonogramMode,
     NonogramUndo,
     NonogramPreset(crate::nonogram::NonogramPreset),
+    NonogramZoom,
+    NonogramPan(i8, i8),
     SolitaireStock,
     SolitaireTableau(usize, usize),
     SolitaireWaste,

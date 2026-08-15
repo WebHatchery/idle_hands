@@ -13,6 +13,15 @@ fn catalog_presets_have_expected_sizes_and_clues() {
 }
 
 #[test]
+fn nonogram_focus_window_keeps_large_boards_touchable() {
+    assert_eq!(visible_size(15, false), 15);
+    assert_eq!(visible_size(15, true), 9);
+    assert_eq!(focus_origin(15, true, (99, 99)), (6, 6));
+    assert_eq!(focus_origin(10, true, (99, 99)), (1, 1));
+    assert_eq!(focus_origin(5, true, (99, 99)), (0, 0));
+}
+
+#[test]
 fn fill_cross_and_undo_are_touch_safe() {
     let mut game = Nonogram::default();
     assert!(game.toggle(0));

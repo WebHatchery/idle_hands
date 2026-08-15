@@ -63,6 +63,7 @@ impl Game {
             "sudoku" => Screen::Game(GameId::Sudoku),
             "sudoku_accessible" => Screen::Game(GameId::Sudoku),
             "nonogram" => Screen::Game(GameId::Nonogram),
+            "nonogram_large" => Screen::Game(GameId::Nonogram),
             "nonogram_accessible" => Screen::Game(GameId::Nonogram),
             "minesweeper_accessible" => Screen::Game(GameId::Minesweeper),
             "solitaire" => Screen::Game(GameId::Solitaire),
@@ -81,6 +82,12 @@ impl Game {
         };
         if scene == "settings_reset" {
             self.state.confirm_reset = true;
+        }
+        if scene == "nonogram_large" {
+            self.state.nonogram =
+                crate::nonogram::Nonogram::new(crate::nonogram::NonogramPreset::Large);
+            self.state.nonogram_zoomed = true;
+            self.state.nonogram_focus = (6, 6);
         }
         if scene.ends_with("_accessible") {
             self.state.high_contrast = true;
@@ -348,6 +355,28 @@ impl Game {
             }
             ui::UiAction::NonogramPreset(preset) => {
                 self.state.nonogram = crate::nonogram::Nonogram::new(preset);
+                self.state.nonogram_zoomed = false;
+                self.state.nonogram_focus = (0, 0);
+            }
+            ui::UiAction::NonogramZoom => {
+                self.state.nonogram_zoomed = !self.state.nonogram_zoomed;
+                self.state.nonogram_focus = crate::nonogram::focus_origin(
+                    self.state.nonogram.size,
+                    self.state.nonogram_zoomed,
+                    self.state.nonogram_focus,
+                );
+            }
+            ui::UiAction::NonogramPan(dx, dy) => {
+                let (x, y) = self.state.nonogram_focus;
+                let next = (
+                    x.saturating_add_signed(dx as isize),
+                    y.saturating_add_signed(dy as isize),
+                );
+                self.state.nonogram_focus = crate::nonogram::focus_origin(
+                    self.state.nonogram.size,
+                    self.state.nonogram_zoomed,
+                    next,
+                );
             }
             ui::UiAction::SolitaireStock => {
                 self.state.solitaire.draw_stock();

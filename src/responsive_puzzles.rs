@@ -32,11 +32,25 @@ const BOARD: Rect = Rect {
 };
 
 fn grid(state: &AppState) -> GridLayout {
-    GridLayout::new(
-        Rect::new(45., 185., 300., 300.),
+    let visible = crate::nonogram::visible_size(state.nonogram.size, state.nonogram_zoomed);
+    GridLayout::new(Rect::new(45., 185., 300., 300.), visible, visible)
+}
+
+fn origin(state: &AppState) -> (usize, usize) {
+    crate::nonogram::focus_origin(
         state.nonogram.size,
-        state.nonogram.size,
+        state.nonogram_zoomed,
+        state.nonogram_focus,
     )
+}
+
+fn global_index(state: &AppState, local: usize) -> usize {
+    let visible = crate::nonogram::visible_size(state.nonogram.size, state.nonogram_zoomed);
+    let (origin_x, origin_y) = origin(state);
+    origin_y * state.nonogram.size
+        + origin_x
+        + (local / visible) * state.nonogram.size
+        + local % visible
 }
 
 pub fn draw_nonogram(state: &AppState) {
@@ -57,8 +71,10 @@ pub fn draw_nonogram(state: &AppState) {
     }
     panel(BOARD, accessibility::board_fill(state.high_contrast));
     let layout = grid(state);
-    for index in 0..game.marks.len() {
-        let cell = layout.cell_rect(index).unwrap();
+    let visible = crate::nonogram::visible_size(game.size, state.nonogram_zoomed);
+    for local in 0..visible * visible {
+        let index = global_index(state, local);
+        let cell = layout.cell_rect(local).unwrap();
         let rect = Rect::new(cell.x, cell.y, cell.w - 1., cell.h - 1.);
         let selected = game.selected == Some(index);
         let fill = match (game.marks[index], selected) {
@@ -88,7 +104,14 @@ pub fn draw_nonogram(state: &AppState) {
             );
         }
     }
-    for (index, clue) in game.row_clues.iter().enumerate() {
+    let (origin_x, origin_y) = origin(state);
+    for (local, clue) in game
+        .row_clues
+        .iter()
+        .skip(origin_y)
+        .take(visible)
+        .enumerate()
+    {
         let label = clue
             .iter()
             .map(|value| value.to_string())
@@ -97,7 +120,7 @@ pub fn draw_nonogram(state: &AppState) {
         text(
             &label,
             7.,
-            190. + index as f32 * layout.cell_height + layout.cell_height * 0.62,
+            190. + local as f32 * layout.cell_height + layout.cell_height * 0.62,
             accessibility::text_size((layout.cell_height * 0.30).min(11.), state.large_text),
             if state.high_contrast {
                 WHITE
@@ -106,7 +129,13 @@ pub fn draw_nonogram(state: &AppState) {
             },
         );
     }
-    for (index, clue) in game.column_clues.iter().enumerate() {
+    for (local, clue) in game
+        .column_clues
+        .iter()
+        .skip(origin_x)
+        .take(visible)
+        .enumerate()
+    {
         let label = clue
             .iter()
             .map(|value| value.to_string())
@@ -114,7 +143,7 @@ pub fn draw_nonogram(state: &AppState) {
             .join(" ");
         text(
             &label,
-            46. + index as f32 * layout.cell_width,
+            46. + local as f32 * layout.cell_width,
             178.,
             accessibility::text_size((layout.cell_width * 0.28).min(10.), state.large_text),
             if state.high_contrast {
@@ -127,6 +156,8 @@ pub fn draw_nonogram(state: &AppState) {
     text(
         if game.status == NonogramStatus::Won {
             "Picture complete"
+        } else if state.nonogram_zoomed && game.size > visible {
+            "Zoomed 9 × 9 focus"
         } else {
             "Tap or drag a row / column"
         },
@@ -159,6 +190,30 @@ pub fn draw_nonogram(state: &AppState) {
         Color::new(0.18, 0.26, 0.34, 1.),
     );
     text("UNDO", 247., 573., 13., WHITE);
+    panel(
+        Rect::new(12., 595., 104., 44.),
+        Color::new(0.20, 0.13, 0.30, 1.),
+    );
+    text(
+        if state.nonogram_zoomed && game.size > visible {
+            "FULL BOARD"
+        } else {
+            "ZOOM 9 × 9"
+        },
+        23.,
+        623.,
+        11.,
+        WHITE,
+    );
+    for (rect, label) in [
+        (Rect::new(128., 595., 50., 44.), "LEFT"),
+        (Rect::new(184., 595., 50., 44.), "RIGHT"),
+        (Rect::new(240., 595., 50., 44.), "UP"),
+        (Rect::new(296., 595., 50., 44.), "DOWN"),
+    ] {
+        panel(rect, Color::new(0.18, 0.26, 0.34, 1.));
+        text(label, rect.x + 5., 622., 9., WHITE);
+    }
     text(
         &format!(
             "Moves {}  •  Best {}",
@@ -167,7 +222,7 @@ pub fn draw_nonogram(state: &AppState) {
                 .map_or("—".into(), |value| value.to_string())
         ),
         12.,
-        625.,
+        670.,
         13.,
         Color::new(0.68, 0.63, 0.78, 1.),
     );
@@ -188,9 +243,22 @@ pub fn nonogram_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if Rect::new(188., 545., 160., 44.).contains(p) {
         return vec![UiAction::NonogramUndo];
     }
-    grid(state)
-        .index_at(p)
-        .map_or_else(Vec::new, |index| vec![UiAction::NonogramCell(index)])
+    if Rect::new(12., 595., 104., 44.).contains(p) {
+        return vec![UiAction::NonogramZoom];
+    }
+    for (rect, delta) in [
+        (Rect::new(128., 595., 50., 44.), (-1, 0)),
+        (Rect::new(184., 595., 50., 44.), (1, 0)),
+        (Rect::new(240., 595., 50., 44.), (0, -1)),
+        (Rect::new(296., 595., 50., 44.), (0, 1)),
+    ] {
+        if rect.contains(p) {
+            return vec![UiAction::NonogramPan(delta.0, delta.1)];
+        }
+    }
+    grid(state).index_at(p).map_or_else(Vec::new, |local| {
+        vec![UiAction::NonogramCell(global_index(state, local))]
+    })
 }
 
 pub fn nonogram_drag_actions(state: &AppState, start: Vec2, end: Vec2) -> Vec<UiAction> {
@@ -200,10 +268,15 @@ pub fn nonogram_drag_actions(state: &AppState, start: Vec2, end: Vec2) -> Vec<Ui
         (Some(start), Some(end)) => (start, end),
         _ => return Vec::new(),
     };
-    crate::nonogram::stroke_indices(state.nonogram.size, start, end)
-        .into_iter()
-        .map(UiAction::NonogramCell)
-        .collect()
+    let (origin_x, origin_y) = origin(state);
+    crate::nonogram::stroke_indices(
+        state.nonogram.size,
+        (start.0 + origin_x, start.1 + origin_y),
+        (end.0 + origin_x, end.1 + origin_y),
+    )
+    .into_iter()
+    .map(UiAction::NonogramCell)
+    .collect()
 }
 
 const MINE_BOARD: Rect = Rect {
