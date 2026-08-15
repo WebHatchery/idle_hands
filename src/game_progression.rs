@@ -267,6 +267,15 @@ impl Game {
                     }),
             );
         }
+        if self.state.daily_dungeon.won() {
+            records.daily_dungeon_best_score = Some(
+                records
+                    .daily_dungeon_best_score
+                    .map_or(self.state.daily_dungeon.score, |best| {
+                        best.max(self.state.daily_dungeon.score)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

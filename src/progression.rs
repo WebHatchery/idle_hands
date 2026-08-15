@@ -58,6 +58,7 @@ impl AchievementId {
                 GameId::Potion2048 => "Potion keeper",
                 GameId::TinyTowerDefence => "Tower keeper",
                 GameId::OneRoomRoguelike => "Room keeper",
+                GameId::DailyDungeon => "Daily keeper",
             },
             Self::FullCabinet => "Full cabinet",
         }
@@ -99,6 +100,7 @@ pub fn completed_games(records: &CollectionRecords) -> usize {
         records.potion_2048_best_score.is_some(),
         records.tiny_tower_defence_best_wave.is_some(),
         records.one_room_roguelike_best_score.is_some(),
+        records.daily_dungeon_best_score.is_some(),
     ]
     .into_iter()
     .filter(|complete| *complete)
@@ -139,6 +141,7 @@ pub fn earned(records: &CollectionRecords, achievement: AchievementId) -> bool {
             GameId::Potion2048 => records.potion_2048_best_score.is_some(),
             GameId::TinyTowerDefence => records.tiny_tower_defence_best_wave.is_some(),
             GameId::OneRoomRoguelike => records.one_room_roguelike_best_score.is_some(),
+            GameId::DailyDungeon => records.daily_dungeon_best_score.is_some(),
         },
         AchievementId::FullCabinet => completed_games(records) == GameId::ALL.len(),
     }

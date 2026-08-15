@@ -167,6 +167,16 @@ impl Game {
                 let seed = self.state.one_room_roguelike.seed.wrapping_add(1);
                 self.state.one_room_roguelike.reset(seed);
             }
+            UiAction::DailyMove(direction) => {
+                self.state.daily_dungeon.move_in(*direction);
+            }
+            UiAction::DailyUndo => {
+                self.state.daily_dungeon.undo();
+            }
+            UiAction::DailyNew => {
+                let seed = self.state.daily_dungeon.seed.wrapping_add(1);
+                self.state.daily_dungeon.reset(seed);
+            }
             _ => return false,
         }
         true

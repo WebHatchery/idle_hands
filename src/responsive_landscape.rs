@@ -29,9 +29,9 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 
 fn cabinet_rect(index: usize) -> Rect {
     Rect::new(
-        8. + (index % 4) as f32 * 210.,
-        38. + (index / 4) as f32 * 40.,
-        200.,
+        8. + (index % 5) as f32 * 168.,
+        38. + (index / 5) as f32 * 40.,
+        160.,
         36.,
     )
 }
@@ -467,6 +467,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "Collect the cache, clear the room, then reach the EXIT.",
             "Use POTION, UNDO, or NEW ROOM with visible controls.",
         ],
+        GameId::DailyDungeon => [
+            "Tap directions to reveal rooms and recover the three runes.",
+            "Traps are one-use; reach EXIT after the runes are gathered.",
+            "Use UNDO or NEW DAY with visible controls.",
+        ],
     }
 }
 
@@ -510,6 +515,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::OneRoomRoguelike if state.records.one_room_roguelike_best_score.is_some() => {
             "COMPLETE"
         }
+        GameId::DailyDungeon if state.records.daily_dungeon_best_score.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

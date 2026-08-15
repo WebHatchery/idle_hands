@@ -84,6 +84,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     state.records.tiny_tower_defence_best_wave = Some(4);
     state.one_room_roguelike.score = 23;
     state.records.one_room_roguelike_best_score = Some(23);
+    state.daily_dungeon.score = 31;
+    state.records.daily_dungeon_best_score = Some(31);
     state.achievements[0] = true;
     state.stamps = 3;
     state.card_back = 1;
@@ -145,6 +147,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     assert_eq!(restored.records.tiny_tower_defence_best_wave, Some(4));
     assert_eq!(restored.one_room_roguelike.score, 23);
     assert_eq!(restored.records.one_room_roguelike_best_score, Some(23));
+    assert_eq!(restored.daily_dungeon.score, 31);
+    assert_eq!(restored.records.daily_dungeon_best_score, Some(31));
     assert!(restored.achievements[0]);
     assert_eq!(restored.stamps, 3);
     assert_eq!(restored.card_back, 1);
@@ -211,6 +215,7 @@ fn every_game_snapshot_round_trips_its_own_state() {
     source.potion_2048.score = 40;
     source.tiny_tower_defence.wave = 4;
     source.one_room_roguelike.score = 40;
+    source.daily_dungeon.score = 42;
 
     for game in GameId::ALL {
         let snapshot = GameSnapshot::from_state(&source, game);
@@ -259,6 +264,7 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
     source.potion_2048.score = 41;
     source.tiny_tower_defence.wave = 5;
     source.one_room_roguelike.score = 41;
+    source.daily_dungeon.score = 43;
 
     let snapshots = GameId::ALL
         .iter()
@@ -299,6 +305,7 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
     assert_eq!(restored.potion_2048.score, 41);
     assert_eq!(restored.tiny_tower_defence.wave, 5);
     assert_eq!(restored.one_room_roguelike.score, 41);
+    assert_eq!(restored.daily_dungeon.score, 43);
 }
 
 #[test]
@@ -337,6 +344,7 @@ fn older_saves_default_new_progression_and_cosmetic_fields() {
         "potion_2048",
         "tiny_tower_defence",
         "one_room_roguelike",
+        "daily_dungeon",
     ] {
         object.remove(field);
     }

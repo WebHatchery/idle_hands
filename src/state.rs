@@ -4,6 +4,7 @@ use crate::blackjack::Blackjack;
 use crate::breakout::Breakout;
 use crate::checkers::Checkers;
 use crate::connect_four::ConnectFour;
+use crate::daily_dungeon::DailyDungeon;
 use crate::dungeon_sweeper::DungeonSweeper;
 use crate::fivefold::Fivefold;
 use crate::freecell::FreeCell;
@@ -65,9 +66,10 @@ pub enum GameId {
     Potion2048,
     TinyTowerDefence,
     OneRoomRoguelike,
+    DailyDungeon,
 }
 impl GameId {
-    pub const ALL: [Self; 30] = [
+    pub const ALL: [Self; 31] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -98,6 +100,7 @@ impl GameId {
         Self::Potion2048,
         Self::TinyTowerDefence,
         Self::OneRoomRoguelike,
+        Self::DailyDungeon,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -131,6 +134,7 @@ impl GameId {
             Self::Potion2048 => "Potion 2048",
             Self::TinyTowerDefence => "Tiny Tower Defence",
             Self::OneRoomRoguelike => "One Room Roguelike",
+            Self::DailyDungeon => "Daily Dungeon",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -165,6 +169,7 @@ impl GameId {
             Self::Potion2048 => "Brew the next tile",
             Self::TinyTowerDefence => "Keep the quiet lanes",
             Self::OneRoomRoguelike => "Clear one quiet room",
+            Self::DailyDungeon => "Recover the daily runes",
         }
     }
     pub fn index(self) -> usize {
@@ -202,6 +207,7 @@ impl GameId {
             Self::Potion2048 => "potion_2048",
             Self::TinyTowerDefence => "tiny_tower_defence",
             Self::OneRoomRoguelike => "one_room_roguelike",
+            Self::DailyDungeon => "daily_dungeon",
         }
     }
 }
@@ -376,6 +382,7 @@ pub struct AppState {
     pub potion_2048: Potion2048,
     pub tiny_tower_defence: TinyTowerDefence,
     pub one_room_roguelike: OneRoomRoguelike,
+    pub daily_dungeon: DailyDungeon,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -452,6 +459,8 @@ pub struct CollectionRecords {
     pub tiny_tower_defence_best_wave: Option<u8>,
     #[serde(default)]
     pub one_room_roguelike_best_score: Option<u32>,
+    #[serde(default)]
+    pub daily_dungeon_best_score: Option<u32>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -515,6 +524,8 @@ pub struct CollectionSave {
     pub tiny_tower_defence: TinyTowerDefence,
     #[serde(default)]
     pub one_room_roguelike: OneRoomRoguelike,
+    #[serde(default)]
+    pub daily_dungeon: DailyDungeon,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -648,6 +659,7 @@ impl CollectionSave {
             potion_2048: state.potion_2048.clone(),
             tiny_tower_defence: state.tiny_tower_defence.clone(),
             one_room_roguelike: state.one_room_roguelike.clone(),
+            daily_dungeon: state.daily_dungeon.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -697,6 +709,7 @@ impl CollectionSave {
         state.potion_2048 = self.potion_2048;
         state.tiny_tower_defence = self.tiny_tower_defence;
         state.one_room_roguelike = self.one_room_roguelike;
+        state.daily_dungeon = self.daily_dungeon;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -752,6 +765,7 @@ impl Default for AppState {
             potion_2048: Potion2048::default(),
             tiny_tower_defence: TinyTowerDefence::default(),
             one_room_roguelike: OneRoomRoguelike::default(),
+            daily_dungeon: DailyDungeon::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

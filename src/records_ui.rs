@@ -166,6 +166,10 @@ pub fn draw_records(state: &AppState) {
             "Room Roguelike best",
             value(state.records.one_room_roguelike_best_score),
         ),
+        (
+            "Daily Dungeon best",
+            value(state.records.daily_dungeon_best_score),
+        ),
     ];
     draw_column(&left, 175., 240.);
     draw_column(&middle, 490., 240.);

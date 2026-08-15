@@ -692,6 +692,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::OneRoomRoguelike if state.records.one_room_roguelike_best_score.is_some() => {
             "COMPLETE"
         }
+        GameId::DailyDungeon if state.records.daily_dungeon_best_score.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

@@ -437,11 +437,23 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Add responsive desktop, portrait, and medium-landscape presentation,
     visible controls, records, and verification captures.
 
+## Phase 30 — Twenty-third post-launch cabinet game
+
+- [x] Add Daily Dungeon as a thirty-first deterministic, touch-complete
+  cabinet game with a seeded daily challenge, hidden six-by-six rooms, three
+  runes, one-use traps, hearts, undo, reset, and an exit-clear victory.
+  - [x] Cover seeded challenges, rune scoring, trap exhaustion, loss, victory,
+    undo, and reset behavior with focused rule tests.
+  - [x] Add persisted active state and best-score records with snapshot,
+    migration, progression, and tutorial coverage.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, records, and verification captures.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.
 - Arcade: no remaining scheduled candidates.
-- Original cabinet games: Dungeon Sweeper and Daily Dungeon.
+- Original cabinet games: Dungeon Sweeper.
 
 Do not begin a post-launch candidate until the eight-game first collection is
 touch-complete and the shared system it would reuse is stable.

@@ -144,6 +144,10 @@ pub fn draw_records(state: &AppState) {
             "Room Roguelike best",
             value(state.records.one_room_roguelike_best_score),
         ),
+        (
+            "Daily Dungeon best",
+            value(state.records.daily_dungeon_best_score),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
         let col = index / 13;

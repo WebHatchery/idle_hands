@@ -5,6 +5,7 @@ use crate::breakout_ui;
 use crate::checkers_ui;
 use crate::connect_four_ui;
 use crate::cosmetics;
+use crate::daily_dungeon_ui;
 use crate::dungeon_sweeper_ui;
 use crate::fivefold_ui;
 use crate::freecell_ui;
@@ -191,6 +192,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Game(GameId::Potion2048) => potion_2048_ui::clicks(state, p),
         Screen::Game(GameId::TinyTowerDefence) => tiny_tower_defence_ui::clicks(state, p),
         Screen::Game(GameId::OneRoomRoguelike) => one_room_roguelike_ui::clicks(state, p),
+        Screen::Game(GameId::DailyDungeon) => daily_dungeon_ui::clicks(state, p),
         Screen::Game(GameId::Mastermind) => mastermind_ui::clicks(state, p),
         Screen::Help => {
             if is_compact_landscape() {
@@ -297,6 +299,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::Potion2048) => potion_2048_ui::draw(state),
         Screen::Game(GameId::TinyTowerDefence) => tiny_tower_defence_ui::draw(state),
         Screen::Game(GameId::OneRoomRoguelike) => one_room_roguelike_ui::draw(state),
+        Screen::Game(GameId::DailyDungeon) => daily_dungeon_ui::draw(state),
         Screen::Game(GameId::Mastermind) => mastermind_ui::draw(state),
         Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(),
         Screen::Help if is_portrait() => responsive_library::draw_help(),

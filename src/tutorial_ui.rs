@@ -232,5 +232,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "Collect the cache, defeat every enemy, then reach the EXIT.",
             "Use POTION, UNDO, or NEW ROOM with the visible controls.",
         ],
+        GameId::DailyDungeon => [
+            "Tap a direction to reveal the next quiet room.",
+            "Recover three runes, avoid the one-use traps, then reach EXIT.",
+            "Use UNDO or NEW DAY with the visible controls.",
+        ],
     }
 }

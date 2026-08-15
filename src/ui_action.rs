@@ -147,4 +147,7 @@ pub enum UiAction {
     RoguePotion,
     RogueUndo,
     RogueNew,
+    DailyMove(Direction),
+    DailyUndo,
+    DailyNew,
 }

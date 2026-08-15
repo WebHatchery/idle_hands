@@ -18,6 +18,8 @@ mod checkers_ui;
 mod connect_four;
 mod connect_four_ui;
 mod cosmetics;
+mod daily_dungeon;
+mod daily_dungeon_ui;
 mod data;
 mod dungeon_sweeper;
 mod dungeon_sweeper_ui;
