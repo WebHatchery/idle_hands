@@ -798,6 +798,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
     layouts with the existing accessible text treatment.
   - [x] Cover hint routing and capture the updated Klondike Golf scenes.
 
+## Phase 65 — Spider Solitaire discoverability polish
+
+- [x] Add a visible deterministic HINT action to Spider Solitaire so players
+  can find a legal run move, stock deal, or recovery action.
+  - [x] Show hint feedback across desktop, portrait, and medium-landscape
+    layouts with the existing accessible text treatment.
+  - [x] Cover hint routing and capture the updated Spider Solitaire scenes.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

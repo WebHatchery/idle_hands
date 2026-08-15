@@ -174,6 +174,46 @@ pub fn klondike_golf(state: &AppState) -> String {
     }
 }
 
+pub fn spider_solitaire(state: &AppState) -> String {
+    let game = &state.spider_solitaire;
+    if game.status == crate::spider_solitaire::SpiderSolitaireStatus::Won {
+        return "All eight spider runs are already clear.".into();
+    }
+    for (source, stack) in game.tableau.iter().enumerate() {
+        for depth in 0..stack.len() {
+            if !crate::spider_solitaire::is_run(&stack[depth..]) {
+                continue;
+            }
+            let card = stack[depth];
+            if let Some(destination) =
+                game.tableau
+                    .iter()
+                    .enumerate()
+                    .find_map(|(column, target)| {
+                        if column == source {
+                            return None;
+                        }
+                        target
+                            .last()
+                            .is_none_or(|top| top.face_up && top.rank == card.rank + 1)
+                            .then_some(column)
+                    })
+            {
+                return format!(
+                    "Move the run from column {} to column {}.",
+                    source + 1,
+                    destination + 1
+                );
+            }
+        }
+    }
+    if !game.stock.is_empty() {
+        "Tap STOCK to deal one card to each column.".into()
+    } else {
+        "No obvious run move — try UNDO or a new deal.".into()
+    }
+}
+
 pub fn is_hint(action: crate::ui::UiAction) -> bool {
     matches!(
         action,
@@ -182,6 +222,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::PyramidHint
             | crate::ui::UiAction::TriPeaksHint
             | crate::ui::UiAction::KlondikeGolfHint
+            | crate::ui::UiAction::SpiderSolitaireHint
     )
 }
 

@@ -13,6 +13,7 @@ struct Layout {
     overlap: f32,
     gap: f32,
     stock: Rect,
+    hint: Rect,
     undo: Rect,
     new_game: Rect,
 }
@@ -38,6 +39,7 @@ fn layout() -> Layout {
             overlap: 13.,
             gap: 5.,
             stock: Rect::new(10., 32., 76., 50.),
+            hint: Rect::new(490., 335., 105., 40.),
             undo: Rect::new(610., 335., 105., 40.),
             new_game: Rect::new(728., 335., 105., 40.),
         }
@@ -49,6 +51,7 @@ fn layout() -> Layout {
             overlap: 15.,
             gap: 4.,
             stock: Rect::new(8., 112., 38., 54.),
+            hint: Rect::new(5., 700., 105., 38.),
             undo: Rect::new(120., 650., 105., 38.),
             new_game: Rect::new(235., 650., 115., 38.),
         }
@@ -60,6 +63,7 @@ fn layout() -> Layout {
             overlap: 20.,
             gap: 8.,
             stock: Rect::new(30., 76., 76., 104.),
+            hint: Rect::new(830., 625., 120., 42.),
             undo: Rect::new(970., 625., 120., 42.),
             new_game: Rect::new(1110., 625., 140., 42.),
         }
@@ -72,6 +76,9 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if l.stock.contains(point) {
         return vec![UiAction::SpiderSolitaireDeal];
+    }
+    if l.hint.contains(point) {
+        return vec![UiAction::SpiderSolitaireHint];
     }
     if l.undo.contains(point) {
         return vec![UiAction::SpiderSolitaireUndo];
@@ -104,11 +111,11 @@ pub fn draw(state: &AppState) {
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
     let (hx, hy) = if compact {
-        (112., 27.)
+        (390., 27.)
     } else if portrait {
         (10., 72.)
     } else {
-        (30., 58.)
+        (390., 58.)
     };
     text(
         "‹ CABINET",
@@ -131,8 +138,8 @@ pub fn draw(state: &AppState) {
     };
     text(
         subtitle,
-        if compact { 350. } else { hx },
-        if compact { 28. } else { hy + 24. },
+        if compact { 390. } else { hx },
+        if compact { 52. } else { hy + 24. },
         accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
@@ -209,19 +216,33 @@ pub fn draw(state: &AppState) {
     );
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW DEAL", state.large_text);
-    text(
-        "Tap a suited run, then tap its destination.",
-        if portrait { 10. } else { hx },
-        if portrait {
-            645.
-        } else if compact {
-            58.
-        } else {
-            615.
-        },
-        accessibility::text_size(11., state.large_text),
-        muted(),
-    );
+    let instruction = "Tap a suited run, then tap its destination.";
+    let instruction_x = if portrait || compact { 10. } else { hx };
+    let instruction_y = if portrait {
+        645.
+    } else if compact {
+        72.
+    } else {
+        615.
+    };
+    if let Some(hint) = state.card_hint.as_deref() {
+        text(
+            hint,
+            instruction_x,
+            instruction_y,
+            accessibility::text_size(11., state.large_text),
+            accent(),
+        );
+    } else {
+        text(
+            instruction,
+            instruction_x,
+            instruction_y,
+            accessibility::text_size(11., state.large_text),
+            muted(),
+        );
+    }
+    button(l.hint, "HINT", state.large_text);
 }
 fn draw_card_slot(rect: Rect, card: Option<crate::cards::Card>, state: &AppState) {
     if let Some(card) = card {
@@ -259,10 +280,10 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     draw_text(value, x, y, size, color);
 }
 fn title_size() -> f32 {
-    if crate::ui::is_portrait() {
+    if crate::ui::is_portrait() || crate::ui::is_compact_landscape() {
         22.
     } else {
-        27.
+        24.
     }
 }
 fn body_size() -> f32 {

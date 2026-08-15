@@ -107,6 +107,9 @@ impl Game {
             UiAction::SpiderSolitaireDeal => {
                 self.state.spider_solitaire.deal_stock();
             }
+            UiAction::SpiderSolitaireHint => {
+                self.state.card_hint = Some(crate::card_hints::spider_solitaire(&self.state));
+            }
             UiAction::SpiderSolitaireUndo => {
                 self.state.spider_solitaire.undo();
             }

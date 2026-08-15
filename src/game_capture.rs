@@ -57,6 +57,9 @@ impl Game {
             "blackjack_accessible" => Screen::Game(GameId::Blackjack),
             "spider_solitaire" => Screen::Game(GameId::SpiderSolitaire),
             "spider_solitaire_accessible" => Screen::Game(GameId::SpiderSolitaire),
+            "spider_solitaire_hint" | "spider_solitaire_hint_accessible" => {
+                Screen::Game(GameId::SpiderSolitaire)
+            }
             "pyramid" => Screen::Game(GameId::Pyramid),
             "pyramid_accessible" => Screen::Game(GameId::Pyramid),
             "pyramid_hint" | "pyramid_hint_accessible" => Screen::Game(GameId::Pyramid),
@@ -129,6 +132,8 @@ impl Game {
             self.state.card_hint = Some(card_hints::tri_peaks(&self.state));
         } else if scene == "klondike_golf_hint" || scene == "klondike_golf_hint_accessible" {
             self.state.card_hint = Some(card_hints::klondike_golf(&self.state));
+        } else if scene == "spider_solitaire_hint" || scene == "spider_solitaire_hint_accessible" {
+            self.state.card_hint = Some(card_hints::spider_solitaire(&self.state));
         }
         if scene.starts_with("tutorial_") {
             if let Screen::Game(game) = self.state.screen {

@@ -131,6 +131,7 @@ pub enum UiAction {
     SpiderSolitaireSelect(usize, usize),
     SpiderSolitaireMove(usize),
     SpiderSolitaireDeal,
+    SpiderSolitaireHint,
     SpiderSolitaireUndo,
     SpiderSolitaireNew,
     PyramidTap(usize),

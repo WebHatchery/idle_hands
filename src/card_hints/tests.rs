@@ -52,3 +52,10 @@ fn default_klondike_golf_has_a_deterministic_hint() {
     assert!(!klondike_golf(&state).is_empty());
     assert_eq!(klondike_golf(&state), klondike_golf(&state));
 }
+
+#[test]
+fn default_spider_solitaire_has_a_deterministic_hint() {
+    let state = AppState::default();
+    assert!(!spider_solitaire(&state).is_empty());
+    assert_eq!(spider_solitaire(&state), spider_solitaire(&state));
+}
