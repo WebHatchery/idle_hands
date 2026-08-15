@@ -336,12 +336,20 @@ pub fn draw_settings(state: &AppState) {
         Color::new(0.68, 0.63, 0.78, 1.),
     );
     for (rect, label) in [
-        (Rect::new(22., 665., 100., 42.), "BACK"),
-        (Rect::new(130., 665., 100., 42.), "SAVE"),
-        (Rect::new(238., 665., 100., 42.), "RESET"),
+        (Rect::new(22., 665., 76., 42.), "BACK"),
+        (Rect::new(108., 665., 76., 42.), "SAVE"),
+        (Rect::new(194., 665., 76., 42.), "LOAD"),
+        (Rect::new(280., 665., 58., 42.), "RESET"),
     ] {
         panel(rect, Color::new(0.20, 0.13, 0.30, 1.));
-        text(label, rect.x + 25., rect.y + 27., 13., WHITE);
+        let width = measure_text(label, None, 11, 1.).width;
+        text(
+            label,
+            rect.x + (rect.w - width) / 2.,
+            rect.y + 27.,
+            11.,
+            WHITE,
+        );
     }
     if state.confirm_reset {
         panel(
@@ -379,13 +387,16 @@ pub fn settings_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         }
         return vec![];
     }
-    if Rect::new(22., 665., 100., 42.).contains(p) {
+    if Rect::new(22., 665., 76., 42.).contains(p) {
         return vec![UiAction::Cabinet];
     }
-    if Rect::new(130., 665., 100., 42.).contains(p) {
+    if Rect::new(108., 665., 76., 42.).contains(p) {
         return vec![UiAction::Save];
     }
-    if Rect::new(238., 665., 100., 42.).contains(p) {
+    if Rect::new(194., 665., 76., 42.).contains(p) {
+        return vec![UiAction::Load];
+    }
+    if Rect::new(280., 665., 58., 42.).contains(p) {
         return vec![UiAction::ResetData];
     }
     for (rect, action) in [

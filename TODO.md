@@ -117,6 +117,8 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Add dedicated Rules and Credits screens plus a confirmed reset-data flow.
   - [x] Verify the compact portrait reset confirmation renders visible Cancel
     and Reset actions at 390×844.
+  - [x] Expose the shared Load action alongside Save on compact portrait
+    Settings.
 - [ ] Audit autosave/resume and save migration independently for all eight games.
   - [x] Cover all eight independent game snapshots and migration defaults for
     progression and cosmetic fields.
