@@ -80,69 +80,52 @@ impl AchievementId {
 }
 
 pub fn completed_games(records: &CollectionRecords) -> usize {
-    [
-        records.solitaire_best_moves.is_some(),
-        records.freecell_best_moves.is_some(),
-        records.sudoku.iter().any(Option::is_some),
-        records.minesweeper.iter().any(Option::is_some),
-        records.best_2048 >= 2048,
-        records.nonogram.iter().any(Option::is_some),
-        records.fivefold_best_total > 0,
-        records.reversi_best_score > 0,
-        records.lights_out_best_moves.is_some(),
-        records.tic_tac_toe_best_moves.is_some(),
-        records.memory_pairs_best_moves.is_some(),
-        records.sliding_puzzle_best_moves.is_some(),
-        records.mastermind_best_rows.is_some(),
-        records.blackjack_best_wins.is_some(),
-        records.spider_solitaire_best_moves.is_some(),
-        records.dungeon_sweeper_best_moves.is_some(),
-        records.potion_2048_best_score.is_some(),
-        records.tiny_tower_defence_best_wave.is_some(),
-        records.one_room_roguelike_best_score.is_some(),
-        records.daily_dungeon_best_score.is_some(),
-    ]
-    .into_iter()
-    .filter(|complete| *complete)
-    .count()
+    GameId::ALL
+        .into_iter()
+        .filter(|&game| game_complete(records, game))
+        .count()
+}
+
+fn game_complete(records: &CollectionRecords, game: GameId) -> bool {
+    match game {
+        GameId::Solitaire => records.solitaire_best_moves.is_some(),
+        GameId::FreeCell => records.freecell_best_moves.is_some(),
+        GameId::Sudoku => records.sudoku.iter().any(Option::is_some),
+        GameId::Minesweeper => records.minesweeper.iter().any(Option::is_some),
+        GameId::Game2048 => records.best_2048 >= 2048,
+        GameId::Nonogram => records.nonogram.iter().any(Option::is_some),
+        GameId::Yahtzee => records.fivefold_best_total > 0,
+        GameId::Reversi => records.reversi_best_score > 0,
+        GameId::LightsOut => records.lights_out_best_moves.is_some(),
+        GameId::TicTacToe => records.tic_tac_toe_best_moves.is_some(),
+        GameId::MemoryPairs => records.memory_pairs_best_moves.is_some(),
+        GameId::SlidingPuzzle => records.sliding_puzzle_best_moves.is_some(),
+        GameId::Mastermind => records.mastermind_best_rows.is_some(),
+        GameId::Spider => records.spider_best_moves.is_some(),
+        GameId::WordSearch => records.word_search_best_moves.is_some(),
+        GameId::Hangman => records.hangman_best_moves.is_some(),
+        GameId::ConnectFour => records.connect_four_best_moves.is_some(),
+        GameId::Checkers => records.checkers_best_moves.is_some(),
+        GameId::PegSolitaire => records.peg_solitaire_best_moves.is_some(),
+        GameId::MahjongSolitaire => records.mahjong_solitaire_best_moves.is_some(),
+        GameId::Snake => records.snake_best_score.is_some(),
+        GameId::Breakout => records.breakout_best_score.is_some(),
+        GameId::HigherLower => records.higher_lower_best_score.is_some(),
+        GameId::KlondikeGolf => records.klondike_golf_best_moves.is_some(),
+        GameId::Blackjack => records.blackjack_best_wins.is_some(),
+        GameId::SpiderSolitaire => records.spider_solitaire_best_moves.is_some(),
+        GameId::DungeonSweeper => records.dungeon_sweeper_best_moves.is_some(),
+        GameId::Potion2048 => records.potion_2048_best_score.is_some(),
+        GameId::TinyTowerDefence => records.tiny_tower_defence_best_wave.is_some(),
+        GameId::OneRoomRoguelike => records.one_room_roguelike_best_score.is_some(),
+        GameId::DailyDungeon => records.daily_dungeon_best_score.is_some(),
+    }
 }
 
 pub fn earned(records: &CollectionRecords, achievement: AchievementId) -> bool {
     match achievement {
         AchievementId::FirstFinish => completed_games(records) > 0,
-        AchievementId::Game(game) => match game {
-            GameId::Solitaire => records.solitaire_best_moves.is_some(),
-            GameId::FreeCell => records.freecell_best_moves.is_some(),
-            GameId::Sudoku => records.sudoku.iter().any(Option::is_some),
-            GameId::Minesweeper => records.minesweeper.iter().any(Option::is_some),
-            GameId::Game2048 => records.best_2048 >= 2048,
-            GameId::Nonogram => records.nonogram.iter().any(Option::is_some),
-            GameId::Yahtzee => records.fivefold_best_total > 0,
-            GameId::Reversi => records.reversi_best_score > 0,
-            GameId::LightsOut => records.lights_out_best_moves.is_some(),
-            GameId::TicTacToe => records.tic_tac_toe_best_moves.is_some(),
-            GameId::MemoryPairs => records.memory_pairs_best_moves.is_some(),
-            GameId::SlidingPuzzle => records.sliding_puzzle_best_moves.is_some(),
-            GameId::Mastermind => records.mastermind_best_rows.is_some(),
-            GameId::Spider => records.spider_best_moves.is_some(),
-            GameId::WordSearch => records.word_search_best_moves.is_some(),
-            GameId::Hangman => records.hangman_best_moves.is_some(),
-            GameId::ConnectFour => records.connect_four_best_moves.is_some(),
-            GameId::Checkers => records.checkers_best_moves.is_some(),
-            GameId::PegSolitaire => records.peg_solitaire_best_moves.is_some(),
-            GameId::MahjongSolitaire => records.mahjong_solitaire_best_moves.is_some(),
-            GameId::Snake => records.snake_best_score.is_some(),
-            GameId::Breakout => records.breakout_best_score.is_some(),
-            GameId::HigherLower => records.higher_lower_best_score.is_some(),
-            GameId::KlondikeGolf => records.klondike_golf_best_moves.is_some(),
-            GameId::Blackjack => records.blackjack_best_wins.is_some(),
-            GameId::SpiderSolitaire => records.spider_solitaire_best_moves.is_some(),
-            GameId::DungeonSweeper => records.dungeon_sweeper_best_moves.is_some(),
-            GameId::Potion2048 => records.potion_2048_best_score.is_some(),
-            GameId::TinyTowerDefence => records.tiny_tower_defence_best_wave.is_some(),
-            GameId::OneRoomRoguelike => records.one_room_roguelike_best_score.is_some(),
-            GameId::DailyDungeon => records.daily_dungeon_best_score.is_some(),
-        },
+        AchievementId::Game(game) => game_complete(records, game),
         AchievementId::FullCabinet => completed_games(records) == GameId::ALL.len(),
     }
 }
