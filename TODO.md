@@ -413,11 +413,23 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Add responsive desktop, portrait, and medium-landscape presentation,
     visible controls, records, and verification captures.
 
+## Phase 28 — Twenty-first post-launch cabinet game
+
+- [x] Add Tiny Tower Defence as a twenty-ninth deterministic, touch-complete
+  cabinet game with five quiet lanes, build and upgrade towers, wave ticks,
+  enemy leaks, undo, reset, and an eight-wave target.
+  - [x] Cover seeded waves, tower costs, shots, leaks, undo, loss, and the
+    target-wave victory boundary with focused rule tests.
+  - [x] Add persisted active state and best-wave records with snapshot,
+    migration, progression, and tutorial coverage.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, records, and verification captures.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.
 - Arcade: no remaining scheduled candidates.
-- Original cabinet games: Dungeon Sweeper, Tiny Tower Defence, One
+- Original cabinet games: Dungeon Sweeper, One
   Room Roguelike, and Daily Dungeon.
 
 Do not begin a post-launch candidate until the eight-game first collection is

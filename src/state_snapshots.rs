@@ -4,6 +4,7 @@ use crate::dungeon_sweeper::DungeonSweeper;
 use crate::potion_2048::Potion2048;
 use crate::state::Game2048;
 use crate::state::{AppState, GameId};
+use crate::tiny_tower_defence::TinyTowerDefence;
 use crate::{
     blackjack::Blackjack, breakout::Breakout, checkers::Checkers, connect_four::ConnectFour,
     fivefold::Fivefold, freecell::FreeCell, hangman::Hangman, higher_lower::HigherLower,
@@ -46,6 +47,7 @@ pub enum GameSnapshot {
     SpiderSolitaire(SpiderSolitaire),
     DungeonSweeper(DungeonSweeper),
     Potion2048(Potion2048),
+    TinyTowerDefence(TinyTowerDefence),
 }
 
 impl GameSnapshot {
@@ -79,6 +81,7 @@ impl GameSnapshot {
             GameId::SpiderSolitaire => Self::SpiderSolitaire(state.spider_solitaire.clone()),
             GameId::DungeonSweeper => Self::DungeonSweeper(state.dungeon_sweeper.clone()),
             GameId::Potion2048 => Self::Potion2048(state.potion_2048.clone()),
+            GameId::TinyTowerDefence => Self::TinyTowerDefence(state.tiny_tower_defence.clone()),
         }
     }
 
@@ -112,6 +115,7 @@ impl GameSnapshot {
             Self::SpiderSolitaire(game) => state.spider_solitaire = game,
             Self::DungeonSweeper(game) => state.dungeon_sweeper = game,
             Self::Potion2048(game) => state.potion_2048 = game,
+            Self::TinyTowerDefence(game) => state.tiny_tower_defence = game,
         }
     }
 }

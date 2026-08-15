@@ -686,6 +686,9 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         }
         GameId::DungeonSweeper if state.records.dungeon_sweeper_best_moves.is_some() => "COMPLETE",
         GameId::Potion2048 if state.records.potion_2048_best_score.is_some() => "COMPLETE",
+        GameId::TinyTowerDefence if state.records.tiny_tower_defence_best_wave.is_some() => {
+            "COMPLETE"
+        }
         _ => "PLAY NOW",
     }
 }

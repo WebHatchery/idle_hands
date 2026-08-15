@@ -249,6 +249,15 @@ impl Game {
                     }),
             );
         }
+        if self.state.tiny_tower_defence.won() {
+            records.tiny_tower_defence_best_wave = Some(
+                records
+                    .tiny_tower_defence_best_wave
+                    .map_or(self.state.tiny_tower_defence.wave, |best| {
+                        best.max(self.state.tiny_tower_defence.wave)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

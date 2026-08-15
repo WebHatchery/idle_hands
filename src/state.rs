@@ -26,6 +26,7 @@ use crate::spider::Spider;
 use crate::spider_solitaire::SpiderSolitaire;
 use crate::sudoku::Sudoku;
 use crate::tic_tac_toe::TicTacToe;
+use crate::tiny_tower_defence::TinyTowerDefence;
 use crate::word_search::WordSearch;
 use serde::{Deserialize, Serialize};
 
@@ -61,9 +62,10 @@ pub enum GameId {
     SpiderSolitaire,
     DungeonSweeper,
     Potion2048,
+    TinyTowerDefence,
 }
 impl GameId {
-    pub const ALL: [Self; 28] = [
+    pub const ALL: [Self; 29] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -92,6 +94,7 @@ impl GameId {
         Self::SpiderSolitaire,
         Self::DungeonSweeper,
         Self::Potion2048,
+        Self::TinyTowerDefence,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -123,6 +126,7 @@ impl GameId {
             Self::SpiderSolitaire => "Spider Solitaire",
             Self::DungeonSweeper => "Dungeon Sweeper",
             Self::Potion2048 => "Potion 2048",
+            Self::TinyTowerDefence => "Tiny Tower Defence",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -155,6 +159,7 @@ impl GameId {
             Self::SpiderSolitaire => "Build suited webs",
             Self::DungeonSweeper => "Find the quiet exit",
             Self::Potion2048 => "Brew the next tile",
+            Self::TinyTowerDefence => "Keep the quiet lanes",
         }
     }
     pub fn index(self) -> usize {
@@ -190,6 +195,7 @@ impl GameId {
             Self::SpiderSolitaire => "spider_solitaire",
             Self::DungeonSweeper => "dungeon_sweeper",
             Self::Potion2048 => "potion_2048",
+            Self::TinyTowerDefence => "tiny_tower_defence",
         }
     }
 }
@@ -362,6 +368,7 @@ pub struct AppState {
     pub spider_solitaire: SpiderSolitaire,
     pub dungeon_sweeper: DungeonSweeper,
     pub potion_2048: Potion2048,
+    pub tiny_tower_defence: TinyTowerDefence,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -434,6 +441,8 @@ pub struct CollectionRecords {
     pub dungeon_sweeper_best_moves: Option<u16>,
     #[serde(default)]
     pub potion_2048_best_score: Option<u32>,
+    #[serde(default)]
+    pub tiny_tower_defence_best_wave: Option<u8>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -493,6 +502,8 @@ pub struct CollectionSave {
     pub dungeon_sweeper: DungeonSweeper,
     #[serde(default)]
     pub potion_2048: Potion2048,
+    #[serde(default)]
+    pub tiny_tower_defence: TinyTowerDefence,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -624,6 +635,7 @@ impl CollectionSave {
             spider_solitaire: state.spider_solitaire.clone(),
             dungeon_sweeper: state.dungeon_sweeper.clone(),
             potion_2048: state.potion_2048.clone(),
+            tiny_tower_defence: state.tiny_tower_defence.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -671,6 +683,7 @@ impl CollectionSave {
         state.spider_solitaire = self.spider_solitaire;
         state.dungeon_sweeper = self.dungeon_sweeper;
         state.potion_2048 = self.potion_2048;
+        state.tiny_tower_defence = self.tiny_tower_defence;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -724,6 +737,7 @@ impl Default for AppState {
             spider_solitaire: SpiderSolitaire::default(),
             dungeon_sweeper: DungeonSweeper::default(),
             potion_2048: Potion2048::default(),
+            tiny_tower_defence: TinyTowerDefence::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

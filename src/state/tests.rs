@@ -80,6 +80,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     state.records.dungeon_sweeper_best_moves = Some(18);
     state.potion_2048.score = 19;
     state.records.potion_2048_best_score = Some(19);
+    state.tiny_tower_defence.wave = 4;
+    state.records.tiny_tower_defence_best_wave = Some(4);
     state.achievements[0] = true;
     state.stamps = 3;
     state.card_back = 1;
@@ -137,6 +139,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     assert_eq!(restored.records.dungeon_sweeper_best_moves, Some(18));
     assert_eq!(restored.potion_2048.score, 19);
     assert_eq!(restored.records.potion_2048_best_score, Some(19));
+    assert_eq!(restored.tiny_tower_defence.wave, 4);
+    assert_eq!(restored.records.tiny_tower_defence_best_wave, Some(4));
     assert!(restored.achievements[0]);
     assert_eq!(restored.stamps, 3);
     assert_eq!(restored.card_back, 1);
@@ -201,6 +205,7 @@ fn every_game_snapshot_round_trips_its_own_state() {
     source.spider_solitaire.moves = 36;
     source.dungeon_sweeper.moves = 38;
     source.potion_2048.score = 40;
+    source.tiny_tower_defence.wave = 4;
 
     for game in GameId::ALL {
         let snapshot = GameSnapshot::from_state(&source, game);
@@ -247,6 +252,7 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
     source.spider_solitaire.moves = 37;
     source.dungeon_sweeper.moves = 39;
     source.potion_2048.score = 41;
+    source.tiny_tower_defence.wave = 5;
 
     let snapshots = GameId::ALL
         .iter()
@@ -285,6 +291,7 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
     assert_eq!(restored.spider_solitaire.moves, 37);
     assert_eq!(restored.dungeon_sweeper.moves, 39);
     assert_eq!(restored.potion_2048.score, 41);
+    assert_eq!(restored.tiny_tower_defence.wave, 5);
 }
 
 #[test]
@@ -321,6 +328,7 @@ fn older_saves_default_new_progression_and_cosmetic_fields() {
         "spider_solitaire",
         "dungeon_sweeper",
         "potion_2048",
+        "tiny_tower_defence",
     ] {
         object.remove(field);
     }

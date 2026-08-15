@@ -136,6 +136,10 @@ pub fn draw_records(state: &AppState) {
             "Potion 2048 best",
             value(state.records.potion_2048_best_score),
         ),
+        (
+            "Tower Defence wave",
+            value(state.records.tiny_tower_defence_best_wave.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
         let col = index / 12;

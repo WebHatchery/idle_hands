@@ -138,6 +138,19 @@ impl Game {
                 let seed = self.state.potion_2048.seed.wrapping_add(1);
                 self.state.potion_2048.reset(seed);
             }
+            UiAction::TowerCell(index) => {
+                self.state.tiny_tower_defence.build_or_upgrade(*index);
+            }
+            UiAction::TowerWave => {
+                self.state.tiny_tower_defence.start_or_advance();
+            }
+            UiAction::TowerUndo => {
+                self.state.tiny_tower_defence.undo();
+            }
+            UiAction::TowerNew => {
+                let seed = self.state.tiny_tower_defence.seed.wrapping_add(1);
+                self.state.tiny_tower_defence.reset(seed);
+            }
             _ => return false,
         }
         true

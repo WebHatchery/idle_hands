@@ -158,6 +158,10 @@ pub fn draw_records(state: &AppState) {
             "Potion 2048 best",
             value(state.records.potion_2048_best_score),
         ),
+        (
+            "Tower Defence wave",
+            value(state.records.tiny_tower_defence_best_wave.map(u32::from)),
+        ),
     ];
     draw_column(&left, 175., 240.);
     draw_column(&middle, 490., 240.);

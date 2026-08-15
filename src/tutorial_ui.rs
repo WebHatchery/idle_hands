@@ -222,5 +222,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "Matching potions merge; brew a 4096 tile to finish.",
             "Use UNDO or NEW BREW with the visible controls.",
         ],
+        GameId::TinyTowerDefence => [
+            "Tap an empty lane cell to build, or a tower to upgrade.",
+            "Tap START WAVE, then ADVANCE to stop enemies at the quiet gate.",
+            "Reach wave 8; use UNDO or NEW TOWER with visible controls.",
+        ],
     }
 }

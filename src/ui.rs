@@ -40,6 +40,7 @@ use crate::spider_solitaire_ui;
 use crate::spider_ui;
 use crate::sudoku_ui;
 use crate::tic_tac_toe_ui;
+use crate::tiny_tower_defence_ui;
 use crate::tutorial_ui;
 pub use crate::ui_action::UiAction;
 use crate::word_search_ui;
@@ -187,6 +188,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Game(GameId::SpiderSolitaire) => spider_solitaire_ui::clicks(state, p),
         Screen::Game(GameId::DungeonSweeper) => dungeon_sweeper_ui::clicks(state, p),
         Screen::Game(GameId::Potion2048) => potion_2048_ui::clicks(state, p),
+        Screen::Game(GameId::TinyTowerDefence) => tiny_tower_defence_ui::clicks(state, p),
         Screen::Game(GameId::Mastermind) => mastermind_ui::clicks(state, p),
         Screen::Help => {
             if is_compact_landscape() {
@@ -291,6 +293,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::SpiderSolitaire) => spider_solitaire_ui::draw(state),
         Screen::Game(GameId::DungeonSweeper) => dungeon_sweeper_ui::draw(state),
         Screen::Game(GameId::Potion2048) => potion_2048_ui::draw(state),
+        Screen::Game(GameId::TinyTowerDefence) => tiny_tower_defence_ui::draw(state),
         Screen::Game(GameId::Mastermind) => mastermind_ui::draw(state),
         Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(),
         Screen::Help if is_portrait() => responsive_library::draw_help(),
@@ -388,7 +391,11 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
             GameId::ALL[i].title(),
             r.x + 18.,
             r.y + 28.,
-            18.,
+            if GameId::ALL[i] == GameId::TinyTowerDefence {
+                14.
+            } else {
+                18.
+            },
             if active {
                 Color::new(0.98, 0.82, 0.42, 1.)
             } else {

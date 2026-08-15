@@ -56,6 +56,7 @@ impl AchievementId {
                 GameId::SpiderSolitaire => "Web keeper",
                 GameId::DungeonSweeper => "Dungeon keeper",
                 GameId::Potion2048 => "Potion keeper",
+                GameId::TinyTowerDefence => "Tower keeper",
             },
             Self::FullCabinet => "Full cabinet",
         }
@@ -95,6 +96,7 @@ pub fn completed_games(records: &CollectionRecords) -> usize {
         records.spider_solitaire_best_moves.is_some(),
         records.dungeon_sweeper_best_moves.is_some(),
         records.potion_2048_best_score.is_some(),
+        records.tiny_tower_defence_best_wave.is_some(),
     ]
     .into_iter()
     .filter(|complete| *complete)
@@ -133,6 +135,7 @@ pub fn earned(records: &CollectionRecords, achievement: AchievementId) -> bool {
             GameId::SpiderSolitaire => records.spider_solitaire_best_moves.is_some(),
             GameId::DungeonSweeper => records.dungeon_sweeper_best_moves.is_some(),
             GameId::Potion2048 => records.potion_2048_best_score.is_some(),
+            GameId::TinyTowerDefence => records.tiny_tower_defence_best_wave.is_some(),
         },
         AchievementId::FullCabinet => completed_games(records) == GameId::ALL.len(),
     }

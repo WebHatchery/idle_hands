@@ -83,6 +83,8 @@ mod sudoku;
 mod sudoku_ui;
 mod tic_tac_toe;
 mod tic_tac_toe_ui;
+mod tiny_tower_defence;
+mod tiny_tower_defence_ui;
 mod tutorial_ui;
 mod ui;
 mod ui_action;

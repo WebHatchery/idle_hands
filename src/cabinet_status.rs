@@ -34,6 +34,7 @@ pub fn status(state: &AppState, game: GameId) -> &'static str {
         GameId::SpiderSolitaire => state.records.spider_solitaire_best_moves.is_some(),
         GameId::DungeonSweeper => state.records.dungeon_sweeper_best_moves.is_some(),
         GameId::Potion2048 => state.records.potion_2048_best_score.is_some(),
+        GameId::TinyTowerDefence => state.records.tiny_tower_defence_best_wave.is_some(),
     };
     if complete {
         "COMPLETE"
@@ -77,6 +78,9 @@ fn has_progress(state: &AppState, game: GameId) -> bool {
         GameId::SpiderSolitaire => state.spider_solitaire.moves > 0,
         GameId::DungeonSweeper => state.dungeon_sweeper.moves > 0,
         GameId::Potion2048 => state.potion_2048.score > 0 || state.potion_2048.best > 0,
+        GameId::TinyTowerDefence => {
+            state.tiny_tower_defence.score > 0 || state.tiny_tower_defence.wave > 1
+        }
     }
 }
 
@@ -118,5 +122,6 @@ pub fn is_active(game: GameId) -> bool {
             | GameId::SpiderSolitaire
             | GameId::DungeonSweeper
             | GameId::Potion2048
+            | GameId::TinyTowerDefence
     )
 }

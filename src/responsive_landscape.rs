@@ -457,6 +457,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "Merge matching potions until 4096 appears.",
             "Use UNDO or NEW BREW with visible controls.",
         ],
+        GameId::TinyTowerDefence => [
+            "Tap empty lane cells to build and towers to upgrade.",
+            "START WAVE spawns enemies; ADVANCE lets your towers fire.",
+            "Reach wave 8; use UNDO or NEW TOWER with visible controls.",
+        ],
     }
 }
 
@@ -494,6 +499,9 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         }
         GameId::DungeonSweeper if state.records.dungeon_sweeper_best_moves.is_some() => "COMPLETE",
         GameId::Potion2048 if state.records.potion_2048_best_score.is_some() => "COMPLETE",
+        GameId::TinyTowerDefence if state.records.tiny_tower_defence_best_wave.is_some() => {
+            "COMPLETE"
+        }
         _ => "PLAY NOW",
     }
 }
