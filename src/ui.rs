@@ -11,6 +11,7 @@ use crate::palette_ui;
 use crate::records_ui;
 use crate::responsive_cards;
 use crate::responsive_landscape;
+use crate::responsive_landscape_cards;
 use crate::responsive_landscape_games;
 use crate::responsive_library;
 use crate::responsive_puzzles;
@@ -174,14 +175,23 @@ pub fn clicks(state: &AppState) -> Vec<UiAction> {
             responsive_puzzles::nonogram_clicks(state, p)
         }
         Screen::Game(GameId::Nonogram) => nonogram_ui::nonogram_clicks(state, p),
+        Screen::Game(GameId::Solitaire) if is_compact_landscape() => {
+            responsive_landscape_cards::solitaire_clicks(state, p)
+        }
         Screen::Game(GameId::Solitaire) if is_portrait() => {
             responsive_cards::solitaire_clicks(state, p)
         }
         Screen::Game(GameId::Solitaire) => solitaire_ui::solitaire_clicks(state, p),
+        Screen::Game(GameId::FreeCell) if is_compact_landscape() => {
+            responsive_landscape_cards::freecell_clicks(state, p)
+        }
         Screen::Game(GameId::FreeCell) if is_portrait() => {
             responsive_cards::freecell_clicks(state, p)
         }
         Screen::Game(GameId::FreeCell) => freecell_ui::freecell_clicks(state, p),
+        Screen::Game(GameId::Yahtzee) if is_compact_landscape() => {
+            responsive_landscape_cards::fivefold_clicks(state, p)
+        }
         Screen::Game(GameId::Yahtzee) if is_portrait() => {
             responsive_cards::fivefold_clicks(state, p)
         }
@@ -248,10 +258,19 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         }
         Screen::Game(GameId::Nonogram) if is_portrait() => responsive_puzzles::draw_nonogram(state),
         Screen::Game(GameId::Nonogram) => nonogram_ui::draw_nonogram(state),
+        Screen::Game(GameId::Solitaire) if is_compact_landscape() => {
+            responsive_landscape_cards::draw_solitaire(state)
+        }
         Screen::Game(GameId::Solitaire) if is_portrait() => responsive_cards::draw_solitaire(state),
         Screen::Game(GameId::Solitaire) => solitaire_ui::draw_solitaire(state),
+        Screen::Game(GameId::FreeCell) if is_compact_landscape() => {
+            responsive_landscape_cards::draw_freecell(state)
+        }
         Screen::Game(GameId::FreeCell) if is_portrait() => responsive_cards::draw_freecell(state),
         Screen::Game(GameId::FreeCell) => freecell_ui::draw_freecell(state),
+        Screen::Game(GameId::Yahtzee) if is_compact_landscape() => {
+            responsive_landscape_cards::draw_fivefold(state)
+        }
         Screen::Game(GameId::Yahtzee) if is_portrait() => responsive_cards::draw_fivefold(state),
         Screen::Game(GameId::Yahtzee) => fivefold_ui::draw_fivefold(state),
         Screen::Game(GameId::Reversi) if is_compact_landscape() => {
