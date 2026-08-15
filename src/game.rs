@@ -354,7 +354,10 @@ impl Game {
             }
             ui::UiAction::SolitaireTableau(column, depth) => {
                 if self.state.solitaire.selected.is_some() {
-                    self.state.solitaire.move_to_tableau(column);
+                    if !self.state.solitaire.move_to_tableau(column) {
+                        self.notifications
+                            .warning("That tableau does not accept this card");
+                    }
                 } else {
                     self.state.solitaire.select_tableau(column, depth);
                 }
@@ -363,7 +366,10 @@ impl Game {
                 self.state.solitaire.select_waste();
             }
             ui::UiAction::SolitaireFoundation(suit) => {
-                self.state.solitaire.move_to_foundation(suit);
+                if !self.state.solitaire.move_to_foundation(suit) {
+                    self.notifications
+                        .warning("That card cannot go to this foundation yet");
+                }
             }
             ui::UiAction::SolitaireUndo => {
                 self.state.solitaire.undo();
@@ -377,20 +383,29 @@ impl Game {
             }
             ui::UiAction::FreeCellCell(cell) => {
                 if self.state.freecell.selected.is_some() {
-                    self.state.freecell.move_selected_to_cascade(cell);
+                    if !self.state.freecell.move_selected_to_cascade(cell) {
+                        self.notifications
+                            .warning("That stack cannot move to this cascade");
+                    }
                 } else {
                     self.state.freecell.select_cell(cell);
                 }
             }
             ui::UiAction::FreeCellCascade(cascade, depth) => {
                 if self.state.freecell.selected.is_some() {
-                    self.state.freecell.move_selected_to_cascade(cascade);
+                    if !self.state.freecell.move_selected_to_cascade(cascade) {
+                        self.notifications
+                            .warning("That stack cannot move to this cascade");
+                    }
                 } else {
                     self.state.freecell.select_cascade(cascade, depth);
                 }
             }
             ui::UiAction::FreeCellFoundation(suit) => {
-                self.state.freecell.move_selected_to_foundation(suit);
+                if !self.state.freecell.move_selected_to_foundation(suit) {
+                    self.notifications
+                        .warning("That card cannot go to this foundation yet");
+                }
             }
             ui::UiAction::FreeCellUndo => {
                 self.state.freecell.undo();

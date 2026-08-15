@@ -58,3 +58,56 @@ fn an_invalid_stack_cannot_be_moved_as_a_supermove() {
     assert!(game.select_cascade(0, 0));
     assert!(!game.move_selected_to_cascade(1));
 }
+
+#[test]
+fn empty_column_capacity_rejects_two_cards_without_free_space() {
+    let mut game = FreeCell::new(8);
+    game.cells = [None; 4];
+    game.cascades = vec![
+        vec![
+            Card {
+                rank: 9,
+                suit: 0,
+                face_up: true,
+            },
+            Card {
+                rank: 8,
+                suit: 2,
+                face_up: true,
+            },
+        ],
+        vec![Card {
+            rank: 13,
+            suit: 1,
+            face_up: true,
+        }],
+        vec![Card {
+            rank: 12,
+            suit: 0,
+            face_up: true,
+        }],
+        vec![Card {
+            rank: 11,
+            suit: 1,
+            face_up: true,
+        }],
+        vec![Card {
+            rank: 10,
+            suit: 0,
+            face_up: true,
+        }],
+        vec![Card {
+            rank: 9,
+            suit: 1,
+            face_up: true,
+        }],
+        vec![Card {
+            rank: 8,
+            suit: 0,
+            face_up: true,
+        }],
+        vec![],
+    ];
+    assert!(game.select_cascade(0, 0));
+    assert!(!game.move_selected_to_cascade(7));
+}

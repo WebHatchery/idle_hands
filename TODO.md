@@ -80,6 +80,7 @@ sizes, covered by rule tests, and passes `publish.ps1`.
     desktop, portrait, and medium-landscape layouts.
   - [x] Route logical card drags through the same select-then-destination
     actions as taps.
+  - [x] Explain rejected tableau and foundation moves with short feedback.
 - [ ] Confirm launch draw/redeal options and encode them as versioned rulesets.
 - [ ] Ensure select-then-select can complete every action without dragging.
 - [ ] Verify readable card ranks and usable stacked-card targets on compact phones.
@@ -95,6 +96,7 @@ sizes, covered by rule tests, and passes `publish.ps1`.
     desktop, portrait, and medium-landscape layouts.
   - [x] Route logical card drags through the same select-then-destination
     actions as taps.
+  - [x] Explain rejected cascade and foundation moves with short feedback.
 - [ ] Add canonical and edge-case move tests, including empty-column capacity.
 - [ ] Verify all actions through both tap selection and drag interaction.
 
