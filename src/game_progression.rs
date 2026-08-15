@@ -71,6 +71,17 @@ impl Game {
                     }),
             );
         }
+        if self.state.tic_tac_toe.status
+            == crate::tic_tac_toe::TicTacToeStatus::Won(crate::tic_tac_toe::Mark::X)
+        {
+            records.tic_tac_toe_best_moves = Some(
+                records
+                    .tic_tac_toe_best_moves
+                    .map_or(self.state.tic_tac_toe.moves, |best| {
+                        best.min(self.state.tic_tac_toe.moves)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

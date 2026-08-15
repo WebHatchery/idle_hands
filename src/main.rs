@@ -44,6 +44,8 @@ mod sound;
 mod state;
 mod sudoku;
 mod sudoku_ui;
+mod tic_tac_toe;
+mod tic_tac_toe_ui;
 mod tutorial_ui;
 mod ui;
 

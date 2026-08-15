@@ -37,6 +37,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     state.records.fivefold_best_total = 275;
     state.lights_out.moves = 4;
     state.records.lights_out_best_moves = Some(4);
+    state.tic_tac_toe.moves = 3;
+    state.records.tic_tac_toe_best_moves = Some(3);
     state.achievements[0] = true;
     state.stamps = 3;
     state.card_back = 1;
@@ -56,6 +58,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     assert_eq!(restored.records.fivefold_best_total, 275);
     assert_eq!(restored.lights_out.moves, 4);
     assert_eq!(restored.records.lights_out_best_moves, Some(4));
+    assert_eq!(restored.tic_tac_toe.moves, 3);
+    assert_eq!(restored.records.tic_tac_toe_best_moves, Some(3));
     assert!(restored.achievements[0]);
     assert_eq!(restored.stamps, 3);
     assert_eq!(restored.card_back, 1);
@@ -97,6 +101,7 @@ fn every_game_snapshot_round_trips_its_own_state() {
     source.fivefold.roll_number = 2;
     source.reversi.turn = 2;
     source.lights_out.moves = 17;
+    source.tic_tac_toe.moves = 19;
 
     for game in GameId::ALL {
         let snapshot = GameSnapshot::from_state(&source, game);
@@ -120,6 +125,7 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
     source.fivefold.roll_number = 2;
     source.reversi.turn = 2;
     source.lights_out.moves = 17;
+    source.tic_tac_toe.moves = 19;
 
     let snapshots = GameId::ALL
         .iter()
@@ -139,6 +145,7 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
     assert_eq!(restored.fivefold.roll_number, 2);
     assert_eq!(restored.reversi.turn, 2);
     assert_eq!(restored.lights_out.moves, 17);
+    assert_eq!(restored.tic_tac_toe.moves, 19);
 }
 
 #[test]
@@ -156,6 +163,7 @@ fn older_saves_default_new_progression_and_cosmetic_fields() {
         "high_contrast",
         "large_text",
         "lights_out",
+        "tic_tac_toe",
     ] {
         object.remove(field);
     }

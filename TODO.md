@@ -199,6 +199,17 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Publish the expanded cabinet and game through the standard validation
     path.
 
+## Phase 9 — Second post-launch cabinet game
+
+- [x] Add Tic-Tac-Toe as a tenth deterministic, touch-complete cabinet game.
+  - [x] Add player moves, bounded local AI responses, win/draw detection, undo,
+    new-board reset, and focused rule tests.
+  - [x] Add persisted active state and best-move records with snapshot coverage.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, and verification captures.
+  - [x] Publish the expanded cabinet and game through the standard validation
+    path.
+
 ## Post-launch candidates (not scheduled)
 
 - Card family: Spider Solitaire, Klondike Golf, Higher or Lower, Blackjack.

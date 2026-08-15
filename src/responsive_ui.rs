@@ -663,6 +663,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::Yahtzee if state.records.fivefold_best_total > 0 => "COMPLETE",
         GameId::Reversi if state.records.reversi_best_score > 0 => "COMPLETE",
         GameId::LightsOut if state.records.lights_out_best_moves.is_some() => "COMPLETE",
+        GameId::TicTacToe if state.records.tic_tac_toe_best_moves.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

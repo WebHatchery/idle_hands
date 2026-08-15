@@ -80,6 +80,7 @@ impl Game {
             "fivefold" => Screen::Game(GameId::Yahtzee),
             "reversi" => Screen::Game(GameId::Reversi),
             "lights_out" => Screen::Game(GameId::LightsOut),
+            "tic_tac_toe" => Screen::Game(GameId::TicTacToe),
             "help" => Screen::Help,
             "records" => Screen::Records,
             "rules" => Screen::Rules,
@@ -285,9 +286,10 @@ impl Game {
                         | GameId::Yahtzee
                         | GameId::Reversi
                         | GameId::LightsOut
+                        | GameId::TicTacToe
                 ) {
                     self.state.screen = Screen::Game(id);
-                    self.state.tutorial = (id != GameId::LightsOut
+                    self.state.tutorial = (!matches!(id, GameId::LightsOut | GameId::TicTacToe)
                         && !self.state.tutorial_seen[id.index()])
                     .then_some(id);
                 } else {
@@ -512,6 +514,16 @@ impl Game {
             ui::UiAction::LightsOutNew => {
                 let seed = self.state.lights_out.seed.wrapping_add(1);
                 self.state.lights_out.reset(seed);
+            }
+            ui::UiAction::TicTacToePress(index) => {
+                self.state.tic_tac_toe.place(index);
+            }
+            ui::UiAction::TicTacToeUndo => {
+                self.state.tic_tac_toe.undo();
+            }
+            ui::UiAction::TicTacToeNew => {
+                let seed = self.state.tic_tac_toe.seed.wrapping_add(1);
+                self.state.tic_tac_toe.reset(seed);
             }
             ui::UiAction::MineChord(index) => {
                 self.state.minesweeper.chord(index);

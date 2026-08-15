@@ -83,6 +83,10 @@ pub fn draw_records(state: &AppState) {
             "Lights Out best moves",
             value(state.records.lights_out_best_moves.map(u32::from)),
         ),
+        (
+            "Tic-Tac-Toe best moves",
+            value(state.records.tic_tac_toe_best_moves.map(u32::from)),
+        ),
     ];
     draw_column(&left, 175., 240.);
     draw_column(&right, 650., 240.);

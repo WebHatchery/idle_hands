@@ -8,6 +8,7 @@ use crate::nonogram::Nonogram;
 use crate::reversi::Reversi;
 use crate::solitaire::Solitaire;
 use crate::sudoku::Sudoku;
+use crate::tic_tac_toe::TicTacToe;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -21,9 +22,10 @@ pub enum GameId {
     Yahtzee,
     Reversi,
     LightsOut,
+    TicTacToe,
 }
 impl GameId {
-    pub const ALL: [Self; 9] = [
+    pub const ALL: [Self; 10] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -33,6 +35,7 @@ impl GameId {
         Self::Yahtzee,
         Self::Reversi,
         Self::LightsOut,
+        Self::TicTacToe,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -45,6 +48,7 @@ impl GameId {
             Self::Yahtzee => "Fivefold",
             Self::Reversi => "Reversi",
             Self::LightsOut => "Lights Out",
+            Self::TicTacToe => "Tic-Tac-Toe",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -58,6 +62,7 @@ impl GameId {
             Self::Yahtzee => "Five dice, thirteen calls",
             Self::Reversi => "Turn the board",
             Self::LightsOut => "Quiet the lights",
+            Self::TicTacToe => "Three in a row",
         }
     }
     pub fn index(self) -> usize {
@@ -74,6 +79,7 @@ impl GameId {
             Self::Yahtzee => "fivefold",
             Self::Reversi => "reversi",
             Self::LightsOut => "lights_out",
+            Self::TicTacToe => "tic_tac_toe",
         }
     }
 }
@@ -227,6 +233,7 @@ pub struct AppState {
     pub fivefold: Fivefold,
     pub reversi: Reversi,
     pub lights_out: LightsOut,
+    pub tic_tac_toe: TicTacToe,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -261,6 +268,8 @@ pub struct CollectionRecords {
     pub reversi_best_score: u8,
     #[serde(default)]
     pub lights_out_best_moves: Option<u16>,
+    #[serde(default)]
+    pub tic_tac_toe_best_moves: Option<u8>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -282,6 +291,8 @@ pub struct CollectionSave {
     pub reversi: Reversi,
     #[serde(default)]
     pub lights_out: LightsOut,
+    #[serde(default)]
+    pub tic_tac_toe: TicTacToe,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -392,6 +403,7 @@ pub enum GameSnapshot {
     Fivefold(Fivefold),
     Reversi(Reversi),
     LightsOut(LightsOut),
+    TicTacToe(TicTacToe),
 }
 impl GameSnapshot {
     pub fn from_state(state: &AppState, game: GameId) -> Self {
@@ -405,6 +417,7 @@ impl GameSnapshot {
             GameId::Yahtzee => Self::Fivefold(state.fivefold.clone()),
             GameId::Reversi => Self::Reversi(state.reversi.clone()),
             GameId::LightsOut => Self::LightsOut(state.lights_out.clone()),
+            GameId::TicTacToe => Self::TicTacToe(state.tic_tac_toe.clone()),
         }
     }
     pub fn apply_to(self, state: &mut AppState) {
@@ -418,6 +431,7 @@ impl GameSnapshot {
             Self::Fivefold(game) => state.fivefold = game,
             Self::Reversi(game) => state.reversi = game,
             Self::LightsOut(game) => state.lights_out = game,
+            Self::TicTacToe(game) => state.tic_tac_toe = game,
         }
     }
 }
@@ -435,6 +449,7 @@ impl CollectionSave {
             fivefold: state.fivefold.clone(),
             reversi: state.reversi.clone(),
             lights_out: state.lights_out.clone(),
+            tic_tac_toe: state.tic_tac_toe.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -463,6 +478,7 @@ impl CollectionSave {
         state.fivefold = self.fivefold;
         state.reversi = self.reversi;
         state.lights_out = self.lights_out;
+        state.tic_tac_toe = self.tic_tac_toe;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -497,6 +513,7 @@ impl Default for AppState {
             fivefold: Fivefold::default(),
             reversi: Reversi::default(),
             lights_out: LightsOut::default(),
+            tic_tac_toe: TicTacToe::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

@@ -29,9 +29,9 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 
 fn cabinet_rect(index: usize) -> Rect {
     Rect::new(
-        8. + (index % 3) as f32 * 280.,
-        46. + (index / 3) as f32 * 92.,
-        268.,
+        8. + (index % 4) as f32 * 210.,
+        46. + (index / 4) as f32 * 92.,
+        200.,
         82.,
     )
 }
@@ -362,6 +362,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "Turn every light off to complete the board.",
             "Use UNDO or NEW BOARD whenever you need it.",
         ],
+        GameId::TicTacToe => [
+            "Tap an empty square to place your X.",
+            "The cabinet answers with O after your move.",
+            "Use UNDO or NEW BOARD when you need it.",
+        ],
     }
 }
 
@@ -376,6 +381,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::Yahtzee if state.records.fivefold_best_total > 0 => "COMPLETE",
         GameId::Reversi if state.records.reversi_best_score > 0 => "COMPLETE",
         GameId::LightsOut if state.records.lights_out_best_moves.is_some() => "COMPLETE",
+        GameId::TicTacToe if state.records.tic_tac_toe_best_moves.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

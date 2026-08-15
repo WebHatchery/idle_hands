@@ -63,6 +63,10 @@ pub fn draw_records(state: &AppState) {
             "Lights Out best",
             value(state.records.lights_out_best_moves.map(u32::from)),
         ),
+        (
+            "Tic-Tac-Toe best",
+            value(state.records.tic_tac_toe_best_moves.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
         let col = index / 7;

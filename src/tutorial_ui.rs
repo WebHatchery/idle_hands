@@ -127,5 +127,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "Turn every light off to complete the board.",
             "Use UNDO or NEW BOARD when you need it.",
         ],
+        GameId::TicTacToe => [
+            "Tap an empty square to place your X.",
+            "The cabinet answers with O after your move.",
+            "Use UNDO or NEW BOARD when you need it.",
+        ],
     }
 }
