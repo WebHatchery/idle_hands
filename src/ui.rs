@@ -4,6 +4,7 @@ use crate::fivefold_ui;
 use crate::freecell_ui;
 use crate::input::Viewport;
 use crate::nonogram_ui;
+use crate::records_ui;
 use crate::reversi_ui;
 use crate::solitaire_ui;
 use crate::sudoku_ui;
@@ -20,6 +21,7 @@ pub enum UiAction {
     Open(usize),
     Cabinet,
     Help,
+    Records,
     Settings,
     Save,
     Load,
@@ -89,8 +91,11 @@ pub fn clicks(state: &AppState) -> Vec<UiAction> {
                     out.push(UiAction::Open(i));
                 }
             }
-            if Rect::new(1040., 28., 90., 42.).contains(p) {
+            if Rect::new(940., 28., 90., 42.).contains(p) {
                 out.push(UiAction::Help)
+            }
+            if Rect::new(1040., 28., 90., 42.).contains(p) {
+                out.push(UiAction::Records)
             }
             if Rect::new(1140., 28., 110., 42.).contains(p) {
                 out.push(UiAction::Settings)
@@ -112,6 +117,7 @@ pub fn clicks(state: &AppState) -> Vec<UiAction> {
                 vec![]
             }
         }
+        Screen::Records => records_ui::records_clicks(p),
         Screen::Settings => settings_clicks(p),
     }
 }
@@ -127,6 +133,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::Yahtzee) => fivefold_ui::draw_fivefold(state),
         Screen::Game(GameId::Reversi) => reversi_ui::draw_reversi(state),
         Screen::Help => draw_help(),
+        Screen::Records => records_ui::draw_records(state),
         Screen::Settings => draw_settings(state),
     }
 }
@@ -231,7 +238,8 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
             Color::new(0.08, 0.05, 0.12, 1.),
         );
     }
-    text("HELP", 1054., 55., 17., WHITE);
+    text("HELP", 954., 55., 17., WHITE);
+    text("RECORDS", 1048., 55., 17., WHITE);
     text("SETTINGS", 1151., 55., 17., WHITE);
     text(
         &format!("Cabinet online  •  {} textures ready", loaded),

@@ -47,6 +47,7 @@ impl Game {
             let time = self.state.minesweeper.elapsed_whole_seconds();
             self.state.mine_records[slot] =
                 Some(self.state.mine_records[slot].map_or(time, |best| best.min(time)));
+            self.state.records.minesweeper[slot] = self.state.mine_records[slot];
         }
         if is_mouse_button_pressed(MouseButton::Left) {
             let viewport = ui::viewport();
@@ -142,6 +143,7 @@ impl Game {
             }
             ui::UiAction::Cabinet => self.state.screen = Screen::Cabinet,
             ui::UiAction::Help => self.state.screen = Screen::Help,
+            ui::UiAction::Records => self.state.screen = Screen::Records,
             ui::UiAction::Settings => self.state.screen = Screen::Settings,
             ui::UiAction::Save => self.save_autosave(),
             ui::UiAction::Load => self.load_autosave(),
@@ -305,7 +307,61 @@ impl Game {
             ui::UiAction::ToggleSound => self.state.sound = !self.state.sound,
             ui::UiAction::ToggleMotion => self.state.reduced_motion = !self.state.reduced_motion,
         }
+        self.update_records();
         self.save_autosave();
+    }
+    fn update_records(&mut self) {
+        let records = &mut self.state.records;
+        records.best_2048 = records.best_2048.max(self.state.game.best);
+        let sudoku_index = match self.state.sudoku.difficulty {
+            crate::sudoku::SudokuDifficulty::Easy => 0,
+            crate::sudoku::SudokuDifficulty::Medium => 1,
+            crate::sudoku::SudokuDifficulty::Hard => 2,
+        };
+        if self.state.sudoku.status == crate::sudoku::SudokuStatus::Won {
+            if let Some(moves) = self.state.sudoku.best_moves {
+                records.sudoku[sudoku_index] =
+                    Some(records.sudoku[sudoku_index].map_or(moves, |best| best.min(moves)));
+            }
+        }
+        let nonogram_index = match self.state.nonogram.preset {
+            crate::nonogram::NonogramPreset::Small => 0,
+            crate::nonogram::NonogramPreset::Medium => 1,
+            crate::nonogram::NonogramPreset::Large => 2,
+        };
+        if self.state.nonogram.status == crate::nonogram::NonogramStatus::Won {
+            if let Some(moves) = self.state.nonogram.best_moves {
+                records.nonogram[nonogram_index] =
+                    Some(records.nonogram[nonogram_index].map_or(moves, |best| best.min(moves)));
+            }
+        }
+        if self.state.solitaire.status == crate::solitaire::SolitaireStatus::Won {
+            records.solitaire_best_moves = Some(
+                records
+                    .solitaire_best_moves
+                    .map_or(self.state.solitaire.moves, |best| {
+                        best.min(self.state.solitaire.moves)
+                    }),
+            );
+        }
+        if self.state.freecell.status == crate::freecell::FreeCellStatus::Won {
+            records.freecell_best_moves = Some(
+                records
+                    .freecell_best_moves
+                    .map_or(self.state.freecell.moves, |best| {
+                        best.min(self.state.freecell.moves)
+                    }),
+            );
+        }
+        if self.state.fivefold.status == crate::fivefold::FivefoldStatus::Complete {
+            records.fivefold_best_total =
+                records.fivefold_best_total.max(self.state.fivefold.total());
+        }
+        if self.state.reversi.status == crate::reversi::ReversiStatus::Won {
+            records.reversi_best_score = records
+                .reversi_best_score
+                .max(self.state.reversi.score(1) as u8);
+        }
     }
     fn try_move(&mut self, direction: Direction) {
         if self.state.game.move_in(direction) && self.state.game.won() {

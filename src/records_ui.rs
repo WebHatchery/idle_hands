@@ -1,0 +1,90 @@
+//! Collection-wide records screen.
+
+use crate::state::AppState;
+use crate::ui::UiAction;
+use macroquad::prelude::*;
+
+fn panel(rect: Rect, fill: Color) {
+    draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
+    draw_rectangle_lines(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        2.,
+        Color::new(0.45, 0.38, 0.65, 0.65),
+    );
+}
+fn value(value: Option<u32>) -> String {
+    value.map_or_else(|| "—".into(), |number| number.to_string())
+}
+
+pub fn draw_records(state: &AppState) {
+    panel(
+        Rect::new(120., 55., 1040., 610.),
+        Color::new(0.08, 0.06, 0.14, 1.),
+    );
+    draw_text("RECORDS", 170., 125., 46., Color::new(0.98, 0.83, 0.45, 1.));
+    draw_text(
+        "Quiet milestones from every drawer",
+        174.,
+        153.,
+        19.,
+        Color::new(0.72, 0.68, 0.82, 1.),
+    );
+    let left = [
+        ("2048 best score", state.records.best_2048.to_string()),
+        ("Minesweeper beginner", value(state.records.minesweeper[0])),
+        (
+            "Minesweeper intermediate",
+            value(state.records.minesweeper[1]),
+        ),
+        ("Minesweeper expert", value(state.records.minesweeper[2])),
+        ("Minesweeper custom", value(state.records.minesweeper[3])),
+        ("Sudoku easy moves", value(state.records.sudoku[0])),
+        ("Sudoku medium moves", value(state.records.sudoku[1])),
+    ];
+    let right = [
+        ("Sudoku hard moves", value(state.records.sudoku[2])),
+        ("Nonogram 5 × 5 moves", value(state.records.nonogram[0])),
+        ("Nonogram 10 × 10 moves", value(state.records.nonogram[1])),
+        ("Nonogram 15 × 15 moves", value(state.records.nonogram[2])),
+        (
+            "Solitaire best moves",
+            value(state.records.solitaire_best_moves),
+        ),
+        (
+            "FreeCell best moves",
+            value(state.records.freecell_best_moves),
+        ),
+        (
+            "Fivefold best total",
+            state.records.fivefold_best_total.to_string(),
+        ),
+        (
+            "Reversi best score",
+            state.records.reversi_best_score.to_string(),
+        ),
+    ];
+    draw_column(&left, 175., 215.);
+    draw_column(&right, 650., 215.);
+    panel(
+        Rect::new(930., 590., 180., 48.),
+        Color::new(0.25, 0.16, 0.32, 1.),
+    );
+    draw_text("BACK", 990., 621., 18., WHITE);
+}
+fn draw_column(entries: &[(&str, String)], x: f32, y: f32) {
+    for (index, (label, value)) in entries.iter().enumerate() {
+        let top = y + index as f32 * 48.;
+        draw_text(label, x, top, 17., Color::new(0.78, 0.73, 0.86, 1.));
+        draw_text(value, x + 335., top, 18., Color::new(0.98, 0.83, 0.45, 1.));
+    }
+}
+pub fn records_clicks(p: Vec2) -> Vec<UiAction> {
+    if Rect::new(930., 590., 180., 48.).contains(p) {
+        vec![UiAction::Cabinet]
+    } else {
+        vec![]
+    }
+}

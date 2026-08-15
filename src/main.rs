@@ -13,6 +13,7 @@ mod input;
 mod minesweeper;
 mod nonogram;
 mod nonogram_ui;
+mod records_ui;
 mod reversi;
 mod reversi_ui;
 mod solitaire;

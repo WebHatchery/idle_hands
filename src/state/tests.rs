@@ -31,10 +31,14 @@ fn collection_save_round_trips_game_and_profile_state() {
     state.profile_name = "Quiet Player".into();
     state.game.score = 128;
     state.mine_records[0] = Some(42);
+    state.records.best_2048 = 128;
+    state.records.fivefold_best_total = 275;
     let save = CollectionSave::from_state(&state, "1.0.0");
     let mut restored = AppState::default();
     save.apply_to(&mut restored);
     assert_eq!(restored.profile_name, "Quiet Player");
     assert_eq!(restored.game.score, 128);
     assert_eq!(restored.mine_records[0], Some(42));
+    assert_eq!(restored.records.best_2048, 128);
+    assert_eq!(restored.records.fivefold_best_total, 275);
 }

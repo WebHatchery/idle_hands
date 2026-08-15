@@ -62,6 +62,7 @@ pub enum Screen {
     Cabinet,
     Game(GameId),
     Help,
+    Records,
     Settings,
 }
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -206,6 +207,33 @@ pub struct AppState {
     pub mine_flag_mode: bool,
     pub mine_records: [Option<u32>; 4],
     pub sudoku_note_mode: bool,
+    pub records: CollectionRecords,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CollectionRecords {
+    pub best_2048: u32,
+    pub minesweeper: [Option<u32>; 4],
+    pub sudoku: [Option<u32>; 3],
+    pub nonogram: [Option<u32>; 3],
+    pub solitaire_best_moves: Option<u32>,
+    pub freecell_best_moves: Option<u32>,
+    pub fivefold_best_total: u16,
+    pub reversi_best_score: u8,
+}
+impl Default for CollectionRecords {
+    fn default() -> Self {
+        Self {
+            best_2048: 0,
+            minesweeper: [None; 4],
+            sudoku: [None; 3],
+            nonogram: [None; 3],
+            solitaire_best_moves: None,
+            freecell_best_moves: None,
+            fivefold_best_total: 0,
+            reversi_best_score: 0,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -232,6 +260,8 @@ pub struct CollectionSave {
     pub mine_records: [Option<u32>; 4],
     #[serde(default)]
     pub sudoku_note_mode: bool,
+    #[serde(default)]
+    pub records: CollectionRecords,
 }
 
 impl CollectionSave {
@@ -252,6 +282,7 @@ impl CollectionSave {
             mine_flag_mode: state.mine_flag_mode,
             mine_records: state.mine_records,
             sudoku_note_mode: state.sudoku_note_mode,
+            records: state.records.clone(),
         }
     }
     pub fn apply_to(self, state: &mut AppState) {
@@ -269,6 +300,7 @@ impl CollectionSave {
         state.mine_flag_mode = self.mine_flag_mode;
         state.mine_records = self.mine_records;
         state.sudoku_note_mode = self.sudoku_note_mode;
+        state.records = self.records;
     }
 }
 impl Default for AppState {
@@ -291,6 +323,7 @@ impl Default for AppState {
             mine_flag_mode: false,
             mine_records: [None, None, None, None],
             sudoku_note_mode: false,
+            records: CollectionRecords::default(),
         }
     }
 }
