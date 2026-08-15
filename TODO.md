@@ -25,7 +25,9 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 - [x] Replace the template session with app-level screen/navigation state.
 - [x] Add `GameId`, collection descriptors, game host lifecycle, and navigation.
 - [ ] Implement safe viewport handling and compact/medium/expanded layouts.
+  - [x] Add an aspect-preserving logical viewport with letterbox edge rejection.
 - [ ] Normalize touch/pointer input with tap, drag, swipe, cancel, and edge rules.
+  - [x] Normalize pointer taps, drags, cancellations, and logical edge rules.
 - [x] Build 44-point-minimum shared controls, modal sheets, help, and settings.
 - [x] Build the responsive cabinet with objects/labels for all eight games;
   unavailable objects clearly say “Coming soon” and remain accessible.

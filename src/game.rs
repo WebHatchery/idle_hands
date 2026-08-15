@@ -1,5 +1,6 @@
 //! Application lifecycle and input routing.
 
+use crate::input::{Gesture, PointerTracker};
 use crate::{
     data::GameData,
     state::{AppState, CollectionSave, Direction, GameId, Screen},
@@ -19,7 +20,7 @@ pub struct Game {
     pub state: AppState,
     assets: AssetManager,
     notifications: NotificationManager,
-    drag_start: Option<Vec2>,
+    pointer: PointerTracker,
 }
 impl Game {
     pub async fn new() -> Self {
@@ -33,7 +34,7 @@ impl Game {
             state: AppState::default(),
             assets,
             notifications: NotificationManager::new(),
-            drag_start: None,
+            pointer: PointerTracker::default(),
         };
         game.load_autosave();
         game
@@ -48,29 +49,39 @@ impl Game {
                 Some(self.state.mine_records[slot].map_or(time, |best| best.min(time)));
         }
         if is_mouse_button_pressed(MouseButton::Left) {
-            self.drag_start = Some(ui::mouse());
+            let viewport = ui::viewport();
+            self.pointer
+                .press(viewport.screen_to_logical(vec2(mouse_position().0, mouse_position().1)));
         }
         if is_mouse_button_released(MouseButton::Left) {
-            if let Some(start) = self.drag_start.take() {
-                let end = ui::mouse();
-                if self.state.screen == Screen::Game(GameId::Game2048)
-                    && (end - start).length() > 32.0
-                {
-                    self.try_move(swipe_direction(end - start));
-                } else if self.state.screen == Screen::Game(GameId::Nonogram)
-                    && (end - start).length() > 16.0
-                {
-                    for action in nonogram_ui::drag_actions(&self.state, start, end) {
-                        self.apply(action);
+            let viewport = ui::viewport();
+            let position = viewport.screen_to_logical(vec2(mouse_position().0, mouse_position().1));
+            if let Some(gesture) = self.pointer.release(position) {
+                match gesture {
+                    Gesture::Drag { start, end }
+                        if self.state.screen == Screen::Game(GameId::Game2048)
+                            && (end - start).length() > 32.0 =>
+                    {
+                        self.try_move(swipe_direction(end - start))
                     }
-                } else {
-                    for action in ui::clicks(&self.state) {
-                        self.apply(action);
+                    Gesture::Drag { start, end }
+                        if self.state.screen == Screen::Game(GameId::Nonogram) =>
+                    {
+                        for action in nonogram_ui::drag_actions(&self.state, start, end) {
+                            self.apply(action);
+                        }
                     }
+                    Gesture::Tap(_) => {
+                        for action in ui::clicks(&self.state) {
+                            self.apply(action);
+                        }
+                    }
+                    Gesture::Drag { .. } => {}
                 }
             }
         }
         if is_key_pressed(KeyCode::Escape) {
+            self.pointer.cancel();
             self.state.screen = Screen::Cabinet;
             self.state.confirm_restart = false;
         }
@@ -90,7 +101,17 @@ impl Game {
     }
     pub fn draw(&mut self) {
         clear_background(Color::new(0.035, 0.028, 0.055, 1.0));
+        let viewport = ui::viewport();
+        set_camera(&Camera2D {
+            target: vec2(ui::LOGICAL_WIDTH / 2., ui::LOGICAL_HEIGHT / 2.),
+            zoom: vec2(
+                2. * viewport.scale / screen_width(),
+                -2. * viewport.scale / screen_height(),
+            ),
+            ..Default::default()
+        });
         ui::draw(&self.state, &self.data, self.assets.len());
+        set_default_camera();
         self.notifications
             .draw_with_config(&NotificationRenderConfig {
                 anchor: NotificationAnchor::BottomRight,

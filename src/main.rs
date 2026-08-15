@@ -9,6 +9,7 @@ mod fivefold_ui;
 mod freecell;
 mod freecell_ui;
 mod game;
+mod input;
 mod minesweeper;
 mod nonogram;
 mod nonogram_ui;

@@ -2,6 +2,7 @@
 
 use crate::fivefold_ui;
 use crate::freecell_ui;
+use crate::input::Viewport;
 use crate::nonogram_ui;
 use crate::reversi_ui;
 use crate::solitaire_ui;
@@ -65,11 +66,18 @@ pub enum UiAction {
     ReversiNew,
     ReversiLevel(crate::reversi::AiLevel),
 }
-pub fn mouse() -> Vec2 {
-    vec2(
-        mouse_position().0 * LOGICAL_WIDTH / screen_width(),
-        mouse_position().1 * LOGICAL_HEIGHT / screen_height(),
+pub fn viewport() -> Viewport {
+    Viewport::new(
+        screen_width(),
+        screen_height(),
+        LOGICAL_WIDTH,
+        LOGICAL_HEIGHT,
     )
+}
+pub fn mouse() -> Vec2 {
+    viewport()
+        .screen_to_logical(vec2(mouse_position().0, mouse_position().1))
+        .unwrap_or(vec2(-1000., -1000.))
 }
 pub fn clicks(state: &AppState) -> Vec<UiAction> {
     let p = mouse();
