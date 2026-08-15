@@ -8,6 +8,8 @@ mod game;
 mod minesweeper;
 mod nonogram;
 mod nonogram_ui;
+mod solitaire;
+mod solitaire_ui;
 mod state;
 mod sudoku;
 mod sudoku_ui;

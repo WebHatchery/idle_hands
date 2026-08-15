@@ -1,6 +1,7 @@
 //! Touch-first cabinet and 2048 presentation.
 
 use crate::nonogram_ui;
+use crate::solitaire_ui;
 use crate::sudoku_ui;
 use crate::{
     data::GameData,
@@ -41,6 +42,12 @@ pub enum UiAction {
     NonogramMode,
     NonogramUndo,
     NonogramPreset(crate::nonogram::NonogramPreset),
+    SolitaireStock,
+    SolitaireTableau(usize, usize),
+    SolitaireWaste,
+    SolitaireFoundation(usize),
+    SolitaireUndo,
+    SolitaireNew,
 }
 pub fn mouse() -> Vec2 {
     vec2(
@@ -70,6 +77,7 @@ pub fn clicks(state: &AppState) -> Vec<UiAction> {
         Screen::Game(GameId::Minesweeper) => mine_clicks(state, p),
         Screen::Game(GameId::Sudoku) => sudoku_ui::sudoku_clicks(state, p),
         Screen::Game(GameId::Nonogram) => nonogram_ui::nonogram_clicks(state, p),
+        Screen::Game(GameId::Solitaire) => solitaire_ui::solitaire_clicks(state, p),
         Screen::Help => {
             if Rect::new(1030., 635., 180., 48.).contains(p) {
                 vec![UiAction::Cabinet]
@@ -88,6 +96,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::Minesweeper) => draw_minesweeper(state),
         Screen::Game(GameId::Sudoku) => sudoku_ui::draw_sudoku(state),
         Screen::Game(GameId::Nonogram) => nonogram_ui::draw_nonogram(state),
+        Screen::Game(GameId::Solitaire) => solitaire_ui::draw_solitaire(state),
         Screen::Help => draw_help(),
         Screen::Settings => draw_settings(state),
         Screen::Game(_) => draw_cabinet(state, data, loaded_assets),

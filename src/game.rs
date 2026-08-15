@@ -104,7 +104,11 @@ impl Game {
                 let id = GameId::ALL[index];
                 if matches!(
                     id,
-                    GameId::Game2048 | GameId::Minesweeper | GameId::Sudoku | GameId::Nonogram
+                    GameId::Game2048
+                        | GameId::Minesweeper
+                        | GameId::Sudoku
+                        | GameId::Nonogram
+                        | GameId::Solitaire
                 ) {
                     self.state.screen = Screen::Game(id);
                 } else {
@@ -175,6 +179,29 @@ impl Game {
             }
             ui::UiAction::NonogramPreset(preset) => {
                 self.state.nonogram = crate::nonogram::Nonogram::new(preset);
+            }
+            ui::UiAction::SolitaireStock => {
+                self.state.solitaire.draw_stock();
+            }
+            ui::UiAction::SolitaireTableau(column, depth) => {
+                if self.state.solitaire.selected.is_some() {
+                    self.state.solitaire.move_to_tableau(column);
+                } else {
+                    self.state.solitaire.select_tableau(column, depth);
+                }
+            }
+            ui::UiAction::SolitaireWaste => {
+                self.state.solitaire.select_waste();
+            }
+            ui::UiAction::SolitaireFoundation(suit) => {
+                self.state.solitaire.move_to_foundation(suit);
+            }
+            ui::UiAction::SolitaireUndo => {
+                self.state.solitaire.undo();
+            }
+            ui::UiAction::SolitaireNew => {
+                self.state.solitaire =
+                    crate::solitaire::Solitaire::new(self.state.solitaire.seed.wrapping_add(1));
             }
             ui::UiAction::MineChord(index) => {
                 self.state.minesweeper.chord(index);

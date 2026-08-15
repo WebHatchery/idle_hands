@@ -2,6 +2,7 @@
 
 use crate::minesweeper::Minesweeper;
 use crate::nonogram::Nonogram;
+use crate::solitaire::Solitaire;
 use crate::sudoku::Sudoku;
 use serde::{Deserialize, Serialize};
 
@@ -191,6 +192,7 @@ pub struct AppState {
     pub minesweeper: Minesweeper,
     pub sudoku: Sudoku,
     pub nonogram: Nonogram,
+    pub solitaire: Solitaire,
     pub confirm_restart: bool,
     pub profile_name: String,
     pub sound: bool,
@@ -209,6 +211,8 @@ pub struct CollectionSave {
     pub sudoku: Sudoku,
     #[serde(default)]
     pub nonogram: Nonogram,
+    #[serde(default)]
+    pub solitaire: Solitaire,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -226,6 +230,7 @@ impl CollectionSave {
             minesweeper: state.minesweeper.clone(),
             sudoku: state.sudoku.clone(),
             nonogram: state.nonogram.clone(),
+            solitaire: state.solitaire.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -239,6 +244,7 @@ impl CollectionSave {
         state.minesweeper = self.minesweeper;
         state.sudoku = self.sudoku;
         state.nonogram = self.nonogram;
+        state.solitaire = self.solitaire;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -256,6 +262,7 @@ impl Default for AppState {
             minesweeper: Minesweeper::beginner(0x1D1E_51),
             sudoku: Sudoku::new(),
             nonogram: Nonogram::default(),
+            solitaire: Solitaire::default(),
             confirm_restart: false,
             profile_name: "Cabinet Guest".into(),
             sound: true,
