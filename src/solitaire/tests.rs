@@ -1,4 +1,5 @@
 use super::*;
+use crate::cards::Card;
 
 #[test]
 fn seeded_deals_are_repeatable_and_complete() {

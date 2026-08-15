@@ -1,6 +1,6 @@
 //! Touch-first FreeCell presentation.
 
-use crate::{freecell::FreeSource, solitaire::Card, state::AppState, ui::UiAction};
+use crate::{cards::Card, freecell::FreeSource, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
 fn card_rect(x: f32, y: f32) -> Rect {

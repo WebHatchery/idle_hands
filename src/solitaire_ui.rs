@@ -1,11 +1,6 @@
 //! Touch-first Klondike presentation.
 
-use crate::{
-    cosmetics,
-    solitaire::{Card, CardSource},
-    state::AppState,
-    ui::UiAction,
-};
+use crate::{cards::Card, cosmetics, solitaire::CardSource, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
 fn text(s: &str, x: f32, y: f32, size: f32, color: Color) {

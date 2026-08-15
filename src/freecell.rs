@@ -1,6 +1,6 @@
 //! Seeded FreeCell rules with tap-selected cards and undo snapshots.
 
-use crate::solitaire::Card;
+use crate::cards::{shuffled_deck, Card};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -38,20 +38,7 @@ impl Default for FreeCell {
 
 impl FreeCell {
     pub fn new(seed: u64) -> Self {
-        let mut deck = (0..4)
-            .flat_map(|suit| {
-                (1..=13).map(move |rank| Card {
-                    rank,
-                    suit,
-                    face_up: true,
-                })
-            })
-            .collect::<Vec<_>>();
-        let mut rng = seed;
-        for index in (1..deck.len()).rev() {
-            rng = next_seed(rng);
-            deck.swap(index, (rng as usize) % (index + 1));
-        }
+        let (deck, rng) = shuffled_deck(seed, true);
         let mut cascades = vec![Vec::new(); 8];
         for (index, card) in deck.into_iter().enumerate() {
             cascades[index % 8].push(card);
@@ -217,10 +204,5 @@ impl FreeCell {
         ));
     }
 }
-fn next_seed(seed: u64) -> u64 {
-    seed.wrapping_mul(6364136223846793005)
-        .wrapping_add(1442695040888963407)
-}
-
 #[cfg(test)]
 mod tests;

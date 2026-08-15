@@ -77,6 +77,8 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 
 - [ ] Build shared card identity, deck, seeded shuffle, visuals, hit regions,
   selection, drag/drop, stack layout, and animation.
+  - [x] Share card identity and seeded deck construction between Solitaire and
+    FreeCell.
 - [ ] Implement Klondike tableau, stock/waste, foundations, legal moves, scoring,
   win detection, undo, hint, new deal, tutorial, and records.
   - [x] Add deterministic visible Hint controls to Solitaire and FreeCell in
@@ -95,6 +97,7 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 ## Phase 5 — FreeCell
 
 - [ ] Reuse shared cards while keeping a separate FreeCell rule engine.
+  - [x] Use the shared card identity and seeded deck for FreeCell deals.
 - [ ] Implement cells, foundations, cascades, supermove capacity, legal move
   feedback, undo, hint, seeded deals, win detection, tutorial, and records.
   - [x] Add deterministic visible Hint controls to Solitaire and FreeCell in

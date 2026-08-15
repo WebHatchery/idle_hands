@@ -1,11 +1,12 @@
 //! Compact portrait layout for the card games.
 
 use crate::{
+    cards::Card,
     cosmetics,
     fivefold::{Category, FivefoldStatus},
     freecell::FreeSource,
     reversi::{AiLevel, ReversiStatus},
-    solitaire::{Card, CardSource, SolitaireStatus},
+    solitaire::{CardSource, SolitaireStatus},
     state::AppState,
     ui::UiAction,
 };

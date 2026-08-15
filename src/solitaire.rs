@@ -1,18 +1,7 @@
 //! Seeded Klondike card state with selection-based touch moves.
 
+use crate::cards::{shuffled_deck, Card};
 use serde::{Deserialize, Serialize};
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-pub struct Card {
-    pub rank: u8,
-    pub suit: u8,
-    pub face_up: bool,
-}
-impl Card {
-    pub fn red(self) -> bool {
-        self.suit >= 2
-    }
-}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum SolitaireStatus {
@@ -73,20 +62,7 @@ impl Solitaire {
         Self::with_ruleset(seed, SolitaireRuleset::default())
     }
     pub fn with_ruleset(seed: u64, ruleset: SolitaireRuleset) -> Self {
-        let mut deck = (0..4)
-            .flat_map(|suit| {
-                (1..=13).map(move |rank| Card {
-                    rank,
-                    suit,
-                    face_up: false,
-                })
-            })
-            .collect::<Vec<_>>();
-        let mut rng = seed;
-        for index in (1..deck.len()).rev() {
-            rng = next_seed(rng);
-            deck.swap(index, (rng as usize) % (index + 1));
-        }
+        let (deck, rng) = shuffled_deck(seed, false);
         let mut tableau = vec![Vec::new(); 7];
         let mut cursor = 0;
         for (column, stack) in tableau.iter_mut().enumerate().take(7) {
@@ -248,10 +224,5 @@ impl Solitaire {
         ));
     }
 }
-fn next_seed(seed: u64) -> u64 {
-    seed.wrapping_mul(6364136223846793005)
-        .wrapping_add(1442690888963407)
-}
-
 #[cfg(test)]
 mod tests;
