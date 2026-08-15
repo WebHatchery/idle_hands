@@ -1,6 +1,7 @@
 //! Application state and the deterministic 2048 rules engine.
 
 use crate::minesweeper::Minesweeper;
+use crate::sudoku::Sudoku;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -187,12 +188,14 @@ pub struct AppState {
     pub selected: usize,
     pub game: Game2048,
     pub minesweeper: Minesweeper,
+    pub sudoku: Sudoku,
     pub confirm_restart: bool,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
     pub mine_flag_mode: bool,
     pub mine_records: [Option<u32>; 4],
+    pub sudoku_note_mode: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -200,11 +203,15 @@ pub struct CollectionSave {
     pub version: String,
     pub game: Game2048,
     pub minesweeper: Minesweeper,
+    #[serde(default)]
+    pub sudoku: Sudoku,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
     pub mine_flag_mode: bool,
     pub mine_records: [Option<u32>; 4],
+    #[serde(default)]
+    pub sudoku_note_mode: bool,
 }
 
 impl CollectionSave {
@@ -213,21 +220,25 @@ impl CollectionSave {
             version: version.to_owned(),
             game: state.game.clone(),
             minesweeper: state.minesweeper.clone(),
+            sudoku: state.sudoku.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
             mine_flag_mode: state.mine_flag_mode,
             mine_records: state.mine_records,
+            sudoku_note_mode: state.sudoku_note_mode,
         }
     }
     pub fn apply_to(self, state: &mut AppState) {
         state.game = self.game;
         state.minesweeper = self.minesweeper;
+        state.sudoku = self.sudoku;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
         state.mine_flag_mode = self.mine_flag_mode;
         state.mine_records = self.mine_records;
+        state.sudoku_note_mode = self.sudoku_note_mode;
     }
 }
 impl Default for AppState {
@@ -237,12 +248,14 @@ impl Default for AppState {
             selected: 4,
             game: Game2048::default(),
             minesweeper: Minesweeper::beginner(0x1D1E_51),
+            sudoku: Sudoku::new(),
             confirm_restart: false,
             profile_name: "Cabinet Guest".into(),
             sound: true,
             reduced_motion: false,
             mine_flag_mode: false,
             mine_records: [None, None, None, None],
+            sudoku_note_mode: false,
         }
     }
 }

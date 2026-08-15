@@ -1,5 +1,6 @@
 //! Touch-first cabinet and 2048 presentation.
 
+use crate::sudoku_ui;
 use crate::{
     data::GameData,
     minesweeper::{Cell, MinePreset, MineStatus},
@@ -29,6 +30,10 @@ pub enum UiAction {
     MineRestart,
     MineFlagMode,
     MinePreset(crate::minesweeper::MinePreset),
+    SudokuCell(usize),
+    SudokuNumber(u8),
+    SudokuErase,
+    SudokuNoteMode,
 }
 pub fn mouse() -> Vec2 {
     vec2(
@@ -56,6 +61,7 @@ pub fn clicks(state: &AppState) -> Vec<UiAction> {
         }
         Screen::Game(GameId::Game2048) => game_clicks(state, p),
         Screen::Game(GameId::Minesweeper) => mine_clicks(state, p),
+        Screen::Game(GameId::Sudoku) => sudoku_ui::sudoku_clicks(state, p),
         Screen::Help => {
             if Rect::new(1030., 635., 180., 48.).contains(p) {
                 vec![UiAction::Cabinet]
@@ -72,6 +78,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Cabinet => draw_cabinet(state, data, loaded_assets),
         Screen::Game(GameId::Game2048) => draw_2048(state),
         Screen::Game(GameId::Minesweeper) => draw_minesweeper(state),
+        Screen::Game(GameId::Sudoku) => sudoku_ui::draw_sudoku(state),
         Screen::Help => draw_help(),
         Screen::Settings => draw_settings(state),
         Screen::Game(_) => draw_cabinet(state, data, loaded_assets),

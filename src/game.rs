@@ -96,7 +96,7 @@ impl Game {
             ui::UiAction::Open(index) => {
                 self.state.selected = index;
                 let id = GameId::ALL[index];
-                if matches!(id, GameId::Game2048 | GameId::Minesweeper) {
+                if matches!(id, GameId::Game2048 | GameId::Minesweeper | GameId::Sudoku) {
                     self.state.screen = Screen::Game(id);
                 } else {
                     self.notifications
@@ -126,6 +126,26 @@ impl Game {
                     crate::minesweeper::Minesweeper::new(preset, seed)
                 };
                 self.state.mine_flag_mode = false;
+            }
+            ui::UiAction::SudokuCell(index) => {
+                self.state.sudoku.select(index);
+            }
+            ui::UiAction::SudokuNumber(value) => {
+                if let Some(index) = self.state.sudoku.selected {
+                    if self.state.sudoku_note_mode {
+                        self.state.sudoku.toggle_note(index, value);
+                    } else {
+                        self.state.sudoku.place(index, value);
+                    }
+                }
+            }
+            ui::UiAction::SudokuErase => {
+                if let Some(index) = self.state.sudoku.selected {
+                    self.state.sudoku.erase(index);
+                }
+            }
+            ui::UiAction::SudokuNoteMode => {
+                self.state.sudoku_note_mode = !self.state.sudoku_note_mode;
             }
             ui::UiAction::MineChord(index) => {
                 self.state.minesweeper.chord(index);

@@ -7,6 +7,8 @@ mod data;
 mod game;
 mod minesweeper;
 mod state;
+mod sudoku;
+mod sudoku_ui;
 mod ui;
 
 use game::Game;
