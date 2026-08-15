@@ -22,29 +22,29 @@ fn layout() -> Layout {
         Layout {
             board: Rect::new(300., 55., 280., 280.),
             directions: [
-                Rect::new(18., 88., 62., 38.),
-                Rect::new(18., 133., 62., 38.),
-                Rect::new(18., 178., 62., 38.),
-                Rect::new(18., 223., 62., 38.),
+                Rect::new(18., 88., 62., 44.),
+                Rect::new(18., 133., 62., 44.),
+                Rect::new(18., 178., 62., 44.),
+                Rect::new(18., 223., 62., 44.),
             ],
-            strike: Rect::new(105., 125., 145., 42.),
-            potion: Rect::new(105., 180., 145., 42.),
-            undo: Rect::new(610., 120., 110., 40.),
-            new_game: Rect::new(610., 175., 145., 40.),
+            strike: Rect::new(105., 125., 145., 44.),
+            potion: Rect::new(105., 180., 145., 44.),
+            undo: Rect::new(610., 120., 110., 44.),
+            new_game: Rect::new(610., 175., 145., 44.),
         }
     } else if crate::ui::is_portrait() {
         Layout {
             board: Rect::new(40., 130., 320., 320.),
             directions: [
-                Rect::new(40., 470., 68., 40.),
-                Rect::new(124., 470., 68., 40.),
-                Rect::new(208., 470., 68., 40.),
-                Rect::new(292., 470., 68., 40.),
+                Rect::new(40., 470., 68., 44.),
+                Rect::new(124., 470., 68., 44.),
+                Rect::new(208., 470., 68., 44.),
+                Rect::new(292., 470., 68., 44.),
             ],
-            strike: Rect::new(40., 525., 145., 42.),
-            potion: Rect::new(195., 525., 165., 42.),
-            undo: Rect::new(40., 580., 145., 42.),
-            new_game: Rect::new(195., 580., 165., 42.),
+            strike: Rect::new(40., 525., 145., 44.),
+            potion: Rect::new(195., 525., 165., 44.),
+            undo: Rect::new(40., 580., 145., 44.),
+            new_game: Rect::new(195., 580., 165., 44.),
         }
     } else {
         Layout {

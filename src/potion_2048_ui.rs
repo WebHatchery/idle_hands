@@ -18,13 +18,13 @@ fn layout() -> Layout {
         Layout {
             board: Rect::new(270., 60., 300., 300.),
             arrows: [
-                Rect::new(610., 70., 52., 42.),
-                Rect::new(610., 120., 52., 42.),
-                Rect::new(610., 170., 52., 42.),
-                Rect::new(610., 220., 52., 42.),
+                Rect::new(610., 70., 52., 44.),
+                Rect::new(610., 120., 52., 44.),
+                Rect::new(610., 170., 52., 44.),
+                Rect::new(610., 220., 52., 44.),
             ],
-            undo: Rect::new(680., 155., 105., 40.),
-            new_game: Rect::new(680., 210., 130., 40.),
+            undo: Rect::new(680., 155., 105., 44.),
+            new_game: Rect::new(680., 210., 130., 44.),
         }
     } else if crate::ui::is_portrait() {
         Layout {
@@ -35,8 +35,8 @@ fn layout() -> Layout {
                 Rect::new(184., 480., 74., 44.),
                 Rect::new(266., 480., 74., 44.),
             ],
-            undo: Rect::new(20., 555., 145., 42.),
-            new_game: Rect::new(185., 555., 155., 42.),
+            undo: Rect::new(20., 555., 145., 44.),
+            new_game: Rect::new(185., 555., 155., 44.),
         }
     } else {
         Layout {

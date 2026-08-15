@@ -19,16 +19,16 @@ fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             board: Rect::new(220., 70., 560., 280.),
-            wave: Rect::new(18., 120., 165., 42.),
-            undo: Rect::new(18., 175., 120., 40.),
-            new_game: Rect::new(18., 228., 145., 40.),
+            wave: Rect::new(18., 120., 165., 44.),
+            undo: Rect::new(18., 175., 120., 44.),
+            new_game: Rect::new(18., 228., 145., 44.),
         }
     } else if crate::ui::is_portrait() {
         Layout {
             board: Rect::new(20., 140., 360., 300.),
-            wave: Rect::new(20., 470., 165., 42.),
-            undo: Rect::new(20., 525., 145., 42.),
-            new_game: Rect::new(195., 525., 165., 42.),
+            wave: Rect::new(20., 470., 165., 44.),
+            undo: Rect::new(20., 525., 145., 44.),
+            new_game: Rect::new(195., 525., 165., 44.),
         }
     } else {
         Layout {
