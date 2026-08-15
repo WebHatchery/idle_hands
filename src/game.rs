@@ -109,6 +109,7 @@ impl Game {
                         | GameId::Sudoku
                         | GameId::Nonogram
                         | GameId::Solitaire
+                        | GameId::FreeCell
                 ) {
                     self.state.screen = Screen::Game(id);
                 } else {
@@ -202,6 +203,30 @@ impl Game {
             ui::UiAction::SolitaireNew => {
                 self.state.solitaire =
                     crate::solitaire::Solitaire::new(self.state.solitaire.seed.wrapping_add(1));
+            }
+            ui::UiAction::FreeCellCell(cell) => {
+                if self.state.freecell.selected.is_some() {
+                    self.state.freecell.move_selected_to_cascade(cell);
+                } else {
+                    self.state.freecell.select_cell(cell);
+                }
+            }
+            ui::UiAction::FreeCellCascade(cascade, depth) => {
+                if self.state.freecell.selected.is_some() {
+                    self.state.freecell.move_selected_to_cascade(cascade);
+                } else {
+                    self.state.freecell.select_cascade(cascade, depth);
+                }
+            }
+            ui::UiAction::FreeCellFoundation(suit) => {
+                self.state.freecell.move_selected_to_foundation(suit);
+            }
+            ui::UiAction::FreeCellUndo => {
+                self.state.freecell.undo();
+            }
+            ui::UiAction::FreeCellNew => {
+                self.state.freecell =
+                    crate::freecell::FreeCell::new(self.state.freecell.seed.wrapping_add(1));
             }
             ui::UiAction::MineChord(index) => {
                 self.state.minesweeper.chord(index);

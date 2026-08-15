@@ -1,5 +1,6 @@
 //! Application state and the deterministic 2048 rules engine.
 
+use crate::freecell::FreeCell;
 use crate::minesweeper::Minesweeper;
 use crate::nonogram::Nonogram;
 use crate::solitaire::Solitaire;
@@ -193,6 +194,7 @@ pub struct AppState {
     pub sudoku: Sudoku,
     pub nonogram: Nonogram,
     pub solitaire: Solitaire,
+    pub freecell: FreeCell,
     pub confirm_restart: bool,
     pub profile_name: String,
     pub sound: bool,
@@ -213,6 +215,8 @@ pub struct CollectionSave {
     pub nonogram: Nonogram,
     #[serde(default)]
     pub solitaire: Solitaire,
+    #[serde(default)]
+    pub freecell: FreeCell,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -231,6 +235,7 @@ impl CollectionSave {
             sudoku: state.sudoku.clone(),
             nonogram: state.nonogram.clone(),
             solitaire: state.solitaire.clone(),
+            freecell: state.freecell.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -245,6 +250,7 @@ impl CollectionSave {
         state.sudoku = self.sudoku;
         state.nonogram = self.nonogram;
         state.solitaire = self.solitaire;
+        state.freecell = self.freecell;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -263,6 +269,7 @@ impl Default for AppState {
             sudoku: Sudoku::new(),
             nonogram: Nonogram::default(),
             solitaire: Solitaire::default(),
+            freecell: FreeCell::default(),
             confirm_restart: false,
             profile_name: "Cabinet Guest".into(),
             sound: true,
