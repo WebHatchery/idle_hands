@@ -70,8 +70,12 @@ impl Game {
             "rules" => Screen::Rules,
             "credits" => Screen::Credits,
             "settings" => Screen::Settings,
+            "settings_reset" => Screen::Settings,
             _ => Screen::Cabinet,
         };
+        if scene == "settings_reset" {
+            self.state.confirm_reset = true;
+        }
         if scene.starts_with("tutorial_") {
             if let Screen::Game(game) = self.state.screen {
                 self.state.tutorial = Some(game);

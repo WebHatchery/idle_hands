@@ -343,10 +343,40 @@ pub fn draw_settings(state: &AppState) {
         panel(rect, Color::new(0.20, 0.13, 0.30, 1.));
         text(label, rect.x + 25., rect.y + 27., 13., WHITE);
     }
+    if state.confirm_reset {
+        panel(
+            Rect::new(20., 485., 320., 145.),
+            Color::new(0.16, 0.08, 0.16, 0.99),
+        );
+        text("Reset the cabinet?", 42., 520., 20., WHITE);
+        text(
+            "This removes saves and records.",
+            42.,
+            548.,
+            13.,
+            Color::new(0.78, 0.73, 0.86, 1.),
+        );
+        panel(
+            Rect::new(42., 570., 120., 40.),
+            Color::new(0.22, 0.18, 0.35, 1.),
+        );
+        text("CANCEL", 75., 596., 12., WHITE);
+        panel(
+            Rect::new(198., 570., 120., 40.),
+            Color::new(0.45, 0.20, 0.24, 1.),
+        );
+        text("RESET", 238., 596., 12., WHITE);
+    }
 }
 
 pub fn settings_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if state.confirm_reset {
+        if Rect::new(42., 570., 120., 40.).contains(p) {
+            return vec![UiAction::CancelResetData];
+        }
+        if Rect::new(198., 570., 120., 40.).contains(p) {
+            return vec![UiAction::ConfirmResetData];
+        }
         return vec![];
     }
     if Rect::new(22., 665., 100., 42.).contains(p) {
