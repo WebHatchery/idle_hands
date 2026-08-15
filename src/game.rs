@@ -8,7 +8,7 @@ use crate::{
     data::GameData,
     state::{AppState, CollectionSave, Direction, GameId, GameSnapshot, ProfileSave, Screen},
 };
-use crate::{nonogram_ui, ui};
+use crate::{nonogram_ui, responsive_puzzles, ui};
 use macroquad::prelude::*;
 use macroquad_toolkit::assets::AssetManager;
 use macroquad_toolkit::notifications::{
@@ -107,7 +107,12 @@ impl Game {
                     Gesture::Drag { start, end }
                         if self.state.screen == Screen::Game(GameId::Nonogram) =>
                     {
-                        for action in nonogram_ui::drag_actions(&self.state, start, end) {
+                        let actions = if ui::is_portrait() {
+                            responsive_puzzles::nonogram_drag_actions(&self.state, start, end)
+                        } else {
+                            nonogram_ui::drag_actions(&self.state, start, end)
+                        };
+                        for action in actions {
                             self.apply(action);
                         }
                     }

@@ -27,7 +27,7 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 - [ ] Implement safe viewport handling and compact/medium/expanded layouts.
   - [x] Add an aspect-preserving logical viewport with letterbox edge rejection.
   - [x] Add a full-size compact portrait canvas for the cabinet, 2048, Sudoku,
-    and Settings flows.
+    Nonogram, and Settings flows.
 - [ ] Normalize touch/pointer input with tap, drag, swipe, cancel, and edge rules.
   - [x] Normalize pointer taps, drags, cancellations, and logical edge rules.
 - [x] Build 44-point-minimum shared controls, modal sheets, help, and settings.
@@ -115,8 +115,8 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover all eight independent game snapshots and migration defaults for
     progression and cosmetic fields.
 - [ ] Audit touch-only completion on iPhone/iPad portrait and landscape sizes.
-  - [x] Verify touch-sized portrait cabinet, 2048, Sudoku, and Settings
-    controls at 390×844.
+  - [x] Verify touch-sized portrait cabinet, 2048, Sudoku, Nonogram, and
+    Settings controls at 390×844.
 - [ ] Run the complete capture matrix, replace duplicate-state images, and update
   the catalog thumbnail with the final cabinet.
 - [ ] Complete final `cargo fmt`, tests, warning-free Clippy, and `publish.ps1`.

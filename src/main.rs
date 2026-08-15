@@ -19,6 +19,7 @@ mod nonogram_ui;
 mod palette_ui;
 mod progression;
 mod records_ui;
+mod responsive_puzzles;
 mod responsive_ui;
 mod reversi;
 mod reversi_ui;
