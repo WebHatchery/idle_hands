@@ -76,6 +76,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     state.records.blackjack_best_wins = Some(2);
     state.spider_solitaire.moves = 17;
     state.records.spider_solitaire_best_moves = Some(17);
+    state.dungeon_sweeper.moves = 18;
+    state.records.dungeon_sweeper_best_moves = Some(18);
     state.achievements[0] = true;
     state.stamps = 3;
     state.card_back = 1;
@@ -129,6 +131,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     assert_eq!(restored.records.blackjack_best_wins, Some(2));
     assert_eq!(restored.spider_solitaire.moves, 17);
     assert_eq!(restored.records.spider_solitaire_best_moves, Some(17));
+    assert_eq!(restored.dungeon_sweeper.moves, 18);
+    assert_eq!(restored.records.dungeon_sweeper_best_moves, Some(18));
     assert!(restored.achievements[0]);
     assert_eq!(restored.stamps, 3);
     assert_eq!(restored.card_back, 1);
@@ -191,6 +195,7 @@ fn every_game_snapshot_round_trips_its_own_state() {
         face_up: true,
     });
     source.spider_solitaire.moves = 36;
+    source.dungeon_sweeper.moves = 38;
 
     for game in GameId::ALL {
         let snapshot = GameSnapshot::from_state(&source, game);
@@ -235,6 +240,7 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
         face_up: true,
     });
     source.spider_solitaire.moves = 37;
+    source.dungeon_sweeper.moves = 39;
 
     let snapshots = GameId::ALL
         .iter()
@@ -271,6 +277,7 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
     assert_eq!(restored.klondike_golf.moves, 35);
     assert_eq!(restored.blackjack.player.len(), 3);
     assert_eq!(restored.spider_solitaire.moves, 37);
+    assert_eq!(restored.dungeon_sweeper.moves, 39);
 }
 
 #[test]
@@ -305,6 +312,7 @@ fn older_saves_default_new_progression_and_cosmetic_fields() {
         "klondike_golf",
         "blackjack",
         "spider_solitaire",
+        "dungeon_sweeper",
     ] {
         object.remove(field);
     }

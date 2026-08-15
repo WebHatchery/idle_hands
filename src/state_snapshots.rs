@@ -1,5 +1,6 @@
 //! Independent active-game snapshot storage.
 
+use crate::dungeon_sweeper::DungeonSweeper;
 use crate::state::Game2048;
 use crate::state::{AppState, GameId};
 use crate::{
@@ -42,6 +43,7 @@ pub enum GameSnapshot {
     KlondikeGolf(KlondikeGolf),
     Blackjack(Blackjack),
     SpiderSolitaire(SpiderSolitaire),
+    DungeonSweeper(DungeonSweeper),
 }
 
 impl GameSnapshot {
@@ -73,6 +75,7 @@ impl GameSnapshot {
             GameId::KlondikeGolf => Self::KlondikeGolf(state.klondike_golf.clone()),
             GameId::Blackjack => Self::Blackjack(state.blackjack.clone()),
             GameId::SpiderSolitaire => Self::SpiderSolitaire(state.spider_solitaire.clone()),
+            GameId::DungeonSweeper => Self::DungeonSweeper(state.dungeon_sweeper.clone()),
         }
     }
 
@@ -104,6 +107,7 @@ impl GameSnapshot {
             Self::KlondikeGolf(game) => state.klondike_golf = game,
             Self::Blackjack(game) => state.blackjack = game,
             Self::SpiderSolitaire(game) => state.spider_solitaire = game,
+            Self::DungeonSweeper(game) => state.dungeon_sweeper = game,
         }
     }
 }

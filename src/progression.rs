@@ -54,6 +54,7 @@ impl AchievementId {
                 GameId::KlondikeGolf => "Golf keeper",
                 GameId::Blackjack => "Hand keeper",
                 GameId::SpiderSolitaire => "Web keeper",
+                GameId::DungeonSweeper => "Dungeon keeper",
             },
             Self::FullCabinet => "Full cabinet",
         }
@@ -91,6 +92,7 @@ pub fn completed_games(records: &CollectionRecords) -> usize {
         records.mastermind_best_rows.is_some(),
         records.blackjack_best_wins.is_some(),
         records.spider_solitaire_best_moves.is_some(),
+        records.dungeon_sweeper_best_moves.is_some(),
     ]
     .into_iter()
     .filter(|complete| *complete)
@@ -127,6 +129,7 @@ pub fn earned(records: &CollectionRecords, achievement: AchievementId) -> bool {
             GameId::KlondikeGolf => records.klondike_golf_best_moves.is_some(),
             GameId::Blackjack => records.blackjack_best_wins.is_some(),
             GameId::SpiderSolitaire => records.spider_solitaire_best_moves.is_some(),
+            GameId::DungeonSweeper => records.dungeon_sweeper_best_moves.is_some(),
         },
         AchievementId::FullCabinet => completed_games(records) == GameId::ALL.len(),
     }

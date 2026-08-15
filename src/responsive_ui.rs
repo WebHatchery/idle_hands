@@ -684,6 +684,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::SpiderSolitaire if state.records.spider_solitaire_best_moves.is_some() => {
             "COMPLETE"
         }
+        GameId::DungeonSweeper if state.records.dungeon_sweeper_best_moves.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

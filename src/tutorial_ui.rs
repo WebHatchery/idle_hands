@@ -212,5 +212,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "Tap a destination column; deal STOCK when every column is filled.",
             "Clear eight suited runs; use UNDO or NEW DEAL visibly.",
         ],
+        GameId::DungeonSweeper => [
+            "Tap a room to reveal its trap clue.",
+            "Use FLAG MODE for traps and follow the clues to the EXIT.",
+            "Reach EXIT; use UNDO or NEW DUNGEON with visible controls.",
+        ],
     }
 }

@@ -231,6 +231,15 @@ impl Game {
                     }),
             );
         }
+        if self.state.dungeon_sweeper.status == crate::dungeon_sweeper::DungeonStatus::Won {
+            records.dungeon_sweeper_best_moves = Some(
+                records
+                    .dungeon_sweeper_best_moves
+                    .map_or(self.state.dungeon_sweeper.moves, |best| {
+                        best.min(self.state.dungeon_sweeper.moves)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

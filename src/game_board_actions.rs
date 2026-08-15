@@ -111,6 +111,23 @@ impl Game {
                 let seed = self.state.spider_solitaire.seed.wrapping_add(1);
                 self.state.spider_solitaire.reset(seed);
             }
+            UiAction::DungeonCell(index) => {
+                if self.state.mine_flag_mode {
+                    self.state.dungeon_sweeper.toggle_flag(*index);
+                } else {
+                    self.state.dungeon_sweeper.reveal(*index);
+                }
+            }
+            UiAction::DungeonToggleFlag => {
+                self.state.mine_flag_mode = !self.state.mine_flag_mode;
+            }
+            UiAction::DungeonUndo => {
+                self.state.dungeon_sweeper.undo();
+            }
+            UiAction::DungeonNew => {
+                let seed = self.state.dungeon_sweeper.seed.wrapping_add(1);
+                self.state.dungeon_sweeper.reset(seed);
+            }
             _ => return false,
         }
         true

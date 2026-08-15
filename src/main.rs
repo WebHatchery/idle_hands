@@ -19,6 +19,8 @@ mod connect_four;
 mod connect_four_ui;
 mod cosmetics;
 mod data;
+mod dungeon_sweeper;
+mod dungeon_sweeper_ui;
 mod fivefold;
 mod fivefold_ui;
 mod freecell;

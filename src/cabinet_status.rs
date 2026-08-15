@@ -32,6 +32,7 @@ pub fn status(state: &AppState, game: GameId) -> &'static str {
         GameId::KlondikeGolf => state.records.klondike_golf_best_moves.is_some(),
         GameId::Blackjack => state.records.blackjack_best_wins.is_some(),
         GameId::SpiderSolitaire => state.records.spider_solitaire_best_moves.is_some(),
+        GameId::DungeonSweeper => state.records.dungeon_sweeper_best_moves.is_some(),
     };
     if complete {
         "COMPLETE"
@@ -73,6 +74,7 @@ fn has_progress(state: &AppState, game: GameId) -> bool {
                 || state.blackjack.status != crate::blackjack::BlackjackStatus::Playing
         }
         GameId::SpiderSolitaire => state.spider_solitaire.moves > 0,
+        GameId::DungeonSweeper => state.dungeon_sweeper.moves > 0,
     }
 }
 
@@ -112,5 +114,6 @@ pub fn is_active(game: GameId) -> bool {
             | GameId::KlondikeGolf
             | GameId::Blackjack
             | GameId::SpiderSolitaire
+            | GameId::DungeonSweeper
     )
 }

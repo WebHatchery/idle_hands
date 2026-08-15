@@ -4,6 +4,7 @@ use crate::blackjack::Blackjack;
 use crate::breakout::Breakout;
 use crate::checkers::Checkers;
 use crate::connect_four::ConnectFour;
+use crate::dungeon_sweeper::DungeonSweeper;
 use crate::fivefold::Fivefold;
 use crate::freecell::FreeCell;
 use crate::hangman::Hangman;
@@ -57,9 +58,10 @@ pub enum GameId {
     KlondikeGolf,
     Blackjack,
     SpiderSolitaire,
+    DungeonSweeper,
 }
 impl GameId {
-    pub const ALL: [Self; 26] = [
+    pub const ALL: [Self; 27] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -86,6 +88,7 @@ impl GameId {
         Self::KlondikeGolf,
         Self::Blackjack,
         Self::SpiderSolitaire,
+        Self::DungeonSweeper,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -115,6 +118,7 @@ impl GameId {
             Self::KlondikeGolf => "Klondike Golf",
             Self::Blackjack => "Blackjack",
             Self::SpiderSolitaire => "Spider Solitaire",
+            Self::DungeonSweeper => "Dungeon Sweeper",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -145,6 +149,7 @@ impl GameId {
             Self::KlondikeGolf => "Clear the quiet columns",
             Self::Blackjack => "Hold the quiet hand",
             Self::SpiderSolitaire => "Build suited webs",
+            Self::DungeonSweeper => "Find the quiet exit",
         }
     }
     pub fn index(self) -> usize {
@@ -178,6 +183,7 @@ impl GameId {
             Self::KlondikeGolf => "klondike_golf",
             Self::Blackjack => "blackjack",
             Self::SpiderSolitaire => "spider_solitaire",
+            Self::DungeonSweeper => "dungeon_sweeper",
         }
     }
 }
@@ -348,6 +354,7 @@ pub struct AppState {
     pub klondike_golf: KlondikeGolf,
     pub blackjack: Blackjack,
     pub spider_solitaire: SpiderSolitaire,
+    pub dungeon_sweeper: DungeonSweeper,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -416,6 +423,8 @@ pub struct CollectionRecords {
     pub blackjack_best_wins: Option<u16>,
     #[serde(default)]
     pub spider_solitaire_best_moves: Option<u32>,
+    #[serde(default)]
+    pub dungeon_sweeper_best_moves: Option<u16>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -471,6 +480,8 @@ pub struct CollectionSave {
     pub blackjack: Blackjack,
     #[serde(default)]
     pub spider_solitaire: SpiderSolitaire,
+    #[serde(default)]
+    pub dungeon_sweeper: DungeonSweeper,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -600,6 +611,7 @@ impl CollectionSave {
             klondike_golf: state.klondike_golf.clone(),
             blackjack: state.blackjack.clone(),
             spider_solitaire: state.spider_solitaire.clone(),
+            dungeon_sweeper: state.dungeon_sweeper.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -645,6 +657,7 @@ impl CollectionSave {
         state.klondike_golf = self.klondike_golf;
         state.blackjack = self.blackjack;
         state.spider_solitaire = self.spider_solitaire;
+        state.dungeon_sweeper = self.dungeon_sweeper;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -696,6 +709,7 @@ impl Default for AppState {
             klondike_golf: KlondikeGolf::default(),
             blackjack: Blackjack::default(),
             spider_solitaire: SpiderSolitaire::default(),
+            dungeon_sweeper: DungeonSweeper::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

@@ -5,6 +5,7 @@ use crate::breakout_ui;
 use crate::checkers_ui;
 use crate::connect_four_ui;
 use crate::cosmetics;
+use crate::dungeon_sweeper_ui;
 use crate::fivefold_ui;
 use crate::freecell_ui;
 use crate::hangman_ui;
@@ -176,6 +177,10 @@ pub enum UiAction {
     SpiderSolitaireDeal,
     SpiderSolitaireUndo,
     SpiderSolitaireNew,
+    DungeonCell(usize),
+    DungeonToggleFlag,
+    DungeonUndo,
+    DungeonNew,
 }
 pub fn viewport() -> Viewport {
     let (width, height) = layout_size();
@@ -312,6 +317,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Game(GameId::KlondikeGolf) => klondike_golf_ui::clicks(state, p),
         Screen::Game(GameId::Blackjack) => blackjack_ui::clicks(state, p),
         Screen::Game(GameId::SpiderSolitaire) => spider_solitaire_ui::clicks(state, p),
+        Screen::Game(GameId::DungeonSweeper) => dungeon_sweeper_ui::clicks(state, p),
         Screen::Game(GameId::Mastermind) => mastermind_ui::clicks(state, p),
         Screen::Help => {
             if is_compact_landscape() {
@@ -414,6 +420,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::KlondikeGolf) => klondike_golf_ui::draw(state),
         Screen::Game(GameId::Blackjack) => blackjack_ui::draw(state),
         Screen::Game(GameId::SpiderSolitaire) => spider_solitaire_ui::draw(state),
+        Screen::Game(GameId::DungeonSweeper) => dungeon_sweeper_ui::draw(state),
         Screen::Game(GameId::Mastermind) => mastermind_ui::draw(state),
         Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(),
         Screen::Help if is_portrait() => responsive_library::draw_help(),

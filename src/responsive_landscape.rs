@@ -30,9 +30,9 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 fn cabinet_rect(index: usize) -> Rect {
     Rect::new(
         8. + (index % 4) as f32 * 210.,
-        38. + (index / 4) as f32 * 46.,
+        38. + (index / 4) as f32 * 40.,
         200.,
-        40.,
+        36.,
     )
 }
 
@@ -40,7 +40,7 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
     let accent = cosmetics::cabinet_accent(state.cabinet_decoration);
     text("IDLE HANDS", 12., 30., 25., accent);
     crate::cabinet_art::draw_header_motif(812., 28., 13., accent);
-    crate::cabinet_art::draw_shelves(8., 54., 828., 242., accent);
+    crate::cabinet_art::draw_shelves(8., 54., 828., 260., accent);
     text(
         "Quiet games for a wider pause",
         190.,
@@ -447,6 +447,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "Tap STOCK to deal one card to every column.",
             "Clear eight runs; use UNDO or NEW DEAL visibly.",
         ],
+        GameId::DungeonSweeper => [
+            "Tap a room to reveal its clue or use FLAG MODE.",
+            "Follow the quiet clues to the EXIT.",
+            "Use UNDO or NEW DUNGEON with visible controls.",
+        ],
     }
 }
 
@@ -482,6 +487,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::SpiderSolitaire if state.records.spider_solitaire_best_moves.is_some() => {
             "COMPLETE"
         }
+        GameId::DungeonSweeper if state.records.dungeon_sweeper_best_moves.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

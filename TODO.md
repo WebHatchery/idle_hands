@@ -366,8 +366,6 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Add responsive desktop, portrait, and medium-landscape presentation,
     visible controls, records, and verification captures.
 
-## Post-launch candidates (not scheduled)
-
 ## Phase 24 — Seventeenth post-launch cabinet game
 
 - [x] Add Blackjack as a twenty-fifth deterministic, touch-complete card
@@ -386,6 +384,18 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   card cabinet game with the standard four-suit, ten-column ruleset.
   - [x] Cover 104-card seeded deals, same-suit descending runs, stock deals,
     completed-run removal, undo, and reset behavior with focused rule tests.
+  - [x] Add persisted active state and best-move records with snapshot,
+    migration, progression, and tutorial coverage.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, records, and verification captures.
+
+## Phase 26 — Nineteenth post-launch cabinet game
+
+- [x] Add Dungeon Sweeper as a twenty-seventh deterministic, touch-complete
+  cabinet game with an eight-by-eight trap field, safe first reveal, flag mode,
+  exit discovery, undo, and reset.
+  - [x] Cover seeded fields, safe starts, flags, trap loss, exit victory, and
+    undo behavior with focused rule tests.
   - [x] Add persisted active state and best-move records with snapshot,
     migration, progression, and tutorial coverage.
   - [x] Add responsive desktop, portrait, and medium-landscape presentation,

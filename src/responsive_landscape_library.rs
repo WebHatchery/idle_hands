@@ -128,6 +128,10 @@ pub fn draw_records(state: &AppState) {
             "Spider Solitaire best",
             value(state.records.spider_solitaire_best_moves),
         ),
+        (
+            "Dungeon Sweeper best",
+            value(state.records.dungeon_sweeper_best_moves.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
         let col = index / 11;
