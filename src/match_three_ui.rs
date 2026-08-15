@@ -1,6 +1,7 @@
 //! Responsive touch presentation for Match Three.
 
 use crate::{
+    accessibility,
     match_three::{MatchThree, MatchThreePhase, SIDE},
     state::AppState,
     ui::UiAction,
@@ -78,17 +79,23 @@ pub fn draw(state: &AppState) {
         58.
     };
     draw_text("‹ CABINET", 8., 30., 13., muted());
-    draw_text("MATCH THREE", title_x, title_y, title_size(), accent());
+    draw_text(
+        "MATCH THREE",
+        title_x,
+        title_y,
+        accessibility::text_size(title_size(), state.large_text),
+        accent(),
+    );
     draw_text(
         format!("{} points  •  {}", game.score, status(game.phase)),
         if compact { 430. } else { title_x },
         if compact { 28. } else { title_y + 24. },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    draw_board(l.board, game);
-    button(l.undo, "UNDO");
-    button(l.new_game, "NEW BOARD");
+    draw_board(l.board, game, state.high_contrast);
+    button(l.undo, "UNDO", state.large_text);
+    button(l.new_game, "NEW BOARD", state.large_text);
     let status_y = if portrait {
         535.
     } else if compact {
@@ -100,12 +107,12 @@ pub fn draw(state: &AppState) {
         "Tap two adjacent tiles to clear matching colors",
         if compact { 250. } else { title_x },
         status_y,
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
 }
 
-fn draw_board(board: Rect, game: &MatchThree) {
+fn draw_board(board: Rect, game: &MatchThree, high_contrast: bool) {
     let cell = board.w / SIDE as f32;
     for index in 0..SIDE * SIDE {
         let rect = Rect::new(
@@ -114,7 +121,13 @@ fn draw_board(board: Rect, game: &MatchThree) {
             cell,
             cell,
         );
-        draw_rectangle(rect.x, rect.y, rect.w, rect.h, palette(game.cells[index]));
+        draw_rectangle(
+            rect.x,
+            rect.y,
+            rect.w,
+            rect.h,
+            palette(game.cells[index], high_contrast),
+        );
         draw_rectangle_lines(
             rect.x,
             rect.y,
@@ -124,7 +137,7 @@ fn draw_board(board: Rect, game: &MatchThree) {
             if game.selected == Some(index) {
                 WHITE
             } else {
-                line_color()
+                line_color(high_contrast)
             },
         );
     }
@@ -136,16 +149,26 @@ fn status(phase: MatchThreePhase) -> &'static str {
         MatchThreePhase::Won => "FIELD CLEARED",
     }
 }
-fn palette(color: u8) -> Color {
-    [
-        Color::new(0.94, 0.35, 0.42, 1.),
-        Color::new(0.98, 0.72, 0.28, 1.),
-        Color::new(0.35, 0.82, 0.58, 1.),
-        Color::new(0.32, 0.64, 0.95, 1.),
-        Color::new(0.68, 0.45, 0.90, 1.),
-    ][color as usize % 5]
+fn palette(color: u8, high_contrast: bool) -> Color {
+    if high_contrast {
+        [
+            Color::new(1., 0.20, 0.25, 1.),
+            Color::new(1., 0.82, 0.05, 1.),
+            Color::new(0.10, 0.95, 0.30, 1.),
+            Color::new(0.10, 0.55, 1., 1.),
+            Color::new(1., 0.25, 0.95, 1.),
+        ][color as usize % 5]
+    } else {
+        [
+            Color::new(0.94, 0.35, 0.42, 1.),
+            Color::new(0.98, 0.72, 0.28, 1.),
+            Color::new(0.35, 0.82, 0.58, 1.),
+            Color::new(0.32, 0.64, 0.95, 1.),
+            Color::new(0.68, 0.45, 0.90, 1.),
+        ][color as usize % 5]
+    }
 }
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -154,7 +177,12 @@ fn button(rect: Rect, label: &str) {
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
-    center_text(label, rect, 11., WHITE);
+    center_text(
+        label,
+        rect,
+        accessibility::text_size(11., large_text),
+        WHITE,
+    );
 }
 fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
     let measured = measure_text(label, None, size as u16, 1.);
@@ -188,6 +216,6 @@ fn accent() -> Color {
 fn muted() -> Color {
     Color::new(0.70, 0.64, 0.78, 1.)
 }
-fn line_color() -> Color {
-    Color::new(0.45, 0.38, 0.65, 0.8)
+fn line_color(high_contrast: bool) -> Color {
+    accessibility::grid_line(high_contrast)
 }

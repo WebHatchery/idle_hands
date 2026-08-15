@@ -1,6 +1,7 @@
 //! Responsive touch presentation for Dungeon Sweeper.
 
 use crate::{
+    accessibility,
     dungeon_sweeper::{DungeonCell, DungeonStatus},
     state::AppState,
     ui::UiAction,
@@ -78,12 +79,18 @@ pub fn draw(state: &AppState) {
         60.
     };
     text("‹ CABINET", 8., 30., 13., muted());
-    text("DUNGEON SWEEPER", x, y, title_size(), accent());
+    text(
+        "DUNGEON SWEEPER",
+        x,
+        y,
+        accessibility::text_size(title_size(), state.large_text),
+        accent(),
+    );
     text(
         &status_text(game.status, game.moves),
         if compact { 430. } else { x },
         if compact { 52. } else { y + 25. },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
     let grid = GridLayout::new(l.board, 8, 8);
@@ -92,9 +99,17 @@ pub fn draw(state: &AppState) {
         let cell = game.cells[index];
         let revealed = matches!(cell, DungeonCell::Revealed(_));
         let fill = if revealed {
-            Color::new(0.20, 0.16, 0.29, 1.)
+            if state.high_contrast {
+                accessibility::mine_cell(true, true)
+            } else {
+                Color::new(0.20, 0.16, 0.29, 1.)
+            }
         } else {
-            Color::new(0.11, 0.08, 0.18, 1.)
+            if state.high_contrast {
+                accessibility::mine_cell(false, true)
+            } else {
+                Color::new(0.11, 0.08, 0.18, 1.)
+            }
         };
         draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
         draw_rectangle_lines(
@@ -103,7 +118,7 @@ pub fn draw(state: &AppState) {
             rect.w,
             rect.h,
             1.,
-            Color::new(0.40, 0.33, 0.55, 1.),
+            accessibility::grid_line(state.high_contrast),
         );
         let show_trap = matches!(game.status, DungeonStatus::Lost)
             && matches!(cell, DungeonCell::Trap | DungeonCell::FlaggedTrap);
@@ -112,7 +127,7 @@ pub fn draw(state: &AppState) {
                 "×",
                 rect.x + rect.w * 0.34,
                 rect.y + rect.h * 0.67,
-                cell_size(),
+                cell_size(state.large_text),
                 Color::new(0.95, 0.35, 0.45, 1.),
             );
         } else if index == game.exit && revealed {
@@ -120,7 +135,7 @@ pub fn draw(state: &AppState) {
                 "E",
                 rect.x + rect.w * 0.34,
                 rect.y + rect.h * 0.67,
-                cell_size(),
+                cell_size(state.large_text),
                 accent(),
             );
         } else if let DungeonCell::Revealed(number) = cell {
@@ -128,7 +143,7 @@ pub fn draw(state: &AppState) {
                 &number.to_string(),
                 rect.x + rect.w * 0.40,
                 rect.y + rect.h * 0.66,
-                cell_size(),
+                cell_size(state.large_text),
                 WHITE,
             );
         } else if matches!(cell, DungeonCell::Flagged | DungeonCell::FlaggedTrap) {
@@ -136,7 +151,7 @@ pub fn draw(state: &AppState) {
                 "⚑",
                 rect.x + rect.w * 0.30,
                 rect.y + rect.h * 0.66,
-                cell_size(),
+                cell_size(state.large_text),
                 accent(),
             );
         }
@@ -152,7 +167,7 @@ pub fn draw(state: &AppState) {
         } else {
             565.
         },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
     button(
@@ -162,9 +177,10 @@ pub fn draw(state: &AppState) {
         } else {
             "FLAG MODE"
         },
+        state.large_text,
     );
-    button(l.undo, "UNDO");
-    button(l.new_game, "NEW DUNGEON");
+    button(l.undo, "UNDO", state.large_text);
+    button(l.new_game, "NEW DUNGEON", state.large_text);
 }
 use crate::grid::GridLayout;
 fn status_text(status: DungeonStatus, moves: u16) -> String {
@@ -175,7 +191,7 @@ fn status_text(status: DungeonStatus, moves: u16) -> String {
         DungeonStatus::Lost => "A trap closed the path".into(),
     }
 }
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -184,7 +200,13 @@ fn button(rect: Rect, label: &str) {
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
-    text(label, rect.x + 12., rect.y + 29., 11., WHITE);
+    text(
+        label,
+        rect.x + 12.,
+        rect.y + 29.,
+        accessibility::text_size(11., large_text),
+        WHITE,
+    );
 }
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     draw_text(value, x, y, size, color);
@@ -203,11 +225,11 @@ fn body_size() -> f32 {
         13.
     }
 }
-fn cell_size() -> f32 {
+fn cell_size(large_text: bool) -> f32 {
     if crate::ui::is_portrait() {
-        20.
+        accessibility::text_size(20., large_text).min(24.)
     } else {
-        28.
+        accessibility::text_size(28., large_text).min(32.)
     }
 }
 fn accent() -> Color {

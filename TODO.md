@@ -660,6 +660,15 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover collection round-trip persistence and verify all three responsive
     cabinet captures with the resume control visible.
 
+## Phase 50 — Post-launch dense-board accessibility
+
+- [x] Extend the persisted High Contrast and Large Text settings to the
+  Match Three, Maze Walk, and Dungeon Sweeper boards.
+  - [x] Improve board fills, grid lines, symbols, labels, and touch controls
+    without changing the underlying game rules.
+  - [x] Capture and verify accessible desktop, portrait, and medium-landscape
+    scenes for all three dense post-launch boards.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

@@ -1,6 +1,7 @@
 //! Responsive touch presentation for Maze Walk.
 
 use crate::{
+    accessibility,
     maze_walk::{MazePhase, MazeWalk, SIDE},
     state::{AppState, Direction},
     ui::UiAction,
@@ -101,20 +102,30 @@ pub fn draw(state: &AppState) {
         58.
     };
     draw_text("‹ CABINET", 8., 30., 13., muted());
-    draw_text("MAZE WALK", title_x, title_y, title_size(), accent());
+    draw_text(
+        "MAZE WALK",
+        title_x,
+        title_y,
+        accessibility::text_size(title_size(), state.large_text),
+        accent(),
+    );
     draw_text(
         format!("{} moves  •  {}", game.moves, status(game.phase)),
         if compact { 430. } else { title_x },
         if compact { 28. } else { title_y + 24. },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    draw_board(l.board, game);
+    draw_board(l.board, game, state.high_contrast);
     for (index, rect) in l.arrows.iter().enumerate() {
-        button(*rect, ["LEFT", "UP", "RIGHT", "DOWN"][index]);
+        button(
+            *rect,
+            ["LEFT", "UP", "RIGHT", "DOWN"][index],
+            state.large_text,
+        );
     }
-    button(l.undo, "UNDO");
-    button(l.new_game, "NEW MAZE");
+    button(l.undo, "UNDO", state.large_text);
+    button(l.new_game, "NEW MAZE", state.large_text);
     let status_y = if portrait {
         595.
     } else if compact {
@@ -126,12 +137,12 @@ pub fn draw(state: &AppState) {
         "Tap a direction to walk to the glowing exit",
         if compact { 250. } else { title_x },
         status_y,
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
 }
 
-fn draw_board(board: Rect, game: &MazeWalk) {
+fn draw_board(board: Rect, game: &MazeWalk, high_contrast: bool) {
     let cell = board.w / SIDE as f32;
     for index in 0..SIDE * SIDE {
         let rect = Rect::new(
@@ -146,15 +157,33 @@ fn draw_board(board: Rect, game: &MazeWalk) {
             rect.w,
             rect.h,
             if index == game.goal {
-                Color::new(0.32, 0.22, 0.35, 1.)
+                if high_contrast {
+                    Color::new(0.55, 0.55, 0.60, 1.)
+                } else {
+                    Color::new(0.32, 0.22, 0.35, 1.)
+                }
             } else {
-                Color::new(0.10, 0.08, 0.17, 1.)
+                accessibility::board_fill(high_contrast)
             },
         );
-        draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., line_color());
+        draw_rectangle_lines(
+            rect.x,
+            rect.y,
+            rect.w,
+            rect.h,
+            1.,
+            line_color(high_contrast),
+        );
         let walls = game.walls[index];
         if walls & 1 != 0 {
-            draw_line(rect.x, rect.y, rect.right(), rect.y, 3., wall_color());
+            draw_line(
+                rect.x,
+                rect.y,
+                rect.right(),
+                rect.y,
+                3.,
+                wall_color(high_contrast),
+            );
         }
         if walls & 2 != 0 {
             draw_line(
@@ -163,7 +192,7 @@ fn draw_board(board: Rect, game: &MazeWalk) {
                 rect.right(),
                 rect.bottom(),
                 3.,
-                wall_color(),
+                wall_color(high_contrast),
             );
         }
         if walls & 4 != 0 {
@@ -173,11 +202,18 @@ fn draw_board(board: Rect, game: &MazeWalk) {
                 rect.right(),
                 rect.bottom(),
                 3.,
-                wall_color(),
+                wall_color(high_contrast),
             );
         }
         if walls & 8 != 0 {
-            draw_line(rect.x, rect.y, rect.x, rect.bottom(), 3., wall_color());
+            draw_line(
+                rect.x,
+                rect.y,
+                rect.x,
+                rect.bottom(),
+                3.,
+                wall_color(high_contrast),
+            );
         }
         if index == game.goal {
             draw_circle(rect.center().x, rect.center().y, cell * 0.16, accent());
@@ -187,7 +223,7 @@ fn draw_board(board: Rect, game: &MazeWalk) {
                 rect.center().x,
                 rect.center().y,
                 cell * 0.22,
-                player_color(),
+                player_color(high_contrast),
             );
         }
     }
@@ -199,7 +235,7 @@ fn status(phase: MazePhase) -> &'static str {
         MazePhase::Won => "EXIT FOUND",
     }
 }
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -208,7 +244,12 @@ fn button(rect: Rect, label: &str) {
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
-    center_text(label, rect, 16., WHITE);
+    center_text(
+        label,
+        rect,
+        accessibility::text_size(16., large_text),
+        WHITE,
+    );
 }
 fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
     let measured = measure_text(label, None, size as u16, 1.);
@@ -239,15 +280,23 @@ fn body_size() -> f32 {
 fn accent() -> Color {
     Color::new(0.98, 0.83, 0.45, 1.)
 }
-fn player_color() -> Color {
-    Color::new(0.35, 0.82, 0.70, 1.)
+fn player_color(high_contrast: bool) -> Color {
+    if high_contrast {
+        Color::new(0.15, 1., 0.85, 1.)
+    } else {
+        Color::new(0.35, 0.82, 0.70, 1.)
+    }
 }
-fn wall_color() -> Color {
-    Color::new(0.72, 0.45, 0.85, 1.)
+fn wall_color(high_contrast: bool) -> Color {
+    if high_contrast {
+        Color::new(1., 1., 1., 1.)
+    } else {
+        Color::new(0.72, 0.45, 0.85, 1.)
+    }
 }
 fn muted() -> Color {
     Color::new(0.70, 0.64, 0.78, 1.)
 }
-fn line_color() -> Color {
-    Color::new(0.45, 0.38, 0.65, 0.8)
+fn line_color(high_contrast: bool) -> Color {
+    accessibility::grid_line(high_contrast)
 }
