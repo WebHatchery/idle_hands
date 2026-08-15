@@ -1,6 +1,6 @@
 //! Responsive presentation and touch routing for Lights Out.
 
-use crate::{lights_out::LightsOutStatus, state::AppState, ui::UiAction};
+use crate::{accessibility, lights_out::LightsOutStatus, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
 #[derive(Clone, Copy)]
@@ -79,10 +79,16 @@ pub fn draw(state: &AppState) {
         "‹ CABINET",
         back_rect().x,
         back_rect().y + 20.,
-        14.,
+        accessibility::text_size(14., state.large_text),
         muted(),
     );
-    text("LIGHTS OUT", header_x, header_y, title_size(), accent());
+    text(
+        "LIGHTS OUT",
+        header_x,
+        header_y,
+        accessibility::text_size(title_size(), state.large_text),
+        accent(),
+    );
     text(
         if game.status == LightsOutStatus::Won {
             "The cabinet is quiet. Start another board or play it again."
@@ -91,7 +97,7 @@ pub fn draw(state: &AppState) {
         },
         body_x,
         body_y,
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
     for index in 0..game.cells.len() {
@@ -104,12 +110,23 @@ pub fn draw(state: &AppState) {
             layout.cell - 3.,
         );
         let fill = if game.cells[index] {
-            Color::new(0.92, 0.64, 0.28, 1.)
+            if state.high_contrast {
+                Color::new(1., 0.85, 0.05, 1.)
+            } else {
+                Color::new(0.92, 0.64, 0.28, 1.)
+            }
         } else {
-            Color::new(0.12, 0.08, 0.20, 1.)
+            accessibility::board_fill(state.high_contrast)
         };
         draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
-        draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., accent());
+        draw_rectangle_lines(
+            rect.x,
+            rect.y,
+            rect.w,
+            rect.h,
+            2.,
+            accessibility::grid_line(state.high_contrast),
+        );
         if game.cells[index] {
             draw_circle(rect.center().x, rect.center().y, layout.cell * 0.15, WHITE);
         }
@@ -118,11 +135,11 @@ pub fn draw(state: &AppState) {
         &format!("MOVES  {}", game.moves),
         layout.board.x,
         layout.board.bottom() + 28.,
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    button(layout.reset, "NEW BOARD");
-    button(layout.undo, "UNDO");
+    button(layout.reset, "NEW BOARD", state.large_text);
+    button(layout.undo, "UNDO", state.large_text);
 }
 
 fn back_rect() -> Rect {
@@ -153,7 +170,7 @@ fn header_x(layout: Layout) -> f32 {
     }
 }
 
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -166,7 +183,7 @@ fn button(rect: Rect, label: &str) {
         label,
         rect.x + 16.,
         rect.y + rect.h * 0.64,
-        body_size(),
+        accessibility::text_size(body_size(), large_text),
         WHITE,
     );
 }

@@ -669,6 +669,15 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Capture and verify accessible desktop, portrait, and medium-landscape
     scenes for all three dense post-launch boards.
 
+## Phase 51 — Original board accessibility
+
+- [x] Extend the persisted High Contrast and Large Text settings to Lights
+  Out, Sliding Puzzle, and Memory / Pairs.
+  - [x] Improve board fills, grid lines, symbols, labels, and touch controls
+    without changing the underlying game rules.
+  - [x] Capture and verify accessible desktop, portrait, and medium-landscape
+    scenes for all three board games.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

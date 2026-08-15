@@ -1,6 +1,6 @@
 //! Responsive presentation and touch routing for Memory/Pairs.
 
-use crate::{memory_pairs::MemoryStatus, state::AppState, ui::UiAction};
+use crate::{accessibility, memory_pairs::MemoryStatus, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
 #[derive(Clone, Copy)]
@@ -88,15 +88,21 @@ pub fn draw(state: &AppState) {
         "‹ CABINET",
         back_rect().x,
         back_rect().y + 20.,
-        14.,
+        accessibility::text_size(14., state.large_text),
         muted(),
     );
-    text("MEMORY / PAIRS", header_x, header_y, title_size(), accent());
+    text(
+        "MEMORY / PAIRS",
+        header_x,
+        header_y,
+        accessibility::text_size(title_size(), state.large_text),
+        accent(),
+    );
     text(
         &status_text(game.status, game.matched_pairs),
         body_x,
         body_y,
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
     for index in 0..game.cards.len() {
@@ -116,18 +122,25 @@ pub fn draw(state: &AppState) {
             rect.w,
             rect.h,
             if face {
-                pair_color(card.pair)
+                pair_color(card.pair, state.high_contrast)
             } else {
-                Color::new(0.16, 0.11, 0.25, 1.)
+                accessibility::board_fill(state.high_contrast)
             },
         );
-        draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., accent());
+        draw_rectangle_lines(
+            rect.x,
+            rect.y,
+            rect.w,
+            rect.h,
+            2.,
+            accessibility::grid_line(state.high_contrast),
+        );
         if face {
             text(
                 &pair_label(card.pair),
                 rect.x + rect.w * 0.38,
                 rect.y + rect.h * 0.62,
-                (rect.w * 0.34).min(40.),
+                accessibility::text_size((rect.w * 0.34).min(40.), state.large_text),
                 WHITE,
             );
         } else {
@@ -136,7 +149,11 @@ pub fn draw(state: &AppState) {
                 rect.center().y,
                 rect.w * 0.18,
                 2.,
-                Color::new(0.60, 0.48, 0.78, 1.),
+                if state.high_contrast {
+                    WHITE
+                } else {
+                    Color::new(0.60, 0.48, 0.78, 1.)
+                },
             );
         }
     }
@@ -144,11 +161,11 @@ pub fn draw(state: &AppState) {
         &format!("MOVES  {}  •  PAIRS  {}/8", game.moves, game.matched_pairs),
         layout.board.x,
         layout.board.bottom() + 28.,
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    button(layout.new_board, "NEW BOARD");
-    button(layout.undo, "UNDO");
+    button(layout.new_board, "NEW BOARD", state.large_text);
+    button(layout.undo, "UNDO", state.large_text);
 }
 
 fn status_text(status: MemoryStatus, pairs: u8) -> String {
@@ -162,7 +179,21 @@ fn pair_label(pair: u8) -> String {
     char::from(b'A' + pair).to_string()
 }
 
-fn pair_color(pair: u8) -> Color {
+fn pair_color(pair: u8, high_contrast: bool) -> Color {
+    if high_contrast {
+        let palette = [
+            (0.10, 0.45, 1.0),
+            (0.85, 0.20, 1.0),
+            (0.05, 0.85, 0.35),
+            (1.0, 0.25, 0.20),
+            (1.0, 0.75, 0.05),
+            (0.05, 0.90, 0.90),
+            (0.95, 0.35, 0.75),
+            (0.55, 0.95, 0.15),
+        ];
+        let (r, g, b) = palette[pair as usize % palette.len()];
+        return Color::new(r, g, b, 1.);
+    }
     let palette = [
         (0.35, 0.55, 0.78),
         (0.55, 0.38, 0.72),
@@ -187,7 +218,7 @@ fn back_rect() -> Rect {
     }
 }
 
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -200,7 +231,7 @@ fn button(rect: Rect, label: &str) {
         label,
         rect.x + 16.,
         rect.y + rect.h * 0.64,
-        body_size(),
+        accessibility::text_size(body_size(), large_text),
         WHITE,
     );
 }

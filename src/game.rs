@@ -22,6 +22,8 @@ use serde::de::DeserializeOwned;
 
 #[path = "game_board_actions.rs"]
 mod game_board_actions;
+#[path = "game_capture.rs"]
+mod game_capture;
 #[path = "game_progression.rs"]
 mod game_progression;
 
@@ -54,108 +56,6 @@ impl Game {
         game
     }
 
-    pub fn begin_capture_scene(&mut self, scene: &str) {
-        self.state = AppState::default();
-        self.notifications = NotificationManager::new();
-        let scene = scene
-            .strip_prefix("portrait_")
-            .or_else(|| scene.strip_prefix("landscape_"))
-            .unwrap_or(scene);
-        self.state.screen = match scene {
-            "2048" | "gameplay" => Screen::Game(GameId::Game2048),
-            "tutorial_2048" => Screen::Game(GameId::Game2048),
-            "minesweeper" => Screen::Game(GameId::Minesweeper),
-            "sudoku" => Screen::Game(GameId::Sudoku),
-            "sudoku_accessible" => Screen::Game(GameId::Sudoku),
-            "nonogram" => Screen::Game(GameId::Nonogram),
-            "nonogram_large" => Screen::Game(GameId::Nonogram),
-            "nonogram_accessible" => Screen::Game(GameId::Nonogram),
-            "minesweeper_accessible" => Screen::Game(GameId::Minesweeper),
-            "solitaire" => Screen::Game(GameId::Solitaire),
-            "solitaire_hint" => Screen::Game(GameId::Solitaire),
-            "solitaire_selected" => Screen::Game(GameId::Solitaire),
-            "freecell" => Screen::Game(GameId::FreeCell),
-            "freecell_hint" => Screen::Game(GameId::FreeCell),
-            "freecell_selected" => Screen::Game(GameId::FreeCell),
-            "fivefold" => Screen::Game(GameId::Yahtzee),
-            "reversi" => Screen::Game(GameId::Reversi),
-            "lights_out" => Screen::Game(GameId::LightsOut),
-            "tic_tac_toe" => Screen::Game(GameId::TicTacToe),
-            "memory_pairs" => Screen::Game(GameId::MemoryPairs),
-            "sliding_puzzle" => Screen::Game(GameId::SlidingPuzzle),
-            "mastermind" => Screen::Game(GameId::Mastermind),
-            "spider" => Screen::Game(GameId::Spider),
-            "word_search" => Screen::Game(GameId::WordSearch),
-            "hangman" => Screen::Game(GameId::Hangman),
-            "connect_four" => Screen::Game(GameId::ConnectFour),
-            "checkers" => Screen::Game(GameId::Checkers),
-            "peg_solitaire" => Screen::Game(GameId::PegSolitaire),
-            "mahjong_solitaire" => Screen::Game(GameId::MahjongSolitaire),
-            "snake" => Screen::Game(GameId::Snake),
-            "breakout" => Screen::Game(GameId::Breakout),
-            "higher_lower" => Screen::Game(GameId::HigherLower),
-            "klondike_golf" => Screen::Game(GameId::KlondikeGolf),
-            "blackjack" => Screen::Game(GameId::Blackjack),
-            "spider_solitaire" => Screen::Game(GameId::SpiderSolitaire),
-            "dungeon_sweeper" => Screen::Game(GameId::DungeonSweeper),
-            "dungeon_sweeper_accessible" => Screen::Game(GameId::DungeonSweeper),
-            "potion_2048" => Screen::Game(GameId::Potion2048),
-            "tiny_tower_defence" => Screen::Game(GameId::TinyTowerDefence),
-            "one_room_roguelike" => Screen::Game(GameId::OneRoomRoguelike),
-            "daily_dungeon" => Screen::Game(GameId::DailyDungeon),
-            "dots_boxes" => Screen::Game(GameId::DotsBoxes),
-            "sokoban" => Screen::Game(GameId::Sokoban),
-            "mancala" => Screen::Game(GameId::Mancala),
-            "hanoi" => Screen::Game(GameId::Hanoi),
-            "number_match" => Screen::Game(GameId::NumberMatch),
-            "flood_it" => Screen::Game(GameId::FloodIt),
-            "color_sort" => Screen::Game(GameId::ColorSort),
-            "battleship" => Screen::Game(GameId::Battleship),
-            "word_grid" => Screen::Game(GameId::WordGrid),
-            "pipe_loop" => Screen::Game(GameId::PipeLoop),
-            "maze_walk" => Screen::Game(GameId::MazeWalk),
-            "maze_walk_accessible" => Screen::Game(GameId::MazeWalk),
-            "match_three" => Screen::Game(GameId::MatchThree),
-            "match_three_accessible" => Screen::Game(GameId::MatchThree),
-            "help" => Screen::Help,
-            "records" => Screen::Records,
-            "rules" => Screen::Rules,
-            "credits" => Screen::Credits,
-            "settings" => Screen::Settings,
-            "settings_reset" => Screen::Settings,
-            _ => Screen::Cabinet,
-        };
-        if scene == "settings_reset" {
-            self.state.confirm_reset = true;
-        }
-        if scene == "nonogram_large" {
-            self.state.nonogram =
-                crate::nonogram::Nonogram::new(crate::nonogram::NonogramPreset::Large);
-            self.state.nonogram_zoomed = true;
-            self.state.nonogram_focus = (6, 6);
-        }
-        if scene == "solitaire_selected" {
-            self.state.solitaire.select_tableau(0, 0);
-        }
-        if scene == "freecell_selected" {
-            self.state.freecell.select_cascade(0, 0);
-        }
-        if scene.ends_with("_accessible") {
-            self.state.high_contrast = true;
-            self.state.large_text = true;
-        }
-        if scene == "solitaire_hint" {
-            self.state.card_hint = Some(card_hints::solitaire(&self.state));
-        } else if scene == "freecell_hint" {
-            self.state.card_hint = Some(card_hints::freecell(&self.state));
-        }
-        if scene.starts_with("tutorial_") {
-            if let Screen::Game(game) = self.state.screen {
-                self.state.tutorial = Some(game);
-            }
-        }
-        self.transition = 0.;
-    }
     pub fn update(&mut self, dt: f32) {
         self.notifications.update(dt);
         self.pointer.tick(dt);

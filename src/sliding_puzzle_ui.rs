@@ -1,6 +1,6 @@
 //! Responsive presentation and touch routing for Sliding Puzzle.
 
-use crate::{sliding_puzzle::SlidingStatus, state::AppState, ui::UiAction};
+use crate::{accessibility, sliding_puzzle::SlidingStatus, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
 #[derive(Clone, Copy)]
@@ -88,15 +88,21 @@ pub fn draw(state: &AppState) {
         "‹ CABINET",
         back_rect().x,
         back_rect().y + 20.,
-        14.,
+        accessibility::text_size(14., state.large_text),
         muted(),
     );
-    text("SLIDING PUZZLE", header_x, header_y, title_size(), accent());
+    text(
+        "SLIDING PUZZLE",
+        header_x,
+        header_y,
+        accessibility::text_size(title_size(), state.large_text),
+        accent(),
+    );
     text(
         status_text(game.status),
         body_x,
         body_y,
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
     for index in 0..game.cells.len() {
@@ -115,18 +121,25 @@ pub fn draw(state: &AppState) {
             rect.w,
             rect.h,
             if value == 0 {
-                Color::new(0.08, 0.06, 0.15, 1.)
+                accessibility::board_fill(state.high_contrast)
             } else {
-                tile_color(value)
+                tile_color(value, state.high_contrast)
             },
         );
-        draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., accent());
+        draw_rectangle_lines(
+            rect.x,
+            rect.y,
+            rect.w,
+            rect.h,
+            2.,
+            accessibility::grid_line(state.high_contrast),
+        );
         if value != 0 {
             text(
                 &value.to_string(),
                 rect.x + rect.w * 0.40,
                 rect.y + rect.h * 0.61,
-                (rect.w * 0.28).min(34.),
+                accessibility::text_size((rect.w * 0.28).min(34.), state.large_text),
                 WHITE,
             );
         }
@@ -135,11 +148,11 @@ pub fn draw(state: &AppState) {
         &format!("MOVES  {}", game.moves),
         layout.board.x,
         layout.board.bottom() + 28.,
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    button(layout.new_board, "NEW BOARD");
-    button(layout.undo, "UNDO");
+    button(layout.new_board, "NEW BOARD", state.large_text);
+    button(layout.undo, "UNDO", state.large_text);
 }
 
 fn status_text(status: SlidingStatus) -> &'static str {
@@ -149,7 +162,16 @@ fn status_text(status: SlidingStatus) -> &'static str {
     }
 }
 
-fn tile_color(value: u8) -> Color {
+fn tile_color(value: u8, high_contrast: bool) -> Color {
+    if high_contrast {
+        return [
+            Color::new(0.10, 0.45, 1., 1.),
+            Color::new(0.95, 0.20, 0.30, 1.),
+            Color::new(0.10, 0.85, 0.35, 1.),
+            Color::new(0.85, 0.25, 1., 1.),
+            Color::new(1., 0.72, 0.05, 1.),
+        ][value as usize % 5];
+    }
     let shade = 0.28 + (value % 5) as f32 * 0.06;
     Color::new(
         0.28 + shade * 0.25,
@@ -169,7 +191,7 @@ fn back_rect() -> Rect {
     }
 }
 
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -182,7 +204,7 @@ fn button(rect: Rect, label: &str) {
         label,
         rect.x + 16.,
         rect.y + rect.h * 0.64,
-        body_size(),
+        accessibility::text_size(body_size(), large_text),
         WHITE,
     );
 }
