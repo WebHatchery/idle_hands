@@ -492,6 +492,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "Never place a larger disk on a smaller one.",
             "Move all five disks to the far peg; use UNDO or NEW BOARD.",
         ],
+        GameId::NumberMatch => [
+            "Tap a number, then tap an adjacent number to pair it.",
+            "Equal numbers or pairs totaling ten disappear together.",
+            "Clear the grid; use UNDO or NEW BOARD with visible controls.",
+        ],
     }
 }
 
@@ -540,6 +545,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::Sokoban if state.records.sokoban_best_moves.is_some() => "COMPLETE",
         GameId::Mancala if state.records.mancala_best_score.is_some() => "COMPLETE",
         GameId::Hanoi if state.records.hanoi_best_moves.is_some() => "COMPLETE",
+        GameId::NumberMatch if state.records.number_match_best_moves.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

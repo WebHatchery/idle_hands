@@ -178,10 +178,14 @@ pub fn draw_records(state: &AppState) {
             "Hanoi best",
             value(state.records.hanoi_best_moves.map(u32::from)),
         ),
+        (
+            "Number Match best",
+            value(state.records.number_match_best_moves.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
-        let column = index / 21;
-        let row = index % 21;
+        let column = index / 22;
+        let row = index % 22;
         let x = 20. + column as f32 * 170.;
         let y = 140. + row as f32 * 21.;
         text(label, x, y, 9., Color::new(0.78, 0.73, 0.86, 1.));

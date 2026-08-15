@@ -1,0 +1,219 @@
+//! Responsive touch presentation for Number Match.
+
+use crate::{
+    number_match::{NumberMatch, NumberMatchPhase, SIDE},
+    state::AppState,
+    ui::UiAction,
+};
+use macroquad::prelude::*;
+
+#[derive(Clone, Copy)]
+struct Layout {
+    board: Rect,
+    undo: Rect,
+    new_game: Rect,
+}
+
+fn layout() -> Layout {
+    if crate::ui::is_compact_landscape() {
+        Layout {
+            board: Rect::new(270., 44., 300., 300.),
+            undo: Rect::new(620., 110., 105., 44.),
+            new_game: Rect::new(620., 165., 140., 44.),
+        }
+    } else if crate::ui::is_portrait() {
+        Layout {
+            board: Rect::new(25., 105., 330., 330.),
+            undo: Rect::new(25., 460., 145., 44.),
+            new_game: Rect::new(180., 460., 175., 44.),
+        }
+    } else {
+        Layout {
+            board: Rect::new(350., 90., 420., 420.),
+            undo: Rect::new(810., 180., 120., 44.),
+            new_game: Rect::new(950., 180., 140., 44.),
+        }
+    }
+}
+
+pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
+    let l = layout();
+    if Rect::new(0., 0., 110., 42.).contains(point) {
+        return vec![UiAction::Cabinet];
+    }
+    let cell = l.board.w / SIDE as f32;
+    if l.board.contains(point) {
+        let col = ((point.x - l.board.x) / cell) as usize;
+        let row = ((point.y - l.board.y) / cell) as usize;
+        if row < SIDE && col < SIDE {
+            return vec![UiAction::NumberMatchTap(row * SIDE + col)];
+        }
+    }
+    if l.undo.contains(point) {
+        return vec![UiAction::NumberMatchUndo];
+    }
+    if l.new_game.contains(point) {
+        return vec![UiAction::NumberMatchNew];
+    }
+    Vec::new()
+}
+
+pub fn draw(state: &AppState) {
+    let l = layout();
+    let game = &state.number_match;
+    let compact = crate::ui::is_compact_landscape();
+    let portrait = crate::ui::is_portrait();
+    let title_x = if compact {
+        70.
+    } else if portrait {
+        10.
+    } else {
+        400.
+    };
+    let title_y = if compact {
+        28.
+    } else if portrait {
+        62.
+    } else {
+        58.
+    };
+    text("‹ CABINET", 8., 30., 13., muted());
+    text("NUMBER MATCH", title_x, title_y, title_size(), accent());
+    text(
+        &format!(
+            "{} pairs  •  {} moves  •  {}",
+            game.score,
+            game.moves,
+            if game.won() {
+                "GRID CLEAR"
+            } else {
+                "PAIR THE NUMBERS"
+            }
+        ),
+        if compact { 430. } else { title_x },
+        if compact { 28. } else { title_y + 24. },
+        body_size(),
+        muted(),
+    );
+    draw_board(l.board, game);
+    text(
+        status_text(game.phase),
+        if compact { 270. } else { title_x },
+        if portrait {
+            445.
+        } else if compact {
+            365.
+        } else {
+            545.
+        },
+        body_size(),
+        muted(),
+    );
+    button(l.undo, "UNDO");
+    button(l.new_game, "NEW BOARD");
+}
+
+fn draw_board(board: Rect, game: &NumberMatch) {
+    let cell = board.w / SIDE as f32;
+    for row in 0..SIDE {
+        for col in 0..SIDE {
+            let index = row * SIDE + col;
+            let rect = Rect::new(
+                board.x + col as f32 * cell,
+                board.y + row as f32 * cell,
+                cell,
+                cell,
+            );
+            let selected = game.selected == Some(index);
+            draw_rectangle(
+                rect.x,
+                rect.y,
+                rect.w,
+                rect.h,
+                if game.cells[index] == 0 {
+                    Color::new(0.08, 0.06, 0.14, 1.)
+                } else if selected {
+                    Color::new(0.35, 0.25, 0.45, 1.)
+                } else {
+                    Color::new(0.18, 0.13, 0.27, 1.)
+                },
+            );
+            draw_rectangle_lines(
+                rect.x,
+                rect.y,
+                rect.w,
+                rect.h,
+                1.,
+                if selected { accent() } else { line_color() },
+            );
+            if game.cells[index] != 0 {
+                center_text(
+                    &game.cells[index].to_string(),
+                    rect,
+                    if portrait_size() { 16. } else { 23. },
+                    WHITE,
+                );
+            }
+        }
+    }
+}
+
+fn status_text(phase: NumberMatchPhase) -> &'static str {
+    match phase {
+        NumberMatchPhase::Playing => "Tap adjacent equal or sum-to-ten numbers",
+        NumberMatchPhase::Won => "Every quiet number has found its pair",
+    }
+}
+
+fn button(rect: Rect, label: &str) {
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        Color::new(0.20, 0.13, 0.30, 1.),
+    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
+    center_text(label, rect, 11., WHITE);
+}
+fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
+    let measured = measure_text(label, None, size as u16, 1.);
+    draw_text(
+        label,
+        rect.x + (rect.w - measured.width) * 0.5,
+        rect.y + rect.h * 0.63,
+        size,
+        color,
+    );
+}
+fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+    draw_text(value, x, y, size, color);
+}
+fn portrait_size() -> bool {
+    crate::ui::is_portrait()
+}
+fn title_size() -> f32 {
+    if crate::ui::is_compact_landscape() {
+        20.
+    } else if crate::ui::is_portrait() {
+        21.
+    } else {
+        27.
+    }
+}
+fn body_size() -> f32 {
+    if crate::ui::is_portrait() {
+        10.
+    } else {
+        12.
+    }
+}
+fn accent() -> Color {
+    Color::new(0.98, 0.83, 0.45, 1.)
+}
+fn muted() -> Color {
+    Color::new(0.70, 0.64, 0.78, 1.)
+}
+fn line_color() -> Color {
+    Color::new(0.45, 0.38, 0.65, 0.8)
+}

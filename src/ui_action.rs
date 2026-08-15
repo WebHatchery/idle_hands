@@ -162,4 +162,7 @@ pub enum UiAction {
     HanoiPeg(usize),
     HanoiUndo,
     HanoiNew,
+    NumberMatchTap(usize),
+    NumberMatchUndo,
+    NumberMatchNew,
 }

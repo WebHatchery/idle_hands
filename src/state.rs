@@ -20,6 +20,7 @@ use crate::mastermind::Mastermind;
 use crate::memory_pairs::MemoryPairs;
 use crate::minesweeper::Minesweeper;
 use crate::nonogram::Nonogram;
+use crate::number_match::NumberMatch;
 use crate::one_room_roguelike::OneRoomRoguelike;
 use crate::peg_solitaire::PegSolitaire;
 use crate::potion_2048::Potion2048;
@@ -77,9 +78,10 @@ pub enum GameId {
     Sokoban,
     Mancala,
     Hanoi,
+    NumberMatch,
 }
 impl GameId {
-    pub const ALL: [Self; 35] = [
+    pub const ALL: [Self; 36] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -115,6 +117,7 @@ impl GameId {
         Self::Sokoban,
         Self::Mancala,
         Self::Hanoi,
+        Self::NumberMatch,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -153,6 +156,7 @@ impl GameId {
             Self::Sokoban => "Sokoban",
             Self::Mancala => "Mancala",
             Self::Hanoi => "Hanoi",
+            Self::NumberMatch => "Number Match",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -192,6 +196,7 @@ impl GameId {
             Self::Sokoban => "Push the quiet crates",
             Self::Mancala => "Sow the quiet stones",
             Self::Hanoi => "Move the quiet disks",
+            Self::NumberMatch => "Pair the quiet numbers",
         }
     }
     pub fn index(self) -> usize {
@@ -234,6 +239,7 @@ impl GameId {
             Self::Sokoban => "sokoban",
             Self::Mancala => "mancala",
             Self::Hanoi => "hanoi",
+            Self::NumberMatch => "number_match",
         }
     }
 }
@@ -297,6 +303,7 @@ pub struct AppState {
     pub sokoban: Sokoban,
     pub mancala: Mancala,
     pub hanoi: Hanoi,
+    pub number_match: NumberMatch,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -383,6 +390,8 @@ pub struct CollectionRecords {
     pub mancala_best_score: Option<u8>,
     #[serde(default)]
     pub hanoi_best_moves: Option<u16>,
+    #[serde(default)]
+    pub number_match_best_moves: Option<u16>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -456,6 +465,8 @@ pub struct CollectionSave {
     pub mancala: Mancala,
     #[serde(default)]
     pub hanoi: Hanoi,
+    #[serde(default)]
+    pub number_match: NumberMatch,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -594,6 +605,7 @@ impl CollectionSave {
             sokoban: state.sokoban.clone(),
             mancala: state.mancala.clone(),
             hanoi: state.hanoi.clone(),
+            number_match: state.number_match.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -648,6 +660,7 @@ impl CollectionSave {
         state.sokoban = self.sokoban;
         state.mancala = self.mancala;
         state.hanoi = self.hanoi;
+        state.number_match = self.number_match;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -708,6 +721,7 @@ impl Default for AppState {
             sokoban: Sokoban::default(),
             mancala: Mancala::default(),
             hanoi: Hanoi::default(),
+            number_match: NumberMatch::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

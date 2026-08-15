@@ -257,5 +257,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "Never place a larger disk on a smaller one.",
             "Move all five disks to the far peg; use UNDO or NEW BOARD.",
         ],
+        GameId::NumberMatch => [
+            "Tap a number, then tap an adjacent number to pair it.",
+            "Equal numbers or pairs totaling ten disappear together.",
+            "Clear the grid; use UNDO or NEW BOARD with the visible controls.",
+        ],
     }
 }

@@ -312,6 +312,15 @@ impl Game {
                     }),
             );
         }
+        if self.state.number_match.won() {
+            records.number_match_best_moves = Some(
+                records
+                    .number_match_best_moves
+                    .map_or(self.state.number_match.moves, |best| {
+                        best.min(self.state.number_match.moves)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

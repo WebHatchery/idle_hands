@@ -217,6 +217,16 @@ impl Game {
                 let seed = self.state.hanoi.seed.wrapping_add(1);
                 self.state.hanoi.reset(seed);
             }
+            UiAction::NumberMatchTap(index) => {
+                self.state.number_match.tap(*index);
+            }
+            UiAction::NumberMatchUndo => {
+                self.state.number_match.undo();
+            }
+            UiAction::NumberMatchNew => {
+                let seed = self.state.number_match.seed.wrapping_add(1);
+                self.state.number_match.reset(seed);
+            }
             _ => return false,
         }
         true

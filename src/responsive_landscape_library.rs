@@ -164,6 +164,10 @@ pub fn draw_records(state: &AppState) {
             "Hanoi best",
             value(state.records.hanoi_best_moves.map(u32::from)),
         ),
+        (
+            "Number Match best",
+            value(state.records.number_match_best_moves.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
         let col = index / 13;

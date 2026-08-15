@@ -106,6 +106,7 @@ impl Game {
             "sokoban" => Screen::Game(GameId::Sokoban),
             "mancala" => Screen::Game(GameId::Mancala),
             "hanoi" => Screen::Game(GameId::Hanoi),
+            "number_match" => Screen::Game(GameId::NumberMatch),
             "help" => Screen::Help,
             "records" => Screen::Records,
             "rules" => Screen::Rules,
@@ -335,6 +336,7 @@ impl Game {
                             | GameId::Sokoban
                             | GameId::Mancala
                             | GameId::Hanoi
+                            | GameId::NumberMatch
                     ) && !self.state.tutorial_seen[id.index()])
                     .then_some(id);
                 } else {

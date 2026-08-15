@@ -64,6 +64,7 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
                     | GameId::Sokoban
                     | GameId::Mancala
                     | GameId::Hanoi
+                    | GameId::NumberMatch
             ) {
                 8.
             } else {
@@ -710,6 +711,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::Sokoban if state.records.sokoban_best_moves.is_some() => "COMPLETE",
         GameId::Mancala if state.records.mancala_best_score.is_some() => "COMPLETE",
         GameId::Hanoi if state.records.hanoi_best_moves.is_some() => "COMPLETE",
+        GameId::NumberMatch if state.records.number_match_best_moves.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }
