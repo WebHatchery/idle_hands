@@ -3,6 +3,7 @@
 use crate::cosmetics;
 use crate::input::{Gesture, PointerTracker};
 use crate::progression;
+use crate::sound::{SoundBank, SoundCue};
 use crate::{
     data::GameData,
     state::{AppState, CollectionSave, Direction, GameId, GameSnapshot, ProfileSave, Screen},
@@ -24,6 +25,7 @@ pub struct Game {
     assets: AssetManager,
     notifications: NotificationManager,
     pointer: PointerTracker,
+    sounds: SoundBank,
 }
 impl Game {
     pub async fn new() -> Self {
@@ -38,6 +40,7 @@ impl Game {
             assets,
             notifications: NotificationManager::new(),
             pointer: PointerTracker::default(),
+            sounds: SoundBank::load().await,
         };
         game.load_autosave();
         game
@@ -368,7 +371,24 @@ impl Game {
         }
         self.update_records();
         self.save_autosave();
+        self.play_feedback(
+            if matches!(
+                action,
+                ui::UiAction::ConfirmRestart | ui::UiAction::ConfirmResetData
+            ) {
+                SoundCue::Success
+            } else {
+                SoundCue::Tap
+            },
+        );
     }
+
+    fn play_feedback(&self, cue: SoundCue) {
+        if self.state.sound {
+            self.sounds.play(self.state.sound_set, cue);
+        }
+    }
+
     fn update_records(&mut self) {
         let records = &mut self.state.records;
         records.best_2048 = records.best_2048.max(self.state.game.best);

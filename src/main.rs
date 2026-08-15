@@ -23,6 +23,7 @@ mod reversi_ui;
 mod settings_ui;
 mod solitaire;
 mod solitaire_ui;
+mod sound;
 mod state;
 mod sudoku;
 mod sudoku_ui;
