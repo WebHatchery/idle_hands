@@ -1,6 +1,7 @@
 //! Responsive touch presentation for Flood It.
 
 use crate::{
+    accessibility,
     flood_it::{FloodIt, FloodPhase, COLORS, SIDE},
     state::AppState,
     ui::UiAction,
@@ -102,21 +103,33 @@ pub fn draw(state: &AppState) {
     } else {
         58.
     };
-    draw_text("‹ CABINET", 8., 30., 13., muted());
-    draw_text("FLOOD IT", title_x, title_y, title_size(), accent());
+    draw_text(
+        "‹ CABINET",
+        8.,
+        30.,
+        accessibility::text_size(13., state.large_text),
+        muted(),
+    );
+    draw_text(
+        "FLOOD IT",
+        title_x,
+        title_y,
+        accessibility::text_size(title_size(), state.large_text),
+        accent(),
+    );
     draw_text(
         format!("{} / 24 moves  •  {}", game.moves, status(game.phase)),
         if compact { 430. } else { title_x },
         if compact { 28. } else { title_y + 24. },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    draw_board(l.board, game);
+    draw_board(l.board, game, state.high_contrast);
     for (color, rect) in l.colors.iter().enumerate() {
-        draw_color(*rect, color as u8, game.active_color);
+        draw_color(*rect, color as u8, game.active_color, state.high_contrast);
     }
-    button(l.undo, "UNDO");
-    button(l.new_game, "NEW FIELD");
+    button(l.undo, "UNDO", state.large_text);
+    button(l.new_game, "NEW FIELD", state.large_text);
     let status_y = if portrait {
         500.
     } else if compact {
@@ -128,12 +141,12 @@ pub fn draw(state: &AppState) {
         "Tap a color to grow the top-left region",
         if compact { 270. } else { title_x },
         status_y,
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
 }
 
-fn draw_board(board: Rect, game: &FloodIt) {
+fn draw_board(board: Rect, game: &FloodIt, high_contrast: bool) {
     let cell = board.w / SIDE as f32;
     for index in 0..SIDE * SIDE {
         let rect = Rect::new(
@@ -142,27 +155,43 @@ fn draw_board(board: Rect, game: &FloodIt) {
             cell,
             cell,
         );
-        draw_rectangle(rect.x, rect.y, rect.w, rect.h, palette(game.cells[index]));
+        draw_rectangle(
+            rect.x,
+            rect.y,
+            rect.w,
+            rect.h,
+            palette(game.cells[index], high_contrast),
+        );
         draw_rectangle_lines(
             rect.x,
             rect.y,
             rect.w,
             rect.h,
             1.,
-            Color::new(0.08, 0.06, 0.14, 0.55),
+            accessibility::grid_line(high_contrast),
         );
     }
 }
 
-fn draw_color(rect: Rect, color: u8, active: u8) {
-    draw_rectangle(rect.x, rect.y, rect.w, rect.h, palette(color));
+fn draw_color(rect: Rect, color: u8, active: u8, high_contrast: bool) {
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        palette(color, high_contrast),
+    );
     draw_rectangle_lines(
         rect.x,
         rect.y,
         rect.w,
         rect.h,
         if color == active { 3. } else { 1. },
-        if color == active { WHITE } else { line_color() },
+        if color == active {
+            WHITE
+        } else {
+            line_color(high_contrast)
+        },
     );
 }
 
@@ -174,18 +203,30 @@ fn status(phase: FloodPhase) -> &'static str {
     }
 }
 
-fn palette(color: u8) -> Color {
-    [
-        Color::new(0.94, 0.35, 0.42, 1.),
-        Color::new(0.98, 0.72, 0.28, 1.),
-        Color::new(0.35, 0.82, 0.58, 1.),
-        Color::new(0.32, 0.64, 0.95, 1.),
-        Color::new(0.68, 0.45, 0.90, 1.),
-        Color::new(0.95, 0.48, 0.72, 1.),
-    ][color as usize % COLORS as usize]
+fn palette(color: u8, high_contrast: bool) -> Color {
+    let palette = if high_contrast {
+        [
+            Color::new(1., 0.18, 0.22, 1.),
+            Color::new(1., 0.82, 0.05, 1.),
+            Color::new(0.05, 0.95, 0.30, 1.),
+            Color::new(0.05, 0.60, 1., 1.),
+            Color::new(0.95, 0.20, 1., 1.),
+            Color::new(1., 0.35, 0.75, 1.),
+        ]
+    } else {
+        [
+            Color::new(0.94, 0.35, 0.42, 1.),
+            Color::new(0.98, 0.72, 0.28, 1.),
+            Color::new(0.35, 0.82, 0.58, 1.),
+            Color::new(0.32, 0.64, 0.95, 1.),
+            Color::new(0.68, 0.45, 0.90, 1.),
+            Color::new(0.95, 0.48, 0.72, 1.),
+        ]
+    };
+    palette[color as usize % COLORS as usize]
 }
 
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -194,7 +235,12 @@ fn button(rect: Rect, label: &str) {
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
-    center_text(label, rect, 11., WHITE);
+    center_text(
+        label,
+        rect,
+        accessibility::text_size(11., large_text),
+        WHITE,
+    );
 }
 fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
     let measured = measure_text(label, None, size as u16, 1.);
@@ -228,6 +274,6 @@ fn accent() -> Color {
 fn muted() -> Color {
     Color::new(0.70, 0.64, 0.78, 1.)
 }
-fn line_color() -> Color {
-    Color::new(0.45, 0.38, 0.65, 0.8)
+fn line_color(high_contrast: bool) -> Color {
+    accessibility::grid_line(high_contrast)
 }

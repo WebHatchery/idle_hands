@@ -1,6 +1,7 @@
 //! Responsive touch presentation for Number Match.
 
 use crate::{
+    accessibility,
     number_match::{NumberMatch, NumberMatchPhase, SIDE},
     state::AppState,
     ui::UiAction,
@@ -77,8 +78,20 @@ pub fn draw(state: &AppState) {
     } else {
         58.
     };
-    text("‹ CABINET", 8., 30., 13., muted());
-    text("NUMBER MATCH", title_x, title_y, title_size(), accent());
+    text(
+        "‹ CABINET",
+        8.,
+        30.,
+        accessibility::text_size(13., state.large_text),
+        muted(),
+    );
+    text(
+        "NUMBER MATCH",
+        title_x,
+        title_y,
+        accessibility::text_size(title_size(), state.large_text),
+        accent(),
+    );
     text(
         &format!(
             "{} pairs  •  {} moves  •  {}",
@@ -92,10 +105,10 @@ pub fn draw(state: &AppState) {
         ),
         if compact { 430. } else { title_x },
         if compact { 28. } else { title_y + 24. },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    draw_board(l.board, game);
+    draw_board(l.board, game, state.high_contrast, state.large_text);
     text(
         status_text(game.phase),
         if compact { 270. } else { title_x },
@@ -106,14 +119,14 @@ pub fn draw(state: &AppState) {
         } else {
             545.
         },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    button(l.undo, "UNDO");
-    button(l.new_game, "NEW BOARD");
+    button(l.undo, "UNDO", state.large_text);
+    button(l.new_game, "NEW BOARD", state.large_text);
 }
 
-fn draw_board(board: Rect, game: &NumberMatch) {
+fn draw_board(board: Rect, game: &NumberMatch, high_contrast: bool, large_text: bool) {
     let cell = board.w / SIDE as f32;
     for row in 0..SIDE {
         for col in 0..SIDE {
@@ -131,11 +144,19 @@ fn draw_board(board: Rect, game: &NumberMatch) {
                 rect.w,
                 rect.h,
                 if game.cells[index] == 0 {
-                    Color::new(0.08, 0.06, 0.14, 1.)
+                    accessibility::board_fill(high_contrast)
                 } else if selected {
-                    Color::new(0.35, 0.25, 0.45, 1.)
+                    if high_contrast {
+                        Color::new(0.45, 0.35, 0.55, 1.)
+                    } else {
+                        Color::new(0.35, 0.25, 0.45, 1.)
+                    }
                 } else {
-                    Color::new(0.18, 0.13, 0.27, 1.)
+                    if high_contrast {
+                        Color::new(0.12, 0.10, 0.16, 1.)
+                    } else {
+                        Color::new(0.18, 0.13, 0.27, 1.)
+                    }
                 },
             );
             draw_rectangle_lines(
@@ -144,13 +165,17 @@ fn draw_board(board: Rect, game: &NumberMatch) {
                 rect.w,
                 rect.h,
                 1.,
-                if selected { accent() } else { line_color() },
+                if selected {
+                    accent()
+                } else {
+                    line_color(high_contrast)
+                },
             );
             if game.cells[index] != 0 {
                 center_text(
                     &game.cells[index].to_string(),
                     rect,
-                    if portrait_size() { 16. } else { 23. },
+                    accessibility::text_size(if portrait_size() { 16. } else { 23. }, large_text),
                     WHITE,
                 );
             }
@@ -165,7 +190,7 @@ fn status_text(phase: NumberMatchPhase) -> &'static str {
     }
 }
 
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -174,7 +199,12 @@ fn button(rect: Rect, label: &str) {
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
-    center_text(label, rect, 11., WHITE);
+    center_text(
+        label,
+        rect,
+        accessibility::text_size(11., large_text),
+        WHITE,
+    );
 }
 fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
     let measured = measure_text(label, None, size as u16, 1.);
@@ -214,6 +244,6 @@ fn accent() -> Color {
 fn muted() -> Color {
     Color::new(0.70, 0.64, 0.78, 1.)
 }
-fn line_color() -> Color {
-    Color::new(0.45, 0.38, 0.65, 0.8)
+fn line_color(high_contrast: bool) -> Color {
+    accessibility::grid_line(high_contrast)
 }

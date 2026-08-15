@@ -1,6 +1,6 @@
 //! Responsive presentation and touch routing for Mastermind.
 
-use crate::{mastermind::MastermindStatus, state::AppState, ui::UiAction};
+use crate::{accessibility, mastermind::MastermindStatus, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
 #[derive(Clone, Copy)]
@@ -104,15 +104,21 @@ pub fn draw(state: &AppState) {
         "‹ CABINET",
         back_rect().x,
         back_rect().y + 20.,
-        14.,
+        accessibility::text_size(14., state.large_text),
         muted(),
     );
-    text("MASTERMIND", header_x, header_y, title_size(), accent());
+    text(
+        "MASTERMIND",
+        header_x,
+        header_y,
+        accessibility::text_size(title_size(), state.large_text),
+        accent(),
+    );
     text(
         &status_text(game.status, game.row),
         body_x,
         body_y,
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
     for row in 0..10 {
@@ -123,7 +129,7 @@ pub fn draw(state: &AppState) {
             layout.board.right(),
             y + layout.row_height - 2.,
             1.,
-            Color::new(0.35, 0.28, 0.48, 1.),
+            accessibility::grid_line(state.high_contrast),
         );
         let guess = if row == game.row as usize {
             game.current
@@ -137,9 +143,9 @@ pub fn draw(state: &AppState) {
                 y + layout.row_height * 0.48,
                 12.,
                 if color == 255 {
-                    Color::new(0.10, 0.07, 0.17, 1.)
+                    accessibility::board_fill(state.high_contrast)
                 } else {
-                    color_for(color)
+                    color_for(color, state.high_contrast)
                 },
             );
             draw_circle_lines(
@@ -147,7 +153,7 @@ pub fn draw(state: &AppState) {
                 y + layout.row_height * 0.48,
                 13.,
                 1.,
-                accent(),
+                accessibility::grid_line(state.high_contrast),
             );
         }
         if row < game.row as usize {
@@ -155,7 +161,7 @@ pub fn draw(state: &AppState) {
                 &format!("{}+ {}o", game.exact[row], game.partial[row]),
                 layout.board.x + 235.,
                 y + layout.row_height * 0.62,
-                body_size(),
+                accessibility::text_size(body_size(), state.large_text),
                 muted(),
             );
         }
@@ -166,20 +172,20 @@ pub fn draw(state: &AppState) {
             x,
             layout.palette.y + layout.palette.h * 0.5,
             layout.palette.h * 0.30,
-            color_for(color),
+            color_for(color, state.high_contrast),
         );
         draw_circle_lines(
             x,
             layout.palette.y + layout.palette.h * 0.5,
             layout.palette.h * 0.34,
             1.,
-            accent(),
+            accessibility::grid_line(state.high_contrast),
         );
     }
-    button(layout.submit, "GUESS");
-    button(layout.clear, "CLEAR");
-    button(layout.undo, "UNDO");
-    button(layout.new_board, "NEW BOARD");
+    button(layout.submit, "GUESS", state.large_text);
+    button(layout.clear, "CLEAR", state.large_text);
+    button(layout.undo, "UNDO", state.large_text);
+    button(layout.new_board, "NEW BOARD", state.large_text);
 }
 
 fn status_text(status: MastermindStatus, row: u8) -> String {
@@ -190,15 +196,27 @@ fn status_text(status: MastermindStatus, row: u8) -> String {
     }
 }
 
-fn color_for(color: u8) -> Color {
-    [
-        Color::new(0.92, 0.38, 0.36, 1.),
-        Color::new(0.96, 0.70, 0.30, 1.),
-        Color::new(0.42, 0.76, 0.45, 1.),
-        Color::new(0.38, 0.70, 0.86, 1.),
-        Color::new(0.68, 0.46, 0.78, 1.),
-        Color::new(0.82, 0.76, 0.38, 1.),
-    ][color as usize % 6]
+fn color_for(color: u8, high_contrast: bool) -> Color {
+    let palette = if high_contrast {
+        [
+            Color::new(1., 0.15, 0.20, 1.),
+            Color::new(1., 0.80, 0.05, 1.),
+            Color::new(0.05, 0.95, 0.30, 1.),
+            Color::new(0.05, 0.60, 1., 1.),
+            Color::new(0.95, 0.20, 1., 1.),
+            Color::new(0.05, 0.95, 0.95, 1.),
+        ]
+    } else {
+        [
+            Color::new(0.92, 0.38, 0.36, 1.),
+            Color::new(0.96, 0.70, 0.30, 1.),
+            Color::new(0.42, 0.76, 0.45, 1.),
+            Color::new(0.38, 0.70, 0.86, 1.),
+            Color::new(0.68, 0.46, 0.78, 1.),
+            Color::new(0.82, 0.76, 0.38, 1.),
+        ]
+    };
+    palette[color as usize % 6]
 }
 
 fn back_rect() -> Rect {
@@ -211,7 +229,7 @@ fn back_rect() -> Rect {
     }
 }
 
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -224,7 +242,7 @@ fn button(rect: Rect, label: &str) {
         label,
         rect.x + 12.,
         rect.y + rect.h * 0.64,
-        body_size(),
+        accessibility::text_size(body_size(), large_text),
         WHITE,
     );
 }
