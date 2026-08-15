@@ -1,6 +1,7 @@
 //! Responsive touch presentation for Pipe Loop.
 
 use crate::{
+    accessibility,
     pipe_loop::{PipeLoop, PipePhase, SIDE},
     state::AppState,
     ui::UiAction,
@@ -77,18 +78,30 @@ pub fn draw(state: &AppState) {
     } else {
         58.
     };
-    draw_text("‹ CABINET", 8., 30., 13., muted());
-    draw_text("PIPE LOOP", title_x, title_y, title_size(), accent());
+    draw_text(
+        "‹ CABINET",
+        8.,
+        30.,
+        accessibility::text_size(13., state.large_text),
+        muted(),
+    );
+    draw_text(
+        "PIPE LOOP",
+        title_x,
+        title_y,
+        accessibility::text_size(title_size(), state.large_text),
+        accent(),
+    );
     draw_text(
         format!("{} rotations  •  {}", game.moves, status(game.phase)),
         if compact { 430. } else { title_x },
         if compact { 28. } else { title_y + 24. },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    draw_board(l.board, game);
-    button(l.undo, "UNDO");
-    button(l.new_game, "NEW LOOP");
+    draw_board(l.board, game, state.high_contrast);
+    button(l.undo, "UNDO", state.large_text);
+    button(l.new_game, "NEW LOOP", state.large_text);
     let status_y = if portrait {
         535.
     } else if compact {
@@ -100,12 +113,12 @@ pub fn draw(state: &AppState) {
         "Tap any tile to rotate its quiet path",
         if compact { 260. } else { title_x },
         status_y,
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
 }
 
-fn draw_board(board: Rect, game: &PipeLoop) {
+fn draw_board(board: Rect, game: &PipeLoop, high_contrast: bool) {
     let cell = board.w / SIDE as f32;
     for index in 0..SIDE * SIDE {
         let rect = Rect::new(
@@ -119,9 +132,16 @@ fn draw_board(board: Rect, game: &PipeLoop) {
             rect.y,
             rect.w,
             rect.h,
-            Color::new(0.10, 0.08, 0.17, 1.),
+            accessibility::board_fill(high_contrast),
         );
-        draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., line_color());
+        draw_rectangle_lines(
+            rect.x,
+            rect.y,
+            rect.w,
+            rect.h,
+            1.,
+            line_color(high_contrast),
+        );
         let center = vec2(rect.x + rect.w * 0.5, rect.y + rect.h * 0.5);
         draw_circle(center.x, center.y, cell * 0.10, accent());
         let mask = game.pipes[index];
@@ -139,7 +159,7 @@ fn draw_board(board: Rect, game: &PipeLoop) {
                     endpoint.x,
                     endpoint.y,
                     cell * 0.12,
-                    pipe_color(),
+                    pipe_color(high_contrast),
                 );
             }
         }
@@ -152,7 +172,7 @@ fn status(phase: PipePhase) -> &'static str {
         PipePhase::Won => "PATH COMPLETE",
     }
 }
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -161,7 +181,12 @@ fn button(rect: Rect, label: &str) {
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
-    center_text(label, rect, 11., WHITE);
+    center_text(
+        label,
+        rect,
+        accessibility::text_size(11., large_text),
+        WHITE,
+    );
 }
 fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
     let measured = measure_text(label, None, size as u16, 1.);
@@ -192,12 +217,16 @@ fn body_size() -> f32 {
 fn accent() -> Color {
     Color::new(0.98, 0.83, 0.45, 1.)
 }
-fn pipe_color() -> Color {
-    Color::new(0.35, 0.82, 0.70, 1.)
+fn pipe_color(high_contrast: bool) -> Color {
+    if high_contrast {
+        Color::new(0.05, 1., 0.85, 1.)
+    } else {
+        Color::new(0.35, 0.82, 0.70, 1.)
+    }
 }
 fn muted() -> Color {
     Color::new(0.70, 0.64, 0.78, 1.)
 }
-fn line_color() -> Color {
-    Color::new(0.45, 0.38, 0.65, 0.8)
+fn line_color(high_contrast: bool) -> Color {
+    accessibility::grid_line(high_contrast)
 }

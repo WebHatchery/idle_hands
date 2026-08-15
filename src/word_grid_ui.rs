@@ -1,6 +1,7 @@
 //! Responsive touch presentation for Word Grid.
 
 use crate::{
+    accessibility,
     state::AppState,
     ui::UiAction,
     word_grid::{LetterState, WordGrid, WordGridPhase, MAX_GUESSES, WORD_LENGTH},
@@ -107,21 +108,33 @@ pub fn draw(state: &AppState) {
     } else {
         58.
     };
-    draw_text("‹ CABINET", 8., 30., 13., muted());
-    draw_text("WORD GRID", title_x, title_y, title_size(), accent());
+    draw_text(
+        "‹ CABINET",
+        8.,
+        30.,
+        accessibility::text_size(13., state.large_text),
+        muted(),
+    );
+    draw_text(
+        "WORD GRID",
+        title_x,
+        title_y,
+        accessibility::text_size(title_size(), state.large_text),
+        accent(),
+    );
     draw_text(
         format!("{} / 6 guesses  •  {}", game.moves, status(game.phase)),
         if compact { 430. } else { title_x },
         if compact { 28. } else { title_y + 24. },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    draw_board(l.board, game);
-    draw_keyboard(l, game);
-    button(l.backspace, "BACKSPACE");
-    button(l.submit, "SUBMIT");
-    button(l.undo, "UNDO");
-    button(l.new_game, "NEW WORD");
+    draw_board(l.board, game, state.high_contrast, state.large_text);
+    draw_keyboard(l, game, state.high_contrast, state.large_text);
+    button(l.backspace, "BACKSPACE", state.large_text);
+    button(l.submit, "SUBMIT", state.large_text);
+    button(l.undo, "UNDO", state.large_text);
+    button(l.new_game, "NEW WORD", state.large_text);
     let status_y = if portrait {
         760.
     } else if compact {
@@ -133,12 +146,12 @@ pub fn draw(state: &AppState) {
         "Build five letters, then tap SUBMIT",
         if compact { 245. } else { title_x },
         status_y,
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
 }
 
-fn draw_board(board: Rect, game: &WordGrid) {
+fn draw_board(board: Rect, game: &WordGrid, high_contrast: bool, large_text: bool) {
     let cell = board.w / WORD_LENGTH as f32;
     for row in 0..MAX_GUESSES {
         for col in 0..WORD_LENGTH {
@@ -152,8 +165,21 @@ fn draw_board(board: Rect, game: &WordGrid) {
                 .feedback
                 .get(row)
                 .map_or(LetterState::Unknown, |feedback| feedback[col]);
-            draw_rectangle(rect.x, rect.y, rect.w, rect.h, tile_color(state));
-            draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., line_color());
+            draw_rectangle(
+                rect.x,
+                rect.y,
+                rect.w,
+                rect.h,
+                tile_color(state, high_contrast),
+            );
+            draw_rectangle_lines(
+                rect.x,
+                rect.y,
+                rect.w,
+                rect.h,
+                1.,
+                line_color(high_contrast),
+            );
             let value = game
                 .guesses
                 .get(row)
@@ -168,7 +194,10 @@ fn draw_board(board: Rect, game: &WordGrid) {
                 center_text(
                     &(letter as char).to_string(),
                     rect,
-                    if crate::ui::is_portrait() { 20. } else { 27. },
+                    accessibility::text_size(
+                        if crate::ui::is_portrait() { 20. } else { 27. },
+                        large_text,
+                    ),
                     WHITE,
                 );
             }
@@ -176,7 +205,7 @@ fn draw_board(board: Rect, game: &WordGrid) {
     }
 }
 
-fn draw_keyboard(l: Layout, game: &WordGrid) {
+fn draw_keyboard(l: Layout, game: &WordGrid, high_contrast: bool, large_text: bool) {
     for index in 0..26 {
         let rect = Rect::new(
             l.keyboard.x + (index % l.columns) as f32 * l.key_w,
@@ -185,12 +214,25 @@ fn draw_keyboard(l: Layout, game: &WordGrid) {
             l.key_h - 3.,
         );
         let state = game.used[index];
-        draw_rectangle(rect.x, rect.y, rect.w, rect.h, key_color(state));
-        draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
+        draw_rectangle(
+            rect.x,
+            rect.y,
+            rect.w,
+            rect.h,
+            key_color(state, high_contrast),
+        );
+        draw_rectangle_lines(
+            rect.x,
+            rect.y,
+            rect.w,
+            rect.h,
+            1.,
+            accessibility::grid_line(high_contrast),
+        );
         center_text(
             &(char::from(b'A' + index as u8)).to_string(),
             rect,
-            12.,
+            accessibility::text_size(12., large_text),
             WHITE,
         );
     }
@@ -203,7 +245,15 @@ fn status(phase: WordGridPhase) -> &'static str {
         WordGridPhase::Lost => "WORD REVEALED",
     }
 }
-fn tile_color(state: LetterState) -> Color {
+fn tile_color(state: LetterState, high_contrast: bool) -> Color {
+    if high_contrast {
+        return match state {
+            LetterState::Unknown => accessibility::board_fill(true),
+            LetterState::Absent => Color::new(0.22, 0.22, 0.26, 1.),
+            LetterState::Present => Color::new(1., 0.65, 0.05, 1.),
+            LetterState::Correct => Color::new(0.05, 0.90, 0.32, 1.),
+        };
+    }
     match state {
         LetterState::Unknown => Color::new(0.12, 0.09, 0.20, 1.),
         LetterState::Absent => Color::new(0.20, 0.16, 0.28, 1.),
@@ -211,7 +261,15 @@ fn tile_color(state: LetterState) -> Color {
         LetterState::Correct => Color::new(0.22, 0.55, 0.38, 1.),
     }
 }
-fn key_color(state: LetterState) -> Color {
+fn key_color(state: LetterState, high_contrast: bool) -> Color {
+    if high_contrast {
+        return match state {
+            LetterState::Unknown => Color::new(0.18, 0.14, 0.26, 1.),
+            LetterState::Absent => Color::new(0.08, 0.08, 0.10, 1.),
+            LetterState::Present => Color::new(0.95, 0.55, 0.02, 1.),
+            LetterState::Correct => Color::new(0.03, 0.75, 0.25, 1.),
+        };
+    }
     match state {
         LetterState::Unknown => Color::new(0.20, 0.13, 0.30, 1.),
         LetterState::Absent => Color::new(0.12, 0.09, 0.17, 1.),
@@ -219,7 +277,7 @@ fn key_color(state: LetterState) -> Color {
         LetterState::Correct => Color::new(0.20, 0.45, 0.30, 1.),
     }
 }
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -228,7 +286,12 @@ fn button(rect: Rect, label: &str) {
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
-    center_text(label, rect, 10., WHITE);
+    center_text(
+        label,
+        rect,
+        accessibility::text_size(10., large_text),
+        WHITE,
+    );
 }
 fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
     let measured = measure_text(label, None, size as u16, 1.);
@@ -262,6 +325,6 @@ fn accent() -> Color {
 fn muted() -> Color {
     Color::new(0.70, 0.64, 0.78, 1.)
 }
-fn line_color() -> Color {
-    Color::new(0.45, 0.38, 0.65, 0.8)
+fn line_color(high_contrast: bool) -> Color {
+    accessibility::grid_line(high_contrast)
 }

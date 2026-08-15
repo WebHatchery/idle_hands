@@ -687,6 +687,15 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Capture and verify accessible desktop, portrait, and medium-landscape
     scenes for all three puzzle games.
 
+## Phase 53 — Symbolic puzzle accessibility
+
+- [x] Extend the persisted High Contrast and Large Text settings to Color
+  Sort, Pipe Loop, and Word Grid.
+  - [x] Improve board fills, grid lines, symbols, labels, and touch controls
+    without changing the underlying game rules.
+  - [x] Capture and verify accessible desktop, portrait, and medium-landscape
+    scenes for all three symbolic puzzle games.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.
