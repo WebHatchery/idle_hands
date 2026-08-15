@@ -134,6 +134,19 @@ fn older_saves_default_new_progression_and_cosmetic_fields() {
 }
 
 #[test]
+fn older_profile_saves_default_accessibility_fields() {
+    let save = ProfileSave::from_state(&AppState::default(), "1.0.0");
+    let mut value = serde_json::to_value(save).unwrap();
+    value.as_object_mut().unwrap().remove("high_contrast");
+    value.as_object_mut().unwrap().remove("large_text");
+    let migrated: ProfileSave = serde_json::from_value(value).unwrap();
+    let mut restored = AppState::default();
+    migrated.apply_to(&mut restored);
+    assert!(!restored.high_contrast);
+    assert!(!restored.large_text);
+}
+
+#[test]
 fn default_state_has_no_reset_confirmation() {
     assert!(!AppState::default().confirm_reset);
 }
