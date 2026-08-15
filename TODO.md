@@ -127,6 +127,8 @@ sizes, covered by rule tests, and passes `publish.ps1`.
     new-board, and AI mode controls at 390×844.
   - [x] Verify compact portrait Help, Records, Rules, and Credits screens at
     390×844.
+  - [x] Capture the complete landscape baseline at 844×390 for all named
+    game, library, settings, and cabinet scenes; touch-size review remains.
 - [x] Run the complete capture matrix, replace duplicate-state images, and update
   the catalog thumbnail with the final cabinet.
 - [x] Complete final `cargo fmt`, tests, warning-free Clippy, and `publish.ps1`.
