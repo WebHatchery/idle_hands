@@ -198,12 +198,12 @@ pub fn draw_records(state: &AppState) {
         ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
-        let col = index / 13;
-        let row = index % 13;
+        let col = index / 10;
+        let row = index % 10;
         let y = 86. + row as f32 * 22.;
-        let x = 40. + col as f32 * 265.;
+        let x = 35. + col as f32 * 155.;
         text(label, x, y, 10., Color::new(0.78, 0.73, 0.86, 1.));
-        text(score, x + 220., y, 11., Color::new(0.98, 0.83, 0.45, 1.));
+        text(score, x + 120., y, 11., Color::new(0.98, 0.83, 0.45, 1.));
     }
     back(Rect::new(700., 330., 110., 38.));
 }

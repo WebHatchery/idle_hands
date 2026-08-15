@@ -624,6 +624,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover late-game tutorial indexing, round-trip persistence, and legacy
     save migration with focused state tests.
 
+## Phase 46 — Full-cabinet records capacity polish
+
+- [x] Reflow desktop and medium-landscape records so all forty-three game
+  records stay inside their panels after the cabinet expansion.
+  - [x] Keep every record label/value pair readable without right-edge clipping.
+  - [x] Preserve the portrait two-column layout and clear BACK targets.
+  - [x] Recapture records at desktop, portrait, and landscape sizes.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.
