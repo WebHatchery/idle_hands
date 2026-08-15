@@ -3,6 +3,7 @@
 use crate::daily_dungeon::DailyDungeon;
 use crate::dots_boxes::DotsBoxes;
 use crate::dungeon_sweeper::DungeonSweeper;
+use crate::flood_it::FloodIt;
 use crate::hanoi::Hanoi;
 use crate::mancala::Mancala;
 use crate::number_match::NumberMatch;
@@ -61,6 +62,7 @@ pub enum GameSnapshot {
     Mancala(Mancala),
     Hanoi(Hanoi),
     NumberMatch(NumberMatch),
+    FloodIt(FloodIt),
 }
 
 impl GameSnapshot {
@@ -102,6 +104,7 @@ impl GameSnapshot {
             GameId::Mancala => Self::Mancala(state.mancala.clone()),
             GameId::Hanoi => Self::Hanoi(state.hanoi.clone()),
             GameId::NumberMatch => Self::NumberMatch(state.number_match.clone()),
+            GameId::FloodIt => Self::FloodIt(state.flood_it.clone()),
         }
     }
 
@@ -143,6 +146,7 @@ impl GameSnapshot {
             Self::Mancala(game) => state.mancala = game,
             Self::Hanoi(game) => state.hanoi = game,
             Self::NumberMatch(game) => state.number_match = game,
+            Self::FloodIt(game) => state.flood_it = game,
         }
     }
 }

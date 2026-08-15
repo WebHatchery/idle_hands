@@ -497,6 +497,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "Equal numbers or pairs totaling ten disappear together.",
             "Clear the grid; use UNDO or NEW BOARD with visible controls.",
         ],
+        GameId::FloodIt => [
+            "Tap one of the visible colors to expand the top-left region.",
+            "Fill every square before the move counter runs out.",
+            "Use UNDO or NEW FIELD with visible controls.",
+        ],
     }
 }
 
@@ -546,6 +551,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::Mancala if state.records.mancala_best_score.is_some() => "COMPLETE",
         GameId::Hanoi if state.records.hanoi_best_moves.is_some() => "COMPLETE",
         GameId::NumberMatch if state.records.number_match_best_moves.is_some() => "COMPLETE",
+        GameId::FloodIt if state.records.flood_it_best_moves.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

@@ -508,6 +508,18 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Add responsive desktop, portrait, and medium-landscape presentation,
     visible controls, records, and verification captures.
 
+## Phase 36 — Twenty-ninth post-launch cabinet game
+
+- [x] Add Flood It as a thirty-seventh deterministic, touch-complete cabinet
+  game with an eight-by-eight color field, visible color choices, flood-fill
+  region growth, undo, reset, and a move-limited victory.
+  - [x] Cover flood expansion, color validation, win/loss boundaries, undo,
+    and reset behavior with focused rule tests.
+  - [x] Add persisted active state and best-move records with snapshot,
+    migration, progression, and tutorial coverage.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, records, and verification captures.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

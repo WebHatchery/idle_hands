@@ -165,4 +165,7 @@ pub enum UiAction {
     NumberMatchTap(usize),
     NumberMatchUndo,
     NumberMatchNew,
+    FloodColor(u8),
+    FloodUndo,
+    FloodNew,
 }

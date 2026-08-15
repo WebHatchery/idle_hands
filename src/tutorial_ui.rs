@@ -262,5 +262,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "Equal numbers or pairs totaling ten disappear together.",
             "Clear the grid; use UNDO or NEW BOARD with the visible controls.",
         ],
+        GameId::FloodIt => [
+            "Tap one of the visible colors to expand the top-left region.",
+            "Fill every square before the move counter runs out.",
+            "Use UNDO or NEW FIELD with the visible controls.",
+        ],
     }
 }

@@ -63,6 +63,7 @@ fn full_cabinet_counts_every_playable_game() {
     records.mancala_best_score = Some(25);
     records.hanoi_best_moves = Some(31);
     records.number_match_best_moves = Some(18);
+    records.flood_it_best_moves = Some(12);
 
     assert_eq!(completed_games(&records), GameId::ALL.len());
     assert!(earned(&records, AchievementId::FullCabinet));

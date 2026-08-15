@@ -64,6 +64,7 @@ impl AchievementId {
                 GameId::Mancala => "Stone keeper",
                 GameId::Hanoi => "Disk keeper",
                 GameId::NumberMatch => "Number keeper",
+                GameId::FloodIt => "Color keeper",
             },
             Self::FullCabinet => "Full cabinet",
         }
@@ -129,6 +130,7 @@ fn game_complete(records: &CollectionRecords, game: GameId) -> bool {
         GameId::Mancala => records.mancala_best_score.is_some(),
         GameId::Hanoi => records.hanoi_best_moves.is_some(),
         GameId::NumberMatch => records.number_match_best_moves.is_some(),
+        GameId::FloodIt => records.flood_it_best_moves.is_some(),
     }
 }
 

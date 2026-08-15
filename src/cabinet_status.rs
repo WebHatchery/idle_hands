@@ -42,6 +42,7 @@ pub fn status(state: &AppState, game: GameId) -> &'static str {
         GameId::Mancala => state.records.mancala_best_score.is_some(),
         GameId::Hanoi => state.records.hanoi_best_moves.is_some(),
         GameId::NumberMatch => state.records.number_match_best_moves.is_some(),
+        GameId::FloodIt => state.records.flood_it_best_moves.is_some(),
     };
     if complete {
         "COMPLETE"
@@ -97,6 +98,7 @@ fn has_progress(state: &AppState, game: GameId) -> bool {
         GameId::Mancala => state.mancala.moves > 0,
         GameId::Hanoi => state.hanoi.moves > 0,
         GameId::NumberMatch => state.number_match.moves > 0,
+        GameId::FloodIt => state.flood_it.moves > 0,
     }
 }
 
@@ -146,5 +148,6 @@ pub fn is_active(game: GameId) -> bool {
             | GameId::Mancala
             | GameId::Hanoi
             | GameId::NumberMatch
+            | GameId::FloodIt
     )
 }

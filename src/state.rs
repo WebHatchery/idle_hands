@@ -8,6 +8,7 @@ use crate::daily_dungeon::DailyDungeon;
 use crate::dots_boxes::DotsBoxes;
 use crate::dungeon_sweeper::DungeonSweeper;
 use crate::fivefold::Fivefold;
+use crate::flood_it::FloodIt;
 use crate::freecell::FreeCell;
 use crate::hangman::Hangman;
 use crate::hanoi::Hanoi;
@@ -79,9 +80,10 @@ pub enum GameId {
     Mancala,
     Hanoi,
     NumberMatch,
+    FloodIt,
 }
 impl GameId {
-    pub const ALL: [Self; 36] = [
+    pub const ALL: [Self; 37] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -118,6 +120,7 @@ impl GameId {
         Self::Mancala,
         Self::Hanoi,
         Self::NumberMatch,
+        Self::FloodIt,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -157,6 +160,7 @@ impl GameId {
             Self::Mancala => "Mancala",
             Self::Hanoi => "Hanoi",
             Self::NumberMatch => "Number Match",
+            Self::FloodIt => "Flood It",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -197,6 +201,7 @@ impl GameId {
             Self::Mancala => "Sow the quiet stones",
             Self::Hanoi => "Move the quiet disks",
             Self::NumberMatch => "Pair the quiet numbers",
+            Self::FloodIt => "Fill the quiet field",
         }
     }
     pub fn index(self) -> usize {
@@ -240,6 +245,7 @@ impl GameId {
             Self::Mancala => "mancala",
             Self::Hanoi => "hanoi",
             Self::NumberMatch => "number_match",
+            Self::FloodIt => "flood_it",
         }
     }
 }
@@ -304,6 +310,7 @@ pub struct AppState {
     pub mancala: Mancala,
     pub hanoi: Hanoi,
     pub number_match: NumberMatch,
+    pub flood_it: FloodIt,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -392,6 +399,8 @@ pub struct CollectionRecords {
     pub hanoi_best_moves: Option<u16>,
     #[serde(default)]
     pub number_match_best_moves: Option<u16>,
+    #[serde(default)]
+    pub flood_it_best_moves: Option<u16>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -467,6 +476,8 @@ pub struct CollectionSave {
     pub hanoi: Hanoi,
     #[serde(default)]
     pub number_match: NumberMatch,
+    #[serde(default)]
+    pub flood_it: FloodIt,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -606,6 +617,7 @@ impl CollectionSave {
             mancala: state.mancala.clone(),
             hanoi: state.hanoi.clone(),
             number_match: state.number_match.clone(),
+            flood_it: state.flood_it.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -661,6 +673,7 @@ impl CollectionSave {
         state.mancala = self.mancala;
         state.hanoi = self.hanoi;
         state.number_match = self.number_match;
+        state.flood_it = self.flood_it;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -722,6 +735,7 @@ impl Default for AppState {
             mancala: Mancala::default(),
             hanoi: Hanoi::default(),
             number_match: NumberMatch::default(),
+            flood_it: FloodIt::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

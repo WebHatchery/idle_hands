@@ -27,6 +27,8 @@ mod dungeon_sweeper;
 mod dungeon_sweeper_ui;
 mod fivefold;
 mod fivefold_ui;
+mod flood_it;
+mod flood_it_ui;
 mod freecell;
 mod freecell_ui;
 mod game;

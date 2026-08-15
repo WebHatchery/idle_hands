@@ -227,6 +227,16 @@ impl Game {
                 let seed = self.state.number_match.seed.wrapping_add(1);
                 self.state.number_match.reset(seed);
             }
+            UiAction::FloodColor(color) => {
+                self.state.flood_it.choose(*color);
+            }
+            UiAction::FloodUndo => {
+                self.state.flood_it.undo();
+            }
+            UiAction::FloodNew => {
+                let seed = self.state.flood_it.seed.wrapping_add(1);
+                self.state.flood_it.reset(seed);
+            }
             _ => return false,
         }
         true

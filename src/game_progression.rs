@@ -321,6 +321,15 @@ impl Game {
                     }),
             );
         }
+        if self.state.flood_it.won() {
+            records.flood_it_best_moves = Some(
+                records
+                    .flood_it_best_moves
+                    .map_or(self.state.flood_it.moves, |best| {
+                        best.min(self.state.flood_it.moves)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,
