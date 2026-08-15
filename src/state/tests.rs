@@ -378,3 +378,26 @@ fn older_profile_saves_default_accessibility_fields() {
 fn default_state_has_no_reset_confirmation() {
     assert!(!AppState::default().confirm_reset);
 }
+
+#[test]
+fn tutorial_state_covers_late_games_and_migrates_short_saves() {
+    let mut state = AppState::default();
+    let late_game = GameId::MatchThree;
+    state.tutorial_seen[late_game.index()] = true;
+    let profile = ProfileSave::from_state(&state, "1.0.0");
+    let mut restored = AppState::default();
+    profile.apply_to(&mut restored);
+    assert!(restored.tutorial_seen[late_game.index()]);
+    assert_eq!(restored.tutorial_seen.len(), GameId::ALL.len());
+
+    let mut old = serde_json::to_value(ProfileSave::from_state(&state, "1.0.0")).unwrap();
+    old["tutorial_seen"] =
+        serde_json::json!([true, false, true, false, false, false, false, false]);
+    let migrated: ProfileSave = serde_json::from_value(old).unwrap();
+    assert_eq!(migrated.tutorial_seen.len(), 8);
+    assert!(migrated.tutorial_seen[0]);
+    let mut migrated_state = AppState::default();
+    migrated.apply_to(&mut migrated_state);
+    assert_eq!(migrated_state.tutorial_seen.len(), GameId::ALL.len());
+    assert!(!migrated_state.tutorial_seen[GameId::MatchThree.index()]);
+}

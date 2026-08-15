@@ -373,7 +373,7 @@ pub struct AppState {
     pub sudoku_note_mode: bool,
     pub records: CollectionRecords,
     pub tutorial: Option<GameId>,
-    pub tutorial_seen: [bool; 8],
+    pub tutorial_seen: Vec<bool>,
     pub card_hint: Option<String>,
 }
 
@@ -490,7 +490,7 @@ pub struct CollectionSave {
     #[serde(default)]
     pub cabinet_decoration: u8,
     #[serde(default)]
-    pub tutorial_seen: [bool; 8],
+    pub tutorial_seen: Vec<bool>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -519,8 +519,16 @@ pub struct ProfileSave {
     pub sound_set: u8,
     #[serde(default)]
     pub cabinet_decoration: u8,
-    pub tutorial_seen: [bool; 8],
+    #[serde(default)]
+    pub tutorial_seen: Vec<bool>,
 }
+
+fn normalize_tutorial_seen(mut tutorial_seen: Vec<bool>) -> Vec<bool> {
+    tutorial_seen.resize(GameId::ALL.len(), false);
+    tutorial_seen.truncate(GameId::ALL.len());
+    tutorial_seen
+}
+
 impl ProfileSave {
     pub fn from_state(state: &AppState, version: &str) -> Self {
         Self {
@@ -540,7 +548,7 @@ impl ProfileSave {
             board_theme: state.board_theme,
             sound_set: state.sound_set,
             cabinet_decoration: state.cabinet_decoration,
-            tutorial_seen: state.tutorial_seen,
+            tutorial_seen: state.tutorial_seen.clone(),
         }
     }
     pub fn apply_to(self, state: &mut AppState) {
@@ -559,7 +567,7 @@ impl ProfileSave {
         state.board_theme = self.board_theme;
         state.sound_set = self.sound_set;
         state.cabinet_decoration = self.cabinet_decoration;
-        state.tutorial_seen = self.tutorial_seen;
+        state.tutorial_seen = normalize_tutorial_seen(self.tutorial_seen);
     }
 }
 
@@ -625,7 +633,7 @@ impl CollectionSave {
             board_theme: state.board_theme,
             sound_set: state.sound_set,
             cabinet_decoration: state.cabinet_decoration,
-            tutorial_seen: state.tutorial_seen,
+            tutorial_seen: state.tutorial_seen.clone(),
         }
     }
     pub fn apply_to(self, state: &mut AppState) {
@@ -687,7 +695,7 @@ impl CollectionSave {
         state.board_theme = self.board_theme;
         state.sound_set = self.sound_set;
         state.cabinet_decoration = self.cabinet_decoration;
-        state.tutorial_seen = self.tutorial_seen;
+        state.tutorial_seen = normalize_tutorial_seen(self.tutorial_seen);
     }
 }
 impl Default for AppState {
@@ -758,7 +766,7 @@ impl Default for AppState {
             sudoku_note_mode: false,
             records: CollectionRecords::default(),
             tutorial: None,
-            tutorial_seen: [false; 8],
+            tutorial_seen: vec![false; GameId::ALL.len()],
             card_hint: None,
         }
     }

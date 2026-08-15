@@ -614,6 +614,16 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Recapture the cabinet matrix and refresh the catalog thumbnail after the
     layout correction.
 
+## Phase 45 — Full-cabinet tutorial persistence audit
+
+- [x] Expand tutorial-seen persistence from the original eight-game array to
+  the complete forty-three-game cabinet so late-game tutorials cannot index
+  beyond the saved state.
+  - [x] Normalize legacy eight-entry collection and profile saves to the full
+    game count while preserving existing tutorial history.
+  - [x] Cover late-game tutorial indexing, round-trip persistence, and legacy
+    save migration with focused state tests.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.
