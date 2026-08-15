@@ -35,6 +35,8 @@ mod game_input;
 mod grid;
 mod hangman;
 mod hangman_ui;
+mod hanoi;
+mod hanoi_ui;
 mod higher_lower;
 mod higher_lower_ui;
 mod input;

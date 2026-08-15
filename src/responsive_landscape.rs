@@ -487,6 +487,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "A final stone in your store grants another turn.",
             "Gather more stones than the cabinet; use UNDO or NEW BOARD.",
         ],
+        GameId::Hanoi => [
+            "Tap a peg to select its top disk, then tap a destination peg.",
+            "Never place a larger disk on a smaller one.",
+            "Move all five disks to the far peg; use UNDO or NEW BOARD.",
+        ],
     }
 }
 
@@ -534,6 +539,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::DotsBoxes if state.records.dots_boxes_best_score.is_some() => "COMPLETE",
         GameId::Sokoban if state.records.sokoban_best_moves.is_some() => "COMPLETE",
         GameId::Mancala if state.records.mancala_best_score.is_some() => "COMPLETE",
+        GameId::Hanoi if state.records.hanoi_best_moves.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

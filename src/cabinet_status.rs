@@ -40,6 +40,7 @@ pub fn status(state: &AppState, game: GameId) -> &'static str {
         GameId::DotsBoxes => state.records.dots_boxes_best_score.is_some(),
         GameId::Sokoban => state.records.sokoban_best_moves.is_some(),
         GameId::Mancala => state.records.mancala_best_score.is_some(),
+        GameId::Hanoi => state.records.hanoi_best_moves.is_some(),
     };
     if complete {
         "COMPLETE"
@@ -93,6 +94,7 @@ fn has_progress(state: &AppState, game: GameId) -> bool {
         GameId::DotsBoxes => state.dots_boxes.moves > 0,
         GameId::Sokoban => state.sokoban.moves > 0,
         GameId::Mancala => state.mancala.moves > 0,
+        GameId::Hanoi => state.hanoi.moves > 0,
     }
 }
 
@@ -140,5 +142,6 @@ pub fn is_active(game: GameId) -> bool {
             | GameId::DotsBoxes
             | GameId::Sokoban
             | GameId::Mancala
+            | GameId::Hanoi
     )
 }

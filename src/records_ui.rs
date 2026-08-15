@@ -184,6 +184,10 @@ pub fn draw_records(state: &AppState) {
             "Mancala best stones",
             value(state.records.mancala_best_score.map(u32::from)),
         ),
+        (
+            "Hanoi best moves",
+            value(state.records.hanoi_best_moves.map(u32::from)),
+        ),
     ];
     draw_column(&left, 175., 240.);
     draw_column(&middle, 490., 240.);

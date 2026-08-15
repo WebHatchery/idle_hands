@@ -207,6 +207,16 @@ impl Game {
                 let seed = self.state.mancala.seed.wrapping_add(1);
                 self.state.mancala.reset(seed);
             }
+            UiAction::HanoiPeg(peg) => {
+                self.state.hanoi.tap_peg(*peg);
+            }
+            UiAction::HanoiUndo => {
+                self.state.hanoi.undo();
+            }
+            UiAction::HanoiNew => {
+                let seed = self.state.hanoi.seed.wrapping_add(1);
+                self.state.hanoi.reset(seed);
+            }
             _ => return false,
         }
         true

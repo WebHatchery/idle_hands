@@ -252,5 +252,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "A final stone in your store grants another turn.",
             "Gather more stones than the cabinet; use UNDO or NEW BOARD.",
         ],
+        GameId::Hanoi => [
+            "Tap a peg to select its top disk, then tap a destination peg.",
+            "Never place a larger disk on a smaller one.",
+            "Move all five disks to the far peg; use UNDO or NEW BOARD.",
+        ],
     }
 }

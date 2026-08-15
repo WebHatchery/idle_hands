@@ -10,6 +10,7 @@ use crate::dungeon_sweeper::DungeonSweeper;
 use crate::fivefold::Fivefold;
 use crate::freecell::FreeCell;
 use crate::hangman::Hangman;
+use crate::hanoi::Hanoi;
 use crate::higher_lower::HigherLower;
 use crate::klondike_golf::KlondikeGolf;
 use crate::lights_out::LightsOut;
@@ -75,9 +76,10 @@ pub enum GameId {
     DotsBoxes,
     Sokoban,
     Mancala,
+    Hanoi,
 }
 impl GameId {
-    pub const ALL: [Self; 34] = [
+    pub const ALL: [Self; 35] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -112,6 +114,7 @@ impl GameId {
         Self::DotsBoxes,
         Self::Sokoban,
         Self::Mancala,
+        Self::Hanoi,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -149,6 +152,7 @@ impl GameId {
             Self::DotsBoxes => "Dots & Boxes",
             Self::Sokoban => "Sokoban",
             Self::Mancala => "Mancala",
+            Self::Hanoi => "Hanoi",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -187,6 +191,7 @@ impl GameId {
             Self::DotsBoxes => "Draw the quiet squares",
             Self::Sokoban => "Push the quiet crates",
             Self::Mancala => "Sow the quiet stones",
+            Self::Hanoi => "Move the quiet disks",
         }
     }
     pub fn index(self) -> usize {
@@ -228,6 +233,7 @@ impl GameId {
             Self::DotsBoxes => "dots_boxes",
             Self::Sokoban => "sokoban",
             Self::Mancala => "mancala",
+            Self::Hanoi => "hanoi",
         }
     }
 }
@@ -290,6 +296,7 @@ pub struct AppState {
     pub dots_boxes: DotsBoxes,
     pub sokoban: Sokoban,
     pub mancala: Mancala,
+    pub hanoi: Hanoi,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -374,6 +381,8 @@ pub struct CollectionRecords {
     pub sokoban_best_moves: Option<u16>,
     #[serde(default)]
     pub mancala_best_score: Option<u8>,
+    #[serde(default)]
+    pub hanoi_best_moves: Option<u16>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -445,6 +454,8 @@ pub struct CollectionSave {
     pub sokoban: Sokoban,
     #[serde(default)]
     pub mancala: Mancala,
+    #[serde(default)]
+    pub hanoi: Hanoi,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -582,6 +593,7 @@ impl CollectionSave {
             dots_boxes: state.dots_boxes.clone(),
             sokoban: state.sokoban.clone(),
             mancala: state.mancala.clone(),
+            hanoi: state.hanoi.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -635,6 +647,7 @@ impl CollectionSave {
         state.dots_boxes = self.dots_boxes;
         state.sokoban = self.sokoban;
         state.mancala = self.mancala;
+        state.hanoi = self.hanoi;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -694,6 +707,7 @@ impl Default for AppState {
             dots_boxes: DotsBoxes::default(),
             sokoban: Sokoban::default(),
             mancala: Mancala::default(),
+            hanoi: Hanoi::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

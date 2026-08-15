@@ -484,6 +484,18 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Add responsive desktop, portrait, and medium-landscape presentation,
     visible controls, records, and verification captures.
 
+## Phase 34 — Twenty-seventh post-launch cabinet game
+
+- [x] Add Hanoi as a thirty-fifth deterministic, touch-complete cabinet game
+  with five disks, tap-to-select peg movement, undo, reset, and a clear-room
+  victory.
+  - [x] Cover selection, legal and illegal moves, classic-solution win,
+    undo, and reset behavior with focused rule tests.
+  - [x] Add persisted active state and best-move records with snapshot,
+    migration, progression, and tutorial coverage.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, records, and verification captures.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

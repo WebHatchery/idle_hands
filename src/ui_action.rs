@@ -159,4 +159,7 @@ pub enum UiAction {
     MancalaPit(usize),
     MancalaUndo,
     MancalaNew,
+    HanoiPeg(usize),
+    HanoiUndo,
+    HanoiNew,
 }
