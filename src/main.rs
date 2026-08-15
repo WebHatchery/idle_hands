@@ -9,6 +9,8 @@ mod cabinet_status;
 mod card_hints;
 mod card_render;
 mod cards;
+mod connect_four;
+mod connect_four_ui;
 mod cosmetics;
 mod data;
 mod fivefold;

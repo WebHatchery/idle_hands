@@ -1,5 +1,6 @@
 //! Touch-first cabinet and 2048 presentation.
 
+use crate::connect_four_ui;
 use crate::cosmetics;
 use crate::fivefold_ui;
 use crate::freecell_ui;
@@ -132,6 +133,9 @@ pub enum UiAction {
     WordSearchNew,
     HangmanGuess(u8),
     HangmanNew,
+    ConnectFourDrop(usize),
+    ConnectFourUndo,
+    ConnectFourNew,
 }
 pub fn viewport() -> Viewport {
     let (width, height) = layout_size();
@@ -258,6 +262,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Game(GameId::Spider) => spider_ui::clicks(state, p),
         Screen::Game(GameId::WordSearch) => word_search_ui::clicks(state, p),
         Screen::Game(GameId::Hangman) => hangman_ui::clicks(state, p),
+        Screen::Game(GameId::ConnectFour) => connect_four_ui::clicks(state, p),
         Screen::Game(GameId::Mastermind) => mastermind_ui::clicks(state, p),
         Screen::Help => {
             if is_compact_landscape() {
@@ -350,6 +355,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::Spider) => spider_ui::draw(state),
         Screen::Game(GameId::WordSearch) => word_search_ui::draw(state),
         Screen::Game(GameId::Hangman) => hangman_ui::draw(state),
+        Screen::Game(GameId::ConnectFour) => connect_four_ui::draw(state),
         Screen::Game(GameId::Mastermind) => mastermind_ui::draw(state),
         Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(),
         Screen::Help if is_portrait() => responsive_library::draw_help(),
@@ -379,7 +385,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         } else {
             tutorial_ui::draw_overlay(game);
         }
-    } else if matches!(state.screen, Screen::Game(game) if !matches!(game, GameId::LightsOut | GameId::TicTacToe | GameId::MemoryPairs | GameId::SlidingPuzzle | GameId::Mastermind | GameId::Spider | GameId::WordSearch | GameId::Hangman))
+    } else if matches!(state.screen, Screen::Game(game) if !matches!(game, GameId::LightsOut | GameId::TicTacToe | GameId::MemoryPairs | GameId::SlidingPuzzle | GameId::Mastermind | GameId::Spider | GameId::WordSearch | GameId::Hangman | GameId::ConnectFour))
     {
         if is_compact_landscape() {
             responsive_landscape::draw_replay_button();
@@ -452,6 +458,7 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
                 | GameId::Spider
                 | GameId::WordSearch
                 | GameId::Hangman
+                | GameId::ConnectFour
         );
         panel(
             r,

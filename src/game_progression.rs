@@ -136,6 +136,17 @@ impl Game {
                     }),
             );
         }
+        if self.state.connect_four.status
+            == crate::connect_four::ConnectFourStatus::Won(crate::connect_four::Disc::Red)
+        {
+            records.connect_four_best_moves = Some(
+                records
+                    .connect_four_best_moves
+                    .map_or(self.state.connect_four.moves, |best| {
+                        best.min(self.state.connect_four.moves)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

@@ -88,6 +88,10 @@ pub fn draw_records(state: &AppState) {
             "Hangman best",
             value(state.records.hangman_best_moves.map(u32::from)),
         ),
+        (
+            "Connect Four best",
+            value(state.records.connect_four_best_moves.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
         let col = index / 7;

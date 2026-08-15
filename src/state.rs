@@ -1,5 +1,6 @@
 //! Application state and the deterministic 2048 rules engine.
 
+use crate::connect_four::ConnectFour;
 use crate::fivefold::Fivefold;
 use crate::freecell::FreeCell;
 use crate::hangman::Hangman;
@@ -35,9 +36,10 @@ pub enum GameId {
     Spider,
     WordSearch,
     Hangman,
+    ConnectFour,
 }
 impl GameId {
-    pub const ALL: [Self; 16] = [
+    pub const ALL: [Self; 17] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -54,6 +56,7 @@ impl GameId {
         Self::Spider,
         Self::WordSearch,
         Self::Hangman,
+        Self::ConnectFour,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -73,6 +76,7 @@ impl GameId {
             Self::Spider => "Spider",
             Self::WordSearch => "Word Search",
             Self::Hangman => "Hangman",
+            Self::ConnectFour => "Connect Four",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -93,6 +97,7 @@ impl GameId {
             Self::Spider => "Build the quiet webs",
             Self::WordSearch => "Find the hidden words",
             Self::Hangman => "Keep the quiet word",
+            Self::ConnectFour => "Drop the quiet discs",
         }
     }
     pub fn index(self) -> usize {
@@ -116,6 +121,7 @@ impl GameId {
             Self::Spider => "spider",
             Self::WordSearch => "word_search",
             Self::Hangman => "hangman",
+            Self::ConnectFour => "connect_four",
         }
     }
 }
@@ -276,6 +282,7 @@ pub struct AppState {
     pub spider: Spider,
     pub word_search: WordSearch,
     pub hangman: Hangman,
+    pub connect_four: ConnectFour,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -324,6 +331,8 @@ pub struct CollectionRecords {
     pub word_search_best_moves: Option<u16>,
     #[serde(default)]
     pub hangman_best_moves: Option<u16>,
+    #[serde(default)]
+    pub connect_four_best_moves: Option<u8>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -359,6 +368,8 @@ pub struct CollectionSave {
     pub word_search: WordSearch,
     #[serde(default)]
     pub hangman: Hangman,
+    #[serde(default)]
+    pub connect_four: ConnectFour,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -476,6 +487,7 @@ pub enum GameSnapshot {
     Spider(Spider),
     WordSearch(WordSearch),
     Hangman(Hangman),
+    ConnectFour(ConnectFour),
 }
 impl GameSnapshot {
     pub fn from_state(state: &AppState, game: GameId) -> Self {
@@ -496,6 +508,7 @@ impl GameSnapshot {
             GameId::Spider => Self::Spider(state.spider.clone()),
             GameId::WordSearch => Self::WordSearch(state.word_search.clone()),
             GameId::Hangman => Self::Hangman(state.hangman.clone()),
+            GameId::ConnectFour => Self::ConnectFour(state.connect_four.clone()),
         }
     }
     pub fn apply_to(self, state: &mut AppState) {
@@ -516,6 +529,7 @@ impl GameSnapshot {
             Self::Spider(game) => state.spider = game,
             Self::WordSearch(game) => state.word_search = game,
             Self::Hangman(game) => state.hangman = game,
+            Self::ConnectFour(game) => state.connect_four = game,
         }
     }
 }
@@ -540,6 +554,7 @@ impl CollectionSave {
             spider: state.spider.clone(),
             word_search: state.word_search.clone(),
             hangman: state.hangman.clone(),
+            connect_four: state.connect_four.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -575,6 +590,7 @@ impl CollectionSave {
         state.spider = self.spider;
         state.word_search = self.word_search;
         state.hangman = self.hangman;
+        state.connect_four = self.connect_four;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -616,6 +632,7 @@ impl Default for AppState {
             spider: Spider::default(),
             word_search: WordSearch::default(),
             hangman: Hangman::default(),
+            connect_four: ConnectFour::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

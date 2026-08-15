@@ -22,6 +22,7 @@ pub fn status(state: &AppState, game: GameId) -> &'static str {
         GameId::Spider => state.records.spider_best_moves.is_some(),
         GameId::WordSearch => state.records.word_search_best_moves.is_some(),
         GameId::Hangman => state.records.hangman_best_moves.is_some(),
+        GameId::ConnectFour => state.records.connect_four_best_moves.is_some(),
     };
     if complete {
         "COMPLETE"
@@ -50,6 +51,7 @@ fn has_progress(state: &AppState, game: GameId) -> bool {
         GameId::Spider => state.spider.moves > 0,
         GameId::WordSearch => state.word_search.moves > 0,
         GameId::Hangman => state.hangman.moves > 0,
+        GameId::ConnectFour => state.connect_four.moves > 0,
     }
 }
 

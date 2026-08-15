@@ -162,5 +162,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "Six wrong guesses end the quiet round.",
             "Tap NEW WORD to begin another word.",
         ],
+        GameId::ConnectFour => [
+            "Tap a numbered column to drop your red disc.",
+            "The cabinet answers with a yellow disc.",
+            "Make four in a row; use UNDO or NEW BOARD visibly.",
+        ],
     }
 }

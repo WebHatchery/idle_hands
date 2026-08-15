@@ -30,9 +30,9 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 fn cabinet_rect(index: usize) -> Rect {
     Rect::new(
         8. + (index % 4) as f32 * 210.,
-        42. + (index / 4) as f32 * 70.,
+        40. + (index / 4) as f32 * 57.,
         200.,
-        64.,
+        50.,
     )
 }
 
@@ -54,35 +54,35 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
         text(
             game.title(),
             rect.x + 10.,
-            rect.y + 19.,
-            12.,
+            rect.y + 15.,
+            10.,
             Color::new(0.98, 0.82, 0.42, 1.),
         );
         text(
             cabinet_status(state, *game),
             rect.x + 10.,
-            rect.y + 37.,
-            9.,
+            rect.y + 29.,
+            8.,
             Color::new(0.98, 0.75, 0.30, 1.),
         );
         text(
             game.subtitle(),
             rect.x + 10.,
-            rect.y + 57.,
-            8.,
+            rect.y + 44.,
+            7.,
             Color::new(0.69, 0.65, 0.78, 1.),
         );
         draw_circle(
             rect.right() - 20.,
-            rect.y + 16.,
-            9.,
+            rect.y + 12.,
+            7.,
             cosmetics::cabinet_accent(state.cabinet_decoration),
         );
         text(
             &(index + 1).to_string(),
             rect.right() - 24.,
-            rect.y + 19.,
-            8.,
+            rect.y + 15.,
+            7.,
             Color::new(0.08, 0.05, 0.12, 1.),
         );
     }
@@ -397,6 +397,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "Six wrong guesses end the quiet round.",
             "Tap NEW WORD to begin another word.",
         ],
+        GameId::ConnectFour => [
+            "Tap a numbered column to drop your red disc.",
+            "The cabinet answers with a yellow disc.",
+            "Make four in a row; use UNDO or NEW BOARD visibly.",
+        ],
     }
 }
 
@@ -418,6 +423,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::Spider if state.records.spider_best_moves.is_some() => "COMPLETE",
         GameId::WordSearch if state.records.word_search_best_moves.is_some() => "COMPLETE",
         GameId::Hangman if state.records.hangman_best_moves.is_some() => "COMPLETE",
+        GameId::ConnectFour if state.records.connect_four_best_moves.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

@@ -85,6 +85,7 @@ impl Game {
             "spider" => Screen::Game(GameId::Spider),
             "word_search" => Screen::Game(GameId::WordSearch),
             "hangman" => Screen::Game(GameId::Hangman),
+            "connect_four" => Screen::Game(GameId::ConnectFour),
             "help" => Screen::Help,
             "records" => Screen::Records,
             "rules" => Screen::Rules,
@@ -297,6 +298,7 @@ impl Game {
                         | GameId::Spider
                         | GameId::WordSearch
                         | GameId::Hangman
+                        | GameId::ConnectFour
                 ) {
                     self.state.screen = Screen::Game(id);
                     self.state.tutorial = (!matches!(
@@ -309,6 +311,7 @@ impl Game {
                             | GameId::Spider
                             | GameId::WordSearch
                             | GameId::Hangman
+                            | GameId::ConnectFour
                     ) && !self.state.tutorial_seen[id.index()])
                     .then_some(id);
                 } else {
@@ -612,6 +615,16 @@ impl Game {
             ui::UiAction::HangmanNew => {
                 let seed = self.state.hangman.seed.wrapping_add(1);
                 self.state.hangman.reset(seed);
+            }
+            ui::UiAction::ConnectFourDrop(column) => {
+                self.state.connect_four.drop(column);
+            }
+            ui::UiAction::ConnectFourUndo => {
+                self.state.connect_four.undo();
+            }
+            ui::UiAction::ConnectFourNew => {
+                let seed = self.state.connect_four.seed.wrapping_add(1);
+                self.state.connect_four.reset(seed);
             }
             ui::UiAction::MineChord(index) => {
                 self.state.minesweeper.chord(index);
