@@ -125,6 +125,8 @@ sizes, covered by rule tests, and passes `publish.ps1`.
     Settings controls at 390×844.
   - [x] Verify touch-sized portrait Minesweeper, Solitaire, FreeCell, and
     Fivefold controls at 390×844.
+  - [x] Verify touch-sized portrait Reversi board, legal-move markers, pass,
+    new-board, and AI mode controls at 390×844.
 - [ ] Run the complete capture matrix, replace duplicate-state images, and update
   the catalog thumbnail with the final cabinet.
 - [ ] Complete final `cargo fmt`, tests, warning-free Clippy, and `publish.ps1`.

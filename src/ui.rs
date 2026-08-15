@@ -166,6 +166,9 @@ pub fn clicks(state: &AppState) -> Vec<UiAction> {
             responsive_cards::fivefold_clicks(state, p)
         }
         Screen::Game(GameId::Yahtzee) => fivefold_ui::fivefold_clicks(state, p),
+        Screen::Game(GameId::Reversi) if is_portrait() => {
+            responsive_cards::reversi_clicks(state, p)
+        }
         Screen::Game(GameId::Reversi) => reversi_ui::reversi_clicks(state, p),
         Screen::Help => {
             if Rect::new(1030., 635., 180., 48.).contains(p) {
@@ -205,6 +208,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::FreeCell) => freecell_ui::draw_freecell(state),
         Screen::Game(GameId::Yahtzee) if is_portrait() => responsive_cards::draw_fivefold(state),
         Screen::Game(GameId::Yahtzee) => fivefold_ui::draw_fivefold(state),
+        Screen::Game(GameId::Reversi) if is_portrait() => responsive_cards::draw_reversi(state),
         Screen::Game(GameId::Reversi) => reversi_ui::draw_reversi(state),
         Screen::Help => draw_help(),
         Screen::Records => records_ui::draw_records(state),
