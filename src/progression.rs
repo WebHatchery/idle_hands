@@ -38,6 +38,7 @@ impl AchievementId {
                 GameId::Reversi => "Board turner",
                 GameId::LightsOut => "Light keeper",
                 GameId::TicTacToe => "Three-in-a-row keeper",
+                GameId::MemoryPairs => "Pair keeper",
             },
             Self::FullCabinet => "Full cabinet",
         }
@@ -70,6 +71,7 @@ pub fn completed_games(records: &CollectionRecords) -> usize {
         records.reversi_best_score > 0,
         records.lights_out_best_moves.is_some(),
         records.tic_tac_toe_best_moves.is_some(),
+        records.memory_pairs_best_moves.is_some(),
     ]
     .into_iter()
     .filter(|complete| *complete)
@@ -90,6 +92,7 @@ pub fn earned(records: &CollectionRecords, achievement: AchievementId) -> bool {
             GameId::Reversi => records.reversi_best_score > 0,
             GameId::LightsOut => records.lights_out_best_moves.is_some(),
             GameId::TicTacToe => records.tic_tac_toe_best_moves.is_some(),
+            GameId::MemoryPairs => records.memory_pairs_best_moves.is_some(),
         },
         AchievementId::FullCabinet => completed_games(records) == GameId::ALL.len(),
     }

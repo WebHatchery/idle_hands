@@ -81,6 +81,10 @@ pub fn draw_records(state: &AppState) {
             "Tic-Tac-Toe best",
             value(state.records.tic_tac_toe_best_moves.map(u32::from)),
         ),
+        (
+            "Memory best",
+            value(state.records.memory_pairs_best_moves.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
         let y = 155. + index as f32 * 27.;

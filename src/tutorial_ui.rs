@@ -132,5 +132,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "The cabinet answers with O after your move.",
             "Use UNDO or NEW BOARD when you need it.",
         ],
+        GameId::MemoryPairs => [
+            "Tap a card to turn it face up.",
+            "Find its matching card before the board goes quiet.",
+            "Use UNDO or NEW BOARD whenever you need it.",
+        ],
     }
 }

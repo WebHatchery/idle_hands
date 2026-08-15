@@ -367,6 +367,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "The cabinet answers with O after your move.",
             "Use UNDO or NEW BOARD when you need it.",
         ],
+        GameId::MemoryPairs => [
+            "Tap a card to turn it face up.",
+            "Find its matching card before the board goes quiet.",
+            "Use UNDO or NEW BOARD whenever you need it.",
+        ],
     }
 }
 
@@ -382,6 +387,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::Reversi if state.records.reversi_best_score > 0 => "COMPLETE",
         GameId::LightsOut if state.records.lights_out_best_moves.is_some() => "COMPLETE",
         GameId::TicTacToe if state.records.tic_tac_toe_best_moves.is_some() => "COMPLETE",
+        GameId::MemoryPairs if state.records.memory_pairs_best_moves.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

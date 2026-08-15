@@ -196,8 +196,18 @@ sizes, covered by rule tests, and passes `publish.ps1`.
     existing saves or per-game snapshot isolation.
   - [x] Add responsive desktop, portrait, and medium-landscape presentation,
     visible controls, and verification captures.
-  - [x] Publish the expanded cabinet and game through the standard validation
+- [x] Publish the expanded cabinet and game through the standard validation
     path.
+
+## Phase 10 — Third post-launch cabinet game
+
+- [x] Add Memory/Pairs as an eleventh deterministic, touch-complete cabinet
+  game.
+  - [x] Add seeded pair deals, face-up matching, mismatch recovery, undo, new
+    board reset, and focused rule tests.
+  - [x] Add persisted active state and best-move records with snapshot coverage.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, and verification captures.
 
 ## Phase 9 — Second post-launch cabinet game
 

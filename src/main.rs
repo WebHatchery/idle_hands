@@ -20,6 +20,8 @@ mod input;
 mod library_ui;
 mod lights_out;
 mod lights_out_ui;
+mod memory_pairs;
+mod memory_pairs_ui;
 mod minesweeper;
 mod minesweeper_ui;
 mod nonogram;

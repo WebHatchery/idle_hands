@@ -6,6 +6,7 @@ use crate::freecell_ui;
 use crate::input::Viewport;
 use crate::library_ui;
 use crate::lights_out_ui;
+use crate::memory_pairs_ui;
 use crate::minesweeper_ui;
 use crate::nonogram_ui;
 use crate::palette_ui;
@@ -106,6 +107,9 @@ pub enum UiAction {
     TicTacToePress(usize),
     TicTacToeUndo,
     TicTacToeNew,
+    MemoryPairsSelect(usize),
+    MemoryPairsUndo,
+    MemoryPairsNew,
 }
 pub fn viewport() -> Viewport {
     let (width, height) = layout_size();
@@ -227,6 +231,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Game(GameId::Reversi) => reversi_ui::reversi_clicks(state, p),
         Screen::Game(GameId::LightsOut) => lights_out_ui::clicks(state, p),
         Screen::Game(GameId::TicTacToe) => tic_tac_toe_ui::clicks(state, p),
+        Screen::Game(GameId::MemoryPairs) => memory_pairs_ui::clicks(state, p),
         Screen::Help => {
             if is_compact_landscape() {
                 responsive_landscape_library::help_clicks(p)
@@ -313,6 +318,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::Reversi) => reversi_ui::draw_reversi(state),
         Screen::Game(GameId::LightsOut) => lights_out_ui::draw(state),
         Screen::Game(GameId::TicTacToe) => tic_tac_toe_ui::draw(state),
+        Screen::Game(GameId::MemoryPairs) => memory_pairs_ui::draw(state),
         Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(),
         Screen::Help if is_portrait() => responsive_library::draw_help(),
         Screen::Help => draw_help(),
@@ -341,7 +347,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         } else {
             tutorial_ui::draw_overlay(game);
         }
-    } else if matches!(state.screen, Screen::Game(game) if !matches!(game, GameId::LightsOut | GameId::TicTacToe))
+    } else if matches!(state.screen, Screen::Game(game) if !matches!(game, GameId::LightsOut | GameId::TicTacToe | GameId::MemoryPairs))
     {
         if is_compact_landscape() {
             responsive_landscape::draw_replay_button();
@@ -408,6 +414,7 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
                 | GameId::Reversi
                 | GameId::LightsOut
                 | GameId::TicTacToe
+                | GameId::MemoryPairs
         );
         panel(
             r,
@@ -474,12 +481,12 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
     let _ = data;
 }
 fn cabinet_rect(i: usize) -> Rect {
-    let col = i % 5;
-    let row = i / 5;
+    let col = i % 6;
+    let row = i / 6;
     Rect::new(
-        48. + col as f32 * 240.,
+        48. + col as f32 * 198.,
         155. + row as f32 * 180.,
-        225.,
+        190.,
         150.,
     )
 }
@@ -495,6 +502,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::Reversi => state.records.reversi_best_score > 0,
         GameId::LightsOut => state.records.lights_out_best_moves.is_some(),
         GameId::TicTacToe => state.records.tic_tac_toe_best_moves.is_some(),
+        GameId::MemoryPairs => state.records.memory_pairs_best_moves.is_some(),
     };
     if complete {
         "COMPLETE"
@@ -516,6 +524,7 @@ fn cabinet_has_progress(state: &AppState, game: GameId) -> bool {
         GameId::Reversi => state.reversi.moves > 0,
         GameId::LightsOut => state.lights_out.moves > 0,
         GameId::TicTacToe => state.tic_tac_toe.moves > 0,
+        GameId::MemoryPairs => state.memory_pairs.moves > 0,
     }
 }
 fn cabinet_status_color(status: &str) -> Color {

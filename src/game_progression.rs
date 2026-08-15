@@ -82,6 +82,15 @@ impl Game {
                     }),
             );
         }
+        if self.state.memory_pairs.status == crate::memory_pairs::MemoryStatus::Won {
+            records.memory_pairs_best_moves = Some(
+                records
+                    .memory_pairs_best_moves
+                    .map_or(self.state.memory_pairs.moves, |best| {
+                        best.min(self.state.memory_pairs.moves)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

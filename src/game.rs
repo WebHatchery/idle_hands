@@ -81,6 +81,7 @@ impl Game {
             "reversi" => Screen::Game(GameId::Reversi),
             "lights_out" => Screen::Game(GameId::LightsOut),
             "tic_tac_toe" => Screen::Game(GameId::TicTacToe),
+            "memory_pairs" => Screen::Game(GameId::MemoryPairs),
             "help" => Screen::Help,
             "records" => Screen::Records,
             "rules" => Screen::Rules,
@@ -287,10 +288,13 @@ impl Game {
                         | GameId::Reversi
                         | GameId::LightsOut
                         | GameId::TicTacToe
+                        | GameId::MemoryPairs
                 ) {
                     self.state.screen = Screen::Game(id);
-                    self.state.tutorial = (!matches!(id, GameId::LightsOut | GameId::TicTacToe)
-                        && !self.state.tutorial_seen[id.index()])
+                    self.state.tutorial = (!matches!(
+                        id,
+                        GameId::LightsOut | GameId::TicTacToe | GameId::MemoryPairs
+                    ) && !self.state.tutorial_seen[id.index()])
                     .then_some(id);
                 } else {
                     self.notifications
@@ -524,6 +528,16 @@ impl Game {
             ui::UiAction::TicTacToeNew => {
                 let seed = self.state.tic_tac_toe.seed.wrapping_add(1);
                 self.state.tic_tac_toe.reset(seed);
+            }
+            ui::UiAction::MemoryPairsSelect(index) => {
+                self.state.memory_pairs.select(index);
+            }
+            ui::UiAction::MemoryPairsUndo => {
+                self.state.memory_pairs.undo();
+            }
+            ui::UiAction::MemoryPairsNew => {
+                let seed = self.state.memory_pairs.seed.wrapping_add(1);
+                self.state.memory_pairs.reset(seed);
             }
             ui::UiAction::MineChord(index) => {
                 self.state.minesweeper.chord(index);

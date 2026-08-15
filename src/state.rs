@@ -3,6 +3,7 @@
 use crate::fivefold::Fivefold;
 use crate::freecell::FreeCell;
 use crate::lights_out::LightsOut;
+use crate::memory_pairs::MemoryPairs;
 use crate::minesweeper::Minesweeper;
 use crate::nonogram::Nonogram;
 use crate::reversi::Reversi;
@@ -23,9 +24,10 @@ pub enum GameId {
     Reversi,
     LightsOut,
     TicTacToe,
+    MemoryPairs,
 }
 impl GameId {
-    pub const ALL: [Self; 10] = [
+    pub const ALL: [Self; 11] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -36,6 +38,7 @@ impl GameId {
         Self::Reversi,
         Self::LightsOut,
         Self::TicTacToe,
+        Self::MemoryPairs,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -49,6 +52,7 @@ impl GameId {
             Self::Reversi => "Reversi",
             Self::LightsOut => "Lights Out",
             Self::TicTacToe => "Tic-Tac-Toe",
+            Self::MemoryPairs => "Memory",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -63,6 +67,7 @@ impl GameId {
             Self::Reversi => "Turn the board",
             Self::LightsOut => "Quiet the lights",
             Self::TicTacToe => "Three in a row",
+            Self::MemoryPairs => "Find the quiet pairs",
         }
     }
     pub fn index(self) -> usize {
@@ -80,6 +85,7 @@ impl GameId {
             Self::Reversi => "reversi",
             Self::LightsOut => "lights_out",
             Self::TicTacToe => "tic_tac_toe",
+            Self::MemoryPairs => "memory_pairs",
         }
     }
 }
@@ -234,6 +240,7 @@ pub struct AppState {
     pub reversi: Reversi,
     pub lights_out: LightsOut,
     pub tic_tac_toe: TicTacToe,
+    pub memory_pairs: MemoryPairs,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -270,6 +277,8 @@ pub struct CollectionRecords {
     pub lights_out_best_moves: Option<u16>,
     #[serde(default)]
     pub tic_tac_toe_best_moves: Option<u8>,
+    #[serde(default)]
+    pub memory_pairs_best_moves: Option<u16>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -293,6 +302,8 @@ pub struct CollectionSave {
     pub lights_out: LightsOut,
     #[serde(default)]
     pub tic_tac_toe: TicTacToe,
+    #[serde(default)]
+    pub memory_pairs: MemoryPairs,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -404,6 +415,7 @@ pub enum GameSnapshot {
     Reversi(Reversi),
     LightsOut(LightsOut),
     TicTacToe(TicTacToe),
+    MemoryPairs(MemoryPairs),
 }
 impl GameSnapshot {
     pub fn from_state(state: &AppState, game: GameId) -> Self {
@@ -418,6 +430,7 @@ impl GameSnapshot {
             GameId::Reversi => Self::Reversi(state.reversi.clone()),
             GameId::LightsOut => Self::LightsOut(state.lights_out.clone()),
             GameId::TicTacToe => Self::TicTacToe(state.tic_tac_toe.clone()),
+            GameId::MemoryPairs => Self::MemoryPairs(state.memory_pairs.clone()),
         }
     }
     pub fn apply_to(self, state: &mut AppState) {
@@ -432,6 +445,7 @@ impl GameSnapshot {
             Self::Reversi(game) => state.reversi = game,
             Self::LightsOut(game) => state.lights_out = game,
             Self::TicTacToe(game) => state.tic_tac_toe = game,
+            Self::MemoryPairs(game) => state.memory_pairs = game,
         }
     }
 }
@@ -450,6 +464,7 @@ impl CollectionSave {
             reversi: state.reversi.clone(),
             lights_out: state.lights_out.clone(),
             tic_tac_toe: state.tic_tac_toe.clone(),
+            memory_pairs: state.memory_pairs.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -479,6 +494,7 @@ impl CollectionSave {
         state.reversi = self.reversi;
         state.lights_out = self.lights_out;
         state.tic_tac_toe = self.tic_tac_toe;
+        state.memory_pairs = self.memory_pairs;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -514,6 +530,7 @@ impl Default for AppState {
             reversi: Reversi::default(),
             lights_out: LightsOut::default(),
             tic_tac_toe: TicTacToe::default(),
+            memory_pairs: MemoryPairs::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

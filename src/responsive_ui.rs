@@ -29,10 +29,10 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 
 pub fn cabinet_rect(index: usize) -> Rect {
     Rect::new(
-        8. + (index % 2) as f32 * 172.,
-        100. + (index / 2) as f32 * 106.,
-        164.,
-        92.,
+        6. + (index % 3) as f32 * 118.,
+        100. + (index / 3) as f32 * 115.,
+        112.,
+        100.,
     )
 }
 
@@ -55,7 +55,7 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
             game.title(),
             rect.x + 10.,
             rect.y + 28.,
-            17.,
+            14.,
             Color::new(0.98, 0.82, 0.42, 1.),
         );
         text(
@@ -664,6 +664,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::Reversi if state.records.reversi_best_score > 0 => "COMPLETE",
         GameId::LightsOut if state.records.lights_out_best_moves.is_some() => "COMPLETE",
         GameId::TicTacToe if state.records.tic_tac_toe_best_moves.is_some() => "COMPLETE",
+        GameId::MemoryPairs if state.records.memory_pairs_best_moves.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }
