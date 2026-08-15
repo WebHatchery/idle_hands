@@ -5,6 +5,7 @@ use macroquad_toolkit::capture;
 
 mod data;
 mod game;
+mod minesweeper;
 mod state;
 mod ui;
 

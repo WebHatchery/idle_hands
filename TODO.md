@@ -33,11 +33,11 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 - [x] Implement seeded 2048 rules, swipe controls, visible direction controls,
   score/best tile, one undo, new-game confirmation, tutorial, and records.
 - [ ] Add portrait/landscape capture scenes and replace the template screenshot.
-- [ ] Create the first real title-screen `catalog_thumbnail.png`.
+- [x] Create the first real title-screen `catalog_thumbnail.png`.
 
 ## Phase 2 — Minesweeper and grid foundations
 
-- [ ] Implement first-tap-safe seeded mine placement and adjacency counts.
+- [x] Implement first-tap-safe seeded mine placement and adjacency counts.
 - [ ] Add beginner/intermediate/expert/custom board presets.
 - [ ] Add Reveal/Flag modes, optional long-press shortcut, visible chord action,
   restart, timer, mine count, win/loss, tutorial, and records.

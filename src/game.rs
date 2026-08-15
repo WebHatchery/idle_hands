@@ -84,7 +84,7 @@ impl Game {
             ui::UiAction::Open(index) => {
                 self.state.selected = index;
                 let id = GameId::ALL[index];
-                if id == GameId::Game2048 {
+                if matches!(id, GameId::Game2048 | GameId::Minesweeper) {
                     self.state.screen = Screen::Game(id);
                 } else {
                     self.notifications
@@ -95,6 +95,23 @@ impl Game {
             ui::UiAction::Help => self.state.screen = Screen::Help,
             ui::UiAction::Settings => self.state.screen = Screen::Settings,
             ui::UiAction::Move(direction) => self.try_move(direction),
+            ui::UiAction::MineReveal(index) => {
+                self.state.minesweeper.reveal(index);
+            }
+            ui::UiAction::MineFlag(index) => {
+                self.state.minesweeper.toggle_flag(index);
+            }
+            ui::UiAction::MineFlagMode => {
+                self.state.mine_flag_mode = !self.state.mine_flag_mode;
+            }
+            ui::UiAction::MineChord(index) => {
+                self.state.minesweeper.chord(index);
+            }
+            ui::UiAction::MineRestart => {
+                self.state.minesweeper = crate::minesweeper::Minesweeper::beginner(
+                    self.state.minesweeper.seed.wrapping_add(1),
+                );
+            }
             ui::UiAction::Undo => {
                 if self.state.game.undo() {
                     self.notifications.info("One move undone");

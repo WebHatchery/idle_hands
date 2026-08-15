@@ -2,6 +2,7 @@
 
 use crate::{
     data::GameData,
+    minesweeper::{Cell, MineStatus},
     state::{AppState, Direction, GameId, Screen},
 };
 use macroquad::prelude::*;
@@ -20,6 +21,11 @@ pub enum UiAction {
     Cancel,
     ToggleSound,
     ToggleMotion,
+    MineReveal(usize),
+    MineFlag(usize),
+    MineChord(usize),
+    MineRestart,
+    MineFlagMode,
 }
 pub fn mouse() -> Vec2 {
     vec2(
@@ -46,6 +52,7 @@ pub fn clicks(state: &AppState) -> Vec<UiAction> {
             out
         }
         Screen::Game(GameId::Game2048) => game_clicks(state, p),
+        Screen::Game(GameId::Minesweeper) => mine_clicks(state, p),
         Screen::Help => {
             if Rect::new(1030., 635., 180., 48.).contains(p) {
                 vec![UiAction::Cabinet]
@@ -61,6 +68,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
     match state.screen {
         Screen::Cabinet => draw_cabinet(state, data, loaded_assets),
         Screen::Game(GameId::Game2048) => draw_2048(state),
+        Screen::Game(GameId::Minesweeper) => draw_minesweeper(state),
         Screen::Help => draw_help(),
         Screen::Settings => draw_settings(state),
         Screen::Game(_) => draw_cabinet(state, data, loaded_assets),
@@ -461,4 +469,167 @@ fn settings_clicks(p: Vec2) -> Vec<UiAction> {
         o.push(UiAction::ToggleMotion)
     }
     o
+}
+
+fn draw_minesweeper(state: &AppState) {
+    let game = &state.minesweeper;
+    text("‹ CABINET", 40., 55., 20., Color::new(0.78, 0.70, 0.92, 1.));
+    text(
+        "MINESWEEPER",
+        40.,
+        105.,
+        42.,
+        Color::new(0.98, 0.83, 0.45, 1.),
+    );
+    text(
+        "Read the quiet field",
+        44.,
+        132.,
+        18.,
+        Color::new(0.70, 0.64, 0.78, 1.),
+    );
+    let board = Rect::new(350., 155., 450., 450.);
+    panel(board, Color::new(0.10, 0.07, 0.16, 1.));
+    let cell_size = 46.;
+    for index in 0..game.cells.len() {
+        let rect = Rect::new(
+            board.x + 12. + (index % game.width) as f32 * cell_size,
+            board.y + 12. + (index / game.width) as f32 * cell_size,
+            42.,
+            42.,
+        );
+        let cell = game.cells[index];
+        let revealed = matches!(cell, Cell::Revealed(value) if value < 9)
+            || matches!(game.status, MineStatus::Lost)
+                && matches!(cell, Cell::Mine | Cell::FlaggedMine | Cell::Revealed(9));
+        draw_rectangle(
+            rect.x,
+            rect.y,
+            rect.w,
+            rect.h,
+            if revealed {
+                Color::new(0.24, 0.19, 0.30, 1.)
+            } else {
+                Color::new(0.15, 0.11, 0.23, 1.)
+            },
+        );
+        draw_rectangle_lines(
+            rect.x,
+            rect.y,
+            rect.w,
+            rect.h,
+            1.,
+            Color::new(0.48, 0.40, 0.60, 0.7),
+        );
+        match cell {
+            Cell::Flagged | Cell::FlaggedMine => text(
+                "⚑",
+                rect.x + 12.,
+                rect.y + 31.,
+                25.,
+                Color::new(0.98, 0.46, 0.38, 1.),
+            ),
+            Cell::Mine if matches!(game.status, MineStatus::Lost) => text(
+                "✹",
+                rect.x + 11.,
+                rect.y + 31.,
+                24.,
+                Color::new(0.98, 0.45, 0.32, 1.),
+            ),
+            Cell::Revealed(value) if value > 0 && value < 9 => text(
+                &value.to_string(),
+                rect.x + 16.,
+                rect.y + 31.,
+                23.,
+                Color::new(0.76, 0.90, 1.0, 1.),
+            ),
+            _ => {}
+        }
+    }
+    text(
+        &format!("Mines: {} / {}", game.flagged_count(), game.mines),
+        850.,
+        215.,
+        22.,
+        Color::new(0.82, 0.75, 0.90, 1.),
+    );
+    text(
+        match game.status {
+            MineStatus::Ready => "First reveal is safe",
+            MineStatus::Playing => "Find every safe square",
+            MineStatus::Won => "Field cleared",
+            MineStatus::Lost => "A mine was found",
+        },
+        850.,
+        255.,
+        18.,
+        Color::new(0.63, 0.95, 0.72, 1.),
+    );
+    panel(
+        Rect::new(850., 320., 170., 52.),
+        if state.mine_flag_mode {
+            Color::new(0.45, 0.20, 0.27, 1.)
+        } else {
+            Color::new(0.20, 0.13, 0.30, 1.)
+        },
+    );
+    text(
+        if state.mine_flag_mode {
+            "FLAG MODE"
+        } else {
+            "REVEAL MODE"
+        },
+        875.,
+        353.,
+        16.,
+        WHITE,
+    );
+    panel(
+        Rect::new(850., 390., 170., 52.),
+        Color::new(0.20, 0.13, 0.30, 1.),
+    );
+    text("RESTART", 892., 423., 16., WHITE);
+    text(
+        "Tap a square to reveal or flag it.",
+        850.,
+        500.,
+        16.,
+        Color::new(0.63, 0.58, 0.72, 1.),
+    );
+    text(
+        "Tap a revealed number after marking its mines to chord.",
+        850.,
+        525.,
+        15.,
+        Color::new(0.63, 0.58, 0.72, 1.),
+    );
+}
+
+fn mine_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
+    if Rect::new(20., 20., 180., 50.).contains(p) {
+        return vec![UiAction::Cabinet];
+    }
+    if Rect::new(850., 320., 170., 52.).contains(p) {
+        return vec![UiAction::MineFlagMode];
+    }
+    if Rect::new(850., 390., 170., 52.).contains(p) {
+        return vec![UiAction::MineRestart];
+    }
+    let board = Rect::new(350., 155., 450., 450.);
+    if !board.contains(p) {
+        return vec![];
+    }
+    let column = ((p.x - board.x - 12.) / 46.) as usize;
+    let row = ((p.y - board.y - 12.) / 46.) as usize;
+    if column >= 9 || row >= 9 {
+        return vec![];
+    }
+    let index = row * 9 + column;
+    if state.mine_flag_mode {
+        vec![UiAction::MineFlag(index)]
+    } else if matches!(state.minesweeper.cells[index], Cell::Revealed(_)) {
+        vec![UiAction::MineChord(index)]
+    } else {
+        vec![UiAction::MineReveal(index)]
+    }
 }

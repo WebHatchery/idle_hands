@@ -1,5 +1,6 @@
 //! Application state and the deterministic 2048 rules engine.
 
+use crate::minesweeper::Minesweeper;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -185,10 +186,12 @@ pub struct AppState {
     pub screen: Screen,
     pub selected: usize,
     pub game: Game2048,
+    pub minesweeper: Minesweeper,
     pub confirm_restart: bool,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
+    pub mine_flag_mode: bool,
 }
 impl Default for AppState {
     fn default() -> Self {
@@ -196,10 +199,12 @@ impl Default for AppState {
             screen: Screen::Cabinet,
             selected: 4,
             game: Game2048::default(),
+            minesweeper: Minesweeper::beginner(0x1D1E_51),
             confirm_restart: false,
             profile_name: "Cabinet Guest".into(),
             sound: true,
             reduced_motion: false,
+            mine_flag_mode: false,
         }
     }
 }
