@@ -1,6 +1,7 @@
 //! Responsive touch presentation for One Room Roguelike.
 
 use crate::{
+    accessibility,
     one_room_roguelike::{OneRoomRoguelike, RoomPhase},
     state::{AppState, Direction},
     ui::UiAction,
@@ -114,7 +115,13 @@ pub fn draw(state: &AppState) {
     } else {
         58.
     };
-    text("‹ CABINET", 8., 30., 13., muted());
+    text(
+        "‹ CABINET",
+        8.,
+        30.,
+        accessibility::text_size(13., state.large_text),
+        muted(),
+    );
     text(
         if compact {
             "ROOM ROGUE"
@@ -123,7 +130,7 @@ pub fn draw(state: &AppState) {
         },
         title_x,
         title_y,
-        title_size(),
+        accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
     text(
@@ -133,19 +140,37 @@ pub fn draw(state: &AppState) {
         ),
         if compact { 430. } else { title_x },
         if compact { 28. } else { title_y + 24. },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
     let grid =
         crate::grid::GridLayout::new(l.board, OneRoomRoguelike::size(), OneRoomRoguelike::size());
     for index in 0..OneRoomRoguelike::size().pow(2) {
         let rect = grid.cell_rect(index).unwrap();
-        draw_rectangle(rect.x, rect.y, rect.w, rect.h, cell_fill(index, game));
-        draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., line_color());
+        draw_rectangle(
+            rect.x,
+            rect.y,
+            rect.w,
+            rect.h,
+            cell_fill(index, game, state.high_contrast),
+        );
+        draw_rectangle_lines(
+            rect.x,
+            rect.y,
+            rect.w,
+            rect.h,
+            1.,
+            line_color(state.high_contrast),
+        );
         if index == game.exit {
-            center_text("EXIT", rect, small_size(), accent());
+            center_text("EXIT", rect, small_size(state.large_text), accent());
         } else if index == game.treasure {
-            center_text("C", rect, cell_size(), Color::new(0.68, 0.92, 1., 1.));
+            center_text(
+                "C",
+                rect,
+                cell_size(state.large_text),
+                Color::new(0.35, 1., 1., 1.),
+            );
         }
     }
     for enemy in &game.enemies {
@@ -155,9 +180,13 @@ pub fn draw(state: &AppState) {
                 rect.x + rect.w * 0.5,
                 rect.y + rect.h * 0.5,
                 rect.w.min(rect.h) * 0.27,
-                Color::new(0.62, 0.22, 0.35, 1.),
+                if state.high_contrast {
+                    Color::new(1., 0.12, 0.20, 1.)
+                } else {
+                    Color::new(0.62, 0.22, 0.35, 1.)
+                },
             );
-            center_text(&label, rect, small_size(), WHITE);
+            center_text(&label, rect, small_size(state.large_text), WHITE);
         }
     }
     if let Some(rect) = grid.cell_rect(game.player) {
@@ -165,9 +194,13 @@ pub fn draw(state: &AppState) {
             rect.x + rect.w * 0.5,
             rect.y + rect.h * 0.5,
             rect.w.min(rect.h) * 0.27,
-            Color::new(0.26, 0.60, 0.48, 1.),
+            if state.high_contrast {
+                Color::new(0.05, 0.90, 0.30, 1.)
+            } else {
+                Color::new(0.26, 0.60, 0.48, 1.)
+            },
         );
-        center_text("@", rect, cell_size(), WHITE);
+        center_text("@", rect, cell_size(state.large_text), WHITE);
     }
     text(
         &status_text(game.phase, game.turns),
@@ -179,25 +212,33 @@ pub fn draw(state: &AppState) {
         } else {
             558.
         },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
     for (rect, label) in l.directions.iter().zip(["UP", "LEFT", "DOWN", "RIGHT"]) {
-        button(*rect, label);
+        button(*rect, label, state.large_text);
     }
-    button(l.strike, "STRIKE");
-    button(l.potion, "POTION");
-    button(l.undo, "UNDO");
-    button(l.new_game, "NEW ROOM");
+    button(l.strike, "STRIKE", state.large_text);
+    button(l.potion, "POTION", state.large_text);
+    button(l.undo, "UNDO", state.large_text);
+    button(l.new_game, "NEW ROOM", state.large_text);
 }
 
-fn cell_fill(index: usize, game: &OneRoomRoguelike) -> Color {
+fn cell_fill(index: usize, game: &OneRoomRoguelike, high_contrast: bool) -> Color {
     if index == game.exit {
-        Color::new(0.32, 0.23, 0.17, 1.)
+        if high_contrast {
+            Color::new(0.50, 0.38, 0.05, 1.)
+        } else {
+            Color::new(0.32, 0.23, 0.17, 1.)
+        }
     } else if index == game.player {
-        Color::new(0.15, 0.25, 0.25, 1.)
+        if high_contrast {
+            Color::new(0.05, 0.30, 0.30, 1.)
+        } else {
+            Color::new(0.15, 0.25, 0.25, 1.)
+        }
     } else {
-        Color::new(0.10, 0.08, 0.17, 1.)
+        accessibility::board_fill(high_contrast)
     }
 }
 
@@ -209,7 +250,7 @@ fn status_text(phase: RoomPhase, turns: u16) -> String {
     }
 }
 
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -218,7 +259,12 @@ fn button(rect: Rect, label: &str) {
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
-    center_text(label, rect, 11., WHITE);
+    center_text(
+        label,
+        rect,
+        accessibility::text_size(11., large_text),
+        WHITE,
+    );
 }
 
 fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
@@ -254,19 +300,19 @@ fn body_size() -> f32 {
     }
 }
 
-fn cell_size() -> f32 {
+fn cell_size(large_text: bool) -> f32 {
     if crate::ui::is_portrait() {
-        18.
+        accessibility::text_size(18., large_text).min(22.)
     } else {
-        25.
+        accessibility::text_size(25., large_text).min(29.)
     }
 }
 
-fn small_size() -> f32 {
+fn small_size(large_text: bool) -> f32 {
     if crate::ui::is_portrait() {
-        8.
+        accessibility::text_size(8., large_text).min(10.)
     } else {
-        10.
+        accessibility::text_size(10., large_text).min(12.)
     }
 }
 
@@ -278,6 +324,6 @@ fn muted() -> Color {
     Color::new(0.70, 0.64, 0.78, 1.)
 }
 
-fn line_color() -> Color {
-    Color::new(0.45, 0.38, 0.65, 0.8)
+fn line_color(high_contrast: bool) -> Color {
+    accessibility::grid_line(high_contrast)
 }

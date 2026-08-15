@@ -1,6 +1,7 @@
 //! Responsive presentation and touch routing for Potion 2048.
 
 use crate::{
+    accessibility,
     state::{AppState, Direction},
     ui::UiAction,
 };
@@ -96,31 +97,50 @@ pub fn draw(state: &AppState) {
     } else {
         60.
     };
-    text("‹ CABINET", 8., 30., 13., muted());
-    text("POTION 2048", x, y, title_size(), accent());
+    text(
+        "‹ CABINET",
+        8.,
+        30.,
+        accessibility::text_size(13., state.large_text),
+        muted(),
+    );
+    text(
+        "POTION 2048",
+        x,
+        y,
+        accessibility::text_size(title_size(), state.large_text),
+        accent(),
+    );
     text(
         &format!("Score {}  •  Best {}  •  Reach 4096", game.score, game.best),
         if compact { 430. } else { x },
         if compact { 30. } else { y + 25. },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
     let grid = crate::grid::GridLayout::new(l.board, 4, 4);
     for index in 0..16 {
         let rect = grid.cell_rect(index).unwrap();
         let value = game.cells[index];
-        draw_rectangle(rect.x, rect.y, rect.w, rect.h, tile_color(value));
+        draw_rectangle(
+            rect.x,
+            rect.y,
+            rect.w,
+            rect.h,
+            tile_color(value, state.high_contrast),
+        );
         draw_rectangle_lines(
             rect.x,
             rect.y,
             rect.w,
             rect.h,
             2.,
-            Color::new(0.45, 0.38, 0.65, 0.75),
+            accessibility::grid_line(state.high_contrast),
         );
         if value > 0 {
             let label = value.to_string();
-            let size = if value < 100 { 29. } else { 21. };
+            let size =
+                accessibility::text_size(if value < 100 { 29. } else { 21. }, state.large_text);
             text(
                 &label,
                 rect.x + rect.w * 0.5 - measure_text(&label, None, size as u16, 1.).width * 0.5,
@@ -131,12 +151,27 @@ pub fn draw(state: &AppState) {
         }
     }
     for (index, rect) in l.arrows.iter().enumerate() {
-        button(*rect, ["UP", "LEFT", "DOWN", "RIGHT"][index]);
+        button(
+            *rect,
+            ["UP", "LEFT", "DOWN", "RIGHT"][index],
+            state.large_text,
+        );
     }
-    button(l.undo, "UNDO");
-    button(l.new_game, "NEW BREW");
+    button(l.undo, "UNDO", state.large_text);
+    button(l.new_game, "NEW BREW", state.large_text);
 }
-fn tile_color(value: u16) -> Color {
+fn tile_color(value: u16, high_contrast: bool) -> Color {
+    if high_contrast {
+        return match value {
+            0 => accessibility::board_fill(true),
+            2 => Color::new(0.05, 0.42, 0.80, 1.),
+            4 => Color::new(0.05, 0.75, 0.65, 1.),
+            8 => Color::new(0.10, 0.85, 0.25, 1.),
+            16 => Color::new(0.95, 0.65, 0.05, 1.),
+            32 => Color::new(1., 0.15, 0.20, 1.),
+            _ => Color::new(0.85, 0.20, 1., 1.),
+        };
+    }
     match value {
         0 => Color::new(0.10, 0.07, 0.16, 1.),
         2 => Color::new(0.22, 0.30, 0.35, 1.),
@@ -147,7 +182,7 @@ fn tile_color(value: u16) -> Color {
         _ => Color::new(0.36, 0.22, 0.48, 1.),
     }
 }
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -156,11 +191,12 @@ fn button(rect: Rect, label: &str) {
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
+    let size = accessibility::text_size(11., large_text);
     text(
         label,
-        rect.x + rect.w * 0.5 - measure_text(label, None, 11, 1.).width * 0.5,
+        rect.x + rect.w * 0.5 - measure_text(label, None, size as u16, 1.).width * 0.5,
         rect.y + rect.h * 0.63,
-        11.,
+        size,
         WHITE,
     );
 }

@@ -1,6 +1,7 @@
 //! Responsive touch presentation for Daily Dungeon.
 
 use crate::{
+    accessibility,
     daily_dungeon::{DailyDungeon, DailyPhase, DailyTile},
     state::{AppState, Direction},
     ui::UiAction,
@@ -100,7 +101,13 @@ pub fn draw(state: &AppState) {
     } else {
         58.
     };
-    text("‹ CABINET", 8., 30., 13., muted());
+    text(
+        "‹ CABINET",
+        8.,
+        30.,
+        accessibility::text_size(13., state.large_text),
+        muted(),
+    );
     text(
         if compact {
             "DAILY RUN"
@@ -109,7 +116,7 @@ pub fn draw(state: &AppState) {
         },
         title_x,
         title_y,
-        title_size(),
+        accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
     text(
@@ -122,29 +129,50 @@ pub fn draw(state: &AppState) {
         ),
         if compact { 430. } else { title_x },
         if compact { 28. } else { title_y + 24. },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
     let grid = crate::grid::GridLayout::new(l.board, DailyDungeon::size(), DailyDungeon::size());
     for index in 0..DailyDungeon::size().pow(2) {
         let rect = grid.cell_rect(index).unwrap();
-        draw_rectangle(rect.x, rect.y, rect.w, rect.h, cell_fill(index, dungeon));
-        draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., line_color());
+        draw_rectangle(
+            rect.x,
+            rect.y,
+            rect.w,
+            rect.h,
+            cell_fill(index, dungeon, state.high_contrast),
+        );
+        draw_rectangle_lines(
+            rect.x,
+            rect.y,
+            rect.w,
+            rect.h,
+            1.,
+            line_color(state.high_contrast),
+        );
         if index == dungeon.player {
-            center_text("@", rect, cell_size(), WHITE);
+            center_text("@", rect, cell_size(state.large_text), WHITE);
         } else if index == dungeon.tiles.len() - 1 {
-            center_text("EXIT", rect, small_size(), accent());
+            center_text("EXIT", rect, small_size(state.large_text), accent());
         } else if !dungeon.revealed[index] {
-            center_text("?", rect, cell_size(), muted());
+            center_text("?", rect, cell_size(state.large_text), muted());
         } else {
             match dungeon.tiles[index] {
-                DailyTile::Rune => {
-                    center_text("R", rect, cell_size(), Color::new(0.68, 0.92, 1., 1.))
+                DailyTile::Rune => center_text(
+                    "R",
+                    rect,
+                    cell_size(state.large_text),
+                    Color::new(0.35, 1., 1., 1.),
+                ),
+                DailyTile::Trap => center_text(
+                    "!",
+                    rect,
+                    cell_size(state.large_text),
+                    Color::new(1., 0.12, 0.20, 1.),
+                ),
+                DailyTile::Exit => {
+                    center_text("EXIT", rect, small_size(state.large_text), accent())
                 }
-                DailyTile::Trap => {
-                    center_text("!", rect, cell_size(), Color::new(0.95, 0.35, 0.45, 1.))
-                }
-                DailyTile::Exit => center_text("EXIT", rect, small_size(), accent()),
                 DailyTile::Floor => {}
             }
         }
@@ -159,25 +187,37 @@ pub fn draw(state: &AppState) {
         } else {
             555.
         },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
     for (rect, label) in l.directions.iter().zip(["UP", "LEFT", "DOWN", "RIGHT"]) {
-        button(*rect, label);
+        button(*rect, label, state.large_text);
     }
-    button(l.undo, "UNDO");
-    button(l.new_game, "NEW DAY");
+    button(l.undo, "UNDO", state.large_text);
+    button(l.new_game, "NEW DAY", state.large_text);
 }
 
-fn cell_fill(index: usize, dungeon: &DailyDungeon) -> Color {
+fn cell_fill(index: usize, dungeon: &DailyDungeon, high_contrast: bool) -> Color {
     if index == dungeon.player {
-        Color::new(0.15, 0.25, 0.25, 1.)
+        if high_contrast {
+            Color::new(0.05, 0.30, 0.30, 1.)
+        } else {
+            Color::new(0.15, 0.25, 0.25, 1.)
+        }
     } else if index == dungeon.tiles.len() - 1 {
-        Color::new(0.32, 0.23, 0.17, 1.)
+        if high_contrast {
+            Color::new(0.50, 0.38, 0.05, 1.)
+        } else {
+            Color::new(0.32, 0.23, 0.17, 1.)
+        }
     } else if !dungeon.revealed[index] {
-        Color::new(0.18, 0.13, 0.27, 1.)
+        if high_contrast {
+            Color::new(0.18, 0.14, 0.26, 1.)
+        } else {
+            Color::new(0.18, 0.13, 0.27, 1.)
+        }
     } else {
-        Color::new(0.10, 0.08, 0.17, 1.)
+        accessibility::board_fill(high_contrast)
     }
 }
 
@@ -191,7 +231,7 @@ fn status_text(phase: DailyPhase, moves: u16, score: u32) -> String {
     }
 }
 
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -200,7 +240,12 @@ fn button(rect: Rect, label: &str) {
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
-    center_text(label, rect, 11., WHITE);
+    center_text(
+        label,
+        rect,
+        accessibility::text_size(11., large_text),
+        WHITE,
+    );
 }
 
 fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
@@ -236,19 +281,19 @@ fn body_size() -> f32 {
     }
 }
 
-fn cell_size() -> f32 {
+fn cell_size(large_text: bool) -> f32 {
     if crate::ui::is_portrait() {
-        18.
+        accessibility::text_size(18., large_text).min(22.)
     } else {
-        25.
+        accessibility::text_size(25., large_text).min(29.)
     }
 }
 
-fn small_size() -> f32 {
+fn small_size(large_text: bool) -> f32 {
     if crate::ui::is_portrait() {
-        7.
+        accessibility::text_size(7., large_text).min(9.)
     } else {
-        9.
+        accessibility::text_size(9., large_text).min(11.)
     }
 }
 
@@ -260,6 +305,6 @@ fn muted() -> Color {
     Color::new(0.70, 0.64, 0.78, 1.)
 }
 
-fn line_color() -> Color {
-    Color::new(0.45, 0.38, 0.65, 0.8)
+fn line_color(high_contrast: bool) -> Color {
+    accessibility::grid_line(high_contrast)
 }

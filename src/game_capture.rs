@@ -46,9 +46,12 @@ impl Game {
                 Screen::Game(GameId::DungeonSweeper)
             }
             "potion_2048" => Screen::Game(GameId::Potion2048),
+            "potion_2048_accessible" => Screen::Game(GameId::Potion2048),
             "tiny_tower_defence" => Screen::Game(GameId::TinyTowerDefence),
             "one_room_roguelike" => Screen::Game(GameId::OneRoomRoguelike),
+            "one_room_roguelike_accessible" => Screen::Game(GameId::OneRoomRoguelike),
             "daily_dungeon" => Screen::Game(GameId::DailyDungeon),
+            "daily_dungeon_accessible" => Screen::Game(GameId::DailyDungeon),
             "dots_boxes" => Screen::Game(GameId::DotsBoxes),
             "dots_boxes_accessible" => Screen::Game(GameId::DotsBoxes),
             "sokoban" => Screen::Game(GameId::Sokoban),
