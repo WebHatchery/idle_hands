@@ -93,7 +93,7 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 
 ## Phase 7 — Progression and collection polish
 
-- [ ] Implement one-time achievements and a single stamp total.
+- [x] Implement one-time achievements and a single persisted stamp total.
 - [ ] Add cosmetic-only unlocks for card backs, board themes, sounds, and cabinet
   decorations; no gameplay effect or attention-pressure mechanics.
 - [ ] Finish coherent cabinet art, object states, transitions, audio, and reduced

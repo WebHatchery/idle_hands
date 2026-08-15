@@ -217,6 +217,8 @@ pub struct AppState {
     pub freecell: FreeCell,
     pub fivefold: Fivefold,
     pub reversi: Reversi,
+    pub achievements: [bool; 10],
+    pub stamps: u16,
     pub confirm_restart: bool,
     pub confirm_reset: bool,
     pub profile_name: String,
@@ -283,6 +285,10 @@ pub struct CollectionSave {
     #[serde(default)]
     pub records: CollectionRecords,
     #[serde(default)]
+    pub achievements: [bool; 10],
+    #[serde(default)]
+    pub stamps: u16,
+    #[serde(default)]
     pub tutorial_seen: [bool; 8],
 }
 
@@ -296,6 +302,10 @@ pub struct ProfileSave {
     pub mine_records: [Option<u32>; 4],
     pub sudoku_note_mode: bool,
     pub records: CollectionRecords,
+    #[serde(default)]
+    pub achievements: [bool; 10],
+    #[serde(default)]
+    pub stamps: u16,
     pub tutorial_seen: [bool; 8],
 }
 impl ProfileSave {
@@ -309,6 +319,8 @@ impl ProfileSave {
             mine_records: state.mine_records,
             sudoku_note_mode: state.sudoku_note_mode,
             records: state.records.clone(),
+            achievements: state.achievements,
+            stamps: state.stamps,
             tutorial_seen: state.tutorial_seen,
         }
     }
@@ -320,6 +332,8 @@ impl ProfileSave {
         state.mine_records = self.mine_records;
         state.sudoku_note_mode = self.sudoku_note_mode;
         state.records = self.records;
+        state.achievements = self.achievements;
+        state.stamps = self.stamps;
         state.tutorial_seen = self.tutorial_seen;
     }
 }
@@ -381,6 +395,8 @@ impl CollectionSave {
             mine_records: state.mine_records,
             sudoku_note_mode: state.sudoku_note_mode,
             records: state.records.clone(),
+            achievements: state.achievements,
+            stamps: state.stamps,
             tutorial_seen: state.tutorial_seen,
         }
     }
@@ -400,6 +416,8 @@ impl CollectionSave {
         state.mine_records = self.mine_records;
         state.sudoku_note_mode = self.sudoku_note_mode;
         state.records = self.records;
+        state.achievements = self.achievements;
+        state.stamps = self.stamps;
         state.tutorial_seen = self.tutorial_seen;
     }
 }
@@ -416,6 +434,8 @@ impl Default for AppState {
             freecell: FreeCell::default(),
             fivefold: Fivefold::default(),
             reversi: Reversi::default(),
+            achievements: [false; 10],
+            stamps: 0,
             confirm_restart: false,
             confirm_reset: false,
             profile_name: "Cabinet Guest".into(),

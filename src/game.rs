@@ -1,6 +1,7 @@
 //! Application lifecycle and input routing.
 
 use crate::input::{Gesture, PointerTracker};
+use crate::progression;
 use crate::{
     data::GameData,
     state::{AppState, CollectionSave, Direction, GameId, GameSnapshot, ProfileSave, Screen},
@@ -400,6 +401,21 @@ impl Game {
             records.reversi_best_score = records
                 .reversi_best_score
                 .max(self.state.reversi.score(1) as u8);
+        }
+        let previous_stamps = self.state.stamps;
+        let newly_earned = progression::sync(
+            &mut self.state.achievements,
+            &mut self.state.stamps,
+            records,
+        );
+        if self.state.stamps > previous_stamps {
+            if let Some(achievement) = newly_earned.first() {
+                self.notifications.success(format!(
+                    "{} — {} stamps",
+                    achievement.title(),
+                    self.state.stamps
+                ));
+            }
         }
     }
     fn try_move(&mut self, direction: Direction) {

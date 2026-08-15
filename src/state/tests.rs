@@ -33,6 +33,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     state.mine_records[0] = Some(42);
     state.records.best_2048 = 128;
     state.records.fivefold_best_total = 275;
+    state.achievements[0] = true;
+    state.stamps = 3;
     state.tutorial_seen[6] = true;
     let save = CollectionSave::from_state(&state, "1.0.0");
     let mut restored = AppState::default();
@@ -42,6 +44,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     assert_eq!(restored.mine_records[0], Some(42));
     assert_eq!(restored.records.best_2048, 128);
     assert_eq!(restored.records.fivefold_best_total, 275);
+    assert!(restored.achievements[0]);
+    assert_eq!(restored.stamps, 3);
     assert!(restored.tutorial_seen[6]);
 }
 

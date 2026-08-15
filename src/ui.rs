@@ -193,8 +193,9 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
     );
     text(
         &format!(
-            "{}  •  {} games waiting at the cabinet",
+            "{}  •  {} stamps  •  {} games waiting at the cabinet",
             state.profile_name,
+            state.stamps,
             GameId::ALL.len()
         ),
         48.,

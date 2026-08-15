@@ -15,6 +15,7 @@ mod library_ui;
 mod minesweeper;
 mod nonogram;
 mod nonogram_ui;
+mod progression;
 mod records_ui;
 mod reversi;
 mod reversi_ui;

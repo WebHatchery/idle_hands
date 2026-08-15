@@ -1,5 +1,6 @@
 //! Collection-wide records screen.
 
+use crate::progression::AchievementId;
 use crate::state::AppState;
 use crate::ui::UiAction;
 use macroquad::prelude::*;
@@ -31,6 +32,19 @@ pub fn draw_records(state: &AppState) {
         153.,
         19.,
         Color::new(0.72, 0.68, 0.82, 1.),
+    );
+    let earned = state.achievements.iter().filter(|earned| **earned).count();
+    draw_text(
+        &format!(
+            "STAMPS  {}   •   ACHIEVEMENTS  {}/{}",
+            state.stamps,
+            earned,
+            AchievementId::ALL.len()
+        ),
+        174.,
+        185.,
+        18.,
+        Color::new(0.98, 0.83, 0.45, 1.),
     );
     let left = [
         ("2048 best score", state.records.best_2048.to_string()),
@@ -66,8 +80,8 @@ pub fn draw_records(state: &AppState) {
             state.records.reversi_best_score.to_string(),
         ),
     ];
-    draw_column(&left, 175., 215.);
-    draw_column(&right, 650., 215.);
+    draw_column(&left, 175., 240.);
+    draw_column(&right, 650., 240.);
     panel(
         Rect::new(930., 590., 180., 48.),
         Color::new(0.25, 0.16, 0.32, 1.),
