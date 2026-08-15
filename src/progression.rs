@@ -49,6 +49,7 @@ impl AchievementId {
                 GameId::PegSolitaire => "Peg keeper",
                 GameId::MahjongSolitaire => "Tile keeper",
                 GameId::Snake => "Coil keeper",
+                GameId::Breakout => "Brick keeper",
             },
             Self::FullCabinet => "Full cabinet",
         }
@@ -115,6 +116,7 @@ pub fn earned(records: &CollectionRecords, achievement: AchievementId) -> bool {
             GameId::PegSolitaire => records.peg_solitaire_best_moves.is_some(),
             GameId::MahjongSolitaire => records.mahjong_solitaire_best_moves.is_some(),
             GameId::Snake => records.snake_best_score.is_some(),
+            GameId::Breakout => records.breakout_best_score.is_some(),
         },
         AchievementId::FullCabinet => completed_games(records) == GameId::ALL.len(),
     }

@@ -30,9 +30,9 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 pub fn cabinet_rect(index: usize) -> Rect {
     Rect::new(
         6. + (index % 3) as f32 * 118.,
-        94. + (index / 3) as f32 * 70.,
+        94. + (index / 3) as f32 * 65.,
         112.,
-        62.,
+        56.,
     )
 }
 
@@ -54,27 +54,27 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
         text(
             game.title(),
             rect.x + 10.,
-            rect.y + 17.,
-            11.,
+            rect.y + 15.,
+            10.,
             Color::new(0.98, 0.82, 0.42, 1.),
         );
         text(
             cabinet_status(state, *game),
             rect.x + 10.,
-            rect.y + 35.,
-            9.,
+            rect.y + 31.,
+            8.,
             Color::new(0.98, 0.75, 0.30, 1.),
         );
         text(
             game.subtitle(),
             rect.x + 10.,
-            rect.y + 52.,
-            8.,
+            rect.y + 47.,
+            7.,
             Color::new(0.69, 0.65, 0.78, 1.),
         );
         draw_circle(
             rect.right() - 20.,
-            rect.y + 13.,
+            rect.y + 12.,
             8.,
             cosmetics::cabinet_accent(state.cabinet_decoration),
         );
@@ -677,6 +677,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
             "COMPLETE"
         }
         GameId::Snake if state.records.snake_best_score.is_some() => "COMPLETE",
+        GameId::Breakout if state.records.breakout_best_score.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

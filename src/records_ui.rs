@@ -130,6 +130,10 @@ pub fn draw_records(state: &AppState) {
             "Snake best score",
             value(state.records.snake_best_score.map(u32::from)),
         ),
+        (
+            "Breakout best score",
+            value(state.records.breakout_best_score.map(u32::from)),
+        ),
     ];
     draw_column(&left, 175., 240.);
     draw_column(&middle, 490., 240.);

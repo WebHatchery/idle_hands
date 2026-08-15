@@ -332,11 +332,22 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Add responsive desktop, portrait, and medium-landscape presentation,
     visible controls, records, and verification captures.
 
+## Phase 21 — Fourteenth post-launch cabinet game
+
+- [x] Add Breakout as a twenty-second deterministic, touch-complete cabinet
+  game with visible paddle controls, brick collisions, undo, and reset.
+  - [x] Cover seeded layouts, paddle steps, brick field setup, wall and paddle
+    collision states, undo, and reset behavior with focused rule tests.
+  - [x] Add persisted active state and best-score records with snapshot,
+    migration, progression, and tutorial coverage.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, records, and verification captures.
+
 ## Post-launch candidates (not scheduled)
 
 - Card family: Spider Solitaire, Klondike Golf, Higher or Lower, Blackjack.
 - Puzzles/tabletop: no remaining scheduled candidates.
-- Arcade: Breakout.
+- Arcade: no remaining scheduled candidates.
 - Original cabinet games: Dungeon Sweeper, Potion 2048, Tiny Tower Defence, One
   Room Roguelike, and Daily Dungeon.
 

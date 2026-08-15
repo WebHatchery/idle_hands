@@ -1,0 +1,217 @@
+//! Responsive presentation and touch routing for turn-based Breakout.
+
+use crate::{
+    breakout::{BreakoutStatus, PaddleMove, HEIGHT, WIDTH},
+    state::AppState,
+    ui::UiAction,
+};
+use macroquad::prelude::*;
+
+#[derive(Clone, Copy)]
+struct Layout {
+    board: Rect,
+    cell: f32,
+    left: Rect,
+    right: Rect,
+    stay: Rect,
+    undo: Rect,
+    new_game: Rect,
+}
+fn layout() -> Layout {
+    if crate::ui::is_compact_landscape() {
+        Layout {
+            board: Rect::new(20., 48., 384., 288.),
+            cell: 24.,
+            left: Rect::new(435., 180., 80., 42.),
+            stay: Rect::new(525., 180., 80., 42.),
+            right: Rect::new(615., 180., 80., 42.),
+            undo: Rect::new(435., 250., 90., 38.),
+            new_game: Rect::new(535., 250., 110., 38.),
+        }
+    } else if crate::ui::is_portrait() {
+        Layout {
+            board: Rect::new(10., 105., 340., 255.),
+            cell: 21.25,
+            left: Rect::new(70., 400., 80., 42.),
+            stay: Rect::new(160., 400., 80., 42.),
+            right: Rect::new(250., 400., 80., 42.),
+            undo: Rect::new(20., 475., 145., 42.),
+            new_game: Rect::new(185., 475., 165., 42.),
+        }
+    } else {
+        Layout {
+            board: Rect::new(360., 82., 640., 480.),
+            cell: 40.,
+            left: Rect::new(1010., 220., 75., 42.),
+            stay: Rect::new(1090., 220., 75., 42.),
+            right: Rect::new(1170., 220., 55., 42.),
+            undo: Rect::new(1010., 290., 95., 42.),
+            new_game: Rect::new(1120., 290., 110., 42.),
+        }
+    }
+}
+pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
+    let l = layout();
+    if back_rect().contains(point) {
+        return vec![UiAction::Cabinet];
+    }
+    for (rect, movement) in [
+        (l.left, PaddleMove::Left),
+        (l.stay, PaddleMove::Stay),
+        (l.right, PaddleMove::Right),
+    ] {
+        if rect.contains(point) {
+            return vec![UiAction::BreakoutStep(movement)];
+        }
+    }
+    if l.undo.contains(point) {
+        return vec![UiAction::BreakoutUndo];
+    }
+    if l.new_game.contains(point) {
+        return vec![UiAction::BreakoutNew];
+    }
+    let _ = state;
+    vec![]
+}
+pub fn draw(state: &AppState) {
+    let l = layout();
+    let game = &state.breakout;
+    let compact = crate::ui::is_compact_landscape();
+    let portrait = crate::ui::is_portrait();
+    let hx = if compact {
+        120.
+    } else if portrait {
+        10.
+    } else {
+        360.
+    };
+    let hy = if compact {
+        30.
+    } else if portrait {
+        68.
+    } else {
+        60.
+    };
+    text("‹ CABINET", 8., 30., 13., muted());
+    text("BREAKOUT", hx, hy, title_size(), accent());
+    text(
+        &status_text(game.status, game.score),
+        if compact { 435. } else { hx },
+        if compact { 30. } else { hy + 25. },
+        body_size(),
+        muted(),
+    );
+    draw_rectangle(
+        l.board.x,
+        l.board.y,
+        l.board.w,
+        l.board.h,
+        Color::new(0.08, 0.12, 0.16, 1.),
+    );
+    for row in 0..HEIGHT {
+        for column in 0..WIDTH {
+            draw_rectangle_lines(
+                l.board.x + column as f32 * l.cell,
+                l.board.y + row as f32 * l.cell,
+                l.cell,
+                l.cell,
+                1.,
+                Color::new(0.16, 0.22, 0.26, 1.),
+            );
+        }
+    }
+    for (index, brick) in game.bricks.iter().enumerate() {
+        if *brick {
+            let row = index as i8 / WIDTH;
+            let column = index as i8 % WIDTH;
+            draw_rectangle(
+                l.board.x + column as f32 * l.cell + 2.,
+                l.board.y + (row + 1) as f32 * l.cell + 2.,
+                l.cell - 4.,
+                l.cell - 4.,
+                Color::new(0.78, 0.30 + row as f32 * 0.05, 0.38, 1.),
+            );
+        }
+    }
+    draw_circle(
+        l.board.x + game.ball_x as f32 * l.cell + l.cell / 2.,
+        l.board.y + game.ball_y as f32 * l.cell + l.cell / 2.,
+        l.cell * 0.25,
+        accent(),
+    );
+    draw_rectangle(
+        l.board.x + (game.paddle - 2) as f32 * l.cell,
+        l.board.y + (HEIGHT - 1) as f32 * l.cell,
+        l.cell * 5.,
+        l.cell * 0.55,
+        Color::new(0.35, 0.82, 0.58, 1.),
+    );
+    text(
+        &format!("Score {}  •  Tap LEFT, STAY, or RIGHT", game.score),
+        if compact {
+            435.
+        } else if portrait {
+            10.
+        } else {
+            360.
+        },
+        if compact {
+            90.
+        } else if portrait {
+            385.
+        } else {
+            600.
+        },
+        body_size(),
+        muted(),
+    );
+    button(l.left, "LEFT");
+    button(l.stay, "STAY");
+    button(l.right, "RIGHT");
+    button(l.undo, "UNDO");
+    button(l.new_game, "NEW BOARD");
+}
+fn status_text(status: BreakoutStatus, score: u16) -> String {
+    match status {
+        BreakoutStatus::Playing => format!("Score {} / 64", score),
+        BreakoutStatus::Won => "The wall is clear".into(),
+        BreakoutStatus::Lost => "The ball fell quiet".into(),
+    }
+}
+fn button(rect: Rect, label: &str) {
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        Color::new(0.20, 0.13, 0.30, 1.),
+    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
+    text(label, rect.x + 8., rect.y + 27., 10., WHITE);
+}
+fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+    draw_text(value, x, y, size, color);
+}
+fn title_size() -> f32 {
+    if crate::ui::is_portrait() {
+        29.
+    } else {
+        31.
+    }
+}
+fn body_size() -> f32 {
+    if crate::ui::is_portrait() {
+        11.
+    } else {
+        13.
+    }
+}
+fn accent() -> Color {
+    Color::new(0.98, 0.83, 0.45, 1.)
+}
+fn muted() -> Color {
+    Color::new(0.70, 0.64, 0.78, 1.)
+}
+fn back_rect() -> Rect {
+    Rect::new(0., 0., 110., 42.)
+}

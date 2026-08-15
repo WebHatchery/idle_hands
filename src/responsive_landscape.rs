@@ -30,9 +30,9 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 fn cabinet_rect(index: usize) -> Rect {
     Rect::new(
         8. + (index % 4) as f32 * 210.,
-        40. + (index / 4) as f32 * 57.,
+        38. + (index / 4) as f32 * 46.,
         200.,
-        50.,
+        40.,
     )
 }
 
@@ -54,35 +54,35 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
         text(
             game.title(),
             rect.x + 10.,
-            rect.y + 15.,
-            10.,
+            rect.y + 12.,
+            9.,
             Color::new(0.98, 0.82, 0.42, 1.),
         );
         text(
             cabinet_status(state, *game),
             rect.x + 10.,
-            rect.y + 29.,
-            8.,
+            rect.y + 24.,
+            7.,
             Color::new(0.98, 0.75, 0.30, 1.),
         );
         text(
             game.subtitle(),
             rect.x + 10.,
-            rect.y + 44.,
-            7.,
+            rect.y + 35.,
+            6.,
             Color::new(0.69, 0.65, 0.78, 1.),
         );
         draw_circle(
             rect.right() - 20.,
-            rect.y + 12.,
-            7.,
+            rect.y + 10.,
+            6.,
             cosmetics::cabinet_accent(state.cabinet_decoration),
         );
         text(
             &(index + 1).to_string(),
             rect.right() - 24.,
-            rect.y + 15.,
-            7.,
+            rect.y + 13.,
+            6.,
             Color::new(0.08, 0.05, 0.12, 1.),
         );
     }
@@ -422,6 +422,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "Eat red food, avoid the walls, and grow toward twenty points.",
             "Use UNDO or NEW BOARD with the visible controls.",
         ],
+        GameId::Breakout => [
+            "Tap LEFT, STAY, or RIGHT to move the paddle and step the ball.",
+            "Bounce the ball into every brick; keep the paddle below it.",
+            "Use UNDO or NEW BOARD with the visible controls.",
+        ],
     }
 }
 
@@ -450,6 +455,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
             "COMPLETE"
         }
         GameId::Snake if state.records.snake_best_score.is_some() => "COMPLETE",
+        GameId::Breakout if state.records.breakout_best_score.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

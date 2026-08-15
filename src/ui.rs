@@ -1,5 +1,6 @@
 //! Touch-first cabinet and 2048 presentation.
 
+use crate::breakout_ui;
 use crate::checkers_ui;
 use crate::connect_four_ui;
 use crate::cosmetics;
@@ -152,6 +153,9 @@ pub enum UiAction {
     SnakeStep(crate::snake::SnakeDirection),
     SnakeUndo,
     SnakeNew,
+    BreakoutStep(crate::breakout::PaddleMove),
+    BreakoutUndo,
+    BreakoutNew,
 }
 pub fn viewport() -> Viewport {
     let (width, height) = layout_size();
@@ -283,6 +287,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Game(GameId::PegSolitaire) => peg_solitaire_ui::clicks(state, p),
         Screen::Game(GameId::MahjongSolitaire) => mahjong_solitaire_ui::clicks(state, p),
         Screen::Game(GameId::Snake) => snake_ui::clicks(state, p),
+        Screen::Game(GameId::Breakout) => breakout_ui::clicks(state, p),
         Screen::Game(GameId::Mastermind) => mastermind_ui::clicks(state, p),
         Screen::Help => {
             if is_compact_landscape() {
@@ -380,6 +385,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::PegSolitaire) => peg_solitaire_ui::draw(state),
         Screen::Game(GameId::MahjongSolitaire) => mahjong_solitaire_ui::draw(state),
         Screen::Game(GameId::Snake) => snake_ui::draw(state),
+        Screen::Game(GameId::Breakout) => breakout_ui::draw(state),
         Screen::Game(GameId::Mastermind) => mastermind_ui::draw(state),
         Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(),
         Screen::Help if is_portrait() => responsive_library::draw_help(),
@@ -409,7 +415,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         } else {
             tutorial_ui::draw_overlay(game);
         }
-    } else if matches!(state.screen, Screen::Game(game) if !matches!(game, GameId::LightsOut | GameId::TicTacToe | GameId::MemoryPairs | GameId::SlidingPuzzle | GameId::Mastermind | GameId::Spider | GameId::WordSearch | GameId::Hangman | GameId::ConnectFour | GameId::Checkers | GameId::PegSolitaire | GameId::MahjongSolitaire | GameId::Snake))
+    } else if matches!(state.screen, Screen::Game(game) if !matches!(game, GameId::LightsOut | GameId::TicTacToe | GameId::MemoryPairs | GameId::SlidingPuzzle | GameId::Mastermind | GameId::Spider | GameId::WordSearch | GameId::Hangman | GameId::ConnectFour | GameId::Checkers | GameId::PegSolitaire | GameId::MahjongSolitaire | GameId::Snake | GameId::Breakout))
     {
         if is_compact_landscape() {
             responsive_landscape::draw_replay_button();
@@ -487,6 +493,7 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
                 | GameId::PegSolitaire
                 | GameId::MahjongSolitaire
                 | GameId::Snake
+                | GameId::Breakout
         );
         panel(
             r,

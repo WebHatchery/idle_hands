@@ -185,6 +185,15 @@ impl Game {
                     }),
             );
         }
+        if self.state.breakout.status == crate::breakout::BreakoutStatus::Won {
+            records.breakout_best_score = Some(
+                records
+                    .breakout_best_score
+                    .map_or(self.state.breakout.score, |best| {
+                        best.max(self.state.breakout.score)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

@@ -49,6 +49,16 @@ impl Game {
                 let seed = self.state.snake.seed.wrapping_add(1);
                 self.state.snake.reset(seed);
             }
+            UiAction::BreakoutStep(movement) => {
+                self.state.breakout.step(*movement);
+            }
+            UiAction::BreakoutUndo => {
+                self.state.breakout.undo();
+            }
+            UiAction::BreakoutNew => {
+                let seed = self.state.breakout.seed.wrapping_add(1);
+                self.state.breakout.reset(seed);
+            }
             _ => return false,
         }
         true

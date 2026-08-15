@@ -61,6 +61,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     state.records.mahjong_solitaire_best_moves = Some(12);
     state.snake.moves = 13;
     state.records.snake_best_score = Some(4);
+    state.breakout.moves = 14;
+    state.records.breakout_best_score = Some(5);
     state.achievements[0] = true;
     state.stamps = 3;
     state.card_back = 1;
@@ -104,6 +106,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     assert_eq!(restored.records.mahjong_solitaire_best_moves, Some(12));
     assert_eq!(restored.snake.moves, 13);
     assert_eq!(restored.records.snake_best_score, Some(4));
+    assert_eq!(restored.breakout.moves, 14);
+    assert_eq!(restored.records.breakout_best_score, Some(5));
     assert!(restored.achievements[0]);
     assert_eq!(restored.stamps, 3);
     assert_eq!(restored.card_back, 1);
@@ -157,6 +161,7 @@ fn every_game_snapshot_round_trips_its_own_state() {
     source.peg_solitaire.moves = 30;
     source.mahjong_solitaire.moves = 31;
     source.snake.moves = 32;
+    source.breakout.moves = 33;
 
     for game in GameId::ALL {
         let snapshot = GameSnapshot::from_state(&source, game);
@@ -192,6 +197,7 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
     source.peg_solitaire.moves = 30;
     source.mahjong_solitaire.moves = 31;
     source.snake.moves = 32;
+    source.breakout.moves = 33;
 
     let snapshots = GameId::ALL
         .iter()
@@ -223,6 +229,7 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
     assert_eq!(restored.peg_solitaire.moves, 30);
     assert_eq!(restored.mahjong_solitaire.moves, 31);
     assert_eq!(restored.snake.moves, 32);
+    assert_eq!(restored.breakout.moves, 33);
 }
 
 #[test]
@@ -252,6 +259,7 @@ fn older_saves_default_new_progression_and_cosmetic_fields() {
         "peg_solitaire",
         "mahjong_solitaire",
         "snake",
+        "breakout",
     ] {
         object.remove(field);
     }

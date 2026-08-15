@@ -122,6 +122,10 @@ pub fn draw_records(state: &AppState) {
             "Snake best",
             value(state.records.snake_best_score.map(u32::from)),
         ),
+        (
+            "Breakout best",
+            value(state.records.breakout_best_score.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
         let y = 155. + index as f32 * 27.;

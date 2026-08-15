@@ -187,5 +187,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "Eat red food, avoid the walls, and grow toward twenty points.",
             "Use UNDO or NEW BOARD with the visible controls.",
         ],
+        GameId::Breakout => [
+            "Tap LEFT, STAY, or RIGHT to move the paddle and step the ball.",
+            "Bounce the ball into every brick; keep the paddle below it.",
+            "Use UNDO or NEW BOARD with the visible controls.",
+        ],
     }
 }

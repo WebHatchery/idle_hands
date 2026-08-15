@@ -92,6 +92,7 @@ impl Game {
             "peg_solitaire" => Screen::Game(GameId::PegSolitaire),
             "mahjong_solitaire" => Screen::Game(GameId::MahjongSolitaire),
             "snake" => Screen::Game(GameId::Snake),
+            "breakout" => Screen::Game(GameId::Breakout),
             "help" => Screen::Help,
             "records" => Screen::Records,
             "rules" => Screen::Rules,
@@ -313,6 +314,7 @@ impl Game {
                         | GameId::PegSolitaire
                         | GameId::MahjongSolitaire
                         | GameId::Snake
+                        | GameId::Breakout
                 ) {
                     self.state.screen = Screen::Game(id);
                     self.state.tutorial = (!matches!(
@@ -330,6 +332,7 @@ impl Game {
                             | GameId::PegSolitaire
                             | GameId::MahjongSolitaire
                             | GameId::Snake
+                            | GameId::Breakout
                     ) && !self.state.tutorial_seen[id.index()])
                     .then_some(id);
                 } else {
@@ -675,23 +678,7 @@ impl Game {
                 self.state = AppState::default();
             }
             ui::UiAction::CancelResetData => self.state.confirm_reset = false,
-            ui::UiAction::HangmanGuess(_)
-            | ui::UiAction::HangmanNew
-            | ui::UiAction::ConnectFourDrop(_)
-            | ui::UiAction::ConnectFourUndo
-            | ui::UiAction::ConnectFourNew
-            | ui::UiAction::CheckersTap(_)
-            | ui::UiAction::CheckersUndo
-            | ui::UiAction::CheckersNew
-            | ui::UiAction::PegSolitaireTap(_)
-            | ui::UiAction::PegSolitaireUndo
-            | ui::UiAction::PegSolitaireNew
-            | ui::UiAction::MahjongSolitaireTap(_)
-            | ui::UiAction::MahjongSolitaireUndo
-            | ui::UiAction::MahjongSolitaireNew
-            | ui::UiAction::SnakeStep(_)
-            | ui::UiAction::SnakeUndo
-            | ui::UiAction::SnakeNew => unreachable!("board action was already handled"),
+            _ => unreachable!("board action was already handled"),
         }
         self.finish_action(previous_screen, action);
     }

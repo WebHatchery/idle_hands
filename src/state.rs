@@ -1,5 +1,6 @@
 //! Application state and the deterministic 2048 rules engine.
 
+use crate::breakout::Breakout;
 use crate::checkers::Checkers;
 use crate::connect_four::ConnectFour;
 use crate::fivefold::Fivefold;
@@ -45,9 +46,10 @@ pub enum GameId {
     PegSolitaire,
     MahjongSolitaire,
     Snake,
+    Breakout,
 }
 impl GameId {
-    pub const ALL: [Self; 21] = [
+    pub const ALL: [Self; 22] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -69,6 +71,7 @@ impl GameId {
         Self::PegSolitaire,
         Self::MahjongSolitaire,
         Self::Snake,
+        Self::Breakout,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -93,6 +96,7 @@ impl GameId {
             Self::PegSolitaire => "Peg Solitaire",
             Self::MahjongSolitaire => "Mahjong Solitaire",
             Self::Snake => "Snake",
+            Self::Breakout => "Breakout",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -118,6 +122,7 @@ impl GameId {
             Self::PegSolitaire => "Leave one quiet peg",
             Self::MahjongSolitaire => "Pair the quiet tiles",
             Self::Snake => "Guide the quiet coil",
+            Self::Breakout => "Bounce the quiet ball",
         }
     }
     pub fn index(self) -> usize {
@@ -146,6 +151,7 @@ impl GameId {
             Self::PegSolitaire => "peg_solitaire",
             Self::MahjongSolitaire => "mahjong_solitaire",
             Self::Snake => "snake",
+            Self::Breakout => "breakout",
         }
     }
 }
@@ -311,6 +317,7 @@ pub struct AppState {
     pub peg_solitaire: PegSolitaire,
     pub mahjong_solitaire: MahjongSolitaire,
     pub snake: Snake,
+    pub breakout: Breakout,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -369,6 +376,8 @@ pub struct CollectionRecords {
     pub mahjong_solitaire_best_moves: Option<u16>,
     #[serde(default)]
     pub snake_best_score: Option<u16>,
+    #[serde(default)]
+    pub breakout_best_score: Option<u16>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -414,6 +423,8 @@ pub struct CollectionSave {
     pub mahjong_solitaire: MahjongSolitaire,
     #[serde(default)]
     pub snake: Snake,
+    #[serde(default)]
+    pub breakout: Breakout,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -536,6 +547,7 @@ pub enum GameSnapshot {
     PegSolitaire(PegSolitaire),
     MahjongSolitaire(MahjongSolitaire),
     Snake(Snake),
+    Breakout(Breakout),
 }
 impl GameSnapshot {
     pub fn from_state(state: &AppState, game: GameId) -> Self {
@@ -561,6 +573,7 @@ impl GameSnapshot {
             GameId::PegSolitaire => Self::PegSolitaire(state.peg_solitaire.clone()),
             GameId::MahjongSolitaire => Self::MahjongSolitaire(state.mahjong_solitaire.clone()),
             GameId::Snake => Self::Snake(state.snake.clone()),
+            GameId::Breakout => Self::Breakout(state.breakout.clone()),
         }
     }
     pub fn apply_to(self, state: &mut AppState) {
@@ -586,6 +599,7 @@ impl GameSnapshot {
             Self::PegSolitaire(game) => state.peg_solitaire = game,
             Self::MahjongSolitaire(game) => state.mahjong_solitaire = game,
             Self::Snake(game) => state.snake = game,
+            Self::Breakout(game) => state.breakout = game,
         }
     }
 }
@@ -615,6 +629,7 @@ impl CollectionSave {
             peg_solitaire: state.peg_solitaire.clone(),
             mahjong_solitaire: state.mahjong_solitaire.clone(),
             snake: state.snake.clone(),
+            breakout: state.breakout.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -655,6 +670,7 @@ impl CollectionSave {
         state.peg_solitaire = self.peg_solitaire;
         state.mahjong_solitaire = self.mahjong_solitaire;
         state.snake = self.snake;
+        state.breakout = self.breakout;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -701,6 +717,7 @@ impl Default for AppState {
             peg_solitaire: PegSolitaire::default(),
             mahjong_solitaire: MahjongSolitaire::default(),
             snake: Snake::default(),
+            breakout: Breakout::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,
