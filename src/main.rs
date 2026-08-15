@@ -21,6 +21,7 @@ mod palette_ui;
 mod progression;
 mod records_ui;
 mod responsive_cards;
+mod responsive_library;
 mod responsive_puzzles;
 mod responsive_ui;
 mod reversi;

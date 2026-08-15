@@ -10,6 +10,7 @@ use crate::nonogram_ui;
 use crate::palette_ui;
 use crate::records_ui;
 use crate::responsive_cards;
+use crate::responsive_library;
 use crate::responsive_puzzles;
 use crate::responsive_ui;
 use crate::reversi_ui;
@@ -171,7 +172,9 @@ pub fn clicks(state: &AppState) -> Vec<UiAction> {
         }
         Screen::Game(GameId::Reversi) => reversi_ui::reversi_clicks(state, p),
         Screen::Help => {
-            if Rect::new(1030., 635., 180., 48.).contains(p) {
+            if is_portrait() {
+                responsive_library::help_clicks(p)
+            } else if Rect::new(1030., 635., 180., 48.).contains(p) {
                 vec![UiAction::Cabinet]
             } else if Rect::new(600., 635., 180., 48.).contains(p) {
                 vec![UiAction::Rules]
@@ -181,8 +184,11 @@ pub fn clicks(state: &AppState) -> Vec<UiAction> {
                 vec![]
             }
         }
+        Screen::Records if is_portrait() => responsive_library::records_clicks(p),
         Screen::Records => records_ui::records_clicks(p),
+        Screen::Rules if is_portrait() => responsive_library::rules_clicks(p),
         Screen::Rules => library_ui::rules_clicks(p),
+        Screen::Credits if is_portrait() => responsive_library::credits_clicks(p),
         Screen::Credits => library_ui::credits_clicks(p),
         Screen::Settings if is_portrait() => responsive_ui::settings_clicks(state, p),
         Screen::Settings => settings_ui::settings_clicks(state, p),
@@ -210,9 +216,13 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::Yahtzee) => fivefold_ui::draw_fivefold(state),
         Screen::Game(GameId::Reversi) if is_portrait() => responsive_cards::draw_reversi(state),
         Screen::Game(GameId::Reversi) => reversi_ui::draw_reversi(state),
+        Screen::Help if is_portrait() => responsive_library::draw_help(),
         Screen::Help => draw_help(),
+        Screen::Records if is_portrait() => responsive_library::draw_records(state),
         Screen::Records => records_ui::draw_records(state),
+        Screen::Rules if is_portrait() => responsive_library::draw_rules(),
         Screen::Rules => library_ui::draw_rules(),
+        Screen::Credits if is_portrait() => responsive_library::draw_credits(),
         Screen::Credits => library_ui::draw_credits(),
         Screen::Settings if is_portrait() => responsive_ui::draw_settings(state),
         Screen::Settings => settings_ui::draw_settings(state),

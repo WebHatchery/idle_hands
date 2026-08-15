@@ -27,7 +27,7 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 - [ ] Implement safe viewport handling and compact/medium/expanded layouts.
   - [x] Add an aspect-preserving logical viewport with letterbox edge rejection.
   - [x] Add a full-size compact portrait canvas for the cabinet, 2048, Sudoku,
-    Nonogram, Minesweeper, Solitaire, FreeCell, and Settings flows.
+    Nonogram, Minesweeper, Solitaire, FreeCell, Fivefold, Reversi, and Settings flows.
 - [ ] Normalize touch/pointer input with tap, drag, swipe, cancel, and edge rules.
   - [x] Normalize pointer taps, drags, cancellations, and logical edge rules.
 - [x] Build 44-point-minimum shared controls, modal sheets, help, and settings.
@@ -56,8 +56,6 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover shared grid boundaries and independent row/column sizing in rule tests.
   - [x] Verify the compact Minesweeper board, presets, mode toggle, restart,
     and long-press flagging at 390×844.
-  - [x] Verify compact Solitaire stock, waste, foundations, tableau, undo,
-    and new-deal controls at 390×844.
 
 ## Phase 3 — Sudoku and Nonogram
 
@@ -127,6 +125,8 @@ sizes, covered by rule tests, and passes `publish.ps1`.
     Fivefold controls at 390×844.
   - [x] Verify touch-sized portrait Reversi board, legal-move markers, pass,
     new-board, and AI mode controls at 390×844.
+  - [x] Verify compact portrait Help, Records, Rules, and Credits screens at
+    390×844.
 - [ ] Run the complete capture matrix, replace duplicate-state images, and update
   the catalog thumbnail with the final cabinet.
 - [ ] Complete final `cargo fmt`, tests, warning-free Clippy, and `publish.ps1`.

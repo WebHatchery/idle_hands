@@ -15,7 +15,7 @@
 param(
     [string[]]$Scenes = @(
         "cabinet", "2048", "minesweeper", "sudoku", "nonogram", "solitaire",
-        "freecell", "fivefold", "reversi", "records", "rules", "credits", "settings"
+        "freecell", "fivefold", "reversi", "help", "records", "rules", "credits", "settings"
     ),
     [int]$Frames = 150,
     [int]$WindowWidth = 0,

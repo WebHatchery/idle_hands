@@ -1,0 +1,242 @@
+//! Compact portrait layouts for collection-wide library screens.
+
+use crate::{progression::AchievementId, state::AppState, ui::UiAction};
+use macroquad::prelude::*;
+
+fn panel(rect: Rect, fill: Color) {
+    draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
+    draw_rectangle_lines(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        2.,
+        Color::new(0.45, 0.38, 0.65, 0.65),
+    );
+}
+fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+    draw_text(value, x, y, size, color);
+}
+fn back_button(y: f32) {
+    panel(
+        Rect::new(10., y, 150., 38.),
+        Color::new(0.25, 0.16, 0.32, 1.),
+    );
+    text("BACK", 62., y + 25., 12., WHITE);
+}
+fn value(value: Option<u32>) -> String {
+    value.map_or_else(|| "-".into(), |number| number.to_string())
+}
+
+pub fn draw_records(state: &AppState) {
+    panel(
+        Rect::new(8., 38., 344., 602.),
+        Color::new(0.08, 0.06, 0.14, 1.),
+    );
+    text("RECORDS", 20., 80., 29., Color::new(0.98, 0.83, 0.45, 1.));
+    text(
+        "Quiet milestones",
+        22.,
+        103.,
+        13.,
+        Color::new(0.72, 0.68, 0.82, 1.),
+    );
+    let earned = state.achievements.iter().filter(|earned| **earned).count();
+    text(
+        &format!(
+            "STAMPS {}  •  ACHIEVEMENTS {}/{}",
+            state.stamps,
+            earned,
+            AchievementId::ALL.len()
+        ),
+        20.,
+        127.,
+        11.,
+        Color::new(0.98, 0.83, 0.45, 1.),
+    );
+    let rows = [
+        ("2048 best", state.records.best_2048.to_string()),
+        ("Mines beginner", value(state.records.minesweeper[0])),
+        ("Mines intermediate", value(state.records.minesweeper[1])),
+        ("Mines expert", value(state.records.minesweeper[2])),
+        ("Mines custom", value(state.records.minesweeper[3])),
+        ("Sudoku easy", value(state.records.sudoku[0])),
+        ("Sudoku medium", value(state.records.sudoku[1])),
+        ("Sudoku hard", value(state.records.sudoku[2])),
+        ("Nonogram 5x5", value(state.records.nonogram[0])),
+        ("Nonogram 10x10", value(state.records.nonogram[1])),
+        ("Nonogram 15x15", value(state.records.nonogram[2])),
+        ("Solitaire best", value(state.records.solitaire_best_moves)),
+        ("FreeCell best", value(state.records.freecell_best_moves)),
+        (
+            "Fivefold total",
+            state.records.fivefold_best_total.to_string(),
+        ),
+        ("Reversi best", state.records.reversi_best_score.to_string()),
+    ];
+    for (index, (label, score)) in rows.iter().enumerate() {
+        let y = 155. + index as f32 * 27.;
+        text(label, 20., y, 11., Color::new(0.78, 0.73, 0.86, 1.));
+        text(score, 315., y, 11., Color::new(0.98, 0.83, 0.45, 1.));
+    }
+    back_button(650.);
+}
+pub fn records_clicks(p: Vec2) -> Vec<UiAction> {
+    if Rect::new(10., 650., 150., 38.).contains(p) {
+        vec![UiAction::Cabinet]
+    } else {
+        vec![]
+    }
+}
+
+pub fn draw_rules() {
+    panel(
+        Rect::new(8., 38., 344., 602.),
+        Color::new(0.08, 0.06, 0.14, 1.),
+    );
+    text("RULES", 20., 80., 29., Color::new(0.98, 0.83, 0.45, 1.));
+    text(
+        "Every drawer keeps its controls visible.",
+        20.,
+        103.,
+        12.,
+        Color::new(0.72, 0.68, 0.82, 1.),
+    );
+    let lines = [
+        "2048  Swipe or tap arrows.",
+        "Mines  Reveal, flag, then chord.",
+        "Sudoku  Select a cell and number.",
+        "Nonogram  Fill or cross from clues.",
+        "Solitaire  Tap card, then target.",
+        "FreeCell  Move cards to cascades.",
+        "Fivefold  Roll, hold, choose a call.",
+        "Reversi  Place on glowing squares.",
+        "",
+        "All games support visible touch controls.",
+    ];
+    for (index, line) in lines.iter().enumerate() {
+        text(
+            line,
+            20.,
+            145. + index as f32 * 36.,
+            12.,
+            Color::new(0.78, 0.73, 0.86, 1.),
+        );
+    }
+    back_button(650.);
+}
+pub fn rules_clicks(p: Vec2) -> Vec<UiAction> {
+    if Rect::new(10., 650., 150., 38.).contains(p) {
+        vec![UiAction::Cabinet]
+    } else {
+        vec![]
+    }
+}
+
+pub fn draw_credits() {
+    panel(
+        Rect::new(8., 70., 344., 520.),
+        Color::new(0.08, 0.06, 0.14, 1.),
+    );
+    text("CREDITS", 20., 115., 29., Color::new(0.98, 0.83, 0.45, 1.));
+    text("IDLE HANDS", 22., 165., 22., WHITE);
+    text(
+        "A quiet collection for",
+        22.,
+        210.,
+        15.,
+        Color::new(0.78, 0.73, 0.86, 1.),
+    );
+    text(
+        "small pauses.",
+        22.,
+        235.,
+        15.,
+        Color::new(0.78, 0.73, 0.86, 1.),
+    );
+    text(
+        "Built with Rust, macroquad,",
+        22.,
+        295.,
+        13.,
+        Color::new(0.68, 0.63, 0.78, 1.),
+    );
+    text(
+        "and the shared toolkit.",
+        22.,
+        320.,
+        13.,
+        Color::new(0.68, 0.63, 0.78, 1.),
+    );
+    text(
+        "Designed for touch and quiet minutes.",
+        22.,
+        390.,
+        13.,
+        Color::new(0.98, 0.83, 0.45, 1.),
+    );
+    back_button(650.);
+}
+pub fn credits_clicks(p: Vec2) -> Vec<UiAction> {
+    if Rect::new(10., 650., 150., 38.).contains(p) {
+        vec![UiAction::Cabinet]
+    } else {
+        vec![]
+    }
+}
+
+pub fn draw_help() {
+    panel(
+        Rect::new(8., 38., 344., 602.),
+        Color::new(0.08, 0.06, 0.14, 1.),
+    );
+    text(
+        "HOW TO PLAY",
+        20.,
+        80.,
+        26.,
+        Color::new(0.98, 0.83, 0.45, 1.),
+    );
+    text("Idle Hands is a cabinet", 20., 112., 14., WHITE);
+    text("of calm, tactile games.", 20., 135., 14., WHITE);
+    text(
+        "Tap a cabinet object to open it.",
+        20.,
+        185.,
+        12.,
+        Color::new(0.75, 0.70, 0.84, 1.),
+    );
+    text(
+        "Use the visible controls in every drawer.",
+        20.,
+        215.,
+        12.,
+        Color::new(0.75, 0.70, 0.84, 1.),
+    );
+    panel(
+        Rect::new(10., 530., 105., 38.),
+        Color::new(0.20, 0.13, 0.30, 1.),
+    );
+    panel(
+        Rect::new(127., 530., 105., 38.),
+        Color::new(0.20, 0.13, 0.30, 1.),
+    );
+    panel(
+        Rect::new(244., 530., 106., 38.),
+        Color::new(0.25, 0.16, 0.32, 1.),
+    );
+    text("RULES", 42., 555., 12., WHITE);
+    text("CREDITS", 150., 555., 11., WHITE);
+    text("BACK", 277., 555., 12., WHITE);
+}
+pub fn help_clicks(p: Vec2) -> Vec<UiAction> {
+    if Rect::new(10., 530., 105., 38.).contains(p) {
+        vec![UiAction::Rules]
+    } else if Rect::new(127., 530., 105., 38.).contains(p) {
+        vec![UiAction::Credits]
+    } else if Rect::new(244., 530., 106., 38.).contains(p) {
+        vec![UiAction::Cabinet]
+    } else {
+        vec![]
+    }
+}

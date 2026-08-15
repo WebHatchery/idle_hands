@@ -64,6 +64,7 @@ impl Game {
             "freecell" => Screen::Game(GameId::FreeCell),
             "fivefold" => Screen::Game(GameId::Yahtzee),
             "reversi" => Screen::Game(GameId::Reversi),
+            "help" => Screen::Help,
             "records" => Screen::Records,
             "rules" => Screen::Rules,
             "credits" => Screen::Credits,
