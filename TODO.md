@@ -219,6 +219,18 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Add responsive desktop, portrait, and medium-landscape presentation,
     visible controls, and verification captures.
 
+## Phase 12 — Fifth post-launch cabinet game
+
+- [x] Add Mastermind as a thirteenth deterministic, touch-complete cabinet
+  game with a seeded four-color code, ten guess rows, and duplicate-aware
+  feedback.
+  - [x] Cover code scoring, win/loss boundaries, clear, undo, and seeded
+    boards with focused rule tests.
+  - [x] Add persisted active state and best-row records with snapshot,
+    achievement, and tutorial coverage.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, and verification captures.
+
 ## Phase 9 — Second post-launch cabinet game
 
 - [x] Add Tic-Tac-Toe as a tenth deterministic, touch-complete cabinet game.

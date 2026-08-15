@@ -100,6 +100,15 @@ impl Game {
                     }),
             );
         }
+        if self.state.mastermind.status == crate::mastermind::MastermindStatus::Won {
+            records.mastermind_best_rows = Some(
+                records
+                    .mastermind_best_rows
+                    .map_or(self.state.mastermind.row, |best| {
+                        best.min(self.state.mastermind.row)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

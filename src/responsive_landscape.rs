@@ -30,9 +30,9 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 fn cabinet_rect(index: usize) -> Rect {
     Rect::new(
         8. + (index % 4) as f32 * 210.,
-        46. + (index / 4) as f32 * 92.,
+        42. + (index / 4) as f32 * 70.,
         200.,
-        82.,
+        64.,
     )
 }
 
@@ -54,35 +54,35 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
         text(
             game.title(),
             rect.x + 10.,
-            rect.y + 27.,
-            16.,
+            rect.y + 19.,
+            12.,
             Color::new(0.98, 0.82, 0.42, 1.),
         );
         text(
             cabinet_status(state, *game),
             rect.x + 10.,
-            rect.y + 51.,
-            11.,
+            rect.y + 37.,
+            9.,
             Color::new(0.98, 0.75, 0.30, 1.),
         );
         text(
             game.subtitle(),
             rect.x + 10.,
-            rect.y + 78.,
-            11.,
+            rect.y + 57.,
+            8.,
             Color::new(0.69, 0.65, 0.78, 1.),
         );
         draw_circle(
             rect.right() - 20.,
-            rect.y + 20.,
-            12.,
+            rect.y + 16.,
+            9.,
             cosmetics::cabinet_accent(state.cabinet_decoration),
         );
         text(
             &(index + 1).to_string(),
             rect.right() - 24.,
-            rect.y + 25.,
-            11.,
+            rect.y + 19.,
+            8.,
             Color::new(0.08, 0.05, 0.12, 1.),
         );
     }
@@ -376,6 +376,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "Tap a tile beside the empty space.",
             "Put every numbered tile back in order.",
             "Use UNDO or NEW BOARD whenever you need it.",
+        ],
+        GameId::Mastermind => [
+            "Tap four colors to build a guess.",
+            "GUESS shows exact and partial matches.",
+            "Use CLEAR, UNDO, or NEW BOARD visibly below.",
         ],
     }
 }

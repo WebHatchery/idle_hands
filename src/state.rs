@@ -3,6 +3,7 @@
 use crate::fivefold::Fivefold;
 use crate::freecell::FreeCell;
 use crate::lights_out::LightsOut;
+use crate::mastermind::Mastermind;
 use crate::memory_pairs::MemoryPairs;
 use crate::minesweeper::Minesweeper;
 use crate::nonogram::Nonogram;
@@ -27,9 +28,10 @@ pub enum GameId {
     TicTacToe,
     MemoryPairs,
     SlidingPuzzle,
+    Mastermind,
 }
 impl GameId {
-    pub const ALL: [Self; 12] = [
+    pub const ALL: [Self; 13] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -42,6 +44,7 @@ impl GameId {
         Self::TicTacToe,
         Self::MemoryPairs,
         Self::SlidingPuzzle,
+        Self::Mastermind,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -57,6 +60,7 @@ impl GameId {
             Self::TicTacToe => "Tic-Tac-Toe",
             Self::MemoryPairs => "Memory",
             Self::SlidingPuzzle => "Sliding Puzzle",
+            Self::Mastermind => "Mastermind",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -73,6 +77,7 @@ impl GameId {
             Self::TicTacToe => "Three in a row",
             Self::MemoryPairs => "Find the quiet pairs",
             Self::SlidingPuzzle => "Move the quiet tiles",
+            Self::Mastermind => "Read the color code",
         }
     }
     pub fn index(self) -> usize {
@@ -92,6 +97,7 @@ impl GameId {
             Self::TicTacToe => "tic_tac_toe",
             Self::MemoryPairs => "memory_pairs",
             Self::SlidingPuzzle => "sliding_puzzle",
+            Self::Mastermind => "mastermind",
         }
     }
 }
@@ -248,6 +254,7 @@ pub struct AppState {
     pub tic_tac_toe: TicTacToe,
     pub memory_pairs: MemoryPairs,
     pub sliding_puzzle: SlidingPuzzle,
+    pub mastermind: Mastermind,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -288,6 +295,8 @@ pub struct CollectionRecords {
     pub memory_pairs_best_moves: Option<u16>,
     #[serde(default)]
     pub sliding_puzzle_best_moves: Option<u16>,
+    #[serde(default)]
+    pub mastermind_best_rows: Option<u8>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -315,6 +324,8 @@ pub struct CollectionSave {
     pub memory_pairs: MemoryPairs,
     #[serde(default)]
     pub sliding_puzzle: SlidingPuzzle,
+    #[serde(default)]
+    pub mastermind: Mastermind,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -428,6 +439,7 @@ pub enum GameSnapshot {
     TicTacToe(TicTacToe),
     MemoryPairs(MemoryPairs),
     SlidingPuzzle(SlidingPuzzle),
+    Mastermind(Mastermind),
 }
 impl GameSnapshot {
     pub fn from_state(state: &AppState, game: GameId) -> Self {
@@ -444,6 +456,7 @@ impl GameSnapshot {
             GameId::TicTacToe => Self::TicTacToe(state.tic_tac_toe.clone()),
             GameId::MemoryPairs => Self::MemoryPairs(state.memory_pairs.clone()),
             GameId::SlidingPuzzle => Self::SlidingPuzzle(state.sliding_puzzle.clone()),
+            GameId::Mastermind => Self::Mastermind(state.mastermind.clone()),
         }
     }
     pub fn apply_to(self, state: &mut AppState) {
@@ -460,6 +473,7 @@ impl GameSnapshot {
             Self::TicTacToe(game) => state.tic_tac_toe = game,
             Self::MemoryPairs(game) => state.memory_pairs = game,
             Self::SlidingPuzzle(game) => state.sliding_puzzle = game,
+            Self::Mastermind(game) => state.mastermind = game,
         }
     }
 }
@@ -480,6 +494,7 @@ impl CollectionSave {
             tic_tac_toe: state.tic_tac_toe.clone(),
             memory_pairs: state.memory_pairs.clone(),
             sliding_puzzle: state.sliding_puzzle.clone(),
+            mastermind: state.mastermind.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -511,6 +526,7 @@ impl CollectionSave {
         state.tic_tac_toe = self.tic_tac_toe;
         state.memory_pairs = self.memory_pairs;
         state.sliding_puzzle = self.sliding_puzzle;
+        state.mastermind = self.mastermind;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -548,6 +564,7 @@ impl Default for AppState {
             tic_tac_toe: TicTacToe::default(),
             memory_pairs: MemoryPairs::default(),
             sliding_puzzle: SlidingPuzzle::default(),
+            mastermind: Mastermind::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

@@ -83,6 +83,7 @@ impl Game {
             "tic_tac_toe" => Screen::Game(GameId::TicTacToe),
             "memory_pairs" => Screen::Game(GameId::MemoryPairs),
             "sliding_puzzle" => Screen::Game(GameId::SlidingPuzzle),
+            "mastermind" => Screen::Game(GameId::Mastermind),
             "help" => Screen::Help,
             "records" => Screen::Records,
             "rules" => Screen::Rules,
@@ -291,6 +292,7 @@ impl Game {
                         | GameId::TicTacToe
                         | GameId::MemoryPairs
                         | GameId::SlidingPuzzle
+                        | GameId::Mastermind
                 ) {
                     self.state.screen = Screen::Game(id);
                     self.state.tutorial = (!matches!(
@@ -299,6 +301,7 @@ impl Game {
                             | GameId::TicTacToe
                             | GameId::MemoryPairs
                             | GameId::SlidingPuzzle
+                            | GameId::Mastermind
                     ) && !self.state.tutorial_seen[id.index()])
                     .then_some(id);
                 } else {
@@ -553,6 +556,22 @@ impl Game {
             ui::UiAction::SlidingPuzzleNew => {
                 let seed = self.state.sliding_puzzle.seed.wrapping_add(1);
                 self.state.sliding_puzzle.reset(seed);
+            }
+            ui::UiAction::MastermindPick(color) => {
+                self.state.mastermind.pick(color);
+            }
+            ui::UiAction::MastermindSubmit => {
+                self.state.mastermind.submit();
+            }
+            ui::UiAction::MastermindClear => {
+                self.state.mastermind.clear();
+            }
+            ui::UiAction::MastermindUndo => {
+                self.state.mastermind.undo();
+            }
+            ui::UiAction::MastermindNew => {
+                let seed = self.state.mastermind.seed.wrapping_add(1);
+                self.state.mastermind.reset(seed);
             }
             ui::UiAction::MineChord(index) => {
                 self.state.minesweeper.chord(index);

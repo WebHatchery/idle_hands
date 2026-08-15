@@ -75,6 +75,10 @@ pub fn draw_records(state: &AppState) {
             "Sliding Puzzle best",
             value(state.records.sliding_puzzle_best_moves.map(u32::from)),
         ),
+        (
+            "Mastermind best",
+            value(state.records.mastermind_best_rows.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
         let col = index / 7;

@@ -142,5 +142,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "Put every numbered tile back in order.",
             "Use UNDO or NEW BOARD whenever you need it.",
         ],
+        GameId::Mastermind => [
+            "Tap four colors to build a guess.",
+            "GUESS shows exact and partial matches.",
+            "Use CLEAR, UNDO, or NEW BOARD visibly below.",
+        ],
     }
 }
