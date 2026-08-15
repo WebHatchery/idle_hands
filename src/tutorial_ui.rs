@@ -152,5 +152,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "Tap a destination column to move the run.",
             "Tap STOCK to deal one card to every column.",
         ],
+        GameId::WordSearch => [
+            "Tap the first letter of a hidden word.",
+            "Tap its final letter in a straight line.",
+            "Use CLEAR or NEW BOARD with the visible controls.",
+        ],
     }
 }

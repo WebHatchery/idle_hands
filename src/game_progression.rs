@@ -118,6 +118,15 @@ impl Game {
                     }),
             );
         }
+        if self.state.word_search.status == crate::word_search::WordSearchStatus::Won {
+            records.word_search_best_moves = Some(
+                records
+                    .word_search_best_moves
+                    .map_or(self.state.word_search.moves, |best| {
+                        best.min(self.state.word_search.moves)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

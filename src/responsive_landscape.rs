@@ -387,6 +387,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "Tap a destination column to move the run.",
             "Tap STOCK to deal one card to every column.",
         ],
+        GameId::WordSearch => [
+            "Tap the first letter of a hidden word.",
+            "Tap its final letter in a straight line.",
+            "Use CLEAR or NEW BOARD with the visible controls.",
+        ],
     }
 }
 
@@ -406,6 +411,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::SlidingPuzzle if state.records.sliding_puzzle_best_moves.is_some() => "COMPLETE",
         GameId::Mastermind if state.records.mastermind_best_rows.is_some() => "COMPLETE",
         GameId::Spider if state.records.spider_best_moves.is_some() => "COMPLETE",
+        GameId::WordSearch if state.records.word_search_best_moves.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

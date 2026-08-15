@@ -668,6 +668,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::SlidingPuzzle if state.records.sliding_puzzle_best_moves.is_some() => "COMPLETE",
         GameId::Mastermind if state.records.mastermind_best_rows.is_some() => "COMPLETE",
         GameId::Spider if state.records.spider_best_moves.is_some() => "COMPLETE",
+        GameId::WordSearch if state.records.word_search_best_moves.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

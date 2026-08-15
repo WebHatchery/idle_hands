@@ -13,6 +13,7 @@ use crate::solitaire::Solitaire;
 use crate::spider::Spider;
 use crate::sudoku::Sudoku;
 use crate::tic_tac_toe::TicTacToe;
+use crate::word_search::WordSearch;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -31,9 +32,10 @@ pub enum GameId {
     SlidingPuzzle,
     Mastermind,
     Spider,
+    WordSearch,
 }
 impl GameId {
-    pub const ALL: [Self; 14] = [
+    pub const ALL: [Self; 15] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -48,6 +50,7 @@ impl GameId {
         Self::SlidingPuzzle,
         Self::Mastermind,
         Self::Spider,
+        Self::WordSearch,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -65,6 +68,7 @@ impl GameId {
             Self::SlidingPuzzle => "Sliding Puzzle",
             Self::Mastermind => "Mastermind",
             Self::Spider => "Spider",
+            Self::WordSearch => "Word Search",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -83,6 +87,7 @@ impl GameId {
             Self::SlidingPuzzle => "Move the quiet tiles",
             Self::Mastermind => "Read the color code",
             Self::Spider => "Build the quiet webs",
+            Self::WordSearch => "Find the hidden words",
         }
     }
     pub fn index(self) -> usize {
@@ -104,6 +109,7 @@ impl GameId {
             Self::SlidingPuzzle => "sliding_puzzle",
             Self::Mastermind => "mastermind",
             Self::Spider => "spider",
+            Self::WordSearch => "word_search",
         }
     }
 }
@@ -262,6 +268,7 @@ pub struct AppState {
     pub sliding_puzzle: SlidingPuzzle,
     pub mastermind: Mastermind,
     pub spider: Spider,
+    pub word_search: WordSearch,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -306,6 +313,8 @@ pub struct CollectionRecords {
     pub mastermind_best_rows: Option<u8>,
     #[serde(default)]
     pub spider_best_moves: Option<u32>,
+    #[serde(default)]
+    pub word_search_best_moves: Option<u16>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -337,6 +346,8 @@ pub struct CollectionSave {
     pub mastermind: Mastermind,
     #[serde(default)]
     pub spider: Spider,
+    #[serde(default)]
+    pub word_search: WordSearch,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -452,6 +463,7 @@ pub enum GameSnapshot {
     SlidingPuzzle(SlidingPuzzle),
     Mastermind(Mastermind),
     Spider(Spider),
+    WordSearch(WordSearch),
 }
 impl GameSnapshot {
     pub fn from_state(state: &AppState, game: GameId) -> Self {
@@ -470,6 +482,7 @@ impl GameSnapshot {
             GameId::SlidingPuzzle => Self::SlidingPuzzle(state.sliding_puzzle.clone()),
             GameId::Mastermind => Self::Mastermind(state.mastermind.clone()),
             GameId::Spider => Self::Spider(state.spider.clone()),
+            GameId::WordSearch => Self::WordSearch(state.word_search.clone()),
         }
     }
     pub fn apply_to(self, state: &mut AppState) {
@@ -488,6 +501,7 @@ impl GameSnapshot {
             Self::SlidingPuzzle(game) => state.sliding_puzzle = game,
             Self::Mastermind(game) => state.mastermind = game,
             Self::Spider(game) => state.spider = game,
+            Self::WordSearch(game) => state.word_search = game,
         }
     }
 }
@@ -510,6 +524,7 @@ impl CollectionSave {
             sliding_puzzle: state.sliding_puzzle.clone(),
             mastermind: state.mastermind.clone(),
             spider: state.spider.clone(),
+            word_search: state.word_search.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -543,6 +558,7 @@ impl CollectionSave {
         state.sliding_puzzle = self.sliding_puzzle;
         state.mastermind = self.mastermind;
         state.spider = self.spider;
+        state.word_search = self.word_search;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -582,6 +598,7 @@ impl Default for AppState {
             sliding_puzzle: SlidingPuzzle::default(),
             mastermind: Mastermind::default(),
             spider: Spider::default(),
+            word_search: WordSearch::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

@@ -57,6 +57,8 @@ mod tic_tac_toe;
 mod tic_tac_toe_ui;
 mod tutorial_ui;
 mod ui;
+mod word_search;
+mod word_search_ui;
 
 use game::Game;
 

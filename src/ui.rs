@@ -28,6 +28,7 @@ use crate::spider_ui;
 use crate::sudoku_ui;
 use crate::tic_tac_toe_ui;
 use crate::tutorial_ui;
+use crate::word_search_ui;
 use crate::{
     data::GameData,
     minesweeper::MineStatus,
@@ -126,6 +127,9 @@ pub enum UiAction {
     SpiderDeal,
     SpiderUndo,
     SpiderNew,
+    WordSearchCell(usize),
+    WordSearchClear,
+    WordSearchNew,
 }
 pub fn viewport() -> Viewport {
     let (width, height) = layout_size();
@@ -250,6 +254,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Game(GameId::MemoryPairs) => memory_pairs_ui::clicks(state, p),
         Screen::Game(GameId::SlidingPuzzle) => sliding_puzzle_ui::clicks(state, p),
         Screen::Game(GameId::Spider) => spider_ui::clicks(state, p),
+        Screen::Game(GameId::WordSearch) => word_search_ui::clicks(state, p),
         Screen::Game(GameId::Mastermind) => mastermind_ui::clicks(state, p),
         Screen::Help => {
             if is_compact_landscape() {
@@ -340,6 +345,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::MemoryPairs) => memory_pairs_ui::draw(state),
         Screen::Game(GameId::SlidingPuzzle) => sliding_puzzle_ui::draw(state),
         Screen::Game(GameId::Spider) => spider_ui::draw(state),
+        Screen::Game(GameId::WordSearch) => word_search_ui::draw(state),
         Screen::Game(GameId::Mastermind) => mastermind_ui::draw(state),
         Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(),
         Screen::Help if is_portrait() => responsive_library::draw_help(),
@@ -369,7 +375,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         } else {
             tutorial_ui::draw_overlay(game);
         }
-    } else if matches!(state.screen, Screen::Game(game) if !matches!(game, GameId::LightsOut | GameId::TicTacToe | GameId::MemoryPairs | GameId::SlidingPuzzle | GameId::Mastermind | GameId::Spider))
+    } else if matches!(state.screen, Screen::Game(game) if !matches!(game, GameId::LightsOut | GameId::TicTacToe | GameId::MemoryPairs | GameId::SlidingPuzzle | GameId::Mastermind | GameId::Spider | GameId::WordSearch))
     {
         if is_compact_landscape() {
             responsive_landscape::draw_replay_button();
@@ -440,6 +446,7 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
                 | GameId::SlidingPuzzle
                 | GameId::Mastermind
                 | GameId::Spider
+                | GameId::WordSearch
         );
         panel(
             r,
@@ -531,6 +538,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         GameId::SlidingPuzzle => state.records.sliding_puzzle_best_moves.is_some(),
         GameId::Mastermind => state.records.mastermind_best_rows.is_some(),
         GameId::Spider => state.records.spider_best_moves.is_some(),
+        GameId::WordSearch => state.records.word_search_best_moves.is_some(),
     };
     if complete {
         "COMPLETE"
@@ -556,6 +564,7 @@ fn cabinet_has_progress(state: &AppState, game: GameId) -> bool {
         GameId::SlidingPuzzle => state.sliding_puzzle.moves > 0,
         GameId::Mastermind => state.mastermind.row > 0,
         GameId::Spider => state.spider.moves > 0,
+        GameId::WordSearch => state.word_search.moves > 0,
     }
 }
 fn cabinet_status_color(status: &str) -> Color {
