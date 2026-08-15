@@ -1,0 +1,22 @@
+{
+  "title": "Idle Hands",
+  "wasm": "idle_hands",
+  "roost_slug": "rust_idle_hands",
+  "status": { "text": "In Development", "class": "in-development" },
+  "controls_hint": "Tap the game canvas to begin",
+  "canvas_rendering": "auto",
+  "about": [
+    "A touch-first cabinet of eight classic games for phone, tablet, and desktop: Solitaire, FreeCell, Sudoku, Minesweeper, 2048, Nonogram, Yahtzee, and Reversi.",
+    "Phase 0 defines the collection. The playable cabinet and first game arrive in Phase 1."
+  ],
+  "controls": [
+    { "key": "Tap", "desc": "Choose cabinet objects, controls, cards, cells, dice, and discs" },
+    { "key": "Drag / Swipe", "desc": "Move cards, mark puzzle cells, and slide tiles" },
+    { "key": "Visible Controls", "desc": "Provide an alternative to every gesture" }
+  ],
+  "details": [
+    { "label": "Genre", "value": "Classic Games / Puzzle Collection" },
+    { "label": "Engine", "value": "Macroquad + Toolkit" },
+    { "label": "Platform", "value": "iPhone, iPad, Browser, Windows" }
+  ]
+}
