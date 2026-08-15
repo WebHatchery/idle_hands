@@ -714,6 +714,15 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Capture and verify accessible desktop, portrait, and medium-landscape
     scenes for all three adventure games.
 
+## Phase 56 — Classic board accessibility
+
+- [x] Extend the persisted High Contrast and Large Text settings to Reversi,
+  Connect Four, and Tic-Tac-Toe across desktop, portrait, and landscape views.
+  - [x] Improve board fills, grid lines, pieces, labels, and touch controls
+    without changing the underlying game rules.
+  - [x] Capture and verify accessible desktop, portrait, and medium-landscape
+    scenes for all three classic board games.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

@@ -579,8 +579,21 @@ const REV_BOARD: Rect = Rect {
 pub fn draw_reversi(state: &AppState) {
     let game = &state.reversi;
     back();
-    text("REVERSI", 100., 20., 19., Color::new(0.98, 0.83, 0.45, 1.));
-    panel(REV_BOARD, Color::new(0.10, 0.30, 0.24, 1.));
+    text(
+        "REVERSI",
+        100.,
+        20.,
+        accessibility::text_size(19., state.large_text),
+        Color::new(0.98, 0.83, 0.45, 1.),
+    );
+    panel(
+        REV_BOARD,
+        if state.high_contrast {
+            Color::new(0.02, 0.20, 0.16, 1.)
+        } else {
+            Color::new(0.10, 0.30, 0.24, 1.)
+        },
+    );
     let cell = REV_BOARD.w / 8.;
     let legal = if game.status == ReversiStatus::Playing {
         game.legal_moves(game.turn)
@@ -602,14 +615,18 @@ pub fn draw_reversi(state: &AppState) {
             rect.w,
             rect.h,
             1.,
-            Color::new(0.48, 0.75, 0.55, 0.7),
+            accessibility::grid_line(state.high_contrast),
         );
         if game.board[index] == 0 && legal.contains(&index) {
             draw_circle(
                 rect.center().x,
                 rect.center().y,
                 5.,
-                Color::new(0.72, 0.95, 0.72, 0.75),
+                if state.high_contrast {
+                    WHITE
+                } else {
+                    Color::new(0.72, 0.95, 0.72, 0.75)
+                },
             );
         }
         if game.board[index] != 0 {
@@ -618,9 +635,13 @@ pub fn draw_reversi(state: &AppState) {
                 rect.center().y,
                 cell * 0.34,
                 if game.board[index] == 1 {
-                    Color::new(0.08, 0.06, 0.12, 1.)
+                    accessibility::board_fill(state.high_contrast)
                 } else {
-                    Color::new(0.92, 0.85, 0.66, 1.)
+                    if state.high_contrast {
+                        WHITE
+                    } else {
+                        Color::new(0.92, 0.85, 0.66, 1.)
+                    }
                 },
             );
         }
@@ -629,7 +650,7 @@ pub fn draw_reversi(state: &AppState) {
         &format!("DARK {}  •  LIGHT {}", game.score(1), game.score(2)),
         400.,
         55.,
-        15.,
+        accessibility::text_size(15., state.large_text),
         Color::new(0.98, 0.83, 0.45, 1.),
     );
     text(
@@ -640,19 +661,31 @@ pub fn draw_reversi(state: &AppState) {
         },
         400.,
         82.,
-        14.,
+        accessibility::text_size(14., state.large_text),
         Color::new(0.63, 0.95, 0.72, 1.),
     );
     panel(
         Rect::new(400., 120., 160., 44.),
         Color::new(0.18, 0.12, 0.28, 1.),
     );
-    text("PASS TURN", 450., 148., 12., WHITE);
+    text(
+        "PASS TURN",
+        450.,
+        148.,
+        accessibility::text_size(12., state.large_text),
+        WHITE,
+    );
     panel(
         Rect::new(590., 120., 160., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    text("NEW BOARD", 635., 148., 12., WHITE);
+    text(
+        "NEW BOARD",
+        635.,
+        148.,
+        accessibility::text_size(12., state.large_text),
+        WHITE,
+    );
     for (index, label) in [
         ("GENTLE", AiLevel::Gentle),
         ("SHARP", AiLevel::Sharp),
@@ -670,7 +703,13 @@ pub fn draw_reversi(state: &AppState) {
                 Color::new(0.18, 0.12, 0.28, 1.)
             },
         );
-        text(label.0, rect.x + 25., rect.y + 25., 10., WHITE);
+        text(
+            label.0,
+            rect.x + 25.,
+            rect.y + 25.,
+            accessibility::text_size(10., state.large_text),
+            WHITE,
+        );
     }
 }
 pub fn reversi_clicks(_state: &AppState, p: Vec2) -> Vec<UiAction> {

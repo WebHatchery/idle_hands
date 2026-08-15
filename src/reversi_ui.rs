@@ -1,6 +1,7 @@
 //! Touch-first Reversi board and pass controls.
 
 use crate::{
+    accessibility,
     reversi::{AiLevel, ReversiStatus},
     state::AppState,
     ui::UiAction,
@@ -21,26 +22,51 @@ fn panel(rect: Rect, fill: Color) {
         rect.w,
         rect.h,
         2.,
-        Color::new(0.45, 0.38, 0.65, 0.65),
+        accessibility::grid_line(false),
     );
 }
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     panel(rect, Color::new(0.18, 0.12, 0.28, 1.));
-    draw_text(label, rect.x + 20., rect.y + 30., 16., WHITE);
+    draw_text(
+        label,
+        rect.x + 20.,
+        rect.y + 30.,
+        accessibility::text_size(16., large_text),
+        WHITE,
+    );
 }
 
 pub fn draw_reversi(state: &AppState) {
     let game = &state.reversi;
-    draw_text("‹ CABINET", 40., 55., 20., Color::new(0.78, 0.70, 0.92, 1.));
-    draw_text("REVERSI", 40., 105., 44., Color::new(0.98, 0.83, 0.45, 1.));
+    draw_text(
+        "‹ CABINET",
+        40.,
+        55.,
+        accessibility::text_size(20., state.large_text),
+        Color::new(0.78, 0.70, 0.92, 1.),
+    );
+    draw_text(
+        "REVERSI",
+        40.,
+        105.,
+        accessibility::text_size(44., state.large_text),
+        Color::new(0.98, 0.83, 0.45, 1.),
+    );
     draw_text(
         "Turn the board, one quiet move at a time",
         44.,
         132.,
-        18.,
+        accessibility::text_size(18., state.large_text),
         Color::new(0.70, 0.64, 0.78, 1.),
     );
-    panel(BOARD, Color::new(0.10, 0.30, 0.24, 1.));
+    panel(
+        BOARD,
+        if state.high_contrast {
+            Color::new(0.02, 0.20, 0.16, 1.)
+        } else {
+            Color::new(0.10, 0.30, 0.24, 1.)
+        },
+    );
     let cell = BOARD.w / 8.;
     for index in 0..64 {
         let row = index / 8;
@@ -57,7 +83,7 @@ pub fn draw_reversi(state: &AppState) {
             rect.w,
             rect.h,
             1.,
-            Color::new(0.48, 0.75, 0.55, 0.7),
+            accessibility::grid_line(state.high_contrast),
         );
         if game.board[index] == 0
             && game.status == ReversiStatus::Playing
@@ -67,7 +93,11 @@ pub fn draw_reversi(state: &AppState) {
                 rect.center().x,
                 rect.center().y,
                 6.,
-                Color::new(0.72, 0.95, 0.72, 0.75),
+                if state.high_contrast {
+                    WHITE
+                } else {
+                    Color::new(0.72, 0.95, 0.72, 0.75)
+                },
             );
         }
         if game.board[index] != 0 {
@@ -76,9 +106,13 @@ pub fn draw_reversi(state: &AppState) {
                 rect.center().y,
                 cell * 0.34,
                 if game.board[index] == 1 {
-                    Color::new(0.08, 0.06, 0.12, 1.)
+                    accessibility::board_fill(state.high_contrast)
                 } else {
-                    Color::new(0.92, 0.85, 0.66, 1.)
+                    if state.high_contrast {
+                        WHITE
+                    } else {
+                        Color::new(0.92, 0.85, 0.66, 1.)
+                    }
                 },
             );
             draw_circle_lines(
@@ -86,7 +120,7 @@ pub fn draw_reversi(state: &AppState) {
                 rect.center().y,
                 cell * 0.34,
                 2.,
-                Color::new(0.75, 0.62, 0.35, 0.8),
+                accessibility::grid_line(state.high_contrast),
             );
         }
     }
@@ -94,14 +128,14 @@ pub fn draw_reversi(state: &AppState) {
         format!("YOU  {}", game.score(1)),
         650.,
         190.,
-        26.,
+        accessibility::text_size(26., state.large_text),
         Color::new(0.98, 0.83, 0.45, 1.),
     );
     draw_text(
         format!("OPPONENT  {}", game.score(2)),
         650.,
         230.,
-        22.,
+        accessibility::text_size(22., state.large_text),
         Color::new(0.82, 0.76, 0.88, 1.),
     );
     draw_text(
@@ -122,7 +156,7 @@ pub fn draw_reversi(state: &AppState) {
         },
         650.,
         285.,
-        18.,
+        accessibility::text_size(18., state.large_text),
         Color::new(0.63, 0.95, 0.72, 1.),
     );
     draw_text(
@@ -133,26 +167,46 @@ pub fn draw_reversi(state: &AppState) {
         },
         650.,
         325.,
-        17.,
+        accessibility::text_size(17., state.large_text),
         Color::new(0.68, 0.63, 0.78, 1.),
     );
-    button(Rect::new(650., 390., 180., 48.), "PASS TURN");
-    button(Rect::new(650., 455., 180., 48.), "NEW BOARD");
-    button(Rect::new(850., 390., 180., 48.), "GENTLE AI");
-    button(Rect::new(850., 455., 180., 48.), "SHARP AI");
-    button(Rect::new(850., 520., 180., 48.), "TWO PLAYER");
+    button(
+        Rect::new(650., 390., 180., 48.),
+        "PASS TURN",
+        state.large_text,
+    );
+    button(
+        Rect::new(650., 455., 180., 48.),
+        "NEW BOARD",
+        state.large_text,
+    );
+    button(
+        Rect::new(850., 390., 180., 48.),
+        "GENTLE AI",
+        state.large_text,
+    );
+    button(
+        Rect::new(850., 455., 180., 48.),
+        "SHARP AI",
+        state.large_text,
+    );
+    button(
+        Rect::new(850., 520., 180., 48.),
+        "TWO PLAYER",
+        state.large_text,
+    );
     draw_text(
         "A pass is available when no legal move remains.",
         650.,
         600.,
-        15.,
+        accessibility::text_size(15., state.large_text),
         Color::new(0.63, 0.58, 0.72, 1.),
     );
     draw_text(
         "Your dark discs face the light opponent discs.",
         650.,
         625.,
-        15.,
+        accessibility::text_size(15., state.large_text),
         Color::new(0.63, 0.58, 0.72, 1.),
     );
 }

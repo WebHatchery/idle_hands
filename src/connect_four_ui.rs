@@ -1,6 +1,7 @@
 //! Responsive presentation and touch routing for Connect Four.
 
 use crate::{
+    accessibility,
     connect_four::{ConnectFourStatus, Disc},
     state::AppState,
     ui::UiAction,
@@ -83,13 +84,25 @@ pub fn draw(state: &AppState) {
     } else {
         72.
     };
-    text("‹ CABINET", 8., 30., 13., muted());
-    text("CONNECT FOUR", header_x, header_y, title_size(), accent());
+    text(
+        "‹ CABINET",
+        8.,
+        30.,
+        accessibility::text_size(13., state.large_text),
+        muted(),
+    );
+    text(
+        "CONNECT FOUR",
+        header_x,
+        header_y,
+        accessibility::text_size(title_size(), state.large_text),
+        accent(),
+    );
     text(
         status_text(game.status),
         if compact { 430. } else { header_x },
         if compact { 30. } else { header_y + 25. },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
     draw_rectangle(
@@ -97,7 +110,11 @@ pub fn draw(state: &AppState) {
         layout.board.y,
         layout.board.w,
         layout.board.h,
-        Color::new(0.12, 0.16, 0.30, 1.),
+        if state.high_contrast {
+            Color::new(0.04, 0.12, 0.28, 1.)
+        } else {
+            Color::new(0.12, 0.16, 0.30, 1.)
+        },
     );
     for row in 0..6 {
         for column in 0..7 {
@@ -110,14 +127,14 @@ pub fn draw(state: &AppState) {
                 center.x,
                 center.y,
                 layout.cell * 0.35,
-                disc_color(game.cells[index]),
+                disc_color(game.cells[index], state.high_contrast),
             );
             draw_circle_lines(
                 center.x,
                 center.y,
                 layout.cell * 0.35,
                 1.,
-                Color::new(0.45, 0.38, 0.65, 1.),
+                accessibility::grid_line(state.high_contrast),
             );
         }
     }
@@ -140,7 +157,7 @@ pub fn draw(state: &AppState) {
             &format!("{}", column + 1),
             rect.x + rect.w * 0.45,
             rect.y + rect.h * 0.68,
-            12.,
+            accessibility::text_size(12., state.large_text),
             WHITE,
         );
     }
@@ -148,7 +165,7 @@ pub fn draw(state: &AppState) {
         "DROP A DISC",
         layout.drops.x,
         layout.drops.y - 8.,
-        10.,
+        accessibility::text_size(10., state.large_text),
         muted(),
     );
     text(
@@ -167,18 +184,30 @@ pub fn draw(state: &AppState) {
         } else {
             650.
         },
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    button(layout.undo, "UNDO");
-    button(layout.new_game, "NEW BOARD");
+    button(layout.undo, "UNDO", state.large_text);
+    button(layout.new_game, "NEW BOARD", state.large_text);
 }
 
-fn disc_color(disc: Disc) -> Color {
+fn disc_color(disc: Disc, high_contrast: bool) -> Color {
     match disc {
-        Disc::Empty => Color::new(0.04, 0.04, 0.09, 1.),
-        Disc::Red => Color::new(0.90, 0.30, 0.35, 1.),
-        Disc::Yellow => Color::new(0.98, 0.75, 0.30, 1.),
+        Disc::Empty => accessibility::board_fill(high_contrast),
+        Disc::Red => {
+            if high_contrast {
+                Color::new(1., 0.12, 0.18, 1.)
+            } else {
+                Color::new(0.90, 0.30, 0.35, 1.)
+            }
+        }
+        Disc::Yellow => {
+            if high_contrast {
+                Color::new(1., 0.85, 0.05, 1.)
+            } else {
+                Color::new(0.98, 0.75, 0.30, 1.)
+            }
+        }
     }
 }
 fn status_text(status: ConnectFourStatus) -> &'static str {
@@ -190,7 +219,7 @@ fn status_text(status: ConnectFourStatus) -> &'static str {
         ConnectFourStatus::Draw => "The board is full",
     }
 }
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -199,7 +228,13 @@ fn button(rect: Rect, label: &str) {
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
-    text(label, rect.x + 12., rect.y + 28., 11., WHITE);
+    text(
+        label,
+        rect.x + 12.,
+        rect.y + 28.,
+        accessibility::text_size(11., large_text),
+        WHITE,
+    );
 }
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     draw_text(value, x, y, size, color);

@@ -1,6 +1,7 @@
 //! Responsive presentation and touch routing for Tic-Tac-Toe.
 
 use crate::{
+    accessibility,
     state::AppState,
     tic_tac_toe::{Mark, TicTacToeStatus},
     ui::UiAction,
@@ -90,15 +91,21 @@ pub fn draw(state: &AppState) {
         "‹ CABINET",
         back_rect().x,
         back_rect().y + 20.,
-        14.,
+        accessibility::text_size(14., state.large_text),
         muted(),
     );
-    text("TIC-TAC-TOE", header_x, header_y, title_size(), accent());
+    text(
+        "TIC-TAC-TOE",
+        header_x,
+        header_y,
+        accessibility::text_size(title_size(), state.large_text),
+        accent(),
+    );
     text(
         status_text(game.status),
         body_x,
         body_y,
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
     for index in 0..9 {
@@ -115,17 +122,28 @@ pub fn draw(state: &AppState) {
             rect.y,
             rect.w,
             rect.h,
-            Color::new(0.12, 0.08, 0.20, 1.),
+            accessibility::board_fill(state.high_contrast),
         );
-        draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., accent());
+        draw_rectangle_lines(
+            rect.x,
+            rect.y,
+            rect.w,
+            rect.h,
+            2.,
+            accessibility::grid_line(state.high_contrast),
+        );
         match game.cells[index] {
-            Mark::X => draw_x(rect),
+            Mark::X => draw_x(rect, state.high_contrast),
             Mark::O => draw_circle_lines(
                 rect.center().x,
                 rect.center().y,
                 rect.w * 0.25,
                 5.,
-                Color::new(0.45, 0.82, 0.80, 1.),
+                if state.high_contrast {
+                    Color::new(0.05, 1., 0.90, 1.)
+                } else {
+                    Color::new(0.45, 0.82, 0.80, 1.)
+                },
             ),
             Mark::Empty => {}
         }
@@ -134,16 +152,20 @@ pub fn draw(state: &AppState) {
         &format!("MOVES  {}", game.moves),
         layout.board.x,
         layout.board.bottom() + 28.,
-        body_size(),
+        accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    button(layout.new_board, "NEW BOARD");
-    button(layout.undo, "UNDO");
+    button(layout.new_board, "NEW BOARD", state.large_text);
+    button(layout.undo, "UNDO", state.large_text);
 }
 
-fn draw_x(rect: Rect) {
+fn draw_x(rect: Rect, high_contrast: bool) {
     let inset = rect.w * 0.25;
-    let color = Color::new(0.98, 0.55, 0.42, 1.);
+    let color = if high_contrast {
+        Color::new(1., 0.15, 0.20, 1.)
+    } else {
+        Color::new(0.98, 0.55, 0.42, 1.)
+    };
     draw_line(
         rect.x + inset,
         rect.y + inset,
@@ -182,7 +204,7 @@ fn back_rect() -> Rect {
     }
 }
 
-fn button(rect: Rect, label: &str) {
+fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -195,7 +217,7 @@ fn button(rect: Rect, label: &str) {
         label,
         rect.x + 16.,
         rect.y + rect.h * 0.64,
-        body_size(),
+        accessibility::text_size(body_size(), large_text),
         WHITE,
     );
 }
