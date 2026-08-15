@@ -30,6 +30,7 @@ use crate::one_room_roguelike::OneRoomRoguelike;
 use crate::peg_solitaire::PegSolitaire;
 use crate::pipe_loop::PipeLoop;
 use crate::potion_2048::Potion2048;
+use crate::pyramid::Pyramid;
 use crate::reversi::Reversi;
 use crate::sliding_puzzle::SlidingPuzzle;
 use crate::snake::Snake;
@@ -95,9 +96,10 @@ pub enum GameId {
     PipeLoop,
     MazeWalk,
     MatchThree,
+    Pyramid,
 }
 impl GameId {
-    pub const ALL: [Self; 43] = [
+    pub const ALL: [Self; 44] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -141,6 +143,7 @@ impl GameId {
         Self::PipeLoop,
         Self::MazeWalk,
         Self::MatchThree,
+        Self::Pyramid,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -187,6 +190,7 @@ impl GameId {
             Self::PipeLoop => "Pipe Loop",
             Self::MazeWalk => "Maze Walk",
             Self::MatchThree => "Match Three",
+            Self::Pyramid => "Pyramid",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -234,6 +238,7 @@ impl GameId {
             Self::PipeLoop => "Join the quiet pipes",
             Self::MazeWalk => "Find the quiet exit",
             Self::MatchThree => "Clear the quiet colors",
+            Self::Pyramid => "Pair the quiet thirteen",
         }
     }
     pub fn index(self) -> usize {
@@ -284,6 +289,7 @@ impl GameId {
             Self::PipeLoop => "pipe_loop",
             Self::MazeWalk => "maze_walk",
             Self::MatchThree => "match_three",
+            Self::Pyramid => "pyramid",
         }
     }
 }
@@ -355,6 +361,7 @@ pub struct AppState {
     pub pipe_loop: PipeLoop,
     pub maze_walk: MazeWalk,
     pub match_three: MatchThree,
+    pub pyramid: Pyramid,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -466,6 +473,8 @@ pub struct CollectionSave {
     pub maze_walk: MazeWalk,
     #[serde(default)]
     pub match_three: MatchThree,
+    #[serde(default)]
+    pub pyramid: Pyramid,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -625,6 +634,7 @@ impl CollectionSave {
             pipe_loop: state.pipe_loop.clone(),
             maze_walk: state.maze_walk.clone(),
             match_three: state.match_three.clone(),
+            pyramid: state.pyramid.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -688,6 +698,7 @@ impl CollectionSave {
         state.pipe_loop = self.pipe_loop;
         state.maze_walk = self.maze_walk;
         state.match_three = self.match_three;
+        state.pyramid = self.pyramid;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -756,6 +767,7 @@ impl Default for AppState {
             pipe_loop: PipeLoop::default(),
             maze_walk: MazeWalk::default(),
             match_three: MatchThree::default(),
+            pyramid: Pyramid::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

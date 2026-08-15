@@ -70,6 +70,7 @@ fn full_cabinet_counts_every_playable_game() {
     records.pipe_loop_best_moves = Some(30);
     records.maze_walk_best_moves = Some(12);
     records.match_three_best_score = Some(120);
+    records.pyramid_best_moves = Some(28);
 
     assert_eq!(completed_games(&records), GameId::ALL.len());
     assert!(earned(&records, AchievementId::FullCabinet));

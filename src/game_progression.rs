@@ -381,6 +381,15 @@ impl Game {
                     }),
             );
         }
+        if self.state.pyramid.status == crate::pyramid::PyramidStatus::Won {
+            records.pyramid_best_moves = Some(
+                records
+                    .pyramid_best_moves
+                    .map_or(self.state.pyramid.moves, |best| {
+                        best.min(self.state.pyramid.moves)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

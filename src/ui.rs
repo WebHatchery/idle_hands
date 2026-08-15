@@ -34,6 +34,7 @@ use crate::palette_ui;
 use crate::peg_solitaire_ui;
 use crate::pipe_loop_ui;
 use crate::potion_2048_ui;
+use crate::pyramid_ui;
 use crate::records_ui;
 use crate::responsive_cards;
 use crate::responsive_landscape;
@@ -203,6 +204,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Game(GameId::KlondikeGolf) => klondike_golf_ui::clicks(state, p),
         Screen::Game(GameId::Blackjack) => blackjack_ui::clicks(state, p),
         Screen::Game(GameId::SpiderSolitaire) => spider_solitaire_ui::clicks(state, p),
+        Screen::Game(GameId::Pyramid) => pyramid_ui::clicks(state, p),
         Screen::Game(GameId::DungeonSweeper) => dungeon_sweeper_ui::clicks(state, p),
         Screen::Game(GameId::Potion2048) => potion_2048_ui::clicks(state, p),
         Screen::Game(GameId::TinyTowerDefence) => tiny_tower_defence_ui::clicks(state, p),
@@ -322,6 +324,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::KlondikeGolf) => klondike_golf_ui::draw(state),
         Screen::Game(GameId::Blackjack) => blackjack_ui::draw(state),
         Screen::Game(GameId::SpiderSolitaire) => spider_solitaire_ui::draw(state),
+        Screen::Game(GameId::Pyramid) => pyramid_ui::draw(state),
         Screen::Game(GameId::DungeonSweeper) => dungeon_sweeper_ui::draw(state),
         Screen::Game(GameId::Potion2048) => potion_2048_ui::draw(state),
         Screen::Game(GameId::TinyTowerDefence) => tiny_tower_defence_ui::draw(state),

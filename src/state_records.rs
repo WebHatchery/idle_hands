@@ -82,4 +82,6 @@ pub struct CollectionRecords {
     pub maze_walk_best_moves: Option<u16>,
     #[serde(default)]
     pub match_three_best_score: Option<u16>,
+    #[serde(default)]
+    pub pyramid_best_moves: Option<u16>,
 }

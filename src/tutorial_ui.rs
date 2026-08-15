@@ -297,5 +297,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "Clear groups of three or more matching colors to reach the target.",
             "Use UNDO or NEW BOARD with the visible controls.",
         ],
+        GameId::Pyramid => [
+            "Tap a king, or tap an exposed card to select it.",
+            "Pair two exposed cards whose ranks total thirteen.",
+            "Tap STOCK for another card; use UNDO or NEW PYRAMID visibly.",
+        ],
     }
 }

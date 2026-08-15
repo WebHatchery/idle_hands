@@ -220,6 +220,10 @@ pub fn draw_records(state: &AppState) {
             "Match Three best",
             value(state.records.match_three_best_score.map(u32::from)),
         ),
+        (
+            "Pyramid best moves",
+            value(state.records.pyramid_best_moves.map(u32::from)),
+        ),
     ];
     let mut rows = Vec::new();
     rows.extend(left);

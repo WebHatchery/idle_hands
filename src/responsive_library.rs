@@ -214,6 +214,10 @@ pub fn draw_records(state: &AppState) {
             "Match Three best",
             value(state.records.match_three_best_score.map(u32::from)),
         ),
+        (
+            "Pyramid best",
+            value(state.records.pyramid_best_moves.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
         let column = index / 25;

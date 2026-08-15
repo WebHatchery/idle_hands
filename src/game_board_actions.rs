@@ -111,6 +111,19 @@ impl Game {
                 let seed = self.state.spider_solitaire.seed.wrapping_add(1);
                 self.state.spider_solitaire.reset(seed);
             }
+            UiAction::PyramidTap(index) => {
+                self.state.pyramid.tap(*index);
+            }
+            UiAction::PyramidStock => {
+                self.state.pyramid.draw_stock();
+            }
+            UiAction::PyramidUndo => {
+                self.state.pyramid.undo();
+            }
+            UiAction::PyramidNew => {
+                let seed = self.state.pyramid.seed.wrapping_add(1);
+                self.state.pyramid.reset(seed);
+            }
             UiAction::DungeonCell(index) => {
                 if self.state.mine_flag_mode {
                     self.state.dungeon_sweeper.toggle_flag(*index);

@@ -14,6 +14,7 @@ use crate::number_match::NumberMatch;
 use crate::one_room_roguelike::OneRoomRoguelike;
 use crate::pipe_loop::PipeLoop;
 use crate::potion_2048::Potion2048;
+use crate::pyramid::Pyramid;
 use crate::state::Game2048;
 use crate::state::{AppState, GameId};
 use crate::tiny_tower_defence::TinyTowerDefence;
@@ -74,6 +75,7 @@ pub enum GameSnapshot {
     PipeLoop(PipeLoop),
     MazeWalk(MazeWalk),
     MatchThree(MatchThree),
+    Pyramid(Pyramid),
 }
 
 impl GameSnapshot {
@@ -122,6 +124,7 @@ impl GameSnapshot {
             GameId::PipeLoop => Self::PipeLoop(state.pipe_loop.clone()),
             GameId::MazeWalk => Self::MazeWalk(state.maze_walk.clone()),
             GameId::MatchThree => Self::MatchThree(state.match_three.clone()),
+            GameId::Pyramid => Self::Pyramid(state.pyramid.clone()),
         }
     }
 
@@ -170,6 +173,7 @@ impl GameSnapshot {
             Self::PipeLoop(game) => state.pipe_loop = game,
             Self::MazeWalk(game) => state.maze_walk = game,
             Self::MatchThree(game) => state.match_three = game,
+            Self::Pyramid(game) => state.pyramid = game,
         }
     }
 }

@@ -750,6 +750,18 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Capture and verify accessible desktop, portrait, and medium-landscape
     scenes for all three card games.
 
+## Phase 60 — Pyramid post-launch cabinet addition
+
+- [x] Add Pyramid as a forty-fourth deterministic, touch-complete cabinet game
+  with a seeded 28-card pyramid, stock/waste pairing, king clears, undo, and
+  win/stuck states.
+  - [x] Cover deterministic deals, exposed-card pairing, king clears, stock
+    draws, undo, and blocked-board detection with focused rule tests.
+  - [x] Add persisted active state and best-move records with snapshot,
+    migration, progression, and tutorial coverage.
+  - [x] Add responsive desktop, portrait, and medium-landscape presentation,
+    visible controls, and verification captures.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

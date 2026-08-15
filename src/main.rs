@@ -79,6 +79,8 @@ mod pipe_loop_ui;
 mod potion_2048;
 mod potion_2048_ui;
 mod progression;
+mod pyramid;
+mod pyramid_ui;
 mod records_ui;
 mod responsive_cards;
 mod responsive_landscape;

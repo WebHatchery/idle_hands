@@ -54,6 +54,8 @@ impl Game {
             "blackjack_accessible" => Screen::Game(GameId::Blackjack),
             "spider_solitaire" => Screen::Game(GameId::SpiderSolitaire),
             "spider_solitaire_accessible" => Screen::Game(GameId::SpiderSolitaire),
+            "pyramid" => Screen::Game(GameId::Pyramid),
+            "pyramid_accessible" => Screen::Game(GameId::Pyramid),
             "dungeon_sweeper" | "dungeon_sweeper_accessible" => {
                 Screen::Game(GameId::DungeonSweeper)
             }
