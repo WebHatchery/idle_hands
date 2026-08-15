@@ -174,7 +174,7 @@ impl FreeCell {
         };
         self.cascades[cascade][depth..]
             .windows(2)
-            .all(|pair| pair[0].rank + 1 == pair[1].rank && pair[0].red() != pair[1].red())
+            .all(|pair| pair[0].rank == pair[1].rank + 1 && pair[0].red() != pair[1].red())
     }
     fn capacity_allows(&self, source: FreeSource, destination: usize) -> bool {
         if !matches!(source, FreeSource::Cascade(_, _)) {

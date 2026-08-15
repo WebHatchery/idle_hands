@@ -89,7 +89,9 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 - [x] Confirm launch draw/redeal options and encode them as versioned rulesets.
   - [x] Launch Solitaire with the explicit Draw 1, unlimited-redeal ruleset and
     preserve the ruleset through saves.
-- [ ] Ensure select-then-select can complete every action without dragging.
+- [x] Ensure select-then-select can complete every action without dragging.
+  - [x] Cover legal tableau, cascade, foundation, and rejected-destination
+    selection behavior in rule tests.
 - [ ] Verify readable card ranks and usable stacked-card targets on compact phones.
   - [x] Verify compact Solitaire and FreeCell selection, foundations, tableau,
     undo, and new-deal controls at 390×844.
@@ -105,7 +107,7 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Route logical card drags through the same select-then-destination
     actions as taps.
   - [x] Explain rejected cascade and foundation moves with short feedback.
-- [ ] Add canonical and edge-case move tests, including empty-column capacity.
+- [x] Add canonical and edge-case move tests, including empty-column capacity.
 - [ ] Verify all actions through both tap selection and drag interaction.
 
 ## Phase 6 — Yahtzee-style scorecard and Reversi

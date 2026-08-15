@@ -63,3 +63,49 @@ fn foundation_requires_the_next_card_of_the_same_suit() {
     assert!(game.move_to_foundation(0));
     assert_eq!(game.foundations[0], 1);
 }
+
+#[test]
+fn select_then_select_moves_a_legal_tableau_card() {
+    let mut game = Solitaire {
+        tableau: vec![
+            vec![Card {
+                rank: 5,
+                suit: 0,
+                face_up: true,
+            }],
+            vec![Card {
+                rank: 6,
+                suit: 2,
+                face_up: true,
+            }],
+            Vec::new(),
+            Vec::new(),
+            Vec::new(),
+            Vec::new(),
+            Vec::new(),
+        ],
+        ..Default::default()
+    };
+    assert!(game.select_tableau(0, 0));
+    assert!(game.move_to_tableau(1));
+    assert_eq!(game.tableau[1].len(), 2);
+    assert_eq!(game.tableau[1][1].rank, 5);
+}
+
+#[test]
+fn rejected_tableau_destination_keeps_the_selected_source() {
+    let mut game = Solitaire::default();
+    game.tableau[0] = vec![Card {
+        rank: 5,
+        suit: 0,
+        face_up: true,
+    }];
+    game.tableau[1] = vec![Card {
+        rank: 9,
+        suit: 2,
+        face_up: true,
+    }];
+    assert!(game.select_tableau(0, 0));
+    assert!(!game.move_to_tableau(1));
+    assert_eq!(game.selected, Some(CardSource::Tableau(0, 0)));
+}

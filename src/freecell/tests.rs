@@ -63,7 +63,28 @@ fn an_invalid_stack_cannot_be_moved_as_a_supermove() {
 #[test]
 fn empty_column_capacity_rejects_two_cards_without_free_space() {
     let mut game = FreeCell::new(8);
-    game.cells = [None; 4];
+    game.cells = [
+        Some(Card {
+            rank: 1,
+            suit: 0,
+            face_up: true,
+        }),
+        Some(Card {
+            rank: 2,
+            suit: 0,
+            face_up: true,
+        }),
+        Some(Card {
+            rank: 3,
+            suit: 0,
+            face_up: true,
+        }),
+        Some(Card {
+            rank: 4,
+            suit: 0,
+            face_up: true,
+        }),
+    ];
     game.cascades = vec![
         vec![
             Card {
@@ -111,4 +132,48 @@ fn empty_column_capacity_rejects_two_cards_without_free_space() {
     ];
     assert!(game.select_cascade(0, 0));
     assert!(!game.move_selected_to_cascade(7));
+}
+
+#[test]
+fn select_then_select_moves_a_legal_cascade_stack() {
+    let mut game = FreeCell::new(12);
+    game.cascades[0] = vec![
+        Card {
+            rank: 8,
+            suit: 0,
+            face_up: true,
+        },
+        Card {
+            rank: 7,
+            suit: 2,
+            face_up: true,
+        },
+    ];
+    game.cascades[1] = vec![Card {
+        rank: 9,
+        suit: 2,
+        face_up: true,
+    }];
+    assert!(game.select_cascade(0, 0));
+    assert!(game.move_selected_to_cascade(1));
+    assert!(game.cascades[0].is_empty());
+    assert_eq!(game.cascades[1].len(), 3);
+}
+
+#[test]
+fn rejected_cascade_destination_keeps_the_selected_source() {
+    let mut game = FreeCell::new(13);
+    game.cascades[0] = vec![Card {
+        rank: 7,
+        suit: 0,
+        face_up: true,
+    }];
+    game.cascades[1] = vec![Card {
+        rank: 3,
+        suit: 1,
+        face_up: true,
+    }];
+    assert!(game.select_cascade(0, 0));
+    assert!(!game.move_selected_to_cascade(1));
+    assert_eq!(game.selected, Some(FreeSource::Cascade(0, 0)));
 }
