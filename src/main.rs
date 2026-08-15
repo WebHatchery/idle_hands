@@ -26,6 +26,8 @@ mod game_input;
 mod grid;
 mod hangman;
 mod hangman_ui;
+mod higher_lower;
+mod higher_lower_ui;
 mod input;
 mod library_ui;
 mod lights_out;

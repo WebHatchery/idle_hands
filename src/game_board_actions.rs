@@ -59,6 +59,16 @@ impl Game {
                 let seed = self.state.breakout.seed.wrapping_add(1);
                 self.state.breakout.reset(seed);
             }
+            UiAction::HigherLowerGuess(guess) => {
+                self.state.higher_lower.guess(*guess);
+            }
+            UiAction::HigherLowerUndo => {
+                self.state.higher_lower.undo();
+            }
+            UiAction::HigherLowerNew => {
+                let seed = self.state.higher_lower.seed.wrapping_add(1);
+                self.state.higher_lower.reset(seed);
+            }
             _ => return false,
         }
         true

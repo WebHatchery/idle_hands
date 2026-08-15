@@ -427,6 +427,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "Bounce the ball into every brick; keep the paddle below it.",
             "Use UNDO or NEW BOARD with the visible controls.",
         ],
+        GameId::HigherLower => [
+            "Tap HIGHER or LOWER to guess the hidden next card.",
+            "Reach ten correct guesses; ties count as correct.",
+            "Use UNDO or NEW ROUND with the visible controls.",
+        ],
     }
 }
 
@@ -456,6 +461,7 @@ fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
         }
         GameId::Snake if state.records.snake_best_score.is_some() => "COMPLETE",
         GameId::Breakout if state.records.breakout_best_score.is_some() => "COMPLETE",
+        GameId::HigherLower if state.records.higher_lower_best_score.is_some() => "COMPLETE",
         _ => "PLAY NOW",
     }
 }

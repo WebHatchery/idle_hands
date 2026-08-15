@@ -194,6 +194,15 @@ impl Game {
                     }),
             );
         }
+        if self.state.higher_lower.status == crate::higher_lower::HigherLowerStatus::Won {
+            records.higher_lower_best_score = Some(
+                records
+                    .higher_lower_best_score
+                    .map_or(self.state.higher_lower.score, |best| {
+                        best.max(self.state.higher_lower.score)
+                    }),
+            );
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,

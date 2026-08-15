@@ -6,6 +6,7 @@ use crate::connect_four::ConnectFour;
 use crate::fivefold::Fivefold;
 use crate::freecell::FreeCell;
 use crate::hangman::Hangman;
+use crate::higher_lower::HigherLower;
 use crate::lights_out::LightsOut;
 use crate::mahjong_solitaire::MahjongSolitaire;
 use crate::mastermind::Mastermind;
@@ -47,9 +48,10 @@ pub enum GameId {
     MahjongSolitaire,
     Snake,
     Breakout,
+    HigherLower,
 }
 impl GameId {
-    pub const ALL: [Self; 22] = [
+    pub const ALL: [Self; 23] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -72,6 +74,7 @@ impl GameId {
         Self::MahjongSolitaire,
         Self::Snake,
         Self::Breakout,
+        Self::HigherLower,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -97,6 +100,7 @@ impl GameId {
             Self::MahjongSolitaire => "Mahjong Solitaire",
             Self::Snake => "Snake",
             Self::Breakout => "Breakout",
+            Self::HigherLower => "Higher or Lower",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -123,6 +127,7 @@ impl GameId {
             Self::MahjongSolitaire => "Pair the quiet tiles",
             Self::Snake => "Guide the quiet coil",
             Self::Breakout => "Bounce the quiet ball",
+            Self::HigherLower => "Read the quiet card",
         }
     }
     pub fn index(self) -> usize {
@@ -152,6 +157,7 @@ impl GameId {
             Self::MahjongSolitaire => "mahjong_solitaire",
             Self::Snake => "snake",
             Self::Breakout => "breakout",
+            Self::HigherLower => "higher_lower",
         }
     }
 }
@@ -318,6 +324,7 @@ pub struct AppState {
     pub mahjong_solitaire: MahjongSolitaire,
     pub snake: Snake,
     pub breakout: Breakout,
+    pub higher_lower: HigherLower,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -378,6 +385,8 @@ pub struct CollectionRecords {
     pub snake_best_score: Option<u16>,
     #[serde(default)]
     pub breakout_best_score: Option<u16>,
+    #[serde(default)]
+    pub higher_lower_best_score: Option<u16>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -425,6 +434,8 @@ pub struct CollectionSave {
     pub snake: Snake,
     #[serde(default)]
     pub breakout: Breakout,
+    #[serde(default)]
+    pub higher_lower: HigherLower,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -548,6 +559,7 @@ pub enum GameSnapshot {
     MahjongSolitaire(MahjongSolitaire),
     Snake(Snake),
     Breakout(Breakout),
+    HigherLower(HigherLower),
 }
 impl GameSnapshot {
     pub fn from_state(state: &AppState, game: GameId) -> Self {
@@ -574,6 +586,7 @@ impl GameSnapshot {
             GameId::MahjongSolitaire => Self::MahjongSolitaire(state.mahjong_solitaire.clone()),
             GameId::Snake => Self::Snake(state.snake.clone()),
             GameId::Breakout => Self::Breakout(state.breakout.clone()),
+            GameId::HigherLower => Self::HigherLower(state.higher_lower.clone()),
         }
     }
     pub fn apply_to(self, state: &mut AppState) {
@@ -600,6 +613,7 @@ impl GameSnapshot {
             Self::MahjongSolitaire(game) => state.mahjong_solitaire = game,
             Self::Snake(game) => state.snake = game,
             Self::Breakout(game) => state.breakout = game,
+            Self::HigherLower(game) => state.higher_lower = game,
         }
     }
 }
@@ -630,6 +644,7 @@ impl CollectionSave {
             mahjong_solitaire: state.mahjong_solitaire.clone(),
             snake: state.snake.clone(),
             breakout: state.breakout.clone(),
+            higher_lower: state.higher_lower.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -671,6 +686,7 @@ impl CollectionSave {
         state.mahjong_solitaire = self.mahjong_solitaire;
         state.snake = self.snake;
         state.breakout = self.breakout;
+        state.higher_lower = self.higher_lower;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -718,6 +734,7 @@ impl Default for AppState {
             mahjong_solitaire: MahjongSolitaire::default(),
             snake: Snake::default(),
             breakout: Breakout::default(),
+            higher_lower: HigherLower::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

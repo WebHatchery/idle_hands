@@ -112,6 +112,10 @@ pub fn draw_records(state: &AppState) {
             "Breakout best",
             value(state.records.breakout_best_score.map(u32::from)),
         ),
+        (
+            "Higher or Lower best",
+            value(state.records.higher_lower_best_score.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
         let col = index / 7;

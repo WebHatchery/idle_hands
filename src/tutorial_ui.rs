@@ -192,5 +192,10 @@ fn instructions(game: GameId) -> [&'static str; 3] {
             "Bounce the ball into every brick; keep the paddle below it.",
             "Use UNDO or NEW BOARD with the visible controls.",
         ],
+        GameId::HigherLower => [
+            "Tap HIGHER or LOWER to guess the hidden next card.",
+            "Reach ten correct guesses; ties count as correct.",
+            "Use UNDO or NEW ROUND with the visible controls.",
+        ],
     }
 }

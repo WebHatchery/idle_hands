@@ -28,6 +28,7 @@ pub fn status(state: &AppState, game: GameId) -> &'static str {
         GameId::MahjongSolitaire => state.records.mahjong_solitaire_best_moves.is_some(),
         GameId::Snake => state.records.snake_best_score.is_some(),
         GameId::Breakout => state.records.breakout_best_score.is_some(),
+        GameId::HigherLower => state.records.higher_lower_best_score.is_some(),
     };
     if complete {
         "COMPLETE"
@@ -62,6 +63,7 @@ fn has_progress(state: &AppState, game: GameId) -> bool {
         GameId::MahjongSolitaire => state.mahjong_solitaire.moves > 0,
         GameId::Snake => state.snake.moves > 0,
         GameId::Breakout => state.breakout.moves > 0,
+        GameId::HigherLower => state.higher_lower.moves > 0,
     }
 }
 
