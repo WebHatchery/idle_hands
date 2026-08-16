@@ -71,6 +71,10 @@ pub fn matches_filter(state: &AppState, game: GameId, filter: u8) -> bool {
     }
 }
 
+pub fn drawer_number(game: GameId) -> usize {
+    game.index() + 1
+}
+
 fn has_progress(state: &AppState, game: GameId) -> bool {
     match game {
         GameId::Game2048 => state.game.score > 0 || state.game.best > 0,

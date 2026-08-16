@@ -109,7 +109,7 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
             cosmetics::cabinet_accent(state.cabinet_decoration),
         );
         text(
-            &(index + 1).to_string(),
+            &crate::cabinet_status::drawer_number(*game).to_string(),
             rect.right() - 24.,
             rect.y + 13.,
             6.,

@@ -18,3 +18,10 @@ fn cabinet_filter_clamps_unknown_values_to_done() {
     let state = AppState::default();
     assert!(!matches_filter(&state, GameId::Solitaire, 99));
 }
+
+#[test]
+fn filtered_drawers_keep_their_canonical_collection_numbers() {
+    assert_eq!(drawer_number(GameId::Solitaire), 1);
+    assert_eq!(drawer_number(GameId::FreeCell), 2);
+    assert_eq!(drawer_number(GameId::WordLadder), GameId::ALL.len());
+}

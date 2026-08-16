@@ -60,7 +60,12 @@ pub fn draw(state: &AppState, _data: &GameData, loaded: usize) {
         Color::new(0.72, 0.68, 0.82, 1.),
     );
     text(
-        &format!("{}  •  {} stamps  •  {} games", state.profile_name, state.stamps, GameId::ALL.len()),
+        &format!(
+            "{}  •  {} stamps  •  {} games",
+            state.profile_name,
+            state.stamps,
+            GameId::ALL.len()
+        ),
         720.,
         130.,
         15.,
@@ -149,7 +154,7 @@ pub fn draw(state: &AppState, _data: &GameData, loaded: usize) {
             draw_circle_lines(rect.x + 9., rect.y + 12., 4., 1., accent);
         }
         text(
-            &(i + 1).to_string(),
+            &crate::cabinet_status::drawer_number(game).to_string(),
             rect.right() - 37.,
             rect.y + 24.,
             11.,

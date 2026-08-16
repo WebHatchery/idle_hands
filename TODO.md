@@ -1287,3 +1287,8 @@ contract, shared confirmation safety, responsive capture coverage, and the
   portrait, and compact-landscape layouts without changing canonical order.
   - [x] Cover unfinished and completed seeded cabinet captures and filter
     predicates with focused tests.
+
+## Phase 128 — Filtered drawer identity
+
+- [x] Preserve each drawer's canonical collection number in ALL, OPEN, and
+  DONE cabinet views, with regression coverage for filtered slot numbering.

@@ -183,6 +183,8 @@ cards; it is reset when opening the shelf and is never persisted.
 The runtime-only `cabinet_filter` value selects ALL, OPEN, or DONE drawers;
 it is never persisted and maps filtered slots back to canonical `GameId`
 indices before dispatching favorite or open actions.
+Filtered cards also render their canonical one-based drawer number rather than
+the temporary slot number produced by the active filter.
 
 Conceptual keys:
 
