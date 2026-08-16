@@ -131,6 +131,7 @@ pub enum UiAction {
     SnakeUndo,
     SnakeNew,
     BreakoutStep(crate::breakout::PaddleMove),
+    BreakoutHint,
     BreakoutUndo,
     BreakoutNew,
     HigherLowerGuess(crate::higher_lower::Guess),

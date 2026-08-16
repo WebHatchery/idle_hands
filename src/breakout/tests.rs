@@ -29,3 +29,26 @@ fn missing_the_paddle_loses_the_round() {
     assert!(game.step(PaddleMove::Right));
     assert_eq!(game.status, BreakoutStatus::Lost);
 }
+
+#[test]
+fn hint_tracks_projected_ball_without_mutating_the_round() {
+    let mut game = Breakout::new(1);
+    game.ball_x = 2;
+    game.ball_y = 2;
+    game.paddle = 8;
+    let before = game.clone();
+
+    assert_eq!(game.hint_move(), Some(PaddleMove::Left));
+    assert_eq!(game.ball_x, before.ball_x);
+    assert_eq!(game.ball_y, before.ball_y);
+    assert_eq!(game.paddle, before.paddle);
+    assert_eq!(game.moves, before.moves);
+}
+
+#[test]
+fn hint_is_empty_after_breakout_ends() {
+    let mut game = Breakout::new(1);
+    game.status = BreakoutStatus::Won;
+
+    assert_eq!(game.hint_move(), None);
+}

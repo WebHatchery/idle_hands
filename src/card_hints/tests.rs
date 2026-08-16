@@ -189,3 +189,11 @@ fn default_snake_has_a_deterministic_hint() {
     assert!(!snake(&state).is_empty());
     assert_eq!(snake(&state), snake(&state));
 }
+
+#[test]
+fn default_breakout_has_a_deterministic_hint() {
+    let state = AppState::default();
+
+    assert!(!breakout(&state).is_empty());
+    assert_eq!(breakout(&state), breakout(&state));
+}

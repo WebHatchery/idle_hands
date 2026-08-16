@@ -75,6 +75,10 @@ impl Game {
             UiAction::BreakoutStep(movement) => {
                 self.state.breakout.step(*movement);
             }
+            UiAction::BreakoutHint => {
+                self.state.card_hint = Some(crate::card_hints::breakout(&self.state));
+                return true;
+            }
             UiAction::BreakoutUndo => {
                 self.state.breakout.undo();
             }

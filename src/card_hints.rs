@@ -523,6 +523,36 @@ pub fn snake(state: &AppState) -> String {
     )
 }
 
+pub fn breakout(state: &AppState) -> String {
+    let game = &state.breakout;
+    match game.status {
+        crate::breakout::BreakoutStatus::Won => {
+            return "The wall is clear — tap NEW BOARD to play again.".into()
+        }
+        crate::breakout::BreakoutStatus::Lost => {
+            return "The ball fell quiet — tap NEW BOARD to begin again.".into()
+        }
+        crate::breakout::BreakoutStatus::Playing => {}
+    }
+    game.hint_move().map_or_else(
+        || "No paddle move is available — tap NEW BOARD to begin again.".into(),
+        |movement| {
+            format!(
+                "Move the paddle {} to track the ball.",
+                movement_label(movement)
+            )
+        },
+    )
+}
+
+fn movement_label(movement: crate::breakout::PaddleMove) -> &'static str {
+    match movement {
+        crate::breakout::PaddleMove::Left => "LEFT",
+        crate::breakout::PaddleMove::Stay => "STAY",
+        crate::breakout::PaddleMove::Right => "RIGHT",
+    }
+}
+
 fn direction_label(direction: crate::snake::SnakeDirection) -> &'static str {
     match direction {
         crate::snake::SnakeDirection::Up => "UP",
@@ -563,6 +593,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::PegSolitaireHint
             | crate::ui::UiAction::MahjongSolitaireHint
             | crate::ui::UiAction::SnakeHint
+            | crate::ui::UiAction::BreakoutHint
     )
 }
 

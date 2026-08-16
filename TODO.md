@@ -961,6 +961,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover safety, food-seeking preference, hint determinism, capture
     aliases, and responsive layouts.
 
+## Phase 85 — Breakout discoverability polish
+
+- [x] Add a deterministic non-mutating HINT action that recommends the paddle
+  movement matching the ball's projected landing column.
+  - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
+  - [x] Cover projected landing, hint determinism, capture aliases, and
+    responsive layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

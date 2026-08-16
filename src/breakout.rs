@@ -118,6 +118,20 @@ impl Breakout {
         true
     }
 
+    pub fn hint_move(&self) -> Option<PaddleMove> {
+        if self.status != BreakoutStatus::Playing {
+            return None;
+        }
+        let projected = self.projected_ball_x();
+        Some(if projected < self.paddle {
+            PaddleMove::Left
+        } else if projected > self.paddle {
+            PaddleMove::Right
+        } else {
+            PaddleMove::Stay
+        })
+    }
+
     pub fn undo(&mut self) -> bool {
         if let Some((
             bricks,
@@ -148,6 +162,20 @@ impl Breakout {
 
     pub fn reset(&mut self, seed: u64) {
         *self = Self::new(seed);
+    }
+
+    fn projected_ball_x(&self) -> i8 {
+        let mut x = self.ball_x;
+        let mut velocity = self.velocity_x;
+        let steps = (HEIGHT - 1 - self.ball_y).max(0);
+        for _ in 0..steps {
+            x += velocity;
+            if x <= 0 || x >= WIDTH - 1 {
+                velocity = -velocity;
+                x = x.clamp(0, WIDTH - 1);
+            }
+        }
+        x
     }
 }
 

@@ -15,6 +15,7 @@ struct Layout {
     left: Rect,
     right: Rect,
     stay: Rect,
+    hint: Rect,
     undo: Rect,
     new_game: Rect,
 }
@@ -26,6 +27,7 @@ fn layout() -> Layout {
             left: Rect::new(435., 180., 80., 42.),
             stay: Rect::new(525., 180., 80., 42.),
             right: Rect::new(615., 180., 80., 42.),
+            hint: Rect::new(435., 300., 90., 38.),
             undo: Rect::new(435., 250., 90., 38.),
             new_game: Rect::new(535., 250., 110., 38.),
         }
@@ -36,16 +38,18 @@ fn layout() -> Layout {
             left: Rect::new(70., 400., 80., 42.),
             stay: Rect::new(160., 400., 80., 42.),
             right: Rect::new(250., 400., 80., 42.),
+            hint: Rect::new(20., 530., 145., 42.),
             undo: Rect::new(20., 475., 145., 42.),
             new_game: Rect::new(185., 475., 165., 42.),
         }
     } else {
         Layout {
-            board: Rect::new(360., 82., 640., 480.),
+            board: Rect::new(360., 100., 640., 480.),
             cell: 40.,
             left: Rect::new(1010., 220., 75., 42.),
             stay: Rect::new(1090., 220., 75., 42.),
             right: Rect::new(1170., 220., 55., 42.),
+            hint: Rect::new(1010., 345., 95., 42.),
             undo: Rect::new(1010., 290., 95., 42.),
             new_game: Rect::new(1120., 290., 110., 42.),
         }
@@ -67,6 +71,9 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if l.undo.contains(point) {
         return vec![UiAction::BreakoutUndo];
+    }
+    if l.hint.contains(point) {
+        return vec![UiAction::BreakoutHint];
     }
     if l.new_game.contains(point) {
         return vec![UiAction::BreakoutNew];
@@ -168,7 +175,14 @@ pub fn draw(state: &AppState) {
         },
     );
     text(
-        &format!("Score {}  •  Tap LEFT, STAY, or RIGHT", game.score),
+        &format!(
+            "Score {}  •  {}",
+            game.score,
+            state
+                .card_hint
+                .as_deref()
+                .unwrap_or("Tap LEFT, STAY, or RIGHT")
+        ),
         if compact {
             435.
         } else if portrait {
@@ -189,6 +203,7 @@ pub fn draw(state: &AppState) {
     button(l.left, "LEFT", state.large_text);
     button(l.stay, "STAY", state.large_text);
     button(l.right, "RIGHT", state.large_text);
+    button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW BOARD", state.large_text);
 }
