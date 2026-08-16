@@ -18,7 +18,7 @@ pub struct ProfileSave {
     pub sudoku_note_mode: bool,
     pub records: CollectionRecords,
     #[serde(default)]
-    pub achievements: [bool; 10],
+    pub achievements: Vec<bool>,
     #[serde(default)]
     pub stamps: u16,
     #[serde(default)]
@@ -62,6 +62,12 @@ pub(super) fn normalize_recent_games(recent_games: Vec<GameId>) -> Vec<GameId> {
     normalized
 }
 
+pub(super) fn normalize_achievements(mut achievements: Vec<bool>) -> Vec<bool> {
+    achievements.resize(crate::progression::AchievementId::ALL.len(), false);
+    achievements.truncate(crate::progression::AchievementId::ALL.len());
+    achievements
+}
+
 impl ProfileSave {
     pub fn from_state(state: &AppState, version: &str) -> Self {
         Self {
@@ -75,7 +81,7 @@ impl ProfileSave {
             mine_records: state.mine_records,
             sudoku_note_mode: state.sudoku_note_mode,
             records: state.records.clone(),
-            achievements: state.achievements,
+            achievements: state.achievements.clone(),
             stamps: state.stamps,
             card_back: state.card_back,
             board_theme: state.board_theme,
@@ -97,7 +103,7 @@ impl ProfileSave {
         state.mine_records = self.mine_records;
         state.sudoku_note_mode = self.sudoku_note_mode;
         state.records = self.records;
-        state.achievements = self.achievements;
+        state.achievements = normalize_achievements(self.achievements);
         state.stamps = self.stamps;
         state.card_back = self.card_back;
         state.board_theme = self.board_theme;

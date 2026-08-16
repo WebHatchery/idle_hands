@@ -170,6 +170,9 @@ the main cabinet.
 The Records summary derives completed-drawer progress from `CollectionRecords`
 through the shared `progression::completed_games` function, keeping the count
 consistent with cabinet completion status without adding another save field.
+Achievement flags are stored as a normalized vector keyed by the 49-entry
+`AchievementId::ALL` list. Legacy ten-entry arrays deserialize as vectors and
+are padded with unearned late-game achievements.
 
 Conceptual keys:
 

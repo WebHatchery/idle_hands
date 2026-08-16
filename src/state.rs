@@ -370,7 +370,7 @@ pub struct AppState {
     pub tri_peaks: TriPeaks,
     pub nim: Nim,
     pub word_ladder: WordLadder,
-    pub achievements: [bool; 10],
+    pub achievements: Vec<bool>,
     pub stamps: u16,
     pub card_back: u8,
     pub board_theme: u8,
@@ -508,7 +508,7 @@ pub struct CollectionSave {
     #[serde(default)]
     pub records: CollectionRecords,
     #[serde(default)]
-    pub achievements: [bool; 10],
+    pub achievements: Vec<bool>,
     #[serde(default)]
     pub stamps: u16,
     #[serde(default)]
@@ -592,7 +592,7 @@ impl CollectionSave {
             mine_records: state.mine_records,
             sudoku_note_mode: state.sudoku_note_mode,
             records: state.records.clone(),
-            achievements: state.achievements,
+            achievements: state.achievements.clone(),
             stamps: state.stamps,
             card_back: state.card_back,
             board_theme: state.board_theme,
@@ -661,7 +661,7 @@ impl CollectionSave {
         state.mine_records = self.mine_records;
         state.sudoku_note_mode = self.sudoku_note_mode;
         state.records = self.records;
-        state.achievements = self.achievements;
+        state.achievements = state_profile::normalize_achievements(self.achievements);
         state.stamps = self.stamps;
         state.card_back = self.card_back;
         state.board_theme = self.board_theme;
@@ -726,7 +726,7 @@ impl Default for AppState {
             tri_peaks: TriPeaks::default(),
             nim: Nim::default(),
             word_ladder: WordLadder::default(),
-            achievements: [false; 10],
+            achievements: vec![false; crate::progression::AchievementId::ALL.len()],
             stamps: 0,
             card_back: 0,
             board_theme: 0,

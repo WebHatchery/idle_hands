@@ -6,10 +6,11 @@ fn first_finish_awards_once_and_full_cabinet_is_worth_two() {
         best_2048: 2048,
         ..Default::default()
     };
-    let mut earned_flags = [false; 10];
+    let mut earned_flags = Vec::new();
     let mut stamps = 0;
     sync(&mut earned_flags, &mut stamps, &records);
     assert_eq!(stamps, 2);
+    assert_eq!(earned_flags.len(), AchievementId::ALL.len());
     assert!(earned_flags[AchievementId::FirstFinish.index()]);
     sync(&mut earned_flags, &mut stamps, &records);
     assert_eq!(stamps, 2);

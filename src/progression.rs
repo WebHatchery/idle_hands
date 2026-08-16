@@ -11,7 +11,7 @@ pub enum AchievementId {
 }
 
 impl AchievementId {
-    pub const ALL: [Self; 10] = [
+    pub const ALL: [Self; 49] = [
         Self::FirstFinish,
         Self::Game(GameId::Solitaire),
         Self::Game(GameId::FreeCell),
@@ -21,6 +21,45 @@ impl AchievementId {
         Self::Game(GameId::Nonogram),
         Self::Game(GameId::Yahtzee),
         Self::Game(GameId::Reversi),
+        Self::Game(GameId::LightsOut),
+        Self::Game(GameId::TicTacToe),
+        Self::Game(GameId::MemoryPairs),
+        Self::Game(GameId::SlidingPuzzle),
+        Self::Game(GameId::Mastermind),
+        Self::Game(GameId::Spider),
+        Self::Game(GameId::WordSearch),
+        Self::Game(GameId::Hangman),
+        Self::Game(GameId::ConnectFour),
+        Self::Game(GameId::Checkers),
+        Self::Game(GameId::PegSolitaire),
+        Self::Game(GameId::MahjongSolitaire),
+        Self::Game(GameId::Snake),
+        Self::Game(GameId::Breakout),
+        Self::Game(GameId::HigherLower),
+        Self::Game(GameId::KlondikeGolf),
+        Self::Game(GameId::Blackjack),
+        Self::Game(GameId::SpiderSolitaire),
+        Self::Game(GameId::DungeonSweeper),
+        Self::Game(GameId::Potion2048),
+        Self::Game(GameId::TinyTowerDefence),
+        Self::Game(GameId::OneRoomRoguelike),
+        Self::Game(GameId::DailyDungeon),
+        Self::Game(GameId::DotsBoxes),
+        Self::Game(GameId::Sokoban),
+        Self::Game(GameId::Mancala),
+        Self::Game(GameId::Hanoi),
+        Self::Game(GameId::NumberMatch),
+        Self::Game(GameId::FloodIt),
+        Self::Game(GameId::ColorSort),
+        Self::Game(GameId::Battleship),
+        Self::Game(GameId::WordGrid),
+        Self::Game(GameId::PipeLoop),
+        Self::Game(GameId::MazeWalk),
+        Self::Game(GameId::MatchThree),
+        Self::Game(GameId::Pyramid),
+        Self::Game(GameId::TriPeaks),
+        Self::Game(GameId::Nim),
+        Self::Game(GameId::WordLadder),
         Self::FullCabinet,
     ];
 
@@ -163,10 +202,11 @@ pub fn earned(records: &CollectionRecords, achievement: AchievementId) -> bool {
 }
 
 pub fn sync(
-    earned_flags: &mut [bool; 10],
+    earned_flags: &mut Vec<bool>,
     stamps: &mut u16,
     records: &CollectionRecords,
 ) -> Vec<AchievementId> {
+    earned_flags.resize(AchievementId::ALL.len(), false);
     let mut newly_earned = Vec::new();
     for achievement in AchievementId::ALL {
         let index = achievement.index();

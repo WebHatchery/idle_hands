@@ -361,7 +361,7 @@ fn older_saves_default_new_progression_and_cosmetic_fields() {
     let mut restored = AppState::default();
     migrated.apply_to(&mut restored);
     assert_eq!(restored.stamps, 0);
-    assert_eq!(restored.achievements, [false; 10]);
+    assert_eq!(restored.achievements, vec![false; crate::progression::AchievementId::ALL.len()]);
     assert_eq!(restored.card_back, 0);
     assert_eq!(restored.board_theme, 0);
     assert_eq!(restored.sound_set, 0);
@@ -382,6 +382,15 @@ fn older_profile_saves_default_accessibility_fields() {
     migrated.apply_to(&mut restored);
     assert!(!restored.high_contrast);
     assert!(!restored.large_text);
+
+    let mut legacy = serde_json::to_value(ProfileSave::from_state(&AppState::default(), "1.0.0")).unwrap();
+    legacy["achievements"] = serde_json::json!([true, false, true, false, true, false, true, false, true, false]);
+    let migrated_achievements: ProfileSave = serde_json::from_value(legacy).unwrap();
+    let mut achievement_state = AppState::default();
+    migrated_achievements.apply_to(&mut achievement_state);
+    assert_eq!(achievement_state.achievements.len(), crate::progression::AchievementId::ALL.len());
+    assert!(achievement_state.achievements[0]);
+    assert!(!achievement_state.achievements[crate::progression::AchievementId::Game(GameId::WordLadder).index()]);
 }
 
 #[test]

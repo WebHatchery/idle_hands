@@ -1247,6 +1247,13 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Derive the count from shared completion logic and capture seeded
     three-drawer progress at all documented sizes.
 
+## Phase 123 — Full-cabinet achievement coverage
+
+- [x] Expand completion achievements from the launch subset to all 47 drawers,
+  while preserving first-finish and full-cabinet collection awards.
+  - [x] Migrate legacy ten-slot achievement saves into the normalized vector
+    and refresh Records captures for the 49-achievement denominator.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.
