@@ -62,7 +62,7 @@ pub fn draw_nonogram(state: &AppState) {
     text("‹ CABINET", 10., 29., 14., Color::new(0.78, 0.70, 0.92, 1.));
     text("NONOGRAM", 12., 78., 32., Color::new(0.98, 0.83, 0.45, 1.));
     for (index, preset) in crate::nonogram::NonogramPreset::ALL.iter().enumerate() {
-        let rect = Rect::new(10. + index as f32 * 113., 92., 103., 30.);
+        let rect = Rect::new(10. + index as f32 * 113., 92., 103., 44.);
         panel(
             rect,
             if *preset == game.preset {
@@ -71,7 +71,7 @@ pub fn draw_nonogram(state: &AppState) {
                 Color::new(0.16, 0.11, 0.24, 1.)
             },
         );
-        text(preset.label(), rect.x + 12., rect.y + 20., 11., WHITE);
+        text(preset.label(), rect.x + 12., rect.y + 29., 11., WHITE);
     }
     panel(BOARD, accessibility::board_fill(state.high_contrast));
     let layout = grid(state);
@@ -237,7 +237,7 @@ pub fn nonogram_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         return vec![UiAction::Cabinet];
     }
     for (index, preset) in crate::nonogram::NonogramPreset::ALL.iter().enumerate() {
-        if Rect::new(10. + index as f32 * 113., 92., 103., 30.).contains(p) {
+        if Rect::new(10. + index as f32 * 113., 92., 103., 44.).contains(p) {
             return vec![UiAction::NonogramPreset(*preset)];
         }
     }
@@ -313,7 +313,7 @@ pub fn draw_minesweeper(state: &AppState) {
         Color::new(0.98, 0.83, 0.45, 1.),
     );
     for (index, preset) in crate::minesweeper::MinePreset::ALL.iter().enumerate() {
-        let rect = Rect::new(5. + index as f32 * 88., 88., 82., 28.);
+        let rect = Rect::new(5. + index as f32 * 88., 88., 82., 44.);
         panel(
             rect,
             if *preset == game.preset {
@@ -322,7 +322,7 @@ pub fn draw_minesweeper(state: &AppState) {
                 Color::new(0.16, 0.11, 0.24, 1.)
             },
         );
-        text(preset.label(), rect.x + 7., rect.y + 19., 9., WHITE);
+        text(preset.label(), rect.x + 7., rect.y + 29., 9., WHITE);
     }
     panel(MINE_BOARD, accessibility::board_fill(state.high_contrast));
     let layout = mine_grid(state);
@@ -448,7 +448,7 @@ pub fn minesweeper_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         return vec![UiAction::Cabinet];
     }
     for (index, preset) in crate::minesweeper::MinePreset::ALL.iter().enumerate() {
-        if Rect::new(5. + index as f32 * 88., 88., 82., 28.).contains(p) {
+        if Rect::new(5. + index as f32 * 88., 88., 82., 44.).contains(p) {
             return vec![UiAction::MinePreset(*preset)];
         }
     }

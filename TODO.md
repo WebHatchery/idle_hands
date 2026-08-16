@@ -1357,3 +1357,8 @@ contract, shared confirmation safety, responsive capture coverage, and the
 
 - [x] Give portrait card, Sudoku, and 2048 cabinet return actions visible
   touch-sized panels and matching hit regions.
+
+## Phase 142 — Portrait puzzle selector accessibility
+
+- [x] Resize portrait Nonogram and Minesweeper preset selectors to
+  touch-complete targets with refreshed puzzle captures.
