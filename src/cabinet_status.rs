@@ -64,15 +64,78 @@ pub fn status(state: &AppState, game: GameId) -> &'static str {
 }
 
 pub fn matches_filter(state: &AppState, game: GameId, filter: u8) -> bool {
-    match filter.min(2) {
+    match filter {
         1 => status(state, game) != "COMPLETE",
         2 => status(state, game) == "COMPLETE",
+        3..=8 => category_filter(game) == filter,
         _ => true,
     }
 }
 
-pub fn drawer_number(game: GameId) -> usize {
-    game.index() + 1
+pub const CATEGORY_FILTERS: [u8; 6] = [3, 4, 5, 6, 7, 8];
+
+pub fn category_filter(game: GameId) -> u8 {
+    match game {
+        GameId::Solitaire
+        | GameId::FreeCell
+        | GameId::Spider
+        | GameId::HigherLower
+        | GameId::KlondikeGolf
+        | GameId::Blackjack
+        | GameId::SpiderSolitaire
+        | GameId::Pyramid
+        | GameId::TriPeaks
+        | GameId::MahjongSolitaire
+        | GameId::Yahtzee
+        | GameId::MemoryPairs => 3,
+        GameId::Sudoku
+        | GameId::Minesweeper
+        | GameId::Nonogram
+        | GameId::LightsOut
+        | GameId::PegSolitaire
+        | GameId::SlidingPuzzle
+        | GameId::Sokoban
+        | GameId::PipeLoop
+        | GameId::Game2048 => 4,
+        GameId::Reversi
+        | GameId::TicTacToe
+        | GameId::ConnectFour
+        | GameId::Checkers
+        | GameId::Mancala
+        | GameId::Hanoi
+        | GameId::Nim
+        | GameId::DailyDungeon => 5,
+        GameId::WordSearch
+        | GameId::Hangman
+        | GameId::WordGrid
+        | GameId::WordLadder
+        | GameId::NumberMatch
+        | GameId::Mastermind
+        | GameId::MazeWalk => 6,
+        GameId::Snake
+        | GameId::Breakout
+        | GameId::DungeonSweeper
+        | GameId::TinyTowerDefence
+        | GameId::OneRoomRoguelike
+        | GameId::Battleship => 7,
+        GameId::DotsBoxes
+        | GameId::ColorSort
+        | GameId::Potion2048
+        | GameId::MatchThree
+        | GameId::FloodIt => 8,
+    }
+}
+
+pub fn category_name(filter: u8) -> &'static str {
+    match filter {
+        3 => "Cards",
+        4 => "Logic",
+        5 => "Board",
+        6 => "Word",
+        7 => "Arcade",
+        8 => "Misc",
+        _ => "All Games",
+    }
 }
 
 pub fn filter_count(state: &AppState, filter: u8) -> usize {
@@ -80,23 +143,6 @@ pub fn filter_count(state: &AppState, filter: u8) -> usize {
         .iter()
         .filter(|game| matches_filter(state, **game, filter))
         .count()
-}
-
-pub fn filter_label(state: &AppState, filter: u8) -> String {
-    let name = match filter.min(2) {
-        1 => "OPEN",
-        2 => "DONE",
-        _ => "ALL",
-    };
-    format!("{} {}", name, filter_count(state, filter))
-}
-
-pub fn empty_filter_message(filter: u8) -> &'static str {
-    match filter.min(2) {
-        2 => "No completed drawers yet — finish a game to fill this shelf.",
-        1 => "Every drawer is complete — the cabinet is quiet.",
-        _ => "The cabinet has no drawers to show.",
-    }
 }
 
 fn has_progress(state: &AppState, game: GameId) -> bool {

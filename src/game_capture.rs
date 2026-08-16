@@ -204,6 +204,7 @@ impl Game {
             self.state.confirm_reset = true;
         }
         if scene == "cabinet_scrolled" {
+            self.state.cabinet_filter = 9;
             self.state.cabinet_scroll = 6;
         }
         if matches!(scene, "records_scrolled" | "rules_scrolled") {

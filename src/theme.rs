@@ -18,55 +18,17 @@ pub const LEATHER: Color = Color::new(0.355, 0.157, 0.110, 1.0);
 pub const WALNUT: Color = Color::new(0.390, 0.235, 0.105, 1.0);
 pub const PARCHMENT_BROWN: Color = Color::new(0.520, 0.390, 0.230, 1.0);
 pub const SLATE_BRONZE: Color = Color::new(0.220, 0.285, 0.260, 1.0);
+pub const PAPER: Color = Color::new(0.835, 0.755, 0.620, 1.0);
+pub const PAPER_LIGHT: Color = Color::new(0.900, 0.835, 0.720, 1.0);
 
 pub fn category_surface(game: GameId, active: bool) -> Color {
-    let base = match game {
-        GameId::Solitaire
-        | GameId::FreeCell
-        | GameId::Spider
-        | GameId::HigherLower
-        | GameId::KlondikeGolf
-        | GameId::Blackjack
-        | GameId::SpiderSolitaire
-        | GameId::Pyramid
-        | GameId::TriPeaks => LEATHER,
-        GameId::Sudoku
-        | GameId::Minesweeper
-        | GameId::Nonogram
-        | GameId::LightsOut
-        | GameId::Mastermind
-        | GameId::PegSolitaire
-        | GameId::MahjongSolitaire
-        | GameId::SlidingPuzzle
-        | GameId::Sokoban
-        | GameId::NumberMatch
-        | GameId::ColorSort
-        | GameId::PipeLoop
-        | GameId::MazeWalk => MOSS_DARK,
-        GameId::Reversi
-        | GameId::TicTacToe
-        | GameId::ConnectFour
-        | GameId::Checkers
-        | GameId::DotsBoxes
-        | GameId::Mancala
-        | GameId::Hanoi
-        | GameId::Battleship
-        | GameId::Nim
-        | GameId::Yahtzee => WALNUT,
-        GameId::WordSearch | GameId::Hangman | GameId::WordGrid | GameId::WordLadder => {
-            PARCHMENT_BROWN
-        }
-        GameId::Game2048
-        | GameId::MemoryPairs
-        | GameId::Snake
-        | GameId::Breakout
-        | GameId::DungeonSweeper
-        | GameId::Potion2048
-        | GameId::TinyTowerDefence
-        | GameId::OneRoomRoguelike
-        | GameId::DailyDungeon
-        | GameId::FloodIt
-        | GameId::MatchThree => SLATE_BRONZE,
+    let base = match crate::cabinet_status::category_filter(game) {
+        3 => LEATHER,
+        4 => MOSS_DARK,
+        5 => WALNUT,
+        6 => PARCHMENT_BROWN,
+        7 => SLATE_BRONZE,
+        _ => SURFACE_DARK,
     };
     if active {
         lighten(base, 0.07)

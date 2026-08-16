@@ -54,14 +54,6 @@ pub fn background(theme: u8) -> Color {
     }
 }
 
-pub fn cabinet_accent(decoration: u8) -> Color {
-    match decoration as usize % CABINET_DECORATIONS.len() {
-        1 => crate::theme::MOSS,
-        2 => Color::new(0.66, 0.57, 0.38, 1.),
-        _ => crate::theme::BRASS,
-    }
-}
-
 pub fn card_back_colors(back: u8) -> (Color, Color) {
     match back as usize % CARD_BACKS.len() {
         1 => (

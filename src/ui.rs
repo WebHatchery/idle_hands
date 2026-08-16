@@ -39,9 +39,11 @@ use crate::pipe_loop_ui;
 use crate::potion_2048_ui;
 use crate::pyramid_ui;
 use crate::records_ui;
+use crate::responsive_cabinet;
 use crate::responsive_cards;
 use crate::responsive_fivefold;
 use crate::responsive_landscape;
+use crate::responsive_landscape_cabinet;
 use crate::responsive_landscape_cards;
 use crate::responsive_landscape_games;
 use crate::responsive_landscape_library;
@@ -176,49 +178,9 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         return restart_modal::clicks(p);
     }
     match state.screen {
-        Screen::Cabinet if is_compact_landscape() => responsive_landscape::cabinet_clicks(state, p),
-        Screen::Cabinet if is_portrait() => responsive_ui::cabinet_clicks(state, p),
-        Screen::Cabinet => {
-            let mut out = vec![];
-            let games = GameId::ALL
-                .iter()
-                .copied()
-                .filter(|game| {
-                    crate::cabinet_status::matches_filter(state, *game, state.cabinet_filter)
-                })
-                .collect::<Vec<_>>();
-            for (slot, game) in games.iter().copied().enumerate() {
-                if hit(cabinet_favorite_rect(slot), p) {
-                    out.push(UiAction::ToggleFavorite(game.index()));
-                } else if cabinet_rect(slot).contains(p) {
-                    out.push(UiAction::Open(game.index()));
-                }
-            }
-            if hit(Rect::new(720., 28., 190., 44.), p) {
-                out.push(UiAction::ContinueGame);
-            }
-            if hit(Rect::new(940., 28., 90., 44.), p) {
-                out.push(UiAction::Help)
-            }
-            if hit(Rect::new(1040., 28., 90., 44.), p) {
-                out.push(UiAction::Records)
-            }
-            if hit(Rect::new(1140., 28., 110., 44.), p) {
-                out.push(UiAction::Settings)
-            }
-            if hit(Rect::new(48., 108., 175., 44.), p) {
-                out.push(UiAction::Favorites)
-            }
-            if hit(Rect::new(230., 108., 175., 44.), p) {
-                out.push(UiAction::Recent)
-            }
-            for (rect, _, filter) in cabinet_ui::filter_buttons_for_input() {
-                if rect.contains(p) {
-                    out.push(UiAction::CabinetFilter(filter));
-                }
-            }
-            out
-        }
+        Screen::Cabinet if is_compact_landscape() => responsive_landscape_cabinet::clicks(state, p),
+        Screen::Cabinet if is_portrait() => responsive_cabinet::clicks(state, p),
+        Screen::Cabinet => cabinet_ui::clicks(state, p),
         Screen::Game(GameId::Game2048) if is_compact_landscape() => {
             responsive_landscape::game2048_clicks(state, p)
         }
@@ -353,9 +315,9 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
     TOUCH_SCALE.with(|scale| scale.set(viewport().scale));
     match state.screen {
         Screen::Cabinet if is_compact_landscape() => {
-            responsive_landscape::draw_cabinet(state, data, loaded_assets)
+            responsive_landscape_cabinet::draw(state, data, loaded_assets)
         }
-        Screen::Cabinet if is_portrait() => responsive_ui::draw_cabinet(state, data, loaded_assets),
+        Screen::Cabinet if is_portrait() => responsive_cabinet::draw(state, data, loaded_assets),
         Screen::Cabinet => cabinet_ui::draw(state, data, loaded_assets),
         Screen::Game(GameId::Game2048) if is_compact_landscape() => {
             responsive_landscape::draw_2048(state)
@@ -492,15 +454,6 @@ fn text(s: &str, x: f32, y: f32, size: f32, color: Color) {
 fn panel(r: Rect, fill: Color) {
     draw_rectangle(r.x, r.y, r.w, r.h, fill);
     draw_rectangle_lines(r.x, r.y, r.w, r.h, 2., crate::theme::BORDER)
-}
-fn cabinet_rect(i: usize) -> Rect {
-    let col = i % 7;
-    let row = i / 7;
-    Rect::new(48. + col as f32 * 170., 150. + row as f32 * 76., 160., 62.)
-}
-fn cabinet_favorite_rect(i: usize) -> Rect {
-    let rect = cabinet_rect(i);
-    Rect::new(rect.right() - 44., rect.y, 44., rect.h)
 }
 fn draw_2048(state: &AppState) {
     let g = &state.game;

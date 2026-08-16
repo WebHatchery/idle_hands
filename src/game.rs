@@ -236,7 +236,7 @@ impl Game {
                 }
             }
             ui::UiAction::CabinetFilter(filter) => {
-                self.state.cabinet_filter = filter.min(2);
+                self.state.cabinet_filter = filter.min(9);
                 self.state.cabinet_scroll = 0;
             }
             ui::UiAction::CabinetScroll(delta) => {
