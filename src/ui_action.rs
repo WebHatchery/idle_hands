@@ -145,6 +145,7 @@ pub enum UiAction {
     KlondikeGolfNew,
     BlackjackHit,
     BlackjackStand,
+    BlackjackHint,
     BlackjackUndo,
     BlackjackNew,
     SpiderSolitaireSelect(usize, usize),

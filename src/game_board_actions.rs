@@ -122,6 +122,10 @@ impl Game {
             UiAction::BlackjackStand => {
                 self.state.blackjack.stand();
             }
+            UiAction::BlackjackHint => {
+                self.state.card_hint = Some(crate::card_hints::blackjack(&self.state));
+                return true;
+            }
             UiAction::BlackjackUndo => {
                 self.state.blackjack.undo();
             }

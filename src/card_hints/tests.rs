@@ -205,3 +205,11 @@ fn default_higher_lower_has_a_deterministic_hint() {
     assert!(!higher_lower(&state).is_empty());
     assert_eq!(higher_lower(&state), higher_lower(&state));
 }
+
+#[test]
+fn default_blackjack_has_a_deterministic_hint() {
+    let state = AppState::default();
+
+    assert!(!blackjack(&state).is_empty());
+    assert_eq!(blackjack(&state), blackjack(&state));
+}

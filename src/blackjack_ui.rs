@@ -7,6 +7,7 @@ use macroquad::prelude::*;
 struct Layout {
     hit: Rect,
     stand: Rect,
+    hint: Rect,
     undo: Rect,
     new_round: Rect,
 }
@@ -16,6 +17,7 @@ fn layout() -> Layout {
         Layout {
             hit: Rect::new(430., 220., 110., 44.),
             stand: Rect::new(550., 220., 120., 44.),
+            hint: Rect::new(430., 335., 100., 40.),
             undo: Rect::new(430., 280., 100., 40.),
             new_round: Rect::new(540., 280., 130., 40.),
         }
@@ -23,6 +25,7 @@ fn layout() -> Layout {
         Layout {
             hit: Rect::new(20., 500., 145., 44.),
             stand: Rect::new(185., 500., 165., 44.),
+            hint: Rect::new(20., 620., 145., 42.),
             undo: Rect::new(20., 560., 145., 42.),
             new_round: Rect::new(185., 560., 165., 42.),
         }
@@ -30,6 +33,7 @@ fn layout() -> Layout {
         Layout {
             hit: Rect::new(650., 370., 140., 46.),
             stand: Rect::new(810., 370., 150., 46.),
+            hint: Rect::new(650., 505., 120., 44.),
             undo: Rect::new(650., 440., 120., 44.),
             new_round: Rect::new(790., 440., 150., 44.),
         }
@@ -49,6 +53,9 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if l.undo.contains(point) {
         return vec![UiAction::BlackjackUndo];
+    }
+    if l.hint.contains(point) {
+        return vec![UiAction::BlackjackHint];
     }
     if l.new_round.contains(point) {
         return vec![UiAction::BlackjackNew];
@@ -146,7 +153,12 @@ pub fn draw(state: &AppState) {
         state.large_text,
     );
     text(
-        &format!("Wins {}  •  Round {}", game.wins, game.rounds),
+        &format!(
+            "Wins {}  •  Round {}  •  {}",
+            game.wins,
+            game.rounds,
+            state.card_hint.as_deref().unwrap_or("Next card hidden")
+        ),
         origin.x,
         if portrait { 475. } else { 350. },
         accessibility::text_size(body_size(), state.large_text),
@@ -154,6 +166,7 @@ pub fn draw(state: &AppState) {
     );
     button(l.hit, "HIT", state.large_text);
     button(l.stand, "STAND", state.large_text);
+    button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_round, "NEW ROUND", state.large_text);
 }

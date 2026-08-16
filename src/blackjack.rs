@@ -11,6 +11,12 @@ pub enum BlackjackStatus {
     Push,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum BlackjackHint {
+    Hit,
+    Stand,
+}
+
 type Snapshot = (
     Vec<Card>,
     Vec<Card>,
@@ -91,6 +97,20 @@ impl Blackjack {
             self.wins = self.wins.saturating_add(1);
         }
         true
+    }
+
+    pub fn hint_action(&self) -> Option<BlackjackHint> {
+        if self.status != BlackjackStatus::Playing {
+            return None;
+        }
+        let player = self.player_total();
+        let dealer_upcard = self.dealer.get(1)?.rank.min(10);
+        let should_stand = player >= 17 || (player > 11 && dealer_upcard <= 6);
+        Some(if should_stand {
+            BlackjackHint::Stand
+        } else {
+            BlackjackHint::Hit
+        })
     }
 
     pub fn undo(&mut self) -> bool {

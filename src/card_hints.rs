@@ -562,6 +562,33 @@ pub fn higher_lower(state: &AppState) -> String {
     )
 }
 
+pub fn blackjack(state: &AppState) -> String {
+    let game = &state.blackjack;
+    match game.status {
+        crate::blackjack::BlackjackStatus::Won => {
+            return "You win — tap NEW ROUND to deal again.".into()
+        }
+        crate::blackjack::BlackjackStatus::Lost => {
+            return "Dealer wins — tap NEW ROUND to deal again.".into()
+        }
+        crate::blackjack::BlackjackStatus::Push => {
+            return "Push — tap NEW ROUND to deal again.".into()
+        }
+        crate::blackjack::BlackjackStatus::Playing => {}
+    }
+    game.hint_action().map_or_else(
+        || "No strategy hint is available — tap NEW ROUND.".into(),
+        |action| format!("Basic odds suggest {}.", blackjack_hint_label(action)),
+    )
+}
+
+fn blackjack_hint_label(action: crate::blackjack::BlackjackHint) -> &'static str {
+    match action {
+        crate::blackjack::BlackjackHint::Hit => "HIT",
+        crate::blackjack::BlackjackHint::Stand => "STAND",
+    }
+}
+
 fn guess_label(guess: crate::higher_lower::Guess) -> &'static str {
     match guess {
         crate::higher_lower::Guess::Higher => "HIGHER",
@@ -619,6 +646,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::SnakeHint
             | crate::ui::UiAction::BreakoutHint
             | crate::ui::UiAction::HigherLowerHint
+            | crate::ui::UiAction::BlackjackHint
     )
 }
 

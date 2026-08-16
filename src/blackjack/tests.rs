@@ -64,3 +64,34 @@ fn new_round_keeps_session_win_count_and_advances_round() {
     assert_eq!(game.rounds, 4);
     assert!(game.wins >= 2);
 }
+
+#[test]
+fn hint_uses_player_total_and_visible_dealer_upcard_without_revealing_hidden_card() {
+    let mut game = Blackjack::new(1);
+    game.player = vec![
+        Card {
+            rank: 10,
+            suit: 0,
+            face_up: true,
+        },
+        Card {
+            rank: 6,
+            suit: 0,
+            face_up: true,
+        },
+    ];
+    game.dealer[1].rank = 5;
+    let hidden = game.dealer[0];
+
+    assert_eq!(game.hint_action(), Some(BlackjackHint::Stand));
+    assert_eq!(game.dealer[0], hidden);
+    assert_eq!(game.deck.len(), 48);
+}
+
+#[test]
+fn hint_is_empty_after_blackjack_ends() {
+    let mut game = Blackjack::new(1);
+    game.status = BlackjackStatus::Lost;
+
+    assert_eq!(game.hint_action(), None);
+}

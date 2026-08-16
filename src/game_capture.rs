@@ -91,7 +91,9 @@ impl Game {
             "klondike_golf_hint" | "klondike_golf_hint_accessible" => {
                 Screen::Game(GameId::KlondikeGolf)
             }
-            "blackjack" => Screen::Game(GameId::Blackjack),
+            "blackjack" | "blackjack_hint" | "blackjack_hint_accessible" => {
+                Screen::Game(GameId::Blackjack)
+            }
             "blackjack_accessible" => Screen::Game(GameId::Blackjack),
             "spider_solitaire" => Screen::Game(GameId::SpiderSolitaire),
             "spider_solitaire_accessible" => Screen::Game(GameId::SpiderSolitaire),
@@ -183,6 +185,8 @@ impl Game {
             self.state.card_hint = Some(card_hints::breakout(&self.state));
         } else if scene == "higher_lower_hint" || scene == "higher_lower_hint_accessible" {
             self.state.card_hint = Some(card_hints::higher_lower(&self.state));
+        } else if scene == "blackjack_hint" || scene == "blackjack_hint_accessible" {
+            self.state.card_hint = Some(card_hints::blackjack(&self.state));
         } else if scene == "2048_hint" || scene == "2048_hint_accessible" {
             self.state.card_hint = Some(card_hints::game_2048(&self.state));
         } else if scene == "tic_tac_toe_hint" || scene == "tic_tac_toe_hint_accessible" {
