@@ -44,9 +44,17 @@ fn draw_card(rect: Rect, card: Card, selected: bool, back_style: u8, reduced_mot
     crate::card_render::draw_card(rect, card, selected, back_style, reduced_motion);
 }
 
+fn back() {
+    panel(
+        Rect::new(0., 0., 110., 44.),
+        Color::new(0.12, 0.08, 0.20, 1.),
+    );
+    text("‹ CABINET", 8., 29., 13., Color::new(0.78, 0.70, 0.92, 1.));
+}
+
 pub fn draw_solitaire(state: &AppState) {
     let game = &state.solitaire;
-    text("‹ CABINET", 8., 30., 13., Color::new(0.78, 0.70, 0.92, 1.));
+    back();
     text("SOLITAIRE", 10., 72., 29., Color::new(0.98, 0.83, 0.45, 1.));
     text(
         if game.status == SolitaireStatus::Won {
@@ -169,7 +177,7 @@ pub fn draw_solitaire(state: &AppState) {
 }
 
 pub fn solitaire_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 100., 42.).contains(p) {
+    if Rect::new(0., 0., 110., 44.).contains(p) {
         return vec![UiAction::Cabinet];
     }
     if card_rect(8., 112.).contains(p) {
@@ -217,7 +225,7 @@ fn free_card_x(slot: usize) -> f32 {
 
 pub fn draw_freecell(state: &AppState) {
     let game = &state.freecell;
-    text("‹ CABINET", 8., 30., 13., Color::new(0.78, 0.70, 0.92, 1.));
+    back();
     text("FREECELL", 10., 72., 29., Color::new(0.98, 0.83, 0.45, 1.));
     text(
         if game.status == crate::freecell::FreeCellStatus::Won {
@@ -333,7 +341,7 @@ pub fn draw_freecell(state: &AppState) {
 }
 
 pub fn freecell_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 100., 42.).contains(p) {
+    if Rect::new(0., 0., 110., 44.).contains(p) {
         return vec![UiAction::Cabinet];
     }
     if Rect::new(5., 650., 105., 44.).contains(p) {
@@ -379,7 +387,7 @@ fn dice_rect(index: usize) -> Rect {
 
 pub fn draw_fivefold(state: &AppState) {
     let game = &state.fivefold;
-    text("‹ CABINET", 8., 30., 13., Color::new(0.78, 0.70, 0.92, 1.));
+    back();
     text("FIVEFOLD", 10., 72., 29., Color::new(0.98, 0.83, 0.45, 1.));
     text(
         "Five dice, thirteen calls",
@@ -526,7 +534,7 @@ pub fn draw_fivefold(state: &AppState) {
 }
 
 pub fn fivefold_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 100., 42.).contains(p) {
+    if Rect::new(0., 0., 110., 44.).contains(p) {
         return vec![UiAction::Cabinet];
     }
     if Rect::new(10., 190., 150., 42.).contains(p) {
@@ -562,10 +570,11 @@ const REVERSI_BOARD: Rect = Rect {
 
 pub fn draw_reversi(state: &AppState) {
     let game = &state.reversi;
+    back();
     text(
         "‹ CABINET",
         8.,
-        30.,
+        29.,
         accessibility::text_size(13., state.large_text),
         Color::new(0.78, 0.70, 0.92, 1.),
     );
@@ -756,7 +765,7 @@ pub fn draw_reversi(state: &AppState) {
 }
 
 pub fn reversi_clicks(_state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 100., 42.).contains(p) {
+    if Rect::new(0., 0., 110., 44.).contains(p) {
         return vec![UiAction::Cabinet];
     }
     if Rect::new(10., 485., 160., 44.).contains(p) {

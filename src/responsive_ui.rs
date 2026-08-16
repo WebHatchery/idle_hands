@@ -261,6 +261,10 @@ fn visible_games(state: &AppState) -> Vec<GameId> {
 
 pub fn draw_2048(state: &AppState) {
     let game = &state.game;
+    panel(
+        Rect::new(0., 0., 120., 48.),
+        Color::new(0.12, 0.08, 0.20, 1.),
+    );
     text("‹ CABINET", 16., 35., 15., Color::new(0.78, 0.70, 0.92, 1.));
     text("2048", 16., 82., 38., Color::new(0.98, 0.83, 0.45, 1.));
     text(
@@ -365,7 +369,7 @@ pub fn draw_2048(state: &AppState) {
 }
 
 pub fn game2048_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(10., 10., 110., 38.).contains(p) {
+    if Rect::new(0., 0., 120., 48.).contains(p) {
         return vec![UiAction::Cabinet];
     }
     if state.confirm_restart {

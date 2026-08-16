@@ -1352,3 +1352,8 @@ contract, shared confirmation safety, responsive capture coverage, and the
 
 - [x] Give compact-landscape card, game, puzzle, and 2048 cabinet return
   actions visible touch-sized panels and matching hit regions.
+
+## Phase 141 — Portrait return accessibility
+
+- [x] Give portrait card, Sudoku, and 2048 cabinet return actions visible
+  touch-sized panels and matching hit regions.

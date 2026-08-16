@@ -21,7 +21,11 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 
 pub fn draw(state: &AppState) {
     let game = &state.sudoku;
-    text("‹ CABINET", 10., 30., 14., Color::new(0.78, 0.70, 0.92, 1.));
+    panel(
+        Rect::new(0., 0., 110., 44.),
+        Color::new(0.12, 0.08, 0.20, 1.),
+    );
+    text("‹ CABINET", 10., 29., 14., Color::new(0.78, 0.70, 0.92, 1.));
     text("SUDOKU", 12., 78., 34., Color::new(0.98, 0.83, 0.45, 1.));
     for (index, difficulty) in crate::sudoku::SudokuDifficulty::ALL.iter().enumerate() {
         let rect = Rect::new(148. + index as f32 * 68., 48., 62., 44.);
@@ -134,7 +138,7 @@ pub fn draw(state: &AppState) {
 }
 
 pub fn clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 110., 42.).contains(p) {
+    if Rect::new(0., 0., 110., 44.).contains(p) {
         return vec![UiAction::Cabinet];
     }
     let board = Rect::new(10., 100., 340., 340.);
