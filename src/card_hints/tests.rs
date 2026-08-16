@@ -317,3 +317,11 @@ fn default_battleship_has_a_deterministic_hint() {
     assert!(battleship(&state).contains("Fire at cell"));
     assert_eq!(battleship(&state), battleship(&state));
 }
+
+#[test]
+fn default_word_grid_has_a_deterministic_probe_hint() {
+    let state = AppState::default();
+
+    assert!(word_grid(&state).contains("Try "));
+    assert_eq!(word_grid(&state), word_grid(&state));
+}

@@ -115,6 +115,29 @@ impl WordGrid {
         self.phase == WordGridPhase::Won
     }
 
+    pub fn hint_word(&self) -> Option<&'static str> {
+        if self.phase != WordGridPhase::Playing {
+            return None;
+        }
+        WORDS
+            .iter()
+            .copied()
+            .filter(|candidate| *candidate != self.target)
+            .filter(|candidate| !self.guesses.iter().any(|guess| guess == candidate))
+            .find(|candidate| {
+                self.guesses
+                    .iter()
+                    .enumerate()
+                    .all(|(index, guess)| score_guess(candidate, guess) == self.feedback[index])
+            })
+            .or_else(|| {
+                WORDS.iter().copied().find(|candidate| {
+                    *candidate != self.target
+                        && !self.guesses.iter().any(|guess| guess == candidate)
+                })
+            })
+    }
+
     fn clone_without_undo(&self) -> Self {
         let mut copy = self.clone();
         copy.undo = None;

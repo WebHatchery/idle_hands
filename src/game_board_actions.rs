@@ -407,6 +407,10 @@ impl Game {
             UiAction::WordGridSubmit => {
                 self.state.word_grid.submit();
             }
+            UiAction::WordGridHint => {
+                self.state.card_hint = Some(crate::card_hints::word_grid(&self.state));
+                return true;
+            }
             UiAction::WordGridUndo => {
                 self.state.word_grid.undo();
             }

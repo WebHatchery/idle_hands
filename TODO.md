@@ -1089,6 +1089,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover target determinism, shot preservation, hint capture aliases,
     accessibility, and responsive layouts.
 
+## Phase 101 — Word Grid discoverability polish
+
+- [x] Add a deterministic, feedback-consistent HINT action that recommends a
+  probe word without revealing the hidden target.
+  - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
+  - [x] Cover candidate consistency, target privacy, hint capture aliases,
+    accessibility, and responsive layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

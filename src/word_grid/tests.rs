@@ -58,3 +58,21 @@ fn reset_changes_the_seeded_word_and_clears_rows() {
     assert!(game.guesses.is_empty());
     assert_eq!(game.moves, 0);
 }
+
+#[test]
+fn hint_returns_a_consistent_probe_without_revealing_the_target() {
+    let game = WordGrid::new(0);
+
+    assert_eq!(game.hint_word(), Some("SHELF"));
+    assert_ne!(game.hint_word(), Some(game.target.as_str()));
+    assert!(game.guesses.is_empty());
+    assert!(game.current.is_empty());
+}
+
+#[test]
+fn hint_is_empty_after_word_grid_ends() {
+    let mut game = WordGrid::new(1);
+    game.phase = WordGridPhase::Won;
+
+    assert_eq!(game.hint_word(), None);
+}

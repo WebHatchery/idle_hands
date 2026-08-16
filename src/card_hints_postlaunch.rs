@@ -315,6 +315,23 @@ pub fn battleship(state: &AppState) -> String {
     )
 }
 
+pub fn word_grid(state: &AppState) -> String {
+    let game = &state.word_grid;
+    match game.phase {
+        crate::word_grid::WordGridPhase::Won => {
+            return "The quiet word is found — tap NEW WORD to play again.".into()
+        }
+        crate::word_grid::WordGridPhase::Lost => {
+            return "The word is revealed — tap NEW WORD to begin again.".into()
+        }
+        crate::word_grid::WordGridPhase::Playing => {}
+    }
+    game.hint_word().map_or_else(
+        || "No probe remains — tap NEW WORD to begin again.".into(),
+        |word| format!("Try {} as a probe.", word),
+    )
+}
+
 fn battleship_cell_label(index: usize) -> String {
     format!(
         "{}{}",

@@ -228,6 +228,7 @@ pub enum UiAction {
     WordGridLetter(u8),
     WordGridBackspace,
     WordGridSubmit,
+    WordGridHint,
     WordGridUndo,
     WordGridNew,
     PipeRotate(usize),

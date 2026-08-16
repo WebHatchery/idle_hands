@@ -154,7 +154,9 @@ impl Game {
                 Screen::Game(GameId::Battleship)
             }
             "battleship_accessible" => Screen::Game(GameId::Battleship),
-            "word_grid" => Screen::Game(GameId::WordGrid),
+            "word_grid" | "word_grid_hint" | "word_grid_hint_accessible" => {
+                Screen::Game(GameId::WordGrid)
+            }
             "word_grid_accessible" => Screen::Game(GameId::WordGrid),
             "pipe_loop" => Screen::Game(GameId::PipeLoop),
             "pipe_loop_accessible" => Screen::Game(GameId::PipeLoop),
@@ -239,6 +241,8 @@ impl Game {
             self.state.card_hint = Some(card_hints::color_sort(&self.state));
         } else if scene == "battleship_hint" || scene == "battleship_hint_accessible" {
             self.state.card_hint = Some(card_hints::battleship(&self.state));
+        } else if scene == "word_grid_hint" || scene == "word_grid_hint_accessible" {
+            self.state.card_hint = Some(card_hints::word_grid(&self.state));
         } else if scene == "2048_hint" || scene == "2048_hint_accessible" {
             self.state.card_hint = Some(card_hints::game_2048(&self.state));
         } else if scene == "tic_tac_toe_hint" || scene == "tic_tac_toe_hint_accessible" {

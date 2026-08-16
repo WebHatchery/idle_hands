@@ -17,6 +17,7 @@ struct Layout {
     columns: usize,
     backspace: Rect,
     submit: Rect,
+    hint: Rect,
     undo: Rect,
     new_game: Rect,
 }
@@ -31,6 +32,7 @@ fn layout() -> Layout {
             columns: 13,
             backspace: Rect::new(300., 90., 120., 44.),
             submit: Rect::new(430., 90., 120., 44.),
+            hint: Rect::new(560., 140., 100., 44.),
             undo: Rect::new(560., 90., 100., 44.),
             new_game: Rect::new(670., 90., 150., 44.),
         }
@@ -43,6 +45,7 @@ fn layout() -> Layout {
             columns: 9,
             backspace: Rect::new(15., 455., 100., 44.),
             submit: Rect::new(125., 455., 100., 44.),
+            hint: Rect::new(15., 505., 100., 44.),
             undo: Rect::new(15., 700., 100., 44.),
             new_game: Rect::new(125., 700., 150., 44.),
         }
@@ -55,6 +58,7 @@ fn layout() -> Layout {
             columns: 13,
             backspace: Rect::new(760., 250., 110., 44.),
             submit: Rect::new(880., 250., 110., 44.),
+            hint: Rect::new(1000., 370., 100., 44.),
             undo: Rect::new(1000., 250., 100., 44.),
             new_game: Rect::new(760., 310., 150., 44.),
         }
@@ -71,6 +75,9 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if l.submit.contains(point) {
         return vec![UiAction::WordGridSubmit];
+    }
+    if l.hint.contains(point) {
+        return vec![UiAction::WordGridHint];
     }
     if l.undo.contains(point) {
         return vec![UiAction::WordGridUndo];
@@ -97,7 +104,7 @@ pub fn draw(state: &AppState) {
     let title_x = if compact {
         70.
     } else if portrait {
-        10.
+        25.
     } else {
         400.
     };
@@ -133,17 +140,21 @@ pub fn draw(state: &AppState) {
     draw_keyboard(l, game, state.high_contrast, state.large_text);
     button(l.backspace, "BACKSPACE", state.large_text);
     button(l.submit, "SUBMIT", state.large_text);
+    button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW WORD", state.large_text);
     let status_y = if portrait {
-        760.
+        690.
     } else if compact {
         285.
     } else {
         560.
     };
     draw_text(
-        "Build five letters, then tap SUBMIT",
+        state
+            .card_hint
+            .as_deref()
+            .unwrap_or("Build five letters, then tap SUBMIT"),
         if compact { 245. } else { title_x },
         status_y,
         accessibility::text_size(body_size(), state.large_text),

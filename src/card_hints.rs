@@ -8,7 +8,7 @@ mod postlaunch;
 pub use postlaunch::{
     battleship, blackjack, breakout, color_sort, daily_dungeon, dots_boxes, dungeon_sweeper,
     flood_it, hanoi, higher_lower, mancala, number_match, one_room_roguelike, potion_2048, snake,
-    sokoban, tiny_tower_defence,
+    sokoban, tiny_tower_defence, word_grid,
 };
 
 fn color_name(color: u8) -> &'static str {
@@ -562,6 +562,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::FloodHint
             | crate::ui::UiAction::ColorSortHint
             | crate::ui::UiAction::BattleshipHint
+            | crate::ui::UiAction::WordGridHint
     )
 }
 
