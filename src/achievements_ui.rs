@@ -62,13 +62,13 @@ pub fn clicks(point: Vec2) -> Vec<UiAction> {
 
 pub fn draw(state: &AppState) {
     let l = layout();
-    panel(l.panel, Color::new(0.08, 0.06, 0.14, 1.));
+    panel(l.panel, Color::new(0.08, 0.06, 0.14, 1.), state.high_contrast);
     let portrait = crate::ui::is_portrait();
     let compact = crate::ui::is_compact_landscape();
     let title_y = if compact { l.panel.y + 35. } else if portrait { l.panel.y + 42. } else { l.panel.y + 70. };
     let subtitle_y = if compact { l.panel.y + 52. } else if portrait { l.panel.y + 66. } else { l.panel.y + 98. };
     let title_size = if portrait { 28. } else { 38. };
-    draw_text("ACHIEVEMENTS", l.panel.x + 50., title_y, title_size, Color::new(0.98, 0.83, 0.45, 1.));
+    draw_text("ACHIEVEMENTS", l.panel.x + 50., title_y, crate::accessibility::text_size(title_size, state.large_text), Color::new(0.98, 0.83, 0.45, 1.));
     let earned = AchievementId::ALL
         .iter()
         .filter(|achievement| state.achievements.get(achievement.index()).copied().unwrap_or(false))
@@ -77,21 +77,45 @@ pub fn draw(state: &AppState) {
         format!("{} earned of {}  •  tap BACK to return to Records", earned, AchievementId::ALL.len()),
         l.panel.x + 52.,
         subtitle_y,
-        if portrait { 10. } else { 15. },
+        crate::accessibility::text_size(if portrait { 10. } else { 15. }, state.large_text),
         Color::new(0.72, 0.68, 0.82, 1.),
     );
     for (slot, achievement) in AchievementId::ALL.iter().enumerate() {
         let rect = card_rect(l, slot);
         let earned = state.achievements.get(achievement.index()).copied().unwrap_or(false);
-        panel(rect, if earned { Color::new(0.20, 0.15, 0.28, 1.) } else { Color::new(0.12, 0.09, 0.19, 1.) });
-        draw_circle(rect.x + 10., rect.y + rect.h * 0.5, if portrait { 3. } else { 4. }, if earned { Color::new(0.98, 0.75, 0.30, 1.) } else { Color::new(0.35, 0.31, 0.44, 1.) });
-        let size = if portrait { 7. } else if compact { 9. } else { 11. };
-        draw_text(achievement.title(), rect.x + 20., rect.y + rect.h * 0.64, size, if earned { Color::new(0.98, 0.82, 0.42, 1.) } else { Color::new(0.68, 0.64, 0.76, 1.) });
+        let fill = if state.high_contrast {
+            if earned { Color::new(0.28, 0.28, 0.30, 1.) } else { Color::new(0.02, 0.02, 0.03, 1.) }
+        } else if earned {
+            Color::new(0.20, 0.15, 0.28, 1.)
+        } else {
+            Color::new(0.12, 0.09, 0.19, 1.)
+        };
+        panel(rect, fill, state.high_contrast);
+        draw_circle(rect.x + 10., rect.y + rect.h * 0.5, if portrait { 3. } else { 4. }, if state.high_contrast { WHITE } else if earned { Color::new(0.98, 0.75, 0.30, 1.) } else { Color::new(0.35, 0.31, 0.44, 1.) });
+        let size = crate::accessibility::text_size(if portrait { 7. } else if compact { 9. } else { 10. }, state.large_text);
+        draw_text(fitted_label(*achievement, portrait), rect.x + 20., rect.y + rect.h * 0.64, size, if state.high_contrast { WHITE } else if earned { Color::new(0.98, 0.82, 0.42, 1.) } else { Color::new(0.68, 0.64, 0.76, 1.) });
         let status = if earned { "EARNED" } else { "LOCKED" };
-        draw_text(status, rect.right() - if portrait { 39. } else { 47. }, rect.y + rect.h * 0.64, if portrait { 5. } else { 7. }, if earned { Color::new(0.55, 1., 0.72, 1.) } else { Color::new(0.55, 0.50, 0.64, 1.) });
+        draw_text(status, rect.right() - if portrait { 39. } else { 47. }, rect.y + rect.h * 0.64, crate::accessibility::text_size(if portrait { 5. } else { 7. }, state.large_text), if state.high_contrast { WHITE } else if earned { Color::new(0.55, 1., 0.72, 1.) } else { Color::new(0.55, 0.50, 0.64, 1.) });
     }
-    panel(l.back, Color::new(0.25, 0.16, 0.32, 1.));
+    panel(l.back, Color::new(0.25, 0.16, 0.32, 1.), state.high_contrast);
     draw_text("BACK", l.back.x + if portrait { 52. } else { 60. }, l.back.y + l.back.h * 0.64, if portrait { 12. } else { 18. }, WHITE);
+}
+
+fn achievement_label(achievement: AchievementId) -> String {
+    match achievement {
+        AchievementId::Game(game) => game.title().to_owned(),
+        _ => achievement.title().to_owned(),
+    }
+}
+
+fn fitted_label(achievement: AchievementId, portrait: bool) -> String {
+    let label = achievement_label(achievement);
+    let limit = if portrait { 10 } else { 18 };
+    if label.chars().count() <= limit {
+        label
+    } else {
+        format!("{}..", label.chars().take(limit.saturating_sub(2)).collect::<String>())
+    }
 }
 
 fn card_rect(layout: Layout, slot: usize) -> Rect {
@@ -103,7 +127,7 @@ fn card_rect(layout: Layout, slot: usize) -> Rect {
     )
 }
 
-fn panel(rect: Rect, fill: Color) {
+fn panel(rect: Rect, fill: Color, high_contrast: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
-    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., Color::new(0.45, 0.38, 0.65, 0.65));
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::accessibility::grid_line(high_contrast));
 }

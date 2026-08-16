@@ -1261,6 +1261,11 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover a seeded mixed-progress achievement state and a visible BACK
     route to Records at all documented sizes.
 
+## Phase 125 — Achievement label clarity
+
+- [x] Use each drawer's title on its achievement card and add an accessible
+  achievement capture path with large-text and high-contrast state coverage.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

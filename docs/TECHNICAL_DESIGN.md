@@ -175,6 +175,9 @@ Achievement flags are stored as a normalized vector keyed by the 49-entry
 are padded with unearned late-game achievements.
 The runtime-only `achievements_view` flag routes Records to the responsive
 achievement shelf; its cards are read-only and BACK returns to Records.
+Drawer achievement cards render the associated `GameId` title rather than only
+thematic award text, and the shelf participates in the shared large-text
+capture path.
 
 Conceptual keys:
 

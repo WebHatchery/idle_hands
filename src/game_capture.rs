@@ -178,7 +178,7 @@ impl Game {
             | "match_three_hint_accessible" => Screen::Game(GameId::MatchThree),
             "mastermind_accessible" => Screen::Game(GameId::Mastermind),
             "help" => Screen::Help,
-            "records" | "records_word_ladder" | "records_progress" | "achievements" | "favorites_browse" | "favorites_all" | "recent_browse" => Screen::Records,
+            "records" | "records_word_ladder" | "records_progress" | "achievements" | "achievements_accessible" | "favorites_browse" | "favorites_all" | "recent_browse" => Screen::Records,
             "rules" => Screen::Rules,
             "credits" => Screen::Credits,
             "settings" | "settings_reset" => Screen::Settings,
@@ -244,7 +244,7 @@ impl Game {
                 &self.state.records,
             );
         }
-        if scene == "achievements" {
+        if scene == "achievements" || scene == "achievements_accessible" {
             self.state.records.best_2048 = 2048;
             self.state.records.solitaire_best_moves = Some(42);
             self.state.records.word_ladder_best_moves = Some(5);
