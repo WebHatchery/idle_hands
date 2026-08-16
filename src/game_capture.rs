@@ -64,7 +64,9 @@ impl Game {
                 Screen::Game(GameId::ConnectFour)
             }
             "connect_four_accessible" => Screen::Game(GameId::ConnectFour),
-            "checkers" => Screen::Game(GameId::Checkers),
+            "checkers" | "checkers_hint" | "checkers_hint_accessible" => {
+                Screen::Game(GameId::Checkers)
+            }
             "checkers_accessible" => Screen::Game(GameId::Checkers),
             "peg_solitaire" => Screen::Game(GameId::PegSolitaire),
             "peg_solitaire_accessible" => Screen::Game(GameId::PegSolitaire),
@@ -191,6 +193,8 @@ impl Game {
             self.state.card_hint = Some(card_hints::hangman(&self.state));
         } else if scene == "connect_four_hint" || scene == "connect_four_hint_accessible" {
             self.state.card_hint = Some(card_hints::connect_four(&self.state));
+        } else if scene == "checkers_hint" || scene == "checkers_hint_accessible" {
+            self.state.card_hint = Some(card_hints::checkers(&self.state));
         }
         if scene.starts_with("tutorial_") {
             if let Screen::Game(game) = self.state.screen {

@@ -153,3 +153,10 @@ fn default_connect_four_has_a_deterministic_hint() {
     assert_eq!(connect_four(&state), "Drop a disc in column 4.");
     assert_eq!(connect_four(&state), connect_four(&state));
 }
+
+#[test]
+fn default_checkers_has_a_deterministic_hint() {
+    let state = AppState::default();
+    assert!(!checkers(&state).is_empty());
+    assert_eq!(checkers(&state), checkers(&state));
+}

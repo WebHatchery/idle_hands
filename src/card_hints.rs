@@ -438,6 +438,26 @@ pub fn connect_four(state: &AppState) -> String {
     )
 }
 
+pub fn checkers(state: &AppState) -> String {
+    let game = &state.checkers;
+    match game.status {
+        crate::checkers::CheckersStatus::Won(_) => {
+            return "The board is already settled — tap NEW BOARD to play again.".into();
+        }
+        crate::checkers::CheckersStatus::Draw => {
+            return "The board rests in a draw — tap NEW BOARD to begin again.".into();
+        }
+        crate::checkers::CheckersStatus::Playing => {}
+    }
+    if game.turn != crate::checkers::Side::Red {
+        return "Yellow is answering — wait for your next turn.".into();
+    }
+    game.hint_move().map_or_else(
+        || "No legal red move remains — tap NEW BOARD to begin again.".into(),
+        |(from, to)| format!("Tap square {}, then square {}.", from + 1, to + 1),
+    )
+}
+
 fn color_name(color: u8) -> &'static str {
     ["red", "amber", "green", "blue", "violet", "gold"][color as usize % 6]
 }
@@ -464,6 +484,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::WordSearchHint
             | crate::ui::UiAction::HangmanHint
             | crate::ui::UiAction::ConnectFourHint
+            | crate::ui::UiAction::CheckersHint
     )
 }
 

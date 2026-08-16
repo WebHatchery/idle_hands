@@ -114,6 +114,7 @@ pub enum UiAction {
     ConnectFourUndo,
     ConnectFourNew,
     CheckersTap(usize),
+    CheckersHint,
     CheckersUndo,
     CheckersNew,
     PegSolitaireTap(usize),

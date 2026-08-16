@@ -139,6 +139,28 @@ impl Checkers {
         *self = Self::new(seed);
     }
 
+    pub fn hint_move(&self) -> Option<(usize, usize)> {
+        if self.status != CheckersStatus::Playing || self.turn != Side::Red {
+            return None;
+        }
+        let mut fallback = None;
+        for from in 0..CELLS {
+            if self.cells[from].side() != Some(Side::Red) {
+                continue;
+            }
+            let targets = self.targets(from);
+            if targets.is_empty() {
+                continue;
+            }
+            let capture = (from / SIZE).abs_diff(targets[0] / SIZE) == 2;
+            if capture {
+                return Some((from, targets[0]));
+            }
+            fallback.get_or_insert((from, targets[0]));
+        }
+        fallback
+    }
+
     pub fn targets(&self, from: usize) -> Vec<usize> {
         if from >= CELLS || self.cells[from].side() != Some(self.turn) {
             return Vec::new();

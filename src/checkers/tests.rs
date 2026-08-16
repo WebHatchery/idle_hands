@@ -55,3 +55,14 @@ fn bounded_yellow_reply_and_undo_restore_the_red_turn() {
     assert_eq!(game.turn, Side::Red);
     assert_eq!(game.moves, 0);
 }
+
+#[test]
+fn hint_move_finds_a_mandatory_capture_without_mutating() {
+    let mut game = Checkers::new(1);
+    game.cells = vec![Piece::Empty; CELLS];
+    game.cells[5 * SIZE] = Piece::RedMan;
+    game.cells[4 * SIZE + 1] = Piece::YellowMan;
+    let before = game.cells.clone();
+    assert_eq!(game.hint_move(), Some((5 * SIZE, 3 * SIZE + 2)));
+    assert_eq!(game.cells, before);
+}

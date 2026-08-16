@@ -24,6 +24,10 @@ impl Game {
             UiAction::ConnectFourUndo => self.apply_connect_four_undo(),
             UiAction::ConnectFourNew => self.apply_connect_four_new(),
             UiAction::CheckersTap(square) => self.apply_checkers_tap(*square),
+            UiAction::CheckersHint => {
+                self.state.card_hint = Some(crate::card_hints::checkers(&self.state));
+                return true;
+            }
             UiAction::CheckersUndo => self.apply_checkers_undo(),
             UiAction::CheckersNew => self.apply_checkers_new(),
             UiAction::PegSolitaireTap(square) => {
