@@ -198,6 +198,7 @@ pub enum UiAction {
     DotsUndo,
     DotsNew,
     SokobanMove(Direction),
+    SokobanHint,
     SokobanUndo,
     SokobanNew,
     MancalaPit(usize),

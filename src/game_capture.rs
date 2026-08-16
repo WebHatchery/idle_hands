@@ -134,7 +134,7 @@ impl Game {
                 Screen::Game(GameId::DotsBoxes)
             }
             "dots_boxes_accessible" => Screen::Game(GameId::DotsBoxes),
-            "sokoban" => Screen::Game(GameId::Sokoban),
+            "sokoban" | "sokoban_hint" | "sokoban_hint_accessible" => Screen::Game(GameId::Sokoban),
             "sokoban_accessible" => Screen::Game(GameId::Sokoban),
             "mancala" => Screen::Game(GameId::Mancala),
             "hanoi" => Screen::Game(GameId::Hanoi),
@@ -217,6 +217,8 @@ impl Game {
             self.state.card_hint = Some(card_hints::daily_dungeon(&self.state));
         } else if scene == "dots_boxes_hint" || scene == "dots_boxes_hint_accessible" {
             self.state.card_hint = Some(card_hints::dots_boxes(&self.state));
+        } else if scene == "sokoban_hint" || scene == "sokoban_hint_accessible" {
+            self.state.card_hint = Some(card_hints::sokoban(&self.state));
         } else if scene == "2048_hint" || scene == "2048_hint_accessible" {
             self.state.card_hint = Some(card_hints::game_2048(&self.state));
         } else if scene == "tic_tac_toe_hint" || scene == "tic_tac_toe_hint_accessible" {

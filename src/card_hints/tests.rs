@@ -261,3 +261,11 @@ fn default_dots_boxes_has_a_deterministic_hint() {
     assert!(!dots_boxes(&state).is_empty());
     assert_eq!(dots_boxes(&state), dots_boxes(&state));
 }
+
+#[test]
+fn default_sokoban_has_a_deterministic_hint() {
+    let state = AppState::default();
+
+    assert!(sokoban(&state).contains("Move UP"));
+    assert_eq!(sokoban(&state), sokoban(&state));
+}

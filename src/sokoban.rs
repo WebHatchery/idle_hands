@@ -2,6 +2,7 @@
 
 use crate::state::Direction;
 use serde::{Deserialize, Serialize};
+use std::collections::VecDeque;
 
 pub const WIDTH: usize = 8;
 pub const HEIGHT: usize = 8;
@@ -116,6 +117,38 @@ impl Sokoban {
 
     pub fn won(&self) -> bool {
         self.phase == SokobanPhase::Won
+    }
+
+    pub fn hint_direction(&self) -> Option<Direction> {
+        if self.won() {
+            return None;
+        }
+        let mut queue = VecDeque::from([(self.clone_without_undo(), None)]);
+        let mut seen = Vec::new();
+        while let Some((state, first)) = queue.pop_front() {
+            let key = (state.player, state.tiles.clone());
+            if seen.contains(&key) {
+                continue;
+            }
+            seen.push(key);
+            for direction in [
+                Direction::Up,
+                Direction::Left,
+                Direction::Down,
+                Direction::Right,
+            ] {
+                let mut next = state.clone_without_undo();
+                if !next.move_in(direction) {
+                    continue;
+                }
+                let first = first.or(Some(direction));
+                if next.won() {
+                    return first;
+                }
+                queue.push_back((next, first));
+            }
+        }
+        None
     }
 
     fn clone_without_undo(&self) -> Self {

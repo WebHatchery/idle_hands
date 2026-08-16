@@ -12,6 +12,7 @@ use macroquad::prelude::*;
 struct Layout {
     board: Rect,
     directions: [Rect; 4],
+    hint: Rect,
     undo: Rect,
     new_game: Rect,
 }
@@ -26,20 +27,22 @@ fn layout() -> Layout {
                 Rect::new(18., 172., 62., 44.),
                 Rect::new(18., 217., 62., 44.),
             ],
+            hint: Rect::new(610., 220., 110., 44.),
             undo: Rect::new(610., 110., 110., 44.),
             new_game: Rect::new(610., 165., 145., 44.),
         }
     } else if crate::ui::is_portrait() {
         Layout {
-            board: Rect::new(30., 105., 330., 330.),
+            board: Rect::new(15., 105., 300., 300.),
             directions: [
-                Rect::new(30., 450., 68., 44.),
-                Rect::new(114., 450., 68., 44.),
-                Rect::new(198., 450., 68., 44.),
-                Rect::new(282., 450., 68., 44.),
+                Rect::new(15., 420., 60., 44.),
+                Rect::new(90., 420., 60., 44.),
+                Rect::new(165., 420., 60., 44.),
+                Rect::new(240., 420., 60., 44.),
             ],
-            undo: Rect::new(30., 510., 145., 44.),
-            new_game: Rect::new(185., 510., 175., 44.),
+            hint: Rect::new(15., 580., 145., 44.),
+            undo: Rect::new(15., 525., 145., 44.),
+            new_game: Rect::new(170., 525., 145., 44.),
         }
     } else {
         Layout {
@@ -50,6 +53,7 @@ fn layout() -> Layout {
                 Rect::new(954., 130., 62., 44.),
                 Rect::new(1026., 130., 62., 44.),
             ],
+            hint: Rect::new(810., 270., 120., 44.),
             undo: Rect::new(810., 205., 120., 44.),
             new_game: Rect::new(950., 205., 140., 44.),
         }
@@ -73,6 +77,9 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
             )];
         }
     }
+    if l.hint.contains(point) {
+        return vec![UiAction::SokobanHint];
+    }
     if l.undo.contains(point) {
         return vec![UiAction::SokobanUndo];
     }
@@ -90,7 +97,7 @@ pub fn draw(state: &AppState) {
     let title_x = if compact {
         70.
     } else if portrait {
-        10.
+        25.
     } else {
         400.
     };
@@ -133,10 +140,13 @@ pub fn draw(state: &AppState) {
     );
     draw_board(l.board, game, state.high_contrast, state.large_text);
     text(
-        status_text(game.phase),
+        state
+            .card_hint
+            .as_deref()
+            .unwrap_or(status_text(game.phase)),
         if compact { 270. } else { title_x },
         if portrait {
-            475.
+            480.
         } else if compact {
             365.
         } else {
@@ -145,6 +155,7 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
+    button(l.hint, "HINT", state.large_text);
     for (rect, label) in l.directions.iter().zip(["UP", "LEFT", "DOWN", "RIGHT"]) {
         button(*rect, label, state.large_text);
     }

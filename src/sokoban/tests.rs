@@ -71,3 +71,30 @@ fn reset_starts_a_fresh_room_with_the_new_seed() {
     assert_eq!(game.phase, SokobanPhase::Playing);
     assert_eq!(game.player, 5 * WIDTH + 3);
 }
+
+#[test]
+fn hint_returns_the_first_shortest_solution_move_without_mutating_the_room() {
+    let game = Sokoban::new(10);
+    let before = game.clone_without_undo();
+
+    assert_eq!(game.hint_direction(), Some(Direction::Up));
+    assert_eq!(game.player, before.player);
+    assert_eq!(game.tiles, before.tiles);
+    assert_eq!(game.moves, before.moves);
+}
+
+#[test]
+fn following_hints_solves_the_default_room() {
+    let mut game = Sokoban::new(11);
+    for _ in 0..32 {
+        let Some(direction) = game.hint_direction() else {
+            break;
+        };
+        assert!(game.move_in(direction));
+        if game.won() {
+            break;
+        }
+    }
+    assert!(game.won());
+    assert_eq!(game.hint_direction(), None);
+}

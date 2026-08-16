@@ -303,6 +303,10 @@ impl Game {
             UiAction::SokobanMove(direction) => {
                 self.state.sokoban.move_in(*direction);
             }
+            UiAction::SokobanHint => {
+                self.state.card_hint = Some(crate::card_hints::sokoban(&self.state));
+                return true;
+            }
             UiAction::SokobanUndo => {
                 self.state.sokoban.undo();
             }

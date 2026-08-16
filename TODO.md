@@ -1033,6 +1033,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover edge priority, board preservation, hint determinism, capture
     aliases, and responsive layouts.
 
+## Phase 94 — Sokoban discoverability polish
+
+- [x] Add an exact, deterministic, non-mutating HINT action that recommends
+  the first move on a shortest solution path.
+  - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
+  - [x] Cover solver determinism, board preservation, hint capture aliases,
+    accessibility, and responsive layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

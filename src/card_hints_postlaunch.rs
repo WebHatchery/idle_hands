@@ -209,6 +209,22 @@ pub fn dots_boxes(state: &AppState) -> String {
     )
 }
 
+pub fn sokoban(state: &AppState) -> String {
+    let game = &state.sokoban;
+    if game.won() {
+        return "The quiet room is clear — tap NEW ROOM to play again.".into();
+    }
+    game.hint_direction().map_or_else(
+        || "No route remains — tap NEW ROOM to begin again.".into(),
+        |direction| {
+            format!(
+                "Move {} to place the next crate.",
+                daily_direction_label(direction)
+            )
+        },
+    )
+}
+
 fn daily_direction_label(direction: crate::state::Direction) -> &'static str {
     match direction {
         crate::state::Direction::Up => "UP",
