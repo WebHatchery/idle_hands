@@ -486,6 +486,9 @@ impl Game {
             ui::UiAction::LightsOutPress(index) => {
                 self.state.lights_out.press(index);
             }
+            ui::UiAction::LightsOutHint => {
+                self.state.card_hint = Some(card_hints::lights_out(&self.state));
+            }
             ui::UiAction::LightsOutUndo => {
                 self.state.lights_out.undo();
             }

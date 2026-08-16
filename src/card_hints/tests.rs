@@ -80,3 +80,10 @@ fn default_tic_tac_toe_has_a_deterministic_hint() {
     assert_eq!(tic_tac_toe(&state), "Try square 5.");
     assert_eq!(tic_tac_toe(&state), tic_tac_toe(&state));
 }
+
+#[test]
+fn default_lights_out_has_a_deterministic_hint() {
+    let state = AppState::default();
+    assert!(!lights_out(&state).is_empty());
+    assert_eq!(lights_out(&state), lights_out(&state));
+}

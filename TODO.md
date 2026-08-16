@@ -843,6 +843,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
     layouts with the existing accessible text treatment.
   - [x] Cover hint routing and capture the updated Tic-Tac-Toe scenes.
 
+## Phase 70 — Lights Out discoverability polish
+
+- [x] Add a visible deterministic HINT action to Lights Out that recommends
+  the press leaving the fewest lit cells without changing the board.
+  - [x] Show hint feedback across desktop, portrait, and medium-landscape
+    layouts with the existing accessible text treatment.
+  - [x] Cover hint routing and capture the updated Lights Out scenes.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

@@ -27,7 +27,10 @@ impl Game {
             "fivefold" => Screen::Game(GameId::Yahtzee),
             "reversi" => Screen::Game(GameId::Reversi),
             "reversi_accessible" => Screen::Game(GameId::Reversi),
-            "lights_out" | "lights_out_accessible" => Screen::Game(GameId::LightsOut),
+            "lights_out"
+            | "lights_out_accessible"
+            | "lights_out_hint"
+            | "lights_out_hint_accessible" => Screen::Game(GameId::LightsOut),
             "tic_tac_toe" | "tic_tac_toe_hint" => Screen::Game(GameId::TicTacToe),
             "tic_tac_toe_accessible" | "tic_tac_toe_hint_accessible" => {
                 Screen::Game(GameId::TicTacToe)
@@ -147,6 +150,8 @@ impl Game {
             self.state.card_hint = Some(card_hints::game_2048(&self.state));
         } else if scene == "tic_tac_toe_hint" || scene == "tic_tac_toe_hint_accessible" {
             self.state.card_hint = Some(card_hints::tic_tac_toe(&self.state));
+        } else if scene == "lights_out_hint" || scene == "lights_out_hint_accessible" {
+            self.state.card_hint = Some(card_hints::lights_out(&self.state));
         }
         if scene.starts_with("tutorial_") {
             if let Screen::Game(game) = self.state.screen {

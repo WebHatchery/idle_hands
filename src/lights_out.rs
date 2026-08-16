@@ -75,6 +75,17 @@ impl LightsOut {
         *self = Self::new(seed);
     }
 
+    pub fn hint_move(&self) -> Option<usize> {
+        if self.status == LightsOutStatus::Won {
+            return None;
+        }
+        (0..CELLS).min_by_key(|&index| {
+            let mut preview = self.clone();
+            preview.press(index);
+            preview.cells.iter().filter(|cell| **cell).count()
+        })
+    }
+
     fn toggle_pattern(&mut self, index: usize) {
         let row = index / SIZE;
         let column = index % SIZE;

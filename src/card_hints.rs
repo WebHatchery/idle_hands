@@ -273,11 +273,23 @@ pub fn tic_tac_toe(state: &AppState) -> String {
     )
 }
 
+pub fn lights_out(state: &AppState) -> String {
+    let game = &state.lights_out;
+    if game.status == crate::lights_out::LightsOutStatus::Won {
+        return "Every light is already quiet — tap NEW BOARD to play again.".into();
+    }
+    game.hint_move().map_or_else(
+        || "No press is available — tap NEW BOARD to begin again.".into(),
+        |index| format!("Try square {} to quiet the field.", index + 1),
+    )
+}
+
 pub fn is_hint(action: crate::ui::UiAction) -> bool {
     matches!(
         action,
         crate::ui::UiAction::Game2048Hint
             | crate::ui::UiAction::TicTacToeHint
+            | crate::ui::UiAction::LightsOutHint
             | crate::ui::UiAction::SolitaireHint
             | crate::ui::UiAction::FreeCellHint
             | crate::ui::UiAction::PyramidHint

@@ -9,6 +9,7 @@ struct Layout {
     cell: f32,
     reset: Rect,
     undo: Rect,
+    hint: Rect,
 }
 
 fn layout() -> Layout {
@@ -18,6 +19,7 @@ fn layout() -> Layout {
             cell: 60.,
             reset: Rect::new(370., 125., 150., 48.),
             undo: Rect::new(370., 185., 150., 48.),
+            hint: Rect::new(530., 185., 150., 48.),
         }
     } else if crate::ui::is_portrait() {
         Layout {
@@ -25,6 +27,7 @@ fn layout() -> Layout {
             cell: 64.,
             reset: Rect::new(20., 510., 155., 48.),
             undo: Rect::new(185., 510., 155., 48.),
+            hint: Rect::new(20., 570., 155., 48.),
         }
     } else {
         Layout {
@@ -32,6 +35,7 @@ fn layout() -> Layout {
             cell: 100.,
             reset: Rect::new(440., 650., 180., 48.),
             undo: Rect::new(650., 650., 180., 48.),
+            hint: Rect::new(860., 650., 180., 48.),
         }
     }
 }
@@ -46,6 +50,9 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if layout.undo.contains(point) {
         return vec![UiAction::LightsOutUndo];
+    }
+    if layout.hint.contains(point) {
+        return vec![UiAction::LightsOutHint];
     }
     if layout.board.contains(point) {
         let column = ((point.x - layout.board.x) / layout.cell) as usize;
@@ -89,12 +96,13 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
+    let instruction = if game.status == LightsOutStatus::Won {
+        "The cabinet is quiet. Start another board or play it again."
+    } else {
+        "Tap a light to toggle it and its four neighbors."
+    };
     text(
-        if game.status == LightsOutStatus::Won {
-            "The cabinet is quiet. Start another board or play it again."
-        } else {
-            "Tap a light to toggle it and its four neighbors."
-        },
+        state.card_hint.as_deref().unwrap_or(instruction),
         body_x,
         body_y,
         accessibility::text_size(body_size(), state.large_text),
@@ -140,6 +148,7 @@ pub fn draw(state: &AppState) {
     );
     button(layout.reset, "NEW BOARD", state.large_text);
     button(layout.undo, "UNDO", state.large_text);
+    button(layout.hint, "HINT", state.large_text);
 }
 
 fn back_rect() -> Rect {
@@ -156,7 +165,7 @@ fn header_y() -> f32 {
     if crate::ui::is_compact_landscape() {
         35.
     } else if crate::ui::is_portrait() {
-        87.
+        105.
     } else {
         72.
     }

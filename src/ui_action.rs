@@ -73,6 +73,7 @@ pub enum UiAction {
     ReversiNew,
     ReversiLevel(crate::reversi::AiLevel),
     LightsOutPress(usize),
+    LightsOutHint,
     LightsOutUndo,
     LightsOutNew,
     TicTacToePress(usize),
