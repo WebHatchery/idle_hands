@@ -142,6 +142,20 @@ impl Sudoku {
             false
         }
     }
+
+    pub fn hint_move(&self) -> Option<(usize, u8)> {
+        if self.status == SudokuStatus::Won {
+            return None;
+        }
+        let mut solved = [0u8; 81];
+        solved.copy_from_slice(&self.values);
+        if !solve_first(&mut solved) {
+            return None;
+        }
+        (0..81)
+            .find(|&index| self.values[index] == 0)
+            .map(|index| (index, solved[index]))
+    }
     pub fn conflicts(&self, index: usize) -> Vec<usize> {
         if index >= 81 || self.values[index] == 0 {
             return Vec::new();
@@ -238,6 +252,44 @@ fn solve_count(board: &mut [u8; 81], found: u8, limit: u8) -> u8 {
         }
     }
     found
+}
+
+fn solve_first(board: &mut [u8; 81]) -> bool {
+    let mut best_index = None;
+    let mut best_candidates = [0u8; 9];
+    let mut best_count = 10;
+    for index in 0..81 {
+        if board[index] != 0 {
+            continue;
+        }
+        let mut candidates = [0u8; 9];
+        let mut count = 0;
+        for value in 1..=9 {
+            if valid_on_board(board, index, value) {
+                candidates[count] = value;
+                count += 1;
+            }
+        }
+        if count == 0 {
+            return false;
+        }
+        if count < best_count {
+            best_index = Some(index);
+            best_candidates = candidates;
+            best_count = count;
+        }
+    }
+    let Some(index) = best_index else {
+        return true;
+    };
+    for value in best_candidates.into_iter().take(best_count) {
+        board[index] = value;
+        if solve_first(board) {
+            return true;
+        }
+        board[index] = 0;
+    }
+    false
 }
 
 fn valid_on_board(board: &[u8; 81], index: usize, value: u8) -> bool {

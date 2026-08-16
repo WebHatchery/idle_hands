@@ -873,6 +873,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover candidate filtering, hint determinism, capture aliases, and
     responsive layouts.
 
+## Phase 74 — Sudoku discoverability polish
+
+- [x] Add a deterministic HINT action that identifies the next empty cell and
+  correct value without changing the board.
+  - [x] Wire the existing touch UI and feedback, including accessibility.
+  - [x] Cover solution validity, hint determinism, capture aliases, and the
+    updated desktop layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

@@ -45,6 +45,7 @@ pub enum UiAction {
     SudokuNoteMode,
     SudokuDifficulty(crate::sudoku::SudokuDifficulty),
     SudokuUndo,
+    SudokuHint,
     NonogramCell(usize),
     NonogramMode,
     NonogramUndo,

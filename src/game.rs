@@ -344,6 +344,9 @@ impl Game {
             ui::UiAction::SudokuUndo => {
                 self.state.sudoku.undo();
             }
+            ui::UiAction::SudokuHint => {
+                self.state.card_hint = Some(card_hints::sudoku(&self.state));
+            }
             ui::UiAction::NonogramCell(index) => {
                 self.state.nonogram.select(index);
                 self.state.nonogram.toggle(index);

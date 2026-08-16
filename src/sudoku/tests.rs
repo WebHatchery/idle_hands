@@ -51,3 +51,13 @@ fn difficulty_and_undo_restore_the_previous_entry() {
     assert_eq!(game.values[69], 0);
     assert_eq!(game.moves, 0);
 }
+
+#[test]
+fn hint_move_identifies_an_empty_cell_without_mutating_the_board() {
+    let game = Sudoku::new();
+    let before = game.values.clone();
+    let (index, value) = game.hint_move().unwrap();
+    assert_eq!(game.values[index], 0);
+    assert!((1..=9).contains(&value));
+    assert_eq!(game.values, before);
+}

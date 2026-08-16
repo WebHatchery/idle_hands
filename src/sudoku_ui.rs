@@ -88,12 +88,16 @@ pub fn draw_sudoku(state: &AppState) {
             );
         }
     }
-    text(
-        if game.status == SudokuStatus::Won {
+    let instruction = state
+        .card_hint
+        .as_deref()
+        .unwrap_or(if game.status == SudokuStatus::Won {
             "Puzzle complete"
         } else {
             "Select a cell, then tap a number"
-        },
+        });
+    text(
+        instruction,
         850.,
         190.,
         18.,
@@ -148,6 +152,11 @@ pub fn draw_sudoku(state: &AppState) {
         Color::new(0.18, 0.26, 0.34, 1.),
     );
     text("UNDO", 900., 558., 16., WHITE);
+    panel(
+        Rect::new(1000., 530., 180., 44.),
+        Color::new(0.20, 0.13, 0.30, 1.),
+    );
+    text("HINT", 1065., 558., 16., WHITE);
     text(
         "Given clues are white. Your entries are gold.",
         850.,
@@ -198,6 +207,9 @@ pub fn sudoku_clicks(_state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     if Rect::new(850., 530., 140., 44.).contains(p) {
         return vec![UiAction::SudokuUndo];
+    }
+    if Rect::new(1000., 530., 180., 44.).contains(p) {
+        return vec![UiAction::SudokuHint];
     }
     vec![]
 }

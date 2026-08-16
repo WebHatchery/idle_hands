@@ -323,6 +323,24 @@ pub fn mastermind(state: &AppState) -> String {
     )
 }
 
+pub fn sudoku(state: &AppState) -> String {
+    let game = &state.sudoku;
+    if game.status == crate::sudoku::SudokuStatus::Won {
+        return "The grid is already complete — choose a difficulty to play again.".into();
+    }
+    game.hint_move().map_or_else(
+        || "No safe entry is available — try UNDO or choose a new difficulty.".into(),
+        |(index, value)| {
+            format!(
+                "Enter {} in row {}, column {}.",
+                value,
+                index / 9 + 1,
+                index % 9 + 1
+            )
+        },
+    )
+}
+
 fn color_name(color: u8) -> &'static str {
     ["red", "amber", "green", "blue", "violet", "gold"][color as usize % 6]
 }
@@ -343,6 +361,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::MemoryPairsHint
             | crate::ui::UiAction::SlidingPuzzleHint
             | crate::ui::UiAction::MastermindHint
+            | crate::ui::UiAction::SudokuHint
     )
 }
 

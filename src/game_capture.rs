@@ -18,7 +18,9 @@ impl Game {
                 Screen::Game(GameId::Game2048)
             }
             "minesweeper" | "minesweeper_accessible" => Screen::Game(GameId::Minesweeper),
-            "sudoku" | "sudoku_accessible" => Screen::Game(GameId::Sudoku),
+            "sudoku" | "sudoku_accessible" | "sudoku_hint" | "sudoku_hint_accessible" => {
+                Screen::Game(GameId::Sudoku)
+            }
             "nonogram" | "nonogram_large" | "nonogram_accessible" => Screen::Game(GameId::Nonogram),
             "solitaire" | "solitaire_hint" | "solitaire_selected" => {
                 Screen::Game(GameId::Solitaire)
@@ -166,6 +168,8 @@ impl Game {
             self.state.card_hint = Some(card_hints::sliding_puzzle(&self.state));
         } else if scene == "mastermind_hint" || scene == "mastermind_hint_accessible" {
             self.state.card_hint = Some(card_hints::mastermind(&self.state));
+        } else if scene == "sudoku_hint" || scene == "sudoku_hint_accessible" {
+            self.state.card_hint = Some(card_hints::sudoku(&self.state));
         }
         if scene.starts_with("tutorial_") {
             if let Screen::Game(game) = self.state.screen {

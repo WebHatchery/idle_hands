@@ -108,3 +108,10 @@ fn default_mastermind_has_a_deterministic_hint() {
     assert_eq!(mastermind(&state), "Try the red peg in slot 1.");
     assert_eq!(mastermind(&state), mastermind(&state));
 }
+
+#[test]
+fn default_sudoku_has_a_deterministic_hint() {
+    let state = AppState::default();
+    assert_eq!(sudoku(&state), "Enter 4 in row 1, column 3.");
+    assert_eq!(sudoku(&state), sudoku(&state));
+}
