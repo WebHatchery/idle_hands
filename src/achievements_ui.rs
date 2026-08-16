@@ -53,8 +53,14 @@ fn layout() -> Layout {
 }
 
 pub fn clicks(point: Vec2) -> Vec<UiAction> {
-    if layout().back.contains(point) {
+    let l = layout();
+    if l.back.contains(point) {
         vec![UiAction::Records]
+    } else if let Some(filter) = filter_rects(l)
+        .iter()
+        .position(|rect| rect.contains(point))
+    {
+        vec![UiAction::AchievementFilter(filter as u8)]
     } else {
         Vec::new()
     }
@@ -74,13 +80,18 @@ pub fn draw(state: &AppState) {
         .filter(|achievement| state.achievements.get(achievement.index()).copied().unwrap_or(false))
         .count();
     draw_text(
-        format!("{} earned of {}  •  tap BACK to return to Records", earned, AchievementId::ALL.len()),
+        format!("{} earned of {}  •  showing {}", earned, AchievementId::ALL.len(), filter_label(state.achievement_filter)),
         l.panel.x + 52.,
         subtitle_y,
         crate::accessibility::text_size(if portrait { 10. } else { 15. }, state.large_text),
         Color::new(0.72, 0.68, 0.82, 1.),
     );
-    for (slot, achievement) in AchievementId::ALL.iter().enumerate() {
+    for (filter, rect) in filter_rects(l).iter().enumerate() {
+        let active = state.achievement_filter == filter as u8;
+        panel(*rect, if active { Color::new(0.25, 0.17, 0.34, 1.) } else { Color::new(0.13, 0.10, 0.20, 1.) }, state.high_contrast);
+        draw_text(filter_label(filter as u8), rect.x + if portrait { 10. } else { 16. }, rect.y + rect.h * 0.68, crate::accessibility::text_size(if portrait { 8. } else { 10. }, state.large_text), if active { WHITE } else { Color::new(0.72, 0.68, 0.82, 1.) });
+    }
+    for (slot, achievement) in AchievementId::ALL.iter().filter(|achievement| visible(**achievement, state.achievement_filter, state)).enumerate() {
         let rect = card_rect(l, slot);
         let earned = state.achievements.get(achievement.index()).copied().unwrap_or(false);
         let fill = if state.high_contrast {
@@ -105,6 +116,44 @@ fn achievement_label(achievement: AchievementId) -> String {
     match achievement {
         AchievementId::Game(game) => game.title().to_owned(),
         _ => achievement.title().to_owned(),
+    }
+}
+
+fn visible(achievement: AchievementId, filter: u8, state: &AppState) -> bool {
+    match filter {
+        1 => state.achievements.get(achievement.index()).copied().unwrap_or(false),
+        2 => !state.achievements.get(achievement.index()).copied().unwrap_or(false),
+        _ => true,
+    }
+}
+
+fn filter_label(filter: u8) -> &'static str {
+    match filter {
+        1 => "EARNED",
+        2 => "LOCKED",
+        _ => "ALL",
+    }
+}
+
+fn filter_rects(layout: Layout) -> [Rect; 3] {
+    if crate::ui::is_compact_landscape() {
+        [
+            Rect::new(500., 40., 60., 22.),
+            Rect::new(565., 40., 90., 22.),
+            Rect::new(660., 40., 90., 22.),
+        ]
+    } else if crate::ui::is_portrait() {
+        [
+            Rect::new(14., 112., 106., 26.),
+            Rect::new(126., 112., 106., 26.),
+            Rect::new(238., 112., 106., 26.),
+        ]
+    } else {
+        [
+            Rect::new(layout.origin.x, 170., 130., 32.),
+            Rect::new(layout.origin.x + 140., 170., 130., 32.),
+            Rect::new(layout.origin.x + 280., 170., 130., 32.),
+        ]
     }
 }
 

@@ -48,7 +48,8 @@ Every drawer has its own completion achievement, in addition to first-finish
 and full-cabinet collection awards. The Records screen opens a responsive
 ACHIEVEMENTS shelf so earned and locked awards remain inspectable without
 interrupting a game. Drawer awards use the drawer's own title so thematic
-achievement names never obscure what was completed.
+achievement names never obscure what was completed. ALL, EARNED, and LOCKED
+filters let a player focus on the next collection goal.
 
 Starting a new drawer session presents a clear CANCEL/START confirmation so an
 accidental tap cannot replace an unfinished session.

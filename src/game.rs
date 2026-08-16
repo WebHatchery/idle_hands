@@ -279,6 +279,10 @@ impl Game {
                 self.state.favorites_view = false;
                 self.state.recent_view = false;
                 self.state.achievements_view = true;
+                self.state.achievement_filter = 0;
+            }
+            ui::UiAction::AchievementFilter(filter) => {
+                self.state.achievement_filter = filter.min(2);
             }
             ui::UiAction::Rules => {
                 self.state.screen = Screen::Rules;

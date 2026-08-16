@@ -52,7 +52,8 @@ Pyramid, TriPeaks, Nim, and Word Ladder.
   of completed drawers out of the full cabinet so progress stays legible. Each
   drawer has its own completion achievement alongside the collection awards,
   and a visible ACHIEVEMENTS shelf names the associated drawer and shows which
-  awards are earned or locked.
+  awards are earned or locked. ALL, EARNED, and LOCKED filters keep the shelf
+  easy to scan.
 - **Clear classic rules.** Familiar games remain recognisable. Any themed
   presentation is cosmetic and never hides state needed to play.
 - **Deterministic where useful.** Seeded deals and puzzles can be replayed and

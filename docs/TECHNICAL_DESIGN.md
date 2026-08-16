@@ -178,6 +178,8 @@ achievement shelf; its cards are read-only and BACK returns to Records.
 Drawer achievement cards render the associated `GameId` title rather than only
 thematic award text, and the shelf participates in the shared large-text
 capture path.
+The runtime-only `achievement_filter` value selects ALL, EARNED, or LOCKED
+cards; it is reset when opening the shelf and is never persisted.
 
 Conceptual keys:
 

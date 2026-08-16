@@ -13,6 +13,7 @@ pub enum UiAction {
     Favorites,
     Recent,
     Achievements,
+    AchievementFilter(u8),
     Rules,
     Credits,
     ResetData,

@@ -1266,6 +1266,11 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 - [x] Use each drawer's title on its achievement card and add an accessible
   achievement capture path with large-text and high-contrast state coverage.
 
+## Phase 126 — Achievement shelf filters
+
+- [x] Add touch-sized ALL, EARNED, and LOCKED filters to the achievement shelf,
+  with responsive seeded captures for the filtered states.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.
