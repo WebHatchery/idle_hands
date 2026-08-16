@@ -142,20 +142,20 @@ pub fn draw_solitaire(state: &AppState) {
         Color::new(0.68, 0.63, 0.78, 1.),
     );
     panel(
-        Rect::new(5., 650., 105., 38.),
+        Rect::new(5., 650., 105., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    text("HINT", 39., 675., 12., WHITE);
+    text("HINT", 39., 679., 12., WHITE);
     panel(
-        Rect::new(120., 650., 105., 38.),
+        Rect::new(120., 650., 105., 44.),
         Color::new(0.18, 0.26, 0.34, 1.),
     );
-    text("UNDO", 153., 675., 12., WHITE);
+    text("UNDO", 153., 679., 12., WHITE);
     panel(
-        Rect::new(235., 650., 115., 38.),
+        Rect::new(235., 650., 115., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    text("NEW DEAL", 263., 675., 11., WHITE);
+    text("NEW DEAL", 263., 679., 11., WHITE);
     text(
         state
             .card_hint
@@ -183,13 +183,13 @@ pub fn solitaire_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
             return vec![UiAction::SolitaireFoundation(suit)];
         }
     }
-    if Rect::new(5., 650., 105., 38.).contains(p) {
+    if Rect::new(5., 650., 105., 44.).contains(p) {
         return vec![UiAction::SolitaireHint];
     }
-    if Rect::new(120., 650., 105., 38.).contains(p) {
+    if Rect::new(120., 650., 105., 44.).contains(p) {
         return vec![UiAction::SolitaireUndo];
     }
-    if Rect::new(235., 650., 115., 38.).contains(p) {
+    if Rect::new(235., 650., 115., 44.).contains(p) {
         return vec![UiAction::SolitaireNew];
     }
     for column in 0..7 {
@@ -306,15 +306,15 @@ pub fn draw_freecell(state: &AppState) {
         Color::new(0.68, 0.63, 0.78, 1.),
     );
     panel(
-        Rect::new(120., 650., 105., 38.),
+        Rect::new(120., 650., 105., 44.),
         Color::new(0.18, 0.26, 0.34, 1.),
     );
-    text("UNDO", 153., 675., 12., WHITE);
+    text("UNDO", 153., 679., 12., WHITE);
     panel(
-        Rect::new(235., 650., 115., 38.),
+        Rect::new(235., 650., 115., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    text("NEW DEAL", 263., 675., 11., WHITE);
+    text("NEW DEAL", 263., 679., 11., WHITE);
     text(
         state
             .card_hint
@@ -326,23 +326,23 @@ pub fn draw_freecell(state: &AppState) {
         Color::new(0.63, 0.58, 0.72, 1.),
     );
     panel(
-        Rect::new(5., 650., 105., 38.),
+        Rect::new(5., 650., 105., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    text("HINT", 39., 675., 12., WHITE);
+    text("HINT", 39., 679., 12., WHITE);
 }
 
 pub fn freecell_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if Rect::new(0., 0., 100., 42.).contains(p) {
         return vec![UiAction::Cabinet];
     }
-    if Rect::new(5., 650., 105., 38.).contains(p) {
+    if Rect::new(5., 650., 105., 44.).contains(p) {
         return vec![UiAction::FreeCellHint];
     }
-    if Rect::new(120., 650., 105., 38.).contains(p) {
+    if Rect::new(120., 650., 105., 44.).contains(p) {
         return vec![UiAction::FreeCellUndo];
     }
-    if Rect::new(235., 650., 115., 38.).contains(p) {
+    if Rect::new(235., 650., 115., 44.).contains(p) {
         return vec![UiAction::FreeCellNew];
     }
     for cell in 0..4 {
@@ -511,15 +511,15 @@ pub fn draw_fivefold(state: &AppState) {
         Color::new(0.63, 0.95, 0.72, 1.),
     );
     panel(
-        Rect::new(10., 650., 150., 38.),
+        Rect::new(10., 650., 150., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    text("NEW SCORECARD", 31., 675., 11., WHITE);
+    text("NEW SCORECARD", 31., 679., 11., WHITE);
     panel(
-        Rect::new(180., 650., 150., 38.),
+        Rect::new(180., 650., 150., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    text("HINT", 235., 675., 11., WHITE);
+    text("HINT", 235., 679., 11., WHITE);
     if let Some(hint) = state.card_hint.as_deref() {
         text(hint, 10., 705., 10., Color::new(0.63, 0.95, 0.72, 1.));
     }
@@ -532,10 +532,10 @@ pub fn fivefold_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if Rect::new(10., 190., 150., 42.).contains(p) {
         return vec![UiAction::FivefoldRoll];
     }
-    if Rect::new(10., 650., 150., 38.).contains(p) {
+    if Rect::new(10., 650., 150., 44.).contains(p) {
         return vec![UiAction::FivefoldNew];
     }
-    if Rect::new(180., 650., 150., 38.).contains(p) {
+    if Rect::new(180., 650., 150., 44.).contains(p) {
         return vec![UiAction::FivefoldHint];
     }
     for index in 0..5 {
@@ -680,29 +680,29 @@ pub fn draw_reversi(state: &AppState) {
         Color::new(0.63, 0.95, 0.72, 1.),
     );
     panel(
-        Rect::new(10., 485., 160., 38.),
+        Rect::new(10., 485., 160., 44.),
         Color::new(0.18, 0.12, 0.28, 1.),
     );
     text(
         "PASS TURN",
         56.,
-        510.,
+        514.,
         accessibility::text_size(12., state.large_text),
         WHITE,
     );
     panel(
-        Rect::new(185., 485., 165., 38.),
+        Rect::new(185., 485., 165., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     text(
         "NEW BOARD",
         229.,
-        510.,
+        514.,
         accessibility::text_size(12., state.large_text),
         WHITE,
     );
     panel(
-        Rect::new(10., 540., 105., 36.),
+        Rect::new(10., 540., 105., 44.),
         if game.ai_level == AiLevel::Gentle {
             Color::new(0.45, 0.25, 0.42, 1.)
         } else {
@@ -710,7 +710,7 @@ pub fn draw_reversi(state: &AppState) {
         },
     );
     panel(
-        Rect::new(127., 540., 105., 36.),
+        Rect::new(127., 540., 105., 44.),
         if game.ai_level == AiLevel::Sharp {
             Color::new(0.45, 0.25, 0.42, 1.)
         } else {
@@ -718,7 +718,7 @@ pub fn draw_reversi(state: &AppState) {
         },
     );
     panel(
-        Rect::new(244., 540., 106., 36.),
+        Rect::new(244., 540., 106., 44.),
         if game.ai_level == AiLevel::TwoPlayer {
             Color::new(0.45, 0.25, 0.42, 1.)
         } else {
@@ -728,21 +728,21 @@ pub fn draw_reversi(state: &AppState) {
     text(
         "GENTLE",
         40.,
-        564.,
+        568.,
         accessibility::text_size(11., state.large_text),
         WHITE,
     );
     text(
         "SHARP",
         160.,
-        564.,
+        568.,
         accessibility::text_size(11., state.large_text),
         WHITE,
     );
     text(
         "2 PLAYER",
         263.,
-        564.,
+        568.,
         accessibility::text_size(11., state.large_text),
         WHITE,
     );
@@ -759,19 +759,19 @@ pub fn reversi_clicks(_state: &AppState, p: Vec2) -> Vec<UiAction> {
     if Rect::new(0., 0., 100., 42.).contains(p) {
         return vec![UiAction::Cabinet];
     }
-    if Rect::new(10., 485., 160., 38.).contains(p) {
+    if Rect::new(10., 485., 160., 44.).contains(p) {
         return vec![UiAction::ReversiPass];
     }
-    if Rect::new(185., 485., 165., 38.).contains(p) {
+    if Rect::new(185., 485., 165., 44.).contains(p) {
         return vec![UiAction::ReversiNew];
     }
-    if Rect::new(10., 540., 105., 36.).contains(p) {
+    if Rect::new(10., 540., 105., 44.).contains(p) {
         return vec![UiAction::ReversiLevel(AiLevel::Gentle)];
     }
-    if Rect::new(127., 540., 105., 36.).contains(p) {
+    if Rect::new(127., 540., 105., 44.).contains(p) {
         return vec![UiAction::ReversiLevel(AiLevel::Sharp)];
     }
-    if Rect::new(244., 540., 106., 36.).contains(p) {
+    if Rect::new(244., 540., 106., 44.).contains(p) {
         return vec![UiAction::ReversiLevel(AiLevel::TwoPlayer)];
     }
     if !REVERSI_BOARD.contains(p) {

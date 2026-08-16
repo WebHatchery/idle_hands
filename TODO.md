@@ -1332,3 +1332,8 @@ contract, shared confirmation safety, responsive capture coverage, and the
 
 - [x] Resize Favorites, Achievements, and portrait Help return actions to
   touch-complete targets with refreshed responsive capture coverage.
+
+## Phase 137 — Card-game action accessibility
+
+- [x] Resize shared responsive Solitaire, FreeCell, Fivefold, and Reversi
+  action rows to touch-complete targets with refreshed game captures.
