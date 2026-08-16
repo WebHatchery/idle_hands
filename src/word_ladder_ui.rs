@@ -32,7 +32,7 @@ pub fn draw(state: &AppState) {
     draw_text(format!("{} moves  •  {} → {}", game.moves, game.start, game.target), if compact { 300. } else { title_x }, if compact { 28. } else { title_y + 24. }, accessibility::text_size(14., state.large_text), muted());
     draw_words(game, if compact { 55. } else if portrait { 15. } else { 390. }, 105., 300.);
     draw_keyboard(l, game, state.large_text); button(l.back, "DELETE", state.large_text); button(l.submit, "SUBMIT", state.large_text); button(l.hint, "HINT", state.large_text); button(l.undo, "UNDO", state.large_text); button(l.new_game, "NEW LADDER", state.large_text);
-    draw_text(&game.message, if compact { 40. } else { title_x }, if compact { 275. } else if portrait { 405. } else { 455. }, accessibility::text_size(15., state.large_text), muted());
+    draw_text(state.card_hint.as_deref().unwrap_or(&game.message), if compact { 40. } else { title_x }, if compact { 275. } else if portrait { 405. } else { 455. }, accessibility::text_size(15., state.large_text), muted());
 }
 
 fn draw_words(game: &WordLadder, x: f32, y: f32, width: f32) {

@@ -209,9 +209,6 @@ impl Game {
             self.state.confirm_restart = true;
             self.state.pending_restart = Some(crate::ui::UiAction::MineRestart);
         }
-        if scene == "word_ladder_hint" || scene == "word_ladder_hint_accessible" {
-            self.state.card_hint = Some(card_hints::word_ladder(&self.state));
-        }
         if scene == "freecell_selected" {
             self.state.freecell.select_cascade(0, 0);
         }
@@ -273,6 +270,8 @@ impl Game {
             self.state.card_hint = Some(card_hints::battleship(&self.state));
         } else if scene == "word_grid_hint" || scene == "word_grid_hint_accessible" {
             self.state.card_hint = Some(card_hints::word_grid(&self.state));
+        } else if scene == "word_ladder_hint" || scene == "word_ladder_hint_accessible" {
+            self.state.card_hint = Some(card_hints::word_ladder(&self.state));
         } else if scene == "pipe_loop_hint" || scene == "pipe_loop_hint_accessible" {
             self.state.card_hint = Some(card_hints::pipe_loop(&self.state));
         } else if scene == "maze_walk_hint" || scene == "maze_walk_hint_accessible" {

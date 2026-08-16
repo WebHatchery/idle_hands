@@ -1181,6 +1181,13 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 
 ## Post-launch candidates (not scheduled)
 
+## Phase 112 — Word Ladder hint feedback
+
+- [x] Route the shared HINT message into the Word Ladder board feedback line
+  so the exact suggested step is visible in desktop, portrait, and compact
+  landscape layouts.
+  - [x] Add deterministic hint coverage and a dedicated hint capture alias.
+
 - Puzzles/tabletop: no remaining scheduled candidates.
 - Arcade: no remaining scheduled candidates.
 - Original cabinet games: no remaining scheduled candidates.

@@ -327,6 +327,14 @@ fn default_word_grid_has_a_deterministic_probe_hint() {
 }
 
 #[test]
+fn default_word_ladder_has_a_deterministic_step_hint() {
+    let state = AppState::default();
+
+    assert_eq!(word_ladder(&state), "Try NIGHT next: change one letter.");
+    assert_eq!(word_ladder(&state), word_ladder(&state));
+}
+
+#[test]
 fn default_pipe_loop_has_a_deterministic_hint() {
     let state = AppState::default();
 
