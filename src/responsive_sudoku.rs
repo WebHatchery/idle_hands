@@ -24,7 +24,7 @@ pub fn draw(state: &AppState) {
     text("‹ CABINET", 10., 30., 14., Color::new(0.78, 0.70, 0.92, 1.));
     text("SUDOKU", 12., 78., 34., Color::new(0.98, 0.83, 0.45, 1.));
     for (index, difficulty) in crate::sudoku::SudokuDifficulty::ALL.iter().enumerate() {
-        let rect = Rect::new(148. + index as f32 * 68., 48., 62., 28.);
+        let rect = Rect::new(148. + index as f32 * 68., 48., 62., 44.);
         panel(
             rect,
             if *difficulty == game.difficulty {
@@ -33,7 +33,7 @@ pub fn draw(state: &AppState) {
                 Color::new(0.16, 0.11, 0.24, 1.)
             },
         );
-        text(difficulty.label(), rect.x + 8., rect.y + 19., 10., WHITE);
+        text(difficulty.label(), rect.x + 8., rect.y + 28., 10., WHITE);
     }
     let board = Rect::new(10., 100., 340., 340.);
     panel(board, crate::accessibility::board_fill(state.high_contrast));
@@ -106,20 +106,20 @@ pub fn draw(state: &AppState) {
         text(&number.to_string(), rect.x + 46., rect.y + 29., 20., WHITE);
     }
     panel(
-        Rect::new(12., 650., 104., 42.),
+        Rect::new(12., 650., 104., 44.),
         Color::new(0.45, 0.25, 0.42, 1.),
     );
-    text("PENCIL", 35., 677., 13., WHITE);
+    text("PENCIL", 35., 679., 13., WHITE);
     panel(
-        Rect::new(128., 650., 104., 42.),
+        Rect::new(128., 650., 104., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    text("ERASE", 158., 677., 13., WHITE);
+    text("ERASE", 158., 679., 13., WHITE);
     panel(
-        Rect::new(244., 650., 104., 42.),
+        Rect::new(244., 650., 104., 44.),
         Color::new(0.18, 0.26, 0.34, 1.),
     );
-    text("UNDO", 276., 677., 13., WHITE);
+    text("UNDO", 276., 679., 13., WHITE);
     text(
         &format!(
             "Moves {}  •  Best {}",
@@ -146,7 +146,7 @@ pub fn clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         }
     }
     for (index, difficulty) in crate::sudoku::SudokuDifficulty::ALL.iter().enumerate() {
-        if Rect::new(148. + index as f32 * 68., 48., 62., 28.).contains(p) {
+        if Rect::new(148. + index as f32 * 68., 48., 62., 44.).contains(p) {
             return vec![UiAction::SudokuDifficulty(*difficulty)];
         }
     }
@@ -157,13 +157,13 @@ pub fn clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
             return vec![UiAction::SudokuNumber(number as u8)];
         }
     }
-    if Rect::new(12., 650., 104., 42.).contains(p) {
+    if Rect::new(12., 650., 104., 44.).contains(p) {
         return vec![UiAction::SudokuNoteMode];
     }
-    if Rect::new(128., 650., 104., 42.).contains(p) {
+    if Rect::new(128., 650., 104., 44.).contains(p) {
         return vec![UiAction::SudokuErase];
     }
-    if Rect::new(244., 650., 104., 42.).contains(p) {
+    if Rect::new(244., 650., 104., 44.).contains(p) {
         return vec![UiAction::SudokuUndo];
     }
     let _ = state;

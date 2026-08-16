@@ -133,19 +133,19 @@ pub fn draw_solitaire(state: &AppState) {
         }
     }
     panel(
-        Rect::new(10., 330., 125., 42.),
+        Rect::new(10., 330., 125., 44.),
         Color::new(0.18, 0.26, 0.34, 1.),
     );
-    text("UNDO", 53., 357., 12., WHITE);
+    text("UNDO", 53., 359., 12., WHITE);
     panel(
-        Rect::new(150., 330., 145., 42.),
+        Rect::new(150., 330., 145., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    text("NEW DEAL", 193., 357., 12., WHITE);
+    text("NEW DEAL", 193., 359., 12., WHITE);
     text(
         &format!("Moves {}", game.moves),
         330.,
-        357.,
+        359.,
         13.,
         Color::new(0.68, 0.63, 0.78, 1.),
     );
@@ -153,10 +153,10 @@ pub fn draw_solitaire(state: &AppState) {
         text(hint, 330., 385., 11., Color::new(0.63, 0.95, 0.72, 1.));
     }
     panel(
-        Rect::new(310., 330., 110., 42.),
+        Rect::new(310., 330., 110., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    text("HINT", 346., 357., 12., WHITE);
+    text("HINT", 346., 359., 12., WHITE);
 }
 pub fn solitaire_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if Rect::new(0., 0., 90., 28.).contains(p) {
@@ -173,13 +173,13 @@ pub fn solitaire_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
             return vec![UiAction::SolitaireFoundation(suit)];
         }
     }
-    if Rect::new(310., 330., 110., 42.).contains(p) {
+    if Rect::new(310., 330., 110., 44.).contains(p) {
         return vec![UiAction::SolitaireHint];
     }
-    if Rect::new(10., 330., 125., 42.).contains(p) {
+    if Rect::new(10., 330., 125., 44.).contains(p) {
         return vec![UiAction::SolitaireUndo];
     }
-    if Rect::new(150., 330., 145., 42.).contains(p) {
+    if Rect::new(150., 330., 145., 44.).contains(p) {
         return vec![UiAction::SolitaireNew];
     }
     for column in 0..7 {
@@ -272,19 +272,19 @@ pub fn draw_freecell(state: &AppState) {
         }
     }
     panel(
-        Rect::new(10., 330., 125., 42.),
+        Rect::new(10., 330., 125., 44.),
         Color::new(0.18, 0.26, 0.34, 1.),
     );
-    text("UNDO", 53., 357., 12., WHITE);
+    text("UNDO", 53., 359., 12., WHITE);
     panel(
-        Rect::new(150., 330., 145., 42.),
+        Rect::new(150., 330., 145., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    text("NEW DEAL", 193., 357., 12., WHITE);
+    text("NEW DEAL", 193., 359., 12., WHITE);
     text(
         &format!("Moves {}", game.moves),
         330.,
-        357.,
+        359.,
         13.,
         Color::new(0.68, 0.63, 0.78, 1.),
     );
@@ -292,22 +292,22 @@ pub fn draw_freecell(state: &AppState) {
         text(hint, 330., 385., 11., Color::new(0.63, 0.95, 0.72, 1.));
     }
     panel(
-        Rect::new(310., 330., 110., 42.),
+        Rect::new(310., 330., 110., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    text("HINT", 346., 357., 12., WHITE);
+    text("HINT", 346., 359., 12., WHITE);
 }
 pub fn freecell_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if Rect::new(0., 0., 90., 28.).contains(p) {
         return vec![UiAction::Cabinet];
     }
-    if Rect::new(310., 330., 110., 42.).contains(p) {
+    if Rect::new(310., 330., 110., 44.).contains(p) {
         return vec![UiAction::FreeCellHint];
     }
-    if Rect::new(10., 330., 125., 42.).contains(p) {
+    if Rect::new(10., 330., 125., 44.).contains(p) {
         return vec![UiAction::FreeCellUndo];
     }
-    if Rect::new(150., 330., 145., 42.).contains(p) {
+    if Rect::new(150., 330., 145., 44.).contains(p) {
         return vec![UiAction::FreeCellNew];
     }
     for cell in 0..4 {
@@ -438,15 +438,15 @@ pub fn draw_fivefold(state: &AppState) {
         text(&score, 790., y, 10., Color::new(0.98, 0.83, 0.45, 1.));
     }
     panel(
-        Rect::new(10., 250., 180., 42.),
+        Rect::new(10., 250., 180., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    text("NEW SCORECARD", 45., 277., 12., WHITE);
+    text("NEW SCORECARD", 45., 279., 12., WHITE);
     panel(
-        Rect::new(210., 250., 150., 42.),
+        Rect::new(210., 250., 150., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    text("HINT", 265., 277., 12., WHITE);
+    text("HINT", 265., 279., 12., WHITE);
     text(
         state.card_hint.as_deref().unwrap_or("Tap HINT for a call"),
         210.,
@@ -462,10 +462,10 @@ pub fn fivefold_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if Rect::new(10., 170., 180., 46.).contains(p) {
         return vec![UiAction::FivefoldRoll];
     }
-    if Rect::new(10., 250., 180., 42.).contains(p) {
+    if Rect::new(10., 250., 180., 44.).contains(p) {
         return vec![UiAction::FivefoldNew];
     }
-    if Rect::new(210., 250., 150., 42.).contains(p) {
+    if Rect::new(210., 250., 150., 44.).contains(p) {
         return vec![UiAction::FivefoldHint];
     }
     for index in 0..5 {

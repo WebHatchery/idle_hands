@@ -1337,3 +1337,8 @@ contract, shared confirmation safety, responsive capture coverage, and the
 
 - [x] Resize shared responsive Solitaire, FreeCell, Fivefold, and Reversi
   action rows to touch-complete targets with refreshed game captures.
+
+## Phase 138 — Responsive control accessibility
+
+- [x] Resize compact-landscape card actions and portrait Sudoku difficulty,
+  note, erase, and undo controls to touch-complete targets with captures.
