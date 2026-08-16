@@ -333,3 +333,11 @@ fn default_pipe_loop_has_a_deterministic_hint() {
     assert!(pipe_loop(&state).contains("Rotate tile"));
     assert_eq!(pipe_loop(&state), pipe_loop(&state));
 }
+
+#[test]
+fn default_maze_walk_has_a_deterministic_hint() {
+    let state = AppState::default();
+
+    assert!(maze_walk(&state).contains("Walk"));
+    assert_eq!(maze_walk(&state), maze_walk(&state));
+}

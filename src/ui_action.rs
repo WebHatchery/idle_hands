@@ -236,6 +236,7 @@ pub enum UiAction {
     PipeUndo,
     PipeNew,
     MazeStep(crate::state::Direction),
+    MazeHint,
     MazeUndo,
     MazeNew,
     MatchThreeTap(usize),

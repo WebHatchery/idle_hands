@@ -1,6 +1,7 @@
 //! Deterministic touch-first Maze Walk navigation puzzle.
 
 use serde::{Deserialize, Serialize};
+use std::collections::VecDeque;
 
 use crate::state::Direction;
 
@@ -118,6 +119,37 @@ impl MazeWalk {
     }
     pub fn won(&self) -> bool {
         self.phase == MazePhase::Won
+    }
+
+    pub fn hint_direction(&self) -> Option<Direction> {
+        if self.phase != MazePhase::Playing {
+            return None;
+        }
+        let mut queue = VecDeque::from([(self.player, None)]);
+        let mut visited = [false; CELLS];
+        while let Some((index, first)) = queue.pop_front() {
+            if visited[index] {
+                continue;
+            }
+            visited[index] = true;
+            for direction in [
+                Direction::Right,
+                Direction::Down,
+                Direction::Left,
+                Direction::Up,
+            ] {
+                if self.walls[index] & direction_bit(direction) != 0 {
+                    continue;
+                }
+                let next = neighbor(index, direction).expect("open edge has a neighbor");
+                let first = first.or(Some(direction));
+                if next == self.goal {
+                    return first;
+                }
+                queue.push_back((next, first));
+            }
+        }
+        None
     }
 
     fn clone_without_undo(&self) -> Self {

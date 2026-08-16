@@ -12,6 +12,7 @@ use macroquad::prelude::*;
 struct Layout {
     board: Rect,
     arrows: [Rect; 4],
+    hint: Rect,
     undo: Rect,
     new_game: Rect,
 }
@@ -26,18 +27,20 @@ fn layout() -> Layout {
                 Rect::new(740., 100., 54., 44.),
                 Rect::new(680., 155., 54., 44.),
             ],
+            hint: Rect::new(620., 275., 105., 44.),
             undo: Rect::new(620., 220., 105., 44.),
             new_game: Rect::new(735., 220., 105., 44.),
         }
     } else if crate::ui::is_portrait() {
         Layout {
-            board: Rect::new(5., 105., 330., 330.),
+            board: Rect::new(15., 85., 300., 300.),
             arrows: [
-                Rect::new(5., 470., 76., 44.),
-                Rect::new(86., 470., 76., 44.),
-                Rect::new(167., 470., 76., 44.),
-                Rect::new(248., 470., 76., 44.),
+                Rect::new(15., 420., 70., 44.),
+                Rect::new(90., 420., 70., 44.),
+                Rect::new(165., 420., 70., 44.),
+                Rect::new(240., 420., 70., 44.),
             ],
+            hint: Rect::new(15., 475., 145., 44.),
             undo: Rect::new(5., 530., 145., 44.),
             new_game: Rect::new(165., 530., 170., 44.),
         }
@@ -50,6 +53,7 @@ fn layout() -> Layout {
                 Rect::new(970., 180., 70., 44.),
                 Rect::new(890., 235., 70., 44.),
             ],
+            hint: Rect::new(810., 365., 120., 44.),
             undo: Rect::new(810., 310., 120., 44.),
             new_game: Rect::new(950., 310., 140., 44.),
         }
@@ -73,6 +77,9 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
             )];
         }
     }
+    if l.hint.contains(point) {
+        return vec![UiAction::MazeHint];
+    }
     if l.undo.contains(point) {
         return vec![UiAction::MazeUndo];
     }
@@ -90,7 +97,7 @@ pub fn draw(state: &AppState) {
     let title_x = if compact {
         70.
     } else if portrait {
-        10.
+        25.
     } else {
         400.
     };
@@ -124,17 +131,21 @@ pub fn draw(state: &AppState) {
             state.large_text,
         );
     }
+    button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW MAZE", state.large_text);
     let status_y = if portrait {
-        595.
+        610.
     } else if compact {
         365.
     } else {
         545.
     };
     draw_text(
-        "Tap a direction to walk to the glowing exit",
+        state
+            .card_hint
+            .as_deref()
+            .unwrap_or("Tap a direction to walk to the glowing exit"),
         if compact { 250. } else { title_x },
         status_y,
         accessibility::text_size(body_size(), state.large_text),

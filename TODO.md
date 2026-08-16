@@ -1105,6 +1105,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover rotation determinism, board preservation, hint capture aliases,
     accessibility, and responsive layouts.
 
+## Phase 103 — Maze Walk discoverability polish
+
+- [x] Add an exact, deterministic, non-mutating HINT action that recommends
+  the next direction on a shortest route to the exit.
+  - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
+  - [x] Cover route determinism, player preservation, hint capture aliases,
+    accessibility, and responsive layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

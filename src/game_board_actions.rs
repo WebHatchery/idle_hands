@@ -435,6 +435,10 @@ impl Game {
             UiAction::MazeStep(direction) => {
                 self.state.maze_walk.step(*direction);
             }
+            UiAction::MazeHint => {
+                self.state.card_hint = Some(crate::card_hints::maze_walk(&self.state));
+                return true;
+            }
             UiAction::MazeUndo => {
                 self.state.maze_walk.undo();
             }

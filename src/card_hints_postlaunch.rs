@@ -349,6 +349,26 @@ pub fn pipe_loop(state: &AppState) -> String {
     )
 }
 
+pub fn maze_walk(state: &AppState) -> String {
+    let game = &state.maze_walk;
+    if game.won() {
+        return "The quiet exit is found — tap NEW MAZE to play again.".into();
+    }
+    game.hint_direction().map_or_else(
+        || "No route remains — tap NEW MAZE to begin again.".into(),
+        |direction| format!("Walk {} toward the exit.", direction_label(direction)),
+    )
+}
+
+fn direction_label(direction: crate::state::Direction) -> &'static str {
+    match direction {
+        crate::state::Direction::Up => "UP",
+        crate::state::Direction::Right => "RIGHT",
+        crate::state::Direction::Down => "DOWN",
+        crate::state::Direction::Left => "LEFT",
+    }
+}
+
 fn battleship_cell_label(index: usize) -> String {
     format!(
         "{}{}",
