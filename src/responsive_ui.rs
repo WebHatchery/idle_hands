@@ -578,20 +578,20 @@ pub fn settings_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         return vec![UiAction::ResetData];
     }
     for (rect, action) in [
-        (Rect::new(22., 137., 316., 42.), UiAction::CycleCardBack),
-        (Rect::new(22., 187., 316., 42.), UiAction::CycleBoardTheme),
-        (Rect::new(22., 237., 316., 42.), UiAction::CycleSoundSet),
+        (Rect::new(22., 137., 316., 44.), UiAction::CycleCardBack),
+        (Rect::new(22., 187., 316., 44.), UiAction::CycleBoardTheme),
+        (Rect::new(22., 237., 316., 44.), UiAction::CycleSoundSet),
         (
-            Rect::new(22., 287., 316., 42.),
+            Rect::new(22., 287., 316., 44.),
             UiAction::CycleCabinetDecoration,
         ),
-        (Rect::new(22., 360., 150., 42.), UiAction::ToggleSound),
-        (Rect::new(186., 360., 152., 42.), UiAction::ToggleMotion),
+        (Rect::new(22., 360., 150., 44.), UiAction::ToggleSound),
+        (Rect::new(186., 360., 152., 44.), UiAction::ToggleMotion),
         (
-            Rect::new(22., 465., 150., 42.),
+            Rect::new(22., 465., 150., 44.),
             UiAction::ToggleHighContrast,
         ),
-        (Rect::new(186., 465., 152., 42.), UiAction::ToggleLargeText),
+        (Rect::new(186., 465., 152., 44.), UiAction::ToggleLargeText),
     ] {
         if rect.contains(p) {
             return vec![action];
@@ -644,14 +644,14 @@ pub fn draw_tutorial(game: GameId) {
 
 pub fn draw_replay_button() {
     panel(
-        Rect::new(245., 10., 105., 38.),
+        Rect::new(245., 10., 105., 44.),
         Color::new(0.16, 0.11, 0.25, 0.96),
     );
-    text("TUTORIAL", 258., 34., 11., WHITE);
+    text("TUTORIAL", 258., 38., 11., WHITE);
 }
 
 pub fn replay_clicks(p: Vec2) -> bool {
-    Rect::new(245., 10., 105., 38.).contains(p)
+    Rect::new(245., 10., 105., 44.).contains(p)
 }
 
 fn cabinet_status(state: &AppState, game: GameId) -> &'static str {

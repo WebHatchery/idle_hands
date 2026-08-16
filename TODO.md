@@ -1362,3 +1362,8 @@ contract, shared confirmation safety, responsive capture coverage, and the
 
 - [x] Resize portrait Nonogram and Minesweeper preset selectors to
   touch-complete targets with refreshed puzzle captures.
+
+## Phase 143 — Portrait Settings routing accessibility
+
+- [x] Align portrait Settings row hit regions and the replay tutorial action
+  with their rendered touch-sized controls.
