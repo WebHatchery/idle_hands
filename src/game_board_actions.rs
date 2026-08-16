@@ -61,6 +61,10 @@ impl Game {
             UiAction::SnakeStep(direction) => {
                 self.state.snake.step(*direction);
             }
+            UiAction::SnakeHint => {
+                self.state.card_hint = Some(crate::card_hints::snake(&self.state));
+                return true;
+            }
             UiAction::SnakeUndo => {
                 self.state.snake.undo();
             }

@@ -16,6 +16,7 @@ struct Layout {
     left: Rect,
     down: Rect,
     right: Rect,
+    hint: Rect,
     undo: Rect,
     new_game: Rect,
 }
@@ -29,6 +30,7 @@ fn layout() -> Layout {
             left: Rect::new(435., 178., 58., 42.),
             down: Rect::new(500., 178., 58., 42.),
             right: Rect::new(565., 178., 58., 42.),
+            hint: Rect::new(435., 300., 90., 38.),
             undo: Rect::new(435., 250., 90., 38.),
             new_game: Rect::new(535., 250., 110., 38.),
         }
@@ -40,17 +42,19 @@ fn layout() -> Layout {
             left: Rect::new(70., 445., 65., 40.),
             down: Rect::new(145., 445., 65., 40.),
             right: Rect::new(220., 445., 65., 40.),
+            hint: Rect::new(20., 590., 145., 42.),
             undo: Rect::new(20., 535., 145., 42.),
             new_game: Rect::new(185., 535., 165., 42.),
         }
     } else {
         Layout {
-            board: Rect::new(360., 82., 640., 480.),
+            board: Rect::new(360., 100., 640., 480.),
             cell: 40.,
             up: Rect::new(1080., 190., 65., 42.),
             left: Rect::new(1010., 238., 65., 42.),
             down: Rect::new(1080., 238., 65., 42.),
             right: Rect::new(1150., 238., 65., 42.),
+            hint: Rect::new(1010., 385., 95., 42.),
             undo: Rect::new(1010., 330., 95., 42.),
             new_game: Rect::new(1120., 330., 110., 42.),
         }
@@ -74,6 +78,9 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if layout.undo.contains(point) {
         return vec![UiAction::SnakeUndo];
+    }
+    if layout.hint.contains(point) {
+        return vec![UiAction::SnakeHint];
     }
     if layout.new_game.contains(point) {
         return vec![UiAction::SnakeNew];
@@ -177,7 +184,14 @@ pub fn draw(state: &AppState) {
         );
     }
     text(
-        &format!("Score {}  •  Tap a direction to move", game.score),
+        &format!(
+            "Score {}  •  {}",
+            game.score,
+            state
+                .card_hint
+                .as_deref()
+                .unwrap_or("Tap a direction to move")
+        ),
         if compact {
             435.
         } else if portrait {
@@ -203,6 +217,7 @@ pub fn draw(state: &AppState) {
     ] {
         button(rect, label, state.large_text);
     }
+    button(layout.hint, "HINT", state.large_text);
     button(layout.undo, "UNDO", state.large_text);
     button(layout.new_game, "NEW BOARD", state.large_text);
 }

@@ -28,3 +28,24 @@ fn opposite_turns_are_rejected_and_wall_collisions_lose() {
     assert!(game.step(SnakeDirection::Right));
     assert_eq!(game.status, SnakeStatus::Lost);
 }
+
+#[test]
+fn hint_prefers_a_safe_direction_toward_food_without_mutating() {
+    let mut game = Snake::new(1);
+    game.food = 8;
+    let before = game.clone();
+
+    assert_eq!(game.hint_direction(), Some(SnakeDirection::Up));
+    assert_eq!(game.body, before.body);
+    assert_eq!(game.direction, before.direction);
+    assert_eq!(game.food, before.food);
+    assert_eq!(game.moves, before.moves);
+}
+
+#[test]
+fn hint_is_empty_after_the_snake_finishes() {
+    let mut game = Snake::new(1);
+    game.status = SnakeStatus::Won;
+
+    assert_eq!(game.hint_direction(), None);
+}

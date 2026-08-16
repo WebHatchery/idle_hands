@@ -506,6 +506,32 @@ pub fn mahjong_solitaire(state: &AppState) -> String {
     )
 }
 
+pub fn snake(state: &AppState) -> String {
+    let game = &state.snake;
+    match game.status {
+        crate::snake::SnakeStatus::Won => {
+            return "The coil is complete — tap NEW BOARD to play again.".into()
+        }
+        crate::snake::SnakeStatus::Lost => {
+            return "The coil is resting — tap NEW BOARD to begin again.".into()
+        }
+        crate::snake::SnakeStatus::Playing => {}
+    }
+    game.hint_direction().map_or_else(
+        || "No safe turn remains — tap NEW BOARD to begin again.".into(),
+        |direction| format!("Try {} toward the food.", direction_label(direction)),
+    )
+}
+
+fn direction_label(direction: crate::snake::SnakeDirection) -> &'static str {
+    match direction {
+        crate::snake::SnakeDirection::Up => "UP",
+        crate::snake::SnakeDirection::Right => "RIGHT",
+        crate::snake::SnakeDirection::Down => "DOWN",
+        crate::snake::SnakeDirection::Left => "LEFT",
+    }
+}
+
 fn color_name(color: u8) -> &'static str {
     ["red", "amber", "green", "blue", "violet", "gold"][color as usize % 6]
 }
@@ -536,6 +562,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::ReversiHint
             | crate::ui::UiAction::PegSolitaireHint
             | crate::ui::UiAction::MahjongSolitaireHint
+            | crate::ui::UiAction::SnakeHint
     )
 }
 

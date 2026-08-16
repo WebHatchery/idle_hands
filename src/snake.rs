@@ -122,6 +122,27 @@ impl Snake {
         true
     }
 
+    pub fn hint_direction(&self) -> Option<SnakeDirection> {
+        if self.status != SnakeStatus::Playing {
+            return None;
+        }
+        [
+            SnakeDirection::Up,
+            SnakeDirection::Right,
+            SnakeDirection::Down,
+            SnakeDirection::Left,
+        ]
+        .into_iter()
+        .filter(|&direction| !direction.opposite(self.direction))
+        .filter_map(|direction| {
+            let next = self.next_cell(direction)?;
+            self.is_safe(next)
+                .then_some((direction, self.food_distance(next)))
+        })
+        .min_by_key(|(_, distance)| *distance)
+        .map(|(direction, _)| direction)
+    }
+
     pub fn undo(&mut self) -> bool {
         if let Some((body, direction, food, score, moves, status, seed)) = self.undo.take() {
             self.body = body;
@@ -153,6 +174,38 @@ impl Snake {
             }
         }
         0
+    }
+
+    fn next_cell(&self, direction: SnakeDirection) -> Option<u16> {
+        let head = self.body.first().copied()? as i32;
+        let row = head / WIDTH;
+        let column = head % WIDTH;
+        let (row_step, column_step) = match direction {
+            SnakeDirection::Up => (-1, 0),
+            SnakeDirection::Right => (0, 1),
+            SnakeDirection::Down => (1, 0),
+            SnakeDirection::Left => (0, -1),
+        };
+        let next_row = row + row_step;
+        let next_column = column + column_step;
+        (0..HEIGHT)
+            .contains(&next_row)
+            .then_some(())
+            .filter(|_| (0..WIDTH).contains(&next_column))
+            .map(|_| (next_row * WIDTH + next_column) as u16)
+    }
+
+    fn is_safe(&self, next: u16) -> bool {
+        let eating = next == self.food;
+        !self.body.contains(&next) || (!eating && !self.body[..self.body.len() - 1].contains(&next))
+    }
+
+    fn food_distance(&self, next: u16) -> i32 {
+        let row = i32::from(next) / WIDTH;
+        let column = i32::from(next) % WIDTH;
+        let food_row = i32::from(self.food) / WIDTH;
+        let food_column = i32::from(self.food) % WIDTH;
+        (row - food_row).abs() + (column - food_column).abs()
     }
 }
 

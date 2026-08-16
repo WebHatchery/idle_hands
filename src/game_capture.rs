@@ -76,7 +76,7 @@ impl Game {
             | "mahjong_solitaire_hint"
             | "mahjong_solitaire_hint_accessible" => Screen::Game(GameId::MahjongSolitaire),
             "mahjong_solitaire_accessible" => Screen::Game(GameId::MahjongSolitaire),
-            "snake" => Screen::Game(GameId::Snake),
+            "snake" | "snake_hint" | "snake_hint_accessible" => Screen::Game(GameId::Snake),
             "snake_accessible" => Screen::Game(GameId::Snake),
             "breakout" => Screen::Game(GameId::Breakout),
             "breakout_accessible" => Screen::Game(GameId::Breakout),
@@ -173,6 +173,8 @@ impl Game {
             self.state.card_hint = Some(card_hints::spider_solitaire(&self.state));
         } else if scene == "nim_hint" || scene == "nim_hint_accessible" {
             self.state.card_hint = Some(card_hints::nim(&self.state));
+        } else if scene == "snake_hint" || scene == "snake_hint_accessible" {
+            self.state.card_hint = Some(card_hints::snake(&self.state));
         } else if scene == "2048_hint" || scene == "2048_hint_accessible" {
             self.state.card_hint = Some(card_hints::game_2048(&self.state));
         } else if scene == "tic_tac_toe_hint" || scene == "tic_tac_toe_hint_accessible" {

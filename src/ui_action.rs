@@ -127,6 +127,7 @@ pub enum UiAction {
     MahjongSolitaireUndo,
     MahjongSolitaireNew,
     SnakeStep(crate::snake::SnakeDirection),
+    SnakeHint,
     SnakeUndo,
     SnakeNew,
     BreakoutStep(crate::breakout::PaddleMove),
