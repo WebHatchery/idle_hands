@@ -70,6 +70,7 @@ pub enum UiAction {
     FivefoldRoll,
     FivefoldHold(usize),
     FivefoldCategory(crate::fivefold::Category),
+    FivefoldHint,
     FivefoldNew,
     ReversiPlace(usize),
     ReversiHint,

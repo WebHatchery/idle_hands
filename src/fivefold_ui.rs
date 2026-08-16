@@ -176,20 +176,21 @@ pub fn draw_fivefold(state: &AppState) {
         );
     }
     draw_text(
-        match game.status {
+        state.card_hint.as_deref().unwrap_or(match game.status {
             FivefoldStatus::Ready => "Roll, hold, and choose a call",
             FivefoldStatus::Rolling => "Tap a score to record this roll",
             FivefoldStatus::Complete => "Scorecard complete",
-        },
+        }),
         45.,
         555.,
         18.,
         Color::new(0.63, 0.95, 0.72, 1.),
     );
     button(Rect::new(45., 610., 150., 44.), "NEW SCORECARD", false);
+    button(Rect::new(215., 610., 150., 44.), "HINT", false);
     draw_text(
         "Tap ROLL, then tap dice to hold them.",
-        220.,
+        390.,
         637.,
         16.,
         Color::new(0.63, 0.58, 0.72, 1.),
@@ -205,6 +206,9 @@ pub fn fivefold_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     if Rect::new(45., 610., 150., 44.).contains(p) {
         return vec![UiAction::FivefoldNew];
+    }
+    if Rect::new(215., 610., 150., 44.).contains(p) {
+        return vec![UiAction::FivefoldHint];
     }
     for index in 0..5 {
         if Rect::new(65. + index as f32 * 125., 205., 100., 100.).contains(p) {

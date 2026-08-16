@@ -110,6 +110,26 @@ pub fn freecell(state: &AppState) -> String {
     "No obvious move — try UNDO and keep every card visible.".into()
 }
 
+pub fn fivefold(state: &AppState) -> String {
+    let game = &state.fivefold;
+    if game.status == crate::fivefold::FivefoldStatus::Complete {
+        return "The scorecard is complete — tap NEW SCORECARD to play again.".into();
+    }
+    if game.roll_number == 0 {
+        return "Roll DICE before choosing a call.".into();
+    }
+    game.hint_category().map_or_else(
+        || "No open call remains — tap NEW SCORECARD to begin again.".into(),
+        |category| {
+            format!(
+                "Choose {} for {} points.",
+                category.label(),
+                game.score_for(category)
+            )
+        },
+    )
+}
+
 pub fn pyramid(state: &AppState) -> String {
     let game = &state.pyramid;
     if game.status == crate::pyramid::PyramidStatus::Won {
@@ -527,6 +547,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::LightsOutHint
             | crate::ui::UiAction::SolitaireHint
             | crate::ui::UiAction::FreeCellHint
+            | crate::ui::UiAction::FivefoldHint
             | crate::ui::UiAction::PyramidHint
             | crate::ui::UiAction::TriPeaksHint
             | crate::ui::UiAction::KlondikeGolfHint

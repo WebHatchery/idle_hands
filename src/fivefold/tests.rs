@@ -65,3 +65,29 @@ fn a_turn_stops_after_three_rolls() {
     assert!(game.roll());
     assert!(!game.roll());
 }
+
+#[test]
+fn hint_recommends_the_best_open_category_without_mutating_the_roll() {
+    let mut game = Fivefold::new(10);
+    game.roll();
+    game.dice = [2, 2, 3, 3, 3];
+    let before = game.clone();
+
+    assert_eq!(game.hint_category(), Some(Category::FullHouse));
+    assert_eq!(game.hint_category(), Some(Category::FullHouse));
+    assert_eq!(game.dice, before.dice);
+    assert_eq!(game.held, before.held);
+    assert_eq!(game.roll_number, before.roll_number);
+    assert_eq!(game.scores, before.scores);
+    assert_eq!(game.seed, before.seed);
+}
+
+#[test]
+fn hint_ignores_categories_that_are_already_scored() {
+    let mut game = Fivefold::new(11);
+    game.roll();
+    game.dice = [6, 6, 6, 6, 2];
+    game.scores[Category::FourKind.index()] = Some(26);
+
+    assert_eq!(game.hint_category(), Some(Category::ThreeKind));
+}

@@ -212,6 +212,26 @@ impl Fivefold {
     pub fn total(&self) -> u16 {
         self.scores.iter().flatten().sum::<u16>() + self.bonus()
     }
+
+    pub fn hint_category(&self) -> Option<Category> {
+        if self.roll_number == 0 || self.status == FivefoldStatus::Complete {
+            return None;
+        }
+        let mut best = None;
+        let mut best_score = 0;
+        for category in Category::ALL {
+            if self.scores[category.index()].is_some() {
+                continue;
+            }
+            let score = self.score_for(category);
+            if best.is_none() || score > best_score {
+                best = Some(category);
+                best_score = score;
+            }
+        }
+        best
+    }
+
     fn counts(&self) -> [u8; 6] {
         let mut counts = [0; 6];
         for value in self.dice {

@@ -515,6 +515,14 @@ pub fn draw_fivefold(state: &AppState) {
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     text("NEW SCORECARD", 31., 675., 11., WHITE);
+    panel(
+        Rect::new(180., 650., 150., 38.),
+        Color::new(0.20, 0.13, 0.30, 1.),
+    );
+    text("HINT", 235., 675., 11., WHITE);
+    if let Some(hint) = state.card_hint.as_deref() {
+        text(hint, 10., 705., 10., Color::new(0.63, 0.95, 0.72, 1.));
+    }
 }
 
 pub fn fivefold_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
@@ -526,6 +534,9 @@ pub fn fivefold_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     if Rect::new(10., 650., 150., 38.).contains(p) {
         return vec![UiAction::FivefoldNew];
+    }
+    if Rect::new(180., 650., 150., 38.).contains(p) {
+        return vec![UiAction::FivefoldHint];
     }
     for index in 0..5 {
         if dice_rect(index).contains(p) {

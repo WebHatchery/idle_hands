@@ -343,6 +343,14 @@ fn default_maze_walk_has_a_deterministic_hint() {
 }
 
 #[test]
+fn default_fivefold_explains_that_a_roll_is_needed_for_a_category_hint() {
+    let state = AppState::default();
+
+    assert!(fivefold(&state).contains("Roll DICE"));
+    assert_eq!(fivefold(&state), fivefold(&state));
+}
+
+#[test]
 fn default_match_three_has_a_deterministic_swap_hint() {
     let state = AppState::default();
 

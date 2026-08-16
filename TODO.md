@@ -1121,6 +1121,15 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover score ranking, board preservation, hint capture aliases,
     accessibility, and responsive layouts.
 
+## Phase 105 — Fivefold discoverability polish
+
+- [x] Add a deterministic, non-mutating HINT action that recommends the
+  highest-scoring open category from the current roll with stable category
+  ordering for ties.
+  - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
+  - [x] Cover category ranking, scored-category exclusion, hint capture
+    aliases, accessibility, and responsive layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

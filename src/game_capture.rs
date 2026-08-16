@@ -33,7 +33,9 @@ impl Game {
                 Screen::Game(GameId::Solitaire)
             }
             "freecell" | "freecell_hint" | "freecell_selected" => Screen::Game(GameId::FreeCell),
-            "fivefold" => Screen::Game(GameId::Yahtzee),
+            "fivefold" | "fivefold_hint" | "fivefold_hint_accessible" => {
+                Screen::Game(GameId::Yahtzee)
+            }
             "reversi" | "reversi_hint" | "reversi_hint_accessible" => Screen::Game(GameId::Reversi),
             "reversi_accessible" => Screen::Game(GameId::Reversi),
             "lights_out"
@@ -254,6 +256,8 @@ impl Game {
             self.state.card_hint = Some(card_hints::pipe_loop(&self.state));
         } else if scene == "maze_walk_hint" || scene == "maze_walk_hint_accessible" {
             self.state.card_hint = Some(card_hints::maze_walk(&self.state));
+        } else if scene == "fivefold_hint" || scene == "fivefold_hint_accessible" {
+            self.state.card_hint = Some(card_hints::fivefold(&self.state));
         } else if scene == "match_three_hint" || scene == "match_three_hint_accessible" {
             self.state.card_hint = Some(card_hints::match_three(&self.state));
         } else if scene == "2048_hint" || scene == "2048_hint_accessible" {

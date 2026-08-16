@@ -465,6 +465,9 @@ impl Game {
             ui::UiAction::FivefoldCategory(category) => {
                 self.state.fivefold.choose_category(category);
             }
+            ui::UiAction::FivefoldHint => {
+                self.state.card_hint = Some(card_hints::fivefold(&self.state));
+            }
             ui::UiAction::FivefoldNew => {
                 self.state.fivefold =
                     crate::fivefold::Fivefold::new(self.state.fivefold.seed.wrapping_add(1));
