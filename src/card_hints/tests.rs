@@ -139,3 +139,10 @@ fn default_word_search_has_a_deterministic_hint() {
     );
     assert_eq!(word_search(&state), word_search(&state));
 }
+
+#[test]
+fn default_hangman_has_a_deterministic_hint() {
+    let state = AppState::default();
+    assert!(!hangman(&state).is_empty());
+    assert_eq!(hangman(&state), hangman(&state));
+}

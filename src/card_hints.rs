@@ -404,6 +404,23 @@ pub fn word_search(state: &AppState) -> String {
     )
 }
 
+pub fn hangman(state: &AppState) -> String {
+    let game = &state.hangman;
+    match game.status {
+        crate::hangman::HangmanStatus::Won => {
+            return "The word is already yours — tap NEW WORD to play again.".into();
+        }
+        crate::hangman::HangmanStatus::Lost => {
+            return "The word slipped away — tap NEW WORD to begin again.".into();
+        }
+        crate::hangman::HangmanStatus::Playing => {}
+    }
+    game.hint_letter().map_or_else(
+        || "No unguessed candidate letter remains — tap NEW WORD to begin again.".into(),
+        |letter| format!("Try the {} key.", char::from(b'A' + letter)),
+    )
+}
+
 fn color_name(color: u8) -> &'static str {
     ["red", "amber", "green", "blue", "violet", "gold"][color as usize % 6]
 }
@@ -428,6 +445,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::MineHint
             | crate::ui::UiAction::NonogramHint
             | crate::ui::UiAction::WordSearchHint
+            | crate::ui::UiAction::HangmanHint
     )
 }
 

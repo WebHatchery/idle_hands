@@ -29,3 +29,12 @@ fn six_wrong_letters_lose_the_round() {
     assert_eq!(game.wrong_count, 6);
     assert_eq!(game.status, HangmanStatus::Lost);
 }
+
+#[test]
+fn hint_letter_is_unplayed_and_does_not_mutate_the_round() {
+    let game = Hangman::new(42);
+    let before = game.guessed;
+    let letter = game.hint_letter().unwrap();
+    assert!(!game.guessed[letter as usize]);
+    assert_eq!(game.guessed, before);
+}

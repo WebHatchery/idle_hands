@@ -107,6 +107,7 @@ pub enum UiAction {
     WordSearchNew,
     WordSearchHint,
     HangmanGuess(u8),
+    HangmanHint,
     HangmanNew,
     ConnectFourDrop(usize),
     ConnectFourUndo,

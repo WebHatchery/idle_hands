@@ -72,6 +72,38 @@ impl Hangman {
         *self = Self::new(seed);
     }
 
+    pub fn hint_letter(&self) -> Option<u8> {
+        if self.status != HangmanStatus::Playing {
+            return None;
+        }
+        let candidates: Vec<&str> = WORDS
+            .iter()
+            .copied()
+            .filter(|word| {
+                word.bytes().all(|letter| {
+                    !self.wrong[(letter - b'A') as usize]
+                        && (!self.guessed[(letter - b'A') as usize]
+                            || self.word.bytes().any(|known| known == letter))
+                })
+            })
+            .collect();
+        let mut frequency = [0usize; 26];
+        for word in candidates {
+            for letter in word.bytes() {
+                let index = (letter - b'A') as usize;
+                if !self.guessed[index] {
+                    frequency[index] += 1;
+                }
+            }
+        }
+        frequency
+            .iter()
+            .enumerate()
+            .max_by_key(|(letter, count)| (**count, std::cmp::Reverse(*letter)))
+            .filter(|(_, count)| **count > 0)
+            .map(|(letter, _)| letter as u8)
+    }
+
     pub fn is_revealed(&self, character: u8) -> bool {
         character < 26 && self.guessed[character as usize]
     }

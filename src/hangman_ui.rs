@@ -9,6 +9,7 @@ struct Layout {
     key_w: f32,
     key_h: f32,
     columns: usize,
+    hint: Rect,
     new_game: Rect,
 }
 
@@ -19,6 +20,7 @@ fn layout() -> Layout {
             key_w: 54.,
             key_h: 38.,
             columns: 13,
+            hint: Rect::new(490., 340., 150., 42.),
             new_game: Rect::new(650., 340., 150., 42.),
         }
     } else if crate::ui::is_portrait() {
@@ -27,6 +29,7 @@ fn layout() -> Layout {
             key_w: 45.,
             key_h: 38.,
             columns: 7,
+            hint: Rect::new(20., 650., 160., 42.),
             new_game: Rect::new(190., 650., 160., 42.),
         }
     } else {
@@ -35,6 +38,7 @@ fn layout() -> Layout {
             key_w: 58.,
             key_h: 40.,
             columns: 13,
+            hint: Rect::new(880., 620., 160., 44.),
             new_game: Rect::new(1060., 620., 160., 44.),
         }
     }
@@ -47,6 +51,9 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if layout.new_game.contains(point) {
         return vec![UiAction::HangmanNew];
+    }
+    if layout.hint.contains(point) {
+        return vec![UiAction::HangmanHint];
     }
     if layout.keyboard.contains(point) {
         let column = ((point.x - layout.keyboard.x) / layout.key_w) as usize;
@@ -81,8 +88,10 @@ pub fn draw(state: &AppState) {
     };
     text("‹ CABINET", 8., 30., 13., muted());
     text("HANGMAN", header_x, header_y, title_size(), accent());
+    let status = status_text(game.status, game.wrong_count);
+    let instruction = state.card_hint.as_deref().unwrap_or(&status);
     text(
-        &status_text(game.status, game.wrong_count),
+        instruction,
         if compact { 350. } else { header_x },
         if compact { 31. } else { header_y + 26. },
         body_size(),
@@ -102,6 +111,7 @@ pub fn draw(state: &AppState) {
     draw_word(game, layout);
     draw_keyboard(game, layout);
     button(layout.new_game, "NEW WORD");
+    button(layout.hint, "HINT");
 }
 
 fn draw_word(game: &crate::hangman::Hangman, layout: Layout) {

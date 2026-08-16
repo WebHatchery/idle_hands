@@ -9,6 +9,9 @@ impl Game {
             UiAction::HangmanGuess(letter) => {
                 self.state.hangman.guess(*letter);
             }
+            UiAction::HangmanHint => {
+                self.state.card_hint = Some(crate::card_hints::hangman(&self.state));
+            }
             UiAction::HangmanNew => {
                 let seed = self.state.hangman.seed.wrapping_add(1);
                 self.state.hangman.reset(seed);

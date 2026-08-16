@@ -905,6 +905,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover endpoint validity, hint determinism, capture aliases, and
     responsive layouts.
 
+## Phase 78 — Hangman discoverability polish
+
+- [x] Add a deterministic candidate-filtered HINT action that recommends an
+  unguessed letter without revealing the word.
+  - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
+  - [x] Cover candidate filtering, hint determinism, capture aliases, and
+    responsive layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.
