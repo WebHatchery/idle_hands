@@ -243,10 +243,30 @@ pub fn nim(state: &AppState) -> String {
     )
 }
 
+pub fn game_2048(state: &AppState) -> String {
+    if state.game.won() {
+        return "2048 is already on the board — keep exploring or start over.".into();
+    }
+    state.game.hint_direction().map_or_else(
+        || "No legal slide remains — tap NEW GAME to begin again.".into(),
+        |direction| format!("Try the {} arrow.", direction_name(direction)),
+    )
+}
+
+fn direction_name(direction: crate::state::Direction) -> &'static str {
+    match direction {
+        crate::state::Direction::Up => "UP",
+        crate::state::Direction::Right => "RIGHT",
+        crate::state::Direction::Down => "DOWN",
+        crate::state::Direction::Left => "LEFT",
+    }
+}
+
 pub fn is_hint(action: crate::ui::UiAction) -> bool {
     matches!(
         action,
-        crate::ui::UiAction::SolitaireHint
+        crate::ui::UiAction::Game2048Hint
+            | crate::ui::UiAction::SolitaireHint
             | crate::ui::UiAction::FreeCellHint
             | crate::ui::UiAction::PyramidHint
             | crate::ui::UiAction::TriPeaksHint

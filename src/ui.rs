@@ -638,6 +638,14 @@ fn draw_2048(state: &AppState) {
         Color::new(0.18, 0.12, 0.28, 1.),
     );
     text("NEW GAME", 575., 421., 17., WHITE);
+    panel(
+        Rect::new(400., 450., 140., 48.),
+        Color::new(0.18, 0.12, 0.28, 1.),
+    );
+    text("HINT", 438., 481., 17., WHITE);
+    if let Some(hint) = state.card_hint.as_deref() {
+        text(hint, 400., 520., 14., Color::new(0.63, 0.95, 0.72, 1.));
+    }
     if state.confirm_restart {
         panel(
             Rect::new(330., 270., 440., 150.),
@@ -677,6 +685,9 @@ fn game_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     if Rect::new(560., 390., 140., 48.).contains(p) {
         out.push(UiAction::Restart)
+    }
+    if Rect::new(400., 450., 140., 48.).contains(p) {
+        out.push(UiAction::Game2048Hint)
     }
     if state.confirm_restart {
         if Rect::new(380., 340., 150., 44.).contains(p) {

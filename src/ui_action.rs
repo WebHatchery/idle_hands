@@ -20,6 +20,7 @@ pub enum UiAction {
     Save,
     Load,
     Move(Direction),
+    Game2048Hint,
     Undo,
     Restart,
     ConfirmRestart,

@@ -295,6 +295,9 @@ impl Game {
             }
             ui::UiAction::Save => self.save_autosave(),
             ui::UiAction::Load => self.load_autosave(),
+            ui::UiAction::Game2048Hint => {
+                self.state.card_hint = Some(card_hints::game_2048(&self.state));
+            }
             ui::UiAction::Move(direction) => self.try_move(direction),
             ui::UiAction::MineReveal(index) => {
                 self.state.minesweeper.reveal(index);

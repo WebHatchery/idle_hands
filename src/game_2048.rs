@@ -104,6 +104,20 @@ impl Game2048 {
         self.cells.iter().any(|&v| v >= 2048)
     }
 
+    pub fn hint_direction(&self) -> Option<Direction> {
+        [
+            Direction::Up,
+            Direction::Left,
+            Direction::Down,
+            Direction::Right,
+        ]
+        .into_iter()
+        .find(|&direction| {
+            let mut preview = self.clone();
+            preview.move_in(direction)
+        })
+    }
+
     fn spawn(&mut self) {
         let empty: Vec<usize> = self
             .cells
@@ -126,3 +140,7 @@ impl Game2048 {
         self.cells[index] = if self.seed & 7 == 0 { 4 } else { 2 };
     }
 }
+
+#[cfg(test)]
+#[path = "game_2048_tests.rs"]
+mod tests;

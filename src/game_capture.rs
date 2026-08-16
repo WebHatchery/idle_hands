@@ -14,7 +14,9 @@ impl Game {
             .or_else(|| scene.strip_prefix("landscape_"))
             .unwrap_or(scene);
         self.state.screen = match scene {
-            "2048" | "gameplay" | "tutorial_2048" => Screen::Game(GameId::Game2048),
+            "2048" | "gameplay" | "tutorial_2048" | "2048_hint" | "2048_hint_accessible" => {
+                Screen::Game(GameId::Game2048)
+            }
             "minesweeper" | "minesweeper_accessible" => Screen::Game(GameId::Minesweeper),
             "sudoku" | "sudoku_accessible" => Screen::Game(GameId::Sudoku),
             "nonogram" | "nonogram_large" | "nonogram_accessible" => Screen::Game(GameId::Nonogram),
@@ -139,6 +141,8 @@ impl Game {
             self.state.card_hint = Some(card_hints::spider_solitaire(&self.state));
         } else if scene == "nim_hint" || scene == "nim_hint_accessible" {
             self.state.card_hint = Some(card_hints::nim(&self.state));
+        } else if scene == "2048_hint" || scene == "2048_hint_accessible" {
+            self.state.card_hint = Some(card_hints::game_2048(&self.state));
         }
         if scene.starts_with("tutorial_") {
             if let Screen::Game(game) = self.state.screen {

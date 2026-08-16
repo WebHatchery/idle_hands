@@ -66,3 +66,10 @@ fn default_nim_has_a_deterministic_hint() {
     assert_eq!(nim(&state), "Select heap 1 and tap TAKE 3.");
     assert_eq!(nim(&state), nim(&state));
 }
+
+#[test]
+fn default_2048_has_a_deterministic_hint() {
+    let state = AppState::default();
+    assert!(!game_2048(&state).is_empty());
+    assert_eq!(game_2048(&state), game_2048(&state));
+}

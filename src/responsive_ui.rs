@@ -232,10 +232,18 @@ pub fn draw_2048(state: &AppState) {
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     text("NEW GAME", 220., 575., 14., WHITE);
+    panel(
+        Rect::new(20., 600., 150., 46.),
+        Color::new(0.18, 0.12, 0.28, 1.),
+    );
+    text("HINT", 70., 630., 15., WHITE);
     text(
-        "Swipe the board or tap an arrow.",
-        42.,
-        635.,
+        state
+            .card_hint
+            .as_deref()
+            .unwrap_or("Swipe the board or tap an arrow."),
+        18.,
+        685.,
         14.,
         Color::new(0.70, 0.64, 0.78, 1.),
     );
@@ -276,6 +284,9 @@ pub fn game2048_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     if Rect::new(190., 545., 150., 46.).contains(p) {
         return vec![UiAction::Restart];
+    }
+    if Rect::new(20., 600., 150., 46.).contains(p) {
+        return vec![UiAction::Game2048Hint];
     }
     for (index, direction) in [
         Direction::Up,

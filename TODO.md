@@ -826,6 +826,15 @@ sizes, covered by rule tests, and passes `publish.ps1`.
     layouts with the existing accessible text treatment.
   - [x] Cover hint routing and capture the updated Nim scenes.
 
+## Phase 68 — 2048 discoverability polish
+
+- [x] Add a visible deterministic HINT action to 2048 that recommends the
+  first legal direction without changing the board state.
+  - [x] Show hint feedback across desktop, portrait, and medium-landscape
+    layouts with the existing accessible text treatment.
+  - [x] Cover direction selection and hint routing, and capture the updated
+    2048 scenes.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.
