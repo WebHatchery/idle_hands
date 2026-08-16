@@ -19,7 +19,7 @@ fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             panel: Rect::new(20., 12., 804., 365.),
-            back: Rect::new(700., 330., 110., 38.),
+            back: Rect::new(700., 330., 110., 44.),
             columns: 5,
             card_w: 145.,
             card_h: 24.,
@@ -30,7 +30,7 @@ fn layout() -> Layout {
     } else if crate::ui::is_portrait() {
         Layout {
             panel: Rect::new(8., 38., 344., 602.),
-            back: Rect::new(10., 650., 150., 38.),
+            back: Rect::new(10., 650., 150., 44.),
             columns: 3,
             card_w: 106.,
             card_h: 22.,

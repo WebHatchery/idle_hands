@@ -378,27 +378,27 @@ pub fn draw_help() {
         Color::new(0.75, 0.70, 0.84, 1.),
     );
     panel(
-        Rect::new(10., 530., 105., 38.),
+        Rect::new(10., 530., 105., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     panel(
-        Rect::new(127., 530., 105., 38.),
+        Rect::new(127., 530., 105., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     panel(
-        Rect::new(244., 530., 106., 38.),
+        Rect::new(244., 530., 106., 44.),
         Color::new(0.25, 0.16, 0.32, 1.),
     );
-    text("RULES", 42., 555., 12., WHITE);
-    text("CREDITS", 150., 555., 11., WHITE);
-    text("BACK", 277., 555., 12., WHITE);
+    text("RULES", 42., 558., 12., WHITE);
+    text("CREDITS", 150., 558., 11., WHITE);
+    text("BACK", 277., 558., 12., WHITE);
 }
 pub fn help_clicks(p: Vec2) -> Vec<UiAction> {
-    if Rect::new(10., 530., 105., 38.).contains(p) {
+    if Rect::new(10., 530., 105., 44.).contains(p) {
         vec![UiAction::Rules]
-    } else if Rect::new(127., 530., 105., 38.).contains(p) {
+    } else if Rect::new(127., 530., 105., 44.).contains(p) {
         vec![UiAction::Credits]
-    } else if Rect::new(244., 530., 106., 38.).contains(p) {
+    } else if Rect::new(244., 530., 106., 44.).contains(p) {
         vec![UiAction::Cabinet]
     } else {
         vec![]

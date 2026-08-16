@@ -1327,3 +1327,8 @@ contract, shared confirmation safety, responsive capture coverage, and the
 
 - [x] Resize cabinet FAVORITES, RECENT, CONTINUE, HELP, RECORDS, and SETTINGS
   actions to touch-complete targets across desktop and responsive layouts.
+
+## Phase 136 — Collection navigation accessibility
+
+- [x] Resize Favorites, Achievements, and portrait Help return actions to
+  touch-complete targets with refreshed responsive capture coverage.
