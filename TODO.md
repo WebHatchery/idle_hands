@@ -1225,6 +1225,13 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 - [x] Clear the runtime-only favorites browse flag whenever a drawer opens,
   preventing stale quick-browse state from surviving navigation.
 
+## Phase 120 — Favorite browse capacity
+
+- [x] Reflow compact-landscape favorite cards to five columns so the full
+  47-drawer favorite set remains visible and reachable.
+  - [x] Capture the maximum favorite state at desktop, portrait, and compact-
+    landscape sizes.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

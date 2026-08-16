@@ -8,7 +8,7 @@ struct Layout { panel: Rect, back: Rect, columns: usize, card_w: f32, card_h: f3
 
 fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
-        Layout { panel: Rect::new(20., 12., 804., 365.), back: Rect::new(700., 330., 110., 38.), columns: 4, card_w: 180., card_h: 24., origin: vec2(35., 70.), gap_x: 195., gap_y: 27. }
+        Layout { panel: Rect::new(20., 12., 804., 365.), back: Rect::new(700., 330., 110., 38.), columns: 5, card_w: 145., card_h: 24., origin: vec2(35., 70.), gap_x: 155., gap_y: 31. }
     } else if crate::ui::is_portrait() {
         Layout { panel: Rect::new(8., 38., 344., 602.), back: Rect::new(10., 650., 150., 38.), columns: 3, card_w: 106., card_h: 30., origin: vec2(14., 130.), gap_x: 112., gap_y: 32. }
     } else {
