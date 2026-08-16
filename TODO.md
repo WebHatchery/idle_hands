@@ -1198,6 +1198,11 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Reflow late-game rows into visible columns on desktop, portrait, and
     compact-landscape Records layouts.
 
+## Phase 115 — Word Ladder input discoverability
+
+- [x] Draw the empty five-letter input row before the first touch, making the
+  next visible interaction clear without relying on tutorial text.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

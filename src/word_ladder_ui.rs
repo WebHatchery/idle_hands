@@ -40,8 +40,50 @@ pub fn draw(state: &AppState) {
 }
 
 fn draw_words(game: &WordLadder, x: f32, y: f32, width: f32) {
-    let cell = (width / 5.).min(62.); let words = std::iter::once(&game.start).chain(game.guesses.iter()).chain(std::iter::once(&game.current));
-    for (row, word) in words.enumerate() { let yy = y + row as f32 * (cell + 7.); for (col, value) in word.bytes().enumerate() { let rect = Rect::new(x + col as f32 * cell, yy, cell - 5., cell - 5.); draw_rectangle(rect.x, rect.y, rect.w, rect.h, if row == game.guesses.len() + 1 { Color::new(0.10, 0.18, 0.22, 1.) } else { Color::new(0.12, 0.28, 0.28, 1.) }); draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., Color::new(0.35, 0.65, 0.62, 1.)); let text = (value as char).to_string(); draw_text(&text, rect.x + rect.w * 0.35, rect.y + rect.h * 0.68, 22., WHITE); } }
+    let cell = (width / 5.).min(62.);
+    let input_row = game.guesses.len() + 1;
+    for row in 0..=input_row {
+        let word = if row == 0 {
+            Some(game.start.as_str())
+        } else if row <= game.guesses.len() {
+            Some(game.guesses[row - 1].as_str())
+        } else {
+            Some(game.current.as_str())
+        };
+        let yy = y + row as f32 * (cell + 7.);
+        for col in 0..5 {
+            let rect = Rect::new(x + col as f32 * cell, yy, cell - 5., cell - 5.);
+            let current = row == input_row;
+            draw_rectangle(
+                rect.x,
+                rect.y,
+                rect.w,
+                rect.h,
+                if current {
+                    Color::new(0.10, 0.18, 0.22, 1.)
+                } else {
+                    Color::new(0.12, 0.28, 0.28, 1.)
+                },
+            );
+            draw_rectangle_lines(
+                rect.x,
+                rect.y,
+                rect.w,
+                rect.h,
+                1.,
+                Color::new(0.35, 0.65, 0.62, 1.),
+            );
+            if let Some(value) = word.and_then(|word| word.as_bytes().get(col)) {
+                draw_text(
+                    (*value as char).to_string(),
+                    rect.x + rect.w * 0.35,
+                    rect.y + rect.h * 0.68,
+                    22.,
+                    WHITE,
+                );
+            }
+        }
+    }
     if game.phase == WordLadderPhase::Won { draw_text("LADDER COMPLETE", x, y + 7. * (cell + 7.), 18., Color::new(0.55, 1., 0.72, 1.)); }
 }
 
