@@ -48,13 +48,7 @@ pub fn draw_overlay(game: GameId) {
         3.,
         Color::new(0.78, 0.58, 0.30, 0.95),
     );
-    crate::ui::draw_text(
-        "HOW TO PLAY",
-        315.,
-        225.,
-        38.,
-        Color::new(0.98, 0.83, 0.45, 1.),
-    );
+    crate::ui::draw_text("HOW TO PLAY", 315., 225., 38., crate::theme::BRASS);
     crate::ui::draw_text(game.title(), 315., 270., 25., WHITE);
     for (index, line) in instructions(game).iter().enumerate() {
         crate::ui::draw_text(
@@ -62,7 +56,7 @@ pub fn draw_overlay(game: GameId) {
             315.,
             330. + index as f32 * 38.,
             19.,
-            Color::new(0.78, 0.73, 0.86, 1.),
+            crate::theme::CREAM,
         );
     }
     draw_rectangle(

@@ -14,13 +14,13 @@ fn dice_rect(index: usize) -> Rect {
 pub fn draw_fivefold(state: &AppState) {
     let game = &state.fivefold;
     back();
-    text("FIVEFOLD", 10., 72., 29., Color::new(0.98, 0.83, 0.45, 1.));
+    text("FIVEFOLD", 10., 72., 29., crate::theme::BRASS);
     text(
         "Five dice, thirteen calls",
         12.,
         94.,
         13.,
-        Color::new(0.70, 0.64, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
     for index in 0..5 {
         let rect = dice_rect(index);
@@ -43,14 +43,14 @@ pub fn draw_fivefold(state: &AppState) {
             rect.x + (rect.w - width) / 2.,
             rect.y + 39.,
             30.,
-            Color::new(0.98, 0.83, 0.45, 1.),
+            crate::theme::BRASS,
         );
         text(
             if game.held[index] { "HELD" } else { "HOLD" },
             rect.x + 15.,
             rect.y + 53.,
             8.,
-            Color::new(0.68, 0.63, 0.78, 1.),
+            crate::theme::SECONDARY,
         );
     }
     panel(
@@ -77,26 +77,20 @@ pub fn draw_fivefold(state: &AppState) {
         180.,
         211.,
         14.,
-        Color::new(0.72, 0.68, 0.82, 1.),
+        crate::theme::SECONDARY,
     );
     text(
         &format!("Total {}", game.total()),
         180.,
         232.,
         14.,
-        Color::new(0.98, 0.83, 0.45, 1.),
+        crate::theme::BRASS,
     );
     panel(
         Rect::new(8., 255., 344., 345.),
-        Color::new(0.08, 0.06, 0.14, 1.),
+        crate::theme::BACKGROUND_DEEP,
     );
-    text(
-        "SCORECARD",
-        18.,
-        280.,
-        20.,
-        Color::new(0.98, 0.83, 0.45, 1.),
-    );
+    text("SCORECARD", 18., 280., 20., crate::theme::BRASS);
     let page = state.fivefold_score_page.min(1);
     page_button(Rect::new(188., 258., 72., 40.), "PREV");
     page_button(Rect::new(270., 258., 72., 40.), "NEXT");
@@ -141,7 +135,7 @@ pub fn draw_fivefold(state: &AppState) {
                 WHITE
             },
         );
-        text(&score, 314., y, 11., Color::new(0.98, 0.83, 0.45, 1.));
+        text(&score, 314., y, 11., crate::theme::BRASS);
     }
     text(
         match game.status {
@@ -154,15 +148,9 @@ pub fn draw_fivefold(state: &AppState) {
         11.,
         Color::new(0.63, 0.95, 0.72, 1.),
     );
-    panel(
-        Rect::new(10., 650., 150., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(10., 650., 150., 44.), crate::theme::SURFACE);
     text("NEW SCORECARD", 31., 679., 11., WHITE);
-    panel(
-        Rect::new(180., 650., 150., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(180., 650., 150., 44.), crate::theme::SURFACE);
     text("HINT", 235., 679., 11., WHITE);
     if let Some(hint) = state.card_hint.as_deref() {
         text(hint, 10., 705., 10., Color::new(0.63, 0.95, 0.72, 1.));
@@ -211,20 +199,13 @@ pub fn fivefold_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
 }
 
 fn page_button(rect: Rect, label: &str) {
-    panel(rect, Color::new(0.18, 0.12, 0.28, 1.));
+    panel(rect, crate::theme::SURFACE_DARK);
     text(label, rect.x + 18., rect.y + 25., 10., WHITE);
 }
 
 fn panel(rect: Rect, fill: Color) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
-    draw_rectangle_lines(
-        rect.x,
-        rect.y,
-        rect.w,
-        rect.h,
-        2.,
-        Color::new(0.45, 0.38, 0.65, 0.65),
-    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
 
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
@@ -232,9 +213,6 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 }
 
 fn back() {
-    panel(
-        Rect::new(0., 0., 110., 44.),
-        Color::new(0.12, 0.08, 0.20, 1.),
-    );
+    panel(Rect::new(0., 0., 110., 44.), crate::theme::SURFACE_DARK);
     text("CABINET", 8., 29., 13., Color::new(0.78, 0.70, 0.92, 1.));
 }

@@ -244,13 +244,7 @@ fn status_text(phase: DailyPhase, moves: u16, score: u32) -> String {
 }
 
 fn button(rect: Rect, label: &str, large_text: bool) {
-    draw_rectangle(
-        rect.x,
-        rect.y,
-        rect.w,
-        rect.h,
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     center_text(
         label,
@@ -310,11 +304,11 @@ fn small_size(large_text: bool) -> f32 {
 }
 
 fn accent() -> Color {
-    Color::new(0.98, 0.83, 0.45, 1.)
+    crate::theme::BRASS
 }
 
 fn muted() -> Color {
-    Color::new(0.70, 0.64, 0.78, 1.)
+    crate::theme::SECONDARY
 }
 
 fn line_color(high_contrast: bool) -> Color {

@@ -261,7 +261,7 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
 fn accent() -> Color {
-    Color::new(0.98, 0.83, 0.45, 1.)
+    crate::theme::BRASS
 }
 fn muted() -> Color {
     Color::new(0.76, 0.70, 0.86, 1.)

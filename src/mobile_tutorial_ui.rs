@@ -56,13 +56,7 @@ fn draw_portrait(game: GameId) {
         Rect::new(15., 105., 330., 540.),
         Color::new(0.07, 0.045, 0.13, 0.98),
     );
-    crate::ui::draw_text(
-        "HOW TO PLAY",
-        35.,
-        160.,
-        25.,
-        Color::new(0.98, 0.83, 0.45, 1.),
-    );
+    crate::ui::draw_text("HOW TO PLAY", 35., 160., 25., crate::theme::BRASS);
     crate::ui::draw_text(game.title(), 35., 198., 20., WHITE);
     let mut y = 240.;
     for (index, instruction) in tutorial_ui::instructions(game).iter().enumerate() {
@@ -91,13 +85,7 @@ fn draw_landscape(game: GameId) {
         Rect::new(88., 48., 668., 292.),
         Color::new(0.07, 0.045, 0.13, 0.98),
     );
-    crate::ui::draw_text(
-        "HOW TO PLAY",
-        122.,
-        90.,
-        28.,
-        Color::new(0.98, 0.83, 0.45, 1.),
-    );
+    crate::ui::draw_text("HOW TO PLAY", 122., 90., 28., crate::theme::BRASS);
     crate::ui::draw_text(game.title(), 122., 123., 19., WHITE);
     let mut y = 154.;
     for (index, instruction) in tutorial_ui::instructions(game).iter().enumerate() {

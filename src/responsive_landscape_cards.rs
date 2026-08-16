@@ -12,14 +12,7 @@ use macroquad::prelude::*;
 
 fn panel(rect: Rect, fill: Color) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
-    draw_rectangle_lines(
-        rect.x,
-        rect.y,
-        rect.w,
-        rect.h,
-        2.,
-        Color::new(0.45, 0.38, 0.65, 0.65),
-    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
@@ -34,23 +27,14 @@ fn draw_card(rect: Rect, card: Card, selected: bool, back_style: u8, reduced_mot
     crate::card_render::draw_card(rect, card, selected, back_style, reduced_motion);
 }
 fn back() {
-    panel(
-        Rect::new(0., 0., 110., 44.),
-        Color::new(0.12, 0.08, 0.20, 1.),
-    );
+    panel(Rect::new(0., 0., 110., 44.), crate::theme::SURFACE_DARK);
     text("< CABINET", 10., 29., 12., Color::new(0.78, 0.70, 0.92, 1.));
 }
 
 pub fn draw_solitaire(state: &AppState) {
     let game = &state.solitaire;
     back();
-    text(
-        "SOLITAIRE",
-        105.,
-        20.,
-        19.,
-        Color::new(0.98, 0.83, 0.45, 1.),
-    );
+    text("SOLITAIRE", 105., 20., 19., crate::theme::BRASS);
     text(
         if game.status == SolitaireStatus::Won {
             "Table cleared"
@@ -60,7 +44,7 @@ pub fn draw_solitaire(state: &AppState) {
         260.,
         18.,
         12.,
-        Color::new(0.70, 0.64, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
     text(
         game.ruleset.label(),
@@ -70,7 +54,7 @@ pub fn draw_solitaire(state: &AppState) {
         Color::new(0.63, 0.95, 0.72, 1.),
     );
     let stock = card_rect(10., 35., 75., 95.);
-    panel(stock, Color::new(0.20, 0.13, 0.30, 1.));
+    panel(stock, crate::theme::SURFACE);
     if let Some(card) = game.stock.last() {
         draw_card(stock, *card, false, state.card_back, state.reduced_motion);
     }
@@ -141,25 +125,19 @@ pub fn draw_solitaire(state: &AppState) {
         Color::new(0.18, 0.26, 0.34, 1.),
     );
     text("UNDO", 53., 359., 12., WHITE);
-    panel(
-        Rect::new(150., 330., 145., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(150., 330., 145., 44.), crate::theme::SURFACE);
     text("NEW DEAL", 193., 359., 12., WHITE);
     text(
         &format!("Moves {}", game.moves),
         330.,
         359.,
         13.,
-        Color::new(0.68, 0.63, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
     if let Some(hint) = state.card_hint.as_deref() {
         text(hint, 330., 385., 11., Color::new(0.63, 0.95, 0.72, 1.));
     }
-    panel(
-        Rect::new(310., 330., 110., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(310., 330., 110., 44.), crate::theme::SURFACE);
     text("HINT", 346., 359., 12., WHITE);
 }
 pub fn solitaire_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
@@ -204,13 +182,13 @@ pub fn solitaire_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
 pub fn draw_freecell(state: &AppState) {
     let game = &state.freecell;
     back();
-    text("FREECELL", 105., 20., 19., Color::new(0.98, 0.83, 0.45, 1.));
+    text("FREECELL", 105., 20., 19., crate::theme::BRASS);
     text(
         "Tap a card, then a cascade or foundation",
         250.,
         18.,
         12.,
-        Color::new(0.70, 0.64, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
     for cell in 0..4 {
         let rect = card_rect(8. + cell as f32 * 84., 30., 72., 75.);
@@ -280,25 +258,19 @@ pub fn draw_freecell(state: &AppState) {
         Color::new(0.18, 0.26, 0.34, 1.),
     );
     text("UNDO", 53., 359., 12., WHITE);
-    panel(
-        Rect::new(150., 330., 145., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(150., 330., 145., 44.), crate::theme::SURFACE);
     text("NEW DEAL", 193., 359., 12., WHITE);
     text(
         &format!("Moves {}", game.moves),
         330.,
         359.,
         13.,
-        Color::new(0.68, 0.63, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
     if let Some(hint) = state.card_hint.as_deref() {
         text(hint, 330., 385., 11., Color::new(0.63, 0.95, 0.72, 1.));
     }
-    panel(
-        Rect::new(310., 330., 110., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(310., 330., 110., 44.), crate::theme::SURFACE);
     text("HINT", 346., 359., 12., WHITE);
 }
 pub fn freecell_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
@@ -345,13 +317,13 @@ fn dice_rect(index: usize) -> Rect {
 pub fn draw_fivefold(state: &AppState) {
     let game = &state.fivefold;
     back();
-    text("FIVEFOLD", 105., 20., 19., Color::new(0.98, 0.83, 0.45, 1.));
+    text("FIVEFOLD", 105., 20., 19., crate::theme::BRASS);
     text(
         "Roll, hold, then choose a call",
         250.,
         18.,
         12.,
-        Color::new(0.70, 0.64, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
     for index in 0..5 {
         let rect = dice_rect(index);
@@ -368,19 +340,13 @@ pub fn draw_fivefold(state: &AppState) {
         } else {
             game.dice[index].to_string()
         };
-        text(
-            &value,
-            rect.x + 36.,
-            rect.y + 54.,
-            30.,
-            Color::new(0.98, 0.83, 0.45, 1.),
-        );
+        text(&value, rect.x + 36., rect.y + 54., 30., crate::theme::BRASS);
         text(
             if game.held[index] { "HELD" } else { "HOLD" },
             rect.x + 30.,
             rect.y + 76.,
             9.,
-            Color::new(0.68, 0.63, 0.78, 1.),
+            crate::theme::SECONDARY,
         );
     }
     panel(
@@ -407,19 +373,13 @@ pub fn draw_fivefold(state: &AppState) {
         220.,
         198.,
         14.,
-        Color::new(0.98, 0.83, 0.45, 1.),
+        crate::theme::BRASS,
     );
     panel(
         Rect::new(500., 30., 330., 330.),
-        Color::new(0.08, 0.06, 0.14, 1.),
+        crate::theme::BACKGROUND_DEEP,
     );
-    text(
-        "SCORECARD",
-        520.,
-        58.,
-        20.,
-        Color::new(0.98, 0.83, 0.45, 1.),
-    );
+    text("SCORECARD", 520., 58., 20., crate::theme::BRASS);
     let page = state.fivefold_score_page.min(2);
     for (slot, (index, category)) in Category::ALL
         .iter()
@@ -446,20 +406,14 @@ pub fn draw_fivefold(state: &AppState) {
             );
         }
         text(category.label(), 525., y, 11., WHITE);
-        text(&score, 790., y, 10., Color::new(0.98, 0.83, 0.45, 1.));
+        text(&score, 790., y, 10., crate::theme::BRASS);
     }
     page_button(Rect::new(515., 306., 92., 44.), "PREV");
     page_button(Rect::new(617., 306., 92., 44.), "NEXT");
     text(&format!("{}/3", page + 1), 748., 334., 11., WHITE);
-    panel(
-        Rect::new(10., 250., 180., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(10., 250., 180., 44.), crate::theme::SURFACE);
     text("NEW SCORECARD", 45., 279., 12., WHITE);
-    panel(
-        Rect::new(210., 250., 150., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(210., 250., 150., 44.), crate::theme::SURFACE);
     text("HINT", 265., 279., 12., WHITE);
     text(
         state.card_hint.as_deref().unwrap_or("Tap HINT for a call"),
@@ -511,6 +465,6 @@ pub fn fivefold_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
 }
 
 fn page_button(rect: Rect, label: &str) {
-    panel(rect, Color::new(0.18, 0.12, 0.28, 1.));
+    panel(rect, crate::theme::SURFACE_DARK);
     text(label, rect.x + 23., rect.y + 28., 11., WHITE);
 }

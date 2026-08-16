@@ -26,7 +26,7 @@ fn panel(rect: Rect, fill: Color) {
     );
 }
 fn button(rect: Rect, label: &str, large_text: bool) {
-    panel(rect, Color::new(0.18, 0.12, 0.28, 1.));
+    panel(rect, crate::theme::SURFACE_DARK);
     crate::ui::draw_text(
         label,
         rect.x + 20.,
@@ -50,14 +50,14 @@ pub fn draw_reversi(state: &AppState) {
         40.,
         105.,
         accessibility::text_size(44., state.large_text),
-        Color::new(0.98, 0.83, 0.45, 1.),
+        crate::theme::BRASS,
     );
     crate::ui::draw_text(
         "Turn the board, one quiet move at a time",
         44.,
         132.,
         accessibility::text_size(18., state.large_text),
-        Color::new(0.70, 0.64, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
     panel(
         BOARD,
@@ -129,7 +129,7 @@ pub fn draw_reversi(state: &AppState) {
         650.,
         190.,
         accessibility::text_size(26., state.large_text),
-        Color::new(0.98, 0.83, 0.45, 1.),
+        crate::theme::BRASS,
     );
     crate::ui::draw_text(
         format!("OPPONENT  {}", game.score(2)),
@@ -169,7 +169,7 @@ pub fn draw_reversi(state: &AppState) {
         650.,
         325.,
         accessibility::text_size(17., state.large_text),
-        Color::new(0.68, 0.63, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
     button(
         Rect::new(650., 390., 180., 48.),

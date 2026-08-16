@@ -5,14 +5,7 @@ use macroquad::prelude::*;
 
 fn panel(rect: Rect, fill: Color) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
-    draw_rectangle_lines(
-        rect.x,
-        rect.y,
-        rect.w,
-        rect.h,
-        2.,
-        Color::new(0.45, 0.38, 0.65, 0.65),
-    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
@@ -21,15 +14,9 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 pub fn draw_settings(state: &AppState) {
     panel(
         Rect::new(180., 60., 920., 600.),
-        Color::new(0.08, 0.06, 0.14, 1.),
+        crate::theme::BACKGROUND_DEEP,
     );
-    text(
-        "SETTINGS",
-        230.,
-        125.,
-        42.,
-        Color::new(0.98, 0.83, 0.45, 1.),
-    );
+    text("SETTINGS", 230., 125., 42., crate::theme::BRASS);
     text(
         &format!(
             "Profile: {}  •  Stamps: {}",
@@ -118,12 +105,9 @@ pub fn draw_settings(state: &AppState) {
         230.,
         530.,
         17.,
-        Color::new(0.68, 0.63, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
-    panel(
-        Rect::new(230., 560., 150., 48.),
-        Color::new(0.25, 0.16, 0.32, 1.),
-    );
+    panel(Rect::new(230., 560., 150., 48.), crate::theme::MOSS_DARK);
     text("BACK", 280., 591., 17., WHITE);
     panel(
         Rect::new(410., 560., 150., 48.),
@@ -151,7 +135,7 @@ pub fn draw_settings(state: &AppState) {
             425.,
             350.,
             17.,
-            Color::new(0.78, 0.73, 0.86, 1.),
+            crate::theme::CREAM,
         );
         panel(
             Rect::new(430., 375., 150., 44.),

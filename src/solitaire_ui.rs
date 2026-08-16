@@ -16,13 +16,7 @@ fn draw_card(rect: Rect, card: Card, selected: bool, back_style: u8, reduced_mot
 pub fn draw_solitaire(state: &AppState) {
     let game = &state.solitaire;
     text("‹ CABINET", 40., 55., 20., Color::new(0.78, 0.70, 0.92, 1.));
-    text(
-        "SOLITAIRE",
-        40.,
-        105.,
-        44.,
-        Color::new(0.98, 0.83, 0.45, 1.),
-    );
+    text("SOLITAIRE", 40., 105., 44., crate::theme::BRASS);
     text(
         if game.status == crate::solitaire::SolitaireStatus::Won {
             "Table cleared"
@@ -32,7 +26,7 @@ pub fn draw_solitaire(state: &AppState) {
         44.,
         132.,
         18.,
-        Color::new(0.70, 0.64, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
     text(
         game.ruleset.label(),
@@ -41,7 +35,7 @@ pub fn draw_solitaire(state: &AppState) {
         14.,
         Color::new(0.63, 0.95, 0.72, 1.),
     );
-    panel(card_rect(60., 80.), Color::new(0.20, 0.13, 0.30, 1.));
+    panel(card_rect(60., 80.), crate::theme::SURFACE);
     if let Some(card) = game.stock.last() {
         draw_card(
             card_rect(60., 80.),
@@ -107,17 +101,14 @@ pub fn draw_solitaire(state: &AppState) {
         45.,
         685.,
         17.,
-        Color::new(0.68, 0.63, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
     panel(
         Rect::new(850., 620., 140., 44.),
         Color::new(0.18, 0.26, 0.34, 1.),
     );
     text("UNDO", 894., 648., 16., WHITE);
-    panel(
-        Rect::new(1010., 620., 160., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(1010., 620., 160., 44.), crate::theme::SURFACE);
     text("NEW DEAL", 1042., 648., 16., WHITE);
     text(
         "Tap a card, then tap its destination.",
@@ -129,23 +120,13 @@ pub fn draw_solitaire(state: &AppState) {
     if let Some(hint) = state.card_hint.as_deref() {
         text(hint, 690., 590., 14., Color::new(0.63, 0.95, 0.72, 1.));
     }
-    panel(
-        Rect::new(690., 620., 140., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(690., 620., 140., 44.), crate::theme::SURFACE);
     text("HINT", 737., 648., 16., WHITE);
 }
 
 fn panel(rect: Rect, fill: Color) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
-    draw_rectangle_lines(
-        rect.x,
-        rect.y,
-        rect.w,
-        rect.h,
-        2.,
-        Color::new(0.45, 0.38, 0.65, 0.65),
-    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
 
 pub fn solitaire_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {

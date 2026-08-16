@@ -14,14 +14,7 @@ pub const HEIGHT: f32 = 390.;
 
 fn panel(rect: Rect, fill: Color) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
-    draw_rectangle_lines(
-        rect.x,
-        rect.y,
-        rect.w,
-        rect.h,
-        2.,
-        Color::new(0.45, 0.38, 0.65, 0.65),
-    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
@@ -42,13 +35,15 @@ fn cabinet_rect(index: usize) -> Rect {
 
 pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
     let accent = cosmetics::cabinet_accent(state.cabinet_decoration);
+    draw_rectangle(3., 3., 838., 384., crate::theme::BACKGROUND_DEEP);
+    draw_rectangle_lines(3., 3., 838., 384., 2., crate::theme::BORDER);
     text("IDLE HANDS", 12., 30., 25., accent);
     text(
         "Tap a title to play  -  FAV circle to star",
         12.,
         45.,
         8.,
-        Color::new(0.72, 0.68, 0.82, 1.),
+        crate::theme::SECONDARY,
     );
     crate::cabinet_art::draw_header_motif(812., 28., 13., accent);
     crate::cabinet_art::draw_shelves(8., 60., 828., 258., accent);
@@ -57,9 +52,9 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
         panel(
             rect,
             if state.cabinet_filter == filter {
-                Color::new(0.35, 0.22, 0.42, 1.)
+                crate::theme::MOSS
             } else {
-                Color::new(0.20, 0.13, 0.30, 1.)
+                crate::theme::SURFACE_DARK
             },
         );
         text(
@@ -73,35 +68,26 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
             draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 3., WHITE);
         }
     }
-    panel(
-        Rect::new(560., 2., 130., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(560., 2., 130., 44.), crate::theme::MOSS_DARK);
     text("CONTINUE", 570., 29., 8., WHITE);
-    text(
-        selected.title(),
-        570.,
-        40.,
-        6.,
-        Color::new(0.98, 0.83, 0.45, 1.),
-    );
+    text(selected.title(), 570., 40., 6., crate::theme::BRASS);
     for (index, game) in scrolled_games(state).iter().enumerate() {
         let rect = cabinet_rect(index);
-        panel(rect, Color::new(0.17, 0.12, 0.27, 1.));
+        panel(rect, crate::theme::category_surface(*game, true));
         draw_line(
             rect.right() - 44.,
             rect.y,
             rect.right() - 44.,
             rect.bottom(),
             2.,
-            Color::new(0.45, 0.38, 0.65, 0.65),
+            crate::theme::BORDER,
         );
         text(
             game.title(),
             rect.x + 6.,
             rect.y + 21.,
             if game.title().len() > 18 { 10. } else { 12. },
-            Color::new(0.98, 0.82, 0.42, 1.),
+            crate::theme::CREAM,
         );
         let favorite = state.favorites.get(game.index()).copied().unwrap_or(false);
         if favorite {
@@ -114,7 +100,7 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
             rect.x + 6.,
             rect.y + 46.,
             9.,
-            Color::new(0.98, 0.75, 0.30, 1.),
+            crate::theme::BRASS,
         );
         draw_circle(
             rect.right() - 22.,
@@ -127,14 +113,14 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
             rect.right() - 26.,
             rect.y + 18.,
             8.,
-            Color::new(0.08, 0.05, 0.12, 1.),
+            crate::theme::INK,
         );
     }
     for (rect, label) in [
         (Rect::new(370., 2., 82., 44.), "PREV"),
         (Rect::new(462., 2., 82., 44.), "NEXT"),
     ] {
-        panel(rect, Color::new(0.18, 0.12, 0.28, 1.));
+        panel(rect, crate::theme::SURFACE_DARK);
         text(label, rect.x + 12., rect.y + 28., 9., WHITE);
     }
     if visible_games(state).is_empty() {
@@ -146,10 +132,7 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
             WHITE,
         );
     }
-    panel(
-        Rect::new(12., 330., 180., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(12., 330., 180., 44.), crate::theme::SURFACE);
     text("FAVORITES", 24., 358., 10., WHITE);
     text(
         &state
@@ -161,19 +144,16 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
         130.,
         358.,
         10.,
-        Color::new(0.98, 0.83, 0.45, 1.),
+        crate::theme::BRASS,
     );
-    panel(
-        Rect::new(200., 330., 180., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(200., 330., 180., 44.), crate::theme::SURFACE);
     text("RECENT", 212., 358., 10., WHITE);
     text(
         &state.recent_games.len().to_string(),
         338.,
         358.,
         10.,
-        Color::new(0.98, 0.83, 0.45, 1.),
+        crate::theme::BRASS,
     );
     text(
         &format!("{} stamps  -  {} textures", state.stamps, loaded),
@@ -187,7 +167,7 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
         (Rect::new(570., 330., 112., 44.), "RECORDS"),
         (Rect::new(690., 330., 140., 44.), "SETTINGS"),
     ] {
-        panel(rect, Color::new(0.12, 0.08, 0.20, 1.));
+        panel(rect, crate::theme::SURFACE_DARK);
         text(label, rect.x + 15., rect.y + 29., 11., WHITE);
     }
 }
@@ -274,12 +254,9 @@ fn scrolled_games(state: &AppState) -> Vec<GameId> {
 
 pub fn draw_2048(state: &AppState) {
     let game = &state.game;
-    panel(
-        Rect::new(0., 0., 110., 44.),
-        Color::new(0.12, 0.08, 0.20, 1.),
-    );
+    panel(Rect::new(0., 0., 110., 44.), crate::theme::SURFACE_DARK);
     text("‹ CABINET", 12., 29., 13., Color::new(0.78, 0.70, 0.92, 1.));
-    text("2048", 12., 58., 27., Color::new(0.98, 0.83, 0.45, 1.));
+    text("2048", 12., 58., 27., crate::theme::BRASS);
     text(
         &format!("Score {}  -  Best {}", game.score, game.best),
         120.,
@@ -332,30 +309,21 @@ pub fn draw_2048(state: &AppState) {
             74.,
             46.,
         );
-        panel(rect, Color::new(0.18, 0.12, 0.28, 1.));
+        panel(rect, crate::theme::SURFACE_DARK);
         text(
             ["UP", "LEFT", "DOWN", "RIGHT"][index],
             rect.x + 12.,
             rect.y + 29.,
             11.,
-            Color::new(0.98, 0.83, 0.45, 1.),
+            crate::theme::BRASS,
         );
         let _ = direction;
     }
-    panel(
-        Rect::new(590., 145., 110., 46.),
-        Color::new(0.18, 0.12, 0.28, 1.),
-    );
+    panel(Rect::new(590., 145., 110., 46.), crate::theme::SURFACE_DARK);
     text("UNDO", 625., 174., 12., WHITE);
-    panel(
-        Rect::new(715., 145., 115., 46.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(715., 145., 115., 46.), crate::theme::SURFACE);
     text("NEW GAME", 738., 174., 11., WHITE);
-    panel(
-        Rect::new(590., 205., 110., 46.),
-        Color::new(0.18, 0.12, 0.28, 1.),
-    );
+    panel(Rect::new(590., 205., 110., 46.), crate::theme::SURFACE_DARK);
     text("HINT", 625., 234., 12., WHITE);
     text(
         state
@@ -365,7 +333,7 @@ pub fn draw_2048(state: &AppState) {
         380.,
         285.,
         13.,
-        Color::new(0.70, 0.64, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
     if state.confirm_restart {
         panel(
@@ -373,10 +341,7 @@ pub fn draw_2048(state: &AppState) {
             Color::new(0.16, 0.09, 0.20, 1.),
         );
         text("Start a new board?", 435., 250., 18., WHITE);
-        panel(
-            Rect::new(395., 270., 115., 42.),
-            Color::new(0.25, 0.16, 0.32, 1.),
-        );
+        panel(Rect::new(395., 270., 115., 42.), crate::theme::MOSS_DARK);
         text("CANCEL", 425., 297., 12., WHITE);
         panel(
             Rect::new(535., 270., 115., 42.),

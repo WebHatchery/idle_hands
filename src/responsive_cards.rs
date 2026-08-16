@@ -17,14 +17,7 @@ const COL_GAP: f32 = 7.;
 
 fn panel(rect: Rect, fill: Color) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
-    draw_rectangle_lines(
-        rect.x,
-        rect.y,
-        rect.w,
-        rect.h,
-        2.,
-        Color::new(0.45, 0.38, 0.65, 0.65),
-    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
 
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
@@ -44,17 +37,14 @@ fn draw_card(rect: Rect, card: Card, selected: bool, back_style: u8, reduced_mot
 }
 
 fn back() {
-    panel(
-        Rect::new(0., 0., 110., 44.),
-        Color::new(0.12, 0.08, 0.20, 1.),
-    );
+    panel(Rect::new(0., 0., 110., 44.), crate::theme::SURFACE_DARK);
     text("CABINET", 8., 29., 13., Color::new(0.78, 0.70, 0.92, 1.));
 }
 
 pub fn draw_solitaire(state: &AppState) {
     let game = &state.solitaire;
     back();
-    text("SOLITAIRE", 10., 72., 29., Color::new(0.98, 0.83, 0.45, 1.));
+    text("SOLITAIRE", 10., 72., 29., crate::theme::BRASS);
     text(
         if game.status == SolitaireStatus::Won {
             "Table cleared"
@@ -64,7 +54,7 @@ pub fn draw_solitaire(state: &AppState) {
         12.,
         94.,
         13.,
-        Color::new(0.70, 0.64, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
     text(
         game.ruleset.label(),
@@ -75,7 +65,7 @@ pub fn draw_solitaire(state: &AppState) {
     );
     let top_y = 112.;
     let stock = card_rect(8., top_y);
-    panel(stock, Color::new(0.20, 0.13, 0.30, 1.));
+    panel(stock, crate::theme::SURFACE);
     if let Some(card) = game.stock.last() {
         draw_card(stock, *card, false, state.card_back, state.reduced_motion);
     }
@@ -146,22 +136,16 @@ pub fn draw_solitaire(state: &AppState) {
         10.,
         680.,
         13.,
-        Color::new(0.68, 0.63, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
-    panel(
-        Rect::new(5., 650., 105., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(5., 650., 105., 44.), crate::theme::SURFACE);
     text("HINT", 39., 679., 12., WHITE);
     panel(
         Rect::new(120., 650., 105., 44.),
         Color::new(0.18, 0.26, 0.34, 1.),
     );
     text("UNDO", 153., 679., 12., WHITE);
-    panel(
-        Rect::new(235., 650., 115., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(235., 650., 115., 44.), crate::theme::SURFACE);
     text("NEW DEAL", 263., 679., 11., WHITE);
     text(
         state
@@ -225,7 +209,7 @@ fn free_card_x(slot: usize) -> f32 {
 pub fn draw_freecell(state: &AppState) {
     let game = &state.freecell;
     back();
-    text("FREECELL", 10., 72., 29., Color::new(0.98, 0.83, 0.45, 1.));
+    text("FREECELL", 10., 72., 29., crate::theme::BRASS);
     text(
         if game.status == crate::freecell::FreeCellStatus::Won {
             "All foundations complete"
@@ -235,7 +219,7 @@ pub fn draw_freecell(state: &AppState) {
         12.,
         94.,
         13.,
-        Color::new(0.70, 0.64, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
     for cell in 0..4 {
         let rect = free_card_rect(free_card_x(cell), 112.);
@@ -310,17 +294,14 @@ pub fn draw_freecell(state: &AppState) {
         10.,
         680.,
         13.,
-        Color::new(0.68, 0.63, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
     panel(
         Rect::new(120., 650., 105., 44.),
         Color::new(0.18, 0.26, 0.34, 1.),
     );
     text("UNDO", 153., 679., 12., WHITE);
-    panel(
-        Rect::new(235., 650., 115., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(235., 650., 115., 44.), crate::theme::SURFACE);
     text("NEW DEAL", 263., 679., 11., WHITE);
     text(
         state
@@ -332,10 +313,7 @@ pub fn draw_freecell(state: &AppState) {
         11.,
         Color::new(0.63, 0.58, 0.72, 1.),
     );
-    panel(
-        Rect::new(5., 650., 105., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(5., 650., 105., 44.), crate::theme::SURFACE);
     text("HINT", 39., 679., 12., WHITE);
 }
 
@@ -402,21 +380,21 @@ pub fn draw_reversi(state: &AppState) {
         10.,
         72.,
         accessibility::text_size(29., state.large_text),
-        Color::new(0.98, 0.83, 0.45, 1.),
+        crate::theme::BRASS,
     );
     text(
         "Turn the board, one quiet move at a time",
         accessibility::text_size(12., state.large_text),
         94.,
         accessibility::text_size(12., state.large_text),
-        Color::new(0.70, 0.64, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
     text(
         &format!("DARK {}  -  LIGHT {}", game.score(1), game.score(2)),
         20.,
         110.,
         12.,
-        Color::new(0.98, 0.83, 0.45, 1.),
+        crate::theme::BRASS,
     );
     panel(
         REVERSI_BOARD,
@@ -507,10 +485,7 @@ pub fn draw_reversi(state: &AppState) {
         accessibility::text_size(12., state.large_text),
         Color::new(0.63, 0.95, 0.72, 1.),
     );
-    panel(
-        Rect::new(10., 485., 160., 44.),
-        Color::new(0.18, 0.12, 0.28, 1.),
-    );
+    panel(Rect::new(10., 485., 160., 44.), crate::theme::SURFACE_DARK);
     text(
         "PASS TURN",
         56.,
@@ -518,10 +493,7 @@ pub fn draw_reversi(state: &AppState) {
         accessibility::text_size(12., state.large_text),
         WHITE,
     );
-    panel(
-        Rect::new(185., 485., 165., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(185., 485., 165., 44.), crate::theme::SURFACE);
     text(
         "NEW BOARD",
         229.,
@@ -534,7 +506,7 @@ pub fn draw_reversi(state: &AppState) {
         if game.ai_level == AiLevel::Gentle {
             Color::new(0.45, 0.25, 0.42, 1.)
         } else {
-            Color::new(0.18, 0.12, 0.28, 1.)
+            crate::theme::SURFACE_DARK
         },
     );
     panel(
@@ -542,7 +514,7 @@ pub fn draw_reversi(state: &AppState) {
         if game.ai_level == AiLevel::Sharp {
             Color::new(0.45, 0.25, 0.42, 1.)
         } else {
-            Color::new(0.18, 0.12, 0.28, 1.)
+            crate::theme::SURFACE_DARK
         },
     );
     panel(
@@ -550,7 +522,7 @@ pub fn draw_reversi(state: &AppState) {
         if game.ai_level == AiLevel::TwoPlayer {
             Color::new(0.45, 0.25, 0.42, 1.)
         } else {
-            Color::new(0.18, 0.12, 0.28, 1.)
+            crate::theme::SURFACE_DARK
         },
     );
     text(

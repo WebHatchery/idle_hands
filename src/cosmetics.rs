@@ -48,17 +48,17 @@ fn next_unlocked(current: u8, stamps: u16, costs: &[u16]) -> u8 {
 
 pub fn background(theme: u8) -> Color {
     match theme as usize % BOARD_THEMES.len() {
-        1 => Color::new(0.025, 0.07, 0.055, 1.),
-        2 => Color::new(0.10, 0.075, 0.055, 1.),
-        _ => Color::new(0.035, 0.028, 0.055, 1.),
+        1 => Color::new(0.135, 0.165, 0.105, 1.),
+        2 => Color::new(0.255, 0.205, 0.155, 1.),
+        _ => crate::theme::BACKGROUND,
     }
 }
 
 pub fn cabinet_accent(decoration: u8) -> Color {
     match decoration as usize % CABINET_DECORATIONS.len() {
-        1 => Color::new(0.45, 0.78, 0.52, 1.),
-        2 => Color::new(0.78, 0.62, 0.36, 1.),
-        _ => Color::new(0.95, 0.83, 0.45, 1.),
+        1 => crate::theme::MOSS,
+        2 => Color::new(0.66, 0.57, 0.38, 1.),
+        _ => crate::theme::BRASS,
     }
 }
 

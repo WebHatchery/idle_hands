@@ -10,20 +10,13 @@ use macroquad::prelude::*;
 
 fn panel(rect: Rect, fill: Color) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
-    draw_rectangle_lines(
-        rect.x,
-        rect.y,
-        rect.w,
-        rect.h,
-        2.,
-        Color::new(0.45, 0.38, 0.65, 0.65),
-    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
 fn back(rect: Rect) {
-    panel(rect, Color::new(0.25, 0.16, 0.32, 1.));
+    panel(rect, crate::theme::MOSS_DARK);
     text("BACK", rect.x + 30., rect.y + 28., 12., WHITE);
 }
 
@@ -31,16 +24,16 @@ const RECORDS_VISIBLE_ROWS: usize = 10;
 const RULES_VISIBLE_ROWS: usize = 8;
 
 fn scroll(rect: Rect, label: &str) {
-    panel(rect, Color::new(0.18, 0.12, 0.28, 1.));
+    panel(rect, crate::theme::SURFACE_DARK);
     text(label, rect.x + 16., rect.y + 28., 10., WHITE);
 }
 
 pub fn draw_records(state: &AppState) {
     panel(
         Rect::new(20., 12., 804., 365.),
-        Color::new(0.08, 0.06, 0.14, 1.),
+        crate::theme::BACKGROUND_DEEP,
     );
-    text("RECORDS", 40., 48., 25., Color::new(0.98, 0.83, 0.45, 1.));
+    text("RECORDS", 40., 48., 25., crate::theme::BRASS);
     let earned = state.achievements.iter().filter(|v| **v).count();
     let completed = completed_games(&state.records);
     text(
@@ -55,12 +48,9 @@ pub fn draw_records(state: &AppState) {
         250.,
         46.,
         12.,
-        Color::new(0.98, 0.83, 0.45, 1.),
+        crate::theme::BRASS,
     );
-    panel(
-        Rect::new(650., 2., 150., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(650., 2., 150., 44.), crate::theme::SURFACE);
     text("ACHIEVEMENTS", 663., 30., 9., WHITE);
     draw_rectangle_lines(650., 2., 150., 44., 3., WHITE);
     let rows = [
@@ -251,20 +241,14 @@ pub fn draw_records(state: &AppState) {
             44.,
         );
         panel(rect, Color::new(0.13, 0.09, 0.20, 1.));
-        text(
-            label,
-            rect.x + 12.,
-            rect.y + 29.,
-            13.,
-            Color::new(0.78, 0.73, 0.86, 1.),
-        );
+        text(label, rect.x + 12., rect.y + 29., 13., crate::theme::CREAM);
         let width = crate::ui::measure_text(score, None, 14, 1.).width;
         text(
             score,
             rect.right() - width - 12.,
             rect.y + 29.,
             14.,
-            Color::new(0.98, 0.83, 0.45, 1.),
+            crate::theme::BRASS,
         );
     }
     scroll(Rect::new(430., 330., 100., 44.), "PREV");
@@ -292,9 +276,9 @@ pub fn records_clicks(p: Vec2) -> Vec<UiAction> {
 pub fn draw_rules(state: &AppState) {
     panel(
         Rect::new(20., 12., 804., 365.),
-        Color::new(0.08, 0.06, 0.14, 1.),
+        crate::theme::BACKGROUND_DEEP,
     );
-    text("RULES", 40., 48., 25., Color::new(0.98, 0.83, 0.45, 1.));
+    text("RULES", 40., 48., 25., crate::theme::BRASS);
     let start = state
         .library_scroll
         .min(GameId::ALL.len().saturating_sub(RULES_VISIBLE_ROWS));
@@ -316,14 +300,14 @@ pub fn draw_rules(state: &AppState) {
             rect.x + 12.,
             rect.y + 23.,
             14.,
-            Color::new(0.98, 0.83, 0.45, 1.),
+            crate::theme::BRASS,
         );
         text(
             game.subtitle(),
             rect.x + 12.,
             rect.y + 44.,
             11.,
-            Color::new(0.78, 0.73, 0.86, 1.),
+            crate::theme::CREAM,
         );
     }
     scroll(Rect::new(430., 330., 100., 44.), "PREV");
@@ -345,30 +329,30 @@ pub fn rules_clicks(p: Vec2) -> Vec<UiAction> {
 pub fn draw_credits() {
     panel(
         Rect::new(170., 20., 504., 350.),
-        Color::new(0.08, 0.06, 0.14, 1.),
+        crate::theme::BACKGROUND_DEEP,
     );
-    text("CREDITS", 205., 62., 28., Color::new(0.98, 0.83, 0.45, 1.));
+    text("CREDITS", 205., 62., 28., crate::theme::BRASS);
     text("IDLE HANDS", 205., 115., 20., WHITE);
     text(
         "A quiet collection for small pauses.",
         205.,
         155.,
         14.,
-        Color::new(0.78, 0.73, 0.86, 1.),
+        crate::theme::CREAM,
     );
     text(
         "Built with Rust, macroquad, and the shared toolkit.",
         205.,
         205.,
         13.,
-        Color::new(0.68, 0.63, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
     text(
         "Designed for touch and quiet minutes.",
         205.,
         260.,
         13.,
-        Color::new(0.98, 0.83, 0.45, 1.),
+        crate::theme::BRASS,
     );
     back(Rect::new(365., 315., 110., 44.));
 }
@@ -383,15 +367,9 @@ pub fn credits_clicks(p: Vec2) -> Vec<UiAction> {
 pub fn draw_help() {
     panel(
         Rect::new(20., 12., 804., 365.),
-        Color::new(0.08, 0.06, 0.14, 1.),
+        crate::theme::BACKGROUND_DEEP,
     );
-    text(
-        "HOW TO PLAY",
-        40.,
-        52.,
-        26.,
-        Color::new(0.98, 0.83, 0.45, 1.),
-    );
+    text("HOW TO PLAY", 40., 52., 26., crate::theme::BRASS);
     text(
         "Idle Hands is a cabinet of calm, tactile games.",
         40.,
@@ -411,7 +389,7 @@ pub fn draw_help() {
         (Rect::new(555., 288., 110., 44.), "CREDITS"),
         (Rect::new(680., 288., 130., 44.), "BACK"),
     ] {
-        panel(rect, Color::new(0.20, 0.13, 0.30, 1.));
+        panel(rect, crate::theme::SURFACE);
         text(label, rect.x + 30., rect.y + 29., 11., WHITE);
     }
 }
@@ -430,9 +408,9 @@ pub fn help_clicks(p: Vec2) -> Vec<UiAction> {
 pub fn draw_settings(state: &AppState) {
     panel(
         Rect::new(20., 10., 804., 370.),
-        Color::new(0.08, 0.06, 0.14, 1.),
+        crate::theme::BACKGROUND_DEEP,
     );
-    text("SETTINGS", 40., 45., 25., Color::new(0.98, 0.83, 0.45, 1.));
+    text("SETTINGS", 40., 45., 25., crate::theme::BRASS);
     text(
         &format!(
             "Profile: {}  -  Stamps: {}",
@@ -459,18 +437,9 @@ pub fn draw_settings(state: &AppState) {
         let rect = Rect::new(40., 68. + index as f32 * 48., 370., 44.);
         panel(rect, Color::new(0.16, 0.11, 0.24, 1.));
         text(label, rect.x + 12., rect.y + 28., 11., WHITE);
-        text(
-            value,
-            rect.x + 190.,
-            rect.y + 22.,
-            11.,
-            Color::new(0.98, 0.83, 0.45, 1.),
-        );
+        text(value, rect.x + 190., rect.y + 22., 11., crate::theme::BRASS);
     }
-    panel(
-        Rect::new(450., 68., 160., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(450., 68., 160., 44.), crate::theme::SURFACE);
     text(
         if state.sound { "SOUND ON" } else { "SOUND OFF" },
         495.,
@@ -478,10 +447,7 @@ pub fn draw_settings(state: &AppState) {
         11.,
         WHITE,
     );
-    panel(
-        Rect::new(630., 68., 160., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(630., 68., 160., 44.), crate::theme::SURFACE);
     text(
         if state.reduced_motion {
             "MOTION OFF"
@@ -498,10 +464,7 @@ pub fn draw_settings(state: &AppState) {
         Color::new(0.18, 0.26, 0.34, 1.),
     );
     text("SAVE NOW", 500., 148., 11., WHITE);
-    panel(
-        Rect::new(630., 120., 160., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(630., 120., 160., 44.), crate::theme::SURFACE);
     text("LOAD", 690., 148., 11., WHITE);
     panel(
         Rect::new(450., 172., 160., 44.),
@@ -538,12 +501,9 @@ pub fn draw_settings(state: &AppState) {
         450.,
         238.,
         12.,
-        Color::new(0.68, 0.63, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
-    panel(
-        Rect::new(40., 268., 160., 44.),
-        Color::new(0.25, 0.16, 0.32, 1.),
-    );
+    panel(Rect::new(40., 268., 160., 44.), crate::theme::MOSS_DARK);
     text("BACK", 98., 297., 12., WHITE);
     panel(
         Rect::new(220., 268., 160., 44.),
@@ -561,7 +521,7 @@ pub fn draw_settings(state: &AppState) {
             300.,
             220.,
             13.,
-            Color::new(0.78, 0.73, 0.86, 1.),
+            crate::theme::CREAM,
         );
         panel(
             Rect::new(285., 242., 110., 44.),

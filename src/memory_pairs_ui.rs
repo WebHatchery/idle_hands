@@ -251,7 +251,7 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 }
 
 fn accent() -> Color {
-    Color::new(0.98, 0.83, 0.45, 1.)
+    crate::theme::BRASS
 }
 
 fn muted() -> Color {

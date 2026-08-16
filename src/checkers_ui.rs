@@ -232,7 +232,7 @@ fn draw_piece(piece: Piece, x: f32, y: f32, radius: f32, high_contrast: bool) {
             if high_contrast {
                 Color::new(1., 0.85, 0.05, 1.)
             } else {
-                Color::new(0.98, 0.75, 0.30, 1.)
+                crate::theme::BRASS
             }
         }
         Piece::Empty => BLACK,
@@ -260,13 +260,7 @@ fn status_text(status: CheckersStatus, turn: Side) -> &'static str {
     }
 }
 fn button(rect: Rect, label: &str, large_text: bool) {
-    draw_rectangle(
-        rect.x,
-        rect.y,
-        rect.w,
-        rect.h,
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     text(
         label,
@@ -294,10 +288,10 @@ fn body_size() -> f32 {
     }
 }
 fn accent() -> Color {
-    Color::new(0.98, 0.83, 0.45, 1.)
+    crate::theme::BRASS
 }
 fn muted() -> Color {
-    Color::new(0.70, 0.64, 0.78, 1.)
+    crate::theme::SECONDARY
 }
 fn back_rect() -> Rect {
     Rect::new(0., 0., 110., 42.)

@@ -79,7 +79,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
 
 pub fn draw(state: &AppState) {
     let l = layout();
-    panel(l.panel, Color::new(0.08, 0.06, 0.14, 1.));
+    panel(l.panel, crate::theme::BACKGROUND_DEEP);
     let title_size = if crate::ui::is_portrait() { 29. } else { 38. };
     let recent = state.recent_view;
     crate::ui::draw_text(
@@ -98,7 +98,7 @@ pub fn draw(state: &AppState) {
                 70.
             },
         title_size,
-        Color::new(0.98, 0.83, 0.45, 1.),
+        crate::theme::BRASS,
     );
     let games = browse_games(state);
     let count = games.len();
@@ -121,7 +121,7 @@ pub fn draw(state: &AppState) {
         l.panel.x + 52.,
         subtitle_y,
         if crate::ui::is_portrait() { 11. } else { 16. },
-        Color::new(0.72, 0.68, 0.82, 1.),
+        crate::theme::SECONDARY,
     );
     if count == 0 {
         crate::ui::draw_text(
@@ -143,7 +143,7 @@ pub fn draw(state: &AppState) {
             rect.x + 10.,
             rect.y + rect.h * 0.5,
             if crate::ui::is_portrait() { 3. } else { 4. },
-            Color::new(0.98, 0.75, 0.30, 1.),
+            crate::theme::BRASS,
         );
         crate::ui::draw_text(
             game.title(),
@@ -156,7 +156,7 @@ pub fn draw(state: &AppState) {
             } else {
                 14.
             },
-            Color::new(0.98, 0.82, 0.42, 1.),
+            crate::theme::BRASS,
         );
         if !crate::ui::is_portrait() {
             crate::ui::draw_text(
@@ -169,12 +169,12 @@ pub fn draw(state: &AppState) {
         }
     }
     if let Some((previous, next)) = scroll_rects() {
-        panel(previous, Color::new(0.18, 0.12, 0.28, 1.));
-        panel(next, Color::new(0.18, 0.12, 0.28, 1.));
+        panel(previous, crate::theme::SURFACE_DARK);
+        panel(next, crate::theme::SURFACE_DARK);
         crate::ui::draw_text("PREV", previous.x + 22., previous.y + 28., 11., WHITE);
         crate::ui::draw_text("NEXT", next.x + 22., next.y + 28., 11., WHITE);
     }
-    panel(l.back, Color::new(0.25, 0.16, 0.32, 1.));
+    panel(l.back, crate::theme::MOSS_DARK);
     crate::ui::draw_text(
         "BACK",
         l.back.x + if crate::ui::is_portrait() { 52. } else { 60. },
@@ -238,12 +238,5 @@ fn list_card_rect(layout: Layout, slot: usize) -> Rect {
 
 fn panel(rect: Rect, fill: Color) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
-    draw_rectangle_lines(
-        rect.x,
-        rect.y,
-        rect.w,
-        rect.h,
-        2.,
-        Color::new(0.45, 0.38, 0.65, 0.65),
-    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }

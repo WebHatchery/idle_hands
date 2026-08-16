@@ -7,14 +7,7 @@ use macroquad::prelude::*;
 
 fn panel(rect: Rect, fill: Color) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
-    draw_rectangle_lines(
-        rect.x,
-        rect.y,
-        rect.w,
-        rect.h,
-        2.,
-        Color::new(0.45, 0.38, 0.65, 0.65),
-    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
 fn value(value: Option<u32>) -> String {
     value.map_or_else(|| "—".into(), |number| number.to_string())
@@ -23,15 +16,15 @@ fn value(value: Option<u32>) -> String {
 pub fn draw_records(state: &AppState) {
     panel(
         Rect::new(120., 55., 1040., 610.),
-        Color::new(0.08, 0.06, 0.14, 1.),
+        crate::theme::BACKGROUND_DEEP,
     );
-    crate::ui::draw_text("RECORDS", 170., 125., 46., Color::new(0.98, 0.83, 0.45, 1.));
+    crate::ui::draw_text("RECORDS", 170., 125., 46., crate::theme::BRASS);
     crate::ui::draw_text(
         "Quiet milestones from every drawer",
         174.,
         153.,
         19.,
-        Color::new(0.72, 0.68, 0.82, 1.),
+        crate::theme::SECONDARY,
     );
     let earned = state.achievements.iter().filter(|earned| **earned).count();
     let completed = completed_games(&state.records);
@@ -47,12 +40,9 @@ pub fn draw_records(state: &AppState) {
         174.,
         185.,
         18.,
-        Color::new(0.98, 0.83, 0.45, 1.),
+        crate::theme::BRASS,
     );
-    panel(
-        Rect::new(900., 102., 210., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(900., 102., 210., 44.), crate::theme::SURFACE);
     draw_rectangle_lines(900., 102., 210., 44., 3., WHITE);
     crate::ui::draw_text("ACHIEVEMENTS", 925., 129., 14., WHITE);
     let left = [
@@ -256,13 +246,10 @@ pub fn draw_records(state: &AppState) {
         let row = index % 11;
         let x = 160. + column as f32 * 200.;
         let y = 240. + row as f32 * 32.;
-        crate::ui::draw_text(label, x, y, 10., Color::new(0.78, 0.73, 0.86, 1.));
-        crate::ui::draw_text(score, x + 150., y, 11., Color::new(0.98, 0.83, 0.45, 1.));
+        crate::ui::draw_text(label, x, y, 10., crate::theme::CREAM);
+        crate::ui::draw_text(score, x + 150., y, 11., crate::theme::BRASS);
     }
-    panel(
-        Rect::new(930., 590., 180., 48.),
-        Color::new(0.25, 0.16, 0.32, 1.),
-    );
+    panel(Rect::new(930., 590., 180., 48.), crate::theme::MOSS_DARK);
     crate::ui::draw_text("BACK", 990., 621., 18., WHITE);
 }
 pub fn records_clicks(p: Vec2) -> Vec<UiAction> {

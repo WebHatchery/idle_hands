@@ -9,13 +9,12 @@ use macroquad::prelude::*;
 
 pub fn draw(state: &AppState, _data: &GameData, loaded: usize) {
     let accent = cosmetics::cabinet_accent(state.cabinet_decoration);
+    draw_rectangle(24., 18., 1232., 684., crate::theme::BACKGROUND_DEEP);
+    draw_rectangle_lines(24., 18., 1232., 684., 3., crate::theme::BORDER);
     text("IDLE HANDS", 46., 70., 48., accent);
     crate::cabinet_art::draw_header_motif(1160., 108., 24., accent);
     crate::cabinet_art::draw_shelves(48., 165., 1184., 510., accent);
-    panel(
-        Rect::new(48., 108., 175., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(48., 108., 175., 44.), crate::theme::MOSS_DARK);
     text("FAVORITES", 60., 130., 11., WHITE);
     text(
         &state
@@ -27,27 +26,24 @@ pub fn draw(state: &AppState, _data: &GameData, loaded: usize) {
         190.,
         130.,
         11.,
-        Color::new(0.98, 0.83, 0.45, 1.),
+        crate::theme::BRASS,
     );
-    panel(
-        Rect::new(230., 108., 175., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(230., 108., 175., 44.), crate::theme::SURFACE_DARK);
     text("RECENT", 242., 130., 11., WHITE);
     text(
         &state.recent_games.len().to_string(),
         372.,
         130.,
         11.,
-        Color::new(0.98, 0.83, 0.45, 1.),
+        crate::theme::BRASS,
     );
     for (rect, _, filter) in filter_buttons() {
         panel(
             rect,
             if state.cabinet_filter == filter {
-                Color::new(0.35, 0.22, 0.42, 1.)
+                crate::theme::MOSS
             } else {
-                Color::new(0.20, 0.13, 0.30, 1.)
+                crate::theme::SURFACE_DARK
             },
         );
         text(
@@ -66,7 +62,7 @@ pub fn draw(state: &AppState, _data: &GameData, loaded: usize) {
         48.,
         98.,
         20.,
-        Color::new(0.72, 0.68, 0.82, 1.),
+        crate::theme::SECONDARY,
     );
     text(
         &format!(
@@ -78,7 +74,7 @@ pub fn draw(state: &AppState, _data: &GameData, loaded: usize) {
         720.,
         130.,
         15.,
-        Color::new(0.60, 0.56, 0.72, 1.),
+        crate::theme::SECONDARY,
     );
     text(
         &format!(
@@ -95,14 +91,7 @@ pub fn draw(state: &AppState, _data: &GameData, loaded: usize) {
     for (i, game) in games.iter().copied().enumerate() {
         let rect = cabinet_rect(i);
         let active = crate::cabinet_status::is_active(game);
-        panel(
-            rect,
-            if active {
-                Color::new(0.17, 0.12, 0.27, 1.)
-            } else {
-                Color::new(0.09, 0.075, 0.15, 1.)
-            },
-        );
+        panel(rect, crate::theme::category_surface(game, active));
         let small_title = matches!(
             game,
             GameId::TinyTowerDefence
@@ -126,11 +115,7 @@ pub fn draw(state: &AppState, _data: &GameData, loaded: usize) {
             rect.x + 18.,
             rect.y + 21.,
             if small_title { 10. } else { 18. },
-            if active {
-                Color::new(0.98, 0.82, 0.42, 1.)
-            } else {
-                WHITE
-            },
+            if active { crate::theme::CREAM } else { WHITE },
         );
         let status = crate::cabinet_status::status(state, game);
         text(
@@ -145,16 +130,16 @@ pub fn draw(state: &AppState, _data: &GameData, loaded: usize) {
             rect.x + 18.,
             rect.y + 56.,
             11.,
-            Color::new(0.69, 0.65, 0.78, 1.),
+            crate::theme::SECONDARY,
         );
         draw_circle(
             rect.right() - 34.,
             rect.y + 20.,
             12.,
             if active {
-                Color::new(0.85, 0.55, 0.28, 1.)
+                crate::theme::BRASS
             } else {
-                Color::new(0.22, 0.18, 0.31, 1.)
+                crate::theme::SURFACE_DARK
             },
         );
         if state.favorites.get(game.index()).copied().unwrap_or(false) {
@@ -167,7 +152,7 @@ pub fn draw(state: &AppState, _data: &GameData, loaded: usize) {
             rect.right() - 37.,
             rect.y + 24.,
             11.,
-            Color::new(0.08, 0.05, 0.12, 1.),
+            crate::theme::INK,
         );
     }
     if games.is_empty() {
@@ -180,24 +165,15 @@ pub fn draw(state: &AppState, _data: &GameData, loaded: usize) {
         );
     }
     let selected = GameId::ALL[state.selected.min(GameId::ALL.len() - 1)];
-    panel(
-        Rect::new(720., 28., 190., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(720., 28., 190., 44.), crate::theme::MOSS_DARK);
     text("CONTINUE", 735., 49., 12., WHITE);
-    text(
-        selected.title(),
-        735.,
-        64.,
-        9.,
-        Color::new(0.98, 0.83, 0.45, 1.),
-    );
+    text(selected.title(), 735., 64., 9., crate::theme::BRASS);
     for (rect, label) in [
         (Rect::new(940., 28., 90., 44.), "HELP"),
         (Rect::new(1040., 28., 90., 44.), "RECORDS"),
         (Rect::new(1140., 28., 110., 44.), "SETTINGS"),
     ] {
-        panel(rect, Color::new(0.12, 0.08, 0.20, 1.));
+        panel(rect, crate::theme::SURFACE_DARK);
         text(label, rect.x + 14., rect.y + 29., 15., WHITE);
     }
     text(
@@ -208,7 +184,7 @@ pub fn draw(state: &AppState, _data: &GameData, loaded: usize) {
         48.,
         686.,
         16.,
-        Color::new(0.52, 0.48, 0.64, 1.),
+        crate::theme::SECONDARY,
     );
 }
 
@@ -239,14 +215,7 @@ fn visible_games(state: &AppState) -> Vec<GameId> {
 }
 fn panel(rect: Rect, fill: Color) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
-    draw_rectangle_lines(
-        rect.x,
-        rect.y,
-        rect.w,
-        rect.h,
-        2.,
-        Color::new(0.45, 0.38, 0.65, 0.65),
-    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);

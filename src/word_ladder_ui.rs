@@ -150,7 +150,7 @@ pub fn draw(state: &AppState) {
                 title_y + 45.
             },
             accessibility::text_size(12., state.large_text),
-            Color::new(0.98, 0.75, 0.30, 1.),
+            crate::theme::BRASS,
         );
     }
     draw_words(

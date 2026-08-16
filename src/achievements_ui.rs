@@ -74,11 +74,7 @@ pub fn clicks(point: Vec2) -> Vec<UiAction> {
 
 pub fn draw(state: &AppState) {
     let l = layout();
-    panel(
-        l.panel,
-        Color::new(0.08, 0.06, 0.14, 1.),
-        state.high_contrast,
-    );
+    panel(l.panel, crate::theme::BACKGROUND_DEEP, state.high_contrast);
     let portrait = crate::ui::is_portrait();
     let compact = crate::ui::is_compact_landscape();
     let title_y = if compact {
@@ -101,7 +97,7 @@ pub fn draw(state: &AppState) {
         l.panel.x + 50.,
         title_y,
         crate::accessibility::text_size(title_size, state.large_text),
-        Color::new(0.98, 0.83, 0.45, 1.),
+        crate::theme::BRASS,
     );
     let earned = AchievementId::ALL
         .iter()
@@ -123,7 +119,7 @@ pub fn draw(state: &AppState) {
         l.panel.x + 52.,
         subtitle_y,
         crate::accessibility::text_size(if portrait { 10. } else { 15. }, state.large_text),
-        Color::new(0.72, 0.68, 0.82, 1.),
+        crate::theme::SECONDARY,
     );
     for (filter, rect) in filter_rects(l).iter().enumerate() {
         let active = state.achievement_filter == filter as u8;
@@ -144,7 +140,7 @@ pub fn draw(state: &AppState) {
             if active {
                 WHITE
             } else {
-                Color::new(0.72, 0.68, 0.82, 1.)
+                crate::theme::SECONDARY
             },
         );
         if active {
@@ -177,7 +173,7 @@ pub fn draw(state: &AppState) {
             if state.high_contrast {
                 WHITE
             } else if earned {
-                Color::new(0.98, 0.75, 0.30, 1.)
+                crate::theme::BRASS
             } else {
                 Color::new(0.35, 0.31, 0.44, 1.)
             },
@@ -200,7 +196,7 @@ pub fn draw(state: &AppState) {
             if state.high_contrast {
                 WHITE
             } else if earned {
-                Color::new(0.98, 0.82, 0.42, 1.)
+                crate::theme::BRASS
             } else {
                 Color::new(0.68, 0.64, 0.76, 1.)
             },
@@ -221,20 +217,12 @@ pub fn draw(state: &AppState) {
         );
     }
     if let Some((previous, next)) = scroll_rects() {
-        panel(
-            previous,
-            Color::new(0.18, 0.12, 0.28, 1.),
-            state.high_contrast,
-        );
-        panel(next, Color::new(0.18, 0.12, 0.28, 1.), state.high_contrast);
+        panel(previous, crate::theme::SURFACE_DARK, state.high_contrast);
+        panel(next, crate::theme::SURFACE_DARK, state.high_contrast);
         crate::ui::draw_text("PREV", previous.x + 22., previous.y + 28., 11., WHITE);
         crate::ui::draw_text("NEXT", next.x + 22., next.y + 28., 11., WHITE);
     }
-    panel(
-        l.back,
-        Color::new(0.25, 0.16, 0.32, 1.),
-        state.high_contrast,
-    );
+    panel(l.back, crate::theme::MOSS_DARK, state.high_contrast);
     crate::ui::draw_text(
         "BACK",
         l.back.x + if portrait { 52. } else { 60. },

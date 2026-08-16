@@ -5,14 +5,7 @@ use macroquad::prelude::*;
 
 fn panel(rect: Rect, fill: Color) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
-    draw_rectangle_lines(
-        rect.x,
-        rect.y,
-        rect.w,
-        rect.h,
-        2.,
-        Color::new(0.45, 0.38, 0.65, 0.65),
-    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
 
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
@@ -21,12 +14,9 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 
 pub fn draw(state: &AppState) {
     let game = &state.sudoku;
-    panel(
-        Rect::new(0., 0., 110., 44.),
-        Color::new(0.12, 0.08, 0.20, 1.),
-    );
+    panel(Rect::new(0., 0., 110., 44.), crate::theme::SURFACE_DARK);
     text("‹ CABINET", 10., 29., 14., Color::new(0.78, 0.70, 0.92, 1.));
-    text("SUDOKU", 12., 78., 34., Color::new(0.98, 0.83, 0.45, 1.));
+    text("SUDOKU", 12., 78., 34., crate::theme::BRASS);
     for (index, difficulty) in crate::sudoku::SudokuDifficulty::ALL.iter().enumerate() {
         let rect = Rect::new(148. + index as f32 * 68., 48., 62., 44.);
         panel(
@@ -100,13 +90,13 @@ pub fn draw(state: &AppState) {
         12.,
         465.,
         13.,
-        Color::new(0.70, 0.64, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
     for number in 1..=9 {
         let col = (number - 1) % 3;
         let row = (number - 1) / 3;
         let rect = Rect::new(12. + col as f32 * 114., 480. + row as f32 * 52., 104., 44.);
-        panel(rect, Color::new(0.20, 0.13, 0.30, 1.));
+        panel(rect, crate::theme::SURFACE);
         text(&number.to_string(), rect.x + 46., rect.y + 29., 20., WHITE);
     }
     panel(
@@ -114,10 +104,7 @@ pub fn draw(state: &AppState) {
         Color::new(0.45, 0.25, 0.42, 1.),
     );
     text("PENCIL", 35., 679., 13., WHITE);
-    panel(
-        Rect::new(128., 650., 104., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(128., 650., 104., 44.), crate::theme::SURFACE);
     text("ERASE", 158., 679., 13., WHITE);
     panel(
         Rect::new(244., 650., 104., 44.),
@@ -133,7 +120,7 @@ pub fn draw(state: &AppState) {
         12.,
         730.,
         12.,
-        Color::new(0.68, 0.63, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
 }
 

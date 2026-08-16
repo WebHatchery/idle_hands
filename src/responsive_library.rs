@@ -9,23 +9,13 @@ use macroquad::prelude::*;
 
 fn panel(rect: Rect, fill: Color) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
-    draw_rectangle_lines(
-        rect.x,
-        rect.y,
-        rect.w,
-        rect.h,
-        2.,
-        Color::new(0.45, 0.38, 0.65, 0.65),
-    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
 fn back_button(y: f32) {
-    panel(
-        Rect::new(10., y, 150., 44.),
-        Color::new(0.25, 0.16, 0.32, 1.),
-    );
+    panel(Rect::new(10., y, 150., 44.), crate::theme::MOSS_DARK);
     text("BACK", 62., y + 28., 12., WHITE);
 }
 fn value(value: Option<u32>) -> String {
@@ -36,23 +26,17 @@ const RECORDS_VISIBLE_ROWS: usize = 11;
 const RULES_VISIBLE_ROWS: usize = 8;
 
 fn scroll_button(rect: Rect, label: &str) {
-    panel(rect, Color::new(0.18, 0.12, 0.28, 1.));
+    panel(rect, crate::theme::SURFACE_DARK);
     text(label, rect.x + 18., rect.y + 28., 11., WHITE);
 }
 
 pub fn draw_records(state: &AppState) {
     panel(
         Rect::new(8., 20., 344., 680.),
-        Color::new(0.08, 0.06, 0.14, 1.),
+        crate::theme::BACKGROUND_DEEP,
     );
-    text("RECORDS", 20., 62., 29., Color::new(0.98, 0.83, 0.45, 1.));
-    text(
-        "Quiet milestones",
-        22.,
-        88.,
-        13.,
-        Color::new(0.72, 0.68, 0.82, 1.),
-    );
+    text("RECORDS", 20., 62., 29., crate::theme::BRASS);
+    text("Quiet milestones", 22., 88., 13., crate::theme::SECONDARY);
     let earned = state.achievements.iter().filter(|earned| **earned).count();
     let completed = completed_games(&state.records);
     text(
@@ -65,12 +49,9 @@ pub fn draw_records(state: &AppState) {
         20.,
         110.,
         12.,
-        Color::new(0.98, 0.83, 0.45, 1.),
+        crate::theme::BRASS,
     );
-    panel(
-        Rect::new(190., 28., 155., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(190., 28., 155., 44.), crate::theme::SURFACE);
     text("ACHIEVEMENTS", 202., 56., 10., WHITE);
     draw_rectangle_lines(190., 28., 155., 44., 3., WHITE);
     text(
@@ -78,7 +59,7 @@ pub fn draw_records(state: &AppState) {
         210.,
         88.,
         11.,
-        Color::new(0.98, 0.83, 0.45, 1.),
+        crate::theme::BRASS,
     );
     let rows = [
         ("2048 best", state.records.best_2048.to_string()),
@@ -264,20 +245,14 @@ pub fn draw_records(state: &AppState) {
     {
         let rect = Rect::new(18., 122. + index as f32 * 42., 324., 36.);
         panel(rect, Color::new(0.13, 0.09, 0.20, 1.));
-        text(
-            label,
-            rect.x + 10.,
-            rect.y + 24.,
-            13.,
-            Color::new(0.78, 0.73, 0.86, 1.),
-        );
+        text(label, rect.x + 10., rect.y + 24., 13., crate::theme::CREAM);
         let score_width = crate::ui::measure_text(score, None, 14, 1.).width;
         text(
             score,
             rect.right() - score_width - 10.,
             rect.y + 24.,
             14.,
-            Color::new(0.98, 0.83, 0.45, 1.),
+            crate::theme::BRASS,
         );
     }
     scroll_button(Rect::new(10., 602., 100., 44.), "PREV");
@@ -292,7 +267,7 @@ pub fn draw_records(state: &AppState) {
         128.,
         630.,
         11.,
-        Color::new(0.78, 0.73, 0.86, 1.),
+        crate::theme::CREAM,
     );
     back_button(714.);
 }
@@ -313,15 +288,15 @@ pub fn records_clicks(p: Vec2) -> Vec<UiAction> {
 pub fn draw_rules(state: &AppState) {
     panel(
         Rect::new(8., 20., 344., 680.),
-        Color::new(0.08, 0.06, 0.14, 1.),
+        crate::theme::BACKGROUND_DEEP,
     );
-    text("RULES", 20., 62., 29., Color::new(0.98, 0.83, 0.45, 1.));
+    text("RULES", 20., 62., 29., crate::theme::BRASS);
     text(
         "Every drawer keeps its controls visible.",
         20.,
         88.,
         12.,
-        Color::new(0.72, 0.68, 0.82, 1.),
+        crate::theme::SECONDARY,
     );
     let start = state
         .library_scroll
@@ -339,14 +314,14 @@ pub fn draw_rules(state: &AppState) {
             rect.x + 10.,
             rect.y + 22.,
             14.,
-            Color::new(0.98, 0.83, 0.45, 1.),
+            crate::theme::BRASS,
         );
         text(
             game.subtitle(),
             rect.x + 10.,
             rect.y + 43.,
             11.,
-            Color::new(0.78, 0.73, 0.86, 1.),
+            crate::theme::CREAM,
         );
     }
     scroll_button(Rect::new(10., 602., 100., 44.), "PREV");
@@ -361,7 +336,7 @@ pub fn draw_rules(state: &AppState) {
         128.,
         630.,
         11.,
-        Color::new(0.78, 0.73, 0.86, 1.),
+        crate::theme::CREAM,
     );
     back_button(714.);
 }
@@ -380,44 +355,38 @@ pub fn rules_clicks(p: Vec2) -> Vec<UiAction> {
 pub fn draw_credits() {
     panel(
         Rect::new(8., 70., 344., 520.),
-        Color::new(0.08, 0.06, 0.14, 1.),
+        crate::theme::BACKGROUND_DEEP,
     );
-    text("CREDITS", 20., 115., 29., Color::new(0.98, 0.83, 0.45, 1.));
+    text("CREDITS", 20., 115., 29., crate::theme::BRASS);
     text("IDLE HANDS", 22., 165., 22., WHITE);
     text(
         "A quiet collection for",
         22.,
         210.,
         15.,
-        Color::new(0.78, 0.73, 0.86, 1.),
+        crate::theme::CREAM,
     );
-    text(
-        "small pauses.",
-        22.,
-        235.,
-        15.,
-        Color::new(0.78, 0.73, 0.86, 1.),
-    );
+    text("small pauses.", 22., 235., 15., crate::theme::CREAM);
     text(
         "Built with Rust, macroquad,",
         22.,
         295.,
         13.,
-        Color::new(0.68, 0.63, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
     text(
         "and the shared toolkit.",
         22.,
         320.,
         13.,
-        Color::new(0.68, 0.63, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
     text(
         "Designed for touch and quiet minutes.",
         22.,
         390.,
         13.,
-        Color::new(0.98, 0.83, 0.45, 1.),
+        crate::theme::BRASS,
     );
     back_button(650.);
 }
@@ -432,15 +401,9 @@ pub fn credits_clicks(p: Vec2) -> Vec<UiAction> {
 pub fn draw_help() {
     panel(
         Rect::new(8., 38., 344., 602.),
-        Color::new(0.08, 0.06, 0.14, 1.),
+        crate::theme::BACKGROUND_DEEP,
     );
-    text(
-        "HOW TO PLAY",
-        20.,
-        80.,
-        26.,
-        Color::new(0.98, 0.83, 0.45, 1.),
-    );
+    text("HOW TO PLAY", 20., 80., 26., crate::theme::BRASS);
     text("Idle Hands is a cabinet", 20., 112., 14., WHITE);
     text("of calm, tactile games.", 20., 135., 14., WHITE);
     text(
@@ -457,18 +420,9 @@ pub fn draw_help() {
         12.,
         Color::new(0.75, 0.70, 0.84, 1.),
     );
-    panel(
-        Rect::new(10., 530., 105., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
-    panel(
-        Rect::new(127., 530., 105., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
-    panel(
-        Rect::new(244., 530., 106., 44.),
-        Color::new(0.25, 0.16, 0.32, 1.),
-    );
+    panel(Rect::new(10., 530., 105., 44.), crate::theme::SURFACE);
+    panel(Rect::new(127., 530., 105., 44.), crate::theme::SURFACE);
+    panel(Rect::new(244., 530., 106., 44.), crate::theme::MOSS_DARK);
     text("RULES", 42., 558., 12., WHITE);
     text("CREDITS", 150., 558., 11., WHITE);
     text("BACK", 277., 558., 12., WHITE);

@@ -8,14 +8,7 @@ fn card_rect(x: f32, y: f32) -> Rect {
 }
 fn panel(rect: Rect, fill: Color) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
-    draw_rectangle_lines(
-        rect.x,
-        rect.y,
-        rect.w,
-        rect.h,
-        2.,
-        Color::new(0.45, 0.38, 0.65, 0.65),
-    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
 fn draw_card(rect: Rect, card: Card, selected: bool, reduced_motion: bool) {
     crate::card_render::draw_card(rect, card, selected, 0, reduced_motion);
@@ -24,7 +17,7 @@ fn draw_card(rect: Rect, card: Card, selected: bool, reduced_motion: bool) {
 pub fn draw_freecell(state: &AppState) {
     let game = &state.freecell;
     crate::ui::draw_text("‹ CABINET", 40., 55., 20., Color::new(0.78, 0.70, 0.92, 1.));
-    crate::ui::draw_text("FREECELL", 40., 105., 44., Color::new(0.98, 0.83, 0.45, 1.));
+    crate::ui::draw_text("FREECELL", 40., 105., 44., crate::theme::BRASS);
     crate::ui::draw_text(
         if game.status == crate::freecell::FreeCellStatus::Won {
             "All foundations complete"
@@ -34,7 +27,7 @@ pub fn draw_freecell(state: &AppState) {
         44.,
         132.,
         18.,
-        Color::new(0.70, 0.64, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
     for cell in 0..4 {
         let rect = card_rect(45. + cell as f32 * 105., 165.);
@@ -112,17 +105,14 @@ pub fn draw_freecell(state: &AppState) {
         45.,
         685.,
         17.,
-        Color::new(0.68, 0.63, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
     panel(
         Rect::new(850., 620., 140., 44.),
         Color::new(0.18, 0.26, 0.34, 1.),
     );
     crate::ui::draw_text("UNDO", 894., 648., 16., WHITE);
-    panel(
-        Rect::new(1010., 620., 160., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(1010., 620., 160., 44.), crate::theme::SURFACE);
     crate::ui::draw_text("NEW DEAL", 1042., 648., 16., WHITE);
     crate::ui::draw_text(
         "Tap a card, then tap a cascade or foundation.",
@@ -134,10 +124,7 @@ pub fn draw_freecell(state: &AppState) {
     if let Some(hint) = state.card_hint.as_deref() {
         crate::ui::draw_text(hint, 690., 590., 14., Color::new(0.63, 0.95, 0.72, 1.));
     }
-    panel(
-        Rect::new(690., 620., 140., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(690., 620., 140., 44.), crate::theme::SURFACE);
     crate::ui::draw_text("HINT", 737., 648., 16., WHITE);
 }
 

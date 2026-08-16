@@ -11,14 +11,7 @@ use macroquad::prelude::*;
 
 fn panel(rect: Rect, fill: Color) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
-    draw_rectangle_lines(
-        rect.x,
-        rect.y,
-        rect.w,
-        rect.h,
-        2.,
-        Color::new(0.45, 0.38, 0.65, 0.65),
-    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
 
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
@@ -28,19 +21,13 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 pub fn draw(state: &AppState) {
     let game = &state.minesweeper;
     text("‹ CABINET", 40., 55., 20., Color::new(0.78, 0.70, 0.92, 1.));
-    text(
-        "MINESWEEPER",
-        40.,
-        105.,
-        42.,
-        Color::new(0.98, 0.83, 0.45, 1.),
-    );
+    text("MINESWEEPER", 40., 105., 42., crate::theme::BRASS);
     text(
         "Read the quiet field",
         44.,
         132.,
         18.,
-        Color::new(0.70, 0.64, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
     let board = Rect::new(350., 155., 450., 450.);
     panel(board, accessibility::board_fill(state.high_contrast));
@@ -145,7 +132,7 @@ pub fn draw(state: &AppState) {
         if state.mine_flag_mode {
             Color::new(0.45, 0.20, 0.27, 1.)
         } else {
-            Color::new(0.20, 0.13, 0.30, 1.)
+            crate::theme::SURFACE
         },
     );
     text(
@@ -159,15 +146,9 @@ pub fn draw(state: &AppState) {
         16.,
         WHITE,
     );
-    panel(
-        Rect::new(850., 390., 170., 52.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(850., 390., 170., 52.), crate::theme::SURFACE);
     text("RESTART", 892., 423., 16., WHITE);
-    panel(
-        Rect::new(1030., 390., 170., 52.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(1030., 390., 170., 52.), crate::theme::SURFACE);
     text("HINT", 1092., 423., 16., WHITE);
     text(
         "Tap a square to reveal or flag it.",

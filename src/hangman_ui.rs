@@ -141,7 +141,7 @@ fn draw_word(game: &crate::hangman::Hangman, layout: Layout) {
         }
         display.push(' ');
     }
-    text(&display, x, y, size, Color::new(0.98, 0.83, 0.45, 1.));
+    text(&display, x, y, size, crate::theme::BRASS);
     if game.status == HangmanStatus::Lost {
         text("The word was", x, y + 42., body_size(), muted());
         text(&game.word, x + 105., y + 42., body_size(), accent());
@@ -164,7 +164,7 @@ fn draw_keyboard(game: &crate::hangman::Hangman, layout: Layout) {
         } else if game.guessed[index] {
             Color::new(0.25, 0.45, 0.34, 1.)
         } else {
-            Color::new(0.20, 0.13, 0.30, 1.)
+            crate::theme::SURFACE
         };
         draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
         draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
@@ -212,13 +212,7 @@ fn status_text(status: HangmanStatus, wrong: u8) -> String {
     }
 }
 fn button(rect: Rect, label: &str) {
-    draw_rectangle(
-        rect.x,
-        rect.y,
-        rect.w,
-        rect.h,
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     text(label, rect.x + 12., rect.y + 28., 11., WHITE);
 }
@@ -240,10 +234,10 @@ fn body_size() -> f32 {
     }
 }
 fn accent() -> Color {
-    Color::new(0.98, 0.83, 0.45, 1.)
+    crate::theme::BRASS
 }
 fn muted() -> Color {
-    Color::new(0.70, 0.64, 0.78, 1.)
+    crate::theme::SECONDARY
 }
 fn back_rect() -> Rect {
     Rect::new(0., 0., 110., 42.)

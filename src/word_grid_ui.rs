@@ -282,20 +282,14 @@ fn key_color(state: LetterState, high_contrast: bool) -> Color {
         };
     }
     match state {
-        LetterState::Unknown => Color::new(0.20, 0.13, 0.30, 1.),
+        LetterState::Unknown => crate::theme::SURFACE,
         LetterState::Absent => Color::new(0.12, 0.09, 0.17, 1.),
         LetterState::Present => Color::new(0.55, 0.35, 0.15, 1.),
         LetterState::Correct => Color::new(0.20, 0.45, 0.30, 1.),
     }
 }
 fn button(rect: Rect, label: &str, large_text: bool) {
-    draw_rectangle(
-        rect.x,
-        rect.y,
-        rect.w,
-        rect.h,
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     center_text(
         label,
@@ -331,10 +325,10 @@ fn body_size() -> f32 {
     }
 }
 fn accent() -> Color {
-    Color::new(0.98, 0.83, 0.45, 1.)
+    crate::theme::BRASS
 }
 fn muted() -> Color {
-    Color::new(0.70, 0.64, 0.78, 1.)
+    crate::theme::SECONDARY
 }
 fn line_color(high_contrast: bool) -> Color {
     accessibility::grid_line(high_contrast)

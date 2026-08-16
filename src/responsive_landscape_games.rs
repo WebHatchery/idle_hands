@@ -14,23 +14,13 @@ use macroquad::prelude::*;
 
 fn panel(rect: Rect, fill: Color) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
-    draw_rectangle_lines(
-        rect.x,
-        rect.y,
-        rect.w,
-        rect.h,
-        2.,
-        Color::new(0.45, 0.38, 0.65, 0.65),
-    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
 fn back() {
-    panel(
-        Rect::new(0., 0., 110., 44.),
-        Color::new(0.12, 0.08, 0.20, 1.),
-    );
+    panel(Rect::new(0., 0., 110., 44.), crate::theme::SURFACE_DARK);
     text("< CABINET", 10., 29., 12., Color::new(0.78, 0.70, 0.92, 1.));
 }
 
@@ -51,13 +41,7 @@ fn mine_grid(state: &AppState) -> GridLayout {
 pub fn draw_minesweeper(state: &AppState) {
     let game = &state.minesweeper;
     back();
-    text(
-        "MINESWEEPER",
-        100.,
-        20.,
-        19.,
-        Color::new(0.98, 0.83, 0.45, 1.),
-    );
+    text("MINESWEEPER", 100., 20., 19., crate::theme::BRASS);
     panel(MINE_BOARD, accessibility::board_fill(state.high_contrast));
     let layout = mine_grid(state);
     for index in 0..game.cells.len() {
@@ -148,7 +132,7 @@ pub fn draw_minesweeper(state: &AppState) {
         if state.mine_flag_mode {
             Color::new(0.45, 0.20, 0.27, 1.)
         } else {
-            Color::new(0.20, 0.13, 0.30, 1.)
+            crate::theme::SURFACE
         },
     );
     text(
@@ -162,17 +146,14 @@ pub fn draw_minesweeper(state: &AppState) {
         13.,
         WHITE,
     );
-    panel(
-        Rect::new(590., 155., 170., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(590., 155., 170., 44.), crate::theme::SURFACE);
     text("RESTART", 645., 183., 13., WHITE);
     text(
         "Tap reveal; hold to flag.",
         400.,
         240.,
         13.,
-        Color::new(0.68, 0.63, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
 }
 pub fn minesweeper_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
@@ -212,7 +193,7 @@ const SUDOKU_BOARD: Rect = Rect {
 pub fn draw_sudoku(state: &AppState) {
     let game = &state.sudoku;
     back();
-    text("SUDOKU", 100., 20., 19., Color::new(0.98, 0.83, 0.45, 1.));
+    text("SUDOKU", 100., 20., 19., crate::theme::BRASS);
     panel(SUDOKU_BOARD, accessibility::board_fill(state.high_contrast));
     let cell = 40.;
     for index in 0..81 {
@@ -230,9 +211,9 @@ pub fn draw_sudoku(state: &AppState) {
         let value = game.values[index];
         if value > 0 {
             let color = if game.is_given(index) {
-                Color::new(0.78, 0.73, 0.86, 1.)
+                crate::theme::CREAM
             } else {
-                Color::new(0.98, 0.83, 0.45, 1.)
+                crate::theme::BRASS
             };
             text(
                 &value.to_string(),
@@ -283,7 +264,7 @@ pub fn draw_sudoku(state: &AppState) {
             54.,
             42.,
         );
-        panel(rect, Color::new(0.20, 0.13, 0.30, 1.));
+        panel(rect, crate::theme::SURFACE);
         text(&value.to_string(), rect.x + 22., rect.y + 28., 17., WHITE);
     }
     panel(
@@ -291,17 +272,14 @@ pub fn draw_sudoku(state: &AppState) {
         Color::new(0.18, 0.26, 0.34, 1.),
     );
     text("UNDO", 622., 309., 12., WHITE);
-    panel(
-        Rect::new(715., 280., 110., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(715., 280., 110., 44.), crate::theme::SURFACE);
     text("ERASE", 747., 309., 12., WHITE);
     panel(
         Rect::new(400., 305., 160., 44.),
         if state.sudoku_note_mode {
             Color::new(0.45, 0.20, 0.27, 1.)
         } else {
-            Color::new(0.20, 0.13, 0.30, 1.)
+            crate::theme::SURFACE
         },
     );
     text(
@@ -367,7 +345,7 @@ const NONO_BOARD: Rect = Rect {
 pub fn draw_nonogram(state: &AppState) {
     let game = &state.nonogram;
     back();
-    text("NONOGRAM", 100., 20., 19., Color::new(0.98, 0.83, 0.45, 1.));
+    text("NONOGRAM", 100., 20., 19., crate::theme::BRASS);
     panel(NONO_BOARD, accessibility::board_fill(state.high_contrast));
     let layout = nonogram_grid(state);
     let visible = crate::nonogram::visible_size(game.size, state.nonogram_zoomed);
@@ -411,7 +389,7 @@ pub fn draw_nonogram(state: &AppState) {
             15.,
             105. + local as f32 * layout.cell_height,
             9.,
-            Color::new(0.78, 0.73, 0.86, 1.),
+            crate::theme::CREAM,
         );
     }
     text(
@@ -444,7 +422,7 @@ pub fn draw_nonogram(state: &AppState) {
         if game.mode == NonogramMode::Fill {
             Color::new(0.45, 0.25, 0.42, 1.)
         } else {
-            Color::new(0.20, 0.13, 0.30, 1.)
+            crate::theme::SURFACE
         },
     );
     text(
@@ -463,10 +441,7 @@ pub fn draw_nonogram(state: &AppState) {
         Color::new(0.18, 0.26, 0.34, 1.),
     );
     text("UNDO", 650., 163., 12., WHITE);
-    panel(
-        Rect::new(400., 190., 160., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(400., 190., 160., 44.), crate::theme::SURFACE);
     text(
         if state.nonogram_zoomed && game.size > visible {
             "FULL BOARD"
@@ -492,7 +467,7 @@ pub fn draw_nonogram(state: &AppState) {
         400.,
         260.,
         13.,
-        Color::new(0.68, 0.63, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
 }
 
@@ -588,7 +563,7 @@ pub fn draw_reversi(state: &AppState) {
         100.,
         20.,
         accessibility::text_size(19., state.large_text),
-        Color::new(0.98, 0.83, 0.45, 1.),
+        crate::theme::BRASS,
     );
     panel(
         REV_BOARD,
@@ -655,7 +630,7 @@ pub fn draw_reversi(state: &AppState) {
         400.,
         55.,
         accessibility::text_size(15., state.large_text),
-        Color::new(0.98, 0.83, 0.45, 1.),
+        crate::theme::BRASS,
     );
     text(
         match game.status {
@@ -668,10 +643,7 @@ pub fn draw_reversi(state: &AppState) {
         accessibility::text_size(14., state.large_text),
         Color::new(0.63, 0.95, 0.72, 1.),
     );
-    panel(
-        Rect::new(400., 120., 160., 44.),
-        Color::new(0.18, 0.12, 0.28, 1.),
-    );
+    panel(Rect::new(400., 120., 160., 44.), crate::theme::SURFACE_DARK);
     text(
         "PASS TURN",
         450.,
@@ -679,10 +651,7 @@ pub fn draw_reversi(state: &AppState) {
         accessibility::text_size(12., state.large_text),
         WHITE,
     );
-    panel(
-        Rect::new(590., 120., 160., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(590., 120., 160., 44.), crate::theme::SURFACE);
     text(
         "NEW BOARD",
         635.,
@@ -704,7 +673,7 @@ pub fn draw_reversi(state: &AppState) {
             if game.ai_level == label.1 {
                 Color::new(0.45, 0.25, 0.42, 1.)
             } else {
-                Color::new(0.18, 0.12, 0.28, 1.)
+                crate::theme::SURFACE_DARK
             },
         );
         text(

@@ -8,26 +8,19 @@ fn text(s: &str, x: f32, y: f32, size: f32, color: Color) {
 }
 fn panel(rect: Rect, fill: Color) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
-    draw_rectangle_lines(
-        rect.x,
-        rect.y,
-        rect.w,
-        rect.h,
-        2.,
-        Color::new(0.45, 0.38, 0.65, 0.65),
-    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
 
 pub fn draw_sudoku(state: &AppState) {
     let game = &state.sudoku;
     text("‹ CABINET", 40., 55., 20., Color::new(0.78, 0.70, 0.92, 1.));
-    text("SUDOKU", 40., 105., 48., Color::new(0.98, 0.83, 0.45, 1.));
+    text("SUDOKU", 40., 105., 48., crate::theme::BRASS);
     text(
         "Fill every row, column, and box",
         44.,
         132.,
         18.,
-        Color::new(0.70, 0.64, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
     let board = Rect::new(300., 150., 504., 504.);
     panel(board, accessibility::board_fill(state.high_contrast));
@@ -130,7 +123,7 @@ pub fn draw_sudoku(state: &AppState) {
         let col = (number - 1) % 3;
         let row = (number - 1) / 3;
         let rect = Rect::new(850. + col as f32 * 78., 260. + row as f32 * 62., 66., 50.);
-        panel(rect, Color::new(0.20, 0.13, 0.30, 1.));
+        panel(rect, crate::theme::SURFACE);
         text(&number.to_string(), rect.x + 25., rect.y + 34., 24., WHITE);
     }
     panel(
@@ -138,7 +131,7 @@ pub fn draw_sudoku(state: &AppState) {
         if state.sudoku_note_mode {
             Color::new(0.45, 0.25, 0.42, 1.)
         } else {
-            Color::new(0.20, 0.13, 0.30, 1.)
+            crate::theme::SURFACE
         },
     );
     text("TOGGLE PENCIL", 880., 496., 16., WHITE);
@@ -152,10 +145,7 @@ pub fn draw_sudoku(state: &AppState) {
         Color::new(0.18, 0.26, 0.34, 1.),
     );
     text("UNDO", 900., 558., 16., WHITE);
-    panel(
-        Rect::new(1000., 530., 180., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(1000., 530., 180., 44.), crate::theme::SURFACE);
     text("HINT", 1065., 558., 16., WHITE);
     text(
         "Given clues are white. Your entries are gold.",

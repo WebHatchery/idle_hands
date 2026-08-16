@@ -127,7 +127,13 @@ pub fn draw_text(
     size: f32,
     color: Color,
 ) -> TextDimensions {
-    macroquad_toolkit::ui::draw_ui_text(value.as_ref(), x, y, readable_text_size(size), color)
+    macroquad_toolkit::ui::draw_ui_text(
+        value.as_ref(),
+        x,
+        y,
+        readable_text_size(size),
+        crate::theme::text_color(color),
+    )
 }
 pub fn measure_text(
     value: impl AsRef<str>,
@@ -485,7 +491,7 @@ fn text(s: &str, x: f32, y: f32, size: f32, color: Color) {
 }
 fn panel(r: Rect, fill: Color) {
     draw_rectangle(r.x, r.y, r.w, r.h, fill);
-    draw_rectangle_lines(r.x, r.y, r.w, r.h, 2., Color::new(0.45, 0.38, 0.65, 0.65))
+    draw_rectangle_lines(r.x, r.y, r.w, r.h, 2., crate::theme::BORDER)
 }
 fn cabinet_rect(i: usize) -> Rect {
     let col = i % 7;
@@ -499,13 +505,13 @@ fn cabinet_favorite_rect(i: usize) -> Rect {
 fn draw_2048(state: &AppState) {
     let g = &state.game;
     text("‹ CABINET", 40., 55., 20., Color::new(0.78, 0.70, 0.92, 1.));
-    text("2048", 40., 105., 52., Color::new(0.98, 0.83, 0.45, 1.));
+    text("2048", 40., 105., 52., crate::theme::BRASS);
     text(
         "Slide, merge, breathe",
         44.,
         132.,
         18.,
-        Color::new(0.70, 0.64, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
     score_box(Rect::new(830., 68., 120., 66.), "SCORE", g.score);
     score_box(Rect::new(965., 68., 120., 66.), "BEST", g.best);
@@ -556,7 +562,7 @@ fn draw_2048(state: &AppState) {
         830.,
         570.,
         17.,
-        Color::new(0.70, 0.64, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
     text(
         "Swipe the board or use a direction button",
@@ -567,14 +573,8 @@ fn draw_2048(state: &AppState) {
     );
     for (i, label) in ["↑", "←", "↓", "→"].iter().enumerate() {
         let r = Rect::new(830. + i as f32 * 90., 615., 78., 46.);
-        panel(r, Color::new(0.18, 0.12, 0.28, 1.));
-        text(
-            label,
-            r.x + 28.,
-            r.y + 33.,
-            26.,
-            Color::new(0.98, 0.83, 0.45, 1.),
-        );
+        panel(r, crate::theme::SURFACE_DARK);
+        text(label, r.x + 28., r.y + 33., 26., crate::theme::BRASS);
     }
     panel(
         Rect::new(400., 190., 300., 160.),
@@ -588,20 +588,11 @@ fn draw_2048(state: &AppState) {
         17.,
         Color::new(0.72, 0.68, 0.80, 1.),
     );
-    panel(
-        Rect::new(400., 390., 140., 48.),
-        Color::new(0.18, 0.12, 0.28, 1.),
-    );
+    panel(Rect::new(400., 390., 140., 48.), crate::theme::SURFACE_DARK);
     text("UNDO", 438., 421., 17., WHITE);
-    panel(
-        Rect::new(560., 390., 140., 48.),
-        Color::new(0.18, 0.12, 0.28, 1.),
-    );
+    panel(Rect::new(560., 390., 140., 48.), crate::theme::SURFACE_DARK);
     text("NEW GAME", 575., 421., 17., WHITE);
-    panel(
-        Rect::new(400., 450., 140., 48.),
-        Color::new(0.18, 0.12, 0.28, 1.),
-    );
+    panel(Rect::new(400., 450., 140., 48.), crate::theme::SURFACE_DARK);
     text("HINT", 438., 481., 17., WHITE);
     if let Some(hint) = state.card_hint.as_deref() {
         text(hint, 400., 520., 14., Color::new(0.63, 0.95, 0.72, 1.));
@@ -612,10 +603,7 @@ fn draw_2048(state: &AppState) {
             Color::new(0.16, 0.09, 0.20, 1.),
         );
         text("Start a new board?", 375., 315., 25., WHITE);
-        panel(
-            Rect::new(380., 340., 150., 44.),
-            Color::new(0.25, 0.16, 0.32, 1.),
-        );
+        panel(Rect::new(380., 340., 150., 44.), crate::theme::MOSS_DARK);
         text("CANCEL", 417., 368., 16., WHITE);
         panel(
             Rect::new(550., 340., 150., 44.),
@@ -676,15 +664,9 @@ fn game_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
 fn draw_help() {
     panel(
         Rect::new(120., 80., 1040., 560.),
-        Color::new(0.08, 0.06, 0.14, 1.),
+        crate::theme::BACKGROUND_DEEP,
     );
-    text(
-        "HOW TO PLAY",
-        170.,
-        145.,
-        42.,
-        Color::new(0.98, 0.83, 0.45, 1.),
-    );
+    text("HOW TO PLAY", 170., 145., 42., crate::theme::BRASS);
     text(
         "Idle Hands is a cabinet of calm, tactile games.",
         170.,
@@ -713,19 +695,10 @@ fn draw_help() {
         19.,
         Color::new(0.75, 0.70, 0.84, 1.),
     );
-    panel(
-        Rect::new(600., 635., 180., 48.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(600., 635., 180., 48.), crate::theme::SURFACE);
     text("RULES", 660., 666., 18., WHITE);
-    panel(
-        Rect::new(800., 635., 180., 48.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(800., 635., 180., 48.), crate::theme::SURFACE);
     text("CREDITS", 850., 666., 18., WHITE);
-    panel(
-        Rect::new(1030., 635., 180., 48.),
-        Color::new(0.25, 0.16, 0.32, 1.),
-    );
+    panel(Rect::new(1030., 635., 180., 48.), crate::theme::MOSS_DARK);
     text("BACK", 1090., 666., 18., WHITE)
 }

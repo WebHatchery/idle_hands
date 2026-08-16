@@ -14,26 +14,19 @@ fn text(s: &str, x: f32, y: f32, size: f32, color: Color) {
 }
 fn panel(rect: Rect, fill: Color) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
-    draw_rectangle_lines(
-        rect.x,
-        rect.y,
-        rect.w,
-        rect.h,
-        2.,
-        Color::new(0.45, 0.38, 0.65, 0.65),
-    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
 
 pub fn draw_nonogram(state: &AppState) {
     let game = &state.nonogram;
     text("‹ CABINET", 40., 55., 20., Color::new(0.78, 0.70, 0.92, 1.));
-    text("NONOGRAM", 40., 105., 44., Color::new(0.98, 0.83, 0.45, 1.));
+    text("NONOGRAM", 40., 105., 44., crate::theme::BRASS);
     text(
         "Paint the hidden picture",
         44.,
         132.,
         18.,
-        Color::new(0.70, 0.64, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
     for (index, preset) in crate::nonogram::NonogramPreset::ALL.iter().enumerate() {
         let rect = Rect::new(830. + index as f32 * 115., 95., 105., 34.);
@@ -129,22 +122,16 @@ pub fn draw_nonogram(state: &AppState) {
         18.,
         Color::new(0.82, 0.75, 0.90, 1.),
     );
-    panel(
-        Rect::new(850., 275., 180., 48.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(850., 275., 180., 48.), crate::theme::SURFACE);
     text("TOGGLE MODE", 878., 306., 15., WHITE);
     panel(
         Rect::new(1050., 275., 120., 48.),
         Color::new(0.18, 0.26, 0.34, 1.),
     );
     text("UNDO", 1084., 306., 16., WHITE);
-    panel(
-        Rect::new(850., 335., 320., 28.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(850., 335., 320., 28.), crate::theme::SURFACE);
     text("HINT", 995., 355., 14., WHITE);
-    text("Rows", 850., 400., 17., Color::new(0.98, 0.83, 0.45, 1.));
+    text("Rows", 850., 400., 17., crate::theme::BRASS);
     for (index, clue) in game.row_clues.iter().take(6).enumerate() {
         text(
             &clue
@@ -158,7 +145,7 @@ pub fn draw_nonogram(state: &AppState) {
             if state.high_contrast {
                 WHITE
             } else {
-                Color::new(0.68, 0.63, 0.78, 1.)
+                crate::theme::SECONDARY
             },
         );
     }

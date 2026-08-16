@@ -120,6 +120,7 @@ mod state_records;
 mod state_snapshots;
 mod sudoku;
 mod sudoku_ui;
+mod theme;
 mod tic_tac_toe;
 mod tic_tac_toe_ui;
 mod tiny_tower_defence;

@@ -11,14 +11,7 @@ use macroquad::prelude::*;
 
 fn panel(rect: Rect, fill: Color) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
-    draw_rectangle_lines(
-        rect.x,
-        rect.y,
-        rect.w,
-        rect.h,
-        2.,
-        Color::new(0.45, 0.38, 0.65, 0.65),
-    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
@@ -55,12 +48,9 @@ fn global_index(state: &AppState, local: usize) -> usize {
 
 pub fn draw_nonogram(state: &AppState) {
     let game = &state.nonogram;
-    panel(
-        Rect::new(0., 0., 110., 44.),
-        Color::new(0.12, 0.08, 0.20, 1.),
-    );
+    panel(Rect::new(0., 0., 110., 44.), crate::theme::SURFACE_DARK);
     text("‹ CABINET", 10., 29., 14., Color::new(0.78, 0.70, 0.92, 1.));
-    text("NONOGRAM", 12., 78., 32., Color::new(0.98, 0.83, 0.45, 1.));
+    text("NONOGRAM", 12., 78., 32., crate::theme::BRASS);
     for (index, preset) in crate::nonogram::NonogramPreset::ALL.iter().enumerate() {
         let rect = Rect::new(10. + index as f32 * 113., 92., 103., 44.);
         panel(
@@ -129,7 +119,7 @@ pub fn draw_nonogram(state: &AppState) {
             if state.high_contrast {
                 WHITE
             } else {
-                Color::new(0.78, 0.73, 0.86, 1.)
+                crate::theme::CREAM
             },
         );
     }
@@ -153,7 +143,7 @@ pub fn draw_nonogram(state: &AppState) {
             if state.high_contrast {
                 WHITE
             } else {
-                Color::new(0.78, 0.73, 0.86, 1.)
+                crate::theme::CREAM
             },
         );
     }
@@ -175,7 +165,7 @@ pub fn draw_nonogram(state: &AppState) {
         if game.mode == NonogramMode::Fill {
             Color::new(0.45, 0.25, 0.42, 1.)
         } else {
-            Color::new(0.20, 0.13, 0.30, 1.)
+            crate::theme::SURFACE
         },
     );
     text(
@@ -194,10 +184,7 @@ pub fn draw_nonogram(state: &AppState) {
         Color::new(0.18, 0.26, 0.34, 1.),
     );
     text("UNDO", 247., 573., 13., WHITE);
-    panel(
-        Rect::new(12., 595., 104., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(12., 595., 104., 44.), crate::theme::SURFACE);
     text(
         if state.nonogram_zoomed && game.size > visible {
             "FULL BOARD"
@@ -228,7 +215,7 @@ pub fn draw_nonogram(state: &AppState) {
         12.,
         670.,
         13.,
-        Color::new(0.68, 0.63, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
 }
 
@@ -300,18 +287,9 @@ fn mine_grid(state: &AppState) -> GridLayout {
 
 pub fn draw_minesweeper(state: &AppState) {
     let game = &state.minesweeper;
-    panel(
-        Rect::new(0., 0., 110., 44.),
-        Color::new(0.12, 0.08, 0.20, 1.),
-    );
+    panel(Rect::new(0., 0., 110., 44.), crate::theme::SURFACE_DARK);
     text("‹ CABINET", 10., 29., 14., Color::new(0.78, 0.70, 0.92, 1.));
-    text(
-        "MINESWEEPER",
-        12.,
-        72.,
-        29.,
-        Color::new(0.98, 0.83, 0.45, 1.),
-    );
+    text("MINESWEEPER", 12., 72., 29., crate::theme::BRASS);
     for (index, preset) in crate::minesweeper::MinePreset::ALL.iter().enumerate() {
         let rect = Rect::new(5. + index as f32 * 88., 88., 82., 44.);
         panel(
@@ -415,7 +393,7 @@ pub fn draw_minesweeper(state: &AppState) {
         if state.mine_flag_mode {
             Color::new(0.45, 0.20, 0.27, 1.)
         } else {
-            Color::new(0.20, 0.13, 0.30, 1.)
+            crate::theme::SURFACE
         },
     );
     text(
@@ -429,17 +407,14 @@ pub fn draw_minesweeper(state: &AppState) {
         13.,
         WHITE,
     );
-    panel(
-        Rect::new(187., 580., 165., 44.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
+    panel(Rect::new(187., 580., 165., 44.), crate::theme::SURFACE);
     text("RESTART", 241., 608., 13., WHITE);
     text(
         "Tap numbers to chord; hold to flag.",
         10.,
         665.,
         12.,
-        Color::new(0.68, 0.63, 0.78, 1.),
+        crate::theme::SECONDARY,
     );
 }
 
