@@ -13,10 +13,10 @@ pub fn draw(state: &AppState, _data: &GameData, loaded: usize) {
     crate::cabinet_art::draw_header_motif(1160., 108., 24., accent);
     crate::cabinet_art::draw_shelves(48., 165., 1184., 510., accent);
     panel(
-        Rect::new(48., 108., 175., 36.),
+        Rect::new(48., 108., 175., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    text("FAVORITES", 60., 124., 11., WHITE);
+    text("FAVORITES", 60., 130., 11., WHITE);
     text(
         &state
             .favorites
@@ -25,19 +25,19 @@ pub fn draw(state: &AppState, _data: &GameData, loaded: usize) {
             .count()
             .to_string(),
         190.,
-        124.,
+        130.,
         11.,
         Color::new(0.98, 0.83, 0.45, 1.),
     );
     panel(
-        Rect::new(230., 108., 175., 36.),
+        Rect::new(230., 108., 175., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    text("RECENT", 242., 124., 11., WHITE);
+    text("RECENT", 242., 130., 11., WHITE);
     text(
         &state.recent_games.len().to_string(),
         372.,
-        124.,
+        130.,
         11.,
         Color::new(0.98, 0.83, 0.45, 1.),
     );
@@ -181,20 +181,25 @@ pub fn draw(state: &AppState, _data: &GameData, loaded: usize) {
     }
     let selected = GameId::ALL[state.selected.min(GameId::ALL.len() - 1)];
     panel(
-        Rect::new(720., 28., 190., 42.),
+        Rect::new(720., 28., 190., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    text("CONTINUE", 735., 47., 12., WHITE);
+    text("CONTINUE", 735., 49., 12., WHITE);
     text(
         selected.title(),
         735.,
-        62.,
+        64.,
         9.,
         Color::new(0.98, 0.83, 0.45, 1.),
     );
-    text("HELP", 954., 55., 17., WHITE);
-    text("RECORDS", 1048., 55., 17., WHITE);
-    text("SETTINGS", 1151., 55., 17., WHITE);
+    for (rect, label) in [
+        (Rect::new(940., 28., 90., 44.), "HELP"),
+        (Rect::new(1040., 28., 90., 44.), "RECORDS"),
+        (Rect::new(1140., 28., 110., 44.), "SETTINGS"),
+    ] {
+        panel(rect, Color::new(0.12, 0.08, 0.20, 1.));
+        text(label, rect.x + 14., rect.y + 29., 15., WHITE);
+    }
     text(
         &format!(
             "Cabinet online  •  tap left markers to save favorites  •  {} textures ready",

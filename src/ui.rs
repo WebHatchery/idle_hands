@@ -141,22 +141,22 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
                     out.push(UiAction::Open(game.index()));
                 }
             }
-            if Rect::new(720., 28., 190., 42.).contains(p) {
+            if Rect::new(720., 28., 190., 44.).contains(p) {
                 out.push(UiAction::ContinueGame);
             }
-            if Rect::new(940., 28., 90., 42.).contains(p) {
+            if Rect::new(940., 28., 90., 44.).contains(p) {
                 out.push(UiAction::Help)
             }
-            if Rect::new(1040., 28., 90., 42.).contains(p) {
+            if Rect::new(1040., 28., 90., 44.).contains(p) {
                 out.push(UiAction::Records)
             }
-            if Rect::new(1140., 28., 110., 42.).contains(p) {
+            if Rect::new(1140., 28., 110., 44.).contains(p) {
                 out.push(UiAction::Settings)
             }
-            if Rect::new(48., 108., 175., 36.).contains(p) {
+            if Rect::new(48., 108., 175., 44.).contains(p) {
                 out.push(UiAction::Favorites)
             }
-            if Rect::new(230., 108., 175., 36.).contains(p) {
+            if Rect::new(230., 108., 175., 44.).contains(p) {
                 out.push(UiAction::Recent)
             }
             for (rect, _, filter) in cabinet_ui::filter_buttons_for_input() {

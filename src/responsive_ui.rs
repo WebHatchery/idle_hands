@@ -70,14 +70,14 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
         }
     }
     panel(
-        Rect::new(190., 40., 130., 42.),
+        Rect::new(190., 40., 130., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    text("CONTINUE", 202., 57., 9., WHITE);
+    text("CONTINUE", 202., 59., 9., WHITE);
     text(
         selected.title(),
         202.,
-        71.,
+        73.,
         8.,
         Color::new(0.98, 0.83, 0.45, 1.),
     );
@@ -159,18 +159,18 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
         );
     }
     for (rect, label) in [
-        (Rect::new(8., 700., 108., 40.), "HELP"),
-        (Rect::new(126., 700., 108., 40.), "RECORDS"),
-        (Rect::new(244., 700., 108., 40.), "SETTINGS"),
+        (Rect::new(8., 700., 108., 44.), "HELP"),
+        (Rect::new(126., 700., 108., 44.), "RECORDS"),
+        (Rect::new(244., 700., 108., 44.), "SETTINGS"),
     ] {
         panel(rect, Color::new(0.12, 0.08, 0.20, 1.));
-        text(label, rect.x + 12., rect.y + 26., 11., WHITE);
+        text(label, rect.x + 12., rect.y + 29., 11., WHITE);
     }
     panel(
-        Rect::new(18., 650., 106., 36.),
+        Rect::new(18., 650., 106., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    text("FAVORITES", 26., 666., 8., WHITE);
+    text("FAVORITES", 26., 678., 8., WHITE);
     text(
         &state
             .favorites
@@ -179,19 +179,19 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
             .count()
             .to_string(),
         94.,
-        666.,
+        678.,
         9.,
         Color::new(0.98, 0.83, 0.45, 1.),
     );
     panel(
-        Rect::new(130., 650., 104., 36.),
+        Rect::new(130., 650., 104., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    text("RECENT", 140., 666., 9., WHITE);
+    text("RECENT", 140., 678., 9., WHITE);
     text(
         &state.recent_games.len().to_string(),
         216.,
-        666.,
+        678.,
         9.,
         Color::new(0.98, 0.83, 0.45, 1.),
     );
@@ -205,7 +205,7 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
 }
 
 pub fn cabinet_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(190., 40., 130., 42.).contains(p) {
+    if Rect::new(190., 40., 130., 44.).contains(p) {
         return vec![UiAction::ContinueGame];
     }
     for (index, game) in visible_games(state).iter().enumerate() {
@@ -221,16 +221,16 @@ pub fn cabinet_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
             return vec![UiAction::CabinetFilter(filter)];
         }
     }
-    if Rect::new(18., 650., 106., 36.).contains(p) {
+    if Rect::new(18., 650., 106., 44.).contains(p) {
         return vec![UiAction::Favorites];
     }
-    if Rect::new(130., 650., 104., 36.).contains(p) {
+    if Rect::new(130., 650., 104., 44.).contains(p) {
         return vec![UiAction::Recent];
     }
     for (rect, action) in [
-        (Rect::new(8., 700., 108., 40.), UiAction::Help),
-        (Rect::new(126., 700., 108., 40.), UiAction::Records),
-        (Rect::new(244., 700., 108., 40.), UiAction::Settings),
+        (Rect::new(8., 700., 108., 44.), UiAction::Help),
+        (Rect::new(126., 700., 108., 44.), UiAction::Records),
+        (Rect::new(244., 700., 108., 44.), UiAction::Settings),
     ] {
         if rect.contains(p) {
             return vec![action];

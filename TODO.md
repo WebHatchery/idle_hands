@@ -1322,3 +1322,8 @@ contract, shared confirmation safety, responsive capture coverage, and the
 
 - [x] Resize responsive Settings cosmetics, toggles, save/load, reset, and
   confirmation actions to touch-complete targets with capture coverage.
+
+## Phase 135 — Cabinet navigation accessibility
+
+- [x] Resize cabinet FAVORITES, RECENT, CONTINUE, HELP, RECORDS, and SETTINGS
+  actions to touch-complete targets across desktop and responsive layouts.
