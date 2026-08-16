@@ -43,3 +43,14 @@ fn a_board_without_remaining_pairs_becomes_stuck() {
     game.resolve();
     assert_eq!(game.status, MahjongStatus::Stuck);
 }
+
+#[test]
+fn hint_pair_finds_free_matching_tiles_without_mutating() {
+    let game = MahjongSolitaire::new(1);
+    let before = game.tiles.clone();
+    let (first, second) = game.hint_pair().unwrap();
+    assert!(game.available(first));
+    assert!(game.available(second));
+    assert_eq!(game.tiles[first].kind, game.tiles[second].kind);
+    assert_eq!(game.tiles, before);
+}

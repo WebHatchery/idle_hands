@@ -945,6 +945,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover jump legality, hint determinism, capture aliases, and responsive
     layouts.
 
+## Phase 83 — Mahjong Solitaire discoverability polish
+
+- [x] Add a deterministic HINT action for a free matching tile pair without
+  changing selection or removed tiles.
+  - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
+  - [x] Cover availability, pair validity, hint determinism, capture aliases,
+    and responsive layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

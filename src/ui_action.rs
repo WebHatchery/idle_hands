@@ -123,6 +123,7 @@ pub enum UiAction {
     PegSolitaireUndo,
     PegSolitaireNew,
     MahjongSolitaireTap(usize),
+    MahjongSolitaireHint,
     MahjongSolitaireUndo,
     MahjongSolitaireNew,
     SnakeStep(crate::snake::SnakeDirection),

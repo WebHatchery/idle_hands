@@ -119,6 +119,21 @@ impl MahjongSolitaire {
         *self = Self::new(seed);
     }
 
+    pub fn hint_pair(&self) -> Option<(usize, usize)> {
+        if self.status != MahjongStatus::Playing {
+            return None;
+        }
+        (0..self.tiles.len()).find_map(|first| {
+            if !self.available(first) {
+                return None;
+            }
+            (first + 1..self.tiles.len()).find_map(|second| {
+                (self.available(second) && self.tiles[second].kind == self.tiles[first].kind)
+                    .then_some((first, second))
+            })
+        })
+    }
+
     pub fn available(&self, index: usize) -> bool {
         let Some(tile) = self.tiles.get(index) else {
             return false;

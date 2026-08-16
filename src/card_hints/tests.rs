@@ -174,3 +174,10 @@ fn default_peg_solitaire_has_a_deterministic_hint() {
     assert!(!peg_solitaire(&state).is_empty());
     assert_eq!(peg_solitaire(&state), peg_solitaire(&state));
 }
+
+#[test]
+fn default_mahjong_solitaire_has_a_deterministic_hint() {
+    let state = AppState::default();
+    assert!(!mahjong_solitaire(&state).is_empty());
+    assert_eq!(mahjong_solitaire(&state), mahjong_solitaire(&state));
+}

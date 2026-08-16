@@ -13,6 +13,7 @@ struct Layout {
     board: Rect,
     tile_w: f32,
     tile_h: f32,
+    hint: Rect,
     undo: Rect,
     new_game: Rect,
 }
@@ -23,6 +24,7 @@ fn layout() -> Layout {
             board: Rect::new(20., 48., 280., 240.),
             tile_w: 32.,
             tile_h: 42.,
+            hint: Rect::new(350., 275., 290., 42.),
             undo: Rect::new(350., 220., 120., 42.),
             new_game: Rect::new(490., 220., 150., 42.),
         }
@@ -31,6 +33,7 @@ fn layout() -> Layout {
             board: Rect::new(10., 115., 340., 240.),
             tile_w: 38.,
             tile_h: 42.,
+            hint: Rect::new(20., 530., 330., 42.),
             undo: Rect::new(20., 475., 145., 42.),
             new_game: Rect::new(185., 475., 165., 42.),
         }
@@ -39,6 +42,7 @@ fn layout() -> Layout {
             board: Rect::new(360., 82., 560., 480.),
             tile_w: 58.,
             tile_h: 62.,
+            hint: Rect::new(950., 495., 290., 44.),
             undo: Rect::new(950., 555., 120., 44.),
             new_game: Rect::new(1090., 555., 150., 44.),
         }
@@ -55,6 +59,9 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if layout.new_game.contains(point) {
         return vec![UiAction::MahjongSolitaireNew];
+    }
+    if layout.hint.contains(point) {
+        return vec![UiAction::MahjongSolitaireHint];
     }
     for (index, tile) in state.mahjong_solitaire.tiles.iter().enumerate().rev() {
         if tile.removed {
@@ -101,8 +108,12 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
+    let instruction = state
+        .card_hint
+        .as_deref()
+        .unwrap_or(status_text(game.status));
     text(
-        status_text(game.status),
+        instruction,
         if compact { 350. } else { header_x },
         if compact { 30. } else { header_y + 25. },
         accessibility::text_size(body_size(), state.large_text),
@@ -160,6 +171,7 @@ pub fn draw(state: &AppState) {
     );
     button(layout.undo, "UNDO", state.large_text);
     button(layout.new_game, "NEW BOARD", state.large_text);
+    button(layout.hint, "HINT", state.large_text);
 }
 
 fn draw_tile(

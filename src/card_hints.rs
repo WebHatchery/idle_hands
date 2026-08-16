@@ -489,6 +489,23 @@ pub fn peg_solitaire(state: &AppState) -> String {
     )
 }
 
+pub fn mahjong_solitaire(state: &AppState) -> String {
+    let game = &state.mahjong_solitaire;
+    match game.status {
+        crate::mahjong_solitaire::MahjongStatus::Won => {
+            return "Every tile is clear — tap NEW BOARD to play again.".into();
+        }
+        crate::mahjong_solitaire::MahjongStatus::Stuck => {
+            return "No free pair remains — tap NEW BOARD to begin again.".into();
+        }
+        crate::mahjong_solitaire::MahjongStatus::Playing => {}
+    }
+    game.hint_pair().map_or_else(
+        || "No removable pair remains — tap NEW BOARD to begin again.".into(),
+        |(first, second)| format!("Pair tiles {} and {}.", first + 1, second + 1),
+    )
+}
+
 fn color_name(color: u8) -> &'static str {
     ["red", "amber", "green", "blue", "violet", "gold"][color as usize % 6]
 }
@@ -518,6 +535,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::CheckersHint
             | crate::ui::UiAction::ReversiHint
             | crate::ui::UiAction::PegSolitaireHint
+            | crate::ui::UiAction::MahjongSolitaireHint
     )
 }
 

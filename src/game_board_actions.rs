@@ -47,6 +47,10 @@ impl Game {
             UiAction::MahjongSolitaireTap(index) => {
                 self.state.mahjong_solitaire.tap(*index);
             }
+            UiAction::MahjongSolitaireHint => {
+                self.state.card_hint = Some(crate::card_hints::mahjong_solitaire(&self.state));
+                return true;
+            }
             UiAction::MahjongSolitaireUndo => {
                 self.state.mahjong_solitaire.undo();
             }

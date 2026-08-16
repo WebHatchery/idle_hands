@@ -72,7 +72,9 @@ impl Game {
                 Screen::Game(GameId::PegSolitaire)
             }
             "peg_solitaire_accessible" => Screen::Game(GameId::PegSolitaire),
-            "mahjong_solitaire" => Screen::Game(GameId::MahjongSolitaire),
+            "mahjong_solitaire"
+            | "mahjong_solitaire_hint"
+            | "mahjong_solitaire_hint_accessible" => Screen::Game(GameId::MahjongSolitaire),
             "mahjong_solitaire_accessible" => Screen::Game(GameId::MahjongSolitaire),
             "snake" => Screen::Game(GameId::Snake),
             "snake_accessible" => Screen::Game(GameId::Snake),
@@ -201,6 +203,9 @@ impl Game {
             self.state.card_hint = Some(card_hints::reversi(&self.state));
         } else if scene == "peg_solitaire_hint" || scene == "peg_solitaire_hint_accessible" {
             self.state.card_hint = Some(card_hints::peg_solitaire(&self.state));
+        } else if scene == "mahjong_solitaire_hint" || scene == "mahjong_solitaire_hint_accessible"
+        {
+            self.state.card_hint = Some(card_hints::mahjong_solitaire(&self.state));
         }
         if scene.starts_with("tutorial_") {
             if let Screen::Game(game) = self.state.screen {
