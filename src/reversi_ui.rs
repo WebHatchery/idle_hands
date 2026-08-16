@@ -138,22 +138,23 @@ pub fn draw_reversi(state: &AppState) {
         accessibility::text_size(22., state.large_text),
         Color::new(0.82, 0.76, 0.88, 1.),
     );
-    draw_text(
-        match game.status {
-            ReversiStatus::Playing if game.ai_level == AiLevel::TwoPlayer && game.turn == 1 => {
-                "Player 1 — tap a glowing square"
-            }
-            ReversiStatus::Playing if game.ai_level == AiLevel::TwoPlayer => {
-                "Player 2 — tap a glowing square"
-            }
-            ReversiStatus::Playing if game.turn == 1 => "Your turn — tap a glowing square",
-            ReversiStatus::Playing => "Opponent is thinking",
-            ReversiStatus::Won => match game.winner {
-                Some(1) => "You win the board",
-                Some(2) => "The opponent takes the board",
-                _ => "The board is tied",
-            },
+    let instruction = state.card_hint.as_deref().unwrap_or(match game.status {
+        ReversiStatus::Playing if game.ai_level == AiLevel::TwoPlayer && game.turn == 1 => {
+            "Player 1 — tap a glowing square"
+        }
+        ReversiStatus::Playing if game.ai_level == AiLevel::TwoPlayer => {
+            "Player 2 — tap a glowing square"
+        }
+        ReversiStatus::Playing if game.turn == 1 => "Your turn — tap a glowing square",
+        ReversiStatus::Playing => "Opponent is thinking",
+        ReversiStatus::Won => match game.winner {
+            Some(1) => "You win the board",
+            Some(2) => "The opponent takes the board",
+            _ => "The board is tied",
         },
+    });
+    draw_text(
+        instruction,
         650.,
         285.,
         accessibility::text_size(18., state.large_text),
@@ -195,6 +196,7 @@ pub fn draw_reversi(state: &AppState) {
         "TWO PLAYER",
         state.large_text,
     );
+    button(Rect::new(650., 520., 180., 48.), "HINT", state.large_text);
     draw_text(
         "A pass is available when no legal move remains.",
         650.,
@@ -229,6 +231,9 @@ pub fn reversi_clicks(_state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     if Rect::new(850., 520., 180., 48.).contains(p) {
         return vec![UiAction::ReversiLevel(AiLevel::TwoPlayer)];
+    }
+    if Rect::new(650., 520., 180., 48.).contains(p) {
+        return vec![UiAction::ReversiHint];
     }
     if !BOARD.contains(p) {
         return vec![];

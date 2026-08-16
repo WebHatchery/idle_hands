@@ -458,6 +458,20 @@ pub fn checkers(state: &AppState) -> String {
     )
 }
 
+pub fn reversi(state: &AppState) -> String {
+    let game = &state.reversi;
+    if game.status == crate::reversi::ReversiStatus::Won {
+        return "The board is already settled — choose NEW BOARD to play again.".into();
+    }
+    if game.turn != 1 {
+        return "The opponent is thinking — wait for your next turn.".into();
+    }
+    game.hint_move().map_or_else(
+        || "No legal move remains — try PASS or NEW BOARD.".into(),
+        |index| format!("Play row {}, column {}.", index / 8 + 1, index % 8 + 1),
+    )
+}
+
 fn color_name(color: u8) -> &'static str {
     ["red", "amber", "green", "blue", "violet", "gold"][color as usize % 6]
 }
@@ -485,6 +499,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::HangmanHint
             | crate::ui::UiAction::ConnectFourHint
             | crate::ui::UiAction::CheckersHint
+            | crate::ui::UiAction::ReversiHint
     )
 }
 

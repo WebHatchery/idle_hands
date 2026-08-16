@@ -72,6 +72,7 @@ pub enum UiAction {
     FivefoldCategory(crate::fivefold::Category),
     FivefoldNew,
     ReversiPlace(usize),
+    ReversiHint,
     ReversiPass,
     ReversiNew,
     ReversiLevel(crate::reversi::AiLevel),

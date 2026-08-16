@@ -483,6 +483,9 @@ impl Game {
                     self.state.reversi.ai_move();
                 }
             }
+            ui::UiAction::ReversiHint => {
+                self.state.card_hint = Some(card_hints::reversi(&self.state));
+            }
             ui::UiAction::ReversiNew => {
                 self.state.reversi = crate::reversi::Reversi::new(
                     self.state.reversi.seed.wrapping_add(1),

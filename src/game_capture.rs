@@ -34,7 +34,7 @@ impl Game {
             }
             "freecell" | "freecell_hint" | "freecell_selected" => Screen::Game(GameId::FreeCell),
             "fivefold" => Screen::Game(GameId::Yahtzee),
-            "reversi" => Screen::Game(GameId::Reversi),
+            "reversi" | "reversi_hint" | "reversi_hint_accessible" => Screen::Game(GameId::Reversi),
             "reversi_accessible" => Screen::Game(GameId::Reversi),
             "lights_out"
             | "lights_out_accessible"
@@ -195,6 +195,8 @@ impl Game {
             self.state.card_hint = Some(card_hints::connect_four(&self.state));
         } else if scene == "checkers_hint" || scene == "checkers_hint_accessible" {
             self.state.card_hint = Some(card_hints::checkers(&self.state));
+        } else if scene == "reversi_hint" || scene == "reversi_hint_accessible" {
+            self.state.card_hint = Some(card_hints::reversi(&self.state));
         }
         if scene.starts_with("tutorial_") {
             if let Screen::Game(game) = self.state.screen {

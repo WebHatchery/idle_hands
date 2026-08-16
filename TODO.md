@@ -929,6 +929,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover mandatory captures, hint determinism, capture aliases, and
     responsive layouts.
 
+## Phase 81 — Reversi discoverability polish
+
+- [x] Add a deterministic HINT action that prioritizes a corner, edge, or
+  strong legal move without changing the board.
+  - [x] Wire the existing touch UI and feedback, including accessibility.
+  - [x] Cover move legality, hint determinism, capture aliases, and updated
+    desktop layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

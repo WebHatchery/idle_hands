@@ -74,3 +74,12 @@ fn two_player_mode_alternates_turns_without_ai_intervention() {
     assert_eq!(game.turn, 1);
     assert_eq!(game.moves, 2);
 }
+
+#[test]
+fn hint_move_is_legal_and_does_not_mutate_the_opening_board() {
+    let game = Reversi::new(1, AiLevel::Gentle);
+    let before = game.board.clone();
+    let hint = game.hint_move().unwrap();
+    assert!(game.legal_moves(1).contains(&hint));
+    assert_eq!(game.board, before);
+}

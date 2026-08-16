@@ -160,3 +160,10 @@ fn default_checkers_has_a_deterministic_hint() {
     assert!(!checkers(&state).is_empty());
     assert_eq!(checkers(&state), checkers(&state));
 }
+
+#[test]
+fn default_reversi_has_a_deterministic_hint() {
+    let state = AppState::default();
+    assert!(!reversi(&state).is_empty());
+    assert_eq!(reversi(&state), reversi(&state));
+}

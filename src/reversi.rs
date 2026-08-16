@@ -110,6 +110,24 @@ impl Reversi {
     pub fn score(&self, player: u8) -> usize {
         self.board.iter().filter(|piece| **piece == player).count()
     }
+
+    pub fn hint_move(&self) -> Option<usize> {
+        if self.status != ReversiStatus::Playing || self.turn != 1 {
+            return None;
+        }
+        self.legal_moves(1).into_iter().max_by_key(|&index| {
+            let row = index / 8;
+            let column = index % 8;
+            let corner = matches!(index, 0 | 7 | 56 | 63);
+            let edge = row == 0 || row == 7 || column == 0 || column == 7;
+            (
+                corner,
+                edge,
+                self.captures(index, 1).count(),
+                std::cmp::Reverse(index),
+            )
+        })
+    }
     fn apply_move(&mut self, index: usize, player: u8) -> bool {
         if index >= 64 || self.board[index] != 0 {
             return false;
