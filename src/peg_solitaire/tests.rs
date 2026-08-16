@@ -37,3 +37,12 @@ fn a_centered_final_peg_wins() {
     game.resolve();
     assert_eq!(game.status, PegSolitaireStatus::Won);
 }
+
+#[test]
+fn hint_move_finds_the_first_legal_jump_without_mutating() {
+    let game = PegSolitaire::new(1);
+    let before = game.cells.clone();
+    let (from, to) = game.hint_move().unwrap();
+    assert_eq!((from, to), (10, 24));
+    assert_eq!(game.cells, before);
+}

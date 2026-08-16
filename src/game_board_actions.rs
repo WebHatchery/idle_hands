@@ -33,6 +33,10 @@ impl Game {
             UiAction::PegSolitaireTap(square) => {
                 self.state.peg_solitaire.tap(*square);
             }
+            UiAction::PegSolitaireHint => {
+                self.state.card_hint = Some(crate::card_hints::peg_solitaire(&self.state));
+                return true;
+            }
             UiAction::PegSolitaireUndo => {
                 self.state.peg_solitaire.undo();
             }

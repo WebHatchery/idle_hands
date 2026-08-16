@@ -472,6 +472,23 @@ pub fn reversi(state: &AppState) -> String {
     )
 }
 
+pub fn peg_solitaire(state: &AppState) -> String {
+    let game = &state.peg_solitaire;
+    match game.status {
+        crate::peg_solitaire::PegSolitaireStatus::Won => {
+            return "One peg remains — tap NEW BOARD to play again.".into();
+        }
+        crate::peg_solitaire::PegSolitaireStatus::Stuck => {
+            return "No jump remains — tap NEW BOARD to begin again.".into();
+        }
+        crate::peg_solitaire::PegSolitaireStatus::Playing => {}
+    }
+    game.hint_move().map_or_else(
+        || "No legal jump remains — tap NEW BOARD to begin again.".into(),
+        |(from, to)| format!("Tap hole {}, then hole {}.", from + 1, to + 1),
+    )
+}
+
 fn color_name(color: u8) -> &'static str {
     ["red", "amber", "green", "blue", "violet", "gold"][color as usize % 6]
 }
@@ -500,6 +517,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::ConnectFourHint
             | crate::ui::UiAction::CheckersHint
             | crate::ui::UiAction::ReversiHint
+            | crate::ui::UiAction::PegSolitaireHint
     )
 }
 

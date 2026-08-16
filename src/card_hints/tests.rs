@@ -167,3 +167,10 @@ fn default_reversi_has_a_deterministic_hint() {
     assert!(!reversi(&state).is_empty());
     assert_eq!(reversi(&state), reversi(&state));
 }
+
+#[test]
+fn default_peg_solitaire_has_a_deterministic_hint() {
+    let state = AppState::default();
+    assert!(!peg_solitaire(&state).is_empty());
+    assert_eq!(peg_solitaire(&state), peg_solitaire(&state));
+}

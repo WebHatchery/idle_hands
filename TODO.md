@@ -937,6 +937,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover move legality, hint determinism, capture aliases, and updated
     desktop layouts.
 
+## Phase 82 — Peg Solitaire discoverability polish
+
+- [x] Add a deterministic HINT action for the first legal peg jump without
+  changing the board.
+  - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
+  - [x] Cover jump legality, hint determinism, capture aliases, and responsive
+    layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

@@ -94,6 +94,13 @@ impl PegSolitaire {
         *self = Self::new(seed);
     }
 
+    pub fn hint_move(&self) -> Option<(usize, usize)> {
+        if self.status != PegSolitaireStatus::Playing {
+            return None;
+        }
+        (0..CELLS).find_map(|from| self.targets(from).into_iter().next().map(|to| (from, to)))
+    }
+
     pub fn targets(&self, from: usize) -> Vec<usize> {
         if from >= CELLS || !valid_hole(from) || self.cells[from] != Hole::Peg {
             return Vec::new();

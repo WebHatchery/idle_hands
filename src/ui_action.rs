@@ -119,6 +119,7 @@ pub enum UiAction {
     CheckersUndo,
     CheckersNew,
     PegSolitaireTap(usize),
+    PegSolitaireHint,
     PegSolitaireUndo,
     PegSolitaireNew,
     MahjongSolitaireTap(usize),
