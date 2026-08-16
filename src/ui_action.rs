@@ -206,6 +206,7 @@ pub enum UiAction {
     MancalaUndo,
     MancalaNew,
     HanoiPeg(usize),
+    HanoiHint,
     HanoiUndo,
     HanoiNew,
     NumberMatchTap(usize),

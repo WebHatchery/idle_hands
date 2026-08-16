@@ -137,7 +137,7 @@ impl Game {
             "sokoban" | "sokoban_hint" | "sokoban_hint_accessible" => Screen::Game(GameId::Sokoban),
             "sokoban_accessible" => Screen::Game(GameId::Sokoban),
             "mancala" | "mancala_hint" | "mancala_hint_accessible" => Screen::Game(GameId::Mancala),
-            "hanoi" => Screen::Game(GameId::Hanoi),
+            "hanoi" | "hanoi_hint" | "hanoi_hint_accessible" => Screen::Game(GameId::Hanoi),
             "number_match" => Screen::Game(GameId::NumberMatch),
             "number_match_accessible" => Screen::Game(GameId::NumberMatch),
             "flood_it" => Screen::Game(GameId::FloodIt),
@@ -221,6 +221,8 @@ impl Game {
             self.state.card_hint = Some(card_hints::sokoban(&self.state));
         } else if scene == "mancala_hint" || scene == "mancala_hint_accessible" {
             self.state.card_hint = Some(card_hints::mancala(&self.state));
+        } else if scene == "hanoi_hint" || scene == "hanoi_hint_accessible" {
+            self.state.card_hint = Some(card_hints::hanoi(&self.state));
         } else if scene == "2048_hint" || scene == "2048_hint_accessible" {
             self.state.card_hint = Some(card_hints::game_2048(&self.state));
         } else if scene == "tic_tac_toe_hint" || scene == "tic_tac_toe_hint_accessible" {

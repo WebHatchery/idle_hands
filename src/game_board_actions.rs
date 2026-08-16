@@ -331,6 +331,10 @@ impl Game {
             UiAction::HanoiPeg(peg) => {
                 self.state.hanoi.tap_peg(*peg);
             }
+            UiAction::HanoiHint => {
+                self.state.card_hint = Some(crate::card_hints::hanoi(&self.state));
+                return true;
+            }
             UiAction::HanoiUndo => {
                 self.state.hanoi.undo();
             }

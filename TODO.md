@@ -1049,6 +1049,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover heuristic determinism, board preservation, hint capture aliases,
     accessibility, and responsive layouts.
 
+## Phase 96 — Hanoi discoverability polish
+
+- [x] Add an exact, deterministic, non-mutating HINT action that recommends
+  the next source/destination pair on a shortest solution route.
+  - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
+  - [x] Cover solver determinism, stack preservation, hint capture aliases,
+    accessibility, and responsive layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

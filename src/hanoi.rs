@@ -1,6 +1,7 @@
 //! Deterministic touch-first Towers of Hanoi.
 
 use serde::{Deserialize, Serialize};
+use std::collections::VecDeque;
 
 const DISKS: usize = 5;
 
@@ -88,6 +89,41 @@ impl Hanoi {
 
     pub fn won(&self) -> bool {
         self.phase == HanoiPhase::Won
+    }
+
+    pub fn hint_move(&self) -> Option<(usize, usize)> {
+        if self.won() {
+            return None;
+        }
+        let mut queue = VecDeque::from([(self.stacks.clone(), None)]);
+        let mut seen: Vec<[Vec<u8>; 3]> = Vec::new();
+        while let Some((stacks, first)) = queue.pop_front() {
+            if seen.contains(&stacks) {
+                continue;
+            }
+            seen.push(stacks.clone());
+            for source in 0..3 {
+                let Some(&disk) = stacks[source].last() else {
+                    continue;
+                };
+                for destination in 0..3 {
+                    if source == destination
+                        || stacks[destination].last().is_some_and(|&top| top < disk)
+                    {
+                        continue;
+                    }
+                    let mut next = stacks.clone();
+                    next[source].pop();
+                    next[destination].push(disk);
+                    let first = first.or(Some((source, destination)));
+                    if next[2].len() == DISKS {
+                        return first;
+                    }
+                    queue.push_back((next, first));
+                }
+            }
+        }
+        None
     }
 
     fn clone_without_undo(&self) -> Self {

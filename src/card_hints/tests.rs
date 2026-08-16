@@ -277,3 +277,11 @@ fn default_mancala_has_a_deterministic_hint() {
     assert!(!mancala(&state).is_empty());
     assert_eq!(mancala(&state), mancala(&state));
 }
+
+#[test]
+fn default_hanoi_has_a_deterministic_hint() {
+    let state = AppState::default();
+
+    assert!(hanoi(&state).contains("peg"));
+    assert_eq!(hanoi(&state), hanoi(&state));
+}

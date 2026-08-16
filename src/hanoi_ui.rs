@@ -11,6 +11,7 @@ use macroquad::prelude::*;
 struct Layout {
     board: Rect,
     pegs: [Rect; 3],
+    hint: Rect,
     undo: Rect,
     new_game: Rect,
 }
@@ -21,22 +22,25 @@ fn layout() -> Layout {
         Layout {
             board,
             pegs: peg_rects(board),
+            hint: Rect::new(635., 220., 105., 44.),
             undo: Rect::new(635., 110., 105., 44.),
             new_game: Rect::new(635., 165., 140., 44.),
         }
     } else if crate::ui::is_portrait() {
-        let board = Rect::new(10., 110., 340., 285.);
+        let board = Rect::new(15., 105., 300., 285.);
         Layout {
             board,
             pegs: peg_rects(board),
-            undo: Rect::new(10., 440., 145., 44.),
-            new_game: Rect::new(165., 440., 185., 44.),
+            hint: Rect::new(15., 440., 145., 44.),
+            undo: Rect::new(15., 495., 145., 44.),
+            new_game: Rect::new(170., 495., 145., 44.),
         }
     } else {
         let board = Rect::new(300., 100., 500., 330.);
         Layout {
             board,
             pegs: peg_rects(board),
+            hint: Rect::new(850., 245., 120., 44.),
             undo: Rect::new(850., 190., 120., 44.),
             new_game: Rect::new(990., 190., 145., 44.),
         }
@@ -52,6 +56,9 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
         if rect.contains(point) {
             return vec![UiAction::HanoiPeg(peg)];
         }
+    }
+    if l.hint.contains(point) {
+        return vec![UiAction::HanoiHint];
     }
     if l.undo.contains(point) {
         return vec![UiAction::HanoiUndo];
@@ -70,7 +77,7 @@ pub fn draw(state: &AppState) {
     let title_x = if compact {
         70.
     } else if portrait {
-        10.
+        25.
     } else {
         400.
     };
@@ -100,10 +107,13 @@ pub fn draw(state: &AppState) {
     );
     draw_board(l.board, game);
     text(
-        status_text(game.phase),
+        state
+            .card_hint
+            .as_deref()
+            .unwrap_or(status_text(game.phase)),
         if compact { 230. } else { title_x },
         if portrait {
-            425.
+            410.
         } else if compact {
             340.
         } else {
@@ -112,6 +122,7 @@ pub fn draw(state: &AppState) {
         body_size(),
         muted(),
     );
+    button(l.hint, "HINT");
     button(l.undo, "UNDO");
     button(l.new_game, "NEW BOARD");
 }
