@@ -185,6 +185,7 @@ impl Game {
             "mastermind_accessible" => Screen::Game(GameId::Mastermind),
             "help" => Screen::Help,
             "records"
+            | "records_scrolled"
             | "records_accessible"
             | "records_word_ladder"
             | "records_progress"
@@ -195,13 +196,19 @@ impl Game {
             | "favorites_browse"
             | "favorites_all"
             | "recent_browse" => Screen::Records,
-            "rules" => Screen::Rules,
+            "rules" | "rules_scrolled" => Screen::Rules,
             "credits" => Screen::Credits,
             "settings" | "settings_accessible" | "settings_reset" => Screen::Settings,
             _ => Screen::Cabinet,
         };
         if scene == "settings_reset" {
             self.state.confirm_reset = true;
+        }
+        if scene == "cabinet_scrolled" {
+            self.state.cabinet_scroll = 6;
+        }
+        if matches!(scene, "records_scrolled" | "rules_scrolled") {
+            self.state.library_scroll = 12;
         }
         if scene == "2048_confirm" {
             self.state.confirm_restart = true;

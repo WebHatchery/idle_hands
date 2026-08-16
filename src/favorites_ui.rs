@@ -23,23 +23,23 @@ fn layout() -> Layout {
         Layout {
             panel: Rect::new(20., 12., 804., 365.),
             back: Rect::new(700., 330., 110., 44.),
-            columns: 5,
-            card_w: 145.,
-            card_h: 24.,
-            origin: vec2(35., 70.),
-            gap_x: 155.,
-            gap_y: 31.,
+            columns: 2,
+            card_w: 360.,
+            card_h: 44.,
+            origin: vec2(30., 70.),
+            gap_x: 380.,
+            gap_y: 50.,
         }
     } else if crate::ui::is_portrait() {
         Layout {
             panel: Rect::new(8., 38., 344., 602.),
-            back: Rect::new(10., 650., 150., 44.),
-            columns: 3,
-            card_w: 106.,
-            card_h: 30.,
-            origin: vec2(14., 130.),
-            gap_x: 112.,
-            gap_y: 32.,
+            back: Rect::new(10., 714., 150., 44.),
+            columns: 1,
+            card_w: 324.,
+            card_h: 54.,
+            origin: vec2(18., 125.),
+            gap_x: 0.,
+            gap_y: 60.,
         }
     } else {
         Layout {
@@ -60,7 +60,15 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     if l.back.contains(point) {
         return vec![UiAction::Cabinet];
     }
-    for (slot, &game) in browse_games(state).iter().enumerate() {
+    if let Some((previous, next)) = scroll_rects() {
+        if previous.contains(point) {
+            return vec![UiAction::LibraryScroll(-1)];
+        }
+        if next.contains(point) {
+            return vec![UiAction::LibraryScroll(1)];
+        }
+    }
+    for (slot, &game) in visible_games(state).iter().enumerate() {
         let rect = list_card_rect(l, slot);
         if rect.contains(point) {
             return vec![UiAction::Open(game.index())];
@@ -104,11 +112,11 @@ pub fn draw(state: &AppState) {
     draw_text(
         if recent {
             format!(
-                "{} recently opened games  •  tap a drawer to open it",
+                "{} recently opened games  -  tap a drawer to open it",
                 count
             )
         } else {
-            format!("{} starred games  •  tap a drawer to open it", count)
+            format!("{} starred games  -  tap a drawer to open it", count)
         },
         l.panel.x + 52.,
         subtitle_y,
@@ -120,7 +128,7 @@ pub fn draw(state: &AppState) {
             if recent {
                 "Open a drawer to start a recent list."
             } else {
-                "No favorites yet — use the markers on the cabinet."
+                "No favorites yet - use the markers on the cabinet."
             },
             l.panel.x + 52.,
             subtitle_y + 42.,
@@ -128,7 +136,7 @@ pub fn draw(state: &AppState) {
             WHITE,
         );
     }
-    for (slot, &game) in games.iter().enumerate() {
+    for (slot, &game) in visible_games(state).iter().enumerate() {
         let rect = list_card_rect(l, slot);
         panel(rect, Color::new(0.17, 0.12, 0.27, 1.));
         draw_circle(
@@ -142,9 +150,9 @@ pub fn draw(state: &AppState) {
             rect.x + 20.,
             rect.y + rect.h * 0.62,
             if crate::ui::is_portrait() {
-                8.
+                14.
             } else if crate::ui::is_compact_landscape() {
-                10.
+                13.
             } else {
                 14.
             },
@@ -159,6 +167,12 @@ pub fn draw(state: &AppState) {
                 crate::cabinet_status::color(crate::cabinet_status::status(state, game)),
             );
         }
+    }
+    if let Some((previous, next)) = scroll_rects() {
+        panel(previous, Color::new(0.18, 0.12, 0.28, 1.));
+        panel(next, Color::new(0.18, 0.12, 0.28, 1.));
+        draw_text("PREV", previous.x + 22., previous.y + 28., 11., WHITE);
+        draw_text("NEXT", next.x + 22., next.y + 28., 11., WHITE);
     }
     panel(l.back, Color::new(0.25, 0.16, 0.32, 1.));
     draw_text(
@@ -179,6 +193,37 @@ fn browse_games(state: &AppState) -> Vec<GameId> {
             .copied()
             .filter(|game| state.favorites.get(game.index()).copied().unwrap_or(false))
             .collect()
+    }
+}
+
+fn visible_games(state: &AppState) -> Vec<GameId> {
+    let games = browse_games(state);
+    let capacity = if crate::ui::is_portrait() {
+        8
+    } else if crate::ui::is_compact_landscape() {
+        10
+    } else {
+        games.len()
+    };
+    let first = state
+        .library_scroll
+        .min(games.len().saturating_sub(capacity));
+    games.into_iter().skip(first).take(capacity).collect()
+}
+
+fn scroll_rects() -> Option<(Rect, Rect)> {
+    if crate::ui::is_portrait() {
+        Some((
+            Rect::new(10., 650., 100., 44.),
+            Rect::new(250., 650., 100., 44.),
+        ))
+    } else if crate::ui::is_compact_landscape() {
+        Some((
+            Rect::new(430., 330., 100., 44.),
+            Rect::new(545., 330., 100., 44.),
+        ))
+    } else {
+        None
     }
 }
 

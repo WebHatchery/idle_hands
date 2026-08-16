@@ -27,25 +27,29 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     draw_text(value, x, y, size, color);
 }
 
+const CABINET_COLUMNS: usize = 2;
+const CABINET_VISIBLE_ROWS: usize = 6;
+const CABINET_PAGE_SIZE: usize = CABINET_COLUMNS * CABINET_VISIBLE_ROWS;
+
 pub fn cabinet_rect(index: usize) -> Rect {
     Rect::new(
-        4. + (index % 4) as f32 * 89.,
-        94. + (index / 4) as f32 * 46.,
-        84.,
-        45.,
+        6. + (index % CABINET_COLUMNS) as f32 * 174.,
+        112. + (index / CABINET_COLUMNS) as f32 * 78.,
+        168.,
+        72.,
     )
 }
 
 pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
     let accent = cosmetics::cabinet_accent(state.cabinet_decoration);
-    text("IDLE HANDS", 18., 55., 30., accent);
-    crate::cabinet_art::draw_header_motif(332., 52., 13., accent);
-    crate::cabinet_art::draw_shelves(8., 100., 344., 540., accent);
+    text("IDLE HANDS", 10., 32., 24., accent);
+    crate::cabinet_art::draw_header_motif(336., 30., 11., accent);
+    crate::cabinet_art::draw_shelves(8., 118., 344., 460., accent);
     text(
-        "Quiet games for a small screen",
-        18.,
-        92.,
-        14.,
+        "Tap a title to play  -  FAV circle to star",
+        8.,
+        105.,
+        10.,
         Color::new(0.72, 0.68, 0.82, 1.),
     );
     let selected = GameId::ALL[state.selected.min(GameId::ALL.len() - 1)];
@@ -70,24 +74,32 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
         }
     }
     panel(
-        Rect::new(190., 40., 130., 44.),
+        Rect::new(184., 6., 140., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    text("CONTINUE", 202., 59., 9., WHITE);
+    text("CONTINUE", 196., 25., 11., WHITE);
     text(
         selected.title(),
-        202.,
-        73.,
-        8.,
+        196.,
+        42.,
+        10.,
         Color::new(0.98, 0.83, 0.45, 1.),
     );
-    for (index, game) in visible_games(state).iter().enumerate() {
+    for (index, game) in scrolled_games(state).iter().enumerate() {
         let rect = cabinet_rect(index);
         panel(rect, Color::new(0.17, 0.12, 0.27, 1.));
+        draw_line(
+            rect.right() - 44.,
+            rect.y,
+            rect.right() - 44.,
+            rect.bottom(),
+            2.,
+            Color::new(0.45, 0.38, 0.65, 0.65),
+        );
         text(
             game.title(),
-            rect.x + 10.,
-            rect.y + 14.,
+            rect.x + 8.,
+            rect.y + 22.,
             if matches!(
                 game,
                 GameId::TinyTowerDefence
@@ -109,43 +121,43 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
                     | GameId::TriPeaks
                     | GameId::Nim
             ) {
-                8.
+                11.
             } else {
-                9.
+                13.
             },
             Color::new(0.98, 0.82, 0.42, 1.),
         );
         let favorite = state.favorites.get(game.index()).copied().unwrap_or(false);
         if favorite {
-            draw_circle(rect.x + 6., rect.y + 10., 3., accent);
+            draw_circle(rect.right() - 22., rect.y + 52., 7., accent);
         } else {
-            draw_circle_lines(rect.x + 6., rect.y + 10., 3., 1., accent);
+            draw_circle_lines(rect.right() - 22., rect.y + 52., 7., 2., accent);
         }
         text(
             cabinet_status(state, *game),
-            rect.x + 10.,
-            rect.y + 28.,
-            8.,
+            rect.x + 8.,
+            rect.y + 61.,
+            10.,
             Color::new(0.98, 0.75, 0.30, 1.),
         );
         text(
             game.subtitle(),
-            rect.x + 10.,
-            rect.y + 41.,
-            7.,
+            rect.x + 8.,
+            rect.y + 43.,
+            9.,
             Color::new(0.69, 0.65, 0.78, 1.),
         );
         draw_circle(
-            rect.right() - 20.,
-            rect.y + 11.,
-            8.,
+            rect.right() - 22.,
+            rect.y + 19.,
+            11.,
             cosmetics::cabinet_accent(state.cabinet_decoration),
         );
         text(
             &crate::cabinet_status::drawer_number(*game).to_string(),
-            rect.right() - 22.,
-            rect.y + 15.,
-            8.,
+            rect.right() - 26.,
+            rect.y + 23.,
+            9.,
             Color::new(0.08, 0.05, 0.12, 1.),
         );
     }
@@ -153,24 +165,44 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
         text(
             crate::cabinet_status::empty_filter_message(state.cabinet_filter),
             18.,
-            150.,
-            11.,
+            160.,
+            14.,
             WHITE,
         );
     }
     for (rect, label) in [
-        (Rect::new(8., 700., 108., 44.), "HELP"),
-        (Rect::new(126., 700., 108., 44.), "RECORDS"),
-        (Rect::new(244., 700., 108., 44.), "SETTINGS"),
+        (Rect::new(6., 586., 100., 44.), "PREV"),
+        (Rect::new(254., 586., 100., 44.), "NEXT"),
+    ] {
+        panel(rect, Color::new(0.18, 0.12, 0.28, 1.));
+        text(label, rect.x + 18., rect.y + 28., 11., WHITE);
+    }
+    let (first, total) = cabinet_range(state);
+    text(
+        &format!(
+            "{}-{} OF {}",
+            first + usize::from(total > 0),
+            (first + CABINET_PAGE_SIZE).min(total),
+            total
+        ),
+        126.,
+        614.,
+        11.,
+        Color::new(0.78, 0.73, 0.86, 1.),
+    );
+    for (rect, label) in [
+        (Rect::new(6., 714., 110., 44.), "HELP"),
+        (Rect::new(125., 714., 110., 44.), "RECORDS"),
+        (Rect::new(244., 714., 110., 44.), "SETTINGS"),
     ] {
         panel(rect, Color::new(0.12, 0.08, 0.20, 1.));
         text(label, rect.x + 12., rect.y + 29., 11., WHITE);
     }
     panel(
-        Rect::new(18., 650., 106., 44.),
+        Rect::new(6., 650., 110., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    text("FAVORITES", 26., 678., 8., WHITE);
+    text("FAVORITES", 14., 678., 10., WHITE);
     text(
         &state
             .favorites
@@ -184,19 +216,19 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
         Color::new(0.98, 0.83, 0.45, 1.),
     );
     panel(
-        Rect::new(130., 650., 104., 44.),
+        Rect::new(125., 650., 110., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    text("RECENT", 140., 678., 9., WHITE);
+    text("RECENT", 137., 678., 10., WHITE);
     text(
         &state.recent_games.len().to_string(),
-        216.,
+        213.,
         678.,
         9.,
         Color::new(0.98, 0.83, 0.45, 1.),
     );
     text(
-        &format!("{} stamps  •  {} textures", state.stamps, loaded),
+        &format!("{} stamps  -  {} textures", state.stamps, loaded),
         244.,
         672.,
         9.,
@@ -205,14 +237,14 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
 }
 
 pub fn cabinet_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(190., 40., 130., 44.).contains(p) {
+    if Rect::new(184., 6., 140., 44.).contains(p) {
         return vec![UiAction::ContinueGame];
     }
-    for (index, game) in visible_games(state).iter().enumerate() {
+    for (index, game) in scrolled_games(state).iter().enumerate() {
         if cabinet_favorite_rect(index).contains(p) {
             return vec![UiAction::ToggleFavorite(game.index())];
         }
-        if cabinet_rect(index).contains(p) {
+        if cabinet_open_rect(index).contains(p) {
             return vec![UiAction::Open(game.index())];
         }
     }
@@ -221,16 +253,22 @@ pub fn cabinet_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
             return vec![UiAction::CabinetFilter(filter)];
         }
     }
-    if Rect::new(18., 650., 106., 44.).contains(p) {
+    if Rect::new(6., 586., 100., 44.).contains(p) {
+        return vec![UiAction::CabinetScroll(-1)];
+    }
+    if Rect::new(254., 586., 100., 44.).contains(p) {
+        return vec![UiAction::CabinetScroll(1)];
+    }
+    if Rect::new(6., 650., 110., 44.).contains(p) {
         return vec![UiAction::Favorites];
     }
-    if Rect::new(130., 650., 104., 44.).contains(p) {
+    if Rect::new(125., 650., 110., 44.).contains(p) {
         return vec![UiAction::Recent];
     }
     for (rect, action) in [
-        (Rect::new(8., 700., 108., 44.), UiAction::Help),
-        (Rect::new(126., 700., 108., 44.), UiAction::Records),
-        (Rect::new(244., 700., 108., 44.), UiAction::Settings),
+        (Rect::new(6., 714., 110., 44.), UiAction::Help),
+        (Rect::new(125., 714., 110., 44.), UiAction::Records),
+        (Rect::new(244., 714., 110., 44.), UiAction::Settings),
     ] {
         if rect.contains(p) {
             return vec![action];
@@ -241,14 +279,19 @@ pub fn cabinet_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
 
 fn cabinet_favorite_rect(index: usize) -> Rect {
     let rect = cabinet_rect(index);
-    Rect::new(rect.x, rect.y, 44., rect.h)
+    Rect::new(rect.right() - 44., rect.y, 44., rect.h)
+}
+
+fn cabinet_open_rect(index: usize) -> Rect {
+    let rect = cabinet_rect(index);
+    Rect::new(rect.x, rect.y, rect.w - 44., rect.h)
 }
 
 fn filter_buttons() -> [(Rect, &'static str, u8); 3] {
     [
-        (Rect::new(4., 38., 54., 44.), "ALL", 0),
-        (Rect::new(62., 38., 54., 44.), "OPEN", 1),
-        (Rect::new(120., 38., 54., 44.), "DONE", 2),
+        (Rect::new(6., 52., 54., 44.), "ALL", 0),
+        (Rect::new(66., 52., 54., 44.), "OPEN", 1),
+        (Rect::new(126., 52., 54., 44.), "DONE", 2),
     ]
 }
 fn visible_games(state: &AppState) -> Vec<GameId> {
@@ -256,6 +299,26 @@ fn visible_games(state: &AppState) -> Vec<GameId> {
         .iter()
         .copied()
         .filter(|game| crate::cabinet_status::matches_filter(state, *game, state.cabinet_filter))
+        .collect()
+}
+
+fn cabinet_range(state: &AppState) -> (usize, usize) {
+    let total = visible_games(state).len();
+    let rows = total.div_ceil(CABINET_COLUMNS);
+    let max_scroll = rows.saturating_sub(CABINET_VISIBLE_ROWS);
+    (
+        state.cabinet_scroll.min(max_scroll) * CABINET_COLUMNS,
+        total,
+    )
+}
+
+fn scrolled_games(state: &AppState) -> Vec<GameId> {
+    let games = visible_games(state);
+    let (first, _) = cabinet_range(state);
+    games
+        .into_iter()
+        .skip(first)
+        .take(CABINET_PAGE_SIZE)
         .collect()
 }
 
@@ -268,7 +331,7 @@ pub fn draw_2048(state: &AppState) {
     text("‹ CABINET", 16., 35., 15., Color::new(0.78, 0.70, 0.92, 1.));
     text("2048", 16., 82., 38., Color::new(0.98, 0.83, 0.45, 1.));
     text(
-        &format!("Score {}  •  Best {}", game.score, game.best),
+        &format!("Score {}  -  Best {}", game.score, game.best),
         18.,
         108.,
         14.,
@@ -316,7 +379,7 @@ pub fn draw_2048(state: &AppState) {
         let rect = Rect::new(20. + index as f32 * 82., 475., 74., 46.);
         panel(rect, Color::new(0.18, 0.12, 0.28, 1.));
         text(
-            ["↑", "←", "↓", "→"][index],
+            ["UP", "LEFT", "DOWN", "RIGHT"][index],
             rect.x + 27.,
             rect.y + 32.,
             24.,

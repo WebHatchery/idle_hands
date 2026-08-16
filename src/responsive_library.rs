@@ -32,16 +32,24 @@ fn value(value: Option<u32>) -> String {
     value.map_or_else(|| "-".into(), |number| number.to_string())
 }
 
+const RECORDS_VISIBLE_ROWS: usize = 11;
+const RULES_VISIBLE_ROWS: usize = 8;
+
+fn scroll_button(rect: Rect, label: &str) {
+    panel(rect, Color::new(0.18, 0.12, 0.28, 1.));
+    text(label, rect.x + 18., rect.y + 28., 11., WHITE);
+}
+
 pub fn draw_records(state: &AppState) {
     panel(
-        Rect::new(8., 38., 344., 602.),
+        Rect::new(8., 20., 344., 680.),
         Color::new(0.08, 0.06, 0.14, 1.),
     );
-    text("RECORDS", 20., 80., 29., Color::new(0.98, 0.83, 0.45, 1.));
+    text("RECORDS", 20., 62., 29., Color::new(0.98, 0.83, 0.45, 1.));
     text(
         "Quiet milestones",
         22.,
-        103.,
+        88.,
         13.,
         Color::new(0.72, 0.68, 0.82, 1.),
     );
@@ -49,24 +57,29 @@ pub fn draw_records(state: &AppState) {
     let completed = completed_games(&state.records);
     text(
         &format!(
-            "STAMPS {}  •  ACHIEVEMENTS {}/{}  •  DRAWERS {}/{}",
+            "STAMPS {}  -  ACHIEVEMENTS {}/{}",
             state.stamps,
             earned,
-            AchievementId::ALL.len(),
-            completed,
-            GameId::ALL.len()
+            AchievementId::ALL.len()
         ),
         20.,
-        127.,
-        11.,
+        110.,
+        12.,
         Color::new(0.98, 0.83, 0.45, 1.),
     );
     panel(
-        Rect::new(185., 65., 145., 44.),
+        Rect::new(190., 28., 155., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    text("ACHIEVEMENTS", 197., 93., 9., WHITE);
-    draw_rectangle_lines(185., 65., 145., 44., 3., WHITE);
+    text("ACHIEVEMENTS", 202., 56., 10., WHITE);
+    draw_rectangle_lines(190., 28., 155., 44., 3., WHITE);
+    text(
+        &format!("DRAWERS {}/{}", completed, GameId::ALL.len()),
+        210.,
+        88.,
+        11.,
+        Color::new(0.98, 0.83, 0.45, 1.),
+    );
     let rows = [
         ("2048 best", state.records.best_2048.to_string()),
         ("Mines beginner", value(state.records.minesweeper[0])),
@@ -240,57 +253,124 @@ pub fn draw_records(state: &AppState) {
             value(state.records.word_ladder_best_moves.map(u32::from)),
         ),
     ];
-    for (index, (label, score)) in rows.iter().enumerate() {
-        let column = index / 27;
-        let row = index % 27;
-        let x = 20. + column as f32 * 170.;
-        let y = 140. + row as f32 * 18.;
-        text(label, x, y, 8., Color::new(0.78, 0.73, 0.86, 1.));
-        text(score, x + 145., y, 9., Color::new(0.98, 0.83, 0.45, 1.));
+    let start = state
+        .library_scroll
+        .min(rows.len().saturating_sub(RECORDS_VISIBLE_ROWS));
+    for (index, (label, score)) in rows
+        .iter()
+        .skip(start)
+        .take(RECORDS_VISIBLE_ROWS)
+        .enumerate()
+    {
+        let rect = Rect::new(18., 122. + index as f32 * 42., 324., 36.);
+        panel(rect, Color::new(0.13, 0.09, 0.20, 1.));
+        text(
+            label,
+            rect.x + 10.,
+            rect.y + 24.,
+            13.,
+            Color::new(0.78, 0.73, 0.86, 1.),
+        );
+        let score_width = measure_text(score, None, 14, 1.).width;
+        text(
+            score,
+            rect.right() - score_width - 10.,
+            rect.y + 24.,
+            14.,
+            Color::new(0.98, 0.83, 0.45, 1.),
+        );
     }
-    back_button(650.);
+    scroll_button(Rect::new(10., 602., 100., 44.), "PREV");
+    scroll_button(Rect::new(250., 602., 100., 44.), "NEXT");
+    text(
+        &format!(
+            "{}-{} OF {}",
+            start + 1,
+            (start + RECORDS_VISIBLE_ROWS).min(rows.len()),
+            rows.len()
+        ),
+        128.,
+        630.,
+        11.,
+        Color::new(0.78, 0.73, 0.86, 1.),
+    );
+    back_button(714.);
 }
 pub fn records_clicks(p: Vec2) -> Vec<UiAction> {
-    if Rect::new(185., 65., 145., 44.).contains(p) {
+    if Rect::new(190., 28., 155., 44.).contains(p) {
         vec![UiAction::Achievements]
-    } else if Rect::new(10., 650., 150., 44.).contains(p) {
+    } else if Rect::new(10., 602., 100., 44.).contains(p) {
+        vec![UiAction::LibraryScroll(-1)]
+    } else if Rect::new(250., 602., 100., 44.).contains(p) {
+        vec![UiAction::LibraryScroll(1)]
+    } else if Rect::new(10., 714., 150., 44.).contains(p) {
         vec![UiAction::Cabinet]
     } else {
         vec![]
     }
 }
 
-pub fn draw_rules() {
+pub fn draw_rules(state: &AppState) {
     panel(
-        Rect::new(8., 38., 344., 602.),
+        Rect::new(8., 20., 344., 680.),
         Color::new(0.08, 0.06, 0.14, 1.),
     );
-    text("RULES", 20., 80., 29., Color::new(0.98, 0.83, 0.45, 1.));
+    text("RULES", 20., 62., 29., Color::new(0.98, 0.83, 0.45, 1.));
     text(
         "Every drawer keeps its controls visible.",
         20.,
-        103.,
+        88.,
         12.,
         Color::new(0.72, 0.68, 0.82, 1.),
     );
-    for (index, game) in GameId::ALL.iter().enumerate() {
-        let column = index / 15;
-        let row = index % 15;
-        let x = 20. + column as f32 * 110.;
-        let y = 145. + row as f32 * 31.;
-        text(game.title(), x, y, 8., Color::new(0.98, 0.83, 0.45, 1.));
+    let start = state
+        .library_scroll
+        .min(GameId::ALL.len().saturating_sub(RULES_VISIBLE_ROWS));
+    for (index, game) in GameId::ALL
+        .iter()
+        .skip(start)
+        .take(RULES_VISIBLE_ROWS)
+        .enumerate()
+    {
+        let rect = Rect::new(18., 108. + index as f32 * 60., 324., 54.);
+        panel(rect, Color::new(0.13, 0.09, 0.20, 1.));
+        text(
+            game.title(),
+            rect.x + 10.,
+            rect.y + 22.,
+            14.,
+            Color::new(0.98, 0.83, 0.45, 1.),
+        );
         text(
             game.subtitle(),
-            x,
-            y + 11.,
-            6.,
+            rect.x + 10.,
+            rect.y + 43.,
+            11.,
             Color::new(0.78, 0.73, 0.86, 1.),
         );
     }
-    back_button(650.);
+    scroll_button(Rect::new(10., 602., 100., 44.), "PREV");
+    scroll_button(Rect::new(250., 602., 100., 44.), "NEXT");
+    text(
+        &format!(
+            "{}-{} OF {}",
+            start + 1,
+            (start + RULES_VISIBLE_ROWS).min(GameId::ALL.len()),
+            GameId::ALL.len()
+        ),
+        128.,
+        630.,
+        11.,
+        Color::new(0.78, 0.73, 0.86, 1.),
+    );
+    back_button(714.);
 }
 pub fn rules_clicks(p: Vec2) -> Vec<UiAction> {
-    if Rect::new(10., 650., 150., 44.).contains(p) {
+    if Rect::new(10., 602., 100., 44.).contains(p) {
+        vec![UiAction::LibraryScroll(-1)]
+    } else if Rect::new(250., 602., 100., 44.).contains(p) {
+        vec![UiAction::LibraryScroll(1)]
+    } else if Rect::new(10., 714., 150., 44.).contains(p) {
         vec![UiAction::Cabinet]
     } else {
         vec![]

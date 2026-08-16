@@ -20,23 +20,23 @@ fn layout() -> Layout {
         Layout {
             panel: Rect::new(20., 12., 804., 365.),
             back: Rect::new(700., 330., 110., 44.),
-            columns: 5,
-            card_w: 145.,
-            card_h: 24.,
+            columns: 2,
+            card_w: 360.,
+            card_h: 44.,
             origin: vec2(35., 70.),
-            gap_x: 155.,
-            gap_y: 26.,
+            gap_x: 380.,
+            gap_y: 50.,
         }
     } else if crate::ui::is_portrait() {
         Layout {
             panel: Rect::new(8., 38., 344., 602.),
-            back: Rect::new(10., 650., 150., 44.),
-            columns: 3,
-            card_w: 106.,
-            card_h: 22.,
-            origin: vec2(14., 155.),
-            gap_x: 112.,
-            gap_y: 28.,
+            back: Rect::new(10., 714., 150., 44.),
+            columns: 1,
+            card_w: 324.,
+            card_h: 54.,
+            origin: vec2(18., 155.),
+            gap_x: 0.,
+            gap_y: 60.,
         }
     } else {
         Layout {
@@ -55,8 +55,17 @@ fn layout() -> Layout {
 pub fn clicks(point: Vec2) -> Vec<UiAction> {
     let l = layout();
     if l.back.contains(point) {
-        vec![UiAction::Records]
-    } else if let Some(filter) = filter_rects(l).iter().position(|rect| rect.contains(point)) {
+        return vec![UiAction::Records];
+    }
+    if let Some((previous, next)) = scroll_rects() {
+        if previous.contains(point) {
+            return vec![UiAction::LibraryScroll(-1)];
+        }
+        if next.contains(point) {
+            return vec![UiAction::LibraryScroll(1)];
+        }
+    }
+    if let Some(filter) = filter_rects(l).iter().position(|rect| rect.contains(point)) {
         vec![UiAction::AchievementFilter(filter as u8)]
     } else {
         Vec::new()
@@ -106,7 +115,7 @@ pub fn draw(state: &AppState) {
         .count();
     draw_text(
         format!(
-            "{} earned of {}  •  showing {}",
+            "{} earned of {}  -  showing {}",
             earned,
             AchievementId::ALL.len(),
             filter_label(state.achievement_filter)
@@ -142,11 +151,7 @@ pub fn draw(state: &AppState) {
             draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 3., WHITE);
         }
     }
-    for (slot, achievement) in AchievementId::ALL
-        .iter()
-        .filter(|achievement| visible(**achievement, state.achievement_filter, state))
-        .enumerate()
-    {
+    for (slot, achievement) in visible_achievements(state).iter().enumerate() {
         let rect = card_rect(l, slot);
         let earned = state
             .achievements
@@ -179,9 +184,9 @@ pub fn draw(state: &AppState) {
         );
         let size = crate::accessibility::text_size(
             if portrait {
-                7.
+                13.
             } else if compact {
-                9.
+                12.
             } else {
                 10.
             },
@@ -203,9 +208,9 @@ pub fn draw(state: &AppState) {
         let status = if earned { "EARNED" } else { "LOCKED" };
         draw_text(
             status,
-            rect.right() - if portrait { 39. } else { 47. },
+            rect.right() - if portrait { 58. } else { 55. },
             rect.y + rect.h * 0.64,
-            crate::accessibility::text_size(if portrait { 5. } else { 7. }, state.large_text),
+            crate::accessibility::text_size(if portrait { 9. } else { 8. }, state.large_text),
             if state.high_contrast {
                 WHITE
             } else if earned {
@@ -214,6 +219,16 @@ pub fn draw(state: &AppState) {
                 Color::new(0.55, 0.50, 0.64, 1.)
             },
         );
+    }
+    if let Some((previous, next)) = scroll_rects() {
+        panel(
+            previous,
+            Color::new(0.18, 0.12, 0.28, 1.),
+            state.high_contrast,
+        );
+        panel(next, Color::new(0.18, 0.12, 0.28, 1.), state.high_contrast);
+        draw_text("PREV", previous.x + 22., previous.y + 28., 11., WHITE);
+        draw_text("NEXT", next.x + 22., next.y + 28., 11., WHITE);
     }
     panel(
         l.back,
@@ -284,7 +299,7 @@ fn filter_rects(layout: Layout) -> [Rect; 3] {
 
 fn fitted_label(achievement: AchievementId, portrait: bool) -> String {
     let label = achievement_label(achievement);
-    let limit = if portrait { 10 } else { 18 };
+    let limit = if portrait { 28 } else { 24 };
     if label.chars().count() <= limit {
         label
     } else {
@@ -305,6 +320,41 @@ fn card_rect(layout: Layout, slot: usize) -> Rect {
         layout.card_w,
         layout.card_h,
     )
+}
+
+fn visible_achievements(state: &AppState) -> Vec<AchievementId> {
+    let matches: Vec<_> = AchievementId::ALL
+        .iter()
+        .copied()
+        .filter(|achievement| visible(*achievement, state.achievement_filter, state))
+        .collect();
+    let capacity = if crate::ui::is_portrait() {
+        8
+    } else if crate::ui::is_compact_landscape() {
+        10
+    } else {
+        matches.len()
+    };
+    let first = state
+        .library_scroll
+        .min(matches.len().saturating_sub(capacity));
+    matches.into_iter().skip(first).take(capacity).collect()
+}
+
+fn scroll_rects() -> Option<(Rect, Rect)> {
+    if crate::ui::is_portrait() {
+        Some((
+            Rect::new(10., 650., 100., 44.),
+            Rect::new(250., 650., 100., 44.),
+        ))
+    } else if crate::ui::is_compact_landscape() {
+        Some((
+            Rect::new(430., 330., 100., 44.),
+            Rect::new(545., 330., 100., 44.),
+        ))
+    } else {
+        None
+    }
 }
 
 fn panel(rect: Rect, fill: Color, high_contrast: bool) {

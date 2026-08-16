@@ -394,8 +394,8 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         }
         Screen::Records if is_portrait() => responsive_library::draw_records(state),
         Screen::Records => records_ui::draw_records(state),
-        Screen::Rules if is_compact_landscape() => responsive_landscape_library::draw_rules(),
-        Screen::Rules if is_portrait() => responsive_library::draw_rules(),
+        Screen::Rules if is_compact_landscape() => responsive_landscape_library::draw_rules(state),
+        Screen::Rules if is_portrait() => responsive_library::draw_rules(state),
         Screen::Rules => library_ui::draw_rules(),
         Screen::Credits if is_compact_landscape() => responsive_landscape_library::draw_credits(),
         Screen::Credits if is_portrait() => responsive_library::draw_credits(),
@@ -442,7 +442,7 @@ fn cabinet_rect(i: usize) -> Rect {
 }
 fn cabinet_favorite_rect(i: usize) -> Rect {
     let rect = cabinet_rect(i);
-    Rect::new(rect.x, rect.y, 44., rect.h)
+    Rect::new(rect.right() - 44., rect.y, 44., rect.h)
 }
 fn draw_2048(state: &AppState) {
     let g = &state.game;

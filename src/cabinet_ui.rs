@@ -70,7 +70,7 @@ pub fn draw(state: &AppState, _data: &GameData, loaded: usize) {
     );
     text(
         &format!(
-            "{}  •  {} stamps  •  {} games",
+            "{}  -  {} stamps  -  {} games",
             state.profile_name,
             state.stamps,
             GameId::ALL.len()
@@ -82,7 +82,7 @@ pub fn draw(state: &AppState, _data: &GameData, loaded: usize) {
     );
     text(
         &format!(
-            "{}  •  {}",
+            "{}  -  {}",
             cosmetics::cabinet_decoration_name(state.cabinet_decoration),
             cosmetics::board_theme_name(state.board_theme)
         ),
@@ -158,9 +158,9 @@ pub fn draw(state: &AppState, _data: &GameData, loaded: usize) {
             },
         );
         if state.favorites.get(game.index()).copied().unwrap_or(false) {
-            draw_circle(rect.x + 9., rect.y + 12., 4., accent);
+            draw_circle(rect.right() - 34., rect.y + 49., 5., accent);
         } else {
-            draw_circle_lines(rect.x + 9., rect.y + 12., 4., 1., accent);
+            draw_circle_lines(rect.right() - 34., rect.y + 49., 5., 2., accent);
         }
         text(
             &crate::cabinet_status::drawer_number(game).to_string(),
@@ -202,7 +202,7 @@ pub fn draw(state: &AppState, _data: &GameData, loaded: usize) {
     }
     text(
         &format!(
-            "Cabinet online  •  tap left markers to save favorites  •  {} textures ready",
+            "Cabinet online  -  tap right FAV circles to save favorites  -  {} textures ready",
             loaded
         ),
         48.,

@@ -151,7 +151,7 @@ impl Game {
                             self.apply(action);
                         }
                     }
-                    Gesture::Drag { .. } => {}
+                    Gesture::Drag { start, end } => self.apply_navigation_drag(start, end),
                     Gesture::LongPress(_) => {}
                 }
             }
@@ -182,6 +182,7 @@ impl Game {
                 }
             }
         }
+        self.update_navigation_scroll();
         let _ = dt;
     }
     pub fn draw(&mut self) {
@@ -236,6 +237,21 @@ impl Game {
             }
             ui::UiAction::CabinetFilter(filter) => {
                 self.state.cabinet_filter = filter.min(2);
+                self.state.cabinet_scroll = 0;
+            }
+            ui::UiAction::CabinetScroll(delta) => {
+                self.state.cabinet_scroll = self
+                    .state
+                    .cabinet_scroll
+                    .saturating_add_signed(delta as isize)
+                    .min(GameId::ALL.len().saturating_sub(1));
+            }
+            ui::UiAction::LibraryScroll(delta) => {
+                self.state.library_scroll = self
+                    .state
+                    .library_scroll
+                    .saturating_add_signed(delta as isize)
+                    .min(GameId::ALL.len().saturating_sub(1));
             }
             ui::UiAction::Cabinet => {
                 self.state.screen = Screen::Cabinet;
@@ -255,24 +271,28 @@ impl Game {
             }
             ui::UiAction::Records => {
                 self.state.screen = Screen::Records;
+                self.state.library_scroll = 0;
                 self.state.favorites_view = false;
                 self.state.recent_view = false;
                 self.state.achievements_view = false;
             }
             ui::UiAction::Favorites => {
                 self.state.screen = Screen::Records;
+                self.state.library_scroll = 0;
                 self.state.favorites_view = true;
                 self.state.recent_view = false;
                 self.state.achievements_view = false;
             }
             ui::UiAction::Recent => {
                 self.state.screen = Screen::Records;
+                self.state.library_scroll = 0;
                 self.state.favorites_view = false;
                 self.state.recent_view = true;
                 self.state.achievements_view = false;
             }
             ui::UiAction::Achievements => {
                 self.state.screen = Screen::Records;
+                self.state.library_scroll = 0;
                 self.state.favorites_view = false;
                 self.state.recent_view = false;
                 self.state.achievements_view = true;
@@ -280,9 +300,11 @@ impl Game {
             }
             ui::UiAction::AchievementFilter(filter) => {
                 self.state.achievement_filter = filter.min(2);
+                self.state.library_scroll = 0;
             }
             ui::UiAction::Rules => {
                 self.state.screen = Screen::Rules;
+                self.state.library_scroll = 0;
                 self.state.favorites_view = false;
                 self.state.recent_view = false;
                 self.state.achievements_view = false;
