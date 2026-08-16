@@ -384,6 +384,26 @@ pub fn nonogram(state: &AppState) -> String {
     )
 }
 
+pub fn word_search(state: &AppState) -> String {
+    let game = &state.word_search;
+    if game.status == crate::word_search::WordSearchStatus::Won {
+        return "Every hidden word is found — tap NEW BOARD to search again.".into();
+    }
+    game.hint_word().map_or_else(
+        || "No hidden word remains — tap NEW BOARD to search again.".into(),
+        |(word, start, end)| {
+            format!(
+                "Try {} from row {}, column {} to row {}, column {}.",
+                crate::word_search::WORDS[word],
+                start / 10 + 1,
+                start % 10 + 1,
+                end / 10 + 1,
+                end % 10 + 1
+            )
+        },
+    )
+}
+
 fn color_name(color: u8) -> &'static str {
     ["red", "amber", "green", "blue", "violet", "gold"][color as usize % 6]
 }
@@ -407,6 +427,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::SudokuHint
             | crate::ui::UiAction::MineHint
             | crate::ui::UiAction::NonogramHint
+            | crate::ui::UiAction::WordSearchHint
     )
 }
 

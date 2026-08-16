@@ -13,6 +13,7 @@ struct Layout {
     cell: f32,
     clear: Rect,
     new_game: Rect,
+    hint: Rect,
 }
 
 fn layout() -> Layout {
@@ -20,8 +21,9 @@ fn layout() -> Layout {
         Layout {
             board: Rect::new(8., 48., 300., 300.),
             cell: 30.,
-            clear: Rect::new(370., 245., 120., 42.),
-            new_game: Rect::new(510., 245., 140., 42.),
+            clear: Rect::new(370., 255., 120., 42.),
+            new_game: Rect::new(510., 255., 140., 42.),
+            hint: Rect::new(370., 200., 280., 42.),
         }
     } else if crate::ui::is_portrait() {
         Layout {
@@ -29,6 +31,7 @@ fn layout() -> Layout {
             cell: 34.,
             clear: Rect::new(20., 660., 150., 42.),
             new_game: Rect::new(190., 660., 160., 42.),
+            hint: Rect::new(20., 610., 330., 42.),
         }
     } else {
         Layout {
@@ -36,6 +39,7 @@ fn layout() -> Layout {
             cell: 56.,
             clear: Rect::new(950., 575., 120., 44.),
             new_game: Rect::new(1090., 575., 150., 44.),
+            hint: Rect::new(950., 450., 290., 44.),
         }
     }
 }
@@ -50,6 +54,9 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if layout.new_game.contains(point) {
         return vec![UiAction::WordSearchNew];
+    }
+    if layout.hint.contains(point) {
+        return vec![UiAction::WordSearchHint];
     }
     if layout.board.contains(point) {
         let column = ((point.x - layout.board.x) / layout.cell) as usize;
@@ -83,11 +90,12 @@ pub fn draw(state: &AppState) {
     };
     text("‹ CABINET", 8., 30., 13., muted());
     text("WORD SEARCH", header_x, header_y, title_size(), accent());
+    let instruction = state.card_hint.as_deref().unwrap_or(match game.status {
+        WordSearchStatus::Playing => "Tap two endpoints to find a word",
+        WordSearchStatus::Won => "The quiet list is complete",
+    });
     text(
-        match game.status {
-            WordSearchStatus::Playing => "Tap two endpoints to find a word",
-            WordSearchStatus::Won => "The quiet list is complete",
-        },
+        instruction,
         if compact { 350. } else { header_x },
         if compact { 30. } else { header_y + 25. },
         body_size(),
@@ -153,7 +161,7 @@ pub fn draw(state: &AppState) {
             950.
         },
         if compact {
-            230.
+            240.
         } else if portrait {
             530.
         } else {
@@ -164,6 +172,7 @@ pub fn draw(state: &AppState) {
     );
     button(layout.clear, "CLEAR");
     button(layout.new_game, "NEW BOARD");
+    button(layout.hint, "HINT");
 }
 
 fn draw_word_list(game: &crate::word_search::WordSearch, _layout: Layout) {
@@ -187,7 +196,7 @@ fn draw_word_list(game: &crate::word_search::WordSearch, _layout: Layout) {
         return;
     }
     let (x, y, size) = if crate::ui::is_compact_landscape() {
-        (370., 80., 13.)
+        (370., 55., 11.)
     } else {
         (950., 155., 18.)
     };
@@ -196,7 +205,7 @@ fn draw_word_list(game: &crate::word_search::WordSearch, _layout: Layout) {
         text(
             &format!("{} {}", if game.found[index] { "✓" } else { "·" }, word),
             x,
-            y + 28. + index as f32 * if size > 15. { 30. } else { 22. },
+            y + 28. + index as f32 * if size > 15. { 30. } else { 18. },
             size,
             if game.found[index] {
                 Color::new(0.55, 1., 0.72, 1.)

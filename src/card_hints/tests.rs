@@ -129,3 +129,13 @@ fn default_nonogram_has_a_deterministic_hint() {
     assert_eq!(nonogram(&state), "Fill row 1, column 1.");
     assert_eq!(nonogram(&state), nonogram(&state));
 }
+
+#[test]
+fn default_word_search_has_a_deterministic_hint() {
+    let state = AppState::default();
+    assert_eq!(
+        word_search(&state),
+        "Try QUIET from row 1, column 1 to row 1, column 5."
+    );
+    assert_eq!(word_search(&state), word_search(&state));
+}

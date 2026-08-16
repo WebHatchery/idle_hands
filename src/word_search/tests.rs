@@ -41,3 +41,13 @@ fn invalid_path_clears_selection_without_progress() {
     assert_eq!(game.selected_start, None);
     assert_eq!(game.moves, 0);
 }
+
+#[test]
+fn hint_word_identifies_the_first_unfound_endpoints_without_mutating() {
+    let game = WordSearch::new(42);
+    let before = game.selected_start;
+    let (word, start, end) = game.hint_word().unwrap();
+    assert_eq!(word, 0);
+    assert_eq!((start, end), (0, 4));
+    assert_eq!(game.selected_start, before);
+}

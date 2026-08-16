@@ -56,7 +56,9 @@ impl Game {
                 Screen::Game(GameId::Mastermind)
             }
             "spider" => Screen::Game(GameId::Spider),
-            "word_search" => Screen::Game(GameId::WordSearch),
+            "word_search" | "word_search_hint" | "word_search_hint_accessible" => {
+                Screen::Game(GameId::WordSearch)
+            }
             "hangman" => Screen::Game(GameId::Hangman),
             "connect_four" => Screen::Game(GameId::ConnectFour),
             "connect_four_accessible" => Screen::Game(GameId::ConnectFour),
@@ -181,6 +183,8 @@ impl Game {
             self.state.card_hint = Some(card_hints::minesweeper(&self.state));
         } else if scene == "nonogram_hint" || scene == "nonogram_hint_accessible" {
             self.state.card_hint = Some(card_hints::nonogram(&self.state));
+        } else if scene == "word_search_hint" || scene == "word_search_hint_accessible" {
+            self.state.card_hint = Some(card_hints::word_search(&self.state));
         }
         if scene.starts_with("tutorial_") {
             if let Screen::Game(game) = self.state.screen {

@@ -897,6 +897,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover solution validity, hint determinism, capture aliases, and the
     updated desktop layouts.
 
+## Phase 77 — Word Search discoverability polish
+
+- [x] Add a deterministic HINT action that identifies the next unfound word’s
+  endpoints without changing selection or found-word state.
+  - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
+  - [x] Cover endpoint validity, hint determinism, capture aliases, and
+    responsive layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

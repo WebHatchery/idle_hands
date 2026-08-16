@@ -585,6 +585,9 @@ impl Game {
             ui::UiAction::WordSearchClear => {
                 self.state.word_search.clear();
             }
+            ui::UiAction::WordSearchHint => {
+                self.state.card_hint = Some(card_hints::word_search(&self.state));
+            }
             ui::UiAction::WordSearchNew => {
                 let seed = self.state.word_search.seed.wrapping_add(1);
                 self.state.word_search.reset(seed);

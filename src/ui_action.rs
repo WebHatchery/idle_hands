@@ -105,6 +105,7 @@ pub enum UiAction {
     WordSearchCell(usize),
     WordSearchClear,
     WordSearchNew,
+    WordSearchHint,
     HangmanGuess(u8),
     HangmanNew,
     ConnectFourDrop(usize),

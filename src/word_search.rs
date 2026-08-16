@@ -91,6 +91,19 @@ impl WordSearch {
         *self = Self::new(seed);
     }
 
+    pub fn hint_word(&self) -> Option<(usize, usize, usize)> {
+        if self.status == WordSearchStatus::Won {
+            return None;
+        }
+        self.found.iter().position(|found| !found).map(|word| {
+            let (row, column, row_step, column_step) = PLACEMENTS[word];
+            let end_offset = WORDS[word].len() as isize - 1;
+            let end_row = (row as isize + row_step * end_offset) as usize;
+            let end_column = (column as isize + column_step * end_offset) as usize;
+            (word, row * SIZE + column, end_row * SIZE + end_column)
+        })
+    }
+
     pub fn cell_found(&self, index: usize) -> bool {
         PLACEMENTS
             .iter()
