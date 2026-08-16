@@ -128,7 +128,7 @@ pub fn draw_minesweeper(state: &AppState) {
         Color::new(0.63, 0.95, 0.72, 1.),
     );
     for (index, preset) in MinePreset::ALL.iter().enumerate() {
-        let rect = Rect::new(400. + index as f32 * 105., 105., 98., 32.);
+        let rect = Rect::new(400. + index as f32 * 105., 105., 98., 44.);
         panel(
             rect,
             if *preset == game.preset {
@@ -137,7 +137,7 @@ pub fn draw_minesweeper(state: &AppState) {
                 Color::new(0.16, 0.11, 0.24, 1.)
             },
         );
-        text(preset.label(), rect.x + 8., rect.y + 21., 10., WHITE);
+        text(preset.label(), rect.x + 8., rect.y + 29., 10., WHITE);
     }
     panel(
         Rect::new(400., 155., 170., 44.),
@@ -176,7 +176,7 @@ pub fn minesweeper_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         return vec![UiAction::Cabinet];
     }
     for (index, preset) in MinePreset::ALL.iter().enumerate() {
-        if Rect::new(400. + index as f32 * 105., 105., 98., 32.).contains(p) {
+        if Rect::new(400. + index as f32 * 105., 105., 98., 44.).contains(p) {
             return vec![UiAction::MinePreset(*preset)];
         }
     }
@@ -260,7 +260,7 @@ pub fn draw_sudoku(state: &AppState) {
         Color::new(0.63, 0.95, 0.72, 1.),
     );
     for (index, difficulty) in SudokuDifficulty::ALL.iter().enumerate() {
-        let rect = Rect::new(400. + index as f32 * 120., 72., 112., 32.);
+        let rect = Rect::new(400. + index as f32 * 120., 72., 112., 44.);
         panel(
             rect,
             if *difficulty == game.difficulty {
@@ -269,7 +269,7 @@ pub fn draw_sudoku(state: &AppState) {
                 Color::new(0.16, 0.11, 0.24, 1.)
             },
         );
-        text(difficulty.label(), rect.x + 17., rect.y + 21., 10., WHITE);
+        text(difficulty.label(), rect.x + 17., rect.y + 29., 10., WHITE);
     }
     for value in 1..=9 {
         let index = value - 1;
@@ -283,17 +283,17 @@ pub fn draw_sudoku(state: &AppState) {
         text(&value.to_string(), rect.x + 22., rect.y + 28., 17., WHITE);
     }
     panel(
-        Rect::new(590., 280., 110., 42.),
+        Rect::new(590., 280., 110., 44.),
         Color::new(0.18, 0.26, 0.34, 1.),
     );
-    text("UNDO", 622., 307., 12., WHITE);
+    text("UNDO", 622., 309., 12., WHITE);
     panel(
-        Rect::new(715., 280., 110., 42.),
+        Rect::new(715., 280., 110., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    text("ERASE", 747., 307., 12., WHITE);
+    text("ERASE", 747., 309., 12., WHITE);
     panel(
-        Rect::new(400., 305., 160., 42.),
+        Rect::new(400., 305., 160., 44.),
         if state.sudoku_note_mode {
             Color::new(0.45, 0.20, 0.27, 1.)
         } else {
@@ -307,7 +307,7 @@ pub fn draw_sudoku(state: &AppState) {
             "NOTES OFF"
         },
         445.,
-        332.,
+        334.,
         12.,
         WHITE,
     );
@@ -324,7 +324,7 @@ pub fn sudoku_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         }
     }
     for (index, difficulty) in SudokuDifficulty::ALL.iter().enumerate() {
-        if Rect::new(400. + index as f32 * 120., 72., 112., 32.).contains(p) {
+        if Rect::new(400. + index as f32 * 120., 72., 112., 44.).contains(p) {
             return vec![UiAction::SudokuDifficulty(*difficulty)];
         }
     }
@@ -341,13 +341,13 @@ pub fn sudoku_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
             return vec![UiAction::SudokuNumber(value as u8)];
         }
     }
-    if Rect::new(590., 280., 110., 42.).contains(p) {
+    if Rect::new(590., 280., 110., 44.).contains(p) {
         return vec![UiAction::SudokuUndo];
     }
-    if Rect::new(715., 280., 110., 42.).contains(p) {
+    if Rect::new(715., 280., 110., 44.).contains(p) {
         return vec![UiAction::SudokuErase];
     }
-    if Rect::new(400., 305., 160., 42.).contains(p) {
+    if Rect::new(400., 305., 160., 44.).contains(p) {
         return vec![UiAction::SudokuNoteMode];
     }
     let _ = state;
@@ -424,7 +424,7 @@ pub fn draw_nonogram(state: &AppState) {
         Color::new(0.63, 0.95, 0.72, 1.),
     );
     for (index, preset) in NonogramPreset::ALL.iter().enumerate() {
-        let rect = Rect::new(400. + index as f32 * 120., 75., 112., 32.);
+        let rect = Rect::new(400. + index as f32 * 120., 75., 112., 44.);
         panel(
             rect,
             if *preset == game.preset {
@@ -433,7 +433,7 @@ pub fn draw_nonogram(state: &AppState) {
                 Color::new(0.16, 0.11, 0.24, 1.)
             },
         );
-        text(preset.label(), rect.x + 14., rect.y + 21., 10., WHITE);
+        text(preset.label(), rect.x + 14., rect.y + 29., 10., WHITE);
     }
     panel(
         Rect::new(400., 135., 160., 44.),
@@ -519,7 +519,7 @@ pub fn nonogram_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         return vec![UiAction::Cabinet];
     }
     for (index, preset) in NonogramPreset::ALL.iter().enumerate() {
-        if Rect::new(400. + index as f32 * 120., 75., 112., 32.).contains(p) {
+        if Rect::new(400. + index as f32 * 120., 75., 112., 44.).contains(p) {
             return vec![UiAction::NonogramPreset(*preset)];
         }
     }
@@ -694,7 +694,7 @@ pub fn draw_reversi(state: &AppState) {
     .iter()
     .enumerate()
     {
-        let rect = Rect::new(400. + index as f32 * 120., 190., 112., 38.);
+        let rect = Rect::new(400. + index as f32 * 120., 190., 112., 44.);
         panel(
             rect,
             if game.ai_level == label.1 {
@@ -706,7 +706,7 @@ pub fn draw_reversi(state: &AppState) {
         text(
             label.0,
             rect.x + 25.,
-            rect.y + 25.,
+            rect.y + 29.,
             accessibility::text_size(10., state.large_text),
             WHITE,
         );
@@ -726,7 +726,7 @@ pub fn reversi_clicks(_state: &AppState, p: Vec2) -> Vec<UiAction> {
         .iter()
         .enumerate()
     {
-        if Rect::new(400. + index as f32 * 120., 190., 112., 38.).contains(p) {
+        if Rect::new(400. + index as f32 * 120., 190., 112., 44.).contains(p) {
             return vec![UiAction::ReversiLevel(*level)];
         }
     }
