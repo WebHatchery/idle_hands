@@ -11,6 +11,7 @@ pub enum UiAction {
     Help,
     Records,
     Favorites,
+    Recent,
     Rules,
     Credits,
     ResetData,

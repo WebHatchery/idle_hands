@@ -178,7 +178,7 @@ impl Game {
             | "match_three_hint_accessible" => Screen::Game(GameId::MatchThree),
             "mastermind_accessible" => Screen::Game(GameId::Mastermind),
             "help" => Screen::Help,
-            "records" | "records_word_ladder" | "favorites_browse" | "favorites_all" => Screen::Records,
+            "records" | "records_word_ladder" | "favorites_browse" | "favorites_all" | "recent_browse" => Screen::Records,
             "rules" => Screen::Rules,
             "credits" => Screen::Credits,
             "settings" | "settings_reset" => Screen::Settings,
@@ -200,6 +200,14 @@ impl Game {
             for index in [0, GameId::Spider.index(), GameId::Nim.index()] {
                 self.state.favorites[index] = true;
             }
+        }
+        if scene == "cabinet_recent" {
+            self.state.recent_games = vec![
+                GameId::WordLadder,
+                GameId::Spider,
+                GameId::Minesweeper,
+                GameId::Solitaire,
+            ];
         }
         if scene == "match_three_confirm" {
             self.state.confirm_restart = true;
@@ -235,6 +243,16 @@ impl Game {
         if scene == "favorites_all" {
             self.state.favorites.fill(true);
             self.state.favorites_view = true;
+        }
+        if scene == "recent_browse" {
+            self.state.recent_games = vec![
+                GameId::WordLadder,
+                GameId::Spider,
+                GameId::Minesweeper,
+                GameId::Solitaire,
+                GameId::Game2048,
+            ];
+            self.state.recent_view = true;
         }
         if scene == "freecell_selected" {
             self.state.freecell.select_cascade(0, 0);

@@ -160,10 +160,12 @@ global accessibility choices. The profile also stores a normalized boolean
 favorite vector keyed by `GameId::ALL`; short legacy vectors are padded with
 false values and never change the selected game.
 
-The runtime-only `favorites_view` opens an optional quick-browse list from the
-cabinet. It never changes the persisted favorite vector or the default drawer
-ordering; selecting a listed game routes through the same `Open` action as the
-main cabinet.
+The runtime-only `favorites_view` and `recent_view` flags open optional
+quick-browse lists from the cabinet. Favorites are persisted as a normalized
+boolean vector; recent history is persisted as a deduplicated, newest-first
+list capped at five `GameId` values. Neither list changes the default drawer
+ordering, and selecting a listed game routes through the same `Open` action as
+the main cabinet.
 
 Conceptual keys:
 

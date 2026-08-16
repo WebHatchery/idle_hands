@@ -147,6 +147,9 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
             if Rect::new(48., 108., 175., 36.).contains(p) {
                 out.push(UiAction::Favorites)
             }
+            if Rect::new(230., 108., 175., 36.).contains(p) {
+                out.push(UiAction::Recent)
+            }
             out
         }
         Screen::Game(GameId::Game2048) if is_compact_landscape() => {
@@ -255,7 +258,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
                 vec![]
             }
         }
-        Screen::Records if state.favorites_view => favorites_ui::clicks(state, p),
+        Screen::Records if state.favorites_view || state.recent_view => favorites_ui::clicks(state, p),
         Screen::Records if is_compact_landscape() => {
             responsive_landscape_library::records_clicks(p)
         }
@@ -367,7 +370,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(),
         Screen::Help if is_portrait() => responsive_library::draw_help(),
         Screen::Help => draw_help(),
-        Screen::Records if state.favorites_view => favorites_ui::draw(state),
+        Screen::Records if state.favorites_view || state.recent_view => favorites_ui::draw(state),
         Screen::Records if is_compact_landscape() => {
             responsive_landscape_library::draw_records(state)
         }

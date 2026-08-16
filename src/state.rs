@@ -391,8 +391,10 @@ pub struct AppState {
     pub tutorial: Option<GameId>,
     pub tutorial_seen: Vec<bool>,
     pub favorites: Vec<bool>,
+    pub recent_games: Vec<GameId>,
     pub card_hint: Option<String>,
     pub favorites_view: bool,
+    pub recent_view: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -521,6 +523,8 @@ pub struct CollectionSave {
     pub tutorial_seen: Vec<bool>,
     #[serde(default)]
     pub favorites: Vec<bool>,
+    #[serde(default)]
+    pub recent_games: Vec<GameId>,
 }
 
 fn default_selected() -> usize {
@@ -596,6 +600,7 @@ impl CollectionSave {
             cabinet_decoration: state.cabinet_decoration,
             tutorial_seen: state.tutorial_seen.clone(),
             favorites: state.favorites.clone(),
+            recent_games: state.recent_games.clone(),
         }
     }
     pub fn apply_to(self, state: &mut AppState) {
@@ -664,6 +669,7 @@ impl CollectionSave {
         state.cabinet_decoration = self.cabinet_decoration;
         state.tutorial_seen = state_profile::normalize_tutorial_seen(self.tutorial_seen);
         state.favorites = state_profile::normalize_favorites(self.favorites);
+        state.recent_games = state_profile::normalize_recent_games(self.recent_games);
     }
 }
 impl Default for AppState {
@@ -741,8 +747,10 @@ impl Default for AppState {
             tutorial: None,
             tutorial_seen: vec![false; GameId::ALL.len()],
             favorites: vec![false; GameId::ALL.len()],
+            recent_games: Vec::new(),
             card_hint: None,
             favorites_view: false,
+            recent_view: false,
         }
     }
 }

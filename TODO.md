@@ -1232,6 +1232,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Capture the maximum favorite state at desktop, portrait, and compact-
     landscape sizes.
 
+## Phase 121 — Recent drawer shelf
+
+- [x] Persist the five most recently opened active drawers and expose them
+  through touch-sized RECENT controls on desktop, portrait, and compact-
+  landscape cabinets.
+  - [x] Reuse the quick-browse layout, normalize legacy history, and cover a
+    seeded five-entry RECENT capture at all documented sizes.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

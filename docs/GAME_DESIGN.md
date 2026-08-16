@@ -47,8 +47,9 @@ accidental tap cannot replace an unfinished session.
 
 The cabinet remembers the last-opened game and exposes a visible CONTINUE action
 alongside Home, Help, Records, and Settings. Players can mark drawers with the
-left-edge favorite markers and open an optional FAVORITES quick list; favorites
-are profile state and never hide or reorder the full collection. A first-time player sees a short, game-specific
+left-edge favorite markers and open optional FAVORITES and RECENT quick lists;
+favorites and recent history are profile state and never hide or reorder the
+full collection. A first-time player sees a short, game-specific
 touch tutorial that can be replayed from Help.
 
 ## 4. Launch Games

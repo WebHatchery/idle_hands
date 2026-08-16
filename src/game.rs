@@ -28,6 +28,8 @@ mod game_capture;
 mod game_progression;
 #[path = "game_restart.rs"]
 mod game_restart;
+#[path = "game_navigation.rs"]
+mod game_navigation;
 
 pub struct Game {
     pub data: GameData,
@@ -156,6 +158,8 @@ impl Game {
         if is_key_pressed(KeyCode::Escape) {
             self.pointer.cancel();
             self.state.screen = Screen::Cabinet;
+            self.state.favorites_view = false;
+            self.state.recent_view = false;
             self.state.confirm_restart = false;
             self.state.pending_restart = None;
             self.state.confirm_reset = false;
@@ -207,62 +211,6 @@ impl Game {
                 ..Default::default()
             });
     }
-    fn open_game(&mut self, index: usize) {
-        let Some(id) = GameId::ALL.get(index).copied() else {
-            return;
-        };
-        self.state.favorites_view = false;
-        self.state.selected = index;
-        if crate::cabinet_status::is_active(id) {
-            self.state.screen = Screen::Game(id);
-            self.state.tutorial = (!matches!(
-                id,
-                GameId::LightsOut
-                    | GameId::TicTacToe
-                    | GameId::MemoryPairs
-                    | GameId::SlidingPuzzle
-                    | GameId::Mastermind
-                    | GameId::Spider
-                    | GameId::WordSearch
-                    | GameId::Hangman
-                    | GameId::ConnectFour
-                    | GameId::Checkers
-                    | GameId::PegSolitaire
-                    | GameId::MahjongSolitaire
-                    | GameId::Snake
-                    | GameId::Breakout
-                    | GameId::HigherLower
-                    | GameId::KlondikeGolf
-                    | GameId::Blackjack
-                    | GameId::SpiderSolitaire
-                    | GameId::DungeonSweeper
-                    | GameId::Potion2048
-                    | GameId::TinyTowerDefence
-                    | GameId::OneRoomRoguelike
-                    | GameId::DailyDungeon
-                    | GameId::DotsBoxes
-                    | GameId::Sokoban
-                    | GameId::Mancala
-                    | GameId::Hanoi
-                    | GameId::NumberMatch
-                    | GameId::FloodIt
-                    | GameId::ColorSort
-                    | GameId::Battleship
-                    | GameId::WordGrid
-                    | GameId::PipeLoop
-                    | GameId::MazeWalk
-                    | GameId::MatchThree
-                    | GameId::Pyramid
-                    | GameId::TriPeaks
-                    | GameId::Nim
-            ) && !self.state.tutorial_seen[id.index()])
-            .then_some(id);
-        } else {
-            self.notifications
-                .info(format!("{} is coming soon", id.title()));
-        }
-    }
-
     fn apply(&mut self, action: ui::UiAction) {
         let previous_screen = self.state.screen;
         if !self.confirmation_bypass
@@ -294,6 +242,7 @@ impl Game {
             ui::UiAction::Cabinet => {
                 self.state.screen = Screen::Cabinet;
                 self.state.favorites_view = false;
+                self.state.recent_view = false;
                 self.state.tutorial = None;
                 self.state.confirm_reset = false;
                 self.state.confirm_restart = false;
@@ -302,26 +251,37 @@ impl Game {
             ui::UiAction::Help => {
                 self.state.screen = Screen::Help;
                 self.state.favorites_view = false;
+                self.state.recent_view = false;
             }
             ui::UiAction::Records => {
                 self.state.screen = Screen::Records;
                 self.state.favorites_view = false;
+                self.state.recent_view = false;
             }
             ui::UiAction::Favorites => {
                 self.state.screen = Screen::Records;
                 self.state.favorites_view = true;
+                self.state.recent_view = false;
+            }
+            ui::UiAction::Recent => {
+                self.state.screen = Screen::Records;
+                self.state.favorites_view = false;
+                self.state.recent_view = true;
             }
             ui::UiAction::Rules => {
                 self.state.screen = Screen::Rules;
                 self.state.favorites_view = false;
+                self.state.recent_view = false;
             }
             ui::UiAction::Credits => {
                 self.state.screen = Screen::Credits;
                 self.state.favorites_view = false;
+                self.state.recent_view = false;
             }
             ui::UiAction::Settings => {
                 self.state.screen = Screen::Settings;
                 self.state.favorites_view = false;
+                self.state.recent_view = false;
             }
             ui::UiAction::TutorialContinue => {
                 if let Some(game) = self.state.tutorial {

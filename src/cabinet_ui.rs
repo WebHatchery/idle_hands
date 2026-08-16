@@ -11,8 +11,11 @@ pub fn draw(state: &AppState, _data: &GameData, loaded: usize) {
     panel(Rect::new(48., 108., 175., 36.), Color::new(0.20, 0.13, 0.30, 1.));
     text("FAVORITES", 60., 124., 11., WHITE);
     text(&state.favorites.iter().filter(|favorite| **favorite).count().to_string(), 190., 124., 11., Color::new(0.98, 0.83, 0.45, 1.));
+    panel(Rect::new(230., 108., 175., 36.), Color::new(0.20, 0.13, 0.30, 1.));
+    text("RECENT", 242., 124., 11., WHITE);
+    text(&state.recent_games.len().to_string(), 372., 124., 11., Color::new(0.98, 0.83, 0.45, 1.));
     text("A small collection for quiet minutes", 48., 98., 20., Color::new(0.72, 0.68, 0.82, 1.));
-    text(&format!("{}  •  {} stamps  •  {} favorites  •  {} games waiting at the cabinet", state.profile_name, state.stamps, state.favorites.iter().filter(|favorite| **favorite).count(), GameId::ALL.len()), 240., 130., 18., Color::new(0.60, 0.56, 0.72, 1.));
+    text(&format!("{}  •  {} stamps  •  {} favorites  •  {} recent  •  {} games", state.profile_name, state.stamps, state.favorites.iter().filter(|favorite| **favorite).count(), state.recent_games.len(), GameId::ALL.len()), 425., 130., 18., Color::new(0.60, 0.56, 0.72, 1.));
     text(&format!("{}  •  {}", cosmetics::cabinet_decoration_name(state.cabinet_decoration), cosmetics::board_theme_name(state.board_theme)), 990., 686., 15., accent);
     for i in 0..GameId::ALL.len() {
         let rect = cabinet_rect(i);
