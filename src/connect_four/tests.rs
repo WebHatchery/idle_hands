@@ -31,3 +31,20 @@ fn a_player_drop_can_be_undone_after_the_bounded_ai_reply() {
     assert!(game.cells.iter().all(|cell| *cell == Disc::Empty));
     assert_eq!(game.moves, 0);
 }
+
+#[test]
+fn hint_column_prefers_center_on_an_empty_board_without_mutating() {
+    let game = ConnectFour::new(42);
+    let before = game.cells.clone();
+    assert_eq!(game.hint_column(), Some(3));
+    assert_eq!(game.cells, before);
+}
+
+#[test]
+fn hint_column_finds_an_immediate_red_win() {
+    let mut game = ConnectFour::new(1);
+    game.cells[5 * COLUMNS] = Disc::Red;
+    game.cells[5 * COLUMNS + 1] = Disc::Red;
+    game.cells[5 * COLUMNS + 2] = Disc::Red;
+    assert_eq!(game.hint_column(), Some(3));
+}

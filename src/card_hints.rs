@@ -421,6 +421,23 @@ pub fn hangman(state: &AppState) -> String {
     )
 }
 
+pub fn connect_four(state: &AppState) -> String {
+    let game = &state.connect_four;
+    match game.status {
+        crate::connect_four::ConnectFourStatus::Won(_) => {
+            return "The row is already settled — tap NEW BOARD to play again.".into();
+        }
+        crate::connect_four::ConnectFourStatus::Draw => {
+            return "The board is full — tap NEW BOARD to begin again.".into();
+        }
+        crate::connect_four::ConnectFourStatus::Playing => {}
+    }
+    game.hint_column().map_or_else(
+        || "No column remains — tap NEW BOARD to begin again.".into(),
+        |column| format!("Drop a disc in column {}.", column + 1),
+    )
+}
+
 fn color_name(color: u8) -> &'static str {
     ["red", "amber", "green", "blue", "violet", "gold"][color as usize % 6]
 }
@@ -446,6 +463,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::NonogramHint
             | crate::ui::UiAction::WordSearchHint
             | crate::ui::UiAction::HangmanHint
+            | crate::ui::UiAction::ConnectFourHint
     )
 }
 

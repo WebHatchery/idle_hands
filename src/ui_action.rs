@@ -110,6 +110,7 @@ pub enum UiAction {
     HangmanHint,
     HangmanNew,
     ConnectFourDrop(usize),
+    ConnectFourHint,
     ConnectFourUndo,
     ConnectFourNew,
     CheckersTap(usize),

@@ -913,6 +913,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover candidate filtering, hint determinism, capture aliases, and
     responsive layouts.
 
+## Phase 79 — Connect Four discoverability polish
+
+- [x] Add a deterministic tactical HINT action for an immediate win, required
+  block, or stable center column without changing the board.
+  - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
+  - [x] Cover win/block detection, hint determinism, capture aliases, and
+    responsive layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

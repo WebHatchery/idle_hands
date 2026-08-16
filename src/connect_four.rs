@@ -75,6 +75,20 @@ impl ConnectFour {
         *self = Self::new(seed);
     }
 
+    pub fn hint_column(&self) -> Option<usize> {
+        if self.status != ConnectFourStatus::Playing {
+            return None;
+        }
+        self.winning_column(Disc::Red)
+            .or_else(|| self.winning_column(Disc::Yellow))
+            .or_else(|| (!self.column_full(3)).then_some(3))
+            .or_else(|| {
+                [3, 2, 4, 1, 5, 0, 6]
+                    .into_iter()
+                    .find(|&column| !self.column_full(column))
+            })
+    }
+
     pub fn column_full(&self, column: usize) -> bool {
         column >= COLUMNS || self.cells[column] != Disc::Empty
     }

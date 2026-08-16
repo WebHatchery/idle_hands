@@ -146,3 +146,10 @@ fn default_hangman_has_a_deterministic_hint() {
     assert!(!hangman(&state).is_empty());
     assert_eq!(hangman(&state), hangman(&state));
 }
+
+#[test]
+fn default_connect_four_has_a_deterministic_hint() {
+    let state = AppState::default();
+    assert_eq!(connect_four(&state), "Drop a disc in column 4.");
+    assert_eq!(connect_four(&state), connect_four(&state));
+}

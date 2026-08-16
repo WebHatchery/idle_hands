@@ -60,7 +60,9 @@ impl Game {
                 Screen::Game(GameId::WordSearch)
             }
             "hangman" | "hangman_hint" | "hangman_hint_accessible" => Screen::Game(GameId::Hangman),
-            "connect_four" => Screen::Game(GameId::ConnectFour),
+            "connect_four" | "connect_four_hint" | "connect_four_hint_accessible" => {
+                Screen::Game(GameId::ConnectFour)
+            }
             "connect_four_accessible" => Screen::Game(GameId::ConnectFour),
             "checkers" => Screen::Game(GameId::Checkers),
             "checkers_accessible" => Screen::Game(GameId::Checkers),
@@ -187,6 +189,8 @@ impl Game {
             self.state.card_hint = Some(card_hints::word_search(&self.state));
         } else if scene == "hangman_hint" || scene == "hangman_hint_accessible" {
             self.state.card_hint = Some(card_hints::hangman(&self.state));
+        } else if scene == "connect_four_hint" || scene == "connect_four_hint_accessible" {
+            self.state.card_hint = Some(card_hints::connect_four(&self.state));
         }
         if scene.starts_with("tutorial_") {
             if let Screen::Game(game) = self.state.screen {

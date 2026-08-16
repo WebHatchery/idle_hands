@@ -13,6 +13,7 @@ struct Layout {
     board: Rect,
     cell: f32,
     drops: Rect,
+    hint: Rect,
     undo: Rect,
     new_game: Rect,
 }
@@ -23,6 +24,7 @@ fn layout() -> Layout {
             board: Rect::new(10., 48., 350., 300.),
             cell: 50.,
             drops: Rect::new(10., 350., 350., 34.),
+            hint: Rect::new(430., 265., 290., 42.),
             undo: Rect::new(430., 210., 120., 42.),
             new_game: Rect::new(570., 210., 150., 42.),
         }
@@ -31,6 +33,7 @@ fn layout() -> Layout {
             board: Rect::new(10., 120., 340., 292.),
             cell: 48.5714,
             drops: Rect::new(10., 420., 340., 38.),
+            hint: Rect::new(20., 575., 330., 42.),
             undo: Rect::new(20., 520., 145., 42.),
             new_game: Rect::new(185., 520., 165., 42.),
         }
@@ -39,6 +42,7 @@ fn layout() -> Layout {
             board: Rect::new(350., 105., 560., 480.),
             cell: 80.,
             drops: Rect::new(350., 600., 560., 42.),
+            hint: Rect::new(950., 540., 290., 44.),
             undo: Rect::new(950., 600., 120., 44.),
             new_game: Rect::new(1090., 600., 150., 44.),
         }
@@ -55,6 +59,9 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if layout.new_game.contains(point) {
         return vec![UiAction::ConnectFourNew];
+    }
+    if layout.hint.contains(point) {
+        return vec![UiAction::ConnectFourHint];
     }
     if layout.drops.contains(point) || layout.board.contains(point) {
         let column = ((point.x - layout.board.x) / layout.cell).clamp(0., 6.99) as usize;
@@ -98,8 +105,12 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
+    let instruction = state
+        .card_hint
+        .as_deref()
+        .unwrap_or(status_text(game.status));
     text(
-        status_text(game.status),
+        instruction,
         if compact { 430. } else { header_x },
         if compact { 30. } else { header_y + 25. },
         accessibility::text_size(body_size(), state.large_text),
@@ -189,6 +200,7 @@ pub fn draw(state: &AppState) {
     );
     button(layout.undo, "UNDO", state.large_text);
     button(layout.new_game, "NEW BOARD", state.large_text);
+    button(layout.hint, "HINT", state.large_text);
 }
 
 fn disc_color(disc: Disc, high_contrast: bool) -> Color {

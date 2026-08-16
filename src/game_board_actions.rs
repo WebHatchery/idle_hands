@@ -17,6 +17,10 @@ impl Game {
                 self.state.hangman.reset(seed);
             }
             UiAction::ConnectFourDrop(column) => self.apply_connect_four_drop(*column),
+            UiAction::ConnectFourHint => {
+                self.state.card_hint = Some(crate::card_hints::connect_four(&self.state));
+                return true;
+            }
             UiAction::ConnectFourUndo => self.apply_connect_four_undo(),
             UiAction::ConnectFourNew => self.apply_connect_four_new(),
             UiAction::CheckersTap(square) => self.apply_checkers_tap(*square),
