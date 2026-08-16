@@ -1280,3 +1280,10 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 Continue with post-launch collection work while preserving the touch-first
 contract, shared confirmation safety, responsive capture coverage, and the
 800-line Rust source limit.
+
+## Phase 127 — Cabinet completion filters
+
+- [x] Add touch-sized ALL, OPEN, and DONE cabinet filters across desktop,
+  portrait, and compact-landscape layouts without changing canonical order.
+  - [x] Cover unfinished and completed seeded cabinet captures and filter
+    predicates with focused tests.

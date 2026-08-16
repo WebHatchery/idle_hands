@@ -63,6 +63,14 @@ pub fn status(state: &AppState, game: GameId) -> &'static str {
     }
 }
 
+pub fn matches_filter(state: &AppState, game: GameId, filter: u8) -> bool {
+    match filter.min(2) {
+        1 => status(state, game) != "COMPLETE",
+        2 => status(state, game) == "COMPLETE",
+        _ => true,
+    }
+}
+
 fn has_progress(state: &AppState, game: GameId) -> bool {
     match game {
         GameId::Game2048 => state.game.score > 0 || state.game.best > 0,
@@ -181,3 +189,6 @@ pub fn is_active(game: GameId) -> bool {
             | GameId::WordLadder
     )
 }
+
+#[cfg(test)]
+mod tests;

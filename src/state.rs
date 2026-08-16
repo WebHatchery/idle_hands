@@ -397,6 +397,7 @@ pub struct AppState {
     pub recent_view: bool,
     pub achievements_view: bool,
     pub achievement_filter: u8,
+    pub cabinet_filter: u8,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -755,6 +756,7 @@ impl Default for AppState {
             recent_view: false,
             achievements_view: false,
             achievement_filter: 0,
+            cabinet_filter: 0,
         }
     }
 }

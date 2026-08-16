@@ -45,6 +45,9 @@ Pyramid, TriPeaks, Nim, and Word Ladder.
   drawer. A player can mark favorite drawers with the cabinet's touch-sized
   markers, open optional FAVORITES and RECENT quick lists, reach a game in one
   tap, and return home without losing progress.
+- **Easy to scan.** The cabinet offers ALL, OPEN, and DONE filters so a large
+  collection can be narrowed to unfinished or completed drawers without
+  changing the canonical order.
 - **Calm progression.** Play may earn stamps that unlock cosmetic card backs,
   board themes, sounds, and cabinet decorations. There are no purchases,
   stamina, streak pressure, nested currencies, or claim screens.

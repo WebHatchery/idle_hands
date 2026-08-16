@@ -12,6 +12,7 @@ pub enum UiAction {
     Records,
     Favorites,
     Recent,
+    CabinetFilter(u8),
     Achievements,
     AchievementFilter(u8),
     Rules,

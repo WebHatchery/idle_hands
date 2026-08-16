@@ -24,12 +24,12 @@ use serde::de::DeserializeOwned;
 mod game_board_actions;
 #[path = "game_capture.rs"]
 mod game_capture;
+#[path = "game_navigation.rs"]
+mod game_navigation;
 #[path = "game_progression.rs"]
 mod game_progression;
 #[path = "game_restart.rs"]
 mod game_restart;
-#[path = "game_navigation.rs"]
-mod game_navigation;
 
 pub struct Game {
     pub data: GameData,
@@ -239,6 +239,9 @@ impl Game {
                 if let Some(favorite) = self.state.favorites.get_mut(index) {
                     *favorite = !*favorite;
                 }
+            }
+            ui::UiAction::CabinetFilter(filter) => {
+                self.state.cabinet_filter = filter.min(2);
             }
             ui::UiAction::Cabinet => {
                 self.state.screen = Screen::Cabinet;

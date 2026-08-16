@@ -1,18 +1,18 @@
 //! Touch-first cabinet and 2048 presentation.
 
-use crate::battleship_ui;
 use crate::achievements_ui;
+use crate::battleship_ui;
 use crate::blackjack_ui;
 use crate::breakout_ui;
+use crate::cabinet_ui;
 use crate::checkers_ui;
 use crate::color_sort_ui;
 use crate::connect_four_ui;
-use crate::cabinet_ui;
 use crate::daily_dungeon_ui;
 use crate::dots_boxes_ui;
 use crate::dungeon_sweeper_ui;
-use crate::fivefold_ui;
 use crate::favorites_ui;
+use crate::fivefold_ui;
 use crate::flood_it_ui;
 use crate::freecell_ui;
 use crate::hangman_ui;
@@ -46,6 +46,7 @@ use crate::responsive_landscape_games;
 use crate::responsive_landscape_library;
 use crate::responsive_library;
 use crate::responsive_puzzles;
+use crate::responsive_sudoku;
 use crate::responsive_ui;
 use crate::reversi_ui;
 use crate::settings_ui;
@@ -122,15 +123,22 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         return restart_modal::clicks(p);
     }
     match state.screen {
-        Screen::Cabinet if is_compact_landscape() => responsive_landscape::cabinet_clicks(p),
-        Screen::Cabinet if is_portrait() => responsive_ui::cabinet_clicks(p),
+        Screen::Cabinet if is_compact_landscape() => responsive_landscape::cabinet_clicks(state, p),
+        Screen::Cabinet if is_portrait() => responsive_ui::cabinet_clicks(state, p),
         Screen::Cabinet => {
             let mut out = vec![];
-            for i in 0..GameId::ALL.len() {
-                if cabinet_favorite_rect(i).contains(p) {
-                    out.push(UiAction::ToggleFavorite(i));
-                } else if cabinet_rect(i).contains(p) {
-                    out.push(UiAction::Open(i));
+            let games = GameId::ALL
+                .iter()
+                .copied()
+                .filter(|game| {
+                    crate::cabinet_status::matches_filter(state, *game, state.cabinet_filter)
+                })
+                .collect::<Vec<_>>();
+            for (slot, game) in games.iter().copied().enumerate() {
+                if cabinet_favorite_rect(slot).contains(p) {
+                    out.push(UiAction::ToggleFavorite(game.index()));
+                } else if cabinet_rect(slot).contains(p) {
+                    out.push(UiAction::Open(game.index()));
                 }
             }
             if Rect::new(720., 28., 190., 42.).contains(p) {
@@ -151,6 +159,11 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
             if Rect::new(230., 108., 175., 36.).contains(p) {
                 out.push(UiAction::Recent)
             }
+            for (rect, _, filter) in cabinet_ui::filter_buttons_for_input() {
+                if rect.contains(p) {
+                    out.push(UiAction::CabinetFilter(filter));
+                }
+            }
             out
         }
         Screen::Game(GameId::Game2048) if is_compact_landscape() => {
@@ -168,7 +181,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Game(GameId::Sudoku) if is_compact_landscape() => {
             responsive_landscape_games::sudoku_clicks(state, p)
         }
-        Screen::Game(GameId::Sudoku) if is_portrait() => responsive_ui::sudoku_clicks(state, p),
+        Screen::Game(GameId::Sudoku) if is_portrait() => responsive_sudoku::clicks(state, p),
         Screen::Game(GameId::Sudoku) => sudoku_ui::sudoku_clicks(state, p),
         Screen::Game(GameId::Nonogram) if is_compact_landscape() => {
             responsive_landscape_games::nonogram_clicks(state, p)
@@ -260,7 +273,9 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
             }
         }
         Screen::Records if state.achievements_view => achievements_ui::clicks(p),
-        Screen::Records if state.favorites_view || state.recent_view => favorites_ui::clicks(state, p),
+        Screen::Records if state.favorites_view || state.recent_view => {
+            favorites_ui::clicks(state, p)
+        }
         Screen::Records if is_compact_landscape() => {
             responsive_landscape_library::records_clicks(p)
         }
@@ -303,7 +318,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::Sudoku) if is_compact_landscape() => {
             responsive_landscape_games::draw_sudoku(state)
         }
-        Screen::Game(GameId::Sudoku) if is_portrait() => responsive_ui::draw_sudoku(state),
+        Screen::Game(GameId::Sudoku) if is_portrait() => responsive_sudoku::draw(state),
         Screen::Game(GameId::Sudoku) => sudoku_ui::draw_sudoku(state),
         Screen::Game(GameId::Nonogram) if is_compact_landscape() => {
             responsive_landscape_games::draw_nonogram(state)

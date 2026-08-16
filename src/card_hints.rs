@@ -614,8 +614,13 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
 
 pub fn word_ladder(state: &AppState) -> String {
     let game = &state.word_ladder;
-    if game.phase == crate::word_ladder::WordLadderPhase::Won { return "The ladder is complete — tap NEW LADDER to climb again.".into(); }
-    game.hint_word().map_or_else(|| "No single-letter step is showing — tap UNDO or NEW LADDER.".into(), |word| format!("Try {} next: change one letter.", word))
+    if game.phase == crate::word_ladder::WordLadderPhase::Won {
+        return "The ladder is complete — tap NEW LADDER to climb again.".into();
+    }
+    game.hint_word().map_or_else(
+        || "No single-letter step is showing — tap UNDO or NEW LADDER.".into(),
+        |word| format!("Try {} next: change one letter.", word),
+    )
 }
 
 #[cfg(test)]

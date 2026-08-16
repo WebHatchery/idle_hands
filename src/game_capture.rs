@@ -161,9 +161,12 @@ impl Game {
                 Screen::Game(GameId::WordGrid)
             }
             "word_grid_accessible" => Screen::Game(GameId::WordGrid),
-            "word_ladder" | "word_ladder_hint" | "word_ladder_hint_accessible" | "word_ladder_best" | "word_ladder_progress" | "word_ladder_confirm" => {
-                Screen::Game(GameId::WordLadder)
-            }
+            "word_ladder"
+            | "word_ladder_hint"
+            | "word_ladder_hint_accessible"
+            | "word_ladder_best"
+            | "word_ladder_progress"
+            | "word_ladder_confirm" => Screen::Game(GameId::WordLadder),
             "pipe_loop" | "pipe_loop_hint" | "pipe_loop_hint_accessible" => {
                 Screen::Game(GameId::PipeLoop)
             }
@@ -178,7 +181,16 @@ impl Game {
             | "match_three_hint_accessible" => Screen::Game(GameId::MatchThree),
             "mastermind_accessible" => Screen::Game(GameId::Mastermind),
             "help" => Screen::Help,
-            "records" | "records_word_ladder" | "records_progress" | "achievements" | "achievements_accessible" | "achievements_earned" | "achievements_locked" | "favorites_browse" | "favorites_all" | "recent_browse" => Screen::Records,
+            "records"
+            | "records_word_ladder"
+            | "records_progress"
+            | "achievements"
+            | "achievements_accessible"
+            | "achievements_earned"
+            | "achievements_locked"
+            | "favorites_browse"
+            | "favorites_all"
+            | "recent_browse" => Screen::Records,
             "rules" => Screen::Rules,
             "credits" => Screen::Credits,
             "settings" | "settings_reset" => Screen::Settings,
@@ -208,6 +220,11 @@ impl Game {
                 GameId::Minesweeper,
                 GameId::Solitaire,
             ];
+        }
+        if matches!(scene, "cabinet_open" | "cabinet_done") {
+            self.state.records.best_2048 = 2048;
+            self.state.records.solitaire_best_moves = Some(42);
+            self.state.cabinet_filter = if scene == "cabinet_done" { 2 } else { 1 };
         }
         if scene == "match_three_confirm" {
             self.state.confirm_restart = true;
@@ -244,7 +261,13 @@ impl Game {
                 &self.state.records,
             );
         }
-        if matches!(scene, "achievements" | "achievements_accessible" | "achievements_earned" | "achievements_locked") {
+        if matches!(
+            scene,
+            "achievements"
+                | "achievements_accessible"
+                | "achievements_earned"
+                | "achievements_locked"
+        ) {
             self.state.records.best_2048 = 2048;
             self.state.records.solitaire_best_moves = Some(42);
             self.state.records.word_ladder_best_moves = Some(5);
@@ -254,10 +277,21 @@ impl Game {
                 &self.state.records,
             );
             self.state.achievements_view = true;
-            self.state.achievement_filter = if scene == "achievements_earned" { 1 } else if scene == "achievements_locked" { 2 } else { 0 };
+            self.state.achievement_filter = if scene == "achievements_earned" {
+                1
+            } else if scene == "achievements_locked" {
+                2
+            } else {
+                0
+            };
         }
         if scene == "favorites_browse" {
-            for index in [0, GameId::Spider.index(), GameId::Nim.index(), GameId::WordLadder.index()] {
+            for index in [
+                0,
+                GameId::Spider.index(),
+                GameId::Nim.index(),
+                GameId::WordLadder.index(),
+            ] {
                 self.state.favorites[index] = true;
             }
             self.state.favorites_view = true;

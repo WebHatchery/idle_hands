@@ -49,6 +49,17 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
         Color::new(0.72, 0.68, 0.82, 1.),
     );
     let selected = GameId::ALL[state.selected.min(GameId::ALL.len() - 1)];
+    for (rect, label, filter) in filter_buttons() {
+        panel(
+            rect,
+            if state.cabinet_filter == filter {
+                Color::new(0.35, 0.22, 0.42, 1.)
+            } else {
+                Color::new(0.20, 0.13, 0.30, 1.)
+            },
+        );
+        text(label, rect.x + 11., rect.y + 20., 8., WHITE);
+    }
     panel(
         Rect::new(560., 2., 130., 30.),
         Color::new(0.20, 0.13, 0.30, 1.),
@@ -61,7 +72,7 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
         6.,
         Color::new(0.98, 0.83, 0.45, 1.),
     );
-    for (index, game) in GameId::ALL.iter().enumerate() {
+    for (index, game) in visible_games(state).iter().enumerate() {
         let rect = cabinet_rect(index);
         panel(rect, Color::new(0.17, 0.12, 0.27, 1.));
         text(
@@ -71,7 +82,7 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
             9.,
             Color::new(0.98, 0.82, 0.42, 1.),
         );
-        let favorite = state.favorites.get(index).copied().unwrap_or(false);
+        let favorite = state.favorites.get(game.index()).copied().unwrap_or(false);
         if favorite {
             draw_circle(rect.x + 6., rect.y + 9., 3., accent);
         } else {
@@ -105,13 +116,42 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
             Color::new(0.08, 0.05, 0.12, 1.),
         );
     }
-    panel(Rect::new(12., 330., 180., 42.), Color::new(0.20, 0.13, 0.30, 1.));
+    panel(
+        Rect::new(12., 330., 180., 42.),
+        Color::new(0.20, 0.13, 0.30, 1.),
+    );
     text("FAVORITES", 24., 348., 10., WHITE);
-    text(&state.favorites.iter().filter(|favorite| **favorite).count().to_string(), 130., 348., 10., Color::new(0.98, 0.83, 0.45, 1.));
-    panel(Rect::new(200., 330., 180., 42.), Color::new(0.20, 0.13, 0.30, 1.));
+    text(
+        &state
+            .favorites
+            .iter()
+            .filter(|favorite| **favorite)
+            .count()
+            .to_string(),
+        130.,
+        348.,
+        10.,
+        Color::new(0.98, 0.83, 0.45, 1.),
+    );
+    panel(
+        Rect::new(200., 330., 180., 42.),
+        Color::new(0.20, 0.13, 0.30, 1.),
+    );
     text("RECENT", 212., 348., 10., WHITE);
-    text(&state.recent_games.len().to_string(), 338., 348., 10., Color::new(0.98, 0.83, 0.45, 1.));
-    text(&format!("{} stamps  •  {} textures", state.stamps, loaded), 400., 354., 11., Color::new(0.52, 0.48, 0.64, 1.));
+    text(
+        &state.recent_games.len().to_string(),
+        338.,
+        348.,
+        10.,
+        Color::new(0.98, 0.83, 0.45, 1.),
+    );
+    text(
+        &format!("{} stamps  •  {} textures", state.stamps, loaded),
+        400.,
+        354.,
+        11.,
+        Color::new(0.52, 0.48, 0.64, 1.),
+    );
     for (rect, label) in [
         (Rect::new(450., 330., 112., 42.), "HELP"),
         (Rect::new(570., 330., 112., 42.), "RECORDS"),
@@ -122,16 +162,21 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
     }
 }
 
-pub fn cabinet_clicks(p: Vec2) -> Vec<UiAction> {
+pub fn cabinet_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if Rect::new(560., 2., 130., 30.).contains(p) {
         return vec![UiAction::ContinueGame];
     }
-    for index in 0..GameId::ALL.len() {
+    for (index, game) in visible_games(state).iter().enumerate() {
         if cabinet_favorite_rect(index).contains(p) {
-            return vec![UiAction::ToggleFavorite(index)];
+            return vec![UiAction::ToggleFavorite(game.index())];
         }
         if cabinet_rect(index).contains(p) {
-            return vec![UiAction::Open(index)];
+            return vec![UiAction::Open(game.index())];
+        }
+    }
+    for (rect, _, filter) in filter_buttons() {
+        if rect.contains(p) {
+            return vec![UiAction::CabinetFilter(filter)];
         }
     }
     if Rect::new(12., 330., 180., 42.).contains(p) {
@@ -155,6 +200,21 @@ pub fn cabinet_clicks(p: Vec2) -> Vec<UiAction> {
 fn cabinet_favorite_rect(index: usize) -> Rect {
     let rect = cabinet_rect(index);
     Rect::new(rect.x, rect.y, 44., rect.h)
+}
+
+fn filter_buttons() -> [(Rect, &'static str, u8); 3] {
+    [
+        (Rect::new(190., 2., 54., 30.), "ALL", 0),
+        (Rect::new(248., 2., 54., 30.), "OPEN", 1),
+        (Rect::new(306., 2., 54., 30.), "DONE", 2),
+    ]
+}
+fn visible_games(state: &AppState) -> Vec<GameId> {
+    GameId::ALL
+        .iter()
+        .copied()
+        .filter(|game| crate::cabinet_status::matches_filter(state, *game, state.cabinet_filter))
+        .collect()
 }
 
 pub fn draw_2048(state: &AppState) {

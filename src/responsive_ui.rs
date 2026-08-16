@@ -49,6 +49,17 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
         Color::new(0.72, 0.68, 0.82, 1.),
     );
     let selected = GameId::ALL[state.selected.min(GameId::ALL.len() - 1)];
+    for (rect, label, filter) in filter_buttons() {
+        panel(
+            rect,
+            if state.cabinet_filter == filter {
+                Color::new(0.35, 0.22, 0.42, 1.)
+            } else {
+                Color::new(0.20, 0.13, 0.30, 1.)
+            },
+        );
+        text(label, rect.x + 10., rect.y + 25., 9., WHITE);
+    }
     panel(
         Rect::new(190., 40., 130., 42.),
         Color::new(0.20, 0.13, 0.30, 1.),
@@ -61,7 +72,7 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
         8.,
         Color::new(0.98, 0.83, 0.45, 1.),
     );
-    for (index, game) in GameId::ALL.iter().enumerate() {
+    for (index, game) in visible_games(state).iter().enumerate() {
         let rect = cabinet_rect(index);
         panel(rect, Color::new(0.17, 0.12, 0.27, 1.));
         text(
@@ -95,7 +106,7 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
             },
             Color::new(0.98, 0.82, 0.42, 1.),
         );
-        let favorite = state.favorites.get(index).copied().unwrap_or(false);
+        let favorite = state.favorites.get(game.index()).copied().unwrap_or(false);
         if favorite {
             draw_circle(rect.x + 6., rect.y + 10., 3., accent);
         } else {
@@ -137,25 +148,59 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
         panel(rect, Color::new(0.12, 0.08, 0.20, 1.));
         text(label, rect.x + 12., rect.y + 26., 11., WHITE);
     }
-    panel(Rect::new(18., 650., 106., 36.), Color::new(0.20, 0.13, 0.30, 1.));
+    panel(
+        Rect::new(18., 650., 106., 36.),
+        Color::new(0.20, 0.13, 0.30, 1.),
+    );
     text("FAVORITES", 26., 666., 8., WHITE);
-    text(&state.favorites.iter().filter(|favorite| **favorite).count().to_string(), 94., 666., 9., Color::new(0.98, 0.83, 0.45, 1.));
-    panel(Rect::new(130., 650., 104., 36.), Color::new(0.20, 0.13, 0.30, 1.));
+    text(
+        &state
+            .favorites
+            .iter()
+            .filter(|favorite| **favorite)
+            .count()
+            .to_string(),
+        94.,
+        666.,
+        9.,
+        Color::new(0.98, 0.83, 0.45, 1.),
+    );
+    panel(
+        Rect::new(130., 650., 104., 36.),
+        Color::new(0.20, 0.13, 0.30, 1.),
+    );
     text("RECENT", 140., 666., 9., WHITE);
-    text(&state.recent_games.len().to_string(), 216., 666., 9., Color::new(0.98, 0.83, 0.45, 1.));
-    text(&format!("{} stamps  •  {} textures", state.stamps, loaded), 244., 672., 9., Color::new(0.52, 0.48, 0.64, 1.));
+    text(
+        &state.recent_games.len().to_string(),
+        216.,
+        666.,
+        9.,
+        Color::new(0.98, 0.83, 0.45, 1.),
+    );
+    text(
+        &format!("{} stamps  •  {} textures", state.stamps, loaded),
+        244.,
+        672.,
+        9.,
+        Color::new(0.52, 0.48, 0.64, 1.),
+    );
 }
 
-pub fn cabinet_clicks(p: Vec2) -> Vec<UiAction> {
+pub fn cabinet_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if Rect::new(190., 40., 130., 42.).contains(p) {
         return vec![UiAction::ContinueGame];
     }
-    for index in 0..GameId::ALL.len() {
+    for (index, game) in visible_games(state).iter().enumerate() {
         if cabinet_favorite_rect(index).contains(p) {
-            return vec![UiAction::ToggleFavorite(index)];
+            return vec![UiAction::ToggleFavorite(game.index())];
         }
         if cabinet_rect(index).contains(p) {
-            return vec![UiAction::Open(index)];
+            return vec![UiAction::Open(game.index())];
+        }
+    }
+    for (rect, _, filter) in filter_buttons() {
+        if rect.contains(p) {
+            return vec![UiAction::CabinetFilter(filter)];
         }
     }
     if Rect::new(18., 650., 106., 36.).contains(p) {
@@ -179,6 +224,21 @@ pub fn cabinet_clicks(p: Vec2) -> Vec<UiAction> {
 fn cabinet_favorite_rect(index: usize) -> Rect {
     let rect = cabinet_rect(index);
     Rect::new(rect.x, rect.y, 44., rect.h)
+}
+
+fn filter_buttons() -> [(Rect, &'static str, u8); 3] {
+    [
+        (Rect::new(4., 40., 54., 38.), "ALL", 0),
+        (Rect::new(62., 40., 54., 38.), "OPEN", 1),
+        (Rect::new(120., 40., 54., 38.), "DONE", 2),
+    ]
+}
+fn visible_games(state: &AppState) -> Vec<GameId> {
+    GameId::ALL
+        .iter()
+        .copied()
+        .filter(|game| crate::cabinet_status::matches_filter(state, *game, state.cabinet_filter))
+        .collect()
 }
 
 pub fn draw_2048(state: &AppState) {
@@ -515,157 +575,6 @@ pub fn settings_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
             return vec![action];
         }
     }
-    vec![]
-}
-
-pub fn draw_sudoku(state: &AppState) {
-    let game = &state.sudoku;
-    text("‹ CABINET", 10., 30., 14., Color::new(0.78, 0.70, 0.92, 1.));
-    text("SUDOKU", 12., 78., 34., Color::new(0.98, 0.83, 0.45, 1.));
-    for (index, difficulty) in crate::sudoku::SudokuDifficulty::ALL.iter().enumerate() {
-        let rect = Rect::new(148. + index as f32 * 68., 48., 62., 28.);
-        panel(
-            rect,
-            if *difficulty == game.difficulty {
-                Color::new(0.45, 0.25, 0.42, 1.)
-            } else {
-                Color::new(0.16, 0.11, 0.24, 1.)
-            },
-        );
-        text(difficulty.label(), rect.x + 8., rect.y + 19., 10., WHITE);
-    }
-    let board = Rect::new(10., 100., 340., 340.);
-    panel(board, crate::accessibility::board_fill(state.high_contrast));
-    let cell = 36.8;
-    for index in 0..81 {
-        let row = index / 9;
-        let col = index % 9;
-        let rect = Rect::new(
-            board.x + 4. + col as f32 * cell,
-            board.y + 4. + row as f32 * cell,
-            cell - 1.,
-            cell - 1.,
-        );
-        let selected = game.selected == Some(index);
-        let conflict = game
-            .selected
-            .map(|selected| game.conflicts(selected).contains(&index))
-            .unwrap_or(false);
-        draw_rectangle(
-            rect.x,
-            rect.y,
-            rect.w,
-            rect.h,
-            if conflict {
-                Color::new(0.35, 0.13, 0.20, 1.)
-            } else if selected {
-                Color::new(0.30, 0.22, 0.42, 1.)
-            } else {
-                Color::new(0.15, 0.11, 0.23, 1.)
-            },
-        );
-        draw_rectangle_lines(
-            rect.x,
-            rect.y,
-            rect.w,
-            rect.h,
-            if col % 3 == 0 || row % 3 == 0 { 2. } else { 1. },
-            crate::accessibility::grid_line(state.high_contrast),
-        );
-        if game.values[index] != 0 {
-            text(
-                &game.values[index].to_string(),
-                rect.x + 12.,
-                rect.y + 26.,
-                crate::accessibility::text_size(21., state.large_text),
-                if game.is_given(index) {
-                    WHITE
-                } else {
-                    Color::new(0.98, 0.72, 0.38, 1.)
-                },
-            );
-        }
-    }
-    text(
-        if state.sudoku_note_mode {
-            "PENCIL"
-        } else {
-            "NUMBER PAD"
-        },
-        12.,
-        465.,
-        13.,
-        Color::new(0.70, 0.64, 0.78, 1.),
-    );
-    for number in 1..=9 {
-        let col = (number - 1) % 3;
-        let row = (number - 1) / 3;
-        let rect = Rect::new(12. + col as f32 * 114., 480. + row as f32 * 52., 104., 44.);
-        panel(rect, Color::new(0.20, 0.13, 0.30, 1.));
-        text(&number.to_string(), rect.x + 46., rect.y + 29., 20., WHITE);
-    }
-    panel(
-        Rect::new(12., 650., 104., 42.),
-        Color::new(0.45, 0.25, 0.42, 1.),
-    );
-    text("PENCIL", 35., 677., 13., WHITE);
-    panel(
-        Rect::new(128., 650., 104., 42.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
-    text("ERASE", 158., 677., 13., WHITE);
-    panel(
-        Rect::new(244., 650., 104., 42.),
-        Color::new(0.18, 0.26, 0.34, 1.),
-    );
-    text("UNDO", 276., 677., 13., WHITE);
-    text(
-        &format!(
-            "Moves {}  •  Best {}",
-            game.moves,
-            game.best_moves.map_or("—".into(), |v| v.to_string())
-        ),
-        12.,
-        730.,
-        12.,
-        Color::new(0.68, 0.63, 0.78, 1.),
-    );
-}
-
-pub fn sudoku_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 110., 42.).contains(p) {
-        return vec![UiAction::Cabinet];
-    }
-    let board = Rect::new(10., 100., 340., 340.);
-    if board.contains(p) {
-        let col = ((p.x - board.x - 4.) / 36.8).floor() as usize;
-        let row = ((p.y - board.y - 4.) / 36.8).floor() as usize;
-        if col < 9 && row < 9 {
-            return vec![UiAction::SudokuCell(row * 9 + col)];
-        }
-    }
-    for (index, difficulty) in crate::sudoku::SudokuDifficulty::ALL.iter().enumerate() {
-        if Rect::new(148. + index as f32 * 68., 48., 62., 28.).contains(p) {
-            return vec![UiAction::SudokuDifficulty(*difficulty)];
-        }
-    }
-    for number in 1..=9 {
-        let col = (number - 1) % 3;
-        let row = (number - 1) / 3;
-        if Rect::new(12. + col as f32 * 114., 480. + row as f32 * 52., 104., 44.).contains(p) {
-            return vec![UiAction::SudokuNumber(number as u8)];
-        }
-    }
-    if Rect::new(12., 650., 104., 42.).contains(p) {
-        return vec![UiAction::SudokuNoteMode];
-    }
-    if Rect::new(128., 650., 104., 42.).contains(p) {
-        return vec![UiAction::SudokuErase];
-    }
-    if Rect::new(244., 650., 104., 42.).contains(p) {
-        return vec![UiAction::SudokuUndo];
-    }
-    let _ = state;
     vec![]
 }
 

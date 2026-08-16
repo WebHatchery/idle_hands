@@ -138,6 +138,9 @@ Records. Destructive restarts require a confirmation sheet that names the game
 and states that its current session will be replaced. Back navigation never
 silently discards play.
 
+The cabinet may filter its canonical order to ALL, OPEN, or DONE drawers for
+quick collection browsing; filtering never changes a drawer's state or place.
+
 ## 6. Progression and Retention
 
 The optional meta layer uses one plainly named collectible: stamps. Finishing
