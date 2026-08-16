@@ -169,6 +169,7 @@ impl Game {
             }
             "match_three"
             | "match_three_accessible"
+            | "match_three_confirm"
             | "match_three_hint"
             | "match_three_hint_accessible" => Screen::Game(GameId::MatchThree),
             "mastermind_accessible" => Screen::Game(GameId::Mastermind),
@@ -195,6 +196,10 @@ impl Game {
             for index in [0, GameId::Spider.index(), GameId::Nim.index()] {
                 self.state.favorites[index] = true;
             }
+        }
+        if scene == "match_three_confirm" {
+            self.state.confirm_restart = true;
+            self.state.pending_restart = Some(crate::ui::UiAction::MatchThreeNew);
         }
         if scene == "freecell_selected" {
             self.state.freecell.select_cascade(0, 0);

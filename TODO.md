@@ -1155,6 +1155,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Align product and technical documentation with profile persistence.
   - [x] Recapture the seeded favorite states at all documented cabinet sizes.
 
+## Phase 109 — Shared new-game safety
+
+- [x] Add a shared, touch-sized confirmation modal before explicit NEW actions
+  across post-launch games, preserving each game’s existing reset handler after
+  START and leaving the established 2048 restart flow unchanged.
+  - [x] Cover modal routing, cancellation, confirmation bypass, and responsive
+    Match Three captures at desktop, portrait, and compact-landscape sizes.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

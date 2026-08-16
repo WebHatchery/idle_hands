@@ -42,6 +42,9 @@ touch contracts.
 5. Finish, abandon, or return to the cabinet; progress is saved automatically.
 6. Optionally inspect records, rules, or cosmetic stamps.
 
+Starting a new drawer session presents a clear CANCEL/START confirmation so an
+accidental tap cannot replace an unfinished session.
+
 The cabinet remembers the last-opened game and exposes a visible CONTINUE action
 alongside Home, Help, Records, and Settings. Players can mark drawers with the
 left-edge favorite markers; favorites are profile state and never hide or

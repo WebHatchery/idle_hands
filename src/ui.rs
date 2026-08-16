@@ -61,6 +61,8 @@ use crate::tutorial_ui;
 pub use crate::ui_action::UiAction;
 use crate::word_grid_ui;
 use crate::word_search_ui;
+#[path = "restart_modal.rs"]
+mod restart_modal;
 use crate::{
     data::GameData,
     state::{AppState, Direction, GameId, Screen},
@@ -112,6 +114,9 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
             || (!is_portrait() && tutorial_ui::REPLAY_RECT.contains(p)))
     {
         return vec![UiAction::ReplayTutorial];
+    }
+    if state.confirm_restart && state.pending_restart.is_some() {
+        return restart_modal::clicks(p);
     }
     match state.screen {
         Screen::Cabinet if is_compact_landscape() => responsive_landscape::cabinet_clicks(p),
@@ -388,6 +393,9 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         } else {
             tutorial_ui::draw_replay_button();
         }
+    }
+    if state.confirm_restart && state.pending_restart.is_some() {
+        restart_modal::draw(state);
     }
 }
 fn text(s: &str, x: f32, y: f32, size: f32, color: Color) {

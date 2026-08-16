@@ -1,0 +1,49 @@
+use crate::ui::UiAction;
+
+pub(super) fn requires_new_confirmation(action: UiAction) -> bool {
+    matches!(
+        action,
+        UiAction::SolitaireNew
+            | UiAction::FreeCellNew
+            | UiAction::FivefoldNew
+            | UiAction::ReversiNew
+            | UiAction::LightsOutNew
+            | UiAction::TicTacToeNew
+            | UiAction::MemoryPairsNew
+            | UiAction::SlidingPuzzleNew
+            | UiAction::MastermindNew
+            | UiAction::SpiderNew
+            | UiAction::WordSearchNew
+            | UiAction::HangmanNew
+            | UiAction::ConnectFourNew
+            | UiAction::CheckersNew
+            | UiAction::PegSolitaireNew
+            | UiAction::MahjongSolitaireNew
+            | UiAction::SnakeNew
+            | UiAction::BreakoutNew
+            | UiAction::HigherLowerNew
+            | UiAction::KlondikeGolfNew
+            | UiAction::BlackjackNew
+            | UiAction::SpiderSolitaireNew
+            | UiAction::PyramidNew
+            | UiAction::TriPeaksNew
+            | UiAction::NimNew
+            | UiAction::DungeonNew
+            | UiAction::PotionNew
+            | UiAction::TowerNew
+            | UiAction::RogueNew
+            | UiAction::DailyNew
+            | UiAction::DotsNew
+            | UiAction::SokobanNew
+            | UiAction::MancalaNew
+            | UiAction::HanoiNew
+            | UiAction::NumberMatchNew
+            | UiAction::FloodNew
+            | UiAction::ColorSortNew
+            | UiAction::BattleshipNew
+            | UiAction::WordGridNew
+            | UiAction::PipeNew
+            | UiAction::MazeNew
+            | UiAction::MatchThreeNew
+    )
+}

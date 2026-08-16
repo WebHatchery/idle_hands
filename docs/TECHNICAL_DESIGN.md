@@ -178,6 +178,10 @@ Autosave occurs after committed player commands, on return Home, and on pause
 or visibility loss where available. Writes are coalesced so drag previews and
 animations do not create storage churn.
 
+Explicit NEW actions use a shared confirmation modal before dispatching the
+game-specific reset command. The pending command is held only in runtime state;
+CANCEL clears it, while START dispatches the existing reset handler unchanged.
+
 ## 8. Determinism and AI
 
 Each new session receives a seed and owns its RNG. Rendering, time, pointer

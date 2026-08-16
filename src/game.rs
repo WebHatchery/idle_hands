@@ -26,6 +26,8 @@ mod game_board_actions;
 mod game_capture;
 #[path = "game_progression.rs"]
 mod game_progression;
+#[path = "game_restart.rs"]
+mod game_restart;
 
 pub struct Game {
     pub data: GameData,
@@ -35,6 +37,7 @@ pub struct Game {
     pointer: PointerTracker,
     sounds: SoundBank,
     transition: f32,
+    confirmation_bypass: bool,
 }
 impl Game {
     pub async fn new() -> Self {
@@ -51,6 +54,7 @@ impl Game {
             pointer: PointerTracker::default(),
             sounds: SoundBank::load().await,
             transition: 0.,
+            confirmation_bypass: false,
         };
         game.load_autosave();
         game
@@ -153,6 +157,7 @@ impl Game {
             self.pointer.cancel();
             self.state.screen = Screen::Cabinet;
             self.state.confirm_restart = false;
+            self.state.pending_restart = None;
             self.state.confirm_reset = false;
             self.state.tutorial = None;
             if !self.state.reduced_motion {
@@ -259,6 +264,14 @@ impl Game {
 
     fn apply(&mut self, action: ui::UiAction) {
         let previous_screen = self.state.screen;
+        if !self.confirmation_bypass
+            && game_restart::requires_new_confirmation(action)
+            && self.state.pending_restart.is_none()
+        {
+            self.state.pending_restart = Some(action);
+            self.state.confirm_restart = true;
+            return;
+        }
         if !card_hints::is_hint(action) {
             self.state.card_hint = None;
         }
@@ -281,6 +294,8 @@ impl Game {
                 self.state.screen = Screen::Cabinet;
                 self.state.tutorial = None;
                 self.state.confirm_reset = false;
+                self.state.confirm_restart = false;
+                self.state.pending_restart = None;
             }
             ui::UiAction::Help => self.state.screen = Screen::Help,
             ui::UiAction::Records => self.state.screen = Screen::Records,
@@ -621,10 +636,20 @@ impl Game {
             }
             ui::UiAction::Restart => self.state.confirm_restart = true,
             ui::UiAction::ConfirmRestart => {
+                if let Some(restart) = self.state.pending_restart.take() {
+                    self.state.confirm_restart = false;
+                    self.confirmation_bypass = true;
+                    self.apply(restart);
+                    self.confirmation_bypass = false;
+                    return;
+                }
                 self.state.game = crate::state::Game2048::new(self.state.game.seed.wrapping_add(1));
                 self.state.confirm_restart = false;
             }
-            ui::UiAction::Cancel => self.state.confirm_restart = false,
+            ui::UiAction::Cancel => {
+                self.state.confirm_restart = false;
+                self.state.pending_restart = None;
+            }
             ui::UiAction::ToggleSound => self.state.sound = !self.state.sound,
             ui::UiAction::ToggleMotion => self.state.reduced_motion = !self.state.reduced_motion,
             ui::UiAction::ToggleHighContrast => {

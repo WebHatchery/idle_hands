@@ -34,3 +34,19 @@ fn card_drag_dispatch_ignores_non_card_screens() {
     let state = crate::state::AppState::default();
     assert!(card_drag_actions(&state, vec2(6., 205.), vec2(55., 205.), true, false).is_empty());
 }
+
+#[test]
+fn new_game_actions_require_confirmation_but_existing_restart_does_not() {
+    assert!(game_restart::requires_new_confirmation(
+        ui::UiAction::MatchThreeNew
+    ));
+    assert!(game_restart::requires_new_confirmation(
+        ui::UiAction::NimNew
+    ));
+    assert!(!game_restart::requires_new_confirmation(
+        ui::UiAction::MatchThreeHint
+    ));
+    assert!(!game_restart::requires_new_confirmation(
+        ui::UiAction::Restart
+    ));
+}
