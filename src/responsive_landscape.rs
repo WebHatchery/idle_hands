@@ -27,16 +27,16 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     draw_text(value, x, y, size, color);
 }
 
-const CABINET_COLUMNS: usize = 6;
-const CABINET_VISIBLE_ROWS: usize = 5;
+const CABINET_COLUMNS: usize = 4;
+const CABINET_VISIBLE_ROWS: usize = 4;
 const CABINET_PAGE_SIZE: usize = CABINET_COLUMNS * CABINET_VISIBLE_ROWS;
 
 fn cabinet_rect(index: usize) -> Rect {
     Rect::new(
-        8. + (index % CABINET_COLUMNS) as f32 * 139.,
-        54. + (index / CABINET_COLUMNS) as f32 * 52.,
-        133.,
-        46.,
+        8. + (index % CABINET_COLUMNS) as f32 * 209.,
+        62. + (index / CABINET_COLUMNS) as f32 * 62.,
+        201.,
+        58.,
     )
 }
 
@@ -99,20 +99,20 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
         text(
             game.title(),
             rect.x + 6.,
-            rect.y + 17.,
-            if game.title().len() > 13 { 8. } else { 10. },
+            rect.y + 21.,
+            if game.title().len() > 18 { 10. } else { 12. },
             Color::new(0.98, 0.82, 0.42, 1.),
         );
         let favorite = state.favorites.get(game.index()).copied().unwrap_or(false);
         if favorite {
-            draw_circle(rect.right() - 22., rect.y + 34., 6., accent);
+            draw_circle(rect.right() - 22., rect.y + 43., 6., accent);
         } else {
-            draw_circle_lines(rect.right() - 22., rect.y + 34., 6., 2., accent);
+            draw_circle_lines(rect.right() - 22., rect.y + 43., 6., 2., accent);
         }
         text(
             cabinet_status(state, *game),
             rect.x + 6.,
-            rect.y + 36.,
+            rect.y + 46.,
             9.,
             Color::new(0.98, 0.75, 0.30, 1.),
         );
