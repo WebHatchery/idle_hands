@@ -211,6 +211,7 @@ impl Game {
         let Some(id) = GameId::ALL.get(index).copied() else {
             return;
         };
+        self.state.favorites_view = false;
         self.state.selected = index;
         if crate::cabinet_status::is_active(id) {
             self.state.screen = Screen::Game(id);

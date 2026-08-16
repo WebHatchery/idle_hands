@@ -1220,6 +1220,11 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover the seeded browse state at desktop, portrait, and compact-
     landscape sizes.
 
+## Phase 119 — Favorite route state hygiene
+
+- [x] Clear the runtime-only favorites browse flag whenever a drawer opens,
+  preventing stale quick-browse state from surviving navigation.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.
