@@ -23,6 +23,12 @@ pub enum TowerPhase {
     Lost,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum TowerHint {
+    Build(usize),
+    Advance,
+}
+
 type Snapshot = (Vec<u8>, Vec<Enemy>, u16, u8, u8, u32, u64, TowerPhase, u16);
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -82,6 +88,25 @@ impl TinyTowerDefence {
             Some(2 + u16::from(level))
         } else {
             None
+        }
+    }
+
+    pub fn hint_action(&self) -> Option<TowerHint> {
+        match self.phase {
+            TowerPhase::Build => {
+                let center = (HEIGHT / 2, WIDTH / 2);
+                (0..self.towers.len())
+                    .filter(|&index| self.valid_build_cell(index))
+                    .filter(|&index| self.tower_cost(index).is_some_and(|cost| cost <= self.gold))
+                    .min_by_key(|&index| {
+                        let row = index / WIDTH;
+                        let column = index % WIDTH;
+                        row.abs_diff(center.0) + column.abs_diff(center.1)
+                    })
+                    .map(TowerHint::Build)
+            }
+            TowerPhase::Wave if !self.enemies.is_empty() => Some(TowerHint::Advance),
+            TowerPhase::Wave | TowerPhase::Won | TowerPhase::Lost => None,
         }
     }
 

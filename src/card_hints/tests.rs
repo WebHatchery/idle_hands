@@ -229,3 +229,11 @@ fn default_potion_2048_has_a_deterministic_hint() {
     assert!(!potion_2048(&state).is_empty());
     assert_eq!(potion_2048(&state), potion_2048(&state));
 }
+
+#[test]
+fn default_tiny_tower_defence_has_a_deterministic_hint() {
+    let state = AppState::default();
+
+    assert!(!tiny_tower_defence(&state).is_empty());
+    assert_eq!(tiny_tower_defence(&state), tiny_tower_defence(&state));
+}

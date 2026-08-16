@@ -617,6 +617,29 @@ pub fn potion_2048(state: &AppState) -> String {
     )
 }
 
+pub fn tiny_tower_defence(state: &AppState) -> String {
+    let game = &state.tiny_tower_defence;
+    match game.phase {
+        crate::tiny_tower_defence::TowerPhase::Won => {
+            return "The tower holds — tap NEW TOWER to play again.".into()
+        }
+        crate::tiny_tower_defence::TowerPhase::Lost => {
+            return "The gate fell — tap NEW TOWER to begin again.".into()
+        }
+        crate::tiny_tower_defence::TowerPhase::Build
+        | crate::tiny_tower_defence::TowerPhase::Wave => {}
+    }
+    game.hint_action().map_or_else(
+        || "No tower action is available — tap NEW TOWER to begin again.".into(),
+        |hint| match hint {
+            crate::tiny_tower_defence::TowerHint::Build(index) => {
+                format!("Build at room {}.", index + 1)
+            }
+            crate::tiny_tower_defence::TowerHint::Advance => "Tap ADVANCE to fire towers.".into(),
+        },
+    )
+}
+
 fn potion_direction_label(direction: crate::state::Direction) -> &'static str {
     match direction {
         crate::state::Direction::Up => "UP",
@@ -693,6 +716,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::BlackjackHint
             | crate::ui::UiAction::DungeonHint
             | crate::ui::UiAction::PotionHint
+            | crate::ui::UiAction::TowerHint
     )
 }
 

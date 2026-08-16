@@ -1001,6 +1001,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover best-direction selection, board preservation, hint determinism,
     capture aliases, and responsive layouts.
 
+## Phase 90 — Tiny Tower Defence discoverability polish
+
+- [x] Add a deterministic non-mutating HINT action that recommends an
+  affordable central build cell or ADVANCE during a wave.
+  - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
+  - [x] Cover phase-aware recommendations, state preservation, hint
+    determinism, capture aliases, and responsive layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

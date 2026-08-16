@@ -75,3 +75,27 @@ fn undo_restores_build_and_target_wave_can_win() {
     assert!(game.start_or_advance());
     assert!(game.won());
 }
+
+#[test]
+fn hint_recommends_build_then_advance_without_mutating_the_tower() {
+    let mut game = TinyTowerDefence::new(1);
+    let before = game.clone();
+
+    assert_eq!(game.hint_action(), Some(TowerHint::Build(17)));
+    assert_eq!(game.towers, before.towers);
+    assert_eq!(game.gold, before.gold);
+
+    assert!(game.start_or_advance());
+    let before_wave = game.clone();
+    assert_eq!(game.hint_action(), Some(TowerHint::Advance));
+    assert_eq!(game.enemies, before_wave.enemies);
+    assert_eq!(game.tick, before_wave.tick);
+}
+
+#[test]
+fn hint_is_empty_after_tower_defence_ends() {
+    let mut game = TinyTowerDefence::new(1);
+    game.phase = TowerPhase::Won;
+
+    assert_eq!(game.hint_action(), None);
+}

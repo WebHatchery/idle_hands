@@ -116,7 +116,12 @@ impl Game {
                 Screen::Game(GameId::Potion2048)
             }
             "potion_2048_accessible" => Screen::Game(GameId::Potion2048),
-            "tiny_tower_defence" => Screen::Game(GameId::TinyTowerDefence),
+            "tiny_tower_defence" | "tiny_tower_defence_hint" => {
+                Screen::Game(GameId::TinyTowerDefence)
+            }
+            "tiny_tower_defence_accessible" | "tiny_tower_defence_hint_accessible" => {
+                Screen::Game(GameId::TinyTowerDefence)
+            }
             "one_room_roguelike" => Screen::Game(GameId::OneRoomRoguelike),
             "one_room_roguelike_accessible" => Screen::Game(GameId::OneRoomRoguelike),
             "daily_dungeon" => Screen::Game(GameId::DailyDungeon),
@@ -194,6 +199,10 @@ impl Game {
             self.state.card_hint = Some(card_hints::dungeon_sweeper(&self.state));
         } else if scene == "potion_2048_hint" || scene == "potion_2048_hint_accessible" {
             self.state.card_hint = Some(card_hints::potion_2048(&self.state));
+        } else if scene == "tiny_tower_defence_hint"
+            || scene == "tiny_tower_defence_hint_accessible"
+        {
+            self.state.card_hint = Some(card_hints::tiny_tower_defence(&self.state));
         } else if scene == "2048_hint" || scene == "2048_hint_accessible" {
             self.state.card_hint = Some(card_hints::game_2048(&self.state));
         } else if scene == "tic_tac_toe_hint" || scene == "tic_tac_toe_hint_accessible" {

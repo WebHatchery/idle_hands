@@ -241,6 +241,10 @@ impl Game {
             UiAction::TowerWave => {
                 self.state.tiny_tower_defence.start_or_advance();
             }
+            UiAction::TowerHint => {
+                self.state.card_hint = Some(crate::card_hints::tiny_tower_defence(&self.state));
+                return true;
+            }
             UiAction::TowerUndo => {
                 self.state.tiny_tower_defence.undo();
             }

@@ -180,6 +180,7 @@ pub enum UiAction {
     PotionNew,
     TowerCell(usize),
     TowerWave,
+    TowerHint,
     TowerUndo,
     TowerNew,
     RogueMove(Direction),

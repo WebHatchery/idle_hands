@@ -11,6 +11,7 @@ use macroquad::prelude::*;
 struct Layout {
     board: Rect,
     wave: Rect,
+    hint: Rect,
     undo: Rect,
     new_game: Rect,
 }
@@ -20,6 +21,7 @@ fn layout() -> Layout {
         Layout {
             board: Rect::new(220., 70., 560., 280.),
             wave: Rect::new(18., 120., 165., 44.),
+            hint: Rect::new(18., 278., 120., 40.),
             undo: Rect::new(18., 175., 120., 44.),
             new_game: Rect::new(18., 228., 145., 44.),
         }
@@ -27,6 +29,7 @@ fn layout() -> Layout {
         Layout {
             board: Rect::new(20., 140., 360., 300.),
             wave: Rect::new(20., 470., 165., 44.),
+            hint: Rect::new(20., 580., 145., 42.),
             undo: Rect::new(20., 525., 145., 44.),
             new_game: Rect::new(195., 525., 165., 44.),
         }
@@ -34,6 +37,7 @@ fn layout() -> Layout {
         Layout {
             board: Rect::new(350., 125., 560., 400.),
             wave: Rect::new(950., 170., 170., 46.),
+            hint: Rect::new(950., 345., 120., 44.),
             undo: Rect::new(950., 230., 120., 44.),
             new_game: Rect::new(950., 288., 155., 44.),
         }
@@ -50,6 +54,9 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if l.undo.contains(point) {
         return vec![UiAction::TowerUndo];
+    }
+    if l.hint.contains(point) {
+        return vec![UiAction::TowerHint];
     }
     if l.new_game.contains(point) {
         return vec![UiAction::TowerNew];
@@ -157,10 +164,13 @@ pub fn draw(state: &AppState) {
         muted(),
     );
     text(
-        "Tap empty cells to build • tap towers to upgrade",
+        state
+            .card_hint
+            .as_deref()
+            .unwrap_or("Tap empty cells to build • tap towers to upgrade"),
         if compact { 220. } else { title_x },
         if portrait {
-            600.
+            640.
         } else if compact {
             383.
         } else {
@@ -170,6 +180,7 @@ pub fn draw(state: &AppState) {
         muted(),
     );
     button(l.wave, wave_label(game.phase));
+    button(l.hint, "HINT");
     button(l.undo, "UNDO");
     button(l.new_game, "NEW TOWER");
 }
