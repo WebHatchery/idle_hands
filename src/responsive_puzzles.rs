@@ -55,7 +55,11 @@ fn global_index(state: &AppState, local: usize) -> usize {
 
 pub fn draw_nonogram(state: &AppState) {
     let game = &state.nonogram;
-    text("‹ CABINET", 10., 30., 14., Color::new(0.78, 0.70, 0.92, 1.));
+    panel(
+        Rect::new(0., 0., 110., 44.),
+        Color::new(0.12, 0.08, 0.20, 1.),
+    );
+    text("‹ CABINET", 10., 29., 14., Color::new(0.78, 0.70, 0.92, 1.));
     text("NONOGRAM", 12., 78., 32., Color::new(0.98, 0.83, 0.45, 1.));
     for (index, preset) in crate::nonogram::NonogramPreset::ALL.iter().enumerate() {
         let rect = Rect::new(10. + index as f32 * 113., 92., 103., 30.);
@@ -229,7 +233,7 @@ pub fn draw_nonogram(state: &AppState) {
 }
 
 pub fn nonogram_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 110., 42.).contains(p) {
+    if Rect::new(0., 0., 110., 44.).contains(p) {
         return vec![UiAction::Cabinet];
     }
     for (index, preset) in crate::nonogram::NonogramPreset::ALL.iter().enumerate() {
@@ -296,7 +300,11 @@ fn mine_grid(state: &AppState) -> GridLayout {
 
 pub fn draw_minesweeper(state: &AppState) {
     let game = &state.minesweeper;
-    text("‹ CABINET", 10., 30., 14., Color::new(0.78, 0.70, 0.92, 1.));
+    panel(
+        Rect::new(0., 0., 110., 44.),
+        Color::new(0.12, 0.08, 0.20, 1.),
+    );
+    text("‹ CABINET", 10., 29., 14., Color::new(0.78, 0.70, 0.92, 1.));
     text(
         "MINESWEEPER",
         12.,
@@ -436,7 +444,7 @@ pub fn draw_minesweeper(state: &AppState) {
 }
 
 pub fn minesweeper_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 110., 42.).contains(p) {
+    if Rect::new(0., 0., 110., 44.).contains(p) {
         return vec![UiAction::Cabinet];
     }
     for (index, preset) in crate::minesweeper::MinePreset::ALL.iter().enumerate() {

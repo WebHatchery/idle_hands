@@ -1347,3 +1347,8 @@ contract, shared confirmation safety, responsive capture coverage, and the
 
 - [x] Resize compact-landscape Minesweeper, Sudoku, Nonogram, and Reversi
   selectors and action controls to touch-complete targets with captures.
+
+## Phase 140 — Compact-landscape return accessibility
+
+- [x] Give compact-landscape card, game, puzzle, and 2048 cabinet return
+  actions visible touch-sized panels and matching hit regions.

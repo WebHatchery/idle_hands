@@ -34,7 +34,11 @@ fn draw_card(rect: Rect, card: Card, selected: bool, back_style: u8, reduced_mot
     crate::card_render::draw_card(rect, card, selected, back_style, reduced_motion);
 }
 fn back() {
-    text("< CABINET", 10., 18., 12., Color::new(0.78, 0.70, 0.92, 1.));
+    panel(
+        Rect::new(0., 0., 110., 44.),
+        Color::new(0.12, 0.08, 0.20, 1.),
+    );
+    text("< CABINET", 10., 29., 12., Color::new(0.78, 0.70, 0.92, 1.));
 }
 
 pub fn draw_solitaire(state: &AppState) {
@@ -159,7 +163,7 @@ pub fn draw_solitaire(state: &AppState) {
     text("HINT", 346., 359., 12., WHITE);
 }
 pub fn solitaire_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 90., 28.).contains(p) {
+    if Rect::new(0., 0., 110., 44.).contains(p) {
         return vec![UiAction::Cabinet];
     }
     if card_rect(10., 35., 75., 95.).contains(p) {
@@ -298,7 +302,7 @@ pub fn draw_freecell(state: &AppState) {
     text("HINT", 346., 359., 12., WHITE);
 }
 pub fn freecell_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 90., 28.).contains(p) {
+    if Rect::new(0., 0., 110., 44.).contains(p) {
         return vec![UiAction::Cabinet];
     }
     if Rect::new(310., 330., 110., 44.).contains(p) {
@@ -456,7 +460,7 @@ pub fn draw_fivefold(state: &AppState) {
     );
 }
 pub fn fivefold_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 90., 28.).contains(p) {
+    if Rect::new(0., 0., 110., 44.).contains(p) {
         return vec![UiAction::Cabinet];
     }
     if Rect::new(10., 170., 180., 46.).contains(p) {

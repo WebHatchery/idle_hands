@@ -27,7 +27,11 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     draw_text(value, x, y, size, color);
 }
 fn back() {
-    text("< CABINET", 10., 18., 12., Color::new(0.78, 0.70, 0.92, 1.));
+    panel(
+        Rect::new(0., 0., 110., 44.),
+        Color::new(0.12, 0.08, 0.20, 1.),
+    );
+    text("< CABINET", 10., 29., 12., Color::new(0.78, 0.70, 0.92, 1.));
 }
 
 const MINE_BOARD: Rect = Rect {
@@ -172,7 +176,7 @@ pub fn draw_minesweeper(state: &AppState) {
     );
 }
 pub fn minesweeper_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 90., 28.).contains(p) {
+    if Rect::new(0., 0., 110., 44.).contains(p) {
         return vec![UiAction::Cabinet];
     }
     for (index, preset) in MinePreset::ALL.iter().enumerate() {
@@ -313,7 +317,7 @@ pub fn draw_sudoku(state: &AppState) {
     );
 }
 pub fn sudoku_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 90., 28.).contains(p) {
+    if Rect::new(0., 0., 110., 44.).contains(p) {
         return vec![UiAction::Cabinet];
     }
     if SUDOKU_BOARD.contains(p) {
@@ -515,7 +519,7 @@ fn nonogram_global_index(state: &AppState, local: usize) -> usize {
 }
 
 pub fn nonogram_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 90., 28.).contains(p) {
+    if Rect::new(0., 0., 110., 44.).contains(p) {
         return vec![UiAction::Cabinet];
     }
     for (index, preset) in NonogramPreset::ALL.iter().enumerate() {
@@ -713,7 +717,7 @@ pub fn draw_reversi(state: &AppState) {
     }
 }
 pub fn reversi_clicks(_state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 90., 28.).contains(p) {
+    if Rect::new(0., 0., 110., 44.).contains(p) {
         return vec![UiAction::Cabinet];
     }
     if Rect::new(400., 120., 160., 44.).contains(p) {
