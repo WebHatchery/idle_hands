@@ -295,6 +295,17 @@ pub fn memory_pairs(state: &AppState) -> String {
     )
 }
 
+pub fn sliding_puzzle(state: &AppState) -> String {
+    let game = &state.sliding_puzzle;
+    if game.status == crate::sliding_puzzle::SlidingStatus::Won {
+        return "The tiles are already in order — tap NEW BOARD to play again.".into();
+    }
+    game.hint_move().map_or_else(
+        || "No tile can move — tap NEW BOARD to begin again.".into(),
+        |index| format!("Tap tile {} beside the empty space.", game.cells[index]),
+    )
+}
+
 pub fn is_hint(action: crate::ui::UiAction) -> bool {
     matches!(
         action,
@@ -309,6 +320,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::SpiderSolitaireHint
             | crate::ui::UiAction::NimHint
             | crate::ui::UiAction::MemoryPairsHint
+            | crate::ui::UiAction::SlidingPuzzleHint
     )
 }
 

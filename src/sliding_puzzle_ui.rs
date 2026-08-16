@@ -9,6 +9,7 @@ struct Layout {
     cell: f32,
     new_board: Rect,
     undo: Rect,
+    hint: Rect,
 }
 
 fn layout() -> Layout {
@@ -18,6 +19,7 @@ fn layout() -> Layout {
             cell: 75.,
             new_board: Rect::new(350., 125., 155., 48.),
             undo: Rect::new(350., 185., 155., 48.),
+            hint: Rect::new(350., 245., 155., 48.),
         }
     } else if crate::ui::is_portrait() {
         Layout {
@@ -25,6 +27,7 @@ fn layout() -> Layout {
             cell: 85.,
             new_board: Rect::new(10., 525., 160., 48.),
             undo: Rect::new(180., 525., 160., 48.),
+            hint: Rect::new(10., 585., 160., 48.),
         }
     } else {
         Layout {
@@ -32,6 +35,7 @@ fn layout() -> Layout {
             cell: 130.,
             new_board: Rect::new(440., 650., 180., 48.),
             undo: Rect::new(650., 650., 180., 48.),
+            hint: Rect::new(860., 650., 180., 48.),
         }
     }
 }
@@ -46,6 +50,9 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if layout.undo.contains(point) {
         return vec![UiAction::SlidingPuzzleUndo];
+    }
+    if layout.hint.contains(point) {
+        return vec![UiAction::SlidingPuzzleHint];
     }
     if layout.board.contains(point) && state.sliding_puzzle.status != SlidingStatus::Won {
         let column = ((point.x - layout.board.x) / layout.cell) as usize;
@@ -98,8 +105,12 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
+    let instruction = state
+        .card_hint
+        .as_deref()
+        .unwrap_or(status_text(game.status));
     text(
-        status_text(game.status),
+        instruction,
         body_x,
         body_y,
         accessibility::text_size(body_size(), state.large_text),
@@ -153,6 +164,7 @@ pub fn draw(state: &AppState) {
     );
     button(layout.new_board, "NEW BOARD", state.large_text);
     button(layout.undo, "UNDO", state.large_text);
+    button(layout.hint, "HINT", state.large_text);
 }
 
 fn status_text(status: SlidingStatus) -> &'static str {

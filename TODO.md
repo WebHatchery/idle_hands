@@ -857,6 +857,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
   - [x] Cover hint determinism, pair validity, capture aliases, and responsive layouts.
 
+## Phase 72 — Sliding Puzzle discoverability polish
+
+- [x] Add a deterministic HINT action that identifies a legal tile move
+  without changing the board.
+  - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
+  - [x] Cover hint legality, determinism, capture aliases, and responsive
+    layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

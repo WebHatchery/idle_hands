@@ -525,6 +525,9 @@ impl Game {
             ui::UiAction::SlidingPuzzleMove(index) => {
                 self.state.sliding_puzzle.move_tile(index);
             }
+            ui::UiAction::SlidingPuzzleHint => {
+                self.state.card_hint = Some(card_hints::sliding_puzzle(&self.state));
+            }
             ui::UiAction::SlidingPuzzleUndo => {
                 self.state.sliding_puzzle.undo();
             }

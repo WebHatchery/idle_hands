@@ -39,7 +39,10 @@ impl Game {
             | "memory_pairs_accessible"
             | "memory_pairs_hint"
             | "memory_pairs_hint_accessible" => Screen::Game(GameId::MemoryPairs),
-            "sliding_puzzle" | "sliding_puzzle_accessible" => Screen::Game(GameId::SlidingPuzzle),
+            "sliding_puzzle"
+            | "sliding_puzzle_accessible"
+            | "sliding_puzzle_hint"
+            | "sliding_puzzle_hint_accessible" => Screen::Game(GameId::SlidingPuzzle),
             "mastermind" => Screen::Game(GameId::Mastermind),
             "spider" => Screen::Game(GameId::Spider),
             "word_search" => Screen::Game(GameId::WordSearch),
@@ -157,6 +160,8 @@ impl Game {
             self.state.card_hint = Some(card_hints::lights_out(&self.state));
         } else if scene == "memory_pairs_hint" || scene == "memory_pairs_hint_accessible" {
             self.state.card_hint = Some(card_hints::memory_pairs(&self.state));
+        } else if scene == "sliding_puzzle_hint" || scene == "sliding_puzzle_hint_accessible" {
+            self.state.card_hint = Some(card_hints::sliding_puzzle(&self.state));
         }
         if scene.starts_with("tutorial_") {
             if let Screen::Game(game) = self.state.screen {

@@ -35,3 +35,12 @@ fn the_final_tile_completes_the_puzzle() {
     assert_eq!(game.status, SlidingStatus::Won);
     assert!(!game.move_tile(14));
 }
+
+#[test]
+fn hint_move_is_legal_and_does_not_mutate_the_board() {
+    let game = SlidingPuzzle::new(42);
+    let before = game.cells;
+    let hint = game.hint_move().unwrap();
+    assert!(neighbors(game.blank()).contains(&hint));
+    assert_eq!(game.cells, before);
+}

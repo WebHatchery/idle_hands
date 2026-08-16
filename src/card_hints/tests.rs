@@ -94,3 +94,10 @@ fn default_memory_pairs_has_a_deterministic_hint() {
     assert_eq!(memory_pairs(&state), "Pair cards 1 and 12.");
     assert_eq!(memory_pairs(&state), memory_pairs(&state));
 }
+
+#[test]
+fn default_sliding_puzzle_has_a_deterministic_hint() {
+    let state = AppState::default();
+    assert!(!sliding_puzzle(&state).is_empty());
+    assert_eq!(sliding_puzzle(&state), sliding_puzzle(&state));
+}

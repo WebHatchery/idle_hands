@@ -86,6 +86,25 @@ impl SlidingPuzzle {
         *self = Self::new(seed);
     }
 
+    pub fn hint_move(&self) -> Option<usize> {
+        if self.status == SlidingStatus::Won {
+            return None;
+        }
+        let blank = self.blank();
+        let mut best = None;
+        let mut best_distance = usize::MAX;
+        for tile in neighbors(blank) {
+            let mut preview = self.cells;
+            preview.swap(blank, tile);
+            let distance = board_distance(&preview);
+            if distance < best_distance {
+                best = Some(tile);
+                best_distance = distance;
+            }
+        }
+        best
+    }
+
     fn blank(&self) -> usize {
         self.cells.iter().position(|cell| *cell == 0).unwrap()
     }
@@ -122,6 +141,22 @@ fn neighbors(index: usize) -> Vec<usize> {
 fn next_seed(seed: u64) -> u64 {
     seed.wrapping_mul(6364136223846793005)
         .wrapping_add(1442695040888963407)
+}
+
+fn board_distance(cells: &[u8; CELLS]) -> usize {
+    cells
+        .iter()
+        .enumerate()
+        .filter(|(_, value)| **value != 0)
+        .map(|(index, value)| {
+            let target = (*value as usize) - 1;
+            let row = index / SIDE;
+            let column = index % SIDE;
+            let target_row = target / SIDE;
+            let target_column = target % SIDE;
+            row.abs_diff(target_row) + column.abs_diff(target_column)
+        })
+        .sum()
 }
 
 #[cfg(test)]
