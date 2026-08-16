@@ -43,7 +43,7 @@ pub fn draw_reversi(state: &AppState) {
         40.,
         55.,
         accessibility::text_size(20., state.large_text),
-        Color::new(0.78, 0.70, 0.92, 1.),
+        crate::theme::BRASS,
     );
     crate::ui::draw_text(
         "REVERSI",

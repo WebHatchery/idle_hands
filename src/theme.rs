@@ -53,7 +53,7 @@ pub fn lighten(color: Color, amount: f32) -> Color {
 pub fn text_color(color: Color) -> Color {
     if color.r > 0.95 && color.g > 0.95 && color.b > 0.95 {
         CREAM
-    } else if color.r > color.b * 0.9 && color.b > color.g * 1.15 && color.b > 0.5 {
+    } else if color.b > color.r + 0.04 && color.b > color.g + 0.04 {
         SECONDARY
     } else {
         color
@@ -63,7 +63,7 @@ pub fn text_color(color: Color) -> Color {
 /// Translates legacy drawer chrome into the cabinet palette. Gameplay pieces
 /// keep their own signal colors; this is intended for neutral panels only.
 pub fn drawer_surface(color: Color) -> Color {
-    if color.r < 0.19 && color.g < 0.14 && color.b > 0.18 {
+    if color.b > color.r * 1.15 && color.b > color.g * 1.25 && color.b > 0.12 {
         GAME_PANEL
     } else if color.r < 0.28 && color.g < 0.20 && color.b > 0.25 {
         SURFACE_DARK

@@ -49,14 +49,14 @@ fn global_index(state: &AppState, local: usize) -> usize {
 pub fn draw_nonogram(state: &AppState) {
     let game = &state.nonogram;
     panel(Rect::new(0., 0., 110., 44.), crate::theme::SURFACE_DARK);
-    text("‹ CABINET", 10., 29., 14., Color::new(0.78, 0.70, 0.92, 1.));
+    text("‹ CABINET", 10., 29., 14., crate::theme::BRASS);
     text("NONOGRAM", 12., 78., 32., crate::theme::BRASS);
     for (index, preset) in crate::nonogram::NonogramPreset::ALL.iter().enumerate() {
         let rect = Rect::new(10. + index as f32 * 113., 92., 103., 44.);
         panel(
             rect,
             if *preset == game.preset {
-                Color::new(0.45, 0.25, 0.42, 1.)
+                crate::theme::LEATHER
             } else {
                 Color::new(0.16, 0.11, 0.24, 1.)
             },
@@ -72,7 +72,7 @@ pub fn draw_nonogram(state: &AppState) {
         let rect = Rect::new(cell.x, cell.y, cell.w - 1., cell.h - 1.);
         let selected = game.selected == Some(index);
         let fill = match (game.marks[index], selected) {
-            (NonogramMark::Empty, true) => Color::new(0.30, 0.22, 0.42, 1.),
+            (NonogramMark::Empty, true) => crate::theme::WALNUT,
             (mark, _) => accessibility::nonogram_cell(mark as u8, state.high_contrast),
         };
         draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
@@ -288,7 +288,7 @@ fn mine_grid(state: &AppState) -> GridLayout {
 pub fn draw_minesweeper(state: &AppState) {
     let game = &state.minesweeper;
     panel(Rect::new(0., 0., 110., 44.), crate::theme::SURFACE_DARK);
-    text("‹ CABINET", 10., 29., 14., Color::new(0.78, 0.70, 0.92, 1.));
+    text("‹ CABINET", 10., 29., 14., crate::theme::BRASS);
     text("MINESWEEPER", 12., 72., 29., crate::theme::BRASS);
     for (index, preset) in crate::minesweeper::MinePreset::ALL.iter().enumerate() {
         let rect = Rect::new(5. + index as f32 * 88., 88., 82., 44.);

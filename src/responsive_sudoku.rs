@@ -15,14 +15,14 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 pub fn draw(state: &AppState) {
     let game = &state.sudoku;
     panel(Rect::new(0., 0., 110., 44.), crate::theme::SURFACE_DARK);
-    text("‹ CABINET", 10., 29., 14., Color::new(0.78, 0.70, 0.92, 1.));
+    text("‹ CABINET", 10., 29., 14., crate::theme::BRASS);
     text("SUDOKU", 12., 78., 34., crate::theme::BRASS);
     for (index, difficulty) in crate::sudoku::SudokuDifficulty::ALL.iter().enumerate() {
         let rect = Rect::new(148. + index as f32 * 68., 48., 62., 44.);
         panel(
             rect,
             if *difficulty == game.difficulty {
-                Color::new(0.45, 0.25, 0.42, 1.)
+                crate::theme::LEATHER
             } else {
                 Color::new(0.16, 0.11, 0.24, 1.)
             },
@@ -54,7 +54,7 @@ pub fn draw(state: &AppState) {
             if conflict {
                 Color::new(0.35, 0.13, 0.20, 1.)
             } else if selected {
-                Color::new(0.30, 0.22, 0.42, 1.)
+                crate::theme::WALNUT
             } else {
                 Color::new(0.15, 0.11, 0.23, 1.)
             },

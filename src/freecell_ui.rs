@@ -16,7 +16,7 @@ fn draw_card(rect: Rect, card: Card, selected: bool, reduced_motion: bool) {
 
 pub fn draw_freecell(state: &AppState) {
     let game = &state.freecell;
-    crate::ui::draw_text("‹ CABINET", 40., 55., 20., Color::new(0.78, 0.70, 0.92, 1.));
+    crate::ui::draw_text("‹ CABINET", 40., 55., 20., crate::theme::BRASS);
     crate::ui::draw_text("FREECELL", 40., 105., 44., crate::theme::BRASS);
     crate::ui::draw_text(
         if game.status == crate::freecell::FreeCellStatus::Won {

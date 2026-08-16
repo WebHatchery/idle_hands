@@ -163,7 +163,7 @@ pub fn draw(state: &AppState) {
             rect.w,
             rect.h,
             1.,
-            Color::new(0.35, 0.28, 0.48, 1.),
+            crate::theme::BRASS,
         );
         if completed < game.completed as usize {
             text("✓", rect.x + 7., rect.y + rect.h * 0.58, 18., accent());
@@ -177,7 +177,7 @@ pub fn draw(state: &AppState) {
                 layout.card_w,
                 layout.card_h,
                 1.,
-                Color::new(0.35, 0.28, 0.48, 1.),
+                crate::theme::BRASS,
             );
         }
         for (depth, card) in stack.iter().enumerate() {

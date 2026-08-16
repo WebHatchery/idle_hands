@@ -38,7 +38,7 @@ fn draw_card(rect: Rect, card: Card, selected: bool, back_style: u8, reduced_mot
 
 fn back() {
     panel(Rect::new(0., 0., 110., 44.), crate::theme::SURFACE_DARK);
-    text("CABINET", 8., 29., 13., Color::new(0.78, 0.70, 0.92, 1.));
+    text("CABINET", 8., 29., 13., crate::theme::BRASS);
 }
 
 pub fn draw_solitaire(state: &AppState) {

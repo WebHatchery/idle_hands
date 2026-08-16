@@ -111,11 +111,11 @@ pub fn draw(state: &AppState) {
                 layout.cell,
             );
             let fill = if game.cell_found(index) {
-                Color::new(0.25, 0.45, 0.34, 1.)
+                crate::theme::MOSS_DARK
             } else if game.selected_start == Some(index) {
-                Color::new(0.45, 0.30, 0.18, 1.)
+                crate::theme::WALNUT
             } else {
-                Color::new(0.12, 0.09, 0.20, 1.)
+                crate::theme::GAME_PANEL
             };
             draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
             draw_rectangle_lines(
@@ -124,7 +124,7 @@ pub fn draw(state: &AppState) {
                 rect.w,
                 rect.h,
                 1.,
-                Color::new(0.35, 0.28, 0.48, 1.),
+                crate::theme::WALNUT,
             );
             let letter = char::from(b'A' + game.cells[index]);
             let size = if portrait {

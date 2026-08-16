@@ -21,7 +21,7 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 pub fn draw_2048(state: &AppState) {
     let game = &state.game;
     panel(Rect::new(0., 0., 120., 48.), crate::theme::SURFACE_DARK);
-    text("‹ CABINET", 16., 35., 15., Color::new(0.78, 0.70, 0.92, 1.));
+    text("‹ CABINET", 16., 35., 15., crate::theme::BRASS);
     text("2048", 16., 82., 38., crate::theme::BRASS);
     text(
         &format!("Score {}  -  Best {}", game.score, game.best),

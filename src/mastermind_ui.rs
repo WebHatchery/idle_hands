@@ -213,7 +213,7 @@ fn color_for(color: u8, high_contrast: bool) -> Color {
             Color::new(1., 0.80, 0.05, 1.),
             Color::new(0.05, 0.95, 0.30, 1.),
             Color::new(0.05, 0.60, 1., 1.),
-            Color::new(0.95, 0.20, 1., 1.),
+            crate::theme::MOSS,
             Color::new(0.05, 0.95, 0.95, 1.),
         ]
     } else {
@@ -222,7 +222,7 @@ fn color_for(color: u8, high_contrast: bool) -> Color {
             Color::new(0.96, 0.70, 0.30, 1.),
             Color::new(0.42, 0.76, 0.45, 1.),
             Color::new(0.38, 0.70, 0.86, 1.),
-            Color::new(0.68, 0.46, 0.78, 1.),
+            crate::theme::MOSS,
             Color::new(0.82, 0.76, 0.38, 1.),
         ]
     };
@@ -245,7 +245,7 @@ fn button(rect: Rect, label: &str, large_text: bool) {
         rect.y,
         rect.w,
         rect.h,
-        Color::new(0.20, 0.14, 0.31, 1.),
+        crate::theme::SURFACE,
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., accent());
     text(
@@ -264,7 +264,7 @@ fn accent() -> Color {
     crate::theme::BRASS
 }
 fn muted() -> Color {
-    Color::new(0.76, 0.70, 0.86, 1.)
+    crate::theme::SECONDARY
 }
 fn title_size() -> f32 {
     if crate::ui::is_portrait() {

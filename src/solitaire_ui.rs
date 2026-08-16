@@ -15,7 +15,7 @@ fn draw_card(rect: Rect, card: Card, selected: bool, back_style: u8, reduced_mot
 
 pub fn draw_solitaire(state: &AppState) {
     let game = &state.solitaire;
-    text("‹ CABINET", 40., 55., 20., Color::new(0.78, 0.70, 0.92, 1.));
+    text("‹ CABINET", 40., 55., 20., crate::theme::BRASS);
     text("SOLITAIRE", 40., 105., 44., crate::theme::BRASS);
     text(
         if game.status == crate::solitaire::SolitaireStatus::Won {

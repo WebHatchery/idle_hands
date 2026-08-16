@@ -13,7 +13,7 @@ fn panel(rect: Rect, fill: Color) {
 
 pub fn draw_sudoku(state: &AppState) {
     let game = &state.sudoku;
-    text("‹ CABINET", 40., 55., 20., Color::new(0.78, 0.70, 0.92, 1.));
+    text("‹ CABINET", 40., 55., 20., crate::theme::BRASS);
     text("SUDOKU", 40., 105., 48., crate::theme::BRASS);
     text(
         "Fill every row, column, and box",
@@ -41,9 +41,9 @@ pub fn draw_sudoku(state: &AppState) {
             if conflict {
                 Color::new(0.35, 0.13, 0.20, 1.)
             } else if selected {
-                Color::new(0.30, 0.22, 0.42, 1.)
+                crate::theme::WALNUT
             } else {
-                Color::new(0.15, 0.11, 0.23, 1.)
+                crate::theme::GAME_PANEL
             },
         );
         draw_rectangle_lines(
@@ -137,7 +137,7 @@ pub fn draw_sudoku(state: &AppState) {
     text("TOGGLE PENCIL", 880., 496., 16., WHITE);
     panel(
         Rect::new(1080., 465., 110., 48.),
-        Color::new(0.28, 0.16, 0.30, 1.),
+            crate::theme::LEATHER,
     );
     text("ERASE", 1108., 496., 16., WHITE);
     panel(
@@ -159,9 +159,9 @@ pub fn draw_sudoku(state: &AppState) {
         panel(
             rect,
             if *difficulty == game.difficulty {
-                Color::new(0.45, 0.25, 0.42, 1.)
+                crate::theme::LEATHER
             } else {
-                Color::new(0.16, 0.11, 0.24, 1.)
+                crate::theme::GAME_PANEL
             },
         );
         text(difficulty.label(), rect.x + 14., rect.y + 21., 12., WHITE);

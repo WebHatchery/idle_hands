@@ -11,7 +11,12 @@ pub fn grid_line(high_contrast: bool) -> Color {
     if high_contrast {
         Color::new(1., 1., 1., 0.95)
     } else {
-        Color::new(0.48, 0.40, 0.60, 0.8)
+        Color::new(
+            crate::theme::BRASS.r,
+            crate::theme::BRASS.g,
+            crate::theme::BRASS.b,
+            0.8,
+        )
     }
 }
 
@@ -31,7 +36,7 @@ pub fn mine_cell(revealed: bool, high_contrast: bool) -> Color {
             Color::new(0.08, 0.08, 0.10, 1.)
         }
     } else if revealed {
-        Color::new(0.24, 0.19, 0.30, 1.)
+        crate::theme::WALNUT
     } else {
         crate::theme::SURFACE_DARK
     }
@@ -47,8 +52,8 @@ pub fn nonogram_cell(mark: u8, high_contrast: bool) -> Color {
     } else {
         match mark {
             1 => Color::new(0.80, 0.52, 0.26, 1.),
-            2 => Color::new(0.20, 0.14, 0.28, 1.),
-            _ => Color::new(0.15, 0.11, 0.23, 1.),
+            2 => crate::theme::WALNUT,
+            _ => crate::theme::GAME_PANEL,
         }
     }
 }

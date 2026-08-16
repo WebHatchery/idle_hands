@@ -545,11 +545,7 @@ fn draw_2048(state: &AppState) {
                 r.x + (r.w - tw) / 2.,
                 r.y + 48.,
                 fs,
-                if v < 8 {
-                    Color::new(0.25, 0.18, 0.20, 1.)
-                } else {
-                    WHITE
-                },
+                crate::theme::CREAM,
             );
         }
     }

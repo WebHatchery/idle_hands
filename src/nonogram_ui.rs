@@ -19,7 +19,7 @@ fn panel(rect: Rect, fill: Color) {
 
 pub fn draw_nonogram(state: &AppState) {
     let game = &state.nonogram;
-    text("‹ CABINET", 40., 55., 20., Color::new(0.78, 0.70, 0.92, 1.));
+    text("‹ CABINET", 40., 55., 20., crate::theme::BRASS);
     text("NONOGRAM", 40., 105., 44., crate::theme::BRASS);
     text(
         "Paint the hidden picture",
@@ -33,9 +33,9 @@ pub fn draw_nonogram(state: &AppState) {
         panel(
             rect,
             if *preset == game.preset {
-                Color::new(0.45, 0.25, 0.42, 1.)
+                crate::theme::LEATHER
             } else {
-                Color::new(0.16, 0.11, 0.24, 1.)
+                crate::theme::GAME_PANEL
             },
         );
         text(preset.label(), rect.x + 15., rect.y + 22., 14., WHITE);
@@ -58,7 +58,7 @@ pub fn draw_nonogram(state: &AppState) {
             rect.w,
             rect.h,
             match (game.marks[index], selected) {
-                (NonogramMark::Empty, true) => Color::new(0.30, 0.22, 0.42, 1.),
+                (NonogramMark::Empty, true) => crate::theme::WALNUT,
                 (mark, _) => accessibility::nonogram_cell(mark as u8, state.high_contrast),
             },
         );

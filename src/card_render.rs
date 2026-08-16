@@ -57,7 +57,7 @@ pub fn draw_card_accessible(
             if high_contrast {
                 WHITE
             } else {
-                Color::new(0.55, 0.45, 0.68, 1.)
+                crate::theme::BRASS
             }
         },
     );
@@ -73,7 +73,7 @@ pub fn draw_card_accessible(
     }
     let color = if card.red() {
         if high_contrast {
-            Color::new(0.95, 0.05, 0.10, 1.)
+            crate::theme::LEATHER
         } else {
             Color::new(0.72, 0.16, 0.22, 1.)
         }

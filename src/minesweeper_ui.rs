@@ -20,7 +20,7 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 
 pub fn draw(state: &AppState) {
     let game = &state.minesweeper;
-    text("‹ CABINET", 40., 55., 20., Color::new(0.78, 0.70, 0.92, 1.));
+    text("‹ CABINET", 40., 55., 20., crate::theme::BRASS);
     text("MINESWEEPER", 40., 105., 42., crate::theme::BRASS);
     text(
         "Read the quiet field",
@@ -93,23 +93,23 @@ pub fn draw(state: &AppState) {
         850.,
         215.,
         22.,
-        Color::new(0.82, 0.75, 0.90, 1.),
+        crate::theme::CREAM,
     );
     text(
         &format!("Time: {:03}s", game.elapsed_whole_seconds()),
         850.,
         175.,
         22.,
-        Color::new(0.82, 0.75, 0.90, 1.),
+        crate::theme::CREAM,
     );
     for (index, preset) in MinePreset::ALL.iter().enumerate() {
         let rect = Rect::new(820. + index as f32 * 110., 285., 100., 32.);
         panel(
             rect,
             if *preset == game.preset {
-                Color::new(0.45, 0.25, 0.42, 1.)
+                crate::theme::LEATHER
             } else {
-                Color::new(0.16, 0.11, 0.24, 1.)
+                crate::theme::GAME_PANEL
             },
         );
         text(preset.label(), rect.x + 8., rect.y + 21., 11., WHITE);

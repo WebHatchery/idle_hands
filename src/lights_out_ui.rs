@@ -185,7 +185,7 @@ fn button(rect: Rect, label: &str, large_text: bool) {
         rect.y,
         rect.w,
         rect.h,
-        Color::new(0.20, 0.14, 0.31, 1.),
+        crate::theme::SURFACE,
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., accent());
     text(
@@ -206,7 +206,7 @@ fn accent() -> Color {
 }
 
 fn muted() -> Color {
-    Color::new(0.76, 0.70, 0.86, 1.)
+    crate::theme::SECONDARY
 }
 
 fn title_size() -> f32 {

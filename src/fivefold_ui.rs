@@ -15,7 +15,7 @@ fn button(rect: Rect, label: &str, active: bool) {
     panel(
         rect,
         if active {
-            Color::new(0.45, 0.25, 0.42, 1.)
+            crate::theme::LEATHER
         } else {
             crate::theme::SURFACE_DARK
         },
@@ -32,7 +32,7 @@ fn button(rect: Rect, label: &str, active: bool) {
 
 pub fn draw_fivefold(state: &AppState) {
     let game = &state.fivefold;
-    crate::ui::draw_text("‹ CABINET", 40., 55., 20., Color::new(0.78, 0.70, 0.92, 1.));
+    crate::ui::draw_text("‹ CABINET", 40., 55., 20., crate::theme::BRASS);
     crate::ui::draw_text("FIVEFOLD", 40., 105., 44., crate::theme::BRASS);
     crate::ui::draw_text(
         "Five dice, thirteen calls",
@@ -50,9 +50,9 @@ pub fn draw_fivefold(state: &AppState) {
         panel(
             rect,
             if game.held[index] {
-                Color::new(0.45, 0.25, 0.42, 1.)
+                crate::theme::LEATHER
             } else {
-                Color::new(0.20, 0.14, 0.30, 1.)
+                crate::theme::GAME_PANEL
             },
         );
         let value = if game.dice[index] == 0 {
@@ -137,9 +137,9 @@ pub fn draw_fivefold(state: &AppState) {
             panel(
                 rect,
                 if selected {
-                    Color::new(0.35, 0.24, 0.38, 1.)
+                    crate::theme::LEATHER
                 } else {
-                    Color::new(0.14, 0.10, 0.22, 1.)
+                crate::theme::GAME_PANEL
                 },
             );
         }
