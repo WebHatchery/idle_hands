@@ -663,6 +663,43 @@ pub fn one_room_roguelike(state: &AppState) -> String {
     )
 }
 
+pub fn daily_dungeon(state: &AppState) -> String {
+    let game = &state.daily_dungeon;
+    match game.phase {
+        crate::daily_dungeon::DailyPhase::Won => {
+            return "The daily route is clear — tap NEW DAY to play again.".into()
+        }
+        crate::daily_dungeon::DailyPhase::Lost => {
+            return "The traps closed in — tap NEW DAY to begin again.".into()
+        }
+        crate::daily_dungeon::DailyPhase::Exploring => {}
+    }
+    game.hint_direction().map_or_else(
+        || "No route hint is available — tap NEW DAY to begin again.".into(),
+        |direction| {
+            let target = if game.runes_found < crate::daily_dungeon::DailyDungeon::rune_total() {
+                "a rune"
+            } else {
+                "EXIT"
+            };
+            format!(
+                "Move {} toward {}.",
+                daily_direction_label(direction),
+                target
+            )
+        },
+    )
+}
+
+fn daily_direction_label(direction: crate::state::Direction) -> &'static str {
+    match direction {
+        crate::state::Direction::Up => "UP",
+        crate::state::Direction::Left => "LEFT",
+        crate::state::Direction::Down => "DOWN",
+        crate::state::Direction::Right => "RIGHT",
+    }
+}
+
 fn rogue_direction_label(direction: crate::state::Direction) -> &'static str {
     match direction {
         crate::state::Direction::Up => "UP",
@@ -750,6 +787,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::PotionHint
             | crate::ui::UiAction::TowerHint
             | crate::ui::UiAction::RogueHint
+            | crate::ui::UiAction::DailyHint
     )
 }
 

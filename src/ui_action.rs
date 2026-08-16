@@ -190,6 +190,7 @@ pub enum UiAction {
     RogueUndo,
     RogueNew,
     DailyMove(Direction),
+    DailyHint,
     DailyUndo,
     DailyNew,
     DotsEdge(crate::dots_boxes::Edge),

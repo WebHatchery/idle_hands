@@ -12,6 +12,7 @@ use macroquad::prelude::*;
 struct Layout {
     board: Rect,
     directions: [Rect; 4],
+    hint: Rect,
     undo: Rect,
     new_game: Rect,
 }
@@ -26,6 +27,7 @@ fn layout() -> Layout {
                 Rect::new(18., 178., 62., 44.),
                 Rect::new(18., 223., 62., 44.),
             ],
+            hint: Rect::new(610., 235., 110., 44.),
             undo: Rect::new(610., 125., 110., 44.),
             new_game: Rect::new(610., 180., 145., 44.),
         }
@@ -38,6 +40,7 @@ fn layout() -> Layout {
                 Rect::new(208., 465., 68., 44.),
                 Rect::new(292., 465., 68., 44.),
             ],
+            hint: Rect::new(40., 580., 145., 42.),
             undo: Rect::new(40., 525., 145., 44.),
             new_game: Rect::new(195., 525., 165., 44.),
         }
@@ -50,6 +53,7 @@ fn layout() -> Layout {
                 Rect::new(954., 145., 62., 44.),
                 Rect::new(1026., 145., 62., 44.),
             ],
+            hint: Rect::new(810., 285., 120., 44.),
             undo: Rect::new(810., 220., 120., 44.),
             new_game: Rect::new(950., 220., 140., 44.),
         }
@@ -75,6 +79,9 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if l.undo.contains(point) {
         return vec![UiAction::DailyUndo];
+    }
+    if l.hint.contains(point) {
+        return vec![UiAction::DailyHint];
     }
     if l.new_game.contains(point) {
         return vec![UiAction::DailyNew];
@@ -178,7 +185,11 @@ pub fn draw(state: &AppState) {
         }
     }
     text(
-        &status_text(dungeon.phase, dungeon.moves, dungeon.score),
+        state.card_hint.as_deref().unwrap_or(&status_text(
+            dungeon.phase,
+            dungeon.moves,
+            dungeon.score,
+        )),
         if compact { 280. } else { title_x },
         if portrait {
             455.
@@ -193,6 +204,7 @@ pub fn draw(state: &AppState) {
     for (rect, label) in l.directions.iter().zip(["UP", "LEFT", "DOWN", "RIGHT"]) {
         button(*rect, label, state.large_text);
     }
+    button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW DAY", state.large_text);
 }

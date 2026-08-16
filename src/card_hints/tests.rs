@@ -245,3 +245,11 @@ fn default_one_room_roguelike_has_a_deterministic_hint() {
     assert!(!one_room_roguelike(&state).is_empty());
     assert_eq!(one_room_roguelike(&state), one_room_roguelike(&state));
 }
+
+#[test]
+fn default_daily_dungeon_has_a_deterministic_hint() {
+    let state = AppState::default();
+
+    assert!(!daily_dungeon(&state).is_empty());
+    assert_eq!(daily_dungeon(&state), daily_dungeon(&state));
+}

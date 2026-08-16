@@ -61,3 +61,24 @@ fn undo_restores_reveal_and_reset_changes_challenge() {
     dungeon.reset(2);
     assert_ne!(challenge, dungeon.challenge);
 }
+
+#[test]
+fn hint_moves_toward_the_nearest_rune_without_mutating_the_run() {
+    let mut dungeon = DailyDungeon::new(1);
+    dungeon.tiles = vec![DailyTile::Floor; CELLS];
+    dungeon.tiles[1] = DailyTile::Rune;
+    let before = dungeon.clone();
+
+    assert_eq!(dungeon.hint_direction(), Some(Direction::Right));
+    assert_eq!(dungeon.player, before.player);
+    assert_eq!(dungeon.revealed, before.revealed);
+    assert_eq!(dungeon.hearts, before.hearts);
+}
+
+#[test]
+fn hint_is_empty_after_daily_run_ends() {
+    let mut dungeon = DailyDungeon::new(1);
+    dungeon.phase = DailyPhase::Won;
+
+    assert_eq!(dungeon.hint_direction(), None);
+}

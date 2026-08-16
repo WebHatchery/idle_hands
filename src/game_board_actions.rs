@@ -275,6 +275,10 @@ impl Game {
             UiAction::DailyMove(direction) => {
                 self.state.daily_dungeon.move_in(*direction);
             }
+            UiAction::DailyHint => {
+                self.state.card_hint = Some(crate::card_hints::daily_dungeon(&self.state));
+                return true;
+            }
             UiAction::DailyUndo => {
                 self.state.daily_dungeon.undo();
             }

@@ -1017,6 +1017,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover tactical priority, state preservation, hint determinism, capture
     aliases, and responsive layouts.
 
+## Phase 92 — Daily Dungeon discoverability polish
+
+- [x] Add a deterministic non-mutating HINT action that recommends movement
+  toward the nearest rune, then EXIT after all runes are found.
+  - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
+  - [x] Cover route selection, state preservation, hint determinism, capture
+    aliases, and responsive layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

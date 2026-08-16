@@ -120,6 +120,36 @@ impl DailyDungeon {
         true
     }
 
+    pub fn hint_direction(&self) -> Option<Direction> {
+        if self.phase != DailyPhase::Exploring {
+            return None;
+        }
+        let target = if self.runes_found < RUNES as u8 {
+            self.tiles
+                .iter()
+                .enumerate()
+                .filter(|(_, tile)| matches!(tile, DailyTile::Rune))
+                .min_by_key(|(index, _)| Self::distance(self.player, *index))
+                .map(|(index, _)| index)
+                .unwrap_or(CELLS - 1)
+        } else {
+            CELLS - 1
+        };
+        [
+            Direction::Up,
+            Direction::Left,
+            Direction::Down,
+            Direction::Right,
+        ]
+        .into_iter()
+        .filter_map(|direction| {
+            self.destination(direction)
+                .map(|destination| (direction, Self::distance(destination, target)))
+        })
+        .min_by_key(|(_, distance)| *distance)
+        .map(|(direction, _)| direction)
+    }
+
     pub fn undo(&mut self) -> bool {
         if let Some((player, tiles, revealed, hearts, runes_found, moves, score, seed, phase)) =
             self.history.pop()
@@ -157,6 +187,14 @@ impl DailyDungeon {
             Direction::Left if column > 0 => Some(self.player - 1),
             _ => None,
         }
+    }
+
+    fn distance(first: usize, second: usize) -> usize {
+        let first_row = first / SIZE;
+        let first_column = first % SIZE;
+        let second_row = second / SIZE;
+        let second_column = second % SIZE;
+        first_row.abs_diff(second_row) + first_column.abs_diff(second_column)
     }
 
     fn place_tiles(&mut self) {
