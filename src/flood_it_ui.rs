@@ -11,6 +11,7 @@ use macroquad::prelude::*;
 #[derive(Clone, Copy)]
 struct Layout {
     board: Rect,
+    hint: Rect,
     undo: Rect,
     new_game: Rect,
     colors: [Rect; 6],
@@ -21,13 +22,14 @@ fn layout() -> Layout {
         let colors = core::array::from_fn(|i| {
             Rect::new(
                 620. + (i % 3) as f32 * 48.,
-                220. + (i / 3) as f32 * 48.,
+                270. + (i / 3) as f32 * 48.,
                 42.,
                 42.,
             )
         });
         Layout {
             board: Rect::new(270., 44., 300., 300.),
+            hint: Rect::new(620., 220., 105., 44.),
             undo: Rect::new(620., 110., 105., 44.),
             new_game: Rect::new(620., 165., 140., 44.),
             colors,
@@ -35,29 +37,31 @@ fn layout() -> Layout {
     } else if crate::ui::is_portrait() {
         let colors = core::array::from_fn(|i| {
             Rect::new(
-                25. + (i % 3) as f32 * 55.,
-                520. + (i / 3) as f32 * 48.,
+                15. + (i % 3) as f32 * 55.,
+                560. + (i / 3) as f32 * 48.,
                 48.,
                 42.,
             )
         });
         Layout {
-            board: Rect::new(25., 105., 330., 330.),
-            undo: Rect::new(25., 460., 145., 44.),
-            new_game: Rect::new(180., 460., 175., 44.),
+            board: Rect::new(15., 95., 300., 300.),
+            hint: Rect::new(15., 450., 145., 44.),
+            undo: Rect::new(15., 505., 145., 44.),
+            new_game: Rect::new(170., 505., 145., 44.),
             colors,
         }
     } else {
         let colors = core::array::from_fn(|i| {
             Rect::new(
                 810. + (i % 3) as f32 * 52.,
-                270. + (i / 3) as f32 * 52.,
+                300. + (i / 3) as f32 * 52.,
                 46.,
                 46.,
             )
         });
         Layout {
             board: Rect::new(350., 90., 420., 420.),
+            hint: Rect::new(810., 235., 120., 44.),
             undo: Rect::new(810., 180., 120., 44.),
             new_game: Rect::new(950., 180., 140., 44.),
             colors,
@@ -72,6 +76,9 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if l.undo.contains(point) {
         return vec![UiAction::FloodUndo];
+    }
+    if l.hint.contains(point) {
+        return vec![UiAction::FloodHint];
     }
     if l.new_game.contains(point) {
         return vec![UiAction::FloodNew];
@@ -92,7 +99,7 @@ pub fn draw(state: &AppState) {
     let title_x = if compact {
         70.
     } else if portrait {
-        10.
+        25.
     } else {
         400.
     };
@@ -128,17 +135,21 @@ pub fn draw(state: &AppState) {
     for (color, rect) in l.colors.iter().enumerate() {
         draw_color(*rect, color as u8, game.active_color, state.high_contrast);
     }
+    button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW FIELD", state.large_text);
     let status_y = if portrait {
-        500.
+        420.
     } else if compact {
         365.
     } else {
         545.
     };
     draw_text(
-        "Tap a color to grow the top-left region",
+        state
+            .card_hint
+            .as_deref()
+            .unwrap_or("Tap a color to grow the top-left region"),
         if compact { 270. } else { title_x },
         status_y,
         accessibility::text_size(body_size(), state.large_text),

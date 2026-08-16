@@ -99,11 +99,52 @@ impl FloodIt {
         self.phase == FloodPhase::Won
     }
 
+    pub fn hint_color(&self) -> Option<u8> {
+        if self.phase != FloodPhase::Playing {
+            return None;
+        }
+        let before = origin_region_size(&self.cells);
+        let mut best: Option<(i32, u8)> = None;
+        for color in 0..COLORS {
+            if color == self.active_color {
+                continue;
+            }
+            let mut trial = self.clone_without_undo();
+            trial.choose(color);
+            let gain = origin_region_size(&trial.cells) - before;
+            let score = (trial.won() as i32) * 10_000 + gain as i32;
+            if best.is_none_or(|(best_score, _)| score > best_score) {
+                best = Some((score, color));
+            }
+        }
+        best.map(|(_, color)| color)
+    }
+
     fn clone_without_undo(&self) -> Self {
         let mut copy = self.clone();
         copy.undo = None;
         copy
     }
+}
+
+fn origin_region_size(cells: &[u8]) -> usize {
+    let color = cells[0];
+    let mut queue = VecDeque::from([0usize]);
+    let mut visited = [false; CELLS];
+    let mut size = 0;
+    while let Some(index) = queue.pop_front() {
+        if visited[index] || cells[index] != color {
+            continue;
+        }
+        visited[index] = true;
+        size += 1;
+        for neighbor in neighbors(index) {
+            if !visited[neighbor] && cells[neighbor] == color {
+                queue.push_back(neighbor);
+            }
+        }
+    }
+    size
 }
 
 fn neighbors(index: usize) -> impl Iterator<Item = usize> {

@@ -1065,6 +1065,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover pair determinism, grid preservation, hint capture aliases,
     accessibility, and responsive layouts.
 
+## Phase 98 — Flood It discoverability polish
+
+- [x] Add a deterministic, non-mutating HINT action that recommends the
+  highest-frontier-gain color with stable color-order tie-breaking.
+  - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
+  - [x] Cover heuristic determinism, board preservation, hint capture aliases,
+    accessibility, and responsive layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

@@ -359,6 +359,10 @@ impl Game {
             UiAction::FloodColor(color) => {
                 self.state.flood_it.choose(*color);
             }
+            UiAction::FloodHint => {
+                self.state.card_hint = Some(crate::card_hints::flood_it(&self.state));
+                return true;
+            }
             UiAction::FloodUndo => {
                 self.state.flood_it.undo();
             }

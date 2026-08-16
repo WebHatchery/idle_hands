@@ -214,6 +214,7 @@ pub enum UiAction {
     NumberMatchUndo,
     NumberMatchNew,
     FloodColor(u8),
+    FloodHint,
     FloodUndo,
     FloodNew,
     ColorSortTap(usize),

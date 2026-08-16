@@ -276,6 +276,27 @@ pub fn number_match(state: &AppState) -> String {
     )
 }
 
+pub fn flood_it(state: &AppState) -> String {
+    let game = &state.flood_it;
+    match game.phase {
+        crate::flood_it::FloodPhase::Won => {
+            return "The field is one color — tap NEW FIELD to play again.".into()
+        }
+        crate::flood_it::FloodPhase::Lost => {
+            return "The field held out — tap NEW FIELD to begin again.".into()
+        }
+        crate::flood_it::FloodPhase::Playing => {}
+    }
+    game.hint_color().map_or_else(
+        || "No color change remains — tap NEW FIELD to begin again.".into(),
+        |color| format!("Choose {} to grow the region.", flood_color_label(color)),
+    )
+}
+
+fn flood_color_label(color: u8) -> &'static str {
+    ["RED", "AMBER", "GREEN", "BLUE", "VIOLET", "PINK"][color as usize % 6]
+}
+
 fn cell_label(index: usize) -> String {
     format!(
         "{}{}",

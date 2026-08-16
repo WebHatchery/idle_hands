@@ -293,3 +293,11 @@ fn default_number_match_has_a_deterministic_hint() {
     assert!(number_match(&state).contains("Pair cells"));
     assert_eq!(number_match(&state), number_match(&state));
 }
+
+#[test]
+fn default_flood_it_has_a_deterministic_hint() {
+    let state = AppState::default();
+
+    assert!(flood_it(&state).contains("Choose"));
+    assert_eq!(flood_it(&state), flood_it(&state));
+}

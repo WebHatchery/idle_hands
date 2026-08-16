@@ -61,3 +61,25 @@ fn reset_starts_a_new_board() {
     assert_eq!(game.moves, 0);
     assert_eq!(game.phase, FloodPhase::Playing);
 }
+
+#[test]
+fn hint_prefers_the_color_with_the_largest_frontier_gain_without_mutating() {
+    let mut game = FloodIt::new(7);
+    game.cells = vec![0; CELLS];
+    game.cells[1] = 1;
+    game.cells[SIDE] = 2;
+    game.active_color = 0;
+    let before = game.cells.clone();
+
+    assert_eq!(game.hint_color(), Some(1));
+    assert_eq!(game.cells, before);
+    assert_eq!(game.moves, 0);
+}
+
+#[test]
+fn hint_is_empty_after_flood_it_ends() {
+    let mut game = FloodIt::new(8);
+    game.phase = FloodPhase::Won;
+
+    assert_eq!(game.hint_color(), None);
+}
