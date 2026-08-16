@@ -1163,6 +1163,13 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover modal routing, cancellation, confirmation bypass, and responsive
     Match Three captures at desktop, portrait, and compact-landscape sizes.
 
+## Phase 110 — Preset and restart safety
+
+- [x] Extend the shared confirmation modal to Minesweeper restart/preset,
+  Sudoku difficulty, and Nonogram preset transitions that replace active work.
+  - [x] Cover action classification and capture the Minesweeper confirmation
+    state at desktop, portrait, and compact-landscape sizes.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

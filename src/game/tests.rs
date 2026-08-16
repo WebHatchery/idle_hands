@@ -43,6 +43,18 @@ fn new_game_actions_require_confirmation_but_existing_restart_does_not() {
     assert!(game_restart::requires_new_confirmation(
         ui::UiAction::NimNew
     ));
+    assert!(game_restart::requires_new_confirmation(
+        ui::UiAction::MineRestart
+    ));
+    assert!(game_restart::requires_new_confirmation(
+        ui::UiAction::MinePreset(crate::minesweeper::MinePreset::Beginner)
+    ));
+    assert!(game_restart::requires_new_confirmation(
+        ui::UiAction::SudokuDifficulty(crate::sudoku::SudokuDifficulty::Easy)
+    ));
+    assert!(game_restart::requires_new_confirmation(
+        ui::UiAction::NonogramPreset(crate::nonogram::NonogramPreset::Small)
+    ));
     assert!(!game_restart::requires_new_confirmation(
         ui::UiAction::MatchThreeHint
     ));

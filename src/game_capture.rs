@@ -20,7 +20,8 @@ impl Game {
             "minesweeper"
             | "minesweeper_accessible"
             | "minesweeper_hint"
-            | "minesweeper_hint_accessible" => Screen::Game(GameId::Minesweeper),
+            | "minesweeper_hint_accessible"
+            | "minesweeper_confirm" => Screen::Game(GameId::Minesweeper),
             "sudoku" | "sudoku_accessible" | "sudoku_hint" | "sudoku_hint_accessible" => {
                 Screen::Game(GameId::Sudoku)
             }
@@ -200,6 +201,10 @@ impl Game {
         if scene == "match_three_confirm" {
             self.state.confirm_restart = true;
             self.state.pending_restart = Some(crate::ui::UiAction::MatchThreeNew);
+        }
+        if scene == "minesweeper_confirm" {
+            self.state.confirm_restart = true;
+            self.state.pending_restart = Some(crate::ui::UiAction::MineRestart);
         }
         if scene == "freecell_selected" {
             self.state.freecell.select_cascade(0, 0);

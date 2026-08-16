@@ -4,6 +4,10 @@ pub(super) fn requires_new_confirmation(action: UiAction) -> bool {
     matches!(
         action,
         UiAction::SolitaireNew
+            | UiAction::MineRestart
+            | UiAction::MinePreset(_)
+            | UiAction::SudokuDifficulty(_)
+            | UiAction::NonogramPreset(_)
             | UiAction::FreeCellNew
             | UiAction::FivefoldNew
             | UiAction::ReversiNew
