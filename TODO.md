@@ -1254,6 +1254,13 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Migrate legacy ten-slot achievement saves into the normalized vector
     and refresh Records captures for the 49-achievement denominator.
 
+## Phase 124 — Achievement shelf discoverability
+
+- [x] Add a touch-first ACHIEVEMENTS shelf from Records showing earned and
+  locked awards across desktop, portrait, and compact-landscape layouts.
+  - [x] Cover a seeded mixed-progress achievement state and a visible BACK
+    route to Records at all documented sizes.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

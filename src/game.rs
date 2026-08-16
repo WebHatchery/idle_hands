@@ -160,6 +160,7 @@ impl Game {
             self.state.screen = Screen::Cabinet;
             self.state.favorites_view = false;
             self.state.recent_view = false;
+            self.state.achievements_view = false;
             self.state.confirm_restart = false;
             self.state.pending_restart = None;
             self.state.confirm_reset = false;
@@ -243,6 +244,7 @@ impl Game {
                 self.state.screen = Screen::Cabinet;
                 self.state.favorites_view = false;
                 self.state.recent_view = false;
+                self.state.achievements_view = false;
                 self.state.tutorial = None;
                 self.state.confirm_reset = false;
                 self.state.confirm_restart = false;
@@ -252,36 +254,49 @@ impl Game {
                 self.state.screen = Screen::Help;
                 self.state.favorites_view = false;
                 self.state.recent_view = false;
+                self.state.achievements_view = false;
             }
             ui::UiAction::Records => {
                 self.state.screen = Screen::Records;
                 self.state.favorites_view = false;
                 self.state.recent_view = false;
+                self.state.achievements_view = false;
             }
             ui::UiAction::Favorites => {
                 self.state.screen = Screen::Records;
                 self.state.favorites_view = true;
                 self.state.recent_view = false;
+                self.state.achievements_view = false;
             }
             ui::UiAction::Recent => {
                 self.state.screen = Screen::Records;
                 self.state.favorites_view = false;
                 self.state.recent_view = true;
+                self.state.achievements_view = false;
+            }
+            ui::UiAction::Achievements => {
+                self.state.screen = Screen::Records;
+                self.state.favorites_view = false;
+                self.state.recent_view = false;
+                self.state.achievements_view = true;
             }
             ui::UiAction::Rules => {
                 self.state.screen = Screen::Rules;
                 self.state.favorites_view = false;
                 self.state.recent_view = false;
+                self.state.achievements_view = false;
             }
             ui::UiAction::Credits => {
                 self.state.screen = Screen::Credits;
                 self.state.favorites_view = false;
                 self.state.recent_view = false;
+                self.state.achievements_view = false;
             }
             ui::UiAction::Settings => {
                 self.state.screen = Screen::Settings;
                 self.state.favorites_view = false;
                 self.state.recent_view = false;
+                self.state.achievements_view = false;
             }
             ui::UiAction::TutorialContinue => {
                 if let Some(game) = self.state.tutorial {

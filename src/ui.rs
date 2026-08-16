@@ -1,6 +1,7 @@
 //! Touch-first cabinet and 2048 presentation.
 
 use crate::battleship_ui;
+use crate::achievements_ui;
 use crate::blackjack_ui;
 use crate::breakout_ui;
 use crate::checkers_ui;
@@ -258,6 +259,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
                 vec![]
             }
         }
+        Screen::Records if state.achievements_view => achievements_ui::clicks(p),
         Screen::Records if state.favorites_view || state.recent_view => favorites_ui::clicks(state, p),
         Screen::Records if is_compact_landscape() => {
             responsive_landscape_library::records_clicks(p)
@@ -370,6 +372,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(),
         Screen::Help if is_portrait() => responsive_library::draw_help(),
         Screen::Help => draw_help(),
+        Screen::Records if state.achievements_view => achievements_ui::draw(state),
         Screen::Records if state.favorites_view || state.recent_view => favorites_ui::draw(state),
         Screen::Records if is_compact_landscape() => {
             responsive_landscape_library::draw_records(state)

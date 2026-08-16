@@ -395,6 +395,7 @@ pub struct AppState {
     pub card_hint: Option<String>,
     pub favorites_view: bool,
     pub recent_view: bool,
+    pub achievements_view: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -751,6 +752,7 @@ impl Default for AppState {
             card_hint: None,
             favorites_view: false,
             recent_view: false,
+            achievements_view: false,
         }
     }
 }

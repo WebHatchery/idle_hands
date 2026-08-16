@@ -173,6 +173,8 @@ consistent with cabinet completion status without adding another save field.
 Achievement flags are stored as a normalized vector keyed by the 49-entry
 `AchievementId::ALL` list. Legacy ten-entry arrays deserialize as vectors and
 are padded with unearned late-game achievements.
+The runtime-only `achievements_view` flag routes Records to the responsive
+achievement shelf; its cards are read-only and BACK returns to Records.
 
 Conceptual keys:
 

@@ -4,6 +4,7 @@ use macroquad::prelude::*;
 use macroquad_toolkit::capture;
 
 mod accessibility;
+mod achievements_ui;
 mod battleship;
 mod battleship_ui;
 mod blackjack;

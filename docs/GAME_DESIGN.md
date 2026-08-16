@@ -45,7 +45,9 @@ touch contracts.
 The Records screen keeps the collection view legible with a compact summary of
 stamps, achievements, and completed drawers out of the full 47-game cabinet.
 Every drawer has its own completion achievement, in addition to first-finish
-and full-cabinet collection awards.
+and full-cabinet collection awards. The Records screen opens a responsive
+ACHIEVEMENTS shelf so earned and locked awards remain inspectable without
+interrupting a game.
 
 Starting a new drawer session presents a clear CANCEL/START confirmation so an
 accidental tap cannot replace an unfinished session.

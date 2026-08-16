@@ -10,6 +10,7 @@ impl Game {
         };
         self.state.favorites_view = false;
         self.state.recent_view = false;
+        self.state.achievements_view = false;
         self.state.selected = index;
         if crate::cabinet_status::is_active(id) {
             self.state.recent_games.retain(|recent| *recent != id);

@@ -49,6 +49,11 @@ pub fn draw_records(state: &AppState) {
         12.,
         Color::new(0.98, 0.83, 0.45, 1.),
     );
+    panel(
+        Rect::new(650., 8., 150., 30.),
+        Color::new(0.20, 0.13, 0.30, 1.),
+    );
+    text("ACHIEVEMENTS", 663., 28., 9., WHITE);
     let rows = [
         ("2048 best", state.records.best_2048.to_string()),
         ("Mines beginner", value(state.records.minesweeper[0])),
@@ -235,7 +240,9 @@ fn value(value: Option<u32>) -> String {
     value.map_or_else(|| "-".into(), |number| number.to_string())
 }
 pub fn records_clicks(p: Vec2) -> Vec<UiAction> {
-    if Rect::new(700., 330., 110., 38.).contains(p) {
+    if Rect::new(650., 8., 150., 30.).contains(p) {
+        vec![UiAction::Achievements]
+    } else if Rect::new(700., 330., 110., 38.).contains(p) {
         vec![UiAction::Cabinet]
     } else {
         vec![]

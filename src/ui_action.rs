@@ -12,6 +12,7 @@ pub enum UiAction {
     Records,
     Favorites,
     Recent,
+    Achievements,
     Rules,
     Credits,
     ResetData,
