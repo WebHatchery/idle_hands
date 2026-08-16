@@ -23,10 +23,10 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 }
 fn back_button(y: f32) {
     panel(
-        Rect::new(10., y, 150., 38.),
+        Rect::new(10., y, 150., 44.),
         Color::new(0.25, 0.16, 0.32, 1.),
     );
-    text("BACK", 62., y + 25., 12., WHITE);
+    text("BACK", 62., y + 28., 12., WHITE);
 }
 fn value(value: Option<u32>) -> String {
     value.map_or_else(|| "-".into(), |number| number.to_string())
@@ -62,10 +62,11 @@ pub fn draw_records(state: &AppState) {
         Color::new(0.98, 0.83, 0.45, 1.),
     );
     panel(
-        Rect::new(185., 72., 145., 32.),
+        Rect::new(185., 65., 145., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     text("ACHIEVEMENTS", 197., 93., 9., WHITE);
+    draw_rectangle_lines(185., 65., 145., 44., 3., WHITE);
     let rows = [
         ("2048 best", state.records.best_2048.to_string()),
         ("Mines beginner", value(state.records.minesweeper[0])),
@@ -250,9 +251,9 @@ pub fn draw_records(state: &AppState) {
     back_button(650.);
 }
 pub fn records_clicks(p: Vec2) -> Vec<UiAction> {
-    if Rect::new(185., 72., 145., 32.).contains(p) {
+    if Rect::new(185., 65., 145., 44.).contains(p) {
         vec![UiAction::Achievements]
-    } else if Rect::new(10., 650., 150., 38.).contains(p) {
+    } else if Rect::new(10., 650., 150., 44.).contains(p) {
         vec![UiAction::Cabinet]
     } else {
         vec![]
@@ -289,7 +290,7 @@ pub fn draw_rules() {
     back_button(650.);
 }
 pub fn rules_clicks(p: Vec2) -> Vec<UiAction> {
-    if Rect::new(10., 650., 150., 38.).contains(p) {
+    if Rect::new(10., 650., 150., 44.).contains(p) {
         vec![UiAction::Cabinet]
     } else {
         vec![]
@@ -341,7 +342,7 @@ pub fn draw_credits() {
     back_button(650.);
 }
 pub fn credits_clicks(p: Vec2) -> Vec<UiAction> {
-    if Rect::new(10., 650., 150., 38.).contains(p) {
+    if Rect::new(10., 650., 150., 44.).contains(p) {
         vec![UiAction::Cabinet]
     } else {
         vec![]

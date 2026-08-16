@@ -182,6 +182,7 @@ impl Game {
             "mastermind_accessible" => Screen::Game(GameId::Mastermind),
             "help" => Screen::Help,
             "records"
+            | "records_accessible"
             | "records_word_ladder"
             | "records_progress"
             | "achievements"

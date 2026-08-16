@@ -50,10 +50,11 @@ pub fn draw_records(state: &AppState) {
         Color::new(0.98, 0.83, 0.45, 1.),
     );
     panel(
-        Rect::new(650., 8., 150., 30.),
+        Rect::new(650., 2., 150., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    text("ACHIEVEMENTS", 663., 28., 9., WHITE);
+    text("ACHIEVEMENTS", 663., 30., 9., WHITE);
+    draw_rectangle_lines(650., 2., 150., 44., 3., WHITE);
     let rows = [
         ("2048 best", state.records.best_2048.to_string()),
         ("Mines beginner", value(state.records.minesweeper[0])),
@@ -234,15 +235,16 @@ pub fn draw_records(state: &AppState) {
         text(label, x, y, 10., Color::new(0.78, 0.73, 0.86, 1.));
         text(score, x + 120., y, 11., Color::new(0.98, 0.83, 0.45, 1.));
     }
-    back(Rect::new(700., 330., 110., 38.));
+    back(Rect::new(700., 330., 110., 44.));
+    draw_rectangle_lines(700., 330., 110., 44., 3., WHITE);
 }
 fn value(value: Option<u32>) -> String {
     value.map_or_else(|| "-".into(), |number| number.to_string())
 }
 pub fn records_clicks(p: Vec2) -> Vec<UiAction> {
-    if Rect::new(650., 8., 150., 30.).contains(p) {
+    if Rect::new(650., 2., 150., 44.).contains(p) {
         vec![UiAction::Achievements]
-    } else if Rect::new(700., 330., 110., 38.).contains(p) {
+    } else if Rect::new(700., 330., 110., 44.).contains(p) {
         vec![UiAction::Cabinet]
     } else {
         vec![]

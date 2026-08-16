@@ -1307,3 +1307,8 @@ contract, shared confirmation safety, responsive capture coverage, and the
 
 - [x] Resize achievement shelf filters to touch-complete targets, add a
   non-color active outline, and reflow the dense card grid around them.
+
+## Phase 132 — Records action accessibility
+
+- [x] Resize the Records ACHIEVEMENTS and responsive BACK actions to touch-
+  complete targets and add visible action outlines across documented sizes.

@@ -50,9 +50,10 @@ pub fn draw_records(state: &AppState) {
         Color::new(0.98, 0.83, 0.45, 1.),
     );
     panel(
-        Rect::new(900., 102., 210., 42.),
+        Rect::new(900., 102., 210., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
+    draw_rectangle_lines(900., 102., 210., 44., 3., WHITE);
     draw_text("ACHIEVEMENTS", 925., 129., 14., WHITE);
     let left = [
         ("2048 best score", state.records.best_2048.to_string()),
@@ -265,7 +266,7 @@ pub fn draw_records(state: &AppState) {
     draw_text("BACK", 990., 621., 18., WHITE);
 }
 pub fn records_clicks(p: Vec2) -> Vec<UiAction> {
-    if Rect::new(900., 102., 210., 42.).contains(p) {
+    if Rect::new(900., 102., 210., 44.).contains(p) {
         vec![UiAction::Achievements]
     } else if Rect::new(930., 590., 180., 48.).contains(p) {
         vec![UiAction::Cabinet]
