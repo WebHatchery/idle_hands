@@ -400,6 +400,7 @@ pub struct AppState {
     pub cabinet_filter: u8,
     pub cabinet_scroll: usize,
     pub library_scroll: usize,
+    pub fivefold_score_page: usize,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -761,6 +762,7 @@ impl Default for AppState {
             cabinet_filter: 0,
             cabinet_scroll: 0,
             library_scroll: 0,
+            fivefold_score_page: 0,
         }
     }
 }

@@ -38,14 +38,14 @@ fn layout() -> Layout {
         }
     } else if crate::ui::is_portrait() {
         Layout {
-            board: Rect::new(15., 105., 300., 300.),
-            keyboard: Rect::new(15., 555., 315., 126.),
-            key_w: 35.,
-            key_h: 42.,
-            columns: 9,
-            backspace: Rect::new(15., 455., 100., 44.),
-            submit: Rect::new(125., 455., 100., 44.),
-            hint: Rect::new(15., 505., 100., 44.),
+            board: Rect::new(55., 105., 250., 300.),
+            keyboard: Rect::new(12., 515., 336., 176.),
+            key_w: 48.,
+            key_h: 44.,
+            columns: 7,
+            backspace: Rect::new(15., 420., 100., 44.),
+            submit: Rect::new(125., 420., 100., 44.),
+            hint: Rect::new(235., 420., 100., 44.),
             undo: Rect::new(15., 700., 100., 44.),
             new_game: Rect::new(125., 700., 150., 44.),
         }
@@ -116,7 +116,7 @@ pub fn draw(state: &AppState) {
         58.
     };
     draw_text(
-        "‹ CABINET",
+        "CABINET",
         8.,
         30.,
         accessibility::text_size(13., state.large_text),
@@ -130,7 +130,7 @@ pub fn draw(state: &AppState) {
         accent(),
     );
     draw_text(
-        format!("{} / 6 guesses  •  {}", game.moves, status(game.phase)),
+        format!("{} / 6 guesses  -  {}", game.moves, status(game.phase)),
         if compact { 430. } else { title_x },
         if compact { 28. } else { title_y + 24. },
         accessibility::text_size(body_size(), state.large_text),
@@ -144,7 +144,7 @@ pub fn draw(state: &AppState) {
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW WORD", state.large_text);
     let status_y = if portrait {
-        690.
+        497.
     } else if compact {
         285.
     } else {

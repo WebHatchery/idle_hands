@@ -78,6 +78,7 @@ pub enum UiAction {
     FivefoldRoll,
     FivefoldHold(usize),
     FivefoldCategory(crate::fivefold::Category),
+    FivefoldScorePage(i8),
     FivefoldHint,
     FivefoldNew,
     ReversiPlace(usize),

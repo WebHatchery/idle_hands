@@ -118,7 +118,7 @@ pub fn draw(state: &AppState) {
         (390., 58.)
     };
     text(
-        "‹ CABINET",
+        "CABINET",
         8.,
         30.,
         accessibility::text_size(13., state.large_text),
@@ -202,7 +202,7 @@ pub fn draw(state: &AppState) {
         }
     }
     text(
-        &format!("Runs {} / 8  •  Moves {}", game.completed, game.moves),
+        &format!("Runs {} / 8  -  Moves {}", game.completed, game.moves),
         if compact { 10. } else { hx },
         if portrait {
             625.

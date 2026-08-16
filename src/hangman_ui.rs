@@ -25,9 +25,9 @@ fn layout() -> Layout {
         }
     } else if crate::ui::is_portrait() {
         Layout {
-            keyboard: Rect::new(10., 350., 340., 168.),
+            keyboard: Rect::new(10., 350., 340., 184.),
             key_w: 45.,
-            key_h: 38.,
+            key_h: 46.,
             columns: 7,
             hint: Rect::new(20., 650., 160., 42.),
             new_game: Rect::new(190., 650., 160., 42.),
@@ -86,7 +86,7 @@ pub fn draw(state: &AppState) {
     } else {
         72.
     };
-    text("‹ CABINET", 8., 30., 13., muted());
+    text("CABINET", 8., 30., 13., muted());
     text("HANGMAN", header_x, header_y, title_size(), accent());
     let status = status_text(game.status, game.wrong_count);
     let instruction = state.card_hint.as_deref().unwrap_or(&status);

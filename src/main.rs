@@ -89,6 +89,7 @@ mod pyramid;
 mod pyramid_ui;
 mod records_ui;
 mod responsive_cards;
+mod responsive_fivefold;
 mod responsive_landscape;
 mod responsive_landscape_cards;
 mod responsive_landscape_games;

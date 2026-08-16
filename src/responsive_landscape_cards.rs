@@ -420,8 +420,15 @@ pub fn draw_fivefold(state: &AppState) {
         20.,
         Color::new(0.98, 0.83, 0.45, 1.),
     );
-    for (index, category) in Category::ALL.iter().enumerate() {
-        let y = 82. + index as f32 * 21.;
+    let page = state.fivefold_score_page.min(2);
+    for (slot, (index, category)) in Category::ALL
+        .iter()
+        .enumerate()
+        .skip(page * 5)
+        .take(5)
+        .enumerate()
+    {
+        let y = 97. + slot as f32 * 44.;
         let score = game.scores[index].map_or_else(
             || {
                 if game.roll_number > 0 {
@@ -434,13 +441,16 @@ pub fn draw_fivefold(state: &AppState) {
         );
         if game.scores[index].is_none() && game.roll_number > 0 {
             panel(
-                Rect::new(515., y - 16., 300., 19.),
+                Rect::new(515., y - 31., 300., 40.),
                 Color::new(0.14, 0.10, 0.22, 1.),
             );
         }
-        text(category.label(), 525., y, 10., WHITE);
+        text(category.label(), 525., y, 11., WHITE);
         text(&score, 790., y, 10., Color::new(0.98, 0.83, 0.45, 1.));
     }
+    page_button(Rect::new(515., 306., 92., 44.), "PREV");
+    page_button(Rect::new(617., 306., 92., 44.), "NEXT");
+    text(&format!("{}/3", page + 1), 748., 334., 11., WHITE);
     panel(
         Rect::new(10., 250., 180., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
@@ -477,12 +487,30 @@ pub fn fivefold_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
             return vec![UiAction::FivefoldHold(index)];
         }
     }
-    for (index, category) in Category::ALL.iter().enumerate() {
-        if crate::ui::hit(Rect::new(515., 66. + index as f32 * 21., 300., 19.), p)
+    if crate::ui::hit(Rect::new(515., 306., 92., 44.), p) {
+        return vec![UiAction::FivefoldScorePage(-1)];
+    }
+    if crate::ui::hit(Rect::new(617., 306., 92., 44.), p) {
+        return vec![UiAction::FivefoldScorePage(1)];
+    }
+    let page = state.fivefold_score_page.min(2);
+    for (slot, (index, category)) in Category::ALL
+        .iter()
+        .enumerate()
+        .skip(page * 5)
+        .take(5)
+        .enumerate()
+    {
+        if crate::ui::hit(Rect::new(515., 66. + slot as f32 * 44., 300., 40.), p)
             && state.fivefold.scores[index].is_none()
         {
             return vec![UiAction::FivefoldCategory(*category)];
         }
     }
     vec![]
+}
+
+fn page_button(rect: Rect, label: &str) {
+    panel(rect, Color::new(0.18, 0.12, 0.28, 1.));
+    text(label, rect.x + 23., rect.y + 28., 11., WHITE);
 }

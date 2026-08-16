@@ -504,12 +504,20 @@ impl Game {
             ui::UiAction::FivefoldCategory(category) => {
                 self.state.fivefold.choose_category(category);
             }
+            ui::UiAction::FivefoldScorePage(delta) => {
+                self.state.fivefold_score_page = self
+                    .state
+                    .fivefold_score_page
+                    .saturating_add_signed(delta as isize)
+                    .min(2);
+            }
             ui::UiAction::FivefoldHint => {
                 self.state.card_hint = Some(card_hints::fivefold(&self.state));
             }
             ui::UiAction::FivefoldNew => {
                 self.state.fivefold =
                     crate::fivefold::Fivefold::new(self.state.fivefold.seed.wrapping_add(1));
+                self.state.fivefold_score_page = 0;
             }
             ui::UiAction::ReversiPlace(index) => {
                 if self.state.reversi.ai_level == crate::reversi::AiLevel::TwoPlayer {

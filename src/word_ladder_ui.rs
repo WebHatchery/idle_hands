@@ -18,6 +18,7 @@ struct Layout {
     new_game: Rect,
     columns: usize,
     key_w: f32,
+    key_h: f32,
 }
 
 fn layout() -> Layout {
@@ -31,17 +32,19 @@ fn layout() -> Layout {
             new_game: Rect::new(610., 135., 170., 42.),
             columns: 13,
             key_w: 58.,
+            key_h: 42.,
         }
     } else if crate::ui::is_portrait() {
         Layout {
-            keyboard: Rect::new(15., 520., 315., 126.),
+            keyboard: Rect::new(12., 500., 336., 176.),
             back: Rect::new(15., 425., 95., 42.),
             submit: Rect::new(115., 425., 95., 42.),
             hint: Rect::new(215., 425., 95., 42.),
-            undo: Rect::new(15., 670., 95., 42.),
-            new_game: Rect::new(115., 670., 145., 42.),
-            columns: 9,
-            key_w: 35.,
+            undo: Rect::new(15., 710., 95., 42.),
+            new_game: Rect::new(115., 710., 145., 42.),
+            columns: 7,
+            key_w: 48.,
+            key_h: 44.,
         }
     } else {
         Layout {
@@ -53,6 +56,7 @@ fn layout() -> Layout {
             new_game: Rect::new(790., 360., 150., 44.),
             columns: 13,
             key_w: 36.,
+            key_h: 42.,
         }
     }
 }
@@ -78,7 +82,7 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
         return vec![UiAction::WordLadderNew];
     }
     if l.keyboard.contains(point) {
-        let index = ((point.y - l.keyboard.y) / 42.) as usize * l.columns
+        let index = ((point.y - l.keyboard.y) / l.key_h) as usize * l.columns
             + ((point.x - l.keyboard.x) / l.key_w) as usize;
         if index < 26 {
             return vec![UiAction::WordLadderLetter(index as u8)];
@@ -107,7 +111,7 @@ pub fn draw(state: &AppState) {
         58.
     };
     draw_text(
-        "‹ CABINET",
+        "CABINET",
         8.,
         30.,
         accessibility::text_size(13., state.large_text),
@@ -121,7 +125,7 @@ pub fn draw(state: &AppState) {
         accent(),
     );
     draw_text(
-        format!("{} moves  •  {} → {}", game.moves, game.start, game.target),
+        format!("{} moves  -  {} TO {}", game.moves, game.start, game.target),
         if compact { 300. } else { title_x },
         if compact { 28. } else { title_y + 24. },
         accessibility::text_size(14., state.large_text),
@@ -242,9 +246,9 @@ fn draw_keyboard(l: Layout, game: &WordLadder, large_text: bool) {
     for index in 0..26 {
         let rect = Rect::new(
             l.keyboard.x + (index % l.columns) as f32 * l.key_w,
-            l.keyboard.y + (index / l.columns) as f32 * 42.,
+            l.keyboard.y + (index / l.columns) as f32 * l.key_h,
             l.key_w - 3.,
-            39.,
+            l.key_h - 3.,
         );
         let letter = b'A' + index as u8;
         let used = game

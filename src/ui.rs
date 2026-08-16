@@ -40,6 +40,7 @@ use crate::potion_2048_ui;
 use crate::pyramid_ui;
 use crate::records_ui;
 use crate::responsive_cards;
+use crate::responsive_fivefold;
 use crate::responsive_landscape;
 use crate::responsive_landscape_cards;
 use crate::responsive_landscape_games;
@@ -225,7 +226,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
             responsive_landscape_cards::fivefold_clicks(state, p)
         }
         Screen::Game(GameId::Yahtzee) if is_portrait() => {
-            responsive_cards::fivefold_clicks(state, p)
+            responsive_fivefold::fivefold_clicks(state, p)
         }
         Screen::Game(GameId::Yahtzee) => fivefold_ui::fivefold_clicks(state, p),
         Screen::Game(GameId::Reversi) if is_compact_landscape() => {
@@ -356,7 +357,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::Yahtzee) if is_compact_landscape() => {
             responsive_landscape_cards::draw_fivefold(state)
         }
-        Screen::Game(GameId::Yahtzee) if is_portrait() => responsive_cards::draw_fivefold(state),
+        Screen::Game(GameId::Yahtzee) if is_portrait() => responsive_fivefold::draw_fivefold(state),
         Screen::Game(GameId::Yahtzee) => fivefold_ui::draw_fivefold(state),
         Screen::Game(GameId::Reversi) if is_compact_landscape() => {
             responsive_landscape_games::draw_reversi(state)

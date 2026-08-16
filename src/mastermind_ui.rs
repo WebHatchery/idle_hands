@@ -108,7 +108,7 @@ pub fn draw(state: &AppState) {
         header_y + 25.
     };
     text(
-        "‹ CABINET",
+        "CABINET",
         back_rect().x,
         back_rect().y + 20.,
         accessibility::text_size(14., state.large_text),
@@ -200,7 +200,7 @@ pub fn draw(state: &AppState) {
 
 fn status_text(status: MastermindStatus, row: u8) -> String {
     match status {
-        MastermindStatus::Playing => format!("Build a four-color code  •  GUESS {}/10", row + 1),
+        MastermindStatus::Playing => format!("Build a four-color code  -  GUESS {}/10", row + 1),
         MastermindStatus::Won => "The code is open. Start another board to play again.".into(),
         MastermindStatus::Lost => "The code stayed quiet. Start another board to try again.".into(),
     }

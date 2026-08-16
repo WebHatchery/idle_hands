@@ -13,7 +13,7 @@ fn continue_rect(compact_landscape: bool) -> Rect {
 
 fn replay_rect(compact_landscape: bool) -> Rect {
     if compact_landscape {
-        Rect::new(220., 20., 150., 50.)
+        Rect::new(365., 2., 120., 44.)
     } else {
         Rect::new(245., 10., 105., 44.)
     }
@@ -36,9 +36,9 @@ pub fn draw_replay_button(compact_landscape: bool) {
     panel(rect, Color::new(0.16, 0.11, 0.25, 0.96));
     draw_text(
         "TUTORIAL",
-        rect.x + if compact_landscape { 22. } else { 13. },
+        rect.x + if compact_landscape { 14. } else { 13. },
         rect.y + rect.h * 0.64,
-        if compact_landscape { 16. } else { 11. },
+        if compact_landscape { 13. } else { 11. },
         WHITE,
     );
 }
