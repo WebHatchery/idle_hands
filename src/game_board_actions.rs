@@ -317,6 +317,10 @@ impl Game {
             UiAction::MancalaPit(pit) => {
                 self.state.mancala.play(*pit);
             }
+            UiAction::MancalaHint => {
+                self.state.card_hint = Some(crate::card_hints::mancala(&self.state));
+                return true;
+            }
             UiAction::MancalaUndo => {
                 self.state.mancala.undo();
             }

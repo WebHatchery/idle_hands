@@ -202,6 +202,7 @@ pub enum UiAction {
     SokobanUndo,
     SokobanNew,
     MancalaPit(usize),
+    MancalaHint,
     MancalaUndo,
     MancalaNew,
     HanoiPeg(usize),

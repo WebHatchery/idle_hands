@@ -269,3 +269,11 @@ fn default_sokoban_has_a_deterministic_hint() {
     assert!(sokoban(&state).contains("Move UP"));
     assert_eq!(sokoban(&state), sokoban(&state));
 }
+
+#[test]
+fn default_mancala_has_a_deterministic_hint() {
+    let state = AppState::default();
+
+    assert!(!mancala(&state).is_empty());
+    assert_eq!(mancala(&state), mancala(&state));
+}

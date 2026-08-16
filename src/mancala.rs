@@ -75,6 +75,28 @@ impl Mancala {
         self.phase == MancalaPhase::Won
     }
 
+    pub fn hint_pit(&self) -> Option<usize> {
+        if self.phase != MancalaPhase::Playing {
+            return None;
+        }
+        let mut best: Option<(i32, usize)> = None;
+        for pit in 0..PLAYER_STORE {
+            if self.pits[pit] == 0 {
+                continue;
+            }
+            let mut trial = self.clone_without_undo();
+            let before_store = trial.pits[PLAYER_STORE];
+            let last = trial.sow(pit, true);
+            let store_gain = trial.pits[PLAYER_STORE] as i32 - before_store as i32;
+            let extra_turn = (last == PLAYER_STORE) as i32;
+            let score = extra_turn * 1_000 + store_gain * 100 + trial.pits[PLAYER_STORE] as i32;
+            if best.is_none_or(|(best_score, _)| score > best_score) {
+                best = Some((score, pit));
+            }
+        }
+        best.map(|(_, pit)| pit)
+    }
+
     fn clone_without_undo(&self) -> Self {
         let mut copy = self.clone();
         copy.undo = None;

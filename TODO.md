@@ -1041,6 +1041,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover solver determinism, board preservation, hint capture aliases,
     accessibility, and responsive layouts.
 
+## Phase 95 — Mancala discoverability polish
+
+- [x] Add a deterministic, non-mutating HINT action that ranks legal pits by
+  extra-turn potential, immediate store gain, and stable pit order.
+  - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
+  - [x] Cover heuristic determinism, board preservation, hint capture aliases,
+    accessibility, and responsive layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

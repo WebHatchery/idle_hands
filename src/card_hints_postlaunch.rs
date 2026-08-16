@@ -225,6 +225,23 @@ pub fn sokoban(state: &AppState) -> String {
     )
 }
 
+pub fn mancala(state: &AppState) -> String {
+    let game = &state.mancala;
+    match game.phase {
+        crate::mancala::MancalaPhase::Won => {
+            return "Your store leads — tap NEW BOARD to play again.".into()
+        }
+        crate::mancala::MancalaPhase::Lost => {
+            return "The cabinet leads — tap NEW BOARD to begin again.".into()
+        }
+        crate::mancala::MancalaPhase::Playing => {}
+    }
+    game.hint_pit().map_or_else(
+        || "No stones remain — tap NEW BOARD to begin again.".into(),
+        |pit| format!("Sow pit {} for the strongest next turn.", pit + 1),
+    )
+}
+
 fn daily_direction_label(direction: crate::state::Direction) -> &'static str {
     match direction {
         crate::state::Direction::Up => "UP",

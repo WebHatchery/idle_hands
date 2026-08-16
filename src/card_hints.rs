@@ -6,7 +6,7 @@ use crate::{freecell::FreeSource, state::AppState};
 mod postlaunch;
 
 pub use postlaunch::{
-    blackjack, breakout, daily_dungeon, dots_boxes, dungeon_sweeper, higher_lower,
+    blackjack, breakout, daily_dungeon, dots_boxes, dungeon_sweeper, higher_lower, mancala,
     one_room_roguelike, potion_2048, snake, sokoban, tiny_tower_defence,
 };
 
@@ -555,6 +555,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::DailyHint
             | crate::ui::UiAction::DotsHint
             | crate::ui::UiAction::SokobanHint
+            | crate::ui::UiAction::MancalaHint
     )
 }
 

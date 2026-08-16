@@ -50,3 +50,25 @@ fn reset_starts_a_new_seeded_board() {
     assert_eq!(game.pits[0], 4);
     assert_eq!(game.phase, MancalaPhase::Playing);
 }
+
+#[test]
+fn hint_prefers_a_pit_that_grants_an_extra_turn_without_mutating_the_board() {
+    let mut game = Mancala::new(7);
+    game.pits = vec![0; 14];
+    game.pits[5] = 1;
+    game.pits[0] = 1;
+    let before = game.clone_without_undo();
+
+    assert_eq!(game.hint_pit(), Some(5));
+    assert_eq!(game.pits, before.pits);
+    assert_eq!(game.moves, before.moves);
+    assert_eq!(game.phase, before.phase);
+}
+
+#[test]
+fn hint_is_empty_after_mancala_ends() {
+    let mut game = Mancala::new(8);
+    game.phase = MancalaPhase::Won;
+
+    assert_eq!(game.hint_pit(), None);
+}
