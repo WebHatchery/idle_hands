@@ -373,6 +373,10 @@ impl Game {
             UiAction::ColorSortTap(tube) => {
                 self.state.color_sort.tap_tube(*tube);
             }
+            UiAction::ColorSortHint => {
+                self.state.card_hint = Some(crate::card_hints::color_sort(&self.state));
+                return true;
+            }
             UiAction::ColorSortUndo => {
                 self.state.color_sort.undo();
             }

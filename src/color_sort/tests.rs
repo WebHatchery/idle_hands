@@ -80,3 +80,25 @@ fn reset_changes_seeded_board_and_finished_games_stop() {
     game.phase = ColorSortPhase::Won;
     assert!(!game.tap_tube(0));
 }
+
+#[test]
+fn hint_returns_a_legal_progress_move_without_mutating_the_tubes() {
+    let game = ColorSort::new(13);
+    let before = game.tubes.clone();
+
+    let Some((source, destination)) = game.hint_move() else {
+        panic!("seeded Color Sort should have a legal move");
+    };
+    assert_ne!(source, destination);
+    assert_eq!(game.tubes, before);
+    assert_eq!(game.selected, None);
+    assert_eq!(game.moves, 0);
+}
+
+#[test]
+fn hint_is_empty_after_color_sort_ends() {
+    let mut game = ColorSort::new(14);
+    game.phase = ColorSortPhase::Won;
+
+    assert_eq!(game.hint_move(), None);
+}

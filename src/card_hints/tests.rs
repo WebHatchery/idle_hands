@@ -301,3 +301,11 @@ fn default_flood_it_has_a_deterministic_hint() {
     assert!(flood_it(&state).contains("Choose"));
     assert_eq!(flood_it(&state), flood_it(&state));
 }
+
+#[test]
+fn default_color_sort_has_a_deterministic_hint() {
+    let state = AppState::default();
+
+    assert!(color_sort(&state).contains("Move tube"));
+    assert_eq!(color_sort(&state), color_sort(&state));
+}

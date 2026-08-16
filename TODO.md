@@ -1073,6 +1073,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover heuristic determinism, board preservation, hint capture aliases,
     accessibility, and responsive layouts.
 
+## Phase 99 — Color Sort discoverability polish
+
+- [x] Add a deterministic, non-mutating HINT action that scores legal moves by
+  completed tubes, uniform tubes, and preserved buffer space.
+  - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
+  - [x] Cover heuristic determinism, tube preservation, hint capture aliases,
+    accessibility, and responsive layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

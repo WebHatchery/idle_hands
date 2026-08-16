@@ -132,11 +132,52 @@ impl ColorSort {
         self.phase == ColorSortPhase::Won
     }
 
+    pub fn hint_move(&self) -> Option<(usize, usize)> {
+        if self.phase != ColorSortPhase::Playing {
+            return None;
+        }
+        let mut best: Option<(i32, usize, usize)> = None;
+        for source in 0..TUBES {
+            if self.tubes[source].is_empty() {
+                continue;
+            }
+            for destination in 0..TUBES {
+                if source == destination {
+                    continue;
+                }
+                let mut trial = self.clone_without_undo();
+                if !trial.tap_tube(source) || !trial.tap_tube(destination) {
+                    continue;
+                }
+                let score = trial.progress_score();
+                if best.is_none_or(|(best_score, _, _)| score > best_score) {
+                    best = Some((score, source, destination));
+                }
+            }
+        }
+        best.map(|(_, source, destination)| (source, destination))
+    }
+
     fn is_solved(&self) -> bool {
         self.tubes.iter().all(|tube| {
             tube.is_empty()
                 || (tube.len() == CAPACITY && tube.windows(2).all(|pair| pair[0] == pair[1]))
         })
+    }
+
+    fn progress_score(&self) -> i32 {
+        let completed = self
+            .tubes
+            .iter()
+            .filter(|tube| tube.len() == CAPACITY && tube.windows(2).all(|pair| pair[0] == pair[1]))
+            .count() as i32;
+        let uniform = self
+            .tubes
+            .iter()
+            .filter(|tube| !tube.is_empty() && tube.windows(2).all(|pair| pair[0] == pair[1]))
+            .count() as i32;
+        let empty = self.tubes.iter().filter(|tube| tube.is_empty()).count() as i32;
+        completed * 10_000 + uniform * 100 + empty
     }
 
     fn clone_without_undo(&self) -> Self {

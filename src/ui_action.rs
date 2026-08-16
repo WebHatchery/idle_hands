@@ -218,6 +218,7 @@ pub enum UiAction {
     FloodUndo,
     FloodNew,
     ColorSortTap(usize),
+    ColorSortHint,
     ColorSortUndo,
     ColorSortNew,
     BattleshipFire(usize),

@@ -12,6 +12,7 @@ use macroquad::prelude::*;
 struct Layout {
     board: Rect,
     tubes: [Rect; TUBES],
+    hint: Rect,
     undo: Rect,
     new_game: Rect,
 }
@@ -22,22 +23,25 @@ fn layout() -> Layout {
         Layout {
             board,
             tubes: tube_rects(board),
+            hint: Rect::new(630., 220., 105., 44.),
             undo: Rect::new(630., 110., 105., 44.),
             new_game: Rect::new(630., 165., 140., 44.),
         }
     } else if crate::ui::is_portrait() {
-        let board = Rect::new(5., 105., 330., 270.);
+        let board = Rect::new(15., 100., 300., 270.);
         Layout {
             board,
             tubes: tube_rects(board),
-            undo: Rect::new(5., 410., 145., 44.),
-            new_game: Rect::new(165., 410., 170., 44.),
+            hint: Rect::new(15., 405., 145., 44.),
+            undo: Rect::new(15., 460., 145., 44.),
+            new_game: Rect::new(170., 460., 145., 44.),
         }
     } else {
         let board = Rect::new(280., 95., 540., 360.);
         Layout {
             board,
             tubes: tube_rects(board),
+            hint: Rect::new(860., 245., 120., 44.),
             undo: Rect::new(860., 190., 120., 44.),
             new_game: Rect::new(1000., 190., 145., 44.),
         }
@@ -59,6 +63,9 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
             return vec![UiAction::ColorSortTap(tube)];
         }
     }
+    if l.hint.contains(point) {
+        return vec![UiAction::ColorSortHint];
+    }
     if l.undo.contains(point) {
         return vec![UiAction::ColorSortUndo];
     }
@@ -76,7 +83,7 @@ pub fn draw(state: &AppState) {
     let title_x = if compact {
         70.
     } else if portrait {
-        10.
+        25.
     } else {
         400.
     };
@@ -109,17 +116,21 @@ pub fn draw(state: &AppState) {
         muted(),
     );
     draw_board(l.board, l.tubes, game, state.high_contrast);
+    button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW BOARD", state.large_text);
     let status_y = if portrait {
-        475.
+        385.
     } else if compact {
         355.
     } else {
         480.
     };
     draw_text(
-        "Tap a source tube, then a matching destination",
+        state
+            .card_hint
+            .as_deref()
+            .unwrap_or("Tap a source tube, then a matching destination"),
         if compact { 220. } else { title_x },
         status_y,
         accessibility::text_size(body_size(), state.large_text),

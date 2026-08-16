@@ -293,6 +293,17 @@ pub fn flood_it(state: &AppState) -> String {
     )
 }
 
+pub fn color_sort(state: &AppState) -> String {
+    let game = &state.color_sort;
+    if game.won() {
+        return "The color tubes are complete — tap NEW BOARD to play again.".into();
+    }
+    game.hint_move().map_or_else(
+        || "No legal tube move remains — tap NEW BOARD to begin again.".into(),
+        |(source, destination)| format!("Move tube {} to tube {}.", source + 1, destination + 1),
+    )
+}
+
 fn flood_color_label(color: u8) -> &'static str {
     ["RED", "AMBER", "GREEN", "BLUE", "VIOLET", "PINK"][color as usize % 6]
 }

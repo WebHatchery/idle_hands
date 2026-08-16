@@ -146,7 +146,9 @@ impl Game {
                 Screen::Game(GameId::FloodIt)
             }
             "flood_it_accessible" => Screen::Game(GameId::FloodIt),
-            "color_sort" => Screen::Game(GameId::ColorSort),
+            "color_sort" | "color_sort_hint" | "color_sort_hint_accessible" => {
+                Screen::Game(GameId::ColorSort)
+            }
             "color_sort_accessible" => Screen::Game(GameId::ColorSort),
             "battleship" => Screen::Game(GameId::Battleship),
             "battleship_accessible" => Screen::Game(GameId::Battleship),
@@ -231,6 +233,8 @@ impl Game {
             self.state.card_hint = Some(card_hints::number_match(&self.state));
         } else if scene == "flood_it_hint" || scene == "flood_it_hint_accessible" {
             self.state.card_hint = Some(card_hints::flood_it(&self.state));
+        } else if scene == "color_sort_hint" || scene == "color_sort_hint_accessible" {
+            self.state.card_hint = Some(card_hints::color_sort(&self.state));
         } else if scene == "2048_hint" || scene == "2048_hint_accessible" {
             self.state.card_hint = Some(card_hints::game_2048(&self.state));
         } else if scene == "tic_tac_toe_hint" || scene == "tic_tac_toe_hint_accessible" {
