@@ -332,6 +332,23 @@ pub fn word_grid(state: &AppState) -> String {
     )
 }
 
+pub fn pipe_loop(state: &AppState) -> String {
+    let game = &state.pipe_loop;
+    if game.won() {
+        return "The quiet loop is joined — tap NEW LOOP to play again.".into();
+    }
+    game.hint_rotation().map_or_else(
+        || "No rotation remains — tap NEW LOOP to begin again.".into(),
+        |(index, count)| {
+            format!(
+                "Rotate tile {} {}.",
+                index + 1,
+                if count == 1 { "once" } else { "times" }
+            )
+        },
+    )
+}
+
 fn battleship_cell_label(index: usize) -> String {
     format!(
         "{}{}",

@@ -48,3 +48,28 @@ fn matching_every_solution_tile_wins() {
     }
     assert!(game.won());
 }
+
+#[test]
+fn hint_returns_the_first_unsolved_tile_without_mutating_the_loop() {
+    let game = PipeLoop::new(13);
+    let before = game.pipes.clone();
+
+    let Some((index, count)) = game.hint_rotation() else {
+        panic!("seeded Pipe Loop should have an unsolved tile");
+    };
+    assert!(index < CELLS);
+    assert!((1..=3).contains(&count));
+    assert_eq!(game.pipes, before);
+    assert_eq!(game.moves, 0);
+}
+
+#[test]
+fn following_rotation_hints_solves_the_loop() {
+    let mut game = PipeLoop::new(14);
+    while let Some((index, count)) = game.hint_rotation() {
+        for _ in 0..count {
+            assert!(game.rotate(index));
+        }
+    }
+    assert!(game.won());
+}

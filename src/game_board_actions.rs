@@ -421,6 +421,10 @@ impl Game {
             UiAction::PipeRotate(index) => {
                 self.state.pipe_loop.rotate(*index);
             }
+            UiAction::PipeHint => {
+                self.state.card_hint = Some(crate::card_hints::pipe_loop(&self.state));
+                return true;
+            }
             UiAction::PipeUndo => {
                 self.state.pipe_loop.undo();
             }

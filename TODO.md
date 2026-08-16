@@ -1097,6 +1097,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover candidate consistency, target privacy, hint capture aliases,
     accessibility, and responsive layouts.
 
+## Phase 102 — Pipe Loop discoverability polish
+
+- [x] Add an exact, deterministic, non-mutating HINT action that recommends
+  the first unsolved tile and its required clockwise rotations.
+  - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
+  - [x] Cover rotation determinism, board preservation, hint capture aliases,
+    accessibility, and responsive layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

@@ -81,6 +81,27 @@ impl PipeLoop {
         self.phase == PipePhase::Won
     }
 
+    pub fn hint_rotation(&self) -> Option<(usize, u8)> {
+        if self.phase != PipePhase::Playing {
+            return None;
+        }
+        self.pipes.iter().zip(&self.solution).enumerate().find_map(
+            |(index, (&current, &solution))| {
+                if current == solution {
+                    return None;
+                }
+                let mut rotated = current;
+                for count in 1..=3 {
+                    rotated = rotate_mask(rotated);
+                    if rotated == solution {
+                        return Some((index, count));
+                    }
+                }
+                None
+            },
+        )
+    }
+
     fn clone_without_undo(&self) -> Self {
         let mut copy = self.clone();
         copy.undo = None;

@@ -232,6 +232,7 @@ pub enum UiAction {
     WordGridUndo,
     WordGridNew,
     PipeRotate(usize),
+    PipeHint,
     PipeUndo,
     PipeNew,
     MazeStep(crate::state::Direction),

@@ -11,6 +11,7 @@ use macroquad::prelude::*;
 #[derive(Clone, Copy)]
 struct Layout {
     board: Rect,
+    hint: Rect,
     undo: Rect,
     new_game: Rect,
 }
@@ -19,18 +20,21 @@ fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             board: Rect::new(260., 44., 300., 300.),
+            hint: Rect::new(620., 220., 105., 44.),
             undo: Rect::new(620., 110., 105., 44.),
             new_game: Rect::new(620., 165., 140., 44.),
         }
     } else if crate::ui::is_portrait() {
         Layout {
-            board: Rect::new(5., 105., 330., 330.),
-            undo: Rect::new(5., 470., 145., 44.),
-            new_game: Rect::new(165., 470., 170., 44.),
+            board: Rect::new(15., 95., 300., 300.),
+            hint: Rect::new(15., 440., 145., 44.),
+            undo: Rect::new(15., 495., 145., 44.),
+            new_game: Rect::new(170., 495., 145., 44.),
         }
     } else {
         Layout {
             board: Rect::new(350., 90., 420., 420.),
+            hint: Rect::new(810., 245., 120., 44.),
             undo: Rect::new(810., 180., 120., 44.),
             new_game: Rect::new(950., 180., 140., 44.),
         }
@@ -50,6 +54,9 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
             return vec![UiAction::PipeRotate(row * SIDE + col)];
         }
     }
+    if l.hint.contains(point) {
+        return vec![UiAction::PipeHint];
+    }
     if l.undo.contains(point) {
         return vec![UiAction::PipeUndo];
     }
@@ -67,7 +74,7 @@ pub fn draw(state: &AppState) {
     let title_x = if compact {
         70.
     } else if portrait {
-        10.
+        25.
     } else {
         400.
     };
@@ -100,17 +107,21 @@ pub fn draw(state: &AppState) {
         muted(),
     );
     draw_board(l.board, game, state.high_contrast);
+    button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW LOOP", state.large_text);
     let status_y = if portrait {
-        535.
+        420.
     } else if compact {
         365.
     } else {
         545.
     };
     draw_text(
-        "Tap any tile to rotate its quiet path",
+        state
+            .card_hint
+            .as_deref()
+            .unwrap_or("Tap any tile to rotate its quiet path"),
         if compact { 260. } else { title_x },
         status_y,
         accessibility::text_size(body_size(), state.large_text),

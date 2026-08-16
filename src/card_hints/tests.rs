@@ -325,3 +325,11 @@ fn default_word_grid_has_a_deterministic_probe_hint() {
     assert!(word_grid(&state).contains("Try "));
     assert_eq!(word_grid(&state), word_grid(&state));
 }
+
+#[test]
+fn default_pipe_loop_has_a_deterministic_hint() {
+    let state = AppState::default();
+
+    assert!(pipe_loop(&state).contains("Rotate tile"));
+    assert_eq!(pipe_loop(&state), pipe_loop(&state));
+}
