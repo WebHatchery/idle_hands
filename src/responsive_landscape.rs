@@ -71,6 +71,12 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
             9.,
             Color::new(0.98, 0.82, 0.42, 1.),
         );
+        let favorite = state.favorites.get(index).copied().unwrap_or(false);
+        if favorite {
+            draw_circle(rect.x + 6., rect.y + 9., 3., accent);
+        } else {
+            draw_circle_lines(rect.x + 6., rect.y + 9., 3., 1., accent);
+        }
         text(
             cabinet_status(state, *game),
             rect.x + 10.,
@@ -121,6 +127,9 @@ pub fn cabinet_clicks(p: Vec2) -> Vec<UiAction> {
         return vec![UiAction::ContinueGame];
     }
     for index in 0..GameId::ALL.len() {
+        if cabinet_favorite_rect(index).contains(p) {
+            return vec![UiAction::ToggleFavorite(index)];
+        }
         if cabinet_rect(index).contains(p) {
             return vec![UiAction::Open(index)];
         }
@@ -135,6 +144,11 @@ pub fn cabinet_clicks(p: Vec2) -> Vec<UiAction> {
         }
     }
     vec![]
+}
+
+fn cabinet_favorite_rect(index: usize) -> Rect {
+    let rect = cabinet_rect(index);
+    Rect::new(rect.x, rect.y, 44., rect.h)
 }
 
 pub fn draw_2048(state: &AppState) {

@@ -31,12 +31,20 @@ pub struct ProfileSave {
     pub cabinet_decoration: u8,
     #[serde(default)]
     pub tutorial_seen: Vec<bool>,
+    #[serde(default)]
+    pub favorites: Vec<bool>,
 }
 
 pub(super) fn normalize_tutorial_seen(mut tutorial_seen: Vec<bool>) -> Vec<bool> {
     tutorial_seen.resize(GameId::ALL.len(), false);
     tutorial_seen.truncate(GameId::ALL.len());
     tutorial_seen
+}
+
+pub(super) fn normalize_favorites(mut favorites: Vec<bool>) -> Vec<bool> {
+    favorites.resize(GameId::ALL.len(), false);
+    favorites.truncate(GameId::ALL.len());
+    favorites
 }
 
 impl ProfileSave {
@@ -59,6 +67,7 @@ impl ProfileSave {
             sound_set: state.sound_set,
             cabinet_decoration: state.cabinet_decoration,
             tutorial_seen: state.tutorial_seen.clone(),
+            favorites: state.favorites.clone(),
         }
     }
 
@@ -79,5 +88,6 @@ impl ProfileSave {
         state.sound_set = self.sound_set;
         state.cabinet_decoration = self.cabinet_decoration;
         state.tutorial_seen = normalize_tutorial_seen(self.tutorial_seen);
+        state.favorites = normalize_favorites(self.favorites);
     }
 }

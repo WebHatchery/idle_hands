@@ -6,6 +6,7 @@ use crate::state::Direction;
 pub enum UiAction {
     Open(usize),
     ContinueGame,
+    ToggleFavorite(usize),
     Cabinet,
     Help,
     Records,

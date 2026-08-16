@@ -191,6 +191,11 @@ impl Game {
         if scene == "solitaire_selected" {
             self.state.solitaire.select_tableau(0, 0);
         }
+        if scene == "cabinet_favorites" {
+            for index in [0, GameId::Spider.index(), GameId::Nim.index()] {
+                self.state.favorites[index] = true;
+            }
+        }
         if scene == "freecell_selected" {
             self.state.freecell.select_cascade(0, 0);
         }

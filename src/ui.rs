@@ -119,7 +119,9 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Cabinet => {
             let mut out = vec![];
             for i in 0..GameId::ALL.len() {
-                if cabinet_rect(i).contains(p) {
+                if cabinet_favorite_rect(i).contains(p) {
+                    out.push(UiAction::ToggleFavorite(i));
+                } else if cabinet_rect(i).contains(p) {
                     out.push(UiAction::Open(i));
                 }
             }
@@ -498,6 +500,12 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
                 Color::new(0.22, 0.18, 0.31, 1.)
             },
         );
+        let favorite = state.favorites.get(i).copied().unwrap_or(false);
+        if favorite {
+            draw_circle(r.x + 9., r.y + 12., 4., accent);
+        } else {
+            draw_circle_lines(r.x + 9., r.y + 12., 4., 1., accent);
+        }
         text(
             &format!("{}", i + 1),
             r.right() - 37.,
@@ -535,6 +543,10 @@ fn cabinet_rect(i: usize) -> Rect {
     let col = i % 7;
     let row = i / 7;
     Rect::new(48. + col as f32 * 170., 150. + row as f32 * 76., 160., 62.)
+}
+fn cabinet_favorite_rect(i: usize) -> Rect {
+    let rect = cabinet_rect(i);
+    Rect::new(rect.x, rect.y, 44., rect.h)
 }
 fn draw_2048(state: &AppState) {
     let g = &state.game;

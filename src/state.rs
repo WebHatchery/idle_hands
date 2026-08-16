@@ -382,6 +382,7 @@ pub struct AppState {
     pub records: CollectionRecords,
     pub tutorial: Option<GameId>,
     pub tutorial_seen: Vec<bool>,
+    pub favorites: Vec<bool>,
     pub card_hint: Option<String>,
 }
 
@@ -507,6 +508,8 @@ pub struct CollectionSave {
     pub cabinet_decoration: u8,
     #[serde(default)]
     pub tutorial_seen: Vec<bool>,
+    #[serde(default)]
+    pub favorites: Vec<bool>,
 }
 
 fn default_selected() -> usize {
@@ -580,6 +583,7 @@ impl CollectionSave {
             sound_set: state.sound_set,
             cabinet_decoration: state.cabinet_decoration,
             tutorial_seen: state.tutorial_seen.clone(),
+            favorites: state.favorites.clone(),
         }
     }
     pub fn apply_to(self, state: &mut AppState) {
@@ -646,6 +650,7 @@ impl CollectionSave {
         state.sound_set = self.sound_set;
         state.cabinet_decoration = self.cabinet_decoration;
         state.tutorial_seen = state_profile::normalize_tutorial_seen(self.tutorial_seen);
+        state.favorites = state_profile::normalize_favorites(self.favorites);
     }
 }
 impl Default for AppState {
@@ -720,6 +725,7 @@ impl Default for AppState {
             records: CollectionRecords::default(),
             tutorial: None,
             tutorial_seen: vec![false; GameId::ALL.len()],
+            favorites: vec![false; GameId::ALL.len()],
             card_hint: None,
         }
     }

@@ -327,6 +327,7 @@ fn older_saves_default_new_progression_and_cosmetic_fields() {
         "board_theme",
         "sound_set",
         "cabinet_decoration",
+        "favorites",
         "high_contrast",
         "large_text",
         "lights_out",
@@ -367,6 +368,7 @@ fn older_saves_default_new_progression_and_cosmetic_fields() {
     assert_eq!(restored.cabinet_decoration, 0);
     assert!(!restored.high_contrast);
     assert!(!restored.large_text);
+    assert_eq!(restored.favorites, vec![false; GameId::ALL.len()]);
 }
 
 #[test]
@@ -413,4 +415,26 @@ fn tutorial_state_covers_late_games_and_migrates_short_saves() {
     migrated.apply_to(&mut migrated_state);
     assert_eq!(migrated_state.tutorial_seen.len(), GameId::ALL.len());
     assert!(!migrated_state.tutorial_seen[GameId::MatchThree.index()]);
+}
+
+#[test]
+fn favorites_round_trip_and_short_legacy_profiles_are_normalized() {
+    let mut state = AppState::default();
+    state.favorites[GameId::Spider.index()] = true;
+    state.favorites[GameId::Nim.index()] = true;
+    let profile = ProfileSave::from_state(&state, "1.0.0");
+    let mut restored = AppState::default();
+    profile.apply_to(&mut restored);
+    assert!(restored.favorites[GameId::Spider.index()]);
+    assert!(restored.favorites[GameId::Nim.index()]);
+    assert_eq!(restored.favorites.len(), GameId::ALL.len());
+
+    let mut old = serde_json::to_value(ProfileSave::from_state(&state, "1.0.0")).unwrap();
+    old["favorites"] = serde_json::json!([true, false]);
+    let migrated: ProfileSave = serde_json::from_value(old).unwrap();
+    let mut migrated_state = AppState::default();
+    migrated.apply_to(&mut migrated_state);
+    assert_eq!(migrated_state.favorites.len(), GameId::ALL.len());
+    assert!(migrated_state.favorites[0]);
+    assert!(!migrated_state.favorites[GameId::Nim.index()]);
 }

@@ -1138,6 +1138,15 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover legal-move determinism, tableau preservation, hint capture
     aliases, accessibility, and responsive layouts.
 
+## Phase 107 — Cabinet favorites
+
+- [x] Add persisted favorite stars to every cabinet drawer with touch-sized
+  toggle targets in desktop, portrait, and compact-landscape layouts.
+  - [x] Normalize short legacy profile and collection saves without changing
+    existing selected-game or tutorial state.
+  - [x] Cover favorite round-trips, legacy defaults, visible star states, and
+    responsive capture layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

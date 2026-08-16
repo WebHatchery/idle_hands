@@ -272,6 +272,11 @@ impl Game {
                 let index = self.state.selected;
                 self.open_game(index);
             }
+            ui::UiAction::ToggleFavorite(index) => {
+                if let Some(favorite) = self.state.favorites.get_mut(index) {
+                    *favorite = !*favorite;
+                }
+            }
             ui::UiAction::Cabinet => {
                 self.state.screen = Screen::Cabinet;
                 self.state.tutorial = None;
