@@ -87,7 +87,47 @@ fn draw_words(game: &WordLadder, x: f32, y: f32, width: f32) {
     if game.phase == WordLadderPhase::Won { draw_text("LADDER COMPLETE", x, y + 7. * (cell + 7.), 18., Color::new(0.55, 1., 0.72, 1.)); }
 }
 
-fn draw_keyboard(l: Layout, _game: &WordLadder, large_text: bool) { for index in 0..26 { let rect = Rect::new(l.keyboard.x + (index % l.columns) as f32 * l.key_w, l.keyboard.y + (index / l.columns) as f32 * 42., l.key_w - 3., 39.); draw_rectangle(rect.x, rect.y, rect.w, rect.h, Color::new(0.12, 0.18, 0.22, 1.)); draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., Color::new(0.35, 0.65, 0.62, 1.)); draw_text((char::from(b'A' + index as u8)).to_string(), rect.x + rect.w * 0.34, rect.y + rect.h * 0.68, accessibility::text_size(13., large_text), WHITE); } }
+fn draw_keyboard(l: Layout, game: &WordLadder, large_text: bool) {
+    for index in 0..26 {
+        let rect = Rect::new(
+            l.keyboard.x + (index % l.columns) as f32 * l.key_w,
+            l.keyboard.y + (index / l.columns) as f32 * 42.,
+            l.key_w - 3.,
+            39.,
+        );
+        let letter = b'A' + index as u8;
+        let used = game
+            .guesses
+            .iter()
+            .any(|word| word.as_bytes().contains(&letter));
+        draw_rectangle(
+            rect.x,
+            rect.y,
+            rect.w,
+            rect.h,
+            if used {
+                Color::new(0.24, 0.28, 0.29, 1.)
+            } else {
+                Color::new(0.12, 0.18, 0.22, 1.)
+            },
+        );
+        draw_rectangle_lines(
+            rect.x,
+            rect.y,
+            rect.w,
+            rect.h,
+            1.,
+            Color::new(0.35, 0.65, 0.62, 1.),
+        );
+        draw_text(
+            (letter as char).to_string(),
+            rect.x + rect.w * 0.34,
+            rect.y + rect.h * 0.68,
+            accessibility::text_size(13., large_text),
+            WHITE,
+        );
+    }
+}
 fn button(rect: Rect, label: &str, large_text: bool) { draw_rectangle(rect.x, rect.y, rect.w, rect.h, Color::new(0.16, 0.32, 0.34, 1.)); draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., Color::new(0.42, 0.78, 0.72, 1.)); draw_text(label, rect.x + 10., rect.y + rect.h * 0.64, accessibility::text_size(12., large_text), WHITE); }
 fn accent() -> Color { Color::new(0.55, 1., 0.72, 1.) }
 fn muted() -> Color { Color::new(0.58, 0.68, 0.68, 1.) }

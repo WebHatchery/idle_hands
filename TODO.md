@@ -1203,6 +1203,11 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 - [x] Draw the empty five-letter input row before the first touch, making the
   next visible interaction clear without relying on tutorial text.
 
+## Phase 116 — Word Ladder keyboard state
+
+- [x] Shade letters already used in submitted ladder steps and add a seeded
+  in-progress capture so the keyboard’s state remains legible during play.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.
