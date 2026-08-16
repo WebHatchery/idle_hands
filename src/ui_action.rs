@@ -76,6 +76,7 @@ pub enum UiAction {
     LightsOutUndo,
     LightsOutNew,
     TicTacToePress(usize),
+    TicTacToeHint,
     TicTacToeUndo,
     TicTacToeNew,
     MemoryPairsSelect(usize),

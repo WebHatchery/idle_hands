@@ -262,10 +262,22 @@ fn direction_name(direction: crate::state::Direction) -> &'static str {
     }
 }
 
+pub fn tic_tac_toe(state: &AppState) -> String {
+    let game = &state.tic_tac_toe;
+    if game.status != crate::tic_tac_toe::TicTacToeStatus::Playing {
+        return "The board is settled — tap NEW BOARD for another round.".into();
+    }
+    game.hint_move().map_or_else(
+        || "No empty square remains — tap NEW BOARD for another round.".into(),
+        |index| format!("Try square {}.", index + 1),
+    )
+}
+
 pub fn is_hint(action: crate::ui::UiAction) -> bool {
     matches!(
         action,
         crate::ui::UiAction::Game2048Hint
+            | crate::ui::UiAction::TicTacToeHint
             | crate::ui::UiAction::SolitaireHint
             | crate::ui::UiAction::FreeCellHint
             | crate::ui::UiAction::PyramidHint

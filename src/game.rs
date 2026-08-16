@@ -496,6 +496,9 @@ impl Game {
             ui::UiAction::TicTacToePress(index) => {
                 self.state.tic_tac_toe.place(index);
             }
+            ui::UiAction::TicTacToeHint => {
+                self.state.card_hint = Some(card_hints::tic_tac_toe(&self.state));
+            }
             ui::UiAction::TicTacToeUndo => {
                 self.state.tic_tac_toe.undo();
             }

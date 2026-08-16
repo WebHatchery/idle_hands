@@ -835,6 +835,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover direction selection and hint routing, and capture the updated
     2048 scenes.
 
+## Phase 69 — Tic-Tac-Toe discoverability polish
+
+- [x] Add a visible deterministic HINT action to Tic-Tac-Toe that recommends
+  a winning move, a necessary block, or a stable fallback square.
+  - [x] Show hint feedback across desktop, portrait, and medium-landscape
+    layouts with the existing accessible text treatment.
+  - [x] Cover hint routing and capture the updated Tic-Tac-Toe scenes.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

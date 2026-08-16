@@ -88,6 +88,21 @@ impl TicTacToe {
         *self = Self::new(seed);
     }
 
+    pub fn hint_move(&self) -> Option<usize> {
+        if self.status != TicTacToeStatus::Playing {
+            return None;
+        }
+        self.winning_move(Mark::X)
+            .or_else(|| self.winning_move(Mark::O))
+            .or_else(|| (self.cells[4] == Mark::Empty).then_some(4))
+            .or_else(|| {
+                [0, 2, 6, 8]
+                    .into_iter()
+                    .find(|&index| self.cells[index] == Mark::Empty)
+            })
+            .or_else(|| self.cells.iter().position(|mark| *mark == Mark::Empty))
+    }
+
     fn ai_move(&mut self) {
         let index = self
             .winning_move(Mark::O)

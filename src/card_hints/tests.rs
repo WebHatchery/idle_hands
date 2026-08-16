@@ -73,3 +73,10 @@ fn default_2048_has_a_deterministic_hint() {
     assert!(!game_2048(&state).is_empty());
     assert_eq!(game_2048(&state), game_2048(&state));
 }
+
+#[test]
+fn default_tic_tac_toe_has_a_deterministic_hint() {
+    let state = AppState::default();
+    assert_eq!(tic_tac_toe(&state), "Try square 5.");
+    assert_eq!(tic_tac_toe(&state), tic_tac_toe(&state));
+}

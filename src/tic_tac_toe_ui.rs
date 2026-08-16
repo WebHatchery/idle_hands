@@ -14,6 +14,7 @@ struct Layout {
     cell: f32,
     new_board: Rect,
     undo: Rect,
+    hint: Rect,
 }
 
 fn layout() -> Layout {
@@ -23,6 +24,7 @@ fn layout() -> Layout {
             cell: 100.,
             new_board: Rect::new(370., 125., 150., 48.),
             undo: Rect::new(370., 185., 150., 48.),
+            hint: Rect::new(530., 185., 150., 48.),
         }
     } else if crate::ui::is_portrait() {
         Layout {
@@ -30,6 +32,7 @@ fn layout() -> Layout {
             cell: 106.6667,
             new_board: Rect::new(20., 510., 155., 48.),
             undo: Rect::new(185., 510., 155., 48.),
+            hint: Rect::new(20., 570., 155., 48.),
         }
     } else {
         Layout {
@@ -37,6 +40,7 @@ fn layout() -> Layout {
             cell: 166.6667,
             new_board: Rect::new(440., 650., 180., 48.),
             undo: Rect::new(650., 650., 180., 48.),
+            hint: Rect::new(860., 650., 180., 48.),
         }
     }
 }
@@ -51,6 +55,9 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if layout.undo.contains(point) {
         return vec![UiAction::TicTacToeUndo];
+    }
+    if layout.hint.contains(point) {
+        return vec![UiAction::TicTacToeHint];
     }
     if layout.board.contains(point) && state.tic_tac_toe.status == TicTacToeStatus::Playing {
         let column = ((point.x - layout.board.x) / layout.cell) as usize;
@@ -68,7 +75,7 @@ pub fn draw(state: &AppState) {
     let header_y = if crate::ui::is_compact_landscape() {
         35.
     } else if crate::ui::is_portrait() {
-        87.
+        105.
     } else {
         72.
     };
@@ -157,6 +164,23 @@ pub fn draw(state: &AppState) {
     );
     button(layout.new_board, "NEW BOARD", state.large_text);
     button(layout.undo, "UNDO", state.large_text);
+    button(layout.hint, "HINT", state.large_text);
+    if let Some(hint) = state.card_hint.as_deref() {
+        let (x, y) = if crate::ui::is_compact_landscape() {
+            (530., 250.)
+        } else if crate::ui::is_portrait() {
+            (20., 640.)
+        } else {
+            (40., 625.)
+        };
+        text(
+            hint,
+            x,
+            y,
+            accessibility::text_size(12., state.large_text),
+            accent(),
+        );
+    }
 }
 
 fn draw_x(rect: Rect, high_contrast: bool) {

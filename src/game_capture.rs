@@ -28,8 +28,10 @@ impl Game {
             "reversi" => Screen::Game(GameId::Reversi),
             "reversi_accessible" => Screen::Game(GameId::Reversi),
             "lights_out" | "lights_out_accessible" => Screen::Game(GameId::LightsOut),
-            "tic_tac_toe" => Screen::Game(GameId::TicTacToe),
-            "tic_tac_toe_accessible" => Screen::Game(GameId::TicTacToe),
+            "tic_tac_toe" | "tic_tac_toe_hint" => Screen::Game(GameId::TicTacToe),
+            "tic_tac_toe_accessible" | "tic_tac_toe_hint_accessible" => {
+                Screen::Game(GameId::TicTacToe)
+            }
             "memory_pairs" | "memory_pairs_accessible" => Screen::Game(GameId::MemoryPairs),
             "sliding_puzzle" | "sliding_puzzle_accessible" => Screen::Game(GameId::SlidingPuzzle),
             "mastermind" => Screen::Game(GameId::Mastermind),
@@ -143,6 +145,8 @@ impl Game {
             self.state.card_hint = Some(card_hints::nim(&self.state));
         } else if scene == "2048_hint" || scene == "2048_hint_accessible" {
             self.state.card_hint = Some(card_hints::game_2048(&self.state));
+        } else if scene == "tic_tac_toe_hint" || scene == "tic_tac_toe_hint_accessible" {
+            self.state.card_hint = Some(card_hints::tic_tac_toe(&self.state));
         }
         if scene.starts_with("tutorial_") {
             if let Screen::Game(game) = self.state.screen {
