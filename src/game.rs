@@ -538,6 +538,9 @@ impl Game {
             ui::UiAction::MastermindPick(color) => {
                 self.state.mastermind.pick(color);
             }
+            ui::UiAction::MastermindHint => {
+                self.state.card_hint = Some(card_hints::mastermind(&self.state));
+            }
             ui::UiAction::MastermindSubmit => {
                 self.state.mastermind.submit();
             }

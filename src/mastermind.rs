@@ -118,6 +118,38 @@ impl Mastermind {
         *self = Self::new(seed);
     }
 
+    pub fn hint_pick(&self) -> Option<(usize, u8)> {
+        if self.status != MastermindStatus::Playing {
+            return None;
+        }
+        let slot = self
+            .current
+            .iter()
+            .position(|peg| *peg == EMPTY)
+            .unwrap_or(0);
+        let mut frequency = [0usize; 6];
+        for first in 0..6 {
+            for second in 0..6 {
+                for third in 0..6 {
+                    for fourth in 0..6 {
+                        let candidate = [first, second, third, fourth];
+                        if (0..self.row as usize).all(|row| {
+                            score_guess(&candidate, &self.guesses[row])
+                                == (self.exact[row], self.partial[row])
+                        }) {
+                            frequency[candidate[slot] as usize] += 1;
+                        }
+                    }
+                }
+            }
+        }
+        frequency
+            .iter()
+            .enumerate()
+            .max_by_key(|(color, count)| (**count, std::cmp::Reverse(*color)))
+            .map(|(color, _)| (slot, color as u8))
+    }
+
     fn snapshot(&self) -> MastermindSnapshot {
         (
             self.guesses,

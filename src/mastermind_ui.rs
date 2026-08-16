@@ -12,6 +12,7 @@ struct Layout {
     clear: Rect,
     undo: Rect,
     new_board: Rect,
+    hint: Rect,
 }
 
 fn layout() -> Layout {
@@ -24,6 +25,7 @@ fn layout() -> Layout {
             clear: Rect::new(480., 160., 110., 42.),
             undo: Rect::new(350., 220., 110., 42.),
             new_board: Rect::new(480., 220., 110., 42.),
+            hint: Rect::new(350., 275., 240., 42.),
         }
     } else if crate::ui::is_portrait() {
         Layout {
@@ -34,6 +36,7 @@ fn layout() -> Layout {
             clear: Rect::new(130., 610., 100., 42.),
             undo: Rect::new(240., 610., 100., 42.),
             new_board: Rect::new(20., 670., 155., 42.),
+            hint: Rect::new(185., 670., 155., 42.),
         }
     } else {
         Layout {
@@ -44,6 +47,7 @@ fn layout() -> Layout {
             clear: Rect::new(720., 605., 110., 42.),
             undo: Rect::new(720., 660., 110., 42.),
             new_board: Rect::new(520., 660., 180., 42.),
+            hint: Rect::new(860., 550., 180., 42.),
         }
     }
 }
@@ -64,6 +68,9 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if layout.new_board.contains(point) {
         return vec![UiAction::MastermindNew];
+    }
+    if layout.hint.contains(point) {
+        return vec![UiAction::MastermindHint];
     }
     if layout.palette.contains(point) {
         let color = (((point.x - layout.palette.x) / (layout.palette.w / 6.)) as usize).min(5);
@@ -114,8 +121,10 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
+    let status = status_text(game.status, game.row);
+    let instruction = state.card_hint.as_deref().unwrap_or(&status);
     text(
-        &status_text(game.status, game.row),
+        instruction,
         body_x,
         body_y,
         accessibility::text_size(body_size(), state.large_text),
@@ -186,6 +195,7 @@ pub fn draw(state: &AppState) {
     button(layout.clear, "CLEAR", state.large_text);
     button(layout.undo, "UNDO", state.large_text);
     button(layout.new_board, "NEW BOARD", state.large_text);
+    button(layout.hint, "HINT", state.large_text);
 }
 
 fn status_text(status: MastermindStatus, row: u8) -> String {

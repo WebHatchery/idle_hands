@@ -101,3 +101,10 @@ fn default_sliding_puzzle_has_a_deterministic_hint() {
     assert!(!sliding_puzzle(&state).is_empty());
     assert_eq!(sliding_puzzle(&state), sliding_puzzle(&state));
 }
+
+#[test]
+fn default_mastermind_has_a_deterministic_hint() {
+    let state = AppState::default();
+    assert_eq!(mastermind(&state), "Try the red peg in slot 1.");
+    assert_eq!(mastermind(&state), mastermind(&state));
+}

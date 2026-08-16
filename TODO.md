@@ -865,6 +865,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover hint legality, determinism, capture aliases, and responsive
     layouts.
 
+## Phase 73 — Mastermind discoverability polish
+
+- [x] Add a deterministic constraint-based HINT action that suggests a color
+  and open slot without revealing or changing the secret.
+  - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
+  - [x] Cover candidate filtering, hint determinism, capture aliases, and
+    responsive layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

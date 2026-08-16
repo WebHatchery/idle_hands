@@ -89,6 +89,7 @@ pub enum UiAction {
     SlidingPuzzleUndo,
     SlidingPuzzleNew,
     MastermindPick(u8),
+    MastermindHint,
     MastermindSubmit,
     MastermindClear,
     MastermindUndo,

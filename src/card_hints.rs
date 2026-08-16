@@ -306,6 +306,27 @@ pub fn sliding_puzzle(state: &AppState) -> String {
     )
 }
 
+pub fn mastermind(state: &AppState) -> String {
+    let game = &state.mastermind;
+    match game.status {
+        crate::mastermind::MastermindStatus::Won => {
+            return "The code is already open — tap NEW BOARD to play again.".into();
+        }
+        crate::mastermind::MastermindStatus::Lost => {
+            return "The code stayed quiet — tap NEW BOARD to begin again.".into();
+        }
+        crate::mastermind::MastermindStatus::Playing => {}
+    }
+    game.hint_pick().map_or_else(
+        || "Try a color in the next open slot.".into(),
+        |(slot, color)| format!("Try the {} peg in slot {}.", color_name(color), slot + 1),
+    )
+}
+
+fn color_name(color: u8) -> &'static str {
+    ["red", "amber", "green", "blue", "violet", "gold"][color as usize % 6]
+}
+
 pub fn is_hint(action: crate::ui::UiAction) -> bool {
     matches!(
         action,
@@ -321,6 +342,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::NimHint
             | crate::ui::UiAction::MemoryPairsHint
             | crate::ui::UiAction::SlidingPuzzleHint
+            | crate::ui::UiAction::MastermindHint
     )
 }
 
