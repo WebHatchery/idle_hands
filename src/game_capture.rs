@@ -13,13 +13,12 @@ impl Game {
             .strip_prefix("portrait_")
             .or_else(|| scene.strip_prefix("landscape_"))
             .unwrap_or(scene);
+        let tutorial = scene.starts_with("tutorial_");
+        let scene = scene.strip_prefix("tutorial_").unwrap_or(scene);
         self.state.screen = match scene {
-            "2048"
-            | "2048_confirm"
-            | "gameplay"
-            | "tutorial_2048"
-            | "2048_hint"
-            | "2048_hint_accessible" => Screen::Game(GameId::Game2048),
+            "2048" | "2048_confirm" | "gameplay" | "2048_hint" | "2048_hint_accessible" => {
+                Screen::Game(GameId::Game2048)
+            }
             "minesweeper"
             | "minesweeper_accessible"
             | "minesweeper_hint"
@@ -439,7 +438,7 @@ impl Game {
         {
             self.state.card_hint = Some(card_hints::mahjong_solitaire(&self.state));
         }
-        if scene.starts_with("tutorial_") {
+        if tutorial {
             if let Screen::Game(game) = self.state.screen {
                 self.state.tutorial = Some(game);
             }

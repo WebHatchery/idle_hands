@@ -663,60 +663,6 @@ pub fn settings_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     vec![]
 }
 
-pub fn tutorial_clicks(p: Vec2) -> Vec<UiAction> {
-    if crate::ui::hit(Rect::new(105., 535., 150., 50.), p) {
-        vec![UiAction::TutorialContinue]
-    } else {
-        vec![]
-    }
-}
-
-pub fn draw_tutorial(game: GameId) {
-    panel(
-        Rect::new(15., 145., 330., 440.),
-        Color::new(0.07, 0.045, 0.13, 0.98),
-    );
-    text(
-        "HOW TO PLAY",
-        35.,
-        205.,
-        25.,
-        Color::new(0.98, 0.83, 0.45, 1.),
-    );
-    text(game.title(), 35., 245., 21., WHITE);
-    text(
-        "Use the visible controls",
-        35.,
-        300.,
-        16.,
-        Color::new(0.78, 0.73, 0.86, 1.),
-    );
-    text(
-        "and tap CONTINUE below",
-        35.,
-        335.,
-        16.,
-        Color::new(0.78, 0.73, 0.86, 1.),
-    );
-    panel(
-        Rect::new(105., 535., 150., 50.),
-        Color::new(0.25, 0.45, 0.34, 1.),
-    );
-    text("CONTINUE", 140., 567., 15., WHITE);
-}
-
-pub fn draw_replay_button() {
-    panel(
-        Rect::new(245., 10., 105., 44.),
-        Color::new(0.16, 0.11, 0.25, 0.96),
-    );
-    text("TUTORIAL", 258., 38., 11., WHITE);
-}
-
-pub fn replay_clicks(p: Vec2) -> bool {
-    crate::ui::hit(Rect::new(245., 10., 105., 44.), p)
-}
-
 fn cabinet_status(state: &AppState, game: GameId) -> &'static str {
     match game {
         GameId::Game2048 if state.records.best_2048 >= 2048 => "COMPLETE",

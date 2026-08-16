@@ -28,6 +28,7 @@ use crate::match_three_ui;
 use crate::maze_walk_ui;
 use crate::memory_pairs_ui;
 use crate::minesweeper_ui;
+use crate::mobile_tutorial_ui;
 use crate::nim_ui;
 use crate::nonogram_ui;
 use crate::number_match_ui;
@@ -121,16 +122,16 @@ pub fn clicks(state: &AppState) -> Vec<UiAction> {
 pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if state.tutorial.is_some() {
         if is_compact_landscape() {
-            return responsive_landscape::tutorial_clicks(p);
+            return mobile_tutorial_ui::tutorial_clicks(p, true);
         }
         if is_portrait() {
-            return responsive_ui::tutorial_clicks(p);
+            return mobile_tutorial_ui::tutorial_clicks(p, false);
         }
         return tutorial_ui::clicks(p);
     }
     if matches!(state.screen, Screen::Game(_))
-        && ((is_compact_landscape() && responsive_landscape::replay_clicks(p))
-            || (is_portrait() && responsive_ui::replay_clicks(p))
+        && ((is_compact_landscape() && mobile_tutorial_ui::replay_clicks(p, true))
+            || (is_portrait() && mobile_tutorial_ui::replay_clicks(p, false))
             || (!is_portrait() && hit(tutorial_ui::REPLAY_RECT, p)))
     {
         return vec![UiAction::ReplayTutorial];
@@ -425,18 +426,17 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
     }
     if let Some(game) = state.tutorial {
         if is_compact_landscape() {
-            responsive_landscape::draw_tutorial(game);
+            mobile_tutorial_ui::draw_tutorial(game, true);
         } else if is_portrait() {
-            responsive_ui::draw_tutorial(game);
+            mobile_tutorial_ui::draw_tutorial(game, false);
         } else {
             tutorial_ui::draw_overlay(game);
         }
-    } else if matches!(state.screen, Screen::Game(game) if !matches!(game, GameId::LightsOut | GameId::TicTacToe | GameId::MemoryPairs | GameId::SlidingPuzzle | GameId::Mastermind | GameId::Spider | GameId::WordSearch | GameId::Hangman | GameId::ConnectFour | GameId::Checkers | GameId::PegSolitaire | GameId::MahjongSolitaire | GameId::Snake | GameId::Breakout | GameId::HigherLower | GameId::KlondikeGolf | GameId::Nim))
-    {
+    } else if matches!(state.screen, Screen::Game(_)) {
         if is_compact_landscape() {
-            responsive_landscape::draw_replay_button();
+            mobile_tutorial_ui::draw_replay_button(true);
         } else if is_portrait() {
-            responsive_ui::draw_replay_button();
+            mobile_tutorial_ui::draw_replay_button(false);
         } else {
             tutorial_ui::draw_replay_button();
         }

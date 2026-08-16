@@ -80,7 +80,7 @@ pub fn draw_overlay(game: GameId) {
         WHITE,
     );
 }
-fn instructions(game: GameId) -> [&'static str; 3] {
+pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
     match game {
         GameId::Game2048 => [
             "Swipe the board to move tiles.",

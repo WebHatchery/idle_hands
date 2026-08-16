@@ -68,6 +68,7 @@ mod memory_pairs;
 mod memory_pairs_ui;
 mod minesweeper;
 mod minesweeper_ui;
+mod mobile_tutorial_ui;
 mod nim;
 mod nim_ui;
 mod nonogram;
