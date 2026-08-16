@@ -136,6 +136,23 @@ impl MemoryPairs {
     pub fn reset(&mut self, seed: u64) {
         *self = Self::new(seed);
     }
+
+    pub fn hint_pair(&self) -> Option<(usize, usize)> {
+        if self.status == MemoryStatus::Won {
+            return None;
+        }
+        for first in 0..CELLS {
+            if self.cards[first].matched {
+                continue;
+            }
+            if let Some(second) = ((first + 1)..CELLS).find(|&index| {
+                !self.cards[index].matched && self.cards[index].pair == self.cards[first].pair
+            }) {
+                return Some((first, second));
+            }
+        }
+        None
+    }
 }
 
 fn next_seed(seed: u64) -> u64 {

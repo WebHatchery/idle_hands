@@ -81,6 +81,7 @@ pub enum UiAction {
     TicTacToeUndo,
     TicTacToeNew,
     MemoryPairsSelect(usize),
+    MemoryPairsHint,
     MemoryPairsUndo,
     MemoryPairsNew,
     SlidingPuzzleMove(usize),

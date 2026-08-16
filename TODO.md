@@ -851,6 +851,12 @@ sizes, covered by rule tests, and passes `publish.ps1`.
     layouts with the existing accessible text treatment.
   - [x] Cover hint routing and capture the updated Lights Out scenes.
 
+## Phase 71 — Memory/Pairs discoverability polish
+
+- [x] Add a deterministic HINT action that identifies an unmatched pair without changing the board.
+  - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
+  - [x] Cover hint determinism, pair validity, capture aliases, and responsive layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

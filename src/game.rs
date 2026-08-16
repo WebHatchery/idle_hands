@@ -512,6 +512,9 @@ impl Game {
             ui::UiAction::MemoryPairsSelect(index) => {
                 self.state.memory_pairs.select(index);
             }
+            ui::UiAction::MemoryPairsHint => {
+                self.state.card_hint = Some(card_hints::memory_pairs(&self.state));
+            }
             ui::UiAction::MemoryPairsUndo => {
                 self.state.memory_pairs.undo();
             }

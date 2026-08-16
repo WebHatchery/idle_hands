@@ -35,7 +35,10 @@ impl Game {
             "tic_tac_toe_accessible" | "tic_tac_toe_hint_accessible" => {
                 Screen::Game(GameId::TicTacToe)
             }
-            "memory_pairs" | "memory_pairs_accessible" => Screen::Game(GameId::MemoryPairs),
+            "memory_pairs"
+            | "memory_pairs_accessible"
+            | "memory_pairs_hint"
+            | "memory_pairs_hint_accessible" => Screen::Game(GameId::MemoryPairs),
             "sliding_puzzle" | "sliding_puzzle_accessible" => Screen::Game(GameId::SlidingPuzzle),
             "mastermind" => Screen::Game(GameId::Mastermind),
             "spider" => Screen::Game(GameId::Spider),
@@ -152,6 +155,8 @@ impl Game {
             self.state.card_hint = Some(card_hints::tic_tac_toe(&self.state));
         } else if scene == "lights_out_hint" || scene == "lights_out_hint_accessible" {
             self.state.card_hint = Some(card_hints::lights_out(&self.state));
+        } else if scene == "memory_pairs_hint" || scene == "memory_pairs_hint_accessible" {
+            self.state.card_hint = Some(card_hints::memory_pairs(&self.state));
         }
         if scene.starts_with("tutorial_") {
             if let Screen::Game(game) = self.state.screen {

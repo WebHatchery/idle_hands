@@ -87,3 +87,10 @@ fn default_lights_out_has_a_deterministic_hint() {
     assert!(!lights_out(&state).is_empty());
     assert_eq!(lights_out(&state), lights_out(&state));
 }
+
+#[test]
+fn default_memory_pairs_has_a_deterministic_hint() {
+    let state = AppState::default();
+    assert_eq!(memory_pairs(&state), "Pair cards 1 and 12.");
+    assert_eq!(memory_pairs(&state), memory_pairs(&state));
+}

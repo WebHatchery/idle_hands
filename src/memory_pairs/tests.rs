@@ -46,3 +46,12 @@ fn a_mismatch_stays_visible_until_the_next_selection_and_undo_restores_it() {
     assert_eq!(game.selected, [Some(0), None]);
     assert_eq!(game.moves, 0);
 }
+
+#[test]
+fn hint_pair_finds_the_first_unmatched_pair_without_mutating_the_board() {
+    let game = MemoryPairs::new(42);
+    let before = game.cards;
+    let (first, second) = game.hint_pair().unwrap();
+    assert_eq!(game.cards[first].pair, game.cards[second].pair);
+    assert_eq!(game.cards, before);
+}

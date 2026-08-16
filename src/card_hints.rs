@@ -284,6 +284,17 @@ pub fn lights_out(state: &AppState) -> String {
     )
 }
 
+pub fn memory_pairs(state: &AppState) -> String {
+    let game = &state.memory_pairs;
+    if game.status == crate::memory_pairs::MemoryStatus::Won {
+        return "Every pair is already resting — tap NEW BOARD to play again.".into();
+    }
+    game.hint_pair().map_or_else(
+        || "No unmatched pair remains — tap NEW BOARD to begin again.".into(),
+        |(first, second)| format!("Pair cards {} and {}.", first + 1, second + 1),
+    )
+}
+
 pub fn is_hint(action: crate::ui::UiAction) -> bool {
     matches!(
         action,
@@ -297,6 +308,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::KlondikeGolfHint
             | crate::ui::UiAction::SpiderSolitaireHint
             | crate::ui::UiAction::NimHint
+            | crate::ui::UiAction::MemoryPairsHint
     )
 }
 
