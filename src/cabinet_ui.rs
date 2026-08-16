@@ -53,10 +53,13 @@ pub fn draw(state: &AppState, _data: &GameData, loaded: usize) {
         text(
             &crate::cabinet_status::filter_label(state, filter),
             rect.x + 9.,
-            rect.y + 23.,
+            rect.y + 28.,
             10.,
             WHITE,
         );
+        if state.cabinet_filter == filter {
+            draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 3., WHITE);
+        }
     }
     text(
         "A small collection for quiet minutes",
@@ -214,9 +217,9 @@ fn cabinet_rect(index: usize) -> Rect {
 }
 pub fn filter_buttons_for_input() -> [(Rect, &'static str, u8); 3] {
     [
-        (Rect::new(425., 108., 78., 36.), "ALL", 0),
-        (Rect::new(509., 108., 78., 36.), "OPEN", 1),
-        (Rect::new(593., 108., 78., 36.), "DONE", 2),
+        (Rect::new(425., 104., 78., 44.), "ALL", 0),
+        (Rect::new(509., 104., 78., 44.), "OPEN", 1),
+        (Rect::new(593., 104., 78., 44.), "DONE", 2),
     ]
 }
 fn filter_buttons() -> [(Rect, &'static str, u8); 3] {

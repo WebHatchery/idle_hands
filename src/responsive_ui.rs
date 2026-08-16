@@ -44,7 +44,7 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
     text(
         "Quiet games for a small screen",
         18.,
-        78.,
+        92.,
         14.,
         Color::new(0.72, 0.68, 0.82, 1.),
     );
@@ -61,10 +61,13 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
         text(
             &crate::cabinet_status::filter_label(state, filter),
             rect.x + 5.,
-            rect.y + 25.,
+            rect.y + 29.,
             8.,
             WHITE,
         );
+        if state.cabinet_filter == filter {
+            draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 3., WHITE);
+        }
     }
     panel(
         Rect::new(190., 40., 130., 42.),
@@ -243,9 +246,9 @@ fn cabinet_favorite_rect(index: usize) -> Rect {
 
 fn filter_buttons() -> [(Rect, &'static str, u8); 3] {
     [
-        (Rect::new(4., 40., 54., 38.), "ALL", 0),
-        (Rect::new(62., 40., 54., 38.), "OPEN", 1),
-        (Rect::new(120., 40., 54., 38.), "DONE", 2),
+        (Rect::new(4., 38., 54., 44.), "ALL", 0),
+        (Rect::new(62., 38., 54., 44.), "OPEN", 1),
+        (Rect::new(120., 38., 54., 44.), "DONE", 2),
     ]
 }
 fn visible_games(state: &AppState) -> Vec<GameId> {

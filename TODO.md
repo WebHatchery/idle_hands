@@ -1297,3 +1297,8 @@ contract, shared confirmation safety, responsive capture coverage, and the
 
 - [x] Add live ALL, OPEN, and DONE counts plus a touch-readable empty-state
   message to the responsive cabinet filters.
+
+## Phase 130 — Cabinet filter accessibility
+
+- [x] Resize cabinet filters to touch-complete targets and add a non-color
+  active outline, with accessible responsive capture coverage.

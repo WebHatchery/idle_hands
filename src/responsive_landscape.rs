@@ -30,7 +30,7 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 fn cabinet_rect(index: usize) -> Rect {
     Rect::new(
         8. + (index % 7) as f32 * 120.,
-        38. + (index / 7) as f32 * 40.,
+        50. + (index / 7) as f32 * 40.,
         114.,
         36.,
     )
@@ -42,10 +42,10 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
     crate::cabinet_art::draw_header_motif(812., 28., 13., accent);
     crate::cabinet_art::draw_shelves(8., 54., 828., 260., accent);
     text(
-        "Quiet games for a wider pause",
-        190.,
+        "WIDER PAUSE",
+        370.,
         28.,
-        13.,
+        10.,
         Color::new(0.72, 0.68, 0.82, 1.),
     );
     let selected = GameId::ALL[state.selected.min(GameId::ALL.len() - 1)];
@@ -61,10 +61,13 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
         text(
             &crate::cabinet_status::filter_label(state, filter),
             rect.x + 3.,
-            rect.y + 20.,
+            rect.y + 29.,
             7.,
             WHITE,
         );
+        if state.cabinet_filter == filter {
+            draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 3., WHITE);
+        }
     }
     panel(
         Rect::new(560., 2., 130., 30.),
@@ -219,9 +222,9 @@ fn cabinet_favorite_rect(index: usize) -> Rect {
 
 fn filter_buttons() -> [(Rect, &'static str, u8); 3] {
     [
-        (Rect::new(190., 2., 54., 30.), "ALL", 0),
-        (Rect::new(248., 2., 54., 30.), "OPEN", 1),
-        (Rect::new(306., 2., 54., 30.), "DONE", 2),
+        (Rect::new(190., 2., 54., 44.), "ALL", 0),
+        (Rect::new(248., 2., 54., 44.), "OPEN", 1),
+        (Rect::new(306., 2., 54., 44.), "DONE", 2),
     ]
 }
 fn visible_games(state: &AppState) -> Vec<GameId> {
