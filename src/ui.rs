@@ -78,6 +78,49 @@ use macroquad::prelude::*;
 use macroquad_toolkit::ui::{
     end_frame_neighbours, note_neighbour, touch_area_for_scale, VirtualUi,
 };
+
+pub fn draw_rounded_panel(rect: Rect, radius: f32, fill: Color, border: Color) {
+    const CORNER_SEGMENTS: usize = 6;
+
+    let radius = radius.clamp(0., rect.w.min(rect.h) * 0.5);
+    if radius == 0. {
+        draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
+        draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., border);
+        return;
+    }
+
+    let mut edge = Vec::with_capacity(CORNER_SEGMENTS * 4 + 1);
+    for (center, start) in [
+        (vec2(rect.x + radius, rect.y + radius), std::f32::consts::PI),
+        (
+            vec2(rect.right() - radius, rect.y + radius),
+            std::f32::consts::PI * 1.5,
+        ),
+        (vec2(rect.right() - radius, rect.bottom() - radius), 0.),
+        (
+            vec2(rect.x + radius, rect.bottom() - radius),
+            std::f32::consts::FRAC_PI_2,
+        ),
+    ] {
+        for step in 0..=CORNER_SEGMENTS {
+            let angle = start + std::f32::consts::FRAC_PI_2 * step as f32 / CORNER_SEGMENTS as f32;
+            edge.push(center + vec2(angle.cos(), angle.sin()) * radius);
+        }
+    }
+
+    let center = rect.center();
+    for index in 0..edge.len() {
+        draw_triangle(center, edge[index], edge[(index + 1) % edge.len()], fill);
+        draw_line(
+            edge[index].x,
+            edge[index].y,
+            edge[(index + 1) % edge.len()].x,
+            edge[(index + 1) % edge.len()].y,
+            2.,
+            border,
+        );
+    }
+}
 use std::cell::Cell;
 pub const LOGICAL_WIDTH: f32 = 1280.0;
 pub const LOGICAL_HEIGHT: f32 = 720.0;

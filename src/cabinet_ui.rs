@@ -459,8 +459,7 @@ fn small_button(rect: Rect, label: &str, fill: Color) {
     text(label, rect.x + 13., rect.y + 29., 10., crate::theme::CREAM);
 }
 fn panel(rect: Rect, fill: Color, border: Color) {
-    draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
-    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., border);
+    crate::ui::draw_rounded_panel(rect, 10., fill, border);
 }
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, size, color);
