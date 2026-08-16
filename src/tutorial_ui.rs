@@ -4,7 +4,7 @@ use crate::state::GameId;
 use crate::ui::UiAction;
 use macroquad::prelude::*;
 
-pub const REPLAY_RECT: Rect = Rect::new(220., 20., 150., 50.);
+pub const REPLAY_RECT: Rect = Rect::new(1080., 8., 150., 42.);
 const CONTINUE_RECT: Rect = Rect::new(900., 565., 180., 52.);
 
 pub fn clicks(p: Vec2) -> Vec<UiAction> {
@@ -20,7 +20,12 @@ pub fn draw_replay_button() {
         REPLAY_RECT.y,
         REPLAY_RECT.w,
         REPLAY_RECT.h,
-        Color::new(0.16, 0.11, 0.25, 0.96),
+        Color::new(
+            crate::theme::GAME_PANEL.r,
+            crate::theme::GAME_PANEL.g,
+            crate::theme::GAME_PANEL.b,
+            0.96,
+        ),
     );
     draw_rectangle_lines(
         REPLAY_RECT.x,
@@ -28,18 +33,34 @@ pub fn draw_replay_button() {
         REPLAY_RECT.w,
         REPLAY_RECT.h,
         2.,
-        Color::new(0.45, 0.38, 0.65, 0.8),
+        Color::new(
+            crate::theme::BRASS.r,
+            crate::theme::BRASS.g,
+            crate::theme::BRASS.b,
+            0.8,
+        ),
     );
     crate::ui::draw_text(
         "TUTORIAL",
         REPLAY_RECT.x + 22.,
-        REPLAY_RECT.y + 31.,
+        REPLAY_RECT.y + 27.,
         16.,
         WHITE,
     );
 }
 pub fn draw_overlay(game: GameId) {
-    draw_rectangle(250., 150., 780., 485., Color::new(0.07, 0.045, 0.13, 0.98));
+    draw_rectangle(
+        250.,
+        150.,
+        780.,
+        485.,
+        Color::new(
+            crate::theme::BACKGROUND_DEEP.r,
+            crate::theme::BACKGROUND_DEEP.g,
+            crate::theme::BACKGROUND_DEEP.b,
+            0.98,
+        ),
+    );
     draw_rectangle_lines(
         250.,
         150.,
@@ -64,7 +85,7 @@ pub fn draw_overlay(game: GameId) {
         CONTINUE_RECT.y,
         CONTINUE_RECT.w,
         CONTINUE_RECT.h,
-        Color::new(0.25, 0.45, 0.34, 1.),
+        crate::theme::MOSS_DARK,
     );
     crate::ui::draw_text(
         "CONTINUE",

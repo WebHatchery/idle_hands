@@ -33,7 +33,12 @@ pub fn replay_clicks(point: Vec2, compact_landscape: bool) -> bool {
 
 pub fn draw_replay_button(compact_landscape: bool) {
     let rect = replay_rect(compact_landscape);
-    panel(rect, Color::new(0.16, 0.11, 0.25, 0.96));
+    panel(rect, Color::new(
+        crate::theme::SURFACE_DARK.r,
+        crate::theme::SURFACE_DARK.g,
+        crate::theme::SURFACE_DARK.b,
+        0.96,
+    ));
     crate::ui::draw_text(
         "TUTORIAL",
         rect.x + if compact_landscape { 14. } else { 13. },
@@ -111,7 +116,7 @@ fn draw_landscape(game: GameId) {
 
 fn draw_continue(compact_landscape: bool) {
     let rect = continue_rect(compact_landscape);
-    panel(rect, Color::new(0.25, 0.45, 0.34, 1.));
+    panel(rect, crate::theme::MOSS_DARK);
     crate::ui::draw_text("CONTINUE", rect.x + 34., rect.y + rect.h * 0.64, 15., WHITE);
 }
 

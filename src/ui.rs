@@ -495,7 +495,7 @@ fn text(s: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(s, x, y, crate::ui::readable_text_size(size), color);
 }
 fn panel(r: Rect, fill: Color) {
-    draw_rectangle(r.x, r.y, r.w, r.h, fill);
+    draw_rectangle(r.x, r.y, r.w, r.h, crate::theme::drawer_surface(fill));
     draw_rectangle_lines(r.x, r.y, r.w, r.h, 2., crate::theme::BORDER)
 }
 fn draw_2048(state: &AppState) {
@@ -513,7 +513,7 @@ fn draw_2048(state: &AppState) {
     score_box(Rect::new(965., 68., 120., 66.), "BEST", g.best);
     panel(
         Rect::new(830., 160., 360., 380.),
-        Color::new(0.10, 0.07, 0.16, 1.),
+        crate::theme::GAME_PANEL,
     );
     for i in 0..16 {
         let r = Rect::new(

@@ -3,7 +3,7 @@
 use macroquad::prelude::Color;
 
 pub const CARD_BACKS: [&str; 3] = ["Plum", "Moss", "Midnight"];
-pub const BOARD_THEMES: [&str; 3] = ["Plum felt", "Moss felt", "Dawn paper"];
+pub const BOARD_THEMES: [&str; 3] = ["Walnut felt", "Moss felt", "Dawn paper"];
 pub const SOUND_SETS: [&str; 3] = ["Quiet room", "Rain on glass", "Late library"];
 pub const CABINET_DECORATIONS: [&str; 3] = ["Brass key", "Pressed fern", "Moon card"];
 
@@ -48,8 +48,8 @@ fn next_unlocked(current: u8, stamps: u16, costs: &[u16]) -> u8 {
 
 pub fn background(theme: u8) -> Color {
     match theme as usize % BOARD_THEMES.len() {
-        1 => Color::new(0.135, 0.165, 0.105, 1.),
-        2 => Color::new(0.255, 0.205, 0.155, 1.),
+        1 => crate::theme::MOSS_DARK,
+        2 => crate::theme::WALNUT,
         _ => crate::theme::BACKGROUND,
     }
 }
@@ -64,10 +64,7 @@ pub fn card_back_colors(back: u8) -> (Color, Color) {
             Color::new(0.07, 0.10, 0.20, 1.),
             Color::new(0.50, 0.72, 0.95, 1.),
         ),
-        _ => (
-            Color::new(0.20, 0.13, 0.30, 1.),
-            Color::new(0.75, 0.55, 0.90, 1.),
-        ),
+        _ => (crate::theme::LEATHER, crate::theme::BRASS),
     }
 }
 

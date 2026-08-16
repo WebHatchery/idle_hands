@@ -21,6 +21,10 @@ pub const SLATE_BRONZE: Color = Color::new(0.220, 0.285, 0.260, 1.0);
 pub const PAPER: Color = Color::new(0.835, 0.755, 0.620, 1.0);
 pub const PAPER_LIGHT: Color = Color::new(0.900, 0.835, 0.720, 1.0);
 
+// Shared drawer chrome keeps every game in the cabinet's oak, moss, brass,
+// and cream family while leaving room for restrained game-piece colors.
+pub const GAME_PANEL: Color = SURFACE_DARK;
+
 pub fn category_surface(game: GameId, active: bool) -> Color {
     let base = match crate::cabinet_status::category_filter(game) {
         3 => LEATHER,
@@ -49,6 +53,22 @@ pub fn lighten(color: Color, amount: f32) -> Color {
 pub fn text_color(color: Color) -> Color {
     if color.r > 0.95 && color.g > 0.95 && color.b > 0.95 {
         CREAM
+    } else if color.r > color.b * 0.9 && color.b > color.g * 1.15 && color.b > 0.5 {
+        SECONDARY
+    } else {
+        color
+    }
+}
+
+/// Translates legacy drawer chrome into the cabinet palette. Gameplay pieces
+/// keep their own signal colors; this is intended for neutral panels only.
+pub fn drawer_surface(color: Color) -> Color {
+    if color.r < 0.19 && color.g < 0.14 && color.b > 0.18 {
+        GAME_PANEL
+    } else if color.r < 0.28 && color.g < 0.20 && color.b > 0.25 {
+        SURFACE_DARK
+    } else if color.r > 0.40 && color.r < 0.55 && color.g < 0.32 && color.b > 0.35 {
+        LEATHER
     } else {
         color
     }

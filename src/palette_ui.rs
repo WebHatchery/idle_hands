@@ -19,8 +19,8 @@ pub fn tile_color(v: u16, theme: u8) -> Color {
             _ => Color::new(0.72, 0.72, 0.34, 1.),
         },
         2 => match v {
-            0 => Color::new(0.22, 0.15, 0.11, 1.),
-            2 => Color::new(0.42, 0.29, 0.20, 1.),
+            0 => crate::theme::BACKGROUND_DEEP,
+            2 => crate::theme::SURFACE_DARK,
             4 => Color::new(0.55, 0.34, 0.22, 1.),
             8 => Color::new(0.72, 0.42, 0.20, 1.),
             16 => Color::new(0.84, 0.56, 0.24, 1.),
@@ -28,9 +28,9 @@ pub fn tile_color(v: u16, theme: u8) -> Color {
             64 => Color::new(0.68, 0.24, 0.22, 1.),
             128 => Color::new(0.70, 0.46, 0.30, 1.),
             256 => Color::new(0.58, 0.40, 0.26, 1.),
-            512 => Color::new(0.40, 0.50, 0.54, 1.),
-            1024 => Color::new(0.42, 0.66, 0.64, 1.),
-            _ => Color::new(0.82, 0.68, 0.34, 1.),
+            512 => crate::theme::SLATE_BRONZE,
+            1024 => crate::theme::MOSS_DARK,
+            _ => crate::theme::BRASS,
         },
         _ => match v {
             0 => Color::new(0.14, 0.10, 0.20, 1.),

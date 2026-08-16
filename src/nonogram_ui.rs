@@ -13,7 +13,7 @@ fn text(s: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(s, x, y, crate::ui::readable_text_size(size), color);
 }
 fn panel(rect: Rect, fill: Color) {
-    draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
+    draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::drawer_surface(fill));
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
 

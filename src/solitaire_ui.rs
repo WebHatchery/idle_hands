@@ -35,32 +35,32 @@ pub fn draw_solitaire(state: &AppState) {
         14.,
         Color::new(0.63, 0.95, 0.72, 1.),
     );
-    panel(card_rect(60., 80.), crate::theme::SURFACE);
+    panel(card_rect(60., 175.), crate::theme::SURFACE);
     if let Some(card) = game.stock.last() {
         draw_card(
-            card_rect(60., 80.),
+            card_rect(60., 175.),
             *card,
             false,
             state.card_back,
             state.reduced_motion,
         );
     }
-    text("STOCK", 68., 214., 13., Color::new(0.63, 0.58, 0.72, 1.));
+    text("STOCK", 68., 309., 13., crate::theme::SECONDARY);
     if let Some(card) = game.waste.last() {
         draw_card(
-            card_rect(170., 80.),
+            card_rect(170., 175.),
             *card,
             game.selected == Some(CardSource::Waste),
             state.card_back,
             state.reduced_motion,
         );
     } else {
-        panel(card_rect(170., 80.), Color::new(0.12, 0.09, 0.20, 1.));
+        panel(card_rect(170., 175.), crate::theme::GAME_PANEL);
     }
-    text("WASTE", 180., 214., 13., Color::new(0.63, 0.58, 0.72, 1.));
+    text("WASTE", 180., 309., 13., crate::theme::SECONDARY);
     for suit in 0..4 {
-        let rect = card_rect(690. + suit as f32 * 105., 80.);
-        panel(rect, Color::new(0.12, 0.09, 0.20, 1.));
+        let rect = card_rect(690. + suit as f32 * 105., 175.);
+        panel(rect, crate::theme::GAME_PANEL);
         if game.foundations[suit] > 0 {
             let card = Card {
                 rank: game.foundations[suit],
@@ -83,17 +83,17 @@ pub fn draw_solitaire(state: &AppState) {
         text(
             &(column + 1).to_string(),
             x + 38.,
-            240.,
+            335.,
             15.,
             Color::new(0.63, 0.58, 0.72, 1.),
         );
         for (depth, card) in game.tableau[column].iter().enumerate() {
-            let rect = card_rect(x, 250. + depth as f32 * 30.);
+            let rect = card_rect(x, 345. + depth as f32 * 30.);
             let selected = game.selected == Some(CardSource::Tableau(column, depth));
             draw_card(rect, *card, selected, state.card_back, state.reduced_motion);
         }
         if game.tableau[column].is_empty() {
-            panel(card_rect(x, 250.), Color::new(0.12, 0.09, 0.20, 1.));
+            panel(card_rect(x, 345.), crate::theme::GAME_PANEL);
         }
     }
     text(
@@ -125,7 +125,7 @@ pub fn draw_solitaire(state: &AppState) {
 }
 
 fn panel(rect: Rect, fill: Color) {
-    draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
+    draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::drawer_surface(fill));
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
 
@@ -133,14 +133,14 @@ pub fn solitaire_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if Rect::new(20., 20., 180., 50.).contains(p) {
         return vec![UiAction::Cabinet];
     }
-    if card_rect(60., 80.).contains(p) {
+    if card_rect(60., 175.).contains(p) {
         return vec![UiAction::SolitaireStock];
     }
-    if card_rect(170., 80.).contains(p) {
+    if card_rect(170., 175.).contains(p) {
         return vec![UiAction::SolitaireWaste];
     }
     for suit in 0..4 {
-        if card_rect(690. + suit as f32 * 105., 80.).contains(p) {
+        if card_rect(690. + suit as f32 * 105., 175.).contains(p) {
             return vec![UiAction::SolitaireFoundation(suit)];
         }
     }
@@ -155,11 +155,11 @@ pub fn solitaire_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     for column in 0..7 {
         let x = 35. + column as f32 * 120.;
-        if p.x >= x && p.x <= x + 92. && p.y >= 240. {
+        if p.x >= x && p.x <= x + 92. && p.y >= 335. {
             let depth = if state.solitaire.tableau[column].is_empty() {
                 0
             } else {
-                (((p.y - 250.) / 30.).floor() as usize)
+                (((p.y - 345.) / 30.).floor() as usize)
                     .min(state.solitaire.tableau[column].len() - 1)
             };
             return vec![UiAction::SolitaireTableau(column, depth)];

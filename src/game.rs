@@ -45,7 +45,7 @@ impl Game {
     pub async fn new() -> Self {
         let data = GameData::load().expect("Idle Hands embedded data failed to load");
         let mut assets = AssetManager::new();
-        let placeholder = Image::gen_image_color(16, 16, Color::new(0.25, 0.18, 0.35, 1.0));
+        let placeholder = Image::gen_image_color(16, 16, crate::theme::SURFACE_DARK);
         assets.set_placeholder_texture_direct(Texture2D::from_image(&placeholder));
         assets.load_texture_configs(&data.texture_manifest).await;
         let mut game = Self {

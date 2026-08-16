@@ -31,7 +31,7 @@ pub fn draw_2048(state: &AppState) {
         WHITE,
     );
     let board = Rect::new(12., 65., 320., 320.);
-    panel(board, Color::new(0.10, 0.07, 0.16, 1.));
+    panel(board, crate::theme::GAME_PANEL);
     for index in 0..16 {
         let rect = Rect::new(
             board.x + 8. + (index % 4) as f32 * 78.,

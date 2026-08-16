@@ -204,7 +204,7 @@ fn page_button(rect: Rect, label: &str) {
 }
 
 fn panel(rect: Rect, fill: Color) {
-    draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
+    draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::drawer_surface(fill));
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
 

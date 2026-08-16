@@ -19,7 +19,7 @@ pub fn board_fill(high_contrast: bool) -> Color {
     if high_contrast {
         Color::new(0.015, 0.015, 0.02, 1.)
     } else {
-        Color::new(0.10, 0.07, 0.16, 1.)
+        crate::theme::BACKGROUND_DEEP
     }
 }
 
@@ -33,7 +33,7 @@ pub fn mine_cell(revealed: bool, high_contrast: bool) -> Color {
     } else if revealed {
         Color::new(0.24, 0.19, 0.30, 1.)
     } else {
-        Color::new(0.15, 0.11, 0.23, 1.)
+        crate::theme::SURFACE_DARK
     }
 }
 
