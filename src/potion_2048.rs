@@ -76,6 +76,35 @@ impl Potion2048 {
         }
         changed
     }
+
+    pub fn hint_direction(&self) -> Option<Direction> {
+        if self.won() {
+            return None;
+        }
+        let mut best = None;
+        let mut best_gain = 0;
+        let mut best_empty = 0;
+        for direction in [
+            Direction::Up,
+            Direction::Left,
+            Direction::Down,
+            Direction::Right,
+        ] {
+            let mut candidate = self.clone();
+            let score = candidate.score;
+            if !candidate.move_in(direction) {
+                continue;
+            }
+            let gain = candidate.score - score;
+            let empty = candidate.cells.iter().filter(|&&value| value == 0).count();
+            if best.is_none() || gain > best_gain || (gain == best_gain && empty > best_empty) {
+                best = Some(direction);
+                best_gain = gain;
+                best_empty = empty;
+            }
+        }
+        best
+    }
     pub fn undo(&mut self) -> bool {
         if let Some((cells, score, seed)) = self.undo.take() {
             self.cells = cells;

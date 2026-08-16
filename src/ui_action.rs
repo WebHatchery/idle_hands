@@ -175,6 +175,7 @@ pub enum UiAction {
     DungeonUndo,
     DungeonNew,
     PotionMove(Direction),
+    PotionHint,
     PotionUndo,
     PotionNew,
     TowerCell(usize),

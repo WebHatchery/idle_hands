@@ -606,6 +606,26 @@ pub fn dungeon_sweeper(state: &AppState) -> String {
     )
 }
 
+pub fn potion_2048(state: &AppState) -> String {
+    let game = &state.potion_2048;
+    if game.won() {
+        return "The master potion is brewed — tap NEW BREW to play again.".into();
+    }
+    game.hint_direction().map_or_else(
+        || "No merge remains — tap NEW BREW to begin again.".into(),
+        |direction| format!("Best move: {}.", potion_direction_label(direction)),
+    )
+}
+
+fn potion_direction_label(direction: crate::state::Direction) -> &'static str {
+    match direction {
+        crate::state::Direction::Up => "UP",
+        crate::state::Direction::Left => "LEFT",
+        crate::state::Direction::Down => "DOWN",
+        crate::state::Direction::Right => "RIGHT",
+    }
+}
+
 fn blackjack_hint_label(action: crate::blackjack::BlackjackHint) -> &'static str {
     match action {
         crate::blackjack::BlackjackHint::Hit => "HIT",
@@ -672,6 +692,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::HigherLowerHint
             | crate::ui::UiAction::BlackjackHint
             | crate::ui::UiAction::DungeonHint
+            | crate::ui::UiAction::PotionHint
     )
 }
 

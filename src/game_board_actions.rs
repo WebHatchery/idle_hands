@@ -224,6 +224,10 @@ impl Game {
             UiAction::PotionMove(direction) => {
                 self.state.potion_2048.move_in(*direction);
             }
+            UiAction::PotionHint => {
+                self.state.card_hint = Some(crate::card_hints::potion_2048(&self.state));
+                return true;
+            }
             UiAction::PotionUndo => {
                 self.state.potion_2048.undo();
             }

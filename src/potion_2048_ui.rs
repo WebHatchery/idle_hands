@@ -11,6 +11,7 @@ use macroquad::prelude::*;
 struct Layout {
     board: Rect,
     arrows: [Rect; 4],
+    hint: Rect,
     undo: Rect,
     new_game: Rect,
 }
@@ -24,6 +25,7 @@ fn layout() -> Layout {
                 Rect::new(610., 170., 52., 44.),
                 Rect::new(610., 220., 52., 44.),
             ],
+            hint: Rect::new(680., 275., 105., 44.),
             undo: Rect::new(680., 155., 105., 44.),
             new_game: Rect::new(680., 210., 130., 44.),
         }
@@ -36,6 +38,7 @@ fn layout() -> Layout {
                 Rect::new(184., 480., 74., 44.),
                 Rect::new(266., 480., 74., 44.),
             ],
+            hint: Rect::new(20., 615., 145., 44.),
             undo: Rect::new(20., 555., 145., 44.),
             new_game: Rect::new(185., 555., 155., 44.),
         }
@@ -48,6 +51,7 @@ fn layout() -> Layout {
                 Rect::new(980., 150., 62., 46.),
                 Rect::new(1050., 150., 62., 46.),
             ],
+            hint: Rect::new(840., 310., 120., 44.),
             undo: Rect::new(840., 250., 120., 44.),
             new_game: Rect::new(980., 250., 150., 44.),
         }
@@ -72,6 +76,9 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if l.undo.contains(point) {
         return vec![UiAction::PotionUndo];
+    }
+    if l.hint.contains(point) {
+        return vec![UiAction::PotionHint];
     }
     if l.new_game.contains(point) {
         return vec![UiAction::PotionNew];
@@ -112,7 +119,12 @@ pub fn draw(state: &AppState) {
         accent(),
     );
     text(
-        &format!("Score {}  •  Best {}  •  Reach 4096", game.score, game.best),
+        &format!(
+            "Score {}  •  Best {}  •  {}",
+            game.score,
+            game.best,
+            state.card_hint.as_deref().unwrap_or("Reach 4096")
+        ),
         if compact { 430. } else { x },
         if compact { 30. } else { y + 25. },
         accessibility::text_size(body_size(), state.large_text),
@@ -158,6 +170,7 @@ pub fn draw(state: &AppState) {
         );
     }
     button(l.undo, "UNDO", state.large_text);
+    button(l.hint, "HINT", state.large_text);
     button(l.new_game, "NEW BREW", state.large_text);
 }
 fn tile_color(value: u16, high_contrast: bool) -> Color {

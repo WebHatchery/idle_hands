@@ -221,3 +221,11 @@ fn default_dungeon_sweeper_has_a_deterministic_hint() {
     assert!(!dungeon_sweeper(&state).is_empty());
     assert_eq!(dungeon_sweeper(&state), dungeon_sweeper(&state));
 }
+
+#[test]
+fn default_potion_2048_has_a_deterministic_hint() {
+    let state = AppState::default();
+
+    assert!(!potion_2048(&state).is_empty());
+    assert_eq!(potion_2048(&state), potion_2048(&state));
+}
