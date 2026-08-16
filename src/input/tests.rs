@@ -1,14 +1,38 @@
 use super::*;
 
 #[test]
-fn viewport_preserves_aspect_and_rejects_letterbox_taps() {
-    let viewport = Viewport::new(1024., 768., 1280., 720.);
-    assert!((viewport.scale - 0.8).abs() < f32::EPSILON);
-    assert_eq!(viewport.screen_to_logical(Vec2::new(512., 10.)), None);
-    assert_eq!(
-        viewport.screen_to_logical(viewport.logical_to_screen(Vec2::new(640., 360.))),
-        Some(Vec2::new(640., 360.))
-    );
+fn device_matrix_keeps_rendering_and_input_on_one_transform() {
+    use macroquad_toolkit::ui::VirtualUi;
+
+    let devices = [
+        (320., 568., 360., 780.),
+        (390., 844., 360., 780.),
+        (568., 320., 840., 390.),
+        (844., 390., 840., 390.),
+        (768., 1024., 360., 780.),
+        (1024., 768., 1280., 720.),
+    ];
+    for (screen_w, screen_h, logical_w, logical_h) in devices {
+        let viewport = VirtualUi::from_screen_size(logical_w, logical_h, screen_w, screen_h);
+        let center = Vec2::new(logical_w / 2., logical_h / 2.);
+        let screen_center = viewport.ui_to_screen(center);
+        let mapped = viewport.screen_to_ui_checked(screen_center).unwrap();
+        assert!((mapped - center).length() < 0.001);
+        assert_eq!(
+            viewport.viewport_for_dpi(1.),
+            (
+                viewport.offset.x.round() as i32,
+                viewport.offset.y.round() as i32,
+                (logical_w * viewport.scale).round() as i32,
+                (logical_h * viewport.scale).round() as i32,
+            )
+        );
+        assert_eq!(
+            viewport
+                .screen_to_ui_checked(Vec2::new(viewport.offset.x - 1., viewport.offset.y - 1.)),
+            None
+        );
+    }
 }
 
 #[test]

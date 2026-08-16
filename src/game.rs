@@ -81,11 +81,12 @@ impl Game {
         if is_mouse_button_pressed(MouseButton::Left) {
             let viewport = ui::viewport();
             self.pointer
-                .press(viewport.screen_to_logical(vec2(mouse_position().0, mouse_position().1)));
+                .press(viewport.screen_to_ui_checked(vec2(mouse_position().0, mouse_position().1)));
         }
         if is_mouse_button_released(MouseButton::Left) {
             let viewport = ui::viewport();
-            let position = viewport.screen_to_logical(vec2(mouse_position().0, mouse_position().1));
+            let position =
+                viewport.screen_to_ui_checked(vec2(mouse_position().0, mouse_position().1));
             if let Some(gesture) = self.pointer.release(position) {
                 match gesture {
                     Gesture::Drag { start, end }
@@ -187,14 +188,7 @@ impl Game {
         clear_background(cosmetics::background(self.state.board_theme));
         let viewport = ui::viewport();
         let (layout_width, layout_height) = ui::layout_size();
-        set_camera(&Camera2D {
-            target: vec2(layout_width / 2., layout_height / 2.),
-            zoom: vec2(
-                2. * viewport.scale / layout_width,
-                2. * viewport.scale / layout_height,
-            ),
-            ..Default::default()
-        });
+        viewport.begin();
         ui::draw(&self.state, &self.data, self.assets.len());
         if self.transition > 0. {
             draw_rectangle(

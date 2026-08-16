@@ -18,7 +18,6 @@ use crate::freecell_ui;
 use crate::hangman_ui;
 use crate::hanoi_ui;
 use crate::higher_lower_ui;
-use crate::input::Viewport;
 use crate::klondike_golf_ui;
 use crate::library_ui;
 use crate::lights_out_ui;
@@ -72,11 +71,12 @@ use crate::{
     state::{AppState, Direction, GameId, Screen},
 };
 use macroquad::prelude::*;
+use macroquad_toolkit::ui::VirtualUi;
 pub const LOGICAL_WIDTH: f32 = 1280.0;
 pub const LOGICAL_HEIGHT: f32 = 720.0;
-pub fn viewport() -> Viewport {
+pub fn viewport() -> VirtualUi {
     let (width, height) = layout_size();
-    Viewport::new(screen_width(), screen_height(), width, height)
+    VirtualUi::new(width, height)
 }
 pub fn layout_size() -> (f32, f32) {
     if is_compact_landscape() {
@@ -95,7 +95,7 @@ pub fn is_compact_landscape() -> bool {
 }
 pub fn mouse() -> Vec2 {
     viewport()
-        .screen_to_logical(vec2(mouse_position().0, mouse_position().1))
+        .screen_to_ui_checked(vec2(mouse_position().0, mouse_position().1))
         .unwrap_or(vec2(-1000., -1000.))
 }
 pub fn clicks(state: &AppState) -> Vec<UiAction> {
