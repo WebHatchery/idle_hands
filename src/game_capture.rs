@@ -14,9 +14,12 @@ impl Game {
             .or_else(|| scene.strip_prefix("landscape_"))
             .unwrap_or(scene);
         self.state.screen = match scene {
-            "2048" | "gameplay" | "tutorial_2048" | "2048_hint" | "2048_hint_accessible" => {
-                Screen::Game(GameId::Game2048)
-            }
+            "2048"
+            | "2048_confirm"
+            | "gameplay"
+            | "tutorial_2048"
+            | "2048_hint"
+            | "2048_hint_accessible" => Screen::Game(GameId::Game2048),
             "minesweeper"
             | "minesweeper_accessible"
             | "minesweeper_hint"
@@ -199,6 +202,10 @@ impl Game {
         };
         if scene == "settings_reset" {
             self.state.confirm_reset = true;
+        }
+        if scene == "2048_confirm" {
+            self.state.confirm_restart = true;
+            self.state.pending_restart = Some(crate::ui::UiAction::Restart);
         }
         if scene == "nonogram_large" {
             self.state.nonogram =

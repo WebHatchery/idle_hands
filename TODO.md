@@ -1367,3 +1367,8 @@ contract, shared confirmation safety, responsive capture coverage, and the
 
 - [x] Align portrait Settings row hit regions and the replay tutorial action
   with their rendered touch-sized controls.
+
+## Phase 144 — Portrait restart confirmation accessibility
+
+- [x] Resize the portrait 2048 restart confirmation actions and add a seeded
+  confirmation capture route with matching hit regions.

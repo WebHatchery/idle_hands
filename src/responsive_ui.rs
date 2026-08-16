@@ -356,15 +356,15 @@ pub fn draw_2048(state: &AppState) {
         );
         text("Start a new board?", 58., 305., 20., WHITE);
         panel(
-            Rect::new(45., 335., 120., 42.),
+            Rect::new(45., 335., 120., 44.),
             Color::new(0.25, 0.16, 0.32, 1.),
         );
-        text("CANCEL", 76., 362., 14., WHITE);
+        text("CANCEL", 76., 364., 14., WHITE);
         panel(
-            Rect::new(195., 335., 120., 42.),
+            Rect::new(195., 335., 120., 44.),
             Color::new(0.45, 0.22, 0.25, 1.),
         );
-        text("START", 235., 362., 14., WHITE);
+        text("START", 235., 364., 14., WHITE);
     }
 }
 
@@ -373,10 +373,10 @@ pub fn game2048_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         return vec![UiAction::Cabinet];
     }
     if state.confirm_restart {
-        if Rect::new(45., 335., 120., 42.).contains(p) {
+        if Rect::new(45., 335., 120., 44.).contains(p) {
             return vec![UiAction::Cancel];
         }
-        if Rect::new(195., 335., 120., 42.).contains(p) {
+        if Rect::new(195., 335., 120., 44.).contains(p) {
             return vec![UiAction::ConfirmRestart];
         }
         return vec![];
