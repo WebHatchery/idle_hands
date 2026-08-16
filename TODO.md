@@ -1179,14 +1179,19 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Add touch-first desktop, portrait, and compact-landscape layouts with
     tutorial text, cabinet status, and deterministic unit coverage.
 
-## Post-launch candidates (not scheduled)
-
 ## Phase 112 — Word Ladder hint feedback
 
 - [x] Route the shared HINT message into the Word Ladder board feedback line
   so the exact suggested step is visible in desktop, portrait, and compact
   landscape layouts.
   - [x] Add deterministic hint coverage and a dedicated hint capture alias.
+
+## Phase 113 — Word Ladder record visibility
+
+- [x] Surface the persisted personal-best move count in the Word Ladder
+  header, with a deterministic seeded capture state for responsive review.
+
+## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.
 - Arcade: no remaining scheduled candidates.

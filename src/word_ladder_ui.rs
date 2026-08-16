@@ -30,6 +30,10 @@ pub fn draw(state: &AppState) {
     draw_text("‹ CABINET", 8., 30., accessibility::text_size(13., state.large_text), muted());
     draw_text("WORD LADDER", title_x, title_y, accessibility::text_size(if compact { 22. } else { 28. }, state.large_text), accent());
     draw_text(format!("{} moves  •  {} → {}", game.moves, game.start, game.target), if compact { 300. } else { title_x }, if compact { 28. } else { title_y + 24. }, accessibility::text_size(14., state.large_text), muted());
+    if let Some(best) = state.records.word_ladder_best_moves {
+        let best_x = if compact { 400. } else if portrait { 210. } else { title_x };
+        draw_text(format!("BEST {} MOVES", best), best_x, if compact { 47. } else if portrait { 88. } else { title_y + 45. }, accessibility::text_size(12., state.large_text), Color::new(0.98, 0.75, 0.30, 1.));
+    }
     draw_words(game, if compact { 55. } else if portrait { 15. } else { 390. }, 105., 300.);
     draw_keyboard(l, game, state.large_text); button(l.back, "DELETE", state.large_text); button(l.submit, "SUBMIT", state.large_text); button(l.hint, "HINT", state.large_text); button(l.undo, "UNDO", state.large_text); button(l.new_game, "NEW LADDER", state.large_text);
     draw_text(state.card_hint.as_deref().unwrap_or(&game.message), if compact { 40. } else { title_x }, if compact { 275. } else if portrait { 405. } else { 455. }, accessibility::text_size(15., state.large_text), muted());

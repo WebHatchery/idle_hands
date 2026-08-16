@@ -161,7 +161,7 @@ impl Game {
                 Screen::Game(GameId::WordGrid)
             }
             "word_grid_accessible" => Screen::Game(GameId::WordGrid),
-            "word_ladder" | "word_ladder_hint" | "word_ladder_hint_accessible" => {
+            "word_ladder" | "word_ladder_hint" | "word_ladder_hint_accessible" | "word_ladder_best" => {
                 Screen::Game(GameId::WordLadder)
             }
             "pipe_loop" | "pipe_loop_hint" | "pipe_loop_hint_accessible" => {
@@ -208,6 +208,9 @@ impl Game {
         if scene == "minesweeper_confirm" {
             self.state.confirm_restart = true;
             self.state.pending_restart = Some(crate::ui::UiAction::MineRestart);
+        }
+        if scene == "word_ladder_best" {
+            self.state.records.word_ladder_best_moves = Some(5);
         }
         if scene == "freecell_selected" {
             self.state.freecell.select_cascade(0, 0);
