@@ -20,6 +20,7 @@ use crate::state::Game2048;
 use crate::state::{AppState, GameId};
 use crate::tiny_tower_defence::TinyTowerDefence;
 use crate::tri_peaks::TriPeaks;
+use crate::word_ladder::WordLadder;
 use crate::{
     blackjack::Blackjack, breakout::Breakout, checkers::Checkers, connect_four::ConnectFour,
     fivefold::Fivefold, freecell::FreeCell, hangman::Hangman, higher_lower::HigherLower,
@@ -80,6 +81,7 @@ pub enum GameSnapshot {
     Pyramid(Pyramid),
     TriPeaks(TriPeaks),
     Nim(Nim),
+    WordLadder(WordLadder),
 }
 
 impl GameSnapshot {
@@ -131,6 +133,7 @@ impl GameSnapshot {
             GameId::Pyramid => Self::Pyramid(state.pyramid.clone()),
             GameId::TriPeaks => Self::TriPeaks(state.tri_peaks.clone()),
             GameId::Nim => Self::Nim(state.nim.clone()),
+            GameId::WordLadder => Self::WordLadder(state.word_ladder.clone()),
         }
     }
 
@@ -182,6 +185,7 @@ impl GameSnapshot {
             Self::Pyramid(game) => state.pyramid = game,
             Self::TriPeaks(game) => state.tri_peaks = game,
             Self::Nim(game) => state.nim = game,
+            Self::WordLadder(game) => state.word_ladder = game,
         }
     }
 }

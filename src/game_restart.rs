@@ -49,5 +49,6 @@ pub(super) fn requires_new_confirmation(action: UiAction) -> bool {
             | UiAction::PipeNew
             | UiAction::MazeNew
             | UiAction::MatchThreeNew
+            | UiAction::WordLadderNew
     )
 }

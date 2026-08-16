@@ -52,6 +52,7 @@ pub fn status(state: &AppState, game: GameId) -> &'static str {
         GameId::Pyramid => state.records.pyramid_best_moves.is_some(),
         GameId::TriPeaks => state.records.tri_peaks_best_moves.is_some(),
         GameId::Nim => state.records.nim_best_moves.is_some(),
+        GameId::WordLadder => state.records.word_ladder_best_moves.is_some(),
     };
     if complete {
         "COMPLETE"
@@ -117,6 +118,7 @@ fn has_progress(state: &AppState, game: GameId) -> bool {
         GameId::Pyramid => state.pyramid.moves > 0,
         GameId::TriPeaks => state.tri_peaks.moves > 0,
         GameId::Nim => state.nim.moves > 0,
+        GameId::WordLadder => state.word_ladder.moves > 0,
     }
 }
 
@@ -176,5 +178,6 @@ pub fn is_active(game: GameId) -> bool {
             | GameId::Pyramid
             | GameId::TriPeaks
             | GameId::Nim
+            | GameId::WordLadder
     )
 }

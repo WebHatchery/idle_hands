@@ -418,6 +418,18 @@ impl Game {
                 let seed = self.state.word_grid.seed.wrapping_add(1);
                 self.state.word_grid.reset(seed);
             }
+            UiAction::WordLadderLetter(letter) => { self.state.word_ladder.tap_letter(*letter); }
+            UiAction::WordLadderBackspace => { self.state.word_ladder.backspace(); }
+            UiAction::WordLadderSubmit => { self.state.word_ladder.submit(); }
+            UiAction::WordLadderHint => {
+                self.state.card_hint = Some(crate::card_hints::word_ladder(&self.state));
+                return true;
+            }
+            UiAction::WordLadderUndo => { self.state.word_ladder.undo(); }
+            UiAction::WordLadderNew => {
+                let seed = self.state.word_ladder.seed.wrapping_add(1);
+                self.state.word_ladder.reset(seed);
+            }
             UiAction::PipeRotate(index) => {
                 self.state.pipe_loop.rotate(*index);
             }

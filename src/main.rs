@@ -125,6 +125,8 @@ mod ui;
 mod ui_action;
 mod word_grid;
 mod word_grid_ui;
+mod word_ladder;
+mod word_ladder_ui;
 mod word_search;
 mod word_search_ui;
 

@@ -44,6 +44,7 @@ use crate::tic_tac_toe::TicTacToe;
 use crate::tiny_tower_defence::TinyTowerDefence;
 use crate::tri_peaks::TriPeaks;
 use crate::word_grid::WordGrid;
+use crate::word_ladder::WordLadder;
 use crate::word_search::WordSearch;
 use serde::{Deserialize, Serialize};
 
@@ -106,9 +107,10 @@ pub enum GameId {
     Pyramid,
     TriPeaks,
     Nim,
+    WordLadder,
 }
 impl GameId {
-    pub const ALL: [Self; 46] = [
+    pub const ALL: [Self; 47] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -155,6 +157,7 @@ impl GameId {
         Self::Pyramid,
         Self::TriPeaks,
         Self::Nim,
+        Self::WordLadder,
     ];
     pub fn title(self) -> &'static str {
         match self {
@@ -204,6 +207,7 @@ impl GameId {
             Self::Pyramid => "Pyramid",
             Self::TriPeaks => "TriPeaks",
             Self::Nim => "Nim",
+            Self::WordLadder => "Word Ladder",
         }
     }
     pub fn subtitle(self) -> &'static str {
@@ -254,6 +258,7 @@ impl GameId {
             Self::Pyramid => "Pair the quiet thirteen",
             Self::TriPeaks => "Clear the three quiet peaks",
             Self::Nim => "Take the quiet stones",
+            Self::WordLadder => "Climb the quiet words",
         }
     }
     pub fn index(self) -> usize {
@@ -307,6 +312,7 @@ impl GameId {
             Self::Pyramid => "pyramid",
             Self::TriPeaks => "tri_peaks",
             Self::Nim => "nim",
+            Self::WordLadder => "word_ladder",
         }
     }
 }
@@ -363,6 +369,7 @@ pub struct AppState {
     pub pyramid: Pyramid,
     pub tri_peaks: TriPeaks,
     pub nim: Nim,
+    pub word_ladder: WordLadder,
     pub achievements: [bool; 10],
     pub stamps: u16,
     pub card_back: u8,
@@ -482,6 +489,8 @@ pub struct CollectionSave {
     pub tri_peaks: TriPeaks,
     #[serde(default)]
     pub nim: Nim,
+    #[serde(default)]
+    pub word_ladder: WordLadder,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -568,6 +577,7 @@ impl CollectionSave {
             pyramid: state.pyramid.clone(),
             tri_peaks: state.tri_peaks.clone(),
             nim: state.nim.clone(),
+            word_ladder: state.word_ladder.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -635,6 +645,7 @@ impl CollectionSave {
         state.pyramid = self.pyramid;
         state.tri_peaks = self.tri_peaks;
         state.nim = self.nim;
+        state.word_ladder = self.word_ladder;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;
@@ -707,6 +718,7 @@ impl Default for AppState {
             pyramid: Pyramid::default(),
             tri_peaks: TriPeaks::default(),
             nim: Nim::default(),
+            word_ladder: WordLadder::default(),
             achievements: [false; 10],
             stamps: 0,
             card_back: 0,

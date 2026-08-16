@@ -5,7 +5,7 @@ Date: 2026-08-15
 
 ## 1. Runtime Boundaries
 
-Idle Hands is one Rust/Macroquad executable with a collection shell and 46
+Idle Hands is one Rust/Macroquad executable with a collection shell and 47
 independent game modules. The shell owns app lifecycle and shared services. A
 game module owns rules and presents state through commands; it does not directly
 change the profile, global settings, or another game's save.
@@ -220,6 +220,6 @@ the card foundation before FreeCell consumes it. Yahtzee exercises scorecards
 and animated randomness; Reversi closes the set with local AI. Final phases add
 cosmetic progression and collection-wide polish only after all foundation games
 are fully playable without a keyboard. The current post-launch implementation
-extends that same contract across 46 games, with collection-wide persistence,
+extends that same contract across 47 games, with collection-wide persistence,
 records, tutorials, rules, and responsive capacity treated as maintained
 systems rather than launch-only scaffolding.

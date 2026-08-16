@@ -73,6 +73,7 @@ fn full_cabinet_counts_every_playable_game() {
     records.pyramid_best_moves = Some(28);
     records.tri_peaks_best_moves = Some(28);
     records.nim_best_moves = Some(10);
+    records.word_ladder_best_moves = Some(5);
 
     assert_eq!(completed_games(&records), GameId::ALL.len());
     assert!(earned(&records, AchievementId::FullCabinet));

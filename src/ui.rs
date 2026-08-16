@@ -60,6 +60,7 @@ use crate::tri_peaks_ui;
 use crate::tutorial_ui;
 pub use crate::ui_action::UiAction;
 use crate::word_grid_ui;
+use crate::word_ladder_ui;
 use crate::word_search_ui;
 #[path = "restart_modal.rs"]
 mod restart_modal;
@@ -230,6 +231,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Game(GameId::ColorSort) => color_sort_ui::clicks(state, p),
         Screen::Game(GameId::Battleship) => battleship_ui::clicks(state, p),
         Screen::Game(GameId::WordGrid) => word_grid_ui::clicks(state, p),
+        Screen::Game(GameId::WordLadder) => word_ladder_ui::clicks(state, p),
         Screen::Game(GameId::PipeLoop) => pipe_loop_ui::clicks(state, p),
         Screen::Game(GameId::MazeWalk) => maze_walk_ui::clicks(state, p),
         Screen::Game(GameId::MatchThree) => match_three_ui::clicks(state, p),
@@ -352,6 +354,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Game(GameId::ColorSort) => color_sort_ui::draw(state),
         Screen::Game(GameId::Battleship) => battleship_ui::draw(state),
         Screen::Game(GameId::WordGrid) => word_grid_ui::draw(state),
+        Screen::Game(GameId::WordLadder) => word_ladder_ui::draw(state),
         Screen::Game(GameId::PipeLoop) => pipe_loop_ui::draw(state),
         Screen::Game(GameId::MazeWalk) => maze_walk_ui::draw(state),
         Screen::Game(GameId::MatchThree) => match_three_ui::draw(state),

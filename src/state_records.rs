@@ -88,4 +88,6 @@ pub struct CollectionRecords {
     pub tri_peaks_best_moves: Option<u16>,
     #[serde(default)]
     pub nim_best_moves: Option<u16>,
+    #[serde(default)]
+    pub word_ladder_best_moves: Option<u16>,
 }

@@ -593,6 +593,11 @@ fn tutorial_lines(game: GameId) -> [&'static str; 3] {
             "Tap TAKE 1, TAKE 2, or TAKE 3 to remove stones.",
             "Take the final stone; use UNDO or NEW BOARD when needed.",
         ],
+        GameId::WordLadder => [
+            "Tap letters to build a five-letter step, then tap SUBMIT.",
+            "Change exactly one letter from the last word.",
+            "Use HINT, UNDO, or NEW LADDER with the visible controls.",
+        ],
     }
 }
 

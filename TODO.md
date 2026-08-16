@@ -1170,11 +1170,21 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover action classification and capture the Minesweeper confirmation
     state at desktop, portrait, and compact-landscape sizes.
 
+## Phase 111 — Word Ladder cabinet addition
+
+- [x] Add a deterministic five-letter Word Ladder with visible keyboard input,
+  one-letter step validation, HINT, UNDO, and confirmation-protected NEW.
+  - [x] Persist active ladder state and best completion moves through the
+    collection save and independent snapshot systems.
+  - [x] Add touch-first desktop, portrait, and compact-landscape layouts with
+    tutorial text, cabinet status, and deterministic unit coverage.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.
 - Arcade: no remaining scheduled candidates.
 - Original cabinet games: no remaining scheduled candidates.
 
-Do not begin a post-launch candidate until the eight-game first collection is
-touch-complete and the shared system it would reuse is stable.
+Continue with post-launch collection work while preserving the touch-first
+contract, shared confirmation safety, responsive capture coverage, and the
+800-line Rust source limit.
