@@ -253,3 +253,11 @@ fn default_daily_dungeon_has_a_deterministic_hint() {
     assert!(!daily_dungeon(&state).is_empty());
     assert_eq!(daily_dungeon(&state), daily_dungeon(&state));
 }
+
+#[test]
+fn default_dots_boxes_has_a_deterministic_hint() {
+    let state = AppState::default();
+
+    assert!(!dots_boxes(&state).is_empty());
+    assert_eq!(dots_boxes(&state), dots_boxes(&state));
+}

@@ -130,7 +130,9 @@ impl Game {
                 Screen::Game(GameId::DailyDungeon)
             }
             "daily_dungeon_accessible" => Screen::Game(GameId::DailyDungeon),
-            "dots_boxes" => Screen::Game(GameId::DotsBoxes),
+            "dots_boxes" | "dots_boxes_hint" | "dots_boxes_hint_accessible" => {
+                Screen::Game(GameId::DotsBoxes)
+            }
             "dots_boxes_accessible" => Screen::Game(GameId::DotsBoxes),
             "sokoban" => Screen::Game(GameId::Sokoban),
             "sokoban_accessible" => Screen::Game(GameId::Sokoban),
@@ -213,6 +215,8 @@ impl Game {
             self.state.card_hint = Some(card_hints::one_room_roguelike(&self.state));
         } else if scene == "daily_dungeon_hint" || scene == "daily_dungeon_hint_accessible" {
             self.state.card_hint = Some(card_hints::daily_dungeon(&self.state));
+        } else if scene == "dots_boxes_hint" || scene == "dots_boxes_hint_accessible" {
+            self.state.card_hint = Some(card_hints::dots_boxes(&self.state));
         } else if scene == "2048_hint" || scene == "2048_hint_accessible" {
             self.state.card_hint = Some(card_hints::game_2048(&self.state));
         } else if scene == "tic_tac_toe_hint" || scene == "tic_tac_toe_hint_accessible" {

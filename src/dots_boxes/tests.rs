@@ -43,3 +43,25 @@ fn cpu_turn_is_deterministic_and_can_finish_a_board() {
     assert_ne!(first.phase, DotsPhase::Playing);
     assert!(first.scores.iter().sum::<u8>() as usize == BOX_COUNT);
 }
+
+#[test]
+fn hint_prefers_a_box_closing_edge_without_mutating_the_board() {
+    let mut game = DotsBoxes::new(1);
+    game.horizontal[0] = true;
+    game.horizontal[4] = true;
+    game.vertical[0] = true;
+    let before = game.clone();
+
+    assert_eq!(game.hint_edge(), Some(Edge::Vertical(1)));
+    assert_eq!(game.horizontal, before.horizontal);
+    assert_eq!(game.vertical, before.vertical);
+    assert_eq!(game.scores, before.scores);
+}
+
+#[test]
+fn hint_is_empty_after_dots_and_boxes_ends() {
+    let mut game = DotsBoxes::new(1);
+    game.phase = DotsPhase::Won;
+
+    assert_eq!(game.hint_edge(), None);
+}

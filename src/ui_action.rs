@@ -194,6 +194,7 @@ pub enum UiAction {
     DailyUndo,
     DailyNew,
     DotsEdge(crate::dots_boxes::Edge),
+    DotsHint,
     DotsUndo,
     DotsNew,
     SokobanMove(Direction),

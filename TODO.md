@@ -1025,6 +1025,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover route selection, state preservation, hint determinism, capture
     aliases, and responsive layouts.
 
+## Phase 93 — Dots & Boxes discoverability polish
+
+- [x] Add a deterministic non-mutating HINT action that prioritizes an edge
+  completing a box, then falls back to an available edge.
+  - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
+  - [x] Cover edge priority, board preservation, hint determinism, capture
+    aliases, and responsive layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

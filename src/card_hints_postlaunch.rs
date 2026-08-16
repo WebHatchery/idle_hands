@@ -1,0 +1,258 @@
+use crate::state::AppState;
+
+pub fn snake(state: &AppState) -> String {
+    let game = &state.snake;
+    match game.status {
+        crate::snake::SnakeStatus::Won => {
+            return "The coil is complete — tap NEW BOARD to play again.".into()
+        }
+        crate::snake::SnakeStatus::Lost => {
+            return "The coil is resting — tap NEW BOARD to begin again.".into()
+        }
+        crate::snake::SnakeStatus::Playing => {}
+    }
+    game.hint_direction().map_or_else(
+        || "No safe turn remains — tap NEW BOARD to begin again.".into(),
+        |direction| format!("Try {} toward the food.", snake_direction_label(direction)),
+    )
+}
+
+pub fn breakout(state: &AppState) -> String {
+    let game = &state.breakout;
+    match game.status {
+        crate::breakout::BreakoutStatus::Won => {
+            return "The wall is clear — tap NEW BOARD to play again.".into()
+        }
+        crate::breakout::BreakoutStatus::Lost => {
+            return "The ball fell quiet — tap NEW BOARD to begin again.".into()
+        }
+        crate::breakout::BreakoutStatus::Playing => {}
+    }
+    game.hint_move().map_or_else(
+        || "No paddle move is available — tap NEW BOARD to begin again.".into(),
+        |movement| {
+            format!(
+                "Move the paddle {} to track the ball.",
+                movement_label(movement)
+            )
+        },
+    )
+}
+
+pub fn higher_lower(state: &AppState) -> String {
+    let game = &state.higher_lower;
+    match game.status {
+        crate::higher_lower::HigherLowerStatus::Won => {
+            return "The quiet run is yours — tap NEW ROUND to play again.".into()
+        }
+        crate::higher_lower::HigherLowerStatus::Lost => {
+            return "The next card slipped away — tap NEW ROUND to begin again.".into()
+        }
+        crate::higher_lower::HigherLowerStatus::Playing => {}
+    }
+    game.hint_guess().map_or_else(
+        || "No odds hint is available — tap NEW ROUND to begin again.".into(),
+        |guess| format!("Best odds: {}; card hidden.", guess_label(guess)),
+    )
+}
+
+pub fn blackjack(state: &AppState) -> String {
+    let game = &state.blackjack;
+    match game.status {
+        crate::blackjack::BlackjackStatus::Won => {
+            return "You win — tap NEW ROUND to deal again.".into()
+        }
+        crate::blackjack::BlackjackStatus::Lost => {
+            return "Dealer wins — tap NEW ROUND to deal again.".into()
+        }
+        crate::blackjack::BlackjackStatus::Push => {
+            return "Push — tap NEW ROUND to deal again.".into()
+        }
+        crate::blackjack::BlackjackStatus::Playing => {}
+    }
+    game.hint_action().map_or_else(
+        || "No strategy hint is available — tap NEW ROUND.".into(),
+        |action| format!("Basic odds suggest {}.", blackjack_hint_label(action)),
+    )
+}
+
+pub fn dungeon_sweeper(state: &AppState) -> String {
+    let game = &state.dungeon_sweeper;
+    match game.status {
+        crate::dungeon_sweeper::DungeonStatus::Won => {
+            return "The quiet exit is found — tap NEW DUNGEON to play again.".into()
+        }
+        crate::dungeon_sweeper::DungeonStatus::Lost => {
+            return "A trap closed the path — tap NEW DUNGEON to begin again.".into()
+        }
+        crate::dungeon_sweeper::DungeonStatus::Ready
+        | crate::dungeon_sweeper::DungeonStatus::Playing => {}
+    }
+    game.hint_cell().map_or_else(
+        || "No safe room remains — tap NEW DUNGEON to begin again.".into(),
+        |index| {
+            if index == game.exit {
+                "Tap EXIT to enter safely.".into()
+            } else {
+                format!("Room {} is safe to reveal.", index + 1)
+            }
+        },
+    )
+}
+
+pub fn potion_2048(state: &AppState) -> String {
+    let game = &state.potion_2048;
+    if game.won() {
+        return "The master potion is brewed — tap NEW BREW to play again.".into();
+    }
+    game.hint_direction().map_or_else(
+        || "No merge remains — tap NEW BREW to begin again.".into(),
+        |direction| format!("Best move: {}.", potion_direction_label(direction)),
+    )
+}
+
+pub fn tiny_tower_defence(state: &AppState) -> String {
+    let game = &state.tiny_tower_defence;
+    match game.phase {
+        crate::tiny_tower_defence::TowerPhase::Won => {
+            return "The tower holds — tap NEW TOWER to play again.".into()
+        }
+        crate::tiny_tower_defence::TowerPhase::Lost => {
+            return "The gate fell — tap NEW TOWER to begin again.".into()
+        }
+        crate::tiny_tower_defence::TowerPhase::Build
+        | crate::tiny_tower_defence::TowerPhase::Wave => {}
+    }
+    game.hint_action().map_or_else(
+        || "No tower action is available — tap NEW TOWER to begin again.".into(),
+        |hint| match hint {
+            crate::tiny_tower_defence::TowerHint::Build(index) => {
+                format!("Build at room {}.", index + 1)
+            }
+            crate::tiny_tower_defence::TowerHint::Advance => "Tap ADVANCE to fire towers.".into(),
+        },
+    )
+}
+
+pub fn one_room_roguelike(state: &AppState) -> String {
+    let game = &state.one_room_roguelike;
+    match game.phase {
+        crate::one_room_roguelike::RoomPhase::Won => {
+            return "The room is quiet — tap NEW ROOM to play again.".into()
+        }
+        crate::one_room_roguelike::RoomPhase::Lost => {
+            return "The room claims you — tap NEW ROOM to begin again.".into()
+        }
+        crate::one_room_roguelike::RoomPhase::Exploring => {}
+    }
+    game.hint_action().map_or_else(
+        || "No room action is available — tap NEW ROOM to begin again.".into(),
+        |hint| match hint {
+            crate::one_room_roguelike::RogueHint::Strike => "STRIKE the adjacent enemy.".into(),
+            crate::one_room_roguelike::RogueHint::Potion => "DRINK POTION to recover.".into(),
+            crate::one_room_roguelike::RogueHint::Move(direction) => {
+                format!("Move {} toward EXIT.", rogue_direction_label(direction))
+            }
+        },
+    )
+}
+
+pub fn daily_dungeon(state: &AppState) -> String {
+    let game = &state.daily_dungeon;
+    match game.phase {
+        crate::daily_dungeon::DailyPhase::Won => {
+            return "The daily route is clear — tap NEW DAY to play again.".into()
+        }
+        crate::daily_dungeon::DailyPhase::Lost => {
+            return "The traps closed in — tap NEW DAY to begin again.".into()
+        }
+        crate::daily_dungeon::DailyPhase::Exploring => {}
+    }
+    game.hint_direction().map_or_else(
+        || "No route hint is available — tap NEW DAY to begin again.".into(),
+        |direction| {
+            let target = if game.runes_found < crate::daily_dungeon::DailyDungeon::rune_total() {
+                "a rune"
+            } else {
+                "EXIT"
+            };
+            format!(
+                "Move {} toward {}.",
+                daily_direction_label(direction),
+                target
+            )
+        },
+    )
+}
+
+pub fn dots_boxes(state: &AppState) -> String {
+    let game = &state.dots_boxes;
+    match game.phase {
+        crate::dots_boxes::DotsPhase::Won => {
+            return "The red boxes hold — tap NEW BOARD to play again.".into()
+        }
+        crate::dots_boxes::DotsPhase::Lost => {
+            return "The blue boxes hold — tap NEW BOARD to play again.".into()
+        }
+        crate::dots_boxes::DotsPhase::Playing => {}
+    }
+    game.hint_edge().map_or_else(
+        || "No edge remains — tap NEW BOARD to begin again.".into(),
+        |edge| match edge {
+            crate::dots_boxes::Edge::Horizontal(index) => {
+                format!("Draw horizontal edge {}.", index + 1)
+            }
+            crate::dots_boxes::Edge::Vertical(index) => {
+                format!("Draw vertical edge {}.", index + 1)
+            }
+        },
+    )
+}
+
+fn daily_direction_label(direction: crate::state::Direction) -> &'static str {
+    match direction {
+        crate::state::Direction::Up => "UP",
+        crate::state::Direction::Left => "LEFT",
+        crate::state::Direction::Down => "DOWN",
+        crate::state::Direction::Right => "RIGHT",
+    }
+}
+
+fn rogue_direction_label(direction: crate::state::Direction) -> &'static str {
+    daily_direction_label(direction)
+}
+
+fn potion_direction_label(direction: crate::state::Direction) -> &'static str {
+    daily_direction_label(direction)
+}
+
+fn blackjack_hint_label(action: crate::blackjack::BlackjackHint) -> &'static str {
+    match action {
+        crate::blackjack::BlackjackHint::Hit => "HIT",
+        crate::blackjack::BlackjackHint::Stand => "STAND",
+    }
+}
+
+fn guess_label(guess: crate::higher_lower::Guess) -> &'static str {
+    match guess {
+        crate::higher_lower::Guess::Higher => "HIGHER",
+        crate::higher_lower::Guess::Lower => "LOWER",
+    }
+}
+
+fn movement_label(movement: crate::breakout::PaddleMove) -> &'static str {
+    match movement {
+        crate::breakout::PaddleMove::Left => "LEFT",
+        crate::breakout::PaddleMove::Stay => "STAY",
+        crate::breakout::PaddleMove::Right => "RIGHT",
+    }
+}
+
+fn snake_direction_label(direction: crate::snake::SnakeDirection) -> &'static str {
+    match direction {
+        crate::snake::SnakeDirection::Up => "UP",
+        crate::snake::SnakeDirection::Right => "RIGHT",
+        crate::snake::SnakeDirection::Down => "DOWN",
+        crate::snake::SnakeDirection::Left => "LEFT",
+    }
+}

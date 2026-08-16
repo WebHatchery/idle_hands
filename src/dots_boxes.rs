@@ -78,6 +78,15 @@ impl DotsBoxes {
         true
     }
 
+    pub fn hint_edge(&self) -> Option<Edge> {
+        if self.phase != DotsPhase::Playing {
+            return None;
+        }
+        self.available_edges()
+            .find(|&edge| self.would_complete(edge))
+            .or_else(|| self.available_edges().next())
+    }
+
     pub fn undo(&mut self) -> bool {
         let Some(previous) = self.undo.take() else {
             return false;

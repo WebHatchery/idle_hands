@@ -289,6 +289,10 @@ impl Game {
             UiAction::DotsEdge(edge) => {
                 self.state.dots_boxes.play(*edge);
             }
+            UiAction::DotsHint => {
+                self.state.card_hint = Some(crate::card_hints::dots_boxes(&self.state));
+                return true;
+            }
             UiAction::DotsUndo => {
                 self.state.dots_boxes.undo();
             }
