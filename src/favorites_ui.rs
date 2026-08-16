@@ -82,7 +82,7 @@ pub fn draw(state: &AppState) {
     panel(l.panel, Color::new(0.08, 0.06, 0.14, 1.));
     let title_size = if crate::ui::is_portrait() { 29. } else { 38. };
     let recent = state.recent_view;
-    draw_text(
+    crate::ui::draw_text(
         if recent {
             "RECENT DRAWERS"
         } else {
@@ -109,7 +109,7 @@ pub fn draw(state: &AppState) {
     } else {
         l.panel.y + 98.
     };
-    draw_text(
+    crate::ui::draw_text(
         if recent {
             format!(
                 "{} recently opened games  -  tap a drawer to open it",
@@ -124,7 +124,7 @@ pub fn draw(state: &AppState) {
         Color::new(0.72, 0.68, 0.82, 1.),
     );
     if count == 0 {
-        draw_text(
+        crate::ui::draw_text(
             if recent {
                 "Open a drawer to start a recent list."
             } else {
@@ -145,7 +145,7 @@ pub fn draw(state: &AppState) {
             if crate::ui::is_portrait() { 3. } else { 4. },
             Color::new(0.98, 0.75, 0.30, 1.),
         );
-        draw_text(
+        crate::ui::draw_text(
             game.title(),
             rect.x + 20.,
             rect.y + rect.h * 0.62,
@@ -159,7 +159,7 @@ pub fn draw(state: &AppState) {
             Color::new(0.98, 0.82, 0.42, 1.),
         );
         if !crate::ui::is_portrait() {
-            draw_text(
+            crate::ui::draw_text(
                 crate::cabinet_status::status(state, game),
                 rect.x + rect.w - 72.,
                 rect.y + rect.h * 0.62,
@@ -171,11 +171,11 @@ pub fn draw(state: &AppState) {
     if let Some((previous, next)) = scroll_rects() {
         panel(previous, Color::new(0.18, 0.12, 0.28, 1.));
         panel(next, Color::new(0.18, 0.12, 0.28, 1.));
-        draw_text("PREV", previous.x + 22., previous.y + 28., 11., WHITE);
-        draw_text("NEXT", next.x + 22., next.y + 28., 11., WHITE);
+        crate::ui::draw_text("PREV", previous.x + 22., previous.y + 28., 11., WHITE);
+        crate::ui::draw_text("NEXT", next.x + 22., next.y + 28., 11., WHITE);
     }
     panel(l.back, Color::new(0.25, 0.16, 0.32, 1.));
-    draw_text(
+    crate::ui::draw_text(
         "BACK",
         l.back.x + if crate::ui::is_portrait() { 52. } else { 60. },
         l.back.y + l.back.h * 0.64,

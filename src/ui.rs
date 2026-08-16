@@ -109,6 +109,35 @@ pub fn mouse() -> Vec2 {
 pub fn physical_touch_rect(rect: Rect, scale: f32) -> Rect {
     touch_area_for_scale(rect, scale)
 }
+pub fn readable_text_size_for_scale(base: f32, scale: f32) -> f32 {
+    let physical_floor = if base < 10. { 9. } else { 11. };
+    if scale.is_finite() && scale > 0. {
+        base.max(physical_floor / scale)
+    } else {
+        base
+    }
+}
+pub fn readable_text_size(base: f32) -> f32 {
+    TOUCH_SCALE.with(|scale| readable_text_size_for_scale(base, scale.get()))
+}
+pub fn draw_text(
+    value: impl AsRef<str>,
+    x: f32,
+    y: f32,
+    size: f32,
+    color: Color,
+) -> TextDimensions {
+    macroquad_toolkit::ui::draw_ui_text(value.as_ref(), x, y, readable_text_size(size), color)
+}
+pub fn measure_text(
+    value: impl AsRef<str>,
+    font: Option<&Font>,
+    size: u16,
+    scale: f32,
+) -> TextDimensions {
+    let readable_size = readable_text_size(size as f32).round() as u16;
+    macroquad_toolkit::ui::measure_ui_text(value.as_ref(), font, readable_size, scale)
+}
 pub fn hit(rect: Rect, point: Vec2) -> bool {
     let scale = TOUCH_SCALE.with(Cell::get);
     let area = physical_touch_rect(rect, scale);
@@ -452,7 +481,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
     end_frame_neighbours();
 }
 fn text(s: &str, x: f32, y: f32, size: f32, color: Color) {
-    draw_text(s, x, y, size, color);
+    crate::ui::draw_text(s, x, y, crate::ui::readable_text_size(size), color);
 }
 fn panel(r: Rect, fill: Color) {
     draw_rectangle(r.x, r.y, r.w, r.h, fill);
@@ -508,7 +537,7 @@ fn draw_2048(state: &AppState) {
             } else {
                 20.
             };
-            let tw = measure_text(&label, None, fs as u16, 1.0).width;
+            let tw = crate::ui::measure_text(&label, None, fs as u16, 1.0).width;
             text(
                 &label,
                 r.x + (r.w - tw) / 2.,

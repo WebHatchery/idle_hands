@@ -150,6 +150,10 @@ fn window_conf() -> Conf {
 #[macroquad::main(window_conf)]
 async fn main() {
     let mut game = Game::new().await;
+    macroquad_toolkit::ui::prewarm_default_ui_font(&[
+        9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 22, 24, 28, 30, 32, 40, 48, 52, 68, 84,
+    ])
+    .expect("bundled UI font should load");
 
     // Screenshot harness: when IDLE_HANDS_CAPTURE_PATH is set, render
     // deterministic frames, write a PNG, and exit. This Phase 0 harness has a

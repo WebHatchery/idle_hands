@@ -3,11 +3,8 @@
 use macroquad::prelude::Color;
 
 pub fn text_size(base: f32, large_text: bool) -> f32 {
-    if large_text {
-        base * 1.18
-    } else {
-        base
-    }
+    let size = if large_text { base * 1.18 } else { base };
+    crate::ui::readable_text_size(size)
 }
 
 pub fn grid_line(high_contrast: bool) -> Color {

@@ -266,8 +266,8 @@ fn button(rect: Rect, label: &str, large_text: bool) {
 }
 
 fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
-    let measured = measure_text(label, None, size as u16, 1.);
-    draw_text(
+    let measured = crate::ui::measure_text(label, None, size as u16, 1.);
+    crate::ui::draw_text(
         label,
         rect.x + (rect.w - measured.width) * 0.5,
         rect.y + rect.h * 0.63,
@@ -277,7 +277,7 @@ fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
 }
 
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
-    draw_text(value, x, y, size, color);
+    crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
 
 fn title_size() -> f32 {

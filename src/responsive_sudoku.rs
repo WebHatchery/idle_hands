@@ -16,7 +16,7 @@ fn panel(rect: Rect, fill: Color) {
 }
 
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
-    draw_text(value, x, y, size, color);
+    crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
 
 pub fn draw(state: &AppState) {

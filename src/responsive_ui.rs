@@ -24,7 +24,7 @@ fn panel(rect: Rect, fill: Color) {
     );
 }
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
-    draw_text(value, x, y, size, color);
+    crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
 
 const CABINET_COLUMNS: usize = 2;
@@ -357,7 +357,7 @@ pub fn draw_2048(state: &AppState) {
         if value > 0 {
             let label = value.to_string();
             let size = if value < 100 { 25. } else { 19. };
-            let width = measure_text(&label, None, size as u16, 1.).width;
+            let width = crate::ui::measure_text(&label, None, size as u16, 1.).width;
             text(
                 &label,
                 rect.x + (rect.w - width) / 2.,
@@ -583,7 +583,7 @@ pub fn draw_settings(state: &AppState) {
         (Rect::new(280., 665., 58., 44.), "RESET"),
     ] {
         panel(rect, Color::new(0.20, 0.13, 0.30, 1.));
-        let width = measure_text(label, None, 11, 1.).width;
+        let width = crate::ui::measure_text(label, None, 11, 1.).width;
         text(
             label,
             rect.x + (rect.w - width) / 2.,

@@ -27,8 +27,8 @@ fn button(rect: Rect, label: &str, active: bool) {
             Color::new(0.18, 0.12, 0.28, 1.)
         },
     );
-    let width = measure_text(label, None, 16, 1.).width;
-    draw_text(
+    let width = crate::ui::measure_text(label, None, 16, 1.).width;
+    crate::ui::draw_text(
         label,
         rect.x + (rect.w - width) / 2.,
         rect.y + 30.,
@@ -39,9 +39,9 @@ fn button(rect: Rect, label: &str, active: bool) {
 
 pub fn draw_fivefold(state: &AppState) {
     let game = &state.fivefold;
-    draw_text("‹ CABINET", 40., 55., 20., Color::new(0.78, 0.70, 0.92, 1.));
-    draw_text("FIVEFOLD", 40., 105., 44., Color::new(0.98, 0.83, 0.45, 1.));
-    draw_text(
+    crate::ui::draw_text("‹ CABINET", 40., 55., 20., Color::new(0.78, 0.70, 0.92, 1.));
+    crate::ui::draw_text("FIVEFOLD", 40., 105., 44., Color::new(0.98, 0.83, 0.45, 1.));
+    crate::ui::draw_text(
         "Five dice, thirteen calls",
         44.,
         132.,
@@ -67,15 +67,15 @@ pub fn draw_fivefold(state: &AppState) {
         } else {
             game.dice[index].to_string()
         };
-        let width = measure_text(&value, None, 48, 1.).width;
-        draw_text(
+        let width = crate::ui::measure_text(&value, None, 48, 1.).width;
+        crate::ui::draw_text(
             &value,
             rect.x + (rect.w - width) / 2.,
             rect.y + 66.,
             48.,
             Color::new(0.98, 0.83, 0.45, 1.),
         );
-        draw_text(
+        crate::ui::draw_text(
             if game.held[index] {
                 "HELD"
             } else {
@@ -96,21 +96,21 @@ pub fn draw_fivefold(state: &AppState) {
         },
         game.roll_number < 3 && game.status != FivefoldStatus::Complete,
     );
-    draw_text(
+    crate::ui::draw_text(
         format!("Roll {}/3", game.roll_number),
         475.,
         433.,
         19.,
         Color::new(0.72, 0.68, 0.82, 1.),
     );
-    draw_text(
+    crate::ui::draw_text(
         format!("Total  {}", game.total()),
         475.,
         463.,
         19.,
         Color::new(0.98, 0.83, 0.45, 1.),
     );
-    draw_text(
+    crate::ui::draw_text(
         format!(
             "Upper  {} / 63   Bonus {}",
             game.upper_total(),
@@ -125,7 +125,7 @@ pub fn draw_fivefold(state: &AppState) {
         Rect::new(790., 75., 430., 585.),
         Color::new(0.08, 0.06, 0.14, 1.),
     );
-    draw_text(
+    crate::ui::draw_text(
         "SCORECARD",
         830.,
         120.,
@@ -156,7 +156,7 @@ pub fn draw_fivefold(state: &AppState) {
                 },
             );
         }
-        draw_text(
+        crate::ui::draw_text(
             category.label(),
             rect.x + 12.,
             y,
@@ -167,7 +167,7 @@ pub fn draw_fivefold(state: &AppState) {
                 WHITE
             },
         );
-        draw_text(
+        crate::ui::draw_text(
             &score,
             rect.right() - 48.,
             y,
@@ -175,7 +175,7 @@ pub fn draw_fivefold(state: &AppState) {
             Color::new(0.98, 0.83, 0.45, 1.),
         );
     }
-    draw_text(
+    crate::ui::draw_text(
         state.card_hint.as_deref().unwrap_or(match game.status {
             FivefoldStatus::Ready => "Roll, hold, and choose a call",
             FivefoldStatus::Rolling => "Tap a score to record this roll",
@@ -188,7 +188,7 @@ pub fn draw_fivefold(state: &AppState) {
     );
     button(Rect::new(45., 610., 150., 44.), "NEW SCORECARD", false);
     button(Rect::new(215., 610., 150., 44.), "HINT", false);
-    draw_text(
+    crate::ui::draw_text(
         "Tap ROLL, then tap dice to hold them.",
         390.,
         637.,

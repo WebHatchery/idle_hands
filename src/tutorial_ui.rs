@@ -30,7 +30,7 @@ pub fn draw_replay_button() {
         2.,
         Color::new(0.45, 0.38, 0.65, 0.8),
     );
-    draw_text(
+    crate::ui::draw_text(
         "TUTORIAL",
         REPLAY_RECT.x + 22.,
         REPLAY_RECT.y + 31.,
@@ -48,16 +48,16 @@ pub fn draw_overlay(game: GameId) {
         3.,
         Color::new(0.78, 0.58, 0.30, 0.95),
     );
-    draw_text(
+    crate::ui::draw_text(
         "HOW TO PLAY",
         315.,
         225.,
         38.,
         Color::new(0.98, 0.83, 0.45, 1.),
     );
-    draw_text(game.title(), 315., 270., 25., WHITE);
+    crate::ui::draw_text(game.title(), 315., 270., 25., WHITE);
     for (index, line) in instructions(game).iter().enumerate() {
-        draw_text(
+        crate::ui::draw_text(
             line,
             315.,
             330. + index as f32 * 38.,
@@ -72,7 +72,7 @@ pub fn draw_overlay(game: GameId) {
         CONTINUE_RECT.h,
         Color::new(0.25, 0.45, 0.34, 1.),
     );
-    draw_text(
+    crate::ui::draw_text(
         "CONTINUE",
         CONTINUE_RECT.x + 42.,
         CONTINUE_RECT.y + 33.,

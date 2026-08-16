@@ -155,7 +155,8 @@ pub fn draw(state: &AppState) {
                 accessibility::text_size(if value < 100 { 29. } else { 21. }, state.large_text);
             text(
                 &label,
-                rect.x + rect.w * 0.5 - measure_text(&label, None, size as u16, 1.).width * 0.5,
+                rect.x + rect.w * 0.5
+                    - crate::ui::measure_text(&label, None, size as u16, 1.).width * 0.5,
                 rect.y + rect.h * 0.60,
                 size,
                 WHITE,
@@ -207,14 +208,14 @@ fn button(rect: Rect, label: &str, large_text: bool) {
     let size = accessibility::text_size(11., large_text);
     text(
         label,
-        rect.x + rect.w * 0.5 - measure_text(label, None, size as u16, 1.).width * 0.5,
+        rect.x + rect.w * 0.5 - crate::ui::measure_text(label, None, size as u16, 1.).width * 0.5,
         rect.y + rect.h * 0.63,
         size,
         WHITE,
     );
 }
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
-    draw_text(value, x, y, size, color);
+    crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
 fn title_size() -> f32 {
     if crate::ui::is_portrait() {

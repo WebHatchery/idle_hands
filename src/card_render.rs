@@ -62,7 +62,7 @@ pub fn draw_card_accessible(
         },
     );
     if !card.face_up {
-        draw_text(
+        crate::ui::draw_text(
             "✦",
             rect.x + rect.w * 0.36,
             rect.y + rect.h * 0.62,
@@ -82,14 +82,14 @@ pub fn draw_card_accessible(
     };
     let rank_size = accessibility::text_size((rect.w * 0.27).clamp(12., 25.), large_text);
     let suit_size = accessibility::text_size((rect.w * 0.30).clamp(13., 28.), large_text);
-    draw_text(
+    crate::ui::draw_text(
         rank_label(card.rank),
         rect.x + rect.w * 0.13,
         rect.y + rect.h * 0.27,
         rank_size,
         color,
     );
-    draw_text(
+    crate::ui::draw_text(
         suit_label(card.suit),
         rect.x + rect.w * 0.67,
         rect.y + rect.h * 0.79,

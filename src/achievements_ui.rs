@@ -96,7 +96,7 @@ pub fn draw(state: &AppState) {
         l.panel.y + 98.
     };
     let title_size = if portrait { 28. } else { 38. };
-    draw_text(
+    crate::ui::draw_text(
         "ACHIEVEMENTS",
         l.panel.x + 50.,
         title_y,
@@ -113,7 +113,7 @@ pub fn draw(state: &AppState) {
                 .unwrap_or(false)
         })
         .count();
-    draw_text(
+    crate::ui::draw_text(
         format!(
             "{} earned of {}  -  showing {}",
             earned,
@@ -136,7 +136,7 @@ pub fn draw(state: &AppState) {
             },
             state.high_contrast,
         );
-        draw_text(
+        crate::ui::draw_text(
             filter_label(filter as u8),
             rect.x + if portrait { 10. } else { 16. },
             rect.y + rect.h * 0.68,
@@ -192,7 +192,7 @@ pub fn draw(state: &AppState) {
             },
             state.large_text,
         );
-        draw_text(
+        crate::ui::draw_text(
             fitted_label(*achievement, portrait),
             rect.x + 20.,
             rect.y + rect.h * 0.64,
@@ -206,7 +206,7 @@ pub fn draw(state: &AppState) {
             },
         );
         let status = if earned { "EARNED" } else { "LOCKED" };
-        draw_text(
+        crate::ui::draw_text(
             status,
             rect.right() - if portrait { 58. } else { 55. },
             rect.y + rect.h * 0.64,
@@ -227,15 +227,15 @@ pub fn draw(state: &AppState) {
             state.high_contrast,
         );
         panel(next, Color::new(0.18, 0.12, 0.28, 1.), state.high_contrast);
-        draw_text("PREV", previous.x + 22., previous.y + 28., 11., WHITE);
-        draw_text("NEXT", next.x + 22., next.y + 28., 11., WHITE);
+        crate::ui::draw_text("PREV", previous.x + 22., previous.y + 28., 11., WHITE);
+        crate::ui::draw_text("NEXT", next.x + 22., next.y + 28., 11., WHITE);
     }
     panel(
         l.back,
         Color::new(0.25, 0.16, 0.32, 1.),
         state.high_contrast,
     );
-    draw_text(
+    crate::ui::draw_text(
         "BACK",
         l.back.x + if portrait { 52. } else { 60. },
         l.back.y + l.back.h * 0.64,

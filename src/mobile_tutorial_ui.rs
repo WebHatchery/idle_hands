@@ -13,7 +13,7 @@ fn continue_rect(compact_landscape: bool) -> Rect {
 
 fn replay_rect(compact_landscape: bool) -> Rect {
     if compact_landscape {
-        Rect::new(365., 2., 120., 44.)
+        Rect::new(700., 2., 130., 44.)
     } else {
         Rect::new(245., 10., 105., 44.)
     }
@@ -34,7 +34,7 @@ pub fn replay_clicks(point: Vec2, compact_landscape: bool) -> bool {
 pub fn draw_replay_button(compact_landscape: bool) {
     let rect = replay_rect(compact_landscape);
     panel(rect, Color::new(0.16, 0.11, 0.25, 0.96));
-    draw_text(
+    crate::ui::draw_text(
         "TUTORIAL",
         rect.x + if compact_landscape { 14. } else { 13. },
         rect.y + rect.h * 0.64,
@@ -56,14 +56,14 @@ fn draw_portrait(game: GameId) {
         Rect::new(15., 105., 330., 540.),
         Color::new(0.07, 0.045, 0.13, 0.98),
     );
-    draw_text(
+    crate::ui::draw_text(
         "HOW TO PLAY",
         35.,
         160.,
         25.,
         Color::new(0.98, 0.83, 0.45, 1.),
     );
-    draw_text(game.title(), 35., 198., 20., WHITE);
+    crate::ui::draw_text(game.title(), 35., 198., 20., WHITE);
     let mut y = 240.;
     for (index, instruction) in tutorial_ui::instructions(game).iter().enumerate() {
         for (line_index, line) in wrap(instruction, 39).iter().enumerate() {
@@ -72,7 +72,7 @@ fn draw_portrait(game: GameId) {
             } else {
                 "   ".to_owned()
             };
-            draw_text(
+            crate::ui::draw_text(
                 &format!("{}{}", prefix, line),
                 35.,
                 y,
@@ -91,14 +91,14 @@ fn draw_landscape(game: GameId) {
         Rect::new(88., 48., 668., 292.),
         Color::new(0.07, 0.045, 0.13, 0.98),
     );
-    draw_text(
+    crate::ui::draw_text(
         "HOW TO PLAY",
         122.,
         90.,
         28.,
         Color::new(0.98, 0.83, 0.45, 1.),
     );
-    draw_text(game.title(), 122., 123., 19., WHITE);
+    crate::ui::draw_text(game.title(), 122., 123., 19., WHITE);
     let mut y = 154.;
     for (index, instruction) in tutorial_ui::instructions(game).iter().enumerate() {
         for (line_index, line) in wrap(instruction, 76).iter().enumerate() {
@@ -107,7 +107,7 @@ fn draw_landscape(game: GameId) {
             } else {
                 "   ".to_owned()
             };
-            draw_text(
+            crate::ui::draw_text(
                 &format!("{}{}", prefix, line),
                 122.,
                 y,
@@ -124,7 +124,7 @@ fn draw_landscape(game: GameId) {
 fn draw_continue(compact_landscape: bool) {
     let rect = continue_rect(compact_landscape);
     panel(rect, Color::new(0.25, 0.45, 0.34, 1.));
-    draw_text("CONTINUE", rect.x + 34., rect.y + rect.h * 0.64, 15., WHITE);
+    crate::ui::draw_text("CONTINUE", rect.x + 34., rect.y + rect.h * 0.64, 15., WHITE);
 }
 
 fn wrap(text: &str, max_chars: usize) -> Vec<String> {

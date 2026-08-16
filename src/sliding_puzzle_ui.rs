@@ -222,7 +222,7 @@ fn button(rect: Rect, label: &str, large_text: bool) {
 }
 
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
-    draw_text(value, x, y, size, color);
+    crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
 fn accent() -> Color {
     Color::new(0.98, 0.83, 0.45, 1.)

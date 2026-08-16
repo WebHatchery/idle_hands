@@ -37,7 +37,7 @@ pub fn draw_fivefold(state: &AppState) {
         } else {
             game.dice[index].to_string()
         };
-        let width = measure_text(&value, None, 30, 1.).width;
+        let width = crate::ui::measure_text(&value, None, 30, 1.).width;
         text(
             &value,
             rect.x + (rect.w - width) / 2.,
@@ -228,7 +228,7 @@ fn panel(rect: Rect, fill: Color) {
 }
 
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
-    draw_text(value, x, y, size, color);
+    crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
 
 fn back() {

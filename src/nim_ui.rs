@@ -242,7 +242,7 @@ fn button(rect: Rect, label: &str, large_text: bool) {
 }
 
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color, large_text: bool) {
-    draw_text(
+    crate::ui::draw_text(
         value,
         x,
         y,

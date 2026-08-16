@@ -110,21 +110,21 @@ pub fn draw(state: &AppState) {
     } else {
         58.
     };
-    draw_text(
+    crate::ui::draw_text(
         "CABINET",
         8.,
         30.,
         accessibility::text_size(13., state.large_text),
         muted(),
     );
-    draw_text(
+    crate::ui::draw_text(
         "WORD LADDER",
         title_x,
         title_y,
         accessibility::text_size(if compact { 22. } else { 28. }, state.large_text),
         accent(),
     );
-    draw_text(
+    crate::ui::draw_text(
         format!("{} moves  -  {} TO {}", game.moves, game.start, game.target),
         if compact { 300. } else { title_x },
         if compact { 28. } else { title_y + 24. },
@@ -139,7 +139,7 @@ pub fn draw(state: &AppState) {
         } else {
             title_x
         };
-        draw_text(
+        crate::ui::draw_text(
             format!("BEST {} MOVES", best),
             best_x,
             if compact {
@@ -171,7 +171,7 @@ pub fn draw(state: &AppState) {
     button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW LADDER", state.large_text);
-    draw_text(
+    crate::ui::draw_text(
         state.card_hint.as_deref().unwrap_or(&game.message),
         if compact { 40. } else { title_x },
         if compact {
@@ -221,7 +221,7 @@ fn draw_words(game: &WordLadder, x: f32, y: f32, width: f32) {
                 Color::new(0.35, 0.65, 0.62, 1.),
             );
             if let Some(value) = word.and_then(|word| word.as_bytes().get(col)) {
-                draw_text(
+                crate::ui::draw_text(
                     (*value as char).to_string(),
                     rect.x + rect.w * 0.35,
                     rect.y + rect.h * 0.68,
@@ -232,7 +232,7 @@ fn draw_words(game: &WordLadder, x: f32, y: f32, width: f32) {
         }
     }
     if game.phase == WordLadderPhase::Won {
-        draw_text(
+        crate::ui::draw_text(
             "LADDER COMPLETE",
             x,
             y + 7. * (cell + 7.),
@@ -274,7 +274,7 @@ fn draw_keyboard(l: Layout, game: &WordLadder, large_text: bool) {
             1.,
             Color::new(0.35, 0.65, 0.62, 1.),
         );
-        draw_text(
+        crate::ui::draw_text(
             (letter as char).to_string(),
             rect.x + rect.w * 0.34,
             rect.y + rect.h * 0.68,
@@ -299,7 +299,7 @@ fn button(rect: Rect, label: &str, large_text: bool) {
         1.,
         Color::new(0.42, 0.78, 0.72, 1.),
     );
-    draw_text(
+    crate::ui::draw_text(
         label,
         rect.x + 10.,
         rect.y + rect.h * 0.64,

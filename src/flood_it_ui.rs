@@ -110,21 +110,21 @@ pub fn draw(state: &AppState) {
     } else {
         58.
     };
-    draw_text(
+    crate::ui::draw_text(
         "‹ CABINET",
         8.,
         30.,
         accessibility::text_size(13., state.large_text),
         muted(),
     );
-    draw_text(
+    crate::ui::draw_text(
         "FLOOD IT",
         title_x,
         title_y,
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
-    draw_text(
+    crate::ui::draw_text(
         format!("{} / 24 moves  •  {}", game.moves, status(game.phase)),
         if compact { 430. } else { title_x },
         if compact { 28. } else { title_y + 24. },
@@ -145,7 +145,7 @@ pub fn draw(state: &AppState) {
     } else {
         545.
     };
-    draw_text(
+    crate::ui::draw_text(
         state
             .card_hint
             .as_deref()
@@ -254,8 +254,8 @@ fn button(rect: Rect, label: &str, large_text: bool) {
     );
 }
 fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
-    let measured = measure_text(label, None, size as u16, 1.);
-    draw_text(
+    let measured = crate::ui::measure_text(label, None, size as u16, 1.);
+    crate::ui::draw_text(
         label,
         rect.x + (rect.w - measured.width) * 0.5,
         rect.y + rect.h * 0.63,

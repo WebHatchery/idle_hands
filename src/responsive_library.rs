@@ -19,7 +19,7 @@ fn panel(rect: Rect, fill: Color) {
     );
 }
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
-    draw_text(value, x, y, size, color);
+    crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
 fn back_button(y: f32) {
     panel(
@@ -271,7 +271,7 @@ pub fn draw_records(state: &AppState) {
             13.,
             Color::new(0.78, 0.73, 0.86, 1.),
         );
-        let score_width = measure_text(score, None, 14, 1.).width;
+        let score_width = crate::ui::measure_text(score, None, 14, 1.).width;
         text(
             score,
             rect.right() - score_width - 10.,

@@ -22,7 +22,7 @@ fn panel(rect: Rect) {
 }
 fn back_button() {
     draw_rectangle(1030., 635., 180., 48., Color::new(0.25, 0.16, 0.32, 1.));
-    draw_text("BACK", 1090., 666., 18., WHITE);
+    crate::ui::draw_text("BACK", 1090., 666., 18., WHITE);
 }
 pub fn rules_clicks(p: Vec2) -> Vec<UiAction> {
     if Rect::new(1030., 635., 180., 48.).contains(p) {
@@ -40,8 +40,8 @@ pub fn credits_clicks(p: Vec2) -> Vec<UiAction> {
 }
 pub fn draw_rules() {
     panel(Rect::new(120., 55., 1040., 610.));
-    draw_text("RULES", 170., 125., 46., Color::new(0.98, 0.83, 0.45, 1.));
-    draw_text(
+    crate::ui::draw_text("RULES", 170., 125., 46., Color::new(0.98, 0.83, 0.45, 1.));
+    crate::ui::draw_text(
         "Every drawer keeps its controls visible and touch-complete.",
         174.,
         157.,
@@ -53,8 +53,8 @@ pub fn draw_rules() {
         let row = index % 11;
         let x = 160. + column as f32 * 245.;
         let y = 215. + row as f32 * 38.;
-        draw_text(game.title(), x, y, 12., Color::new(0.98, 0.83, 0.45, 1.));
-        draw_text(
+        crate::ui::draw_text(game.title(), x, y, 12., Color::new(0.98, 0.83, 0.45, 1.));
+        crate::ui::draw_text(
             game.subtitle(),
             x,
             y + 15.,
@@ -66,30 +66,30 @@ pub fn draw_rules() {
 }
 pub fn draw_credits() {
     panel(Rect::new(230., 95., 820., 520.));
-    draw_text("CREDITS", 300., 175., 46., Color::new(0.98, 0.83, 0.45, 1.));
-    draw_text("IDLE HANDS", 305., 240., 28., WHITE);
-    draw_text(
+    crate::ui::draw_text("CREDITS", 300., 175., 46., Color::new(0.98, 0.83, 0.45, 1.));
+    crate::ui::draw_text("IDLE HANDS", 305., 240., 28., WHITE);
+    crate::ui::draw_text(
         "A quiet collection for small pauses.",
         305.,
         280.,
         20.,
         Color::new(0.78, 0.73, 0.86, 1.),
     );
-    draw_text(
+    crate::ui::draw_text(
         "Built with Rust, macroquad, and the shared macroquad-toolkit.",
         305.,
         335.,
         18.,
         Color::new(0.68, 0.63, 0.78, 1.),
     );
-    draw_text(
+    crate::ui::draw_text(
         "All games are deterministic where practical and designed for touch.",
         305.,
         375.,
         18.,
         Color::new(0.68, 0.63, 0.78, 1.),
     );
-    draw_text(
+    crate::ui::draw_text(
         "Thank you for spending a quiet minute at the cabinet.",
         305.,
         450.,

@@ -135,8 +135,8 @@ pub fn draw(state: &AppState) {
                 25.
             };
             let letter_text = letter.to_string();
-            let width = measure_text(letter_text.clone(), None, size as u16, 1.).width;
-            draw_text(
+            let width = crate::ui::measure_text(letter_text.clone(), None, size as u16, 1.).width;
+            crate::ui::draw_text(
                 &letter_text,
                 rect.x + (rect.w - width) / 2.,
                 rect.y + rect.h * 0.68,
@@ -228,7 +228,7 @@ fn button(rect: Rect, label: &str) {
     text(label, rect.x + 12., rect.y + 27., 11., WHITE);
 }
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
-    draw_text(value, x, y, size, color);
+    crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
 fn title_size() -> f32 {
     if crate::ui::is_portrait() {

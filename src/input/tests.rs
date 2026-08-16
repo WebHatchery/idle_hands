@@ -57,6 +57,23 @@ fn device_matrix_keeps_shared_button_hits_at_least_44_physical_points() {
 }
 
 #[test]
+fn smallest_phone_matrix_keeps_body_text_physically_readable() {
+    use macroquad_toolkit::ui::VirtualUi;
+
+    for (screen_w, screen_h, logical_w, logical_h) in [
+        (320., 568., 360., 780.),
+        (568., 320., 844., 390.),
+        (1024., 768., 1280., 720.),
+    ] {
+        let viewport = VirtualUi::from_screen_size(logical_w, logical_h, screen_w, screen_h);
+        let body = crate::ui::readable_text_size_for_scale(10., viewport.scale);
+        let caption = crate::ui::readable_text_size_for_scale(8., viewport.scale);
+        assert!(body * viewport.scale >= 11. - 0.01);
+        assert!(caption * viewport.scale >= 9. - 0.01);
+    }
+}
+
+#[test]
 fn pointer_tracker_distinguishes_taps_drags_and_cancelled_releases() {
     let mut tracker = PointerTracker::default();
     tracker.press(Some(Vec2::new(10., 10.)));

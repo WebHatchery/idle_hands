@@ -23,9 +23,9 @@ fn draw_card(rect: Rect, card: Card, selected: bool, reduced_motion: bool) {
 
 pub fn draw_freecell(state: &AppState) {
     let game = &state.freecell;
-    draw_text("‹ CABINET", 40., 55., 20., Color::new(0.78, 0.70, 0.92, 1.));
-    draw_text("FREECELL", 40., 105., 44., Color::new(0.98, 0.83, 0.45, 1.));
-    draw_text(
+    crate::ui::draw_text("‹ CABINET", 40., 55., 20., Color::new(0.78, 0.70, 0.92, 1.));
+    crate::ui::draw_text("FREECELL", 40., 105., 44., Color::new(0.98, 0.83, 0.45, 1.));
+    crate::ui::draw_text(
         if game.status == crate::freecell::FreeCellStatus::Won {
             "All foundations complete"
         } else {
@@ -47,7 +47,7 @@ pub fn draw_freecell(state: &AppState) {
                 state.reduced_motion,
             );
         }
-        draw_text(
+        crate::ui::draw_text(
             format!("CELL {}", cell + 1),
             rect.x + 8.,
             300.,
@@ -70,7 +70,7 @@ pub fn draw_freecell(state: &AppState) {
                 state.reduced_motion,
             );
         } else {
-            draw_text(
+            crate::ui::draw_text(
                 ["♣", "♦", "♥", "♠"][suit],
                 rect.x + 30.,
                 rect.y + 70.,
@@ -78,7 +78,7 @@ pub fn draw_freecell(state: &AppState) {
                 Color::new(0.46, 0.37, 0.58, 1.),
             );
         }
-        draw_text(
+        crate::ui::draw_text(
             "FOUND",
             rect.x + 12.,
             300.,
@@ -88,7 +88,7 @@ pub fn draw_freecell(state: &AppState) {
     }
     for cascade in 0..8 {
         let x = 28. + cascade as f32 * 122.;
-        draw_text(
+        crate::ui::draw_text(
             (cascade + 1).to_string(),
             x + 38.,
             340.,
@@ -107,7 +107,7 @@ pub fn draw_freecell(state: &AppState) {
             panel(card_rect(x, 350.), Color::new(0.12, 0.09, 0.20, 1.));
         }
     }
-    draw_text(
+    crate::ui::draw_text(
         format!("Moves: {}", game.moves),
         45.,
         685.,
@@ -118,13 +118,13 @@ pub fn draw_freecell(state: &AppState) {
         Rect::new(850., 620., 140., 44.),
         Color::new(0.18, 0.26, 0.34, 1.),
     );
-    draw_text("UNDO", 894., 648., 16., WHITE);
+    crate::ui::draw_text("UNDO", 894., 648., 16., WHITE);
     panel(
         Rect::new(1010., 620., 160., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    draw_text("NEW DEAL", 1042., 648., 16., WHITE);
-    draw_text(
+    crate::ui::draw_text("NEW DEAL", 1042., 648., 16., WHITE);
+    crate::ui::draw_text(
         "Tap a card, then tap a cascade or foundation.",
         850.,
         545.,
@@ -132,13 +132,13 @@ pub fn draw_freecell(state: &AppState) {
         Color::new(0.63, 0.58, 0.72, 1.),
     );
     if let Some(hint) = state.card_hint.as_deref() {
-        draw_text(hint, 690., 590., 14., Color::new(0.63, 0.95, 0.72, 1.));
+        crate::ui::draw_text(hint, 690., 590., 14., Color::new(0.63, 0.95, 0.72, 1.));
     }
     panel(
         Rect::new(690., 620., 140., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    draw_text("HINT", 737., 648., 16., WHITE);
+    crate::ui::draw_text("HINT", 737., 648., 16., WHITE);
 }
 
 pub fn freecell_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {

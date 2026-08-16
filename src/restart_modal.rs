@@ -75,14 +75,14 @@ pub fn draw(state: &AppState) {
         2.,
         Color::new(0.98, 0.83, 0.45, 1.),
     );
-    draw_text(
+    crate::ui::draw_text(
         &title,
         title_pos.x,
         title_pos.y,
         if crate::ui::is_portrait() { 18. } else { 21. },
         WHITE,
     );
-    draw_text(
+    crate::ui::draw_text(
         "Current progress will be replaced.",
         detail_pos.x,
         detail_pos.y,
@@ -95,8 +95,8 @@ pub fn draw(state: &AppState) {
     ] {
         draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
         draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., WHITE);
-        let measured = measure_text(label, None, 14, 1.);
-        draw_text(
+        let measured = crate::ui::measure_text(label, None, 14, 1.);
+        crate::ui::draw_text(
             label,
             rect.x + (rect.w - measured.width) * 0.5,
             rect.y + rect.h * 0.65,

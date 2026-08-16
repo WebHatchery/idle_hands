@@ -10,7 +10,7 @@ use crate::{
 use macroquad::prelude::*;
 
 fn text(s: &str, x: f32, y: f32, size: f32, color: Color) {
-    draw_text(s, x, y, size, color);
+    crate::ui::draw_text(s, x, y, crate::ui::readable_text_size(size), color);
 }
 fn panel(rect: Rect, fill: Color) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);

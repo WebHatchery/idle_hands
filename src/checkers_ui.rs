@@ -240,7 +240,7 @@ fn draw_piece(piece: Piece, x: f32, y: f32, radius: f32, high_contrast: bool) {
     draw_circle(x, y, radius, color);
     draw_circle_lines(x, y, radius, 2., Color::new(0.08, 0.05, 0.12, 1.));
     if matches!(piece, Piece::RedKing | Piece::YellowKing) {
-        draw_text(
+        crate::ui::draw_text(
             "K",
             x - radius * 0.3,
             y + radius * 0.3,
@@ -277,7 +277,7 @@ fn button(rect: Rect, label: &str, large_text: bool) {
     );
 }
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
-    draw_text(value, x, y, size, color);
+    crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
 fn title_size() -> f32 {
     if crate::ui::is_portrait() {

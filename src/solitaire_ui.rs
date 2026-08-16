@@ -4,7 +4,7 @@ use crate::{cards::Card, solitaire::CardSource, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
 fn text(s: &str, x: f32, y: f32, size: f32, color: Color) {
-    draw_text(s, x, y, size, color);
+    crate::ui::draw_text(s, x, y, crate::ui::readable_text_size(size), color);
 }
 fn card_rect(x: f32, y: f32) -> Rect {
     Rect::new(x, y, 92., 116.)
