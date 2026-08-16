@@ -49,7 +49,7 @@ fn layout() -> Layout {
 
 pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     let l = layout();
-    if Rect::new(0., 0., 110., 42.).contains(point) {
+    if crate::ui::hit(Rect::new(0., 0., 110., 42.), point) {
         return vec![UiAction::Cabinet];
     }
     for (peg, rect) in l.pegs.iter().enumerate() {
@@ -57,13 +57,13 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
             return vec![UiAction::HanoiPeg(peg)];
         }
     }
-    if l.hint.contains(point) {
+    if crate::ui::hit(l.hint, point) {
         return vec![UiAction::HanoiHint];
     }
-    if l.undo.contains(point) {
+    if crate::ui::hit(l.undo, point) {
         return vec![UiAction::HanoiUndo];
     }
-    if l.new_game.contains(point) {
+    if crate::ui::hit(l.new_game, point) {
         return vec![UiAction::HanoiNew];
     }
     Vec::new()

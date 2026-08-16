@@ -21,9 +21,9 @@ pub fn clicks(p: Vec2) -> Vec<UiAction> {
             Rect::new(670., 360., 160., 48.),
         )
     };
-    if cancel.contains(p) {
+    if crate::ui::hit(cancel, p) {
         vec![UiAction::Cancel]
-    } else if start.contains(p) {
+    } else if crate::ui::hit(start, p) {
         vec![UiAction::ConfirmRestart]
     } else {
         vec![]

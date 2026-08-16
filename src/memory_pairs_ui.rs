@@ -42,16 +42,16 @@ fn layout() -> Layout {
 
 pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     let layout = layout();
-    if back_rect().contains(point) {
+    if crate::ui::hit(back_rect(), point) {
         return vec![UiAction::Cabinet];
     }
-    if layout.new_board.contains(point) {
+    if crate::ui::hit(layout.new_board, point) {
         return vec![UiAction::MemoryPairsNew];
     }
-    if layout.undo.contains(point) {
+    if crate::ui::hit(layout.undo, point) {
         return vec![UiAction::MemoryPairsUndo];
     }
-    if layout.hint.contains(point) {
+    if crate::ui::hit(layout.hint, point) {
         return vec![UiAction::MemoryPairsHint];
     }
     if layout.board.contains(point) && state.memory_pairs.status != MemoryStatus::Won {

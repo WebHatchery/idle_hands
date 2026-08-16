@@ -85,22 +85,22 @@ fn layout() -> Layout {
 
 pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     let l = layout();
-    if back_rect().contains(point) {
+    if crate::ui::hit(back_rect(), point) {
         return vec![UiAction::Cabinet];
     }
-    if l.stock.contains(point) {
+    if crate::ui::hit(l.stock, point) {
         return vec![UiAction::PyramidStock];
     }
     if l.waste.contains(point) {
         return vec![UiAction::PyramidTap(crate::pyramid::WASTE_INDEX)];
     }
-    if l.hint.contains(point) {
+    if crate::ui::hit(l.hint, point) {
         return vec![UiAction::PyramidHint];
     }
-    if l.undo.contains(point) {
+    if crate::ui::hit(l.undo, point) {
         return vec![UiAction::PyramidUndo];
     }
-    if l.new_game.contains(point) {
+    if crate::ui::hit(l.new_game, point) {
         return vec![UiAction::PyramidNew];
     }
     for index in (0..28).rev() {

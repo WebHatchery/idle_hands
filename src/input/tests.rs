@@ -36,6 +36,27 @@ fn device_matrix_keeps_rendering_and_input_on_one_transform() {
 }
 
 #[test]
+fn device_matrix_keeps_shared_button_hits_at_least_44_physical_points() {
+    use macroquad::prelude::Rect;
+    use macroquad_toolkit::ui::{VirtualUi, MIN_TARGET};
+
+    let devices = [
+        (320., 568., 360., 780.),
+        (390., 844., 360., 780.),
+        (568., 320., 840., 390.),
+        (844., 390., 840., 390.),
+        (768., 1024., 360., 780.),
+        (1024., 768., 1280., 720.),
+    ];
+    for (screen_w, screen_h, logical_w, logical_h) in devices {
+        let viewport = VirtualUi::from_screen_size(logical_w, logical_h, screen_w, screen_h);
+        let area = crate::ui::physical_touch_rect(Rect::new(100., 100., 100., 30.), viewport.scale);
+        assert!(area.w * viewport.scale >= MIN_TARGET - 0.01);
+        assert!(area.h * viewport.scale >= MIN_TARGET - 0.01);
+    }
+}
+
+#[test]
 fn pointer_tracker_distinguishes_taps_drags_and_cancelled_releases() {
     let mut tracker = PointerTracker::default();
     tracker.press(Some(Vec2::new(10., 10.)));

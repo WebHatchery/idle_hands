@@ -168,49 +168,49 @@ pub fn draw_settings(state: &AppState) {
 
 pub fn settings_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if state.confirm_reset {
-        if Rect::new(430., 375., 150., 44.).contains(p) {
+        if crate::ui::hit(Rect::new(430., 375., 150., 44.), p) {
             return vec![UiAction::CancelResetData];
         }
-        if Rect::new(650., 375., 150., 44.).contains(p) {
+        if crate::ui::hit(Rect::new(650., 375., 150., 44.), p) {
             return vec![UiAction::ConfirmResetData];
         }
         return vec![];
     }
     let mut actions = Vec::new();
-    if Rect::new(230., 560., 150., 48.).contains(p) {
+    if crate::ui::hit(Rect::new(230., 560., 150., 48.), p) {
         actions.push(UiAction::Cabinet);
     }
-    if Rect::new(410., 560., 150., 48.).contains(p) {
+    if crate::ui::hit(Rect::new(410., 560., 150., 48.), p) {
         actions.push(UiAction::Save);
     }
-    if Rect::new(590., 560., 150., 48.).contains(p) {
+    if crate::ui::hit(Rect::new(590., 560., 150., 48.), p) {
         actions.push(UiAction::Load);
     }
-    if Rect::new(230., 215., 700., 45.).contains(p) {
+    if crate::ui::hit(Rect::new(230., 215., 700., 45.), p) {
         actions.push(UiAction::CycleCardBack);
     }
-    if Rect::new(230., 265., 700., 45.).contains(p) {
+    if crate::ui::hit(Rect::new(230., 265., 700., 45.), p) {
         actions.push(UiAction::CycleBoardTheme);
     }
-    if Rect::new(230., 315., 700., 45.).contains(p) {
+    if crate::ui::hit(Rect::new(230., 315., 700., 45.), p) {
         actions.push(UiAction::CycleSoundSet);
     }
-    if Rect::new(230., 365., 700., 45.).contains(p) {
+    if crate::ui::hit(Rect::new(230., 365., 700., 45.), p) {
         actions.push(UiAction::CycleCabinetDecoration);
     }
-    if Rect::new(230., 415., 350., 45.).contains(p) {
+    if crate::ui::hit(Rect::new(230., 415., 350., 45.), p) {
         actions.push(UiAction::ToggleSound);
     }
-    if Rect::new(580., 415., 350., 45.).contains(p) {
+    if crate::ui::hit(Rect::new(580., 415., 350., 45.), p) {
         actions.push(UiAction::ToggleMotion);
     }
-    if Rect::new(230., 470., 350., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(230., 470., 350., 44.), p) {
         actions.push(UiAction::ToggleHighContrast);
     }
-    if Rect::new(580., 470., 350., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(580., 470., 350., 44.), p) {
         actions.push(UiAction::ToggleLargeText);
     }
-    if Rect::new(770., 560., 210., 48.).contains(p) {
+    if crate::ui::hit(Rect::new(770., 560., 210., 48.), p) {
         actions.push(UiAction::ResetData);
     }
     actions

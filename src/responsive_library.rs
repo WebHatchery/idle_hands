@@ -297,13 +297,13 @@ pub fn draw_records(state: &AppState) {
     back_button(714.);
 }
 pub fn records_clicks(p: Vec2) -> Vec<UiAction> {
-    if Rect::new(190., 28., 155., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(190., 28., 155., 44.), p) {
         vec![UiAction::Achievements]
-    } else if Rect::new(10., 602., 100., 44.).contains(p) {
+    } else if crate::ui::hit(Rect::new(10., 602., 100., 44.), p) {
         vec![UiAction::LibraryScroll(-1)]
-    } else if Rect::new(250., 602., 100., 44.).contains(p) {
+    } else if crate::ui::hit(Rect::new(250., 602., 100., 44.), p) {
         vec![UiAction::LibraryScroll(1)]
-    } else if Rect::new(10., 714., 150., 44.).contains(p) {
+    } else if crate::ui::hit(Rect::new(10., 714., 150., 44.), p) {
         vec![UiAction::Cabinet]
     } else {
         vec![]
@@ -366,11 +366,11 @@ pub fn draw_rules(state: &AppState) {
     back_button(714.);
 }
 pub fn rules_clicks(p: Vec2) -> Vec<UiAction> {
-    if Rect::new(10., 602., 100., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(10., 602., 100., 44.), p) {
         vec![UiAction::LibraryScroll(-1)]
-    } else if Rect::new(250., 602., 100., 44.).contains(p) {
+    } else if crate::ui::hit(Rect::new(250., 602., 100., 44.), p) {
         vec![UiAction::LibraryScroll(1)]
-    } else if Rect::new(10., 714., 150., 44.).contains(p) {
+    } else if crate::ui::hit(Rect::new(10., 714., 150., 44.), p) {
         vec![UiAction::Cabinet]
     } else {
         vec![]
@@ -422,7 +422,7 @@ pub fn draw_credits() {
     back_button(650.);
 }
 pub fn credits_clicks(p: Vec2) -> Vec<UiAction> {
-    if Rect::new(10., 650., 150., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(10., 650., 150., 44.), p) {
         vec![UiAction::Cabinet]
     } else {
         vec![]
@@ -474,11 +474,11 @@ pub fn draw_help() {
     text("BACK", 277., 558., 12., WHITE);
 }
 pub fn help_clicks(p: Vec2) -> Vec<UiAction> {
-    if Rect::new(10., 530., 105., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(10., 530., 105., 44.), p) {
         vec![UiAction::Rules]
-    } else if Rect::new(127., 530., 105., 44.).contains(p) {
+    } else if crate::ui::hit(Rect::new(127., 530., 105., 44.), p) {
         vec![UiAction::Credits]
-    } else if Rect::new(244., 530., 106., 44.).contains(p) {
+    } else if crate::ui::hit(Rect::new(244., 530., 106., 44.), p) {
         vec![UiAction::Cabinet]
     } else {
         vec![]

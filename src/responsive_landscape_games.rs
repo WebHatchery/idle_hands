@@ -176,18 +176,18 @@ pub fn draw_minesweeper(state: &AppState) {
     );
 }
 pub fn minesweeper_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 110., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(0., 0., 110., 44.), p) {
         return vec![UiAction::Cabinet];
     }
     for (index, preset) in MinePreset::ALL.iter().enumerate() {
-        if Rect::new(400. + index as f32 * 105., 105., 98., 44.).contains(p) {
+        if crate::ui::hit(Rect::new(400. + index as f32 * 105., 105., 98., 44.), p) {
             return vec![UiAction::MinePreset(*preset)];
         }
     }
-    if Rect::new(400., 155., 170., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(400., 155., 170., 44.), p) {
         return vec![UiAction::MineFlagMode];
     }
-    if Rect::new(590., 155., 170., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(590., 155., 170., 44.), p) {
         return vec![UiAction::MineRestart];
     }
     if let Some(index) = mine_grid(state).index_at(p) {
@@ -317,7 +317,7 @@ pub fn draw_sudoku(state: &AppState) {
     );
 }
 pub fn sudoku_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 110., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(0., 0., 110., 44.), p) {
         return vec![UiAction::Cabinet];
     }
     if SUDOKU_BOARD.contains(p) {
@@ -328,7 +328,7 @@ pub fn sudoku_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         }
     }
     for (index, difficulty) in SudokuDifficulty::ALL.iter().enumerate() {
-        if Rect::new(400. + index as f32 * 120., 72., 112., 44.).contains(p) {
+        if crate::ui::hit(Rect::new(400. + index as f32 * 120., 72., 112., 44.), p) {
             return vec![UiAction::SudokuDifficulty(*difficulty)];
         }
     }
@@ -345,13 +345,13 @@ pub fn sudoku_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
             return vec![UiAction::SudokuNumber(value as u8)];
         }
     }
-    if Rect::new(590., 280., 110., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(590., 280., 110., 44.), p) {
         return vec![UiAction::SudokuUndo];
     }
-    if Rect::new(715., 280., 110., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(715., 280., 110., 44.), p) {
         return vec![UiAction::SudokuErase];
     }
-    if Rect::new(400., 305., 160., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(400., 305., 160., 44.), p) {
         return vec![UiAction::SudokuNoteMode];
     }
     let _ = state;
@@ -519,21 +519,21 @@ fn nonogram_global_index(state: &AppState, local: usize) -> usize {
 }
 
 pub fn nonogram_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 110., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(0., 0., 110., 44.), p) {
         return vec![UiAction::Cabinet];
     }
     for (index, preset) in NonogramPreset::ALL.iter().enumerate() {
-        if Rect::new(400. + index as f32 * 120., 75., 112., 44.).contains(p) {
+        if crate::ui::hit(Rect::new(400. + index as f32 * 120., 75., 112., 44.), p) {
             return vec![UiAction::NonogramPreset(*preset)];
         }
     }
-    if Rect::new(400., 135., 160., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(400., 135., 160., 44.), p) {
         return vec![UiAction::NonogramMode];
     }
-    if Rect::new(590., 135., 160., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(590., 135., 160., 44.), p) {
         return vec![UiAction::NonogramUndo];
     }
-    if Rect::new(400., 190., 160., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(400., 190., 160., 44.), p) {
         return vec![UiAction::NonogramZoom];
     }
     for (rect, delta) in [
@@ -717,20 +717,20 @@ pub fn draw_reversi(state: &AppState) {
     }
 }
 pub fn reversi_clicks(_state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 110., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(0., 0., 110., 44.), p) {
         return vec![UiAction::Cabinet];
     }
-    if Rect::new(400., 120., 160., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(400., 120., 160., 44.), p) {
         return vec![UiAction::ReversiPass];
     }
-    if Rect::new(590., 120., 160., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(590., 120., 160., 44.), p) {
         return vec![UiAction::ReversiNew];
     }
     for (index, level) in [AiLevel::Gentle, AiLevel::Sharp, AiLevel::TwoPlayer]
         .iter()
         .enumerate()
     {
-        if Rect::new(400. + index as f32 * 120., 190., 112., 44.).contains(p) {
+        if crate::ui::hit(Rect::new(400. + index as f32 * 120., 190., 112., 44.), p) {
             return vec![UiAction::ReversiLevel(*level)];
         }
     }

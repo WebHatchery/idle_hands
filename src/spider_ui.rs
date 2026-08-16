@@ -72,19 +72,19 @@ fn layout() -> Layout {
 
 pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     let layout = layout();
-    if Rect::new(0., 0., 110., 42.).contains(point) {
+    if crate::ui::hit(Rect::new(0., 0., 110., 42.), point) {
         return vec![UiAction::Cabinet];
     }
-    if layout.stock.contains(point) {
+    if crate::ui::hit(layout.stock, point) {
         return vec![UiAction::SpiderDeal];
     }
-    if layout.hint.contains(point) {
+    if crate::ui::hit(layout.hint, point) {
         return vec![UiAction::SpiderHint];
     }
-    if layout.undo.contains(point) {
+    if crate::ui::hit(layout.undo, point) {
         return vec![UiAction::SpiderUndo];
     }
-    if layout.new_game.contains(point) {
+    if crate::ui::hit(layout.new_game, point) {
         return vec![UiAction::SpiderNew];
     }
     for column in 0..8 {

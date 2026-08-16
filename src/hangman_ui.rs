@@ -46,13 +46,13 @@ fn layout() -> Layout {
 
 pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     let layout = layout();
-    if back_rect().contains(point) {
+    if crate::ui::hit(back_rect(), point) {
         return vec![UiAction::Cabinet];
     }
-    if layout.new_game.contains(point) {
+    if crate::ui::hit(layout.new_game, point) {
         return vec![UiAction::HangmanNew];
     }
-    if layout.hint.contains(point) {
+    if crate::ui::hit(layout.hint, point) {
         return vec![UiAction::HangmanHint];
     }
     if layout.keyboard.contains(point) {

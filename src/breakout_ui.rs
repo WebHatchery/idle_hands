@@ -57,7 +57,7 @@ fn layout() -> Layout {
 }
 pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     let l = layout();
-    if back_rect().contains(point) {
+    if crate::ui::hit(back_rect(), point) {
         return vec![UiAction::Cabinet];
     }
     for (rect, movement) in [
@@ -69,13 +69,13 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
             return vec![UiAction::BreakoutStep(movement)];
         }
     }
-    if l.undo.contains(point) {
+    if crate::ui::hit(l.undo, point) {
         return vec![UiAction::BreakoutUndo];
     }
-    if l.hint.contains(point) {
+    if crate::ui::hit(l.hint, point) {
         return vec![UiAction::BreakoutHint];
     }
-    if l.new_game.contains(point) {
+    if crate::ui::hit(l.new_game, point) {
         return vec![UiAction::BreakoutNew];
     }
     let _ = state;

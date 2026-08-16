@@ -8,7 +8,7 @@ pub const REPLAY_RECT: Rect = Rect::new(220., 20., 150., 50.);
 const CONTINUE_RECT: Rect = Rect::new(900., 565., 180., 52.);
 
 pub fn clicks(p: Vec2) -> Vec<UiAction> {
-    if CONTINUE_RECT.contains(p) {
+    if crate::ui::hit(CONTINUE_RECT, p) {
         vec![UiAction::TutorialContinue]
     } else {
         vec![]

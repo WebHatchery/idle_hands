@@ -45,22 +45,22 @@ fn layout() -> Layout {
 }
 pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     let l = layout();
-    if back_rect().contains(point) {
+    if crate::ui::hit(back_rect(), point) {
         return vec![UiAction::Cabinet];
     }
-    if l.higher.contains(point) {
+    if crate::ui::hit(l.higher, point) {
         return vec![UiAction::HigherLowerGuess(Guess::Higher)];
     }
-    if l.lower.contains(point) {
+    if crate::ui::hit(l.lower, point) {
         return vec![UiAction::HigherLowerGuess(Guess::Lower)];
     }
-    if l.undo.contains(point) {
+    if crate::ui::hit(l.undo, point) {
         return vec![UiAction::HigherLowerUndo];
     }
-    if l.hint.contains(point) {
+    if crate::ui::hit(l.hint, point) {
         return vec![UiAction::HigherLowerHint];
     }
-    if l.new_game.contains(point) {
+    if crate::ui::hit(l.new_game, point) {
         return vec![UiAction::HigherLowerNew];
     }
     let _ = state;

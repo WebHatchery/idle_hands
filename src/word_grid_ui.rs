@@ -67,22 +67,22 @@ fn layout() -> Layout {
 
 pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     let l = layout();
-    if Rect::new(0., 0., 110., 42.).contains(point) {
+    if crate::ui::hit(Rect::new(0., 0., 110., 42.), point) {
         return vec![UiAction::Cabinet];
     }
     if l.backspace.contains(point) {
         return vec![UiAction::WordGridBackspace];
     }
-    if l.submit.contains(point) {
+    if crate::ui::hit(l.submit, point) {
         return vec![UiAction::WordGridSubmit];
     }
-    if l.hint.contains(point) {
+    if crate::ui::hit(l.hint, point) {
         return vec![UiAction::WordGridHint];
     }
-    if l.undo.contains(point) {
+    if crate::ui::hit(l.undo, point) {
         return vec![UiAction::WordGridUndo];
     }
-    if l.new_game.contains(point) {
+    if crate::ui::hit(l.new_game, point) {
         return vec![UiAction::WordGridNew];
     }
     if l.keyboard.contains(point) {

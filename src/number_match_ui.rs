@@ -43,7 +43,7 @@ fn layout() -> Layout {
 
 pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     let l = layout();
-    if Rect::new(0., 0., 110., 42.).contains(point) {
+    if crate::ui::hit(Rect::new(0., 0., 110., 42.), point) {
         return vec![UiAction::Cabinet];
     }
     let cell = l.board.w / SIDE as f32;
@@ -54,13 +54,13 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
             return vec![UiAction::NumberMatchTap(row * SIDE + col)];
         }
     }
-    if l.hint.contains(point) {
+    if crate::ui::hit(l.hint, point) {
         return vec![UiAction::NumberMatchHint];
     }
-    if l.undo.contains(point) {
+    if crate::ui::hit(l.undo, point) {
         return vec![UiAction::NumberMatchUndo];
     }
-    if l.new_game.contains(point) {
+    if crate::ui::hit(l.new_game, point) {
         return vec![UiAction::NumberMatchNew];
     }
     Vec::new()

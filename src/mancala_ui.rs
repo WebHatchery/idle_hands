@@ -42,7 +42,7 @@ fn layout() -> Layout {
 
 pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     let l = layout();
-    if Rect::new(0., 0., 110., 42.).contains(point) {
+    if crate::ui::hit(Rect::new(0., 0., 110., 42.), point) {
         return vec![UiAction::Cabinet];
     }
     for pit in 0..6 {
@@ -50,13 +50,13 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
             return vec![UiAction::MancalaPit(pit)];
         }
     }
-    if l.hint.contains(point) {
+    if crate::ui::hit(l.hint, point) {
         return vec![UiAction::MancalaHint];
     }
-    if l.undo.contains(point) {
+    if crate::ui::hit(l.undo, point) {
         return vec![UiAction::MancalaUndo];
     }
-    if l.new_game.contains(point) {
+    if crate::ui::hit(l.new_game, point) {
         return vec![UiAction::MancalaNew];
     }
     Vec::new()

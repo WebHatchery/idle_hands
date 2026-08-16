@@ -237,7 +237,7 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
 }
 
 pub fn cabinet_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(184., 6., 140., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(184., 6., 140., 44.), p) {
         return vec![UiAction::ContinueGame];
     }
     for (index, game) in scrolled_games(state).iter().enumerate() {
@@ -253,16 +253,16 @@ pub fn cabinet_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
             return vec![UiAction::CabinetFilter(filter)];
         }
     }
-    if Rect::new(6., 586., 100., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(6., 586., 100., 44.), p) {
         return vec![UiAction::CabinetScroll(-1)];
     }
-    if Rect::new(254., 586., 100., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(254., 586., 100., 44.), p) {
         return vec![UiAction::CabinetScroll(1)];
     }
-    if Rect::new(6., 650., 110., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(6., 650., 110., 44.), p) {
         return vec![UiAction::Favorites];
     }
-    if Rect::new(125., 650., 110., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(125., 650., 110., 44.), p) {
         return vec![UiAction::Recent];
     }
     for (rect, action) in [
@@ -432,25 +432,25 @@ pub fn draw_2048(state: &AppState) {
 }
 
 pub fn game2048_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 120., 48.).contains(p) {
+    if crate::ui::hit(Rect::new(0., 0., 120., 48.), p) {
         return vec![UiAction::Cabinet];
     }
     if state.confirm_restart {
-        if Rect::new(45., 335., 120., 44.).contains(p) {
+        if crate::ui::hit(Rect::new(45., 335., 120., 44.), p) {
             return vec![UiAction::Cancel];
         }
-        if Rect::new(195., 335., 120., 44.).contains(p) {
+        if crate::ui::hit(Rect::new(195., 335., 120., 44.), p) {
             return vec![UiAction::ConfirmRestart];
         }
         return vec![];
     }
-    if Rect::new(20., 545., 150., 46.).contains(p) && state.game.can_undo() {
+    if crate::ui::hit(Rect::new(20., 545., 150., 46.), p) && state.game.can_undo() {
         return vec![UiAction::Undo];
     }
-    if Rect::new(190., 545., 150., 46.).contains(p) {
+    if crate::ui::hit(Rect::new(190., 545., 150., 46.), p) {
         return vec![UiAction::Restart];
     }
-    if Rect::new(20., 600., 150., 46.).contains(p) {
+    if crate::ui::hit(Rect::new(20., 600., 150., 46.), p) {
         return vec![UiAction::Game2048Hint];
     }
     for (index, direction) in [
@@ -462,7 +462,7 @@ pub fn game2048_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     .iter()
     .enumerate()
     {
-        if Rect::new(20. + index as f32 * 82., 475., 74., 46.).contains(p) {
+        if crate::ui::hit(Rect::new(20. + index as f32 * 82., 475., 74., 46.), p) {
             return vec![UiAction::Move(*direction)];
         }
     }
@@ -620,24 +620,24 @@ pub fn draw_settings(state: &AppState) {
 
 pub fn settings_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if state.confirm_reset {
-        if Rect::new(42., 568., 120., 44.).contains(p) {
+        if crate::ui::hit(Rect::new(42., 568., 120., 44.), p) {
             return vec![UiAction::CancelResetData];
         }
-        if Rect::new(198., 568., 120., 44.).contains(p) {
+        if crate::ui::hit(Rect::new(198., 568., 120., 44.), p) {
             return vec![UiAction::ConfirmResetData];
         }
         return vec![];
     }
-    if Rect::new(22., 665., 76., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(22., 665., 76., 44.), p) {
         return vec![UiAction::Cabinet];
     }
-    if Rect::new(108., 665., 76., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(108., 665., 76., 44.), p) {
         return vec![UiAction::Save];
     }
-    if Rect::new(194., 665., 76., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(194., 665., 76., 44.), p) {
         return vec![UiAction::Load];
     }
-    if Rect::new(280., 665., 58., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(280., 665., 58., 44.), p) {
         return vec![UiAction::ResetData];
     }
     for (rect, action) in [
@@ -664,7 +664,7 @@ pub fn settings_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
 }
 
 pub fn tutorial_clicks(p: Vec2) -> Vec<UiAction> {
-    if Rect::new(105., 535., 150., 50.).contains(p) {
+    if crate::ui::hit(Rect::new(105., 535., 150., 50.), p) {
         vec![UiAction::TutorialContinue]
     } else {
         vec![]
@@ -714,7 +714,7 @@ pub fn draw_replay_button() {
 }
 
 pub fn replay_clicks(p: Vec2) -> bool {
-    Rect::new(245., 10., 105., 44.).contains(p)
+    crate::ui::hit(Rect::new(245., 10., 105., 44.), p)
 }
 
 fn cabinet_status(state: &AppState, game: GameId) -> &'static str {

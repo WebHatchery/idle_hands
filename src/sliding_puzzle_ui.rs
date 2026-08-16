@@ -42,16 +42,16 @@ fn layout() -> Layout {
 
 pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     let layout = layout();
-    if back_rect().contains(point) {
+    if crate::ui::hit(back_rect(), point) {
         return vec![UiAction::Cabinet];
     }
-    if layout.new_board.contains(point) {
+    if crate::ui::hit(layout.new_board, point) {
         return vec![UiAction::SlidingPuzzleNew];
     }
-    if layout.undo.contains(point) {
+    if crate::ui::hit(layout.undo, point) {
         return vec![UiAction::SlidingPuzzleUndo];
     }
-    if layout.hint.contains(point) {
+    if crate::ui::hit(layout.hint, point) {
         return vec![UiAction::SlidingPuzzleHint];
     }
     if layout.board.contains(point) && state.sliding_puzzle.status != SlidingStatus::Won {

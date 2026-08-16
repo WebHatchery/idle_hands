@@ -45,19 +45,19 @@ fn layout() -> Layout {
 }
 pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     let l = layout();
-    if Rect::new(0., 0., 110., 42.).contains(point) {
+    if crate::ui::hit(Rect::new(0., 0., 110., 42.), point) {
         return vec![UiAction::Cabinet];
     }
-    if l.flag.contains(point) {
+    if crate::ui::hit(l.flag, point) {
         return vec![UiAction::DungeonToggleFlag];
     }
-    if l.undo.contains(point) {
+    if crate::ui::hit(l.undo, point) {
         return vec![UiAction::DungeonUndo];
     }
-    if l.hint.contains(point) {
+    if crate::ui::hit(l.hint, point) {
         return vec![UiAction::DungeonHint];
     }
-    if l.new_game.contains(point) {
+    if crate::ui::hit(l.new_game, point) {
         return vec![UiAction::DungeonNew];
     }
     if let Some(index) = crate::grid::GridLayout::new(l.board, 8, 8).index_at(point) {

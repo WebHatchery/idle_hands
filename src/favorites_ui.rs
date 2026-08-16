@@ -57,7 +57,7 @@ fn layout() -> Layout {
 
 pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     let l = layout();
-    if l.back.contains(point) {
+    if crate::ui::hit(l.back, point) {
         return vec![UiAction::Cabinet];
     }
     if let Some((previous, next)) = scroll_rects() {

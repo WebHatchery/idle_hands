@@ -138,7 +138,7 @@ pub fn draw(state: &AppState) {
 }
 
 pub fn clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 110., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(0., 0., 110., 44.), p) {
         return vec![UiAction::Cabinet];
     }
     let board = Rect::new(10., 100., 340., 340.);
@@ -150,24 +150,27 @@ pub fn clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         }
     }
     for (index, difficulty) in crate::sudoku::SudokuDifficulty::ALL.iter().enumerate() {
-        if Rect::new(148. + index as f32 * 68., 48., 62., 44.).contains(p) {
+        if crate::ui::hit(Rect::new(148. + index as f32 * 68., 48., 62., 44.), p) {
             return vec![UiAction::SudokuDifficulty(*difficulty)];
         }
     }
     for number in 1..=9 {
         let col = (number - 1) % 3;
         let row = (number - 1) / 3;
-        if Rect::new(12. + col as f32 * 114., 480. + row as f32 * 52., 104., 44.).contains(p) {
+        if crate::ui::hit(
+            Rect::new(12. + col as f32 * 114., 480. + row as f32 * 52., 104., 44.),
+            p,
+        ) {
             return vec![UiAction::SudokuNumber(number as u8)];
         }
     }
-    if Rect::new(12., 650., 104., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(12., 650., 104., 44.), p) {
         return vec![UiAction::SudokuNoteMode];
     }
-    if Rect::new(128., 650., 104., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(128., 650., 104., 44.), p) {
         return vec![UiAction::SudokuErase];
     }
-    if Rect::new(244., 650., 104., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(244., 650., 104., 44.), p) {
         return vec![UiAction::SudokuUndo];
     }
     let _ = state;

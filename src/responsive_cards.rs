@@ -177,7 +177,7 @@ pub fn draw_solitaire(state: &AppState) {
 }
 
 pub fn solitaire_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 110., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(0., 0., 110., 44.), p) {
         return vec![UiAction::Cabinet];
     }
     if card_rect(8., 112.).contains(p) {
@@ -191,13 +191,13 @@ pub fn solitaire_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
             return vec![UiAction::SolitaireFoundation(suit)];
         }
     }
-    if Rect::new(5., 650., 105., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(5., 650., 105., 44.), p) {
         return vec![UiAction::SolitaireHint];
     }
-    if Rect::new(120., 650., 105., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(120., 650., 105., 44.), p) {
         return vec![UiAction::SolitaireUndo];
     }
-    if Rect::new(235., 650., 115., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(235., 650., 115., 44.), p) {
         return vec![UiAction::SolitaireNew];
     }
     for column in 0..7 {
@@ -341,16 +341,16 @@ pub fn draw_freecell(state: &AppState) {
 }
 
 pub fn freecell_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 110., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(0., 0., 110., 44.), p) {
         return vec![UiAction::Cabinet];
     }
-    if Rect::new(5., 650., 105., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(5., 650., 105., 44.), p) {
         return vec![UiAction::FreeCellHint];
     }
-    if Rect::new(120., 650., 105., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(120., 650., 105., 44.), p) {
         return vec![UiAction::FreeCellUndo];
     }
-    if Rect::new(235., 650., 115., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(235., 650., 115., 44.), p) {
         return vec![UiAction::FreeCellNew];
     }
     for cell in 0..4 {
@@ -534,16 +534,16 @@ pub fn draw_fivefold(state: &AppState) {
 }
 
 pub fn fivefold_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 110., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(0., 0., 110., 44.), p) {
         return vec![UiAction::Cabinet];
     }
-    if Rect::new(10., 190., 150., 42.).contains(p) {
+    if crate::ui::hit(Rect::new(10., 190., 150., 42.), p) {
         return vec![UiAction::FivefoldRoll];
     }
-    if Rect::new(10., 650., 150., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(10., 650., 150., 44.), p) {
         return vec![UiAction::FivefoldNew];
     }
-    if Rect::new(180., 650., 150., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(180., 650., 150., 44.), p) {
         return vec![UiAction::FivefoldHint];
     }
     for index in 0..5 {
@@ -552,7 +552,7 @@ pub fn fivefold_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         }
     }
     for (index, category) in Category::ALL.iter().enumerate() {
-        if Rect::new(15., 284. + index as f32 * 23., 330., 21.).contains(p)
+        if crate::ui::hit(Rect::new(15., 284. + index as f32 * 23., 330., 21.), p)
             && state.fivefold.scores[index].is_none()
         {
             return vec![UiAction::FivefoldCategory(*category)];
@@ -765,22 +765,22 @@ pub fn draw_reversi(state: &AppState) {
 }
 
 pub fn reversi_clicks(_state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 110., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(0., 0., 110., 44.), p) {
         return vec![UiAction::Cabinet];
     }
-    if Rect::new(10., 485., 160., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(10., 485., 160., 44.), p) {
         return vec![UiAction::ReversiPass];
     }
-    if Rect::new(185., 485., 165., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(185., 485., 165., 44.), p) {
         return vec![UiAction::ReversiNew];
     }
-    if Rect::new(10., 540., 105., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(10., 540., 105., 44.), p) {
         return vec![UiAction::ReversiLevel(AiLevel::Gentle)];
     }
-    if Rect::new(127., 540., 105., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(127., 540., 105., 44.), p) {
         return vec![UiAction::ReversiLevel(AiLevel::Sharp)];
     }
-    if Rect::new(244., 540., 106., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(244., 540., 106., 44.), p) {
         return vec![UiAction::ReversiLevel(AiLevel::TwoPlayer)];
     }
     if !REVERSI_BOARD.contains(p) {

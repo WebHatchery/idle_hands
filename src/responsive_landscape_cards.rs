@@ -163,7 +163,7 @@ pub fn draw_solitaire(state: &AppState) {
     text("HINT", 346., 359., 12., WHITE);
 }
 pub fn solitaire_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 110., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(0., 0., 110., 44.), p) {
         return vec![UiAction::Cabinet];
     }
     if card_rect(10., 35., 75., 95.).contains(p) {
@@ -177,13 +177,13 @@ pub fn solitaire_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
             return vec![UiAction::SolitaireFoundation(suit)];
         }
     }
-    if Rect::new(310., 330., 110., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(310., 330., 110., 44.), p) {
         return vec![UiAction::SolitaireHint];
     }
-    if Rect::new(10., 330., 125., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(10., 330., 125., 44.), p) {
         return vec![UiAction::SolitaireUndo];
     }
-    if Rect::new(150., 330., 145., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(150., 330., 145., 44.), p) {
         return vec![UiAction::SolitaireNew];
     }
     for column in 0..7 {
@@ -302,16 +302,16 @@ pub fn draw_freecell(state: &AppState) {
     text("HINT", 346., 359., 12., WHITE);
 }
 pub fn freecell_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 110., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(0., 0., 110., 44.), p) {
         return vec![UiAction::Cabinet];
     }
-    if Rect::new(310., 330., 110., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(310., 330., 110., 44.), p) {
         return vec![UiAction::FreeCellHint];
     }
-    if Rect::new(10., 330., 125., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(10., 330., 125., 44.), p) {
         return vec![UiAction::FreeCellUndo];
     }
-    if Rect::new(150., 330., 145., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(150., 330., 145., 44.), p) {
         return vec![UiAction::FreeCellNew];
     }
     for cell in 0..4 {
@@ -460,16 +460,16 @@ pub fn draw_fivefold(state: &AppState) {
     );
 }
 pub fn fivefold_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 110., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(0., 0., 110., 44.), p) {
         return vec![UiAction::Cabinet];
     }
-    if Rect::new(10., 170., 180., 46.).contains(p) {
+    if crate::ui::hit(Rect::new(10., 170., 180., 46.), p) {
         return vec![UiAction::FivefoldRoll];
     }
-    if Rect::new(10., 250., 180., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(10., 250., 180., 44.), p) {
         return vec![UiAction::FivefoldNew];
     }
-    if Rect::new(210., 250., 150., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(210., 250., 150., 44.), p) {
         return vec![UiAction::FivefoldHint];
     }
     for index in 0..5 {
@@ -478,7 +478,7 @@ pub fn fivefold_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         }
     }
     for (index, category) in Category::ALL.iter().enumerate() {
-        if Rect::new(515., 66. + index as f32 * 21., 300., 19.).contains(p)
+        if crate::ui::hit(Rect::new(515., 66. + index as f32 * 21., 300., 19.), p)
             && state.fivefold.scores[index].is_none()
         {
             return vec![UiAction::FivefoldCategory(*category)];

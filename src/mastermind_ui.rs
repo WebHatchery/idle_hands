@@ -54,22 +54,22 @@ fn layout() -> Layout {
 
 pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     let layout = layout();
-    if back_rect().contains(point) {
+    if crate::ui::hit(back_rect(), point) {
         return vec![UiAction::Cabinet];
     }
-    if layout.submit.contains(point) {
+    if crate::ui::hit(layout.submit, point) {
         return vec![UiAction::MastermindSubmit];
     }
-    if layout.clear.contains(point) {
+    if crate::ui::hit(layout.clear, point) {
         return vec![UiAction::MastermindClear];
     }
-    if layout.undo.contains(point) {
+    if crate::ui::hit(layout.undo, point) {
         return vec![UiAction::MastermindUndo];
     }
-    if layout.new_board.contains(point) {
+    if crate::ui::hit(layout.new_board, point) {
         return vec![UiAction::MastermindNew];
     }
-    if layout.hint.contains(point) {
+    if crate::ui::hit(layout.hint, point) {
         return vec![UiAction::MastermindHint];
     }
     if layout.palette.contains(point) {

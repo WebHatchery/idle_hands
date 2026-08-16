@@ -42,22 +42,22 @@ fn layout() -> Layout {
 
 pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     let l = layout();
-    if back_rect().contains(point) {
+    if crate::ui::hit(back_rect(), point) {
         return vec![UiAction::Cabinet];
     }
-    if l.hit.contains(point) {
+    if crate::ui::hit(l.hit, point) {
         return vec![UiAction::BlackjackHit];
     }
-    if l.stand.contains(point) {
+    if crate::ui::hit(l.stand, point) {
         return vec![UiAction::BlackjackStand];
     }
-    if l.undo.contains(point) {
+    if crate::ui::hit(l.undo, point) {
         return vec![UiAction::BlackjackUndo];
     }
-    if l.hint.contains(point) {
+    if crate::ui::hit(l.hint, point) {
         return vec![UiAction::BlackjackHint];
     }
-    if l.new_round.contains(point) {
+    if crate::ui::hit(l.new_round, point) {
         return vec![UiAction::BlackjackNew];
     }
     vec![]

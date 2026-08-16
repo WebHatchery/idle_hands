@@ -71,9 +71,15 @@ use crate::{
     state::{AppState, Direction, GameId, Screen},
 };
 use macroquad::prelude::*;
-use macroquad_toolkit::ui::VirtualUi;
+use macroquad_toolkit::ui::{
+    end_frame_neighbours, note_neighbour, touch_area_for_scale, VirtualUi,
+};
+use std::cell::Cell;
 pub const LOGICAL_WIDTH: f32 = 1280.0;
 pub const LOGICAL_HEIGHT: f32 = 720.0;
+thread_local! {
+    static TOUCH_SCALE: Cell<f32> = const { Cell::new(1.0) };
+}
 pub fn viewport() -> VirtualUi {
     let (width, height) = layout_size();
     VirtualUi::new(width, height)
@@ -98,7 +104,17 @@ pub fn mouse() -> Vec2 {
         .screen_to_ui_checked(vec2(mouse_position().0, mouse_position().1))
         .unwrap_or(vec2(-1000., -1000.))
 }
+pub fn physical_touch_rect(rect: Rect, scale: f32) -> Rect {
+    touch_area_for_scale(rect, scale)
+}
+pub fn hit(rect: Rect, point: Vec2) -> bool {
+    let scale = TOUCH_SCALE.with(Cell::get);
+    let area = physical_touch_rect(rect, scale);
+    note_neighbour(rect);
+    area.contains(point)
+}
 pub fn clicks(state: &AppState) -> Vec<UiAction> {
+    TOUCH_SCALE.with(|scale| scale.set(viewport().scale));
     actions_at(state, mouse())
 }
 
@@ -115,7 +131,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if matches!(state.screen, Screen::Game(_))
         && ((is_compact_landscape() && responsive_landscape::replay_clicks(p))
             || (is_portrait() && responsive_ui::replay_clicks(p))
-            || (!is_portrait() && tutorial_ui::REPLAY_RECT.contains(p)))
+            || (!is_portrait() && hit(tutorial_ui::REPLAY_RECT, p)))
     {
         return vec![UiAction::ReplayTutorial];
     }
@@ -135,28 +151,28 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
                 })
                 .collect::<Vec<_>>();
             for (slot, game) in games.iter().copied().enumerate() {
-                if cabinet_favorite_rect(slot).contains(p) {
+                if hit(cabinet_favorite_rect(slot), p) {
                     out.push(UiAction::ToggleFavorite(game.index()));
                 } else if cabinet_rect(slot).contains(p) {
                     out.push(UiAction::Open(game.index()));
                 }
             }
-            if Rect::new(720., 28., 190., 44.).contains(p) {
+            if hit(Rect::new(720., 28., 190., 44.), p) {
                 out.push(UiAction::ContinueGame);
             }
-            if Rect::new(940., 28., 90., 44.).contains(p) {
+            if hit(Rect::new(940., 28., 90., 44.), p) {
                 out.push(UiAction::Help)
             }
-            if Rect::new(1040., 28., 90., 44.).contains(p) {
+            if hit(Rect::new(1040., 28., 90., 44.), p) {
                 out.push(UiAction::Records)
             }
-            if Rect::new(1140., 28., 110., 44.).contains(p) {
+            if hit(Rect::new(1140., 28., 110., 44.), p) {
                 out.push(UiAction::Settings)
             }
-            if Rect::new(48., 108., 175., 44.).contains(p) {
+            if hit(Rect::new(48., 108., 175., 44.), p) {
                 out.push(UiAction::Favorites)
             }
-            if Rect::new(230., 108., 175., 44.).contains(p) {
+            if hit(Rect::new(230., 108., 175., 44.), p) {
                 out.push(UiAction::Recent)
             }
             for (rect, _, filter) in cabinet_ui::filter_buttons_for_input() {
@@ -262,11 +278,11 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
                 responsive_landscape_library::help_clicks(p)
             } else if is_portrait() {
                 responsive_library::help_clicks(p)
-            } else if Rect::new(1030., 635., 180., 48.).contains(p) {
+            } else if hit(Rect::new(1030., 635., 180., 48.), p) {
                 vec![UiAction::Cabinet]
-            } else if Rect::new(600., 635., 180., 48.).contains(p) {
+            } else if hit(Rect::new(600., 635., 180., 48.), p) {
                 vec![UiAction::Rules]
-            } else if Rect::new(800., 635., 180., 48.).contains(p) {
+            } else if hit(Rect::new(800., 635., 180., 48.), p) {
                 vec![UiAction::Credits]
             } else {
                 vec![]
@@ -297,6 +313,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
 }
 pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
+    TOUCH_SCALE.with(|scale| scale.set(viewport().scale));
     match state.screen {
         Screen::Cabinet if is_compact_landscape() => {
             responsive_landscape::draw_cabinet(state, data, loaded_assets)
@@ -427,6 +444,11 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
     if state.confirm_restart && state.pending_restart.is_some() {
         restart_modal::draw(state);
     }
+    // Prime neighbour-aware target growth from the visible action map. Input
+    // is handled before drawing, so the next frame can expand small controls
+    // without allowing adjacent targets to claim the same physical point.
+    let _ = actions_at(state, vec2(-10_000., -10_000.));
+    end_frame_neighbours();
 }
 fn text(s: &str, x: f32, y: f32, size: f32, color: Color) {
     draw_text(s, x, y, size, color);
@@ -585,23 +607,23 @@ fn score_box(r: Rect, label: &str, value: u32) {
 }
 fn game_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     let mut out = vec![];
-    if Rect::new(20., 20., 180., 50.).contains(p) {
+    if hit(Rect::new(20., 20., 180., 50.), p) {
         out.push(UiAction::Cabinet)
     }
-    if Rect::new(400., 390., 140., 48.).contains(p) && state.game.can_undo() {
+    if hit(Rect::new(400., 390., 140., 48.), p) && state.game.can_undo() {
         out.push(UiAction::Undo)
     }
-    if Rect::new(560., 390., 140., 48.).contains(p) {
+    if hit(Rect::new(560., 390., 140., 48.), p) {
         out.push(UiAction::Restart)
     }
-    if Rect::new(400., 450., 140., 48.).contains(p) {
+    if hit(Rect::new(400., 450., 140., 48.), p) {
         out.push(UiAction::Game2048Hint)
     }
     if state.confirm_restart {
-        if Rect::new(380., 340., 150., 44.).contains(p) {
+        if hit(Rect::new(380., 340., 150., 44.), p) {
             out.push(UiAction::Cancel)
         }
-        if Rect::new(550., 340., 150., 44.).contains(p) {
+        if hit(Rect::new(550., 340., 150., 44.), p) {
             out.push(UiAction::ConfirmRestart)
         }
     } else {
@@ -614,7 +636,7 @@ fn game_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         .iter()
         .enumerate()
         {
-            if Rect::new(830. + i as f32 * 90., 615., 78., 46.).contains(p) {
+            if hit(Rect::new(830. + i as f32 * 90., 615., 78., 46.), p) {
                 out.push(UiAction::Move(*d))
             }
         }

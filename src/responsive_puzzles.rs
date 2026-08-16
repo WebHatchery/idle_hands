@@ -233,21 +233,21 @@ pub fn draw_nonogram(state: &AppState) {
 }
 
 pub fn nonogram_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 110., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(0., 0., 110., 44.), p) {
         return vec![UiAction::Cabinet];
     }
     for (index, preset) in crate::nonogram::NonogramPreset::ALL.iter().enumerate() {
-        if Rect::new(10. + index as f32 * 113., 92., 103., 44.).contains(p) {
+        if crate::ui::hit(Rect::new(10. + index as f32 * 113., 92., 103., 44.), p) {
             return vec![UiAction::NonogramPreset(*preset)];
         }
     }
-    if Rect::new(12., 545., 160., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(12., 545., 160., 44.), p) {
         return vec![UiAction::NonogramMode];
     }
-    if Rect::new(188., 545., 160., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(188., 545., 160., 44.), p) {
         return vec![UiAction::NonogramUndo];
     }
-    if Rect::new(12., 595., 104., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(12., 595., 104., 44.), p) {
         return vec![UiAction::NonogramZoom];
     }
     for (rect, delta) in [
@@ -444,18 +444,18 @@ pub fn draw_minesweeper(state: &AppState) {
 }
 
 pub fn minesweeper_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 110., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(0., 0., 110., 44.), p) {
         return vec![UiAction::Cabinet];
     }
     for (index, preset) in crate::minesweeper::MinePreset::ALL.iter().enumerate() {
-        if Rect::new(5. + index as f32 * 88., 88., 82., 44.).contains(p) {
+        if crate::ui::hit(Rect::new(5. + index as f32 * 88., 88., 82., 44.), p) {
             return vec![UiAction::MinePreset(*preset)];
         }
     }
-    if Rect::new(8., 580., 165., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(8., 580., 165., 44.), p) {
         return vec![UiAction::MineFlagMode];
     }
-    if Rect::new(187., 580., 165., 44.).contains(p) {
+    if crate::ui::hit(Rect::new(187., 580., 165., 44.), p) {
         return vec![UiAction::MineRestart];
     }
     let Some(index) = mine_grid(state).index_at(p) else {

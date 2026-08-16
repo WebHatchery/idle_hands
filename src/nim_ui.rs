@@ -76,7 +76,7 @@ fn bottom_rects() -> (Rect, Rect, Rect) {
 }
 
 pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
-    if Rect::new(0., 0., 110., 42.).contains(point) {
+    if crate::ui::hit(Rect::new(0., 0., 110., 42.), point) {
         return vec![UiAction::Cabinet];
     }
     for index in 0..3 {
