@@ -52,3 +52,22 @@ fn reset_rebuilds_the_grid() {
     assert_eq!(game.cells.len(), CELLS);
     assert_eq!(game.phase, NumberMatchPhase::Playing);
 }
+
+#[test]
+fn hint_returns_the_first_valid_pair_without_mutating_the_grid() {
+    let game = NumberMatch::new(7);
+    let before = game.cells.clone();
+
+    assert_eq!(game.hint_pair(), Some((0, 1)));
+    assert_eq!(game.cells, before);
+    assert_eq!(game.selected, None);
+    assert_eq!(game.moves, 0);
+}
+
+#[test]
+fn hint_is_empty_after_number_match_ends() {
+    let mut game = NumberMatch::new(8);
+    game.phase = NumberMatchPhase::Won;
+
+    assert_eq!(game.hint_pair(), None);
+}

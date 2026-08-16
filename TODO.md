@@ -1057,6 +1057,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover solver determinism, stack preservation, hint capture aliases,
     accessibility, and responsive layouts.
 
+## Phase 97 — Number Match discoverability polish
+
+- [x] Add a deterministic, non-mutating HINT action that recommends the first
+  valid adjacent equal-or-sum-to-ten pair in stable board order.
+  - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
+  - [x] Cover pair determinism, grid preservation, hint capture aliases,
+    accessibility, and responsive layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

@@ -11,6 +11,7 @@ use macroquad::prelude::*;
 #[derive(Clone, Copy)]
 struct Layout {
     board: Rect,
+    hint: Rect,
     undo: Rect,
     new_game: Rect,
 }
@@ -19,18 +20,21 @@ fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             board: Rect::new(270., 44., 300., 300.),
+            hint: Rect::new(620., 220., 105., 44.),
             undo: Rect::new(620., 110., 105., 44.),
             new_game: Rect::new(620., 165., 140., 44.),
         }
     } else if crate::ui::is_portrait() {
         Layout {
-            board: Rect::new(25., 105., 330., 330.),
-            undo: Rect::new(25., 460., 145., 44.),
-            new_game: Rect::new(180., 460., 175., 44.),
+            board: Rect::new(15., 105., 300., 300.),
+            hint: Rect::new(15., 460., 145., 44.),
+            undo: Rect::new(15., 515., 145., 44.),
+            new_game: Rect::new(170., 515., 145., 44.),
         }
     } else {
         Layout {
             board: Rect::new(350., 90., 420., 420.),
+            hint: Rect::new(810., 245., 120., 44.),
             undo: Rect::new(810., 180., 120., 44.),
             new_game: Rect::new(950., 180., 140., 44.),
         }
@@ -50,6 +54,9 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
             return vec![UiAction::NumberMatchTap(row * SIDE + col)];
         }
     }
+    if l.hint.contains(point) {
+        return vec![UiAction::NumberMatchHint];
+    }
     if l.undo.contains(point) {
         return vec![UiAction::NumberMatchUndo];
     }
@@ -67,7 +74,7 @@ pub fn draw(state: &AppState) {
     let title_x = if compact {
         70.
     } else if portrait {
-        10.
+        25.
     } else {
         400.
     };
@@ -110,10 +117,13 @@ pub fn draw(state: &AppState) {
     );
     draw_board(l.board, game, state.high_contrast, state.large_text);
     text(
-        status_text(game.phase),
+        state
+            .card_hint
+            .as_deref()
+            .unwrap_or(status_text(game.phase)),
         if compact { 270. } else { title_x },
         if portrait {
-            445.
+            430.
         } else if compact {
             365.
         } else {
@@ -122,6 +132,7 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
+    button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW BOARD", state.large_text);
 }

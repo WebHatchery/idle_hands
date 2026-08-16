@@ -94,6 +94,31 @@ impl NumberMatch {
         self.phase == NumberMatchPhase::Won
     }
 
+    pub fn hint_pair(&self) -> Option<(usize, usize)> {
+        if self.phase != NumberMatchPhase::Playing {
+            return None;
+        }
+        for first in 0..CELLS {
+            if self.cells[first] == 0 {
+                continue;
+            }
+            let row = first / SIDE;
+            let col = first % SIDE;
+            for second in [
+                (col + 1 < SIDE).then_some(first + 1),
+                (row + 1 < SIDE).then_some(first + SIDE),
+            ]
+            .into_iter()
+            .flatten()
+            {
+                if self.cells[second] != 0 && self.valid_pair(first, second) {
+                    return Some((first, second));
+                }
+            }
+        }
+        None
+    }
+
     fn adjacent(&self, first: usize, second: usize) -> bool {
         let first_row = first / SIDE;
         let first_col = first % SIDE;

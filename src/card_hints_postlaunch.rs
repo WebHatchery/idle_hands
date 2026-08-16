@@ -259,6 +259,31 @@ pub fn hanoi(state: &AppState) -> String {
     )
 }
 
+pub fn number_match(state: &AppState) -> String {
+    let game = &state.number_match;
+    if game.won() {
+        return "Every quiet number has found its pair — tap NEW BOARD to play again.".into();
+    }
+    game.hint_pair().map_or_else(
+        || "No adjacent pair remains — tap NEW BOARD to begin again.".into(),
+        |(first, second)| {
+            format!(
+                "Pair cells {} and {}.",
+                cell_label(first),
+                cell_label(second)
+            )
+        },
+    )
+}
+
+fn cell_label(index: usize) -> String {
+    format!(
+        "{}{}",
+        (b'A' + (index % crate::number_match::SIDE) as u8) as char,
+        index / crate::number_match::SIDE + 1
+    )
+}
+
 fn daily_direction_label(direction: crate::state::Direction) -> &'static str {
     match direction {
         crate::state::Direction::Up => "UP",

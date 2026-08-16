@@ -210,6 +210,7 @@ pub enum UiAction {
     HanoiUndo,
     HanoiNew,
     NumberMatchTap(usize),
+    NumberMatchHint,
     NumberMatchUndo,
     NumberMatchNew,
     FloodColor(u8),

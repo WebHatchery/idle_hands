@@ -345,6 +345,10 @@ impl Game {
             UiAction::NumberMatchTap(index) => {
                 self.state.number_match.tap(*index);
             }
+            UiAction::NumberMatchHint => {
+                self.state.card_hint = Some(crate::card_hints::number_match(&self.state));
+                return true;
+            }
             UiAction::NumberMatchUndo => {
                 self.state.number_match.undo();
             }

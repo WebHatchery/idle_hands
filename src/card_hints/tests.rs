@@ -285,3 +285,11 @@ fn default_hanoi_has_a_deterministic_hint() {
     assert!(hanoi(&state).contains("peg"));
     assert_eq!(hanoi(&state), hanoi(&state));
 }
+
+#[test]
+fn default_number_match_has_a_deterministic_hint() {
+    let state = AppState::default();
+
+    assert!(number_match(&state).contains("Pair cells"));
+    assert_eq!(number_match(&state), number_match(&state));
+}

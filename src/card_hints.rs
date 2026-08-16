@@ -7,7 +7,7 @@ mod postlaunch;
 
 pub use postlaunch::{
     blackjack, breakout, daily_dungeon, dots_boxes, dungeon_sweeper, hanoi, higher_lower, mancala,
-    one_room_roguelike, potion_2048, snake, sokoban, tiny_tower_defence,
+    number_match, one_room_roguelike, potion_2048, snake, sokoban, tiny_tower_defence,
 };
 
 fn color_name(color: u8) -> &'static str {
@@ -557,6 +557,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::SokobanHint
             | crate::ui::UiAction::MancalaHint
             | crate::ui::UiAction::HanoiHint
+            | crate::ui::UiAction::NumberMatchHint
     )
 }
 
