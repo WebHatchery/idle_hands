@@ -25,7 +25,7 @@ fn layout() -> Layout {
             card_h: 24.,
             origin: vec2(35., 70.),
             gap_x: 155.,
-            gap_y: 31.,
+            gap_y: 26.,
         }
     } else if crate::ui::is_portrait() {
         Layout {
@@ -34,9 +34,9 @@ fn layout() -> Layout {
             columns: 3,
             card_w: 106.,
             card_h: 22.,
-            origin: vec2(14., 145.),
+            origin: vec2(14., 155.),
             gap_x: 112.,
-            gap_y: 29.,
+            gap_y: 28.,
         }
     } else {
         Layout {
@@ -47,7 +47,7 @@ fn layout() -> Layout {
             card_h: 34.,
             origin: vec2(160., 215.),
             gap_x: 205.,
-            gap_y: 38.,
+            gap_y: 35.,
         }
     }
 }
@@ -138,6 +138,9 @@ pub fn draw(state: &AppState) {
                 Color::new(0.72, 0.68, 0.82, 1.)
             },
         );
+        if active {
+            draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 3., WHITE);
+        }
     }
     for (slot, achievement) in AchievementId::ALL
         .iter()
@@ -260,21 +263,21 @@ fn filter_label(filter: u8) -> &'static str {
 fn filter_rects(layout: Layout) -> [Rect; 3] {
     if crate::ui::is_compact_landscape() {
         [
-            Rect::new(500., 40., 60., 22.),
-            Rect::new(565., 40., 90., 22.),
-            Rect::new(660., 40., 90., 22.),
+            Rect::new(500., 2., 60., 44.),
+            Rect::new(565., 2., 90., 44.),
+            Rect::new(660., 2., 90., 44.),
         ]
     } else if crate::ui::is_portrait() {
         [
-            Rect::new(14., 112., 106., 26.),
-            Rect::new(126., 112., 106., 26.),
-            Rect::new(238., 112., 106., 26.),
+            Rect::new(14., 108., 106., 44.),
+            Rect::new(126., 108., 106., 44.),
+            Rect::new(238., 108., 106., 44.),
         ]
     } else {
         [
-            Rect::new(layout.origin.x, 170., 130., 32.),
-            Rect::new(layout.origin.x + 140., 170., 130., 32.),
-            Rect::new(layout.origin.x + 280., 170., 130., 32.),
+            Rect::new(layout.origin.x, 170., 130., 44.),
+            Rect::new(layout.origin.x + 140., 170., 130., 44.),
+            Rect::new(layout.origin.x + 280., 170., 130., 44.),
         ]
     }
 }

@@ -1302,3 +1302,8 @@ contract, shared confirmation safety, responsive capture coverage, and the
 
 - [x] Resize cabinet filters to touch-complete targets and add a non-color
   active outline, with accessible responsive capture coverage.
+
+## Phase 131 — Achievement filter accessibility
+
+- [x] Resize achievement shelf filters to touch-complete targets, add a
+  non-color active outline, and reflow the dense card grid around them.

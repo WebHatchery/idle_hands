@@ -180,6 +180,9 @@ thematic award text, and the shelf participates in the shared large-text
 capture path.
 The runtime-only `achievement_filter` value selects ALL, EARNED, or LOCKED
 cards; it is reset when opening the shelf and is never persisted.
+Achievement filter controls use touch-complete responsive targets and a
+non-color active outline; card spacing is reflowed per orientation so the
+full 49-entry shelf remains inside its panel.
 The runtime-only `cabinet_filter` value selects ALL, OPEN, or DONE drawers;
 it is never persisted and maps filtered slots back to canonical `GameId`
 indices before dispatching favorite or open actions.
