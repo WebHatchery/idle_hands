@@ -221,10 +221,17 @@ impl Game {
                 GameId::Solitaire,
             ];
         }
-        if matches!(scene, "cabinet_open" | "cabinet_done") {
+        if matches!(scene, "cabinet_open" | "cabinet_done" | "cabinet_empty") {
             self.state.records.best_2048 = 2048;
             self.state.records.solitaire_best_moves = Some(42);
-            self.state.cabinet_filter = if scene == "cabinet_done" { 2 } else { 1 };
+            self.state.cabinet_filter = if scene == "cabinet_empty" {
+                self.state.records = crate::state::CollectionRecords::default();
+                2
+            } else if scene == "cabinet_done" {
+                2
+            } else {
+                1
+            };
         }
         if scene == "match_three_confirm" {
             self.state.confirm_restart = true;

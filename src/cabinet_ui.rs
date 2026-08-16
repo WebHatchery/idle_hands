@@ -41,7 +41,7 @@ pub fn draw(state: &AppState, _data: &GameData, loaded: usize) {
         11.,
         Color::new(0.98, 0.83, 0.45, 1.),
     );
-    for (rect, label, filter) in filter_buttons() {
+    for (rect, _, filter) in filter_buttons() {
         panel(
             rect,
             if state.cabinet_filter == filter {
@@ -50,7 +50,13 @@ pub fn draw(state: &AppState, _data: &GameData, loaded: usize) {
                 Color::new(0.20, 0.13, 0.30, 1.)
             },
         );
-        text(label, rect.x + 14., rect.y + 23., 11., WHITE);
+        text(
+            &crate::cabinet_status::filter_label(state, filter),
+            rect.x + 9.,
+            rect.y + 23.,
+            10.,
+            WHITE,
+        );
     }
     text(
         "A small collection for quiet minutes",
@@ -159,6 +165,15 @@ pub fn draw(state: &AppState, _data: &GameData, loaded: usize) {
             rect.y + 24.,
             11.,
             Color::new(0.08, 0.05, 0.12, 1.),
+        );
+    }
+    if games.is_empty() {
+        text(
+            crate::cabinet_status::empty_filter_message(state.cabinet_filter),
+            70.,
+            210.,
+            18.,
+            WHITE,
         );
     }
     let selected = GameId::ALL[state.selected.min(GameId::ALL.len() - 1)];

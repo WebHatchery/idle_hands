@@ -47,7 +47,8 @@ Pyramid, TriPeaks, Nim, and Word Ladder.
   tap, and return home without losing progress.
 - **Easy to scan.** The cabinet offers ALL, OPEN, and DONE filters so a large
   collection can be narrowed to unfinished or completed drawers without
-  changing the canonical order.
+  changing the canonical order; each filter shows its live count and explains
+  an empty shelf.
 - **Calm progression.** Play may earn stamps that unlock cosmetic card backs,
   board themes, sounds, and cabinet decorations. There are no purchases,
   stamina, streak pressure, nested currencies, or claim screens.

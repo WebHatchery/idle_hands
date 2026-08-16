@@ -75,6 +75,30 @@ pub fn drawer_number(game: GameId) -> usize {
     game.index() + 1
 }
 
+pub fn filter_count(state: &AppState, filter: u8) -> usize {
+    GameId::ALL
+        .iter()
+        .filter(|game| matches_filter(state, **game, filter))
+        .count()
+}
+
+pub fn filter_label(state: &AppState, filter: u8) -> String {
+    let name = match filter.min(2) {
+        1 => "OPEN",
+        2 => "DONE",
+        _ => "ALL",
+    };
+    format!("{} {}", name, filter_count(state, filter))
+}
+
+pub fn empty_filter_message(filter: u8) -> &'static str {
+    match filter.min(2) {
+        2 => "No completed drawers yet — finish a game to fill this shelf.",
+        1 => "Every drawer is complete — the cabinet is quiet.",
+        _ => "The cabinet has no drawers to show.",
+    }
+}
+
 fn has_progress(state: &AppState, game: GameId) -> bool {
     match game {
         GameId::Game2048 => state.game.score > 0 || state.game.best > 0,

@@ -49,7 +49,7 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
         Color::new(0.72, 0.68, 0.82, 1.),
     );
     let selected = GameId::ALL[state.selected.min(GameId::ALL.len() - 1)];
-    for (rect, label, filter) in filter_buttons() {
+    for (rect, _, filter) in filter_buttons() {
         panel(
             rect,
             if state.cabinet_filter == filter {
@@ -58,7 +58,13 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
                 Color::new(0.20, 0.13, 0.30, 1.)
             },
         );
-        text(label, rect.x + 11., rect.y + 20., 8., WHITE);
+        text(
+            &crate::cabinet_status::filter_label(state, filter),
+            rect.x + 3.,
+            rect.y + 20.,
+            7.,
+            WHITE,
+        );
     }
     panel(
         Rect::new(560., 2., 130., 30.),
@@ -114,6 +120,15 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
             rect.y + 13.,
             6.,
             Color::new(0.08, 0.05, 0.12, 1.),
+        );
+    }
+    if visible_games(state).is_empty() {
+        text(
+            crate::cabinet_status::empty_filter_message(state.cabinet_filter),
+            20.,
+            100.,
+            11.,
+            WHITE,
         );
     }
     panel(

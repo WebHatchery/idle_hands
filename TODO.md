@@ -1292,3 +1292,8 @@ contract, shared confirmation safety, responsive capture coverage, and the
 
 - [x] Preserve each drawer's canonical collection number in ALL, OPEN, and
   DONE cabinet views, with regression coverage for filtered slot numbering.
+
+## Phase 129 — Cabinet filter feedback
+
+- [x] Add live ALL, OPEN, and DONE counts plus a touch-readable empty-state
+  message to the responsive cabinet filters.
