@@ -1208,6 +1208,11 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 - [x] Shade letters already used in submitted ladder steps and add a seeded
   in-progress capture so the keyboard’s state remains legible during play.
 
+## Phase 117 — Word Ladder reset safety coverage
+
+- [x] Add explicit regression coverage and responsive confirmation captures
+  for the destructive NEW LADDER action.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

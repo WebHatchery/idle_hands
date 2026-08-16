@@ -161,7 +161,7 @@ impl Game {
                 Screen::Game(GameId::WordGrid)
             }
             "word_grid_accessible" => Screen::Game(GameId::WordGrid),
-            "word_ladder" | "word_ladder_hint" | "word_ladder_hint_accessible" | "word_ladder_best" | "word_ladder_progress" => {
+            "word_ladder" | "word_ladder_hint" | "word_ladder_hint_accessible" | "word_ladder_best" | "word_ladder_progress" | "word_ladder_confirm" => {
                 Screen::Game(GameId::WordLadder)
             }
             "pipe_loop" | "pipe_loop_hint" | "pipe_loop_hint_accessible" => {
@@ -218,6 +218,10 @@ impl Game {
                 self.state.word_ladder.tap_letter(letter - b'A');
             }
             self.state.word_ladder.submit();
+        }
+        if scene == "word_ladder_confirm" {
+            self.state.confirm_restart = true;
+            self.state.pending_restart = Some(crate::ui::UiAction::WordLadderNew);
         }
         if scene == "records_word_ladder" {
             self.state.records.word_ladder_best_moves = Some(5);

@@ -44,6 +44,9 @@ fn new_game_actions_require_confirmation_but_existing_restart_does_not() {
         ui::UiAction::NimNew
     ));
     assert!(game_restart::requires_new_confirmation(
+        ui::UiAction::WordLadderNew
+    ));
+    assert!(game_restart::requires_new_confirmation(
         ui::UiAction::MineRestart
     ));
     assert!(game_restart::requires_new_confirmation(
