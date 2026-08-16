@@ -1081,6 +1081,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover heuristic determinism, tube preservation, hint capture aliases,
     accessibility, and responsive layouts.
 
+## Phase 100 — Battleship discoverability polish
+
+- [x] Add a deterministic, non-mutating HINT action that targets unknown
+  neighbors of hits, then falls back to checkerboard search.
+  - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
+  - [x] Cover target determinism, shot preservation, hint capture aliases,
+    accessibility, and responsive layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

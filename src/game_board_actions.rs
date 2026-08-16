@@ -387,6 +387,10 @@ impl Game {
             UiAction::BattleshipFire(cell) => {
                 self.state.battleship.fire(*cell);
             }
+            UiAction::BattleshipHint => {
+                self.state.card_hint = Some(crate::card_hints::battleship(&self.state));
+                return true;
+            }
             UiAction::BattleshipUndo => {
                 self.state.battleship.undo();
             }

@@ -309,3 +309,11 @@ fn default_color_sort_has_a_deterministic_hint() {
     assert!(color_sort(&state).contains("Move tube"));
     assert_eq!(color_sort(&state), color_sort(&state));
 }
+
+#[test]
+fn default_battleship_has_a_deterministic_hint() {
+    let state = AppState::default();
+
+    assert!(battleship(&state).contains("Fire at cell"));
+    assert_eq!(battleship(&state), battleship(&state));
+}

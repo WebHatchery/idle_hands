@@ -108,6 +108,38 @@ impl Battleship {
         self.shots.iter().filter(|shot| **shot == Shot::Hit).count()
     }
 
+    pub fn hint_cell(&self) -> Option<usize> {
+        if self.phase != BattleshipPhase::Playing {
+            return None;
+        }
+        for index in 0..CELLS {
+            if self.shots[index] != Shot::Hit {
+                continue;
+            }
+            let row = index / SIDE;
+            let col = index % SIDE;
+            for neighbor in [
+                (col + 1 < SIDE).then_some(row * SIDE + col + 1),
+                (row + 1 < SIDE).then_some((row + 1) * SIDE + col),
+                col.checked_sub(1).map(|next| row * SIDE + next),
+                row.checked_sub(1).map(|next| next * SIDE + col),
+            ]
+            .into_iter()
+            .flatten()
+            {
+                if self.shots[neighbor] == Shot::Unknown {
+                    return Some(neighbor);
+                }
+            }
+        }
+        (0..CELLS)
+            .find(|&index| {
+                (index / SIDE + index % SIDE).is_multiple_of(2)
+                    && self.shots[index] == Shot::Unknown
+            })
+            .or_else(|| self.shots.iter().position(|shot| *shot == Shot::Unknown))
+    }
+
     fn clone_without_undo(&self) -> Self {
         let mut copy = self.clone();
         copy.undo = None;

@@ -222,6 +222,7 @@ pub enum UiAction {
     ColorSortUndo,
     ColorSortNew,
     BattleshipFire(usize),
+    BattleshipHint,
     BattleshipUndo,
     BattleshipNew,
     WordGridLetter(u8),

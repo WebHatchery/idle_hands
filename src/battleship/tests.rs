@@ -54,3 +54,24 @@ fn reset_starts_a_new_hidden_fleet() {
     assert_eq!(game.moves, 0);
     assert_eq!(game.hits(), 0);
 }
+
+#[test]
+fn hint_uses_a_neighbor_after_a_hit_without_mutating_shots() {
+    let mut game = Battleship::new(15);
+    game.shots[0] = Shot::Hit;
+    let before = game.shots.clone();
+
+    assert_eq!(game.hint_cell(), Some(1));
+    assert_eq!(game.shots, before);
+    assert_eq!(game.moves, 0);
+}
+
+#[test]
+fn hint_falls_back_to_a_checkerboard_cell_and_ends_cleanly() {
+    let game = Battleship::new(16);
+
+    assert_eq!(game.hint_cell(), Some(0));
+    let mut finished = game.clone();
+    finished.phase = BattleshipPhase::Won;
+    assert_eq!(finished.hint_cell(), None);
+}

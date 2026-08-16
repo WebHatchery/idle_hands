@@ -304,6 +304,25 @@ pub fn color_sort(state: &AppState) -> String {
     )
 }
 
+pub fn battleship(state: &AppState) -> String {
+    let game = &state.battleship;
+    if game.won() {
+        return "The quiet fleet is found — tap NEW FLEET to play again.".into();
+    }
+    game.hint_cell().map_or_else(
+        || "Every water cell is searched — tap NEW FLEET to begin again.".into(),
+        |cell| format!("Fire at cell {}.", battleship_cell_label(cell)),
+    )
+}
+
+fn battleship_cell_label(index: usize) -> String {
+    format!(
+        "{}{}",
+        (b'A' + (index % crate::battleship::SIDE) as u8) as char,
+        index / crate::battleship::SIDE + 1
+    )
+}
+
 fn flood_color_label(color: u8) -> &'static str {
     ["RED", "AMBER", "GREEN", "BLUE", "VIOLET", "PINK"][color as usize % 6]
 }
