@@ -213,10 +213,14 @@ pub fn draw_records(state: &AppState) {
             "Nim best",
             value(state.records.nim_best_moves.map(u32::from)),
         ),
+        (
+            "Word Ladder best",
+            value(state.records.word_ladder_best_moves.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
-        let col = index / 10;
-        let row = index % 10;
+        let col = index / 11;
+        let row = index % 11;
         let y = 86. + row as f32 * 22.;
         let x = 35. + col as f32 * 155.;
         text(label, x, y, 10., Color::new(0.78, 0.73, 0.86, 1.));

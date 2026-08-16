@@ -226,14 +226,18 @@ pub fn draw_records(state: &AppState) {
             "Nim best",
             value(state.records.nim_best_moves.map(u32::from)),
         ),
+        (
+            "Word Ladder best",
+            value(state.records.word_ladder_best_moves.map(u32::from)),
+        ),
     ];
     for (index, (label, score)) in rows.iter().enumerate() {
-        let column = index / 25;
-        let row = index % 25;
+        let column = index / 27;
+        let row = index % 27;
         let x = 20. + column as f32 * 170.;
-        let y = 140. + row as f32 * 20.;
-        text(label, x, y, 9., Color::new(0.78, 0.73, 0.86, 1.));
-        text(score, x + 145., y, 10., Color::new(0.98, 0.83, 0.45, 1.));
+        let y = 140. + row as f32 * 18.;
+        text(label, x, y, 8., Color::new(0.78, 0.73, 0.86, 1.));
+        text(score, x + 145., y, 9., Color::new(0.98, 0.83, 0.45, 1.));
     }
     back_button(650.);
 }

@@ -178,7 +178,7 @@ impl Game {
             | "match_three_hint_accessible" => Screen::Game(GameId::MatchThree),
             "mastermind_accessible" => Screen::Game(GameId::Mastermind),
             "help" => Screen::Help,
-            "records" => Screen::Records,
+            "records" | "records_word_ladder" => Screen::Records,
             "rules" => Screen::Rules,
             "credits" => Screen::Credits,
             "settings" | "settings_reset" => Screen::Settings,
@@ -210,6 +210,9 @@ impl Game {
             self.state.pending_restart = Some(crate::ui::UiAction::MineRestart);
         }
         if scene == "word_ladder_best" {
+            self.state.records.word_ladder_best_moves = Some(5);
+        }
+        if scene == "records_word_ladder" {
             self.state.records.word_ladder_best_moves = Some(5);
         }
         if scene == "freecell_selected" {

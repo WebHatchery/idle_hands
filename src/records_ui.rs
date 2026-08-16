@@ -232,6 +232,10 @@ pub fn draw_records(state: &AppState) {
             "Nim best moves",
             value(state.records.nim_best_moves.map(u32::from)),
         ),
+        (
+            "Word Ladder best",
+            value(state.records.word_ladder_best_moves.map(u32::from)),
+        ),
     ];
     let mut rows = Vec::new();
     rows.extend(left);
@@ -239,8 +243,8 @@ pub fn draw_records(state: &AppState) {
     rows.extend(right);
     rows.extend(far_right);
     for (index, (label, score)) in rows.iter().enumerate() {
-        let column = index / 10;
-        let row = index % 10;
+        let column = index / 11;
+        let row = index % 11;
         let x = 160. + column as f32 * 200.;
         let y = 240. + row as f32 * 32.;
         draw_text(label, x, y, 10., Color::new(0.78, 0.73, 0.86, 1.));

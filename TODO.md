@@ -1191,6 +1191,13 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 - [x] Surface the persisted personal-best move count in the Word Ladder
   header, with a deterministic seeded capture state for responsive review.
 
+## Phase 114 — Records screen coverage
+
+- [x] Add Word Ladder’s persisted best result to desktop, portrait, and
+  compact-landscape Records views, with a seeded Records capture state.
+  - [x] Reflow late-game rows into visible columns on desktop, portrait, and
+    compact-landscape Records layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.
