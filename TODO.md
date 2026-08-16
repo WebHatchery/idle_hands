@@ -969,6 +969,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover projected landing, hint determinism, capture aliases, and
     responsive layouts.
 
+## Phase 86 — Higher or Lower discoverability polish
+
+- [x] Add a deterministic non-mutating HINT action that recommends the
+  higher-odds guess without revealing the next card.
+  - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
+  - [x] Cover odds selection, hidden-card preservation, hint determinism,
+    capture aliases, and responsive layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

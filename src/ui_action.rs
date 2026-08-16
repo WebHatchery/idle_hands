@@ -135,6 +135,7 @@ pub enum UiAction {
     BreakoutUndo,
     BreakoutNew,
     HigherLowerGuess(crate::higher_lower::Guess),
+    HigherLowerHint,
     HigherLowerUndo,
     HigherLowerNew,
     KlondikeGolfColumn(usize),

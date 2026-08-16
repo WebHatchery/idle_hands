@@ -12,6 +12,7 @@ use macroquad::prelude::*;
 struct Layout {
     higher: Rect,
     lower: Rect,
+    hint: Rect,
     undo: Rect,
     new_game: Rect,
 }
@@ -20,6 +21,7 @@ fn layout() -> Layout {
         Layout {
             higher: Rect::new(430., 210., 130., 44.),
             lower: Rect::new(570., 210., 130., 44.),
+            hint: Rect::new(430., 335., 100., 40.),
             undo: Rect::new(430., 275., 100., 40.),
             new_game: Rect::new(540., 275., 130., 40.),
         }
@@ -27,6 +29,7 @@ fn layout() -> Layout {
         Layout {
             higher: Rect::new(20., 430., 155., 44.),
             lower: Rect::new(185., 430., 165., 44.),
+            hint: Rect::new(20., 565., 145., 42.),
             undo: Rect::new(20., 510., 145., 42.),
             new_game: Rect::new(185., 510., 165., 42.),
         }
@@ -34,6 +37,7 @@ fn layout() -> Layout {
         Layout {
             higher: Rect::new(650., 360., 160., 46.),
             lower: Rect::new(830., 360., 170., 46.),
+            hint: Rect::new(650., 490., 120., 44.),
             undo: Rect::new(650., 430., 120., 44.),
             new_game: Rect::new(790., 430., 150., 44.),
         }
@@ -52,6 +56,9 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if l.undo.contains(point) {
         return vec![UiAction::HigherLowerUndo];
+    }
+    if l.hint.contains(point) {
+        return vec![UiAction::HigherLowerHint];
     }
     if l.new_game.contains(point) {
         return vec![UiAction::HigherLowerNew];
@@ -145,7 +152,11 @@ pub fn draw(state: &AppState) {
         muted(),
     );
     text(
-        &format!("Score {} / 10  •  Next card hidden", game.score),
+        &format!(
+            "Score {} / 10  •  {}",
+            game.score,
+            state.card_hint.as_deref().unwrap_or("Next card hidden")
+        ),
         if compact {
             140.
         } else if portrait {
@@ -165,6 +176,7 @@ pub fn draw(state: &AppState) {
     );
     button(l.higher, "HIGHER", state.large_text);
     button(l.lower, "LOWER", state.large_text);
+    button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW ROUND", state.large_text);
 }

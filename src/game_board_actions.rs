@@ -89,6 +89,10 @@ impl Game {
             UiAction::HigherLowerGuess(guess) => {
                 self.state.higher_lower.guess(*guess);
             }
+            UiAction::HigherLowerHint => {
+                self.state.card_hint = Some(crate::card_hints::higher_lower(&self.state));
+                return true;
+            }
             UiAction::HigherLowerUndo => {
                 self.state.higher_lower.undo();
             }

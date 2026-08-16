@@ -81,6 +81,19 @@ impl HigherLower {
         true
     }
 
+    pub fn hint_guess(&self) -> Option<Guess> {
+        if self.status != HigherLowerStatus::Playing {
+            return None;
+        }
+        let higher_or_equal = 14 - self.current;
+        let lower_or_equal = self.current;
+        Some(if higher_or_equal >= lower_or_equal {
+            Guess::Higher
+        } else {
+            Guess::Lower
+        })
+    }
+
     pub fn undo(&mut self) -> bool {
         if let Some((current, next, score, moves, status, seed)) = self.undo.take() {
             self.current = current;

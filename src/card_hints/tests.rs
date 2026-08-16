@@ -197,3 +197,11 @@ fn default_breakout_has_a_deterministic_hint() {
     assert!(!breakout(&state).is_empty());
     assert_eq!(breakout(&state), breakout(&state));
 }
+
+#[test]
+fn default_higher_lower_has_a_deterministic_hint() {
+    let state = AppState::default();
+
+    assert!(!higher_lower(&state).is_empty());
+    assert_eq!(higher_lower(&state), higher_lower(&state));
+}

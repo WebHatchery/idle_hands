@@ -545,6 +545,30 @@ pub fn breakout(state: &AppState) -> String {
     )
 }
 
+pub fn higher_lower(state: &AppState) -> String {
+    let game = &state.higher_lower;
+    match game.status {
+        crate::higher_lower::HigherLowerStatus::Won => {
+            return "The quiet run is yours — tap NEW ROUND to play again.".into()
+        }
+        crate::higher_lower::HigherLowerStatus::Lost => {
+            return "The next card slipped away — tap NEW ROUND to begin again.".into()
+        }
+        crate::higher_lower::HigherLowerStatus::Playing => {}
+    }
+    game.hint_guess().map_or_else(
+        || "No odds hint is available — tap NEW ROUND to begin again.".into(),
+        |guess| format!("Best odds: {}; card hidden.", guess_label(guess)),
+    )
+}
+
+fn guess_label(guess: crate::higher_lower::Guess) -> &'static str {
+    match guess {
+        crate::higher_lower::Guess::Higher => "HIGHER",
+        crate::higher_lower::Guess::Lower => "LOWER",
+    }
+}
+
 fn movement_label(movement: crate::breakout::PaddleMove) -> &'static str {
     match movement {
         crate::breakout::PaddleMove::Left => "LEFT",
@@ -594,6 +618,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::MahjongSolitaireHint
             | crate::ui::UiAction::SnakeHint
             | crate::ui::UiAction::BreakoutHint
+            | crate::ui::UiAction::HigherLowerHint
     )
 }
 
