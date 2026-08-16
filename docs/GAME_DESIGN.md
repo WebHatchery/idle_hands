@@ -42,6 +42,9 @@ touch contracts.
 5. Finish, abandon, or return to the cabinet; progress is saved automatically.
 6. Optionally inspect records, rules, or cosmetic stamps.
 
+The Records screen keeps the collection view legible with a compact summary of
+stamps, achievements, and completed drawers out of the full 47-game cabinet.
+
 Starting a new drawer session presents a clear CANCEL/START confirmation so an
 accidental tap cannot replace an unfinished session.
 

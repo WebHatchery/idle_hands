@@ -167,6 +167,10 @@ list capped at five `GameId` values. Neither list changes the default drawer
 ordering, and selecting a listed game routes through the same `Open` action as
 the main cabinet.
 
+The Records summary derives completed-drawer progress from `CollectionRecords`
+through the shared `progression::completed_games` function, keeping the count
+consistent with cabinet completion status without adding another save field.
+
 Conceptual keys:
 
 ```text

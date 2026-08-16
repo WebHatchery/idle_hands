@@ -1,7 +1,7 @@
 //! Collection-wide records screen.
 
-use crate::progression::AchievementId;
-use crate::state::AppState;
+use crate::progression::{completed_games, AchievementId};
+use crate::state::{AppState, GameId};
 use crate::ui::UiAction;
 use macroquad::prelude::*;
 
@@ -34,12 +34,15 @@ pub fn draw_records(state: &AppState) {
         Color::new(0.72, 0.68, 0.82, 1.),
     );
     let earned = state.achievements.iter().filter(|earned| **earned).count();
+    let completed = completed_games(&state.records);
     draw_text(
         format!(
-            "STAMPS  {}   •   ACHIEVEMENTS  {}/{}",
+            "STAMPS  {}   •   ACHIEVEMENTS  {}/{}   •   DRAWERS  {}/{}",
             state.stamps,
             earned,
-            AchievementId::ALL.len()
+            AchievementId::ALL.len(),
+            completed,
+            GameId::ALL.len()
         ),
         174.,
         185.,

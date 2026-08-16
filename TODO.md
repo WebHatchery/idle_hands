@@ -1240,6 +1240,13 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Reuse the quick-browse layout, normalize legacy history, and cover a
     seeded five-entry RECENT capture at all documented sizes.
 
+## Phase 122 — Collection completion summary
+
+- [x] Surface completed-drawer progress alongside stamps and achievements on
+  desktop, portrait, and compact-landscape Records screens.
+  - [x] Derive the count from shared completion logic and capture seeded
+    three-drawer progress at all documented sizes.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

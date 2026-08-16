@@ -48,6 +48,8 @@ Pyramid, TriPeaks, Nim, and Word Ladder.
 - **Calm progression.** Play may earn stamps that unlock cosmetic card backs,
   board themes, sounds, and cabinet decorations. There are no purchases,
   stamina, streak pressure, nested currencies, or claim screens.
+- **Collection feedback.** Records shows stamps, achievements, and the number
+  of completed drawers out of the full cabinet so progress stays legible.
 - **Clear classic rules.** Familiar games remain recognisable. Any themed
   presentation is cosmetic and never hides state needed to play.
 - **Deterministic where useful.** Seeded deals and puzzles can be replayed and

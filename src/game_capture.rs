@@ -178,7 +178,7 @@ impl Game {
             | "match_three_hint_accessible" => Screen::Game(GameId::MatchThree),
             "mastermind_accessible" => Screen::Game(GameId::Mastermind),
             "help" => Screen::Help,
-            "records" | "records_word_ladder" | "favorites_browse" | "favorites_all" | "recent_browse" => Screen::Records,
+            "records" | "records_word_ladder" | "records_progress" | "favorites_browse" | "favorites_all" | "recent_browse" => Screen::Records,
             "rules" => Screen::Rules,
             "credits" => Screen::Credits,
             "settings" | "settings_reset" => Screen::Settings,
@@ -233,6 +233,16 @@ impl Game {
         }
         if scene == "records_word_ladder" {
             self.state.records.word_ladder_best_moves = Some(5);
+        }
+        if scene == "records_progress" {
+            self.state.records.best_2048 = 2048;
+            self.state.records.solitaire_best_moves = Some(42);
+            self.state.records.word_ladder_best_moves = Some(5);
+            let _ = crate::progression::sync(
+                &mut self.state.achievements,
+                &mut self.state.stamps,
+                &self.state.records,
+            );
         }
         if scene == "favorites_browse" {
             for index in [0, GameId::Spider.index(), GameId::Nim.index(), GameId::WordLadder.index()] {

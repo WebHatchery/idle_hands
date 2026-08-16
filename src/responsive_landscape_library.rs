@@ -2,7 +2,7 @@
 
 use crate::{
     cosmetics,
-    progression::AchievementId,
+    progression::{completed_games, AchievementId},
     state::{AppState, GameId},
     ui::UiAction,
 };
@@ -34,12 +34,15 @@ pub fn draw_records(state: &AppState) {
     );
     text("RECORDS", 40., 48., 25., Color::new(0.98, 0.83, 0.45, 1.));
     let earned = state.achievements.iter().filter(|v| **v).count();
+    let completed = completed_games(&state.records);
     text(
         &format!(
-            "STAMPS {}  •  ACHIEVEMENTS {}/{}",
+            "STAMPS {}  •  ACHIEVEMENTS {}/{}  •  DRAWERS {}/{}",
             state.stamps,
             earned,
-            AchievementId::ALL.len()
+            AchievementId::ALL.len(),
+            completed,
+            GameId::ALL.len()
         ),
         250.,
         46.,
