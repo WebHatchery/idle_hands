@@ -157,6 +157,16 @@ impl Nonogram {
             NonogramMode::Cross => NonogramMode::Fill,
         };
     }
+
+    pub fn hint_cell(&self) -> Option<(usize, bool)> {
+        if self.status == NonogramStatus::Won {
+            return None;
+        }
+        self.marks
+            .iter()
+            .position(|mark| *mark == NonogramMark::Empty)
+            .map(|index| (index, self.solution[index]))
+    }
     fn check_win(&mut self) {
         if self
             .marks

@@ -91,12 +91,16 @@ pub fn draw_nonogram(state: &AppState) {
             );
         }
     }
-    text(
-        if game.status == NonogramStatus::Won {
+    let instruction = state
+        .card_hint
+        .as_deref()
+        .unwrap_or(if game.status == NonogramStatus::Won {
             "Picture complete"
         } else {
             "Use the clues to mark each square"
-        },
+        });
+    text(
+        instruction,
         850.,
         185.,
         18.,
@@ -135,7 +139,12 @@ pub fn draw_nonogram(state: &AppState) {
         Color::new(0.18, 0.26, 0.34, 1.),
     );
     text("UNDO", 1084., 306., 16., WHITE);
-    text("Rows", 850., 370., 17., Color::new(0.98, 0.83, 0.45, 1.));
+    panel(
+        Rect::new(850., 335., 320., 28.),
+        Color::new(0.20, 0.13, 0.30, 1.),
+    );
+    text("HINT", 995., 355., 14., WHITE);
+    text("Rows", 850., 400., 17., Color::new(0.98, 0.83, 0.45, 1.));
     for (index, clue) in game.row_clues.iter().take(6).enumerate() {
         text(
             &clue
@@ -144,7 +153,7 @@ pub fn draw_nonogram(state: &AppState) {
                 .collect::<Vec<_>>()
                 .join(" "),
             850.,
-            400. + index as f32 * 26.,
+            430. + index as f32 * 26.,
             accessibility::text_size(15., state.large_text),
             if state.high_contrast {
                 WHITE
@@ -169,6 +178,9 @@ pub fn nonogram_clicks(_state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     if Rect::new(1050., 275., 120., 48.).contains(p) {
         return vec![UiAction::NonogramUndo];
+    }
+    if Rect::new(850., 335., 320., 28.).contains(p) {
+        return vec![UiAction::NonogramHint];
     }
     let board = Rect::new(320., 175., 500., 500.);
     let grid = GridLayout::new(

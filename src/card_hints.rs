@@ -366,6 +366,24 @@ pub fn minesweeper(state: &AppState) -> String {
     )
 }
 
+pub fn nonogram(state: &AppState) -> String {
+    let game = &state.nonogram;
+    if game.status == crate::nonogram::NonogramStatus::Won {
+        return "The hidden picture is complete — choose a size to play again.".into();
+    }
+    game.hint_cell().map_or_else(
+        || "No empty square remains — inspect the marked picture.".into(),
+        |(index, filled)| {
+            format!(
+                "{} row {}, column {}.",
+                if filled { "Fill" } else { "Cross" },
+                index / game.size + 1,
+                index % game.size + 1
+            )
+        },
+    )
+}
+
 fn color_name(color: u8) -> &'static str {
     ["red", "amber", "green", "blue", "violet", "gold"][color as usize % 6]
 }
@@ -388,6 +406,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::MastermindHint
             | crate::ui::UiAction::SudokuHint
             | crate::ui::UiAction::MineHint
+            | crate::ui::UiAction::NonogramHint
     )
 }
 

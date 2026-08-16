@@ -122,3 +122,10 @@ fn default_minesweeper_has_a_deterministic_hint() {
     assert_eq!(minesweeper(&state), "Reveal row 5, column 5.");
     assert_eq!(minesweeper(&state), minesweeper(&state));
 }
+
+#[test]
+fn default_nonogram_has_a_deterministic_hint() {
+    let state = AppState::default();
+    assert_eq!(nonogram(&state), "Fill row 1, column 1.");
+    assert_eq!(nonogram(&state), nonogram(&state));
+}

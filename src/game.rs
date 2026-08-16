@@ -357,6 +357,9 @@ impl Game {
             ui::UiAction::NonogramMode => {
                 self.state.nonogram.toggle_mode();
             }
+            ui::UiAction::NonogramHint => {
+                self.state.card_hint = Some(card_hints::nonogram(&self.state));
+            }
             ui::UiAction::NonogramUndo => {
                 self.state.nonogram.undo();
             }

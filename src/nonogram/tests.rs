@@ -50,3 +50,13 @@ fn strokes_lock_to_the_dominant_axis() {
     assert_eq!(stroke_indices(5, (0, 2), (4, 3)), vec![10, 11, 12, 13, 14]);
     assert_eq!(stroke_indices(5, (2, 0), (3, 4)), vec![2, 7, 12, 17, 22]);
 }
+
+#[test]
+fn hint_cell_identifies_the_first_empty_solution_mark_without_mutating() {
+    let game = Nonogram::default();
+    let before = game.marks.clone();
+    let (index, filled) = game.hint_cell().unwrap();
+    assert_eq!(index, 0);
+    assert!(filled);
+    assert_eq!(game.marks, before);
+}

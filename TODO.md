@@ -889,6 +889,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover first-reveal safety, visible deductions, hint determinism,
     capture aliases, and updated desktop layouts.
 
+## Phase 76 — Nonogram discoverability polish
+
+- [x] Add a deterministic HINT action that identifies whether the next empty
+  square should be filled or crossed without changing marks.
+  - [x] Wire the existing touch UI and feedback, including accessibility.
+  - [x] Cover solution validity, hint determinism, capture aliases, and the
+    updated desktop layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.
