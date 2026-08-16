@@ -130,6 +130,26 @@ pub fn fivefold(state: &AppState) -> String {
     )
 }
 
+pub fn spider(state: &AppState) -> String {
+    let game = &state.spider;
+    if game.status == crate::spider::SpiderStatus::Won {
+        return "All eight spider runs are clear — tap NEW DEAL to play again.".into();
+    }
+    if let Some((source, depth, destination)) = game.hint_move() {
+        return format!(
+            "Move column {} card {} to column {}.",
+            source + 1,
+            depth + 1,
+            destination + 1
+        );
+    }
+    if !game.stock.is_empty() {
+        "Deal STOCK for the next row.".into()
+    } else {
+        "No legal run remains — tap NEW DEAL to begin again.".into()
+    }
+}
+
 pub fn pyramid(state: &AppState) -> String {
     let game = &state.pyramid;
     if game.status == crate::pyramid::PyramidStatus::Won {
@@ -548,6 +568,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::SolitaireHint
             | crate::ui::UiAction::FreeCellHint
             | crate::ui::UiAction::FivefoldHint
+            | crate::ui::UiAction::SpiderHint
             | crate::ui::UiAction::PyramidHint
             | crate::ui::UiAction::TriPeaksHint
             | crate::ui::UiAction::KlondikeGolfHint

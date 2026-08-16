@@ -11,6 +11,7 @@ struct Layout {
     overlap: f32,
     gap: f32,
     stock: Rect,
+    hint: Rect,
     undo: Rect,
     new_game: Rect,
 }
@@ -38,6 +39,7 @@ fn layout() -> Layout {
             overlap: 14.,
             gap: 7.,
             stock: Rect::new(10., 34., 78., 52.),
+            hint: Rect::new(610., 265., 105., 40.),
             undo: Rect::new(610., 335., 105., 40.),
             new_game: Rect::new(728., 335., 105., 40.),
         }
@@ -49,6 +51,7 @@ fn layout() -> Layout {
             overlap: 17.,
             gap: 6.,
             stock: Rect::new(8., 112., 44., 58.),
+            hint: Rect::new(5., 650., 105., 38.),
             undo: Rect::new(120., 650., 105., 38.),
             new_game: Rect::new(235., 650., 115., 38.),
         }
@@ -60,6 +63,7 @@ fn layout() -> Layout {
             overlap: 22.,
             gap: 16.,
             stock: Rect::new(30., 88., 94., 126.),
+            hint: Rect::new(830., 625., 120., 42.),
             undo: Rect::new(970., 625., 120., 42.),
             new_game: Rect::new(1110., 625., 140., 42.),
         }
@@ -73,6 +77,9 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if layout.stock.contains(point) {
         return vec![UiAction::SpiderDeal];
+    }
+    if layout.hint.contains(point) {
+        return vec![UiAction::SpiderHint];
     }
     if layout.undo.contains(point) {
         return vec![UiAction::SpiderUndo];
@@ -203,17 +210,23 @@ pub fn draw(state: &AppState) {
     );
     button(layout.undo, "UNDO");
     button(layout.new_game, "NEW DEAL");
+    button(layout.hint, "HINT");
     text(
-        "Tap a run, then tap its destination.",
+        state
+            .card_hint
+            .as_deref()
+            .unwrap_or("Tap a run, then tap its destination."),
         if crate::ui::is_portrait() {
             10.
+        } else if crate::ui::is_compact_landscape() {
+            300.
         } else {
             header_x
         },
         if crate::ui::is_portrait() {
-            645.
+            700.
         } else if crate::ui::is_compact_landscape() {
-            58.
+            315.
         } else {
             615.
         },

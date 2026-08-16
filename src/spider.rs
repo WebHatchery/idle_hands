@@ -140,6 +140,25 @@ impl Spider {
         *self = Self::new(seed);
     }
 
+    pub fn hint_move(&self) -> Option<(usize, usize, usize)> {
+        if self.status == SpiderStatus::Won {
+            return None;
+        }
+        for source in 0..COLUMNS {
+            for depth in 0..self.tableau[source].len() {
+                if !is_run(&self.tableau[source][depth..]) {
+                    continue;
+                }
+                for destination in 0..COLUMNS {
+                    if destination != source && self.can_place(destination, depth, source) {
+                        return Some((source, depth, destination));
+                    }
+                }
+            }
+        }
+        None
+    }
+
     fn can_place(&self, destination: usize, depth: usize, source: usize) -> bool {
         let Some(card) = self.tableau[source].get(depth) else {
             return false;

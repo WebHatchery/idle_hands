@@ -351,6 +351,14 @@ fn default_fivefold_explains_that_a_roll_is_needed_for_a_category_hint() {
 }
 
 #[test]
+fn default_spider_has_a_deterministic_run_hint() {
+    let state = AppState::default();
+
+    assert!(!spider(&state).is_empty());
+    assert_eq!(spider(&state), spider(&state));
+}
+
+#[test]
 fn default_match_three_has_a_deterministic_swap_hint() {
     let state = AppState::default();
 

@@ -57,7 +57,7 @@ impl Game {
             "mastermind" | "mastermind_hint" | "mastermind_hint_accessible" => {
                 Screen::Game(GameId::Mastermind)
             }
-            "spider" => Screen::Game(GameId::Spider),
+            "spider" | "spider_hint" | "spider_hint_accessible" => Screen::Game(GameId::Spider),
             "word_search" | "word_search_hint" | "word_search_hint_accessible" => {
                 Screen::Game(GameId::WordSearch)
             }
@@ -258,6 +258,8 @@ impl Game {
             self.state.card_hint = Some(card_hints::maze_walk(&self.state));
         } else if scene == "fivefold_hint" || scene == "fivefold_hint_accessible" {
             self.state.card_hint = Some(card_hints::fivefold(&self.state));
+        } else if scene == "spider_hint" || scene == "spider_hint_accessible" {
+            self.state.card_hint = Some(card_hints::spider(&self.state));
         } else if scene == "match_three_hint" || scene == "match_three_hint_accessible" {
             self.state.card_hint = Some(card_hints::match_three(&self.state));
         } else if scene == "2048_hint" || scene == "2048_hint_accessible" {

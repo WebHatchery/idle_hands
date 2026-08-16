@@ -578,6 +578,9 @@ impl Game {
             ui::UiAction::SpiderDeal => {
                 self.state.spider.deal_stock();
             }
+            ui::UiAction::SpiderHint => {
+                self.state.card_hint = Some(card_hints::spider(&self.state));
+            }
             ui::UiAction::SpiderUndo => {
                 self.state.spider.undo();
             }

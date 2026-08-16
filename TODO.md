@@ -1130,6 +1130,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover category ranking, scored-category exclusion, hint capture
     aliases, accessibility, and responsive layouts.
 
+## Phase 106 — Spider discoverability polish
+
+- [x] Add a deterministic, non-mutating HINT action that recommends the first
+  legal run move in stable tableau order, then falls back to DEAL STOCK.
+  - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
+  - [x] Cover legal-move determinism, tableau preservation, hint capture
+    aliases, accessibility, and responsive layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

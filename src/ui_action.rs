@@ -102,6 +102,7 @@ pub enum UiAction {
     SpiderSelect(usize, usize),
     SpiderMove(usize),
     SpiderDeal,
+    SpiderHint,
     SpiderUndo,
     SpiderNew,
     WordSearchCell(usize),

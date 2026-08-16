@@ -65,3 +65,44 @@ fn complete_run_is_removed_and_counts_toward_win() {
     assert_eq!(game.completed, 1);
     assert!(game.tableau[1].is_empty());
 }
+
+#[test]
+fn hint_returns_the_first_legal_run_move_without_mutating_the_tableau() {
+    let mut game = Spider::new(43);
+    game.tableau[0] = vec![
+        Card {
+            rank: 4,
+            suit: 0,
+            face_up: false,
+        },
+        Card {
+            rank: 12,
+            suit: 0,
+            face_up: true,
+        },
+        Card {
+            rank: 11,
+            suit: 0,
+            face_up: true,
+        },
+    ];
+    game.tableau[1] = vec![Card {
+        rank: 13,
+        suit: 0,
+        face_up: true,
+    }];
+    let before = game.tableau.clone();
+
+    assert_eq!(game.hint_move(), Some((0, 1, 1)));
+    assert_eq!(game.hint_move(), Some((0, 1, 1)));
+    assert_eq!(game.tableau, before);
+    assert_eq!(game.selected, None);
+    assert_eq!(game.moves, 0);
+}
+
+#[test]
+fn won_spider_has_no_hint_move() {
+    let mut game = Spider::new(44);
+    game.status = SpiderStatus::Won;
+    assert_eq!(game.hint_move(), None);
+}
