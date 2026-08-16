@@ -186,6 +186,7 @@ pub enum UiAction {
     RogueMove(Direction),
     RogueStrike,
     RoguePotion,
+    RogueHint,
     RogueUndo,
     RogueNew,
     DailyMove(Direction),

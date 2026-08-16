@@ -23,6 +23,13 @@ pub enum RoomPhase {
     Lost,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum RogueHint {
+    Strike,
+    Potion,
+    Move(Direction),
+}
+
 type Snapshot = (
     usize,
     Vec<RoomEnemy>,
@@ -99,6 +106,31 @@ impl OneRoomRoguelike {
             }
         }
         true
+    }
+
+    pub fn hint_action(&self) -> Option<RogueHint> {
+        if self.phase != RoomPhase::Exploring {
+            return None;
+        }
+        if let Some(enemy) = self.adjacent_enemy() {
+            if self.health <= 4 && self.potions > 0 && self.enemies[enemy].damage > 0 {
+                return Some(RogueHint::Potion);
+            }
+            return Some(RogueHint::Strike);
+        }
+        [
+            Direction::Up,
+            Direction::Left,
+            Direction::Down,
+            Direction::Right,
+        ]
+        .into_iter()
+        .filter_map(|direction| {
+            self.destination(direction)
+                .map(|destination| (direction, Self::distance(destination, self.exit)))
+        })
+        .min_by_key(|(_, distance)| *distance)
+        .map(|(direction, _)| RogueHint::Move(direction))
     }
 
     pub fn strike(&mut self) -> bool {

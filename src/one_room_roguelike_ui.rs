@@ -14,6 +14,7 @@ struct Layout {
     directions: [Rect; 4],
     strike: Rect,
     potion: Rect,
+    hint: Rect,
     undo: Rect,
     new_game: Rect,
 }
@@ -30,6 +31,7 @@ fn layout() -> Layout {
             ],
             strike: Rect::new(105., 125., 145., 44.),
             potion: Rect::new(105., 180., 145., 44.),
+            hint: Rect::new(610., 230., 110., 44.),
             undo: Rect::new(610., 120., 110., 44.),
             new_game: Rect::new(610., 175., 145., 44.),
         }
@@ -44,6 +46,7 @@ fn layout() -> Layout {
             ],
             strike: Rect::new(40., 525., 145., 44.),
             potion: Rect::new(195., 525., 165., 44.),
+            hint: Rect::new(40., 635., 145., 42.),
             undo: Rect::new(40., 580., 145., 44.),
             new_game: Rect::new(195., 580., 165., 44.),
         }
@@ -58,6 +61,7 @@ fn layout() -> Layout {
             ],
             strike: Rect::new(810., 220., 125., 44.),
             potion: Rect::new(955., 220., 135., 44.),
+            hint: Rect::new(810., 350., 120., 44.),
             undo: Rect::new(810., 285., 120., 44.),
             new_game: Rect::new(950., 285., 140., 44.),
         }
@@ -89,6 +93,9 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if l.undo.contains(point) {
         return vec![UiAction::RogueUndo];
+    }
+    if l.hint.contains(point) {
+        return vec![UiAction::RogueHint];
     }
     if l.new_game.contains(point) {
         return vec![UiAction::RogueNew];
@@ -203,7 +210,10 @@ pub fn draw(state: &AppState) {
         center_text("@", rect, cell_size(state.large_text), WHITE);
     }
     text(
-        &status_text(game.phase, game.turns),
+        state
+            .card_hint
+            .as_deref()
+            .unwrap_or(&status_text(game.phase, game.turns)),
         if compact { 300. } else { title_x },
         if portrait {
             460.
@@ -220,6 +230,7 @@ pub fn draw(state: &AppState) {
     }
     button(l.strike, "STRIKE", state.large_text);
     button(l.potion, "POTION", state.large_text);
+    button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW ROOM", state.large_text);
 }

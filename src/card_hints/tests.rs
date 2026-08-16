@@ -237,3 +237,11 @@ fn default_tiny_tower_defence_has_a_deterministic_hint() {
     assert!(!tiny_tower_defence(&state).is_empty());
     assert_eq!(tiny_tower_defence(&state), tiny_tower_defence(&state));
 }
+
+#[test]
+fn default_one_room_roguelike_has_a_deterministic_hint() {
+    let state = AppState::default();
+
+    assert!(!one_room_roguelike(&state).is_empty());
+    assert_eq!(one_room_roguelike(&state), one_room_roguelike(&state));
+}

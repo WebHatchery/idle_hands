@@ -122,7 +122,9 @@ impl Game {
             "tiny_tower_defence_accessible" | "tiny_tower_defence_hint_accessible" => {
                 Screen::Game(GameId::TinyTowerDefence)
             }
-            "one_room_roguelike" => Screen::Game(GameId::OneRoomRoguelike),
+            "one_room_roguelike"
+            | "one_room_roguelike_hint"
+            | "one_room_roguelike_hint_accessible" => Screen::Game(GameId::OneRoomRoguelike),
             "one_room_roguelike_accessible" => Screen::Game(GameId::OneRoomRoguelike),
             "daily_dungeon" => Screen::Game(GameId::DailyDungeon),
             "daily_dungeon_accessible" => Screen::Game(GameId::DailyDungeon),
@@ -203,6 +205,10 @@ impl Game {
             || scene == "tiny_tower_defence_hint_accessible"
         {
             self.state.card_hint = Some(card_hints::tiny_tower_defence(&self.state));
+        } else if scene == "one_room_roguelike_hint"
+            || scene == "one_room_roguelike_hint_accessible"
+        {
+            self.state.card_hint = Some(card_hints::one_room_roguelike(&self.state));
         } else if scene == "2048_hint" || scene == "2048_hint_accessible" {
             self.state.card_hint = Some(card_hints::game_2048(&self.state));
         } else if scene == "tic_tac_toe_hint" || scene == "tic_tac_toe_hint_accessible" {

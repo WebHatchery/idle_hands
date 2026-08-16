@@ -640,6 +640,38 @@ pub fn tiny_tower_defence(state: &AppState) -> String {
     )
 }
 
+pub fn one_room_roguelike(state: &AppState) -> String {
+    let game = &state.one_room_roguelike;
+    match game.phase {
+        crate::one_room_roguelike::RoomPhase::Won => {
+            return "The room is quiet — tap NEW ROOM to play again.".into()
+        }
+        crate::one_room_roguelike::RoomPhase::Lost => {
+            return "The room claims you — tap NEW ROOM to begin again.".into()
+        }
+        crate::one_room_roguelike::RoomPhase::Exploring => {}
+    }
+    game.hint_action().map_or_else(
+        || "No room action is available — tap NEW ROOM to begin again.".into(),
+        |hint| match hint {
+            crate::one_room_roguelike::RogueHint::Strike => "STRIKE the adjacent enemy.".into(),
+            crate::one_room_roguelike::RogueHint::Potion => "DRINK POTION to recover.".into(),
+            crate::one_room_roguelike::RogueHint::Move(direction) => {
+                format!("Move {} toward EXIT.", rogue_direction_label(direction))
+            }
+        },
+    )
+}
+
+fn rogue_direction_label(direction: crate::state::Direction) -> &'static str {
+    match direction {
+        crate::state::Direction::Up => "UP",
+        crate::state::Direction::Left => "LEFT",
+        crate::state::Direction::Down => "DOWN",
+        crate::state::Direction::Right => "RIGHT",
+    }
+}
+
 fn potion_direction_label(direction: crate::state::Direction) -> &'static str {
     match direction {
         crate::state::Direction::Up => "UP",
@@ -717,6 +749,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::DungeonHint
             | crate::ui::UiAction::PotionHint
             | crate::ui::UiAction::TowerHint
+            | crate::ui::UiAction::RogueHint
     )
 }
 

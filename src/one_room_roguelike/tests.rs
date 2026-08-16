@@ -61,3 +61,40 @@ fn undo_restores_action_and_reset_reseeds_room() {
     game.reset(2);
     assert_ne!(game.enemies, OneRoomRoguelike::new(1).enemies);
 }
+
+#[test]
+fn hint_prioritizes_combat_and_preserves_the_room() {
+    let mut game = OneRoomRoguelike::new(1);
+    game.enemies = vec![RoomEnemy {
+        position: game.player - 1,
+        health: 3,
+        damage: 1,
+    }];
+    let before = game.clone();
+
+    assert_eq!(game.hint_action(), Some(RogueHint::Strike));
+    assert_eq!(game.player, before.player);
+    assert_eq!(game.health, before.health);
+    assert_eq!(game.enemies, before.enemies);
+}
+
+#[test]
+fn hint_recommends_potion_when_health_is_low() {
+    let mut game = OneRoomRoguelike::new(1);
+    game.health = 3;
+    game.enemies = vec![RoomEnemy {
+        position: game.player - 1,
+        health: 3,
+        damage: 1,
+    }];
+
+    assert_eq!(game.hint_action(), Some(RogueHint::Potion));
+}
+
+#[test]
+fn hint_is_empty_after_the_room_ends() {
+    let mut game = OneRoomRoguelike::new(1);
+    game.phase = RoomPhase::Won;
+
+    assert_eq!(game.hint_action(), None);
+}

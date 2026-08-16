@@ -261,6 +261,10 @@ impl Game {
             UiAction::RoguePotion => {
                 self.state.one_room_roguelike.drink_potion();
             }
+            UiAction::RogueHint => {
+                self.state.card_hint = Some(crate::card_hints::one_room_roguelike(&self.state));
+                return true;
+            }
             UiAction::RogueUndo => {
                 self.state.one_room_roguelike.undo();
             }

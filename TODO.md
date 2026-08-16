@@ -1009,6 +1009,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover phase-aware recommendations, state preservation, hint
     determinism, capture aliases, and responsive layouts.
 
+## Phase 91 — One Room Roguelike discoverability polish
+
+- [x] Add a deterministic non-mutating HINT action that prioritizes STRIKE,
+  POTION, or a move toward EXIT based on the room state.
+  - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
+  - [x] Cover tactical priority, state preservation, hint determinism, capture
+    aliases, and responsive layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.
