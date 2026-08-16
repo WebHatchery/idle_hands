@@ -440,13 +440,13 @@ pub fn draw_settings(state: &AppState) {
         ),
     ] {
         panel(
-            Rect::new(22., y - 28., 316., 42.),
+            Rect::new(22., y - 28., 316., 44.),
             Color::new(0.16, 0.11, 0.24, 1.),
         );
         text(&label, 34., y, 14., WHITE);
     }
     panel(
-        Rect::new(22., 360., 150., 42.),
+        Rect::new(22., 360., 150., 44.),
         Color::new(0.16, 0.11, 0.24, 1.),
     );
     text(
@@ -457,7 +457,7 @@ pub fn draw_settings(state: &AppState) {
         WHITE,
     );
     panel(
-        Rect::new(186., 360., 152., 42.),
+        Rect::new(186., 360., 152., 44.),
         Color::new(0.16, 0.11, 0.24, 1.),
     );
     text(
@@ -475,7 +475,7 @@ pub fn draw_settings(state: &AppState) {
         WHITE,
     );
     panel(
-        Rect::new(22., 465., 150., 42.),
+        Rect::new(22., 465., 150., 44.),
         Color::new(0.16, 0.11, 0.24, 1.),
     );
     text(
@@ -489,7 +489,7 @@ pub fn draw_settings(state: &AppState) {
         WHITE,
     );
     panel(
-        Rect::new(186., 465., 152., 42.),
+        Rect::new(186., 465., 152., 44.),
         Color::new(0.16, 0.11, 0.24, 1.),
     );
     text(
@@ -510,10 +510,10 @@ pub fn draw_settings(state: &AppState) {
         Color::new(0.68, 0.63, 0.78, 1.),
     );
     for (rect, label) in [
-        (Rect::new(22., 665., 76., 42.), "BACK"),
-        (Rect::new(108., 665., 76., 42.), "SAVE"),
-        (Rect::new(194., 665., 76., 42.), "LOAD"),
-        (Rect::new(280., 665., 58., 42.), "RESET"),
+        (Rect::new(22., 665., 76., 44.), "BACK"),
+        (Rect::new(108., 665., 76., 44.), "SAVE"),
+        (Rect::new(194., 665., 76., 44.), "LOAD"),
+        (Rect::new(280., 665., 58., 44.), "RESET"),
     ] {
         panel(rect, Color::new(0.20, 0.13, 0.30, 1.));
         let width = measure_text(label, None, 11, 1.).width;
@@ -539,12 +539,12 @@ pub fn draw_settings(state: &AppState) {
             Color::new(0.78, 0.73, 0.86, 1.),
         );
         panel(
-            Rect::new(42., 570., 120., 40.),
+            Rect::new(42., 568., 120., 44.),
             Color::new(0.22, 0.18, 0.35, 1.),
         );
         text("CANCEL", 75., 596., 12., WHITE);
         panel(
-            Rect::new(198., 570., 120., 40.),
+            Rect::new(198., 568., 120., 44.),
             Color::new(0.45, 0.20, 0.24, 1.),
         );
         text("RESET", 238., 596., 12., WHITE);
@@ -553,24 +553,24 @@ pub fn draw_settings(state: &AppState) {
 
 pub fn settings_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if state.confirm_reset {
-        if Rect::new(42., 570., 120., 40.).contains(p) {
+        if Rect::new(42., 568., 120., 44.).contains(p) {
             return vec![UiAction::CancelResetData];
         }
-        if Rect::new(198., 570., 120., 40.).contains(p) {
+        if Rect::new(198., 568., 120., 44.).contains(p) {
             return vec![UiAction::ConfirmResetData];
         }
         return vec![];
     }
-    if Rect::new(22., 665., 76., 42.).contains(p) {
+    if Rect::new(22., 665., 76., 44.).contains(p) {
         return vec![UiAction::Cabinet];
     }
-    if Rect::new(108., 665., 76., 42.).contains(p) {
+    if Rect::new(108., 665., 76., 44.).contains(p) {
         return vec![UiAction::Save];
     }
-    if Rect::new(194., 665., 76., 42.).contains(p) {
+    if Rect::new(194., 665., 76., 44.).contains(p) {
         return vec![UiAction::Load];
     }
-    if Rect::new(280., 665., 58., 42.).contains(p) {
+    if Rect::new(280., 665., 58., 44.).contains(p) {
         return vec![UiAction::ResetData];
     }
     for (rect, action) in [

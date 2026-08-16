@@ -1317,3 +1317,8 @@ contract, shared confirmation safety, responsive capture coverage, and the
 
 - [x] Bring compact-landscape Help, Rules, and Credits navigation actions to
   touch-complete targets with refreshed responsive capture coverage.
+
+## Phase 134 — Settings touch accessibility
+
+- [x] Resize responsive Settings cosmetics, toggles, save/load, reset, and
+  confirmation actions to touch-complete targets with capture coverage.

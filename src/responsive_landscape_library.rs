@@ -395,9 +395,9 @@ pub fn draw_settings(state: &AppState) {
         ),
     ];
     for (index, (label, value)) in rows.iter().enumerate() {
-        let rect = Rect::new(40., 68. + index as f32 * 42., 370., 34.);
+        let rect = Rect::new(40., 68. + index as f32 * 48., 370., 44.);
         panel(rect, Color::new(0.16, 0.11, 0.24, 1.));
-        text(label, rect.x + 12., rect.y + 22., 11., WHITE);
+        text(label, rect.x + 12., rect.y + 28., 11., WHITE);
         text(
             value,
             rect.x + 190.,
@@ -407,18 +407,18 @@ pub fn draw_settings(state: &AppState) {
         );
     }
     panel(
-        Rect::new(450., 68., 160., 34.),
+        Rect::new(450., 68., 160., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     text(
         if state.sound { "SOUND ON" } else { "SOUND OFF" },
         495.,
-        90.,
+        96.,
         11.,
         WHITE,
     );
     panel(
-        Rect::new(630., 68., 160., 34.),
+        Rect::new(630., 68., 160., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     text(
@@ -428,22 +428,22 @@ pub fn draw_settings(state: &AppState) {
             "MOTION ON"
         },
         670.,
-        90.,
+        96.,
         11.,
         WHITE,
     );
     panel(
-        Rect::new(450., 120., 160., 34.),
+        Rect::new(450., 120., 160., 44.),
         Color::new(0.18, 0.26, 0.34, 1.),
     );
-    text("SAVE NOW", 500., 142., 11., WHITE);
+    text("SAVE NOW", 500., 148., 11., WHITE);
     panel(
-        Rect::new(630., 120., 160., 34.),
+        Rect::new(630., 120., 160., 44.),
         Color::new(0.20, 0.13, 0.30, 1.),
     );
-    text("LOAD", 690., 142., 11., WHITE);
+    text("LOAD", 690., 148., 11., WHITE);
     panel(
-        Rect::new(450., 165., 160., 34.),
+        Rect::new(450., 172., 160., 44.),
         Color::new(0.16, 0.11, 0.24, 1.),
     );
     text(
@@ -453,12 +453,12 @@ pub fn draw_settings(state: &AppState) {
             "CONTRAST OFF"
         },
         475.,
-        187.,
+        200.,
         10.,
         WHITE,
     );
     panel(
-        Rect::new(630., 165., 160., 34.),
+        Rect::new(630., 172., 160., 44.),
         Color::new(0.16, 0.11, 0.24, 1.),
     );
     text(
@@ -468,24 +468,24 @@ pub fn draw_settings(state: &AppState) {
             "LARGE TEXT OFF"
         },
         650.,
-        187.,
+        200.,
         10.,
         WHITE,
     );
     text(
         "Tap a cosmetic row to cycle unlocked items.",
         450.,
-        220.,
+        238.,
         12.,
         Color::new(0.68, 0.63, 0.78, 1.),
     );
     panel(
-        Rect::new(40., 270., 160., 42.),
+        Rect::new(40., 268., 160., 44.),
         Color::new(0.25, 0.16, 0.32, 1.),
     );
     text("BACK", 98., 297., 12., WHITE);
     panel(
-        Rect::new(220., 270., 160., 42.),
+        Rect::new(220., 268., 160., 44.),
         Color::new(0.36, 0.16, 0.22, 1.),
     );
     text("RESET DATA", 267., 297., 11., WHITE);
@@ -503,12 +503,12 @@ pub fn draw_settings(state: &AppState) {
             Color::new(0.78, 0.73, 0.86, 1.),
         );
         panel(
-            Rect::new(285., 245., 110., 38.),
+            Rect::new(285., 242., 110., 44.),
             Color::new(0.22, 0.18, 0.35, 1.),
         );
         text("CANCEL", 315., 270., 11., WHITE);
         panel(
-            Rect::new(455., 245., 110., 38.),
+            Rect::new(455., 242., 110., 44.),
             Color::new(0.45, 0.20, 0.24, 1.),
         );
         text("RESET", 490., 270., 11., WHITE);
@@ -516,48 +516,48 @@ pub fn draw_settings(state: &AppState) {
 }
 pub fn settings_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if state.confirm_reset {
-        if Rect::new(285., 245., 110., 38.).contains(p) {
+        if Rect::new(285., 242., 110., 44.).contains(p) {
             return vec![UiAction::CancelResetData];
         }
-        if Rect::new(455., 245., 110., 38.).contains(p) {
+        if Rect::new(455., 242., 110., 44.).contains(p) {
             return vec![UiAction::ConfirmResetData];
         }
         return vec![];
     }
-    if Rect::new(40., 68., 370., 34.).contains(p) {
+    if Rect::new(40., 68., 370., 44.).contains(p) {
         return vec![UiAction::CycleCardBack];
     }
-    if Rect::new(40., 110., 370., 34.).contains(p) {
+    if Rect::new(40., 116., 370., 44.).contains(p) {
         return vec![UiAction::CycleBoardTheme];
     }
-    if Rect::new(40., 152., 370., 34.).contains(p) {
+    if Rect::new(40., 164., 370., 44.).contains(p) {
         return vec![UiAction::CycleSoundSet];
     }
-    if Rect::new(40., 194., 370., 34.).contains(p) {
+    if Rect::new(40., 212., 370., 44.).contains(p) {
         return vec![UiAction::CycleCabinetDecoration];
     }
-    if Rect::new(450., 68., 160., 34.).contains(p) {
+    if Rect::new(450., 68., 160., 44.).contains(p) {
         return vec![UiAction::ToggleSound];
     }
-    if Rect::new(630., 68., 160., 34.).contains(p) {
+    if Rect::new(630., 68., 160., 44.).contains(p) {
         return vec![UiAction::ToggleMotion];
     }
-    if Rect::new(450., 165., 160., 34.).contains(p) {
+    if Rect::new(450., 172., 160., 44.).contains(p) {
         return vec![UiAction::ToggleHighContrast];
     }
-    if Rect::new(630., 165., 160., 34.).contains(p) {
+    if Rect::new(630., 172., 160., 44.).contains(p) {
         return vec![UiAction::ToggleLargeText];
     }
-    if Rect::new(450., 120., 160., 34.).contains(p) {
+    if Rect::new(450., 120., 160., 44.).contains(p) {
         return vec![UiAction::Save];
     }
-    if Rect::new(630., 120., 160., 34.).contains(p) {
+    if Rect::new(630., 120., 160., 44.).contains(p) {
         return vec![UiAction::Load];
     }
-    if Rect::new(40., 270., 160., 42.).contains(p) {
+    if Rect::new(40., 268., 160., 44.).contains(p) {
         return vec![UiAction::Cabinet];
     }
-    if Rect::new(220., 270., 160., 42.).contains(p) {
+    if Rect::new(220., 268., 160., 44.).contains(p) {
         return vec![UiAction::ResetData];
     }
     vec![]

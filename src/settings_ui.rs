@@ -86,7 +86,7 @@ pub fn draw_settings(state: &AppState) {
         WHITE,
     );
     panel(
-        Rect::new(230., 470., 350., 40.),
+        Rect::new(230., 470., 350., 44.),
         Color::new(0.16, 0.11, 0.24, 1.),
     );
     text(
@@ -100,7 +100,7 @@ pub fn draw_settings(state: &AppState) {
         WHITE,
     );
     panel(
-        Rect::new(580., 470., 350., 40.),
+        Rect::new(580., 470., 350., 44.),
         Color::new(0.16, 0.11, 0.24, 1.),
     );
     text(
@@ -204,10 +204,10 @@ pub fn settings_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if Rect::new(580., 415., 350., 45.).contains(p) {
         actions.push(UiAction::ToggleMotion);
     }
-    if Rect::new(230., 470., 350., 40.).contains(p) {
+    if Rect::new(230., 470., 350., 44.).contains(p) {
         actions.push(UiAction::ToggleHighContrast);
     }
-    if Rect::new(580., 470., 350., 40.).contains(p) {
+    if Rect::new(580., 470., 350., 44.).contains(p) {
         actions.push(UiAction::ToggleLargeText);
     }
     if Rect::new(770., 560., 210., 48.).contains(p) {

@@ -194,7 +194,7 @@ impl Game {
             | "recent_browse" => Screen::Records,
             "rules" => Screen::Rules,
             "credits" => Screen::Credits,
-            "settings" | "settings_reset" => Screen::Settings,
+            "settings" | "settings_accessible" | "settings_reset" => Screen::Settings,
             _ => Screen::Cabinet,
         };
         if scene == "settings_reset" {
