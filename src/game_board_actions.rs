@@ -210,6 +210,10 @@ impl Game {
             UiAction::DungeonToggleFlag => {
                 self.state.mine_flag_mode = !self.state.mine_flag_mode;
             }
+            UiAction::DungeonHint => {
+                self.state.card_hint = Some(crate::card_hints::dungeon_sweeper(&self.state));
+                return true;
+            }
             UiAction::DungeonUndo => {
                 self.state.dungeon_sweeper.undo();
             }

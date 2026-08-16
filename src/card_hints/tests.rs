@@ -213,3 +213,11 @@ fn default_blackjack_has_a_deterministic_hint() {
     assert!(!blackjack(&state).is_empty());
     assert_eq!(blackjack(&state), blackjack(&state));
 }
+
+#[test]
+fn default_dungeon_sweeper_has_a_deterministic_hint() {
+    let state = AppState::default();
+
+    assert!(!dungeon_sweeper(&state).is_empty());
+    assert_eq!(dungeon_sweeper(&state), dungeon_sweeper(&state));
+}

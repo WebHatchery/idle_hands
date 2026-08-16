@@ -12,6 +12,7 @@ use macroquad::prelude::*;
 struct Layout {
     board: Rect,
     flag: Rect,
+    hint: Rect,
     undo: Rect,
     new_game: Rect,
 }
@@ -20,6 +21,7 @@ fn layout() -> Layout {
         Layout {
             board: Rect::new(250., 66., 560., 280.),
             flag: Rect::new(18., 170., 100., 42.),
+            hint: Rect::new(18., 330., 100., 40.),
             undo: Rect::new(18., 225., 100., 40.),
             new_game: Rect::new(18., 278., 120., 40.),
         }
@@ -27,15 +29,17 @@ fn layout() -> Layout {
         Layout {
             board: Rect::new(20., 145., 320., 320.),
             flag: Rect::new(20., 500., 145., 44.),
+            hint: Rect::new(20., 620., 145., 42.),
             undo: Rect::new(20., 560., 145., 42.),
             new_game: Rect::new(185., 560., 165., 42.),
         }
     } else {
         Layout {
             board: Rect::new(360., 120., 420., 420.),
-            flag: Rect::new(650., 390., 150., 46.),
-            undo: Rect::new(650., 450., 120., 44.),
-            new_game: Rect::new(790., 450., 150., 44.),
+            flag: Rect::new(820., 390., 150., 46.),
+            hint: Rect::new(820., 510., 120., 44.),
+            undo: Rect::new(820., 450., 120., 44.),
+            new_game: Rect::new(950., 450., 150., 44.),
         }
     }
 }
@@ -49,6 +53,9 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if l.undo.contains(point) {
         return vec![UiAction::DungeonUndo];
+    }
+    if l.hint.contains(point) {
+        return vec![UiAction::DungeonHint];
     }
     if l.new_game.contains(point) {
         return vec![UiAction::DungeonNew];
@@ -158,7 +165,12 @@ pub fn draw(state: &AppState) {
     }
     text("EXIT", l.board.right() - 38., l.board.y - 8., 10., accent());
     text(
-        &format!("Traps flagged {} / {}", game.flagged_count(), game.traps),
+        &format!(
+            "Traps flagged {} / {}  •  {}",
+            game.flagged_count(),
+            game.traps,
+            state.card_hint.as_deref().unwrap_or("Find the EXIT")
+        ),
         if compact { 18. } else { x },
         if portrait {
             485.
@@ -179,6 +191,7 @@ pub fn draw(state: &AppState) {
         },
         state.large_text,
     );
+    button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW DUNGEON", state.large_text);
 }

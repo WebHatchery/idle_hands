@@ -171,6 +171,7 @@ pub enum UiAction {
     NimNew,
     DungeonCell(usize),
     DungeonToggleFlag,
+    DungeonHint,
     DungeonUndo,
     DungeonNew,
     PotionMove(Direction),

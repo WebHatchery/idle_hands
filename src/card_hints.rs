@@ -582,6 +582,30 @@ pub fn blackjack(state: &AppState) -> String {
     )
 }
 
+pub fn dungeon_sweeper(state: &AppState) -> String {
+    let game = &state.dungeon_sweeper;
+    match game.status {
+        crate::dungeon_sweeper::DungeonStatus::Won => {
+            return "The quiet exit is found — tap NEW DUNGEON to play again.".into()
+        }
+        crate::dungeon_sweeper::DungeonStatus::Lost => {
+            return "A trap closed the path — tap NEW DUNGEON to begin again.".into()
+        }
+        crate::dungeon_sweeper::DungeonStatus::Ready
+        | crate::dungeon_sweeper::DungeonStatus::Playing => {}
+    }
+    game.hint_cell().map_or_else(
+        || "No safe room remains — tap NEW DUNGEON to begin again.".into(),
+        |index| {
+            if index == game.exit {
+                "Tap EXIT to enter safely.".into()
+            } else {
+                format!("Room {} is safe to reveal.", index + 1)
+            }
+        },
+    )
+}
+
 fn blackjack_hint_label(action: crate::blackjack::BlackjackHint) -> &'static str {
     match action {
         crate::blackjack::BlackjackHint::Hit => "HIT",
@@ -647,6 +671,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::BreakoutHint
             | crate::ui::UiAction::HigherLowerHint
             | crate::ui::UiAction::BlackjackHint
+            | crate::ui::UiAction::DungeonHint
     )
 }
 

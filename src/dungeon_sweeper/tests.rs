@@ -100,3 +100,26 @@ fn trap_flags_round_trip_and_wrong_chord_can_lose() {
     assert!(game.chord(0));
     assert_eq!(game.status, DungeonStatus::Lost);
 }
+
+#[test]
+fn hint_recommends_exit_then_a_safe_hidden_room_without_mutating() {
+    let mut game = DungeonSweeper::new(8);
+    assert_eq!(game.hint_cell(), Some(game.exit));
+    assert!(!game.first_reveal);
+
+    assert!(game.reveal(0));
+    let before = game.cells.clone();
+    let hint = game.hint_cell().unwrap();
+
+    assert!(matches!(game.cells[hint], DungeonCell::Hidden));
+    assert!(!matches!(game.cells[hint], DungeonCell::Trap));
+    assert_eq!(game.cells, before);
+}
+
+#[test]
+fn hint_is_empty_after_dungeon_ends() {
+    let mut game = DungeonSweeper::new(8);
+    game.status = DungeonStatus::Lost;
+
+    assert_eq!(game.hint_cell(), None);
+}

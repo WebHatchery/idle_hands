@@ -170,6 +170,19 @@ impl DungeonSweeper {
             .count()
     }
 
+    pub fn hint_cell(&self) -> Option<usize> {
+        if !matches!(self.status, DungeonStatus::Ready | DungeonStatus::Playing) {
+            return None;
+        }
+        if !self.first_reveal {
+            return Some(self.exit);
+        }
+        self.cells.iter().enumerate().find_map(|(index, cell)| {
+            (matches!(cell, DungeonCell::Hidden) && index != self.exit && !self.is_trap(index))
+                .then_some(index)
+        })
+    }
+
     pub fn adjacent_traps(&self, index: usize) -> u8 {
         self.neighbors(index)
             .filter(|&neighbor| {
@@ -213,6 +226,13 @@ impl DungeonSweeper {
             self.cells[index] = DungeonCell::Trap;
             placed += 1;
         }
+    }
+
+    fn is_trap(&self, index: usize) -> bool {
+        matches!(
+            self.cells[index],
+            DungeonCell::Trap | DungeonCell::FlaggedTrap
+        )
     }
 
     fn snapshot(&mut self) {

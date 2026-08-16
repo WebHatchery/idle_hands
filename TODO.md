@@ -985,6 +985,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover strategy selection, hidden-card preservation, hint determinism,
     capture aliases, and responsive layouts.
 
+## Phase 88 — Dungeon Sweeper discoverability polish
+
+- [x] Add a deterministic non-mutating HINT action that recommends the exit
+  before the first reveal, then a safe hidden room during play.
+  - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
+  - [x] Cover safe-room validity, hint determinism, capture aliases, and
+    responsive layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.
