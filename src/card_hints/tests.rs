@@ -115,3 +115,10 @@ fn default_sudoku_has_a_deterministic_hint() {
     assert_eq!(sudoku(&state), "Enter 4 in row 1, column 3.");
     assert_eq!(sudoku(&state), sudoku(&state));
 }
+
+#[test]
+fn default_minesweeper_has_a_deterministic_hint() {
+    let state = AppState::default();
+    assert_eq!(minesweeper(&state), "Reveal row 5, column 5.");
+    assert_eq!(minesweeper(&state), minesweeper(&state));
+}

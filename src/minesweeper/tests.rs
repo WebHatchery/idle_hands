@@ -82,3 +82,34 @@ fn custom_board_clamps_to_touchable_safe_bounds() {
     assert_eq!(game.mines, 111);
     assert_eq!(game.cells.len(), 120);
 }
+
+#[test]
+fn first_hint_is_safe_and_visible_deductions_do_not_mutate_the_field() {
+    let game = Minesweeper::beginner(7);
+    let before = game.cells.clone();
+    let (index, safe) = game.hint_move().unwrap();
+    assert!(safe);
+    assert_eq!(index, 40);
+    assert_eq!(game.cells, before);
+}
+
+#[test]
+fn revealed_number_can_prove_a_neighbor_is_a_mine() {
+    let mut game = Minesweeper {
+        preset: MinePreset::Beginner,
+        width: 3,
+        height: 3,
+        mines: 1,
+        cells: vec![Cell::Hidden; 9],
+        seed: 1,
+        first_reveal: true,
+        status: MineStatus::Playing,
+        elapsed_seconds: 0.0,
+    };
+    game.cells[0] = Cell::Revealed(3);
+    game.cells[1] = Cell::Flagged;
+    game.cells[3] = Cell::Flagged;
+    let (index, safe) = game.hint_move().unwrap();
+    assert_eq!(index, 4);
+    assert!(!safe);
+}

@@ -17,7 +17,10 @@ impl Game {
             "2048" | "gameplay" | "tutorial_2048" | "2048_hint" | "2048_hint_accessible" => {
                 Screen::Game(GameId::Game2048)
             }
-            "minesweeper" | "minesweeper_accessible" => Screen::Game(GameId::Minesweeper),
+            "minesweeper"
+            | "minesweeper_accessible"
+            | "minesweeper_hint"
+            | "minesweeper_hint_accessible" => Screen::Game(GameId::Minesweeper),
             "sudoku" | "sudoku_accessible" | "sudoku_hint" | "sudoku_hint_accessible" => {
                 Screen::Game(GameId::Sudoku)
             }
@@ -170,6 +173,8 @@ impl Game {
             self.state.card_hint = Some(card_hints::mastermind(&self.state));
         } else if scene == "sudoku_hint" || scene == "sudoku_hint_accessible" {
             self.state.card_hint = Some(card_hints::sudoku(&self.state));
+        } else if scene == "minesweeper_hint" || scene == "minesweeper_hint_accessible" {
+            self.state.card_hint = Some(card_hints::minesweeper(&self.state));
         }
         if scene.starts_with("tutorial_") {
             if let Screen::Game(game) = self.state.screen {

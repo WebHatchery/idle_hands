@@ -341,6 +341,31 @@ pub fn sudoku(state: &AppState) -> String {
     )
 }
 
+pub fn minesweeper(state: &AppState) -> String {
+    let game = &state.minesweeper;
+    match game.status {
+        crate::minesweeper::MineStatus::Won => {
+            return "The field is already clear — tap RESTART to play again.".into();
+        }
+        crate::minesweeper::MineStatus::Lost => {
+            return "A mine was found — tap RESTART to begin again.".into();
+        }
+        crate::minesweeper::MineStatus::Ready | crate::minesweeper::MineStatus::Playing => {}
+    }
+    game.hint_move().map_or_else(
+        || "No certain square is visible — inspect another revealed number.".into(),
+        |(index, safe)| {
+            let row = index / game.width + 1;
+            let column = index % game.width + 1;
+            if safe {
+                format!("Reveal row {}, column {}.", row, column)
+            } else {
+                format!("Flag row {}, column {}.", row, column)
+            }
+        },
+    )
+}
+
 fn color_name(color: u8) -> &'static str {
     ["red", "amber", "green", "blue", "violet", "gold"][color as usize % 6]
 }
@@ -362,6 +387,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::SlidingPuzzleHint
             | crate::ui::UiAction::MastermindHint
             | crate::ui::UiAction::SudokuHint
+            | crate::ui::UiAction::MineHint
     )
 }
 

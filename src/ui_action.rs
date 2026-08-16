@@ -38,6 +38,7 @@ pub enum UiAction {
     MineChord(usize),
     MineRestart,
     MineFlagMode,
+    MineHint,
     MinePreset(crate::minesweeper::MinePreset),
     SudokuCell(usize),
     SudokuNumber(u8),

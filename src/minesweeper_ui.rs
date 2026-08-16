@@ -127,13 +127,14 @@ pub fn draw(state: &AppState) {
         );
         text(preset.label(), rect.x + 8., rect.y + 21., 11., WHITE);
     }
+    let instruction = state.card_hint.as_deref().unwrap_or(match game.status {
+        MineStatus::Ready => "First reveal is safe",
+        MineStatus::Playing => "Find every safe square",
+        MineStatus::Won => "Field cleared",
+        MineStatus::Lost => "A mine was found",
+    });
     text(
-        match game.status {
-            MineStatus::Ready => "First reveal is safe",
-            MineStatus::Playing => "Find every safe square",
-            MineStatus::Won => "Field cleared",
-            MineStatus::Lost => "A mine was found",
-        },
+        instruction,
         850.,
         255.,
         18.,
@@ -163,6 +164,11 @@ pub fn draw(state: &AppState) {
         Color::new(0.20, 0.13, 0.30, 1.),
     );
     text("RESTART", 892., 423., 16., WHITE);
+    panel(
+        Rect::new(1030., 390., 170., 52.),
+        Color::new(0.20, 0.13, 0.30, 1.),
+    );
+    text("HINT", 1092., 423., 16., WHITE);
     text(
         "Tap a square to reveal or flag it.",
         850.,
@@ -188,6 +194,9 @@ pub fn clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     if Rect::new(850., 390., 170., 52.).contains(p) {
         return vec![UiAction::MineRestart];
+    }
+    if Rect::new(1030., 390., 170., 52.).contains(p) {
+        return vec![UiAction::MineHint];
     }
     for (index, preset) in MinePreset::ALL.iter().enumerate() {
         if Rect::new(820. + index as f32 * 110., 285., 100., 32.).contains(p) {

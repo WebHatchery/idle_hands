@@ -881,6 +881,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover solution validity, hint determinism, capture aliases, and the
     updated desktop layouts.
 
+## Phase 75 — Minesweeper discoverability polish
+
+- [x] Add a non-mutating HINT action for guaranteed-safe or guaranteed-mine
+  deductions from the visible field.
+  - [x] Wire the existing touch UI and feedback, including accessibility.
+  - [x] Cover first-reveal safety, visible deductions, hint determinism,
+    capture aliases, and updated desktop layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

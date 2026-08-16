@@ -181,6 +181,41 @@ impl Minesweeper {
             .filter(|cell| matches!(cell, Cell::Flagged | Cell::FlaggedMine))
             .count()
     }
+
+    pub fn hint_move(&self) -> Option<(usize, bool)> {
+        if matches!(self.status, MineStatus::Won | MineStatus::Lost) {
+            return None;
+        }
+        if !self.first_reveal {
+            return Some(((self.height / 2) * self.width + self.width / 2, true));
+        }
+        for index in 0..self.cells.len() {
+            let Cell::Revealed(number) = self.cells[index] else {
+                continue;
+            };
+            let neighbors: Vec<_> = self.neighbors(index).collect();
+            let flagged = neighbors
+                .iter()
+                .filter(|&&neighbor| {
+                    matches!(self.cells[neighbor], Cell::Flagged | Cell::FlaggedMine)
+                })
+                .count();
+            let hidden: Vec<_> = neighbors
+                .into_iter()
+                .filter(|&neighbor| matches!(self.cells[neighbor], Cell::Hidden))
+                .collect();
+            if flagged == number as usize {
+                if let Some(&safe) = hidden.first() {
+                    return Some((safe, true));
+                }
+            } else if flagged + hidden.len() == number as usize {
+                if let Some(&mine) = hidden.first() {
+                    return Some((mine, false));
+                }
+            }
+        }
+        None
+    }
     fn place_mines(&mut self, safe: usize) {
         let safe_zone: Vec<usize> = std::iter::once(safe).chain(self.neighbors(safe)).collect();
         let mut placed = 0;

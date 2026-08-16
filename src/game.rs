@@ -308,6 +308,9 @@ impl Game {
             ui::UiAction::MineFlagMode => {
                 self.state.mine_flag_mode = !self.state.mine_flag_mode;
             }
+            ui::UiAction::MineHint => {
+                self.state.card_hint = Some(card_hints::minesweeper(&self.state));
+            }
             ui::UiAction::MinePreset(preset) => {
                 let seed = self.state.minesweeper.seed.wrapping_add(1);
                 self.state.minesweeper = if preset == crate::minesweeper::MinePreset::Custom {
