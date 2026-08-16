@@ -10,6 +10,7 @@ pub enum UiAction {
     Cabinet,
     Help,
     Records,
+    Favorites,
     Rules,
     Credits,
     ResetData,

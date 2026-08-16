@@ -292,16 +292,36 @@ impl Game {
             }
             ui::UiAction::Cabinet => {
                 self.state.screen = Screen::Cabinet;
+                self.state.favorites_view = false;
                 self.state.tutorial = None;
                 self.state.confirm_reset = false;
                 self.state.confirm_restart = false;
                 self.state.pending_restart = None;
             }
-            ui::UiAction::Help => self.state.screen = Screen::Help,
-            ui::UiAction::Records => self.state.screen = Screen::Records,
-            ui::UiAction::Rules => self.state.screen = Screen::Rules,
-            ui::UiAction::Credits => self.state.screen = Screen::Credits,
-            ui::UiAction::Settings => self.state.screen = Screen::Settings,
+            ui::UiAction::Help => {
+                self.state.screen = Screen::Help;
+                self.state.favorites_view = false;
+            }
+            ui::UiAction::Records => {
+                self.state.screen = Screen::Records;
+                self.state.favorites_view = false;
+            }
+            ui::UiAction::Favorites => {
+                self.state.screen = Screen::Records;
+                self.state.favorites_view = true;
+            }
+            ui::UiAction::Rules => {
+                self.state.screen = Screen::Rules;
+                self.state.favorites_view = false;
+            }
+            ui::UiAction::Credits => {
+                self.state.screen = Screen::Credits;
+                self.state.favorites_view = false;
+            }
+            ui::UiAction::Settings => {
+                self.state.screen = Screen::Settings;
+                self.state.favorites_view = false;
+            }
             ui::UiAction::TutorialContinue => {
                 if let Some(game) = self.state.tutorial {
                     self.state.tutorial_seen[game.index()] = true;

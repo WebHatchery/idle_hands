@@ -6,11 +6,12 @@ use crate::breakout_ui;
 use crate::checkers_ui;
 use crate::color_sort_ui;
 use crate::connect_four_ui;
-use crate::cosmetics;
+use crate::cabinet_ui;
 use crate::daily_dungeon_ui;
 use crate::dots_boxes_ui;
 use crate::dungeon_sweeper_ui;
 use crate::fivefold_ui;
+use crate::favorites_ui;
 use crate::flood_it_ui;
 use crate::freecell_ui;
 use crate::hangman_ui;
@@ -143,6 +144,9 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
             if Rect::new(1140., 28., 110., 42.).contains(p) {
                 out.push(UiAction::Settings)
             }
+            if Rect::new(48., 108., 175., 36.).contains(p) {
+                out.push(UiAction::Favorites)
+            }
             out
         }
         Screen::Game(GameId::Game2048) if is_compact_landscape() => {
@@ -251,6 +255,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
                 vec![]
             }
         }
+        Screen::Records if state.favorites_view => favorites_ui::clicks(state, p),
         Screen::Records if is_compact_landscape() => {
             responsive_landscape_library::records_clicks(p)
         }
@@ -277,7 +282,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
             responsive_landscape::draw_cabinet(state, data, loaded_assets)
         }
         Screen::Cabinet if is_portrait() => responsive_ui::draw_cabinet(state, data, loaded_assets),
-        Screen::Cabinet => draw_cabinet(state, data, loaded_assets),
+        Screen::Cabinet => cabinet_ui::draw(state, data, loaded_assets),
         Screen::Game(GameId::Game2048) if is_compact_landscape() => {
             responsive_landscape::draw_2048(state)
         }
@@ -362,6 +367,7 @@ pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
         Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(),
         Screen::Help if is_portrait() => responsive_library::draw_help(),
         Screen::Help => draw_help(),
+        Screen::Records if state.favorites_view => favorites_ui::draw(state),
         Screen::Records if is_compact_landscape() => {
             responsive_landscape_library::draw_records(state)
         }
@@ -407,152 +413,6 @@ fn text(s: &str, x: f32, y: f32, size: f32, color: Color) {
 fn panel(r: Rect, fill: Color) {
     draw_rectangle(r.x, r.y, r.w, r.h, fill);
     draw_rectangle_lines(r.x, r.y, r.w, r.h, 2., Color::new(0.45, 0.38, 0.65, 0.65))
-}
-fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
-    let accent = cosmetics::cabinet_accent(state.cabinet_decoration);
-    text("IDLE HANDS", 46., 70., 48., accent);
-    crate::cabinet_art::draw_header_motif(1160., 108., 24., accent);
-    crate::cabinet_art::draw_shelves(48., 165., 1184., 510., accent);
-    text(
-        "A small collection for quiet minutes",
-        48.,
-        98.,
-        20.,
-        Color::new(0.72, 0.68, 0.82, 1.),
-    );
-    text(
-        &format!(
-            "{}  •  {} stamps  •  {} favorites  •  {} games waiting at the cabinet",
-            state.profile_name,
-            state.stamps,
-            state.favorites.iter().filter(|favorite| **favorite).count(),
-            GameId::ALL.len()
-        ),
-        48.,
-        130.,
-        18.,
-        Color::new(0.60, 0.56, 0.72, 1.),
-    );
-    text(
-        &format!(
-            "{}  •  {}",
-            cosmetics::cabinet_decoration_name(state.cabinet_decoration),
-            cosmetics::board_theme_name(state.board_theme)
-        ),
-        990.,
-        686.,
-        15.,
-        cosmetics::cabinet_accent(state.cabinet_decoration),
-    );
-    for i in 0..GameId::ALL.len() {
-        let r = cabinet_rect(i);
-        let active = crate::cabinet_status::is_active(GameId::ALL[i]);
-        panel(
-            r,
-            if active {
-                Color::new(0.17, 0.12, 0.27, 1.)
-            } else {
-                Color::new(0.09, 0.075, 0.15, 1.)
-            },
-        );
-        text(
-            GameId::ALL[i].title(),
-            r.x + 18.,
-            r.y + 21.,
-            if matches!(
-                GameId::ALL[i],
-                GameId::TinyTowerDefence
-                    | GameId::OneRoomRoguelike
-                    | GameId::DailyDungeon
-                    | GameId::DotsBoxes
-                    | GameId::Sokoban
-                    | GameId::Mancala
-                    | GameId::Hanoi
-                    | GameId::NumberMatch
-                    | GameId::FloodIt
-                    | GameId::ColorSort
-                    | GameId::Battleship
-                    | GameId::WordGrid
-                    | GameId::PipeLoop
-                    | GameId::MazeWalk
-                    | GameId::MatchThree
-            ) {
-                10.
-            } else {
-                18.
-            },
-            if active {
-                Color::new(0.98, 0.82, 0.42, 1.)
-            } else {
-                WHITE
-            },
-        );
-        let status = crate::cabinet_status::status(state, GameId::ALL[i]);
-        text(
-            status,
-            r.x + 18.,
-            r.y + 39.,
-            11.,
-            crate::cabinet_status::color(status),
-        );
-        text(
-            GameId::ALL[i].subtitle(),
-            r.x + 18.,
-            r.y + 56.,
-            11.,
-            Color::new(0.69, 0.65, 0.78, 1.),
-        );
-        draw_circle(
-            r.right() - 34.,
-            r.y + 20.,
-            12.,
-            if active {
-                Color::new(0.85, 0.55, 0.28, 1.)
-            } else {
-                Color::new(0.22, 0.18, 0.31, 1.)
-            },
-        );
-        let favorite = state.favorites.get(i).copied().unwrap_or(false);
-        if favorite {
-            draw_circle(r.x + 9., r.y + 12., 4., accent);
-        } else {
-            draw_circle_lines(r.x + 9., r.y + 12., 4., 1., accent);
-        }
-        text(
-            &format!("{}", i + 1),
-            r.right() - 37.,
-            r.y + 24.,
-            11.,
-            Color::new(0.08, 0.05, 0.12, 1.),
-        );
-    }
-    let selected = GameId::ALL[state.selected.min(GameId::ALL.len() - 1)];
-    panel(
-        Rect::new(720., 28., 190., 42.),
-        Color::new(0.20, 0.13, 0.30, 1.),
-    );
-    text("CONTINUE", 735., 47., 12., WHITE);
-    text(
-        selected.title(),
-        735.,
-        62.,
-        9.,
-        Color::new(0.98, 0.83, 0.45, 1.),
-    );
-    text("HELP", 954., 55., 17., WHITE);
-    text("RECORDS", 1048., 55., 17., WHITE);
-    text("SETTINGS", 1151., 55., 17., WHITE);
-    text(
-        &format!(
-            "Cabinet online  •  tap left markers to save favorites  •  {} textures ready",
-            loaded
-        ),
-        48.,
-        686.,
-        16.,
-        Color::new(0.52, 0.48, 0.64, 1.),
-    );
-    let _ = data;
 }
 fn cabinet_rect(i: usize) -> Rect {
     let col = i % 7;

@@ -105,18 +105,10 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
             Color::new(0.08, 0.05, 0.12, 1.),
         );
     }
-    text(
-        &format!(
-            "{} stamps  •  {} favorites  •  {} textures",
-            state.stamps,
-            state.favorites.iter().filter(|favorite| **favorite).count(),
-            loaded
-        ),
-        12.,
-        344.,
-        11.,
-        Color::new(0.52, 0.48, 0.64, 1.),
-    );
+    panel(Rect::new(12., 330., 180., 42.), Color::new(0.20, 0.13, 0.30, 1.));
+    text("FAVORITES", 24., 348., 10., WHITE);
+    text(&state.favorites.iter().filter(|favorite| **favorite).count().to_string(), 130., 348., 10., Color::new(0.98, 0.83, 0.45, 1.));
+    text(&format!("{} stamps  •  {} textures", state.stamps, loaded), 210., 354., 11., Color::new(0.52, 0.48, 0.64, 1.));
     for (rect, label) in [
         (Rect::new(450., 330., 112., 42.), "HELP"),
         (Rect::new(570., 330., 112., 42.), "RECORDS"),
@@ -138,6 +130,9 @@ pub fn cabinet_clicks(p: Vec2) -> Vec<UiAction> {
         if cabinet_rect(index).contains(p) {
             return vec![UiAction::Open(index)];
         }
+    }
+    if Rect::new(12., 330., 180., 42.).contains(p) {
+        return vec![UiAction::Favorites];
     }
     for (rect, action) in [
         (Rect::new(450., 330., 112., 42.), UiAction::Help),

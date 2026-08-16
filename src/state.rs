@@ -392,6 +392,7 @@ pub struct AppState {
     pub tutorial_seen: Vec<bool>,
     pub favorites: Vec<bool>,
     pub card_hint: Option<String>,
+    pub favorites_view: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -741,6 +742,7 @@ impl Default for AppState {
             tutorial_seen: vec![false; GameId::ALL.len()],
             favorites: vec![false; GameId::ALL.len()],
             card_hint: None,
+            favorites_view: false,
         }
     }
 }

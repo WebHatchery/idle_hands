@@ -1213,6 +1213,13 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 - [x] Add explicit regression coverage and responsive confirmation captures
   for the destructive NEW LADDER action.
 
+## Phase 118 — Favorite quick browse
+
+- [x] Add a visible FAVORITES control to the cabinet and a responsive quick-
+  browse list that opens starred drawers without changing default ordering.
+  - [x] Cover the seeded browse state at desktop, portrait, and compact-
+    landscape sizes.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

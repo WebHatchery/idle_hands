@@ -43,7 +43,8 @@ Pyramid, TriPeaks, Nim, and Word Ladder.
 - **Fast to enter and leave.** The cabinet restores each game's unfinished
   session locally and exposes a visible CONTINUE action for the last-opened
   drawer. A player can mark favorite drawers with the cabinet's touch-sized
-  markers, reach a game in one tap, and return home without losing progress.
+  markers, open the optional FAVORITES quick list, reach a game in one tap,
+  and return home without losing progress.
 - **Calm progression.** Play may earn stamps that unlock cosmetic card backs,
   board themes, sounds, and cabinet decorations. There are no purchases,
   stamina, streak pressure, nested currencies, or claim screens.

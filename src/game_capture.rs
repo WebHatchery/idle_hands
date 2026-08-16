@@ -178,7 +178,7 @@ impl Game {
             | "match_three_hint_accessible" => Screen::Game(GameId::MatchThree),
             "mastermind_accessible" => Screen::Game(GameId::Mastermind),
             "help" => Screen::Help,
-            "records" | "records_word_ladder" => Screen::Records,
+            "records" | "records_word_ladder" | "favorites_browse" => Screen::Records,
             "rules" => Screen::Rules,
             "credits" => Screen::Credits,
             "settings" | "settings_reset" => Screen::Settings,
@@ -225,6 +225,12 @@ impl Game {
         }
         if scene == "records_word_ladder" {
             self.state.records.word_ladder_best_moves = Some(5);
+        }
+        if scene == "favorites_browse" {
+            for index in [0, GameId::Spider.index(), GameId::Nim.index(), GameId::WordLadder.index()] {
+                self.state.favorites[index] = true;
+            }
+            self.state.favorites_view = true;
         }
         if scene == "freecell_selected" {
             self.state.freecell.select_cascade(0, 0);
