@@ -271,10 +271,10 @@ pub fn draw_rules() {
             Color::new(0.78, 0.73, 0.86, 1.),
         );
     }
-    back(Rect::new(700., 330., 110., 38.));
+    back(Rect::new(700., 330., 110., 44.));
 }
 pub fn rules_clicks(p: Vec2) -> Vec<UiAction> {
-    if Rect::new(700., 330., 110., 38.).contains(p) {
+    if Rect::new(700., 330., 110., 44.).contains(p) {
         vec![UiAction::Cabinet]
     } else {
         vec![]
@@ -309,10 +309,10 @@ pub fn draw_credits() {
         13.,
         Color::new(0.98, 0.83, 0.45, 1.),
     );
-    back(Rect::new(365., 315., 110., 38.));
+    back(Rect::new(365., 315., 110., 44.));
 }
 pub fn credits_clicks(p: Vec2) -> Vec<UiAction> {
-    if Rect::new(365., 315., 110., 38.).contains(p) {
+    if Rect::new(365., 315., 110., 44.).contains(p) {
         vec![UiAction::Cabinet]
     } else {
         vec![]
@@ -346,20 +346,20 @@ pub fn draw_help() {
         Color::new(0.75, 0.70, 0.84, 1.),
     );
     for (rect, label) in [
-        (Rect::new(430., 290., 110., 42.), "RULES"),
-        (Rect::new(555., 290., 110., 42.), "CREDITS"),
-        (Rect::new(680., 290., 130., 42.), "BACK"),
+        (Rect::new(430., 288., 110., 44.), "RULES"),
+        (Rect::new(555., 288., 110., 44.), "CREDITS"),
+        (Rect::new(680., 288., 130., 44.), "BACK"),
     ] {
         panel(rect, Color::new(0.20, 0.13, 0.30, 1.));
-        text(label, rect.x + 30., rect.y + 27., 11., WHITE);
+        text(label, rect.x + 30., rect.y + 29., 11., WHITE);
     }
 }
 pub fn help_clicks(p: Vec2) -> Vec<UiAction> {
-    if Rect::new(430., 290., 110., 42.).contains(p) {
+    if Rect::new(430., 288., 110., 44.).contains(p) {
         vec![UiAction::Rules]
-    } else if Rect::new(555., 290., 110., 42.).contains(p) {
+    } else if Rect::new(555., 288., 110., 44.).contains(p) {
         vec![UiAction::Credits]
-    } else if Rect::new(680., 290., 130., 42.).contains(p) {
+    } else if Rect::new(680., 288., 130., 44.).contains(p) {
         vec![UiAction::Cabinet]
     } else {
         vec![]

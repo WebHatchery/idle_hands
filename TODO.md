@@ -1312,3 +1312,8 @@ contract, shared confirmation safety, responsive capture coverage, and the
 
 - [x] Resize the Records ACHIEVEMENTS and responsive BACK actions to touch-
   complete targets and add visible action outlines across documented sizes.
+
+## Phase 133 — Library navigation accessibility
+
+- [x] Bring compact-landscape Help, Rules, and Credits navigation actions to
+  touch-complete targets with refreshed responsive capture coverage.
