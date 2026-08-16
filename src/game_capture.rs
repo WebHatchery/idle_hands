@@ -165,7 +165,10 @@ impl Game {
             "maze_walk" | "maze_walk_hint" | "maze_walk_hint_accessible" => {
                 Screen::Game(GameId::MazeWalk)
             }
-            "match_three" | "match_three_accessible" => Screen::Game(GameId::MatchThree),
+            "match_three"
+            | "match_three_accessible"
+            | "match_three_hint"
+            | "match_three_hint_accessible" => Screen::Game(GameId::MatchThree),
             "mastermind_accessible" => Screen::Game(GameId::Mastermind),
             "help" => Screen::Help,
             "records" => Screen::Records,
@@ -251,6 +254,8 @@ impl Game {
             self.state.card_hint = Some(card_hints::pipe_loop(&self.state));
         } else if scene == "maze_walk_hint" || scene == "maze_walk_hint_accessible" {
             self.state.card_hint = Some(card_hints::maze_walk(&self.state));
+        } else if scene == "match_three_hint" || scene == "match_three_hint_accessible" {
+            self.state.card_hint = Some(card_hints::match_three(&self.state));
         } else if scene == "2048_hint" || scene == "2048_hint_accessible" {
             self.state.card_hint = Some(card_hints::game_2048(&self.state));
         } else if scene == "tic_tac_toe_hint" || scene == "tic_tac_toe_hint_accessible" {

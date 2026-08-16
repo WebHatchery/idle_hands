@@ -240,6 +240,7 @@ pub enum UiAction {
     MazeUndo,
     MazeNew,
     MatchThreeTap(usize),
+    MatchThreeHint,
     MatchThreeUndo,
     MatchThreeNew,
 }

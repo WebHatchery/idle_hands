@@ -341,3 +341,11 @@ fn default_maze_walk_has_a_deterministic_hint() {
     assert!(maze_walk(&state).contains("Walk"));
     assert_eq!(maze_walk(&state), maze_walk(&state));
 }
+
+#[test]
+fn default_match_three_has_a_deterministic_swap_hint() {
+    let state = AppState::default();
+
+    assert!(match_three(&state).contains("Swap tiles"));
+    assert_eq!(match_three(&state), match_three(&state));
+}

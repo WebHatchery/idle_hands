@@ -97,6 +97,31 @@ impl MatchThree {
         self.phase == MatchThreePhase::Won
     }
 
+    pub fn hint_swap(&self) -> Option<(usize, usize)> {
+        if self.phase != MatchThreePhase::Playing {
+            return None;
+        }
+        let mut best: Option<(u16, usize, usize)> = None;
+        for first in 0..CELLS {
+            for second in [first + 1, first + SIDE] {
+                if second >= CELLS || !adjacent(first, second) {
+                    continue;
+                }
+                let mut candidate = self.clone_without_undo();
+                candidate.selected = None;
+                let before = candidate.score;
+                if !candidate.tap(first) || !candidate.tap(second) {
+                    continue;
+                }
+                let gain = candidate.score.saturating_sub(before);
+                if best.is_none_or(|(best_gain, _, _)| gain > best_gain) {
+                    best = Some((gain, first, second));
+                }
+            }
+        }
+        best.map(|(_, first, second)| (first, second))
+    }
+
     fn resolve(&mut self) {
         loop {
             let matches = find_matches(&self.cells);

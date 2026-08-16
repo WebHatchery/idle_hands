@@ -449,6 +449,10 @@ impl Game {
             UiAction::MatchThreeTap(index) => {
                 self.state.match_three.tap(*index);
             }
+            UiAction::MatchThreeHint => {
+                self.state.card_hint = Some(crate::card_hints::match_three(&self.state));
+                return true;
+            }
             UiAction::MatchThreeUndo => {
                 self.state.match_three.undo();
             }

@@ -11,6 +11,7 @@ use macroquad::prelude::*;
 #[derive(Clone, Copy)]
 struct Layout {
     board: Rect,
+    hint: Rect,
     undo: Rect,
     new_game: Rect,
 }
@@ -19,20 +20,23 @@ fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             board: Rect::new(250., 44., 300., 300.),
-            undo: Rect::new(620., 110., 105., 44.),
-            new_game: Rect::new(620., 165., 140., 44.),
+            hint: Rect::new(620., 110., 105., 44.),
+            undo: Rect::new(620., 165., 105., 44.),
+            new_game: Rect::new(735., 165., 105., 44.),
         }
     } else if crate::ui::is_portrait() {
         Layout {
             board: Rect::new(5., 105., 330., 330.),
-            undo: Rect::new(5., 470., 145., 44.),
-            new_game: Rect::new(165., 470., 170., 44.),
+            hint: Rect::new(15., 465., 145., 44.),
+            undo: Rect::new(5., 520., 145., 44.),
+            new_game: Rect::new(165., 520., 170., 44.),
         }
     } else {
         Layout {
             board: Rect::new(350., 90., 420., 420.),
-            undo: Rect::new(810., 180., 120., 44.),
-            new_game: Rect::new(950., 180., 140., 44.),
+            hint: Rect::new(810., 180., 120., 44.),
+            undo: Rect::new(810., 235., 120., 44.),
+            new_game: Rect::new(950., 235., 140., 44.),
         }
     }
 }
@@ -49,6 +53,9 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
         if row < SIDE && col < SIDE {
             return vec![UiAction::MatchThreeTap(row * SIDE + col)];
         }
+    }
+    if l.hint.contains(point) {
+        return vec![UiAction::MatchThreeHint];
     }
     if l.undo.contains(point) {
         return vec![UiAction::MatchThreeUndo];
@@ -67,7 +74,7 @@ pub fn draw(state: &AppState) {
     let title_x = if compact {
         70.
     } else if portrait {
-        10.
+        25.
     } else {
         400.
     };
@@ -94,18 +101,28 @@ pub fn draw(state: &AppState) {
         muted(),
     );
     draw_board(l.board, game, state.high_contrast);
+    button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW BOARD", state.large_text);
     let status_y = if portrait {
-        535.
+        585.
     } else if compact {
         365.
     } else {
         545.
     };
     draw_text(
-        "Tap two adjacent tiles to clear matching colors",
-        if compact { 250. } else { title_x },
+        state
+            .card_hint
+            .as_deref()
+            .unwrap_or("Tap two adjacent tiles to clear matching colors"),
+        if compact {
+            250.
+        } else if portrait {
+            15.
+        } else {
+            title_x
+        },
         status_y,
         accessibility::text_size(body_size(), state.large_text),
         muted(),

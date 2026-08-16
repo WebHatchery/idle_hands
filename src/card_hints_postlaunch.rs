@@ -360,6 +360,17 @@ pub fn maze_walk(state: &AppState) -> String {
     )
 }
 
+pub fn match_three(state: &AppState) -> String {
+    let game = &state.match_three;
+    if game.won() {
+        return "The color field is clear — tap NEW BOARD to play again.".into();
+    }
+    game.hint_swap().map_or_else(
+        || "No matching swap remains — tap NEW BOARD to begin again.".into(),
+        |(first, second)| format!("Swap tiles {} and {}.", first + 1, second + 1),
+    )
+}
+
 fn direction_label(direction: crate::state::Direction) -> &'static str {
     match direction {
         crate::state::Direction::Up => "UP",

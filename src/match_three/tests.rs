@@ -56,3 +56,29 @@ fn undo_restores_a_successful_swap_and_reset_clears_progress() {
     assert_eq!(game.score, 0);
     assert_eq!(game.moves, 0);
 }
+
+#[test]
+fn hint_returns_the_highest_scoring_legal_swap_without_mutating_the_board() {
+    let mut game = MatchThree::new(8);
+    game.cells = vec![
+        1, 2, 1, 0, 0, 0, 2, 1, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2,
+        3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2,
+    ];
+    game.selected = Some(4);
+    let before = game.clone();
+
+    assert_eq!(game.hint_swap(), Some((1, 8)));
+    assert_eq!(game.hint_swap(), Some((1, 8)));
+    assert_eq!(game.cells, before.cells);
+    assert_eq!(game.selected, before.selected);
+    assert_eq!(game.score, before.score);
+    assert_eq!(game.moves, before.moves);
+    assert_eq!(game.seed, before.seed);
+}
+
+#[test]
+fn won_board_has_no_hint() {
+    let mut game = MatchThree::new(9);
+    game.phase = MatchThreePhase::Won;
+    assert_eq!(game.hint_swap(), None);
+}

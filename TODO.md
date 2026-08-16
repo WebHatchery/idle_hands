@@ -1113,6 +1113,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover route determinism, player preservation, hint capture aliases,
     accessibility, and responsive layouts.
 
+## Phase 104 — Match Three discoverability polish
+
+- [x] Add a deterministic, non-mutating HINT action that recommends the
+  highest-scoring legal adjacent swap with stable board-order tie-breaking.
+  - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
+  - [x] Cover score ranking, board preservation, hint capture aliases,
+    accessibility, and responsive layouts.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.
