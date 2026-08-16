@@ -411,9 +411,10 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
     );
     text(
         &format!(
-            "{}  •  {} stamps  •  {} games waiting at the cabinet",
+            "{}  •  {} stamps  •  {} favorites  •  {} games waiting at the cabinet",
             state.profile_name,
             state.stamps,
+            state.favorites.iter().filter(|favorite| **favorite).count(),
             GameId::ALL.len()
         ),
         48.,
@@ -531,7 +532,10 @@ fn draw_cabinet(state: &AppState, data: &GameData, loaded: usize) {
     text("RECORDS", 1048., 55., 17., WHITE);
     text("SETTINGS", 1151., 55., 17., WHITE);
     text(
-        &format!("Cabinet online  •  {} textures ready", loaded),
+        &format!(
+            "Cabinet online  •  tap left markers to save favorites  •  {} textures ready",
+            loaded
+        ),
         48.,
         686.,
         16.,

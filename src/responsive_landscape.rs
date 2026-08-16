@@ -106,7 +106,12 @@ pub fn draw_cabinet(state: &AppState, _data: &GameData, loaded: usize) {
         );
     }
     text(
-        &format!("{} stamps  •  {} textures", state.stamps, loaded),
+        &format!(
+            "{} stamps  •  {} favorites  •  {} textures",
+            state.stamps,
+            state.favorites.iter().filter(|favorite| **favorite).count(),
+            loaded
+        ),
         12.,
         344.,
         11.,

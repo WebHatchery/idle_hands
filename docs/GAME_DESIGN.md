@@ -43,8 +43,10 @@ touch contracts.
 6. Optionally inspect records, rules, or cosmetic stamps.
 
 The cabinet remembers the last-opened game and exposes a visible CONTINUE action
-alongside Home, Help, Records, and Settings. A first-time player sees a short,
-game-specific touch tutorial that can be replayed from Help.
+alongside Home, Help, Records, and Settings. Players can mark drawers with the
+left-edge favorite markers; favorites are profile state and never hide or
+reorder the full collection. A first-time player sees a short, game-specific
+touch tutorial that can be replayed from Help.
 
 ## 4. Launch Games
 

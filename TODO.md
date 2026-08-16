@@ -1147,6 +1147,14 @@ sizes, covered by rule tests, and passes `publish.ps1`.
   - [x] Cover favorite round-trips, legacy defaults, visible star states, and
     responsive capture layouts.
 
+## Phase 108 — Favorite marker discoverability
+
+- [x] Add favorite counts and a visible marker instruction to the desktop,
+  portrait, and compact-landscape cabinet layouts without hiding or reordering
+  any drawer.
+  - [x] Align product and technical documentation with profile persistence.
+  - [x] Recapture the seeded favorite states at all documented cabinet sizes.
+
 ## Post-launch candidates (not scheduled)
 
 - Puzzles/tabletop: no remaining scheduled candidates.

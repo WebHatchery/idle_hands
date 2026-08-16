@@ -156,7 +156,9 @@ depending on color alone.
 
 Use toolkit save slots with a versioned collection envelope. Separate profile
 settings from game sessions so a corrupt or migrated game save cannot erase
-global accessibility choices.
+global accessibility choices. The profile also stores a normalized boolean
+favorite vector keyed by `GameId::ALL`; short legacy vectors are padded with
+false values and never change the selected game.
 
 Conceptual keys:
 
