@@ -3,11 +3,14 @@
 use crate::{state::GameId, tutorial_ui, ui::UiAction};
 use macroquad::prelude::*;
 
+const PORTRAIT_PANEL: Rect = Rect::new(15., 70., 330., 650.);
+const LANDSCAPE_PANEL: Rect = Rect::new(40., 24., 760., 354.);
+
 fn continue_rect(compact_landscape: bool) -> Rect {
     if compact_landscape {
-        Rect::new(584., 272., 150., 48.)
+        Rect::new(584., 320., 150., 48.)
     } else {
-        Rect::new(105., 570., 150., 50.)
+        Rect::new(105., 650., 150., 50.)
     }
 }
 
@@ -58,7 +61,7 @@ pub fn draw_tutorial(game: GameId, compact_landscape: bool) {
 
 fn draw_portrait(game: GameId) {
     panel(
-        Rect::new(15., 105., 330., 540.),
+        PORTRAIT_PANEL,
         Color::new(0.07, 0.045, 0.13, 0.98),
     );
     crate::ui::draw_text("HOW TO PLAY", 35., 160., 25., crate::theme::BRASS);
@@ -87,7 +90,7 @@ fn draw_portrait(game: GameId) {
 
 fn draw_landscape(game: GameId) {
     panel(
-        Rect::new(88., 48., 668., 292.),
+        LANDSCAPE_PANEL,
         Color::new(0.07, 0.045, 0.13, 0.98),
     );
     crate::ui::draw_text("HOW TO PLAY", 122., 90., 28., crate::theme::BRASS);

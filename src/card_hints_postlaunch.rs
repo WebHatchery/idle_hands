@@ -106,7 +106,7 @@ pub fn potion_2048(state: &AppState) -> String {
         return "The master potion is brewed — tap NEW BREW to play again.".into();
     }
     game.hint_direction().map_or_else(
-        || "No merge remains — tap NEW BREW to begin again.".into(),
+        || format!("No merge remains — tap NEW BREW to reach {} again.", game.target()),
         |direction| format!("Best move: {}.", potion_direction_label(direction)),
     )
 }
@@ -389,7 +389,9 @@ fn battleship_cell_label(index: usize) -> String {
 }
 
 fn flood_color_label(color: u8) -> &'static str {
-    ["RED", "AMBER", "GREEN", "BLUE", "VIOLET", "PINK"][color as usize % 6]
+    [
+        "RED", "AMBER", "GREEN", "BLUE", "VIOLET", "PINK", "MINT", "ORANGE",
+    ][color as usize % 8]
 }
 
 fn cell_label(index: usize) -> String {

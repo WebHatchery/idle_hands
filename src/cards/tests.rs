@@ -20,3 +20,31 @@ fn deck_face_state_is_set_by_the_caller() {
     assert!(shuffled_deck(1, true).0.iter().all(|card| card.face_up));
     assert!(shuffled_deck(1, false).0.iter().all(|card| !card.face_up));
 }
+
+#[test]
+fn standard_suit_colors_keep_red_and_black_suits_distinct() {
+    assert!(!Card {
+        rank: 1,
+        suit: 0,
+        face_up: true,
+    }
+    .red());
+    assert!(Card {
+        rank: 1,
+        suit: 1,
+        face_up: true,
+    }
+    .red());
+    assert!(Card {
+        rank: 1,
+        suit: 2,
+        face_up: true,
+    }
+    .red());
+    assert!(!Card {
+        rank: 1,
+        suit: 3,
+        face_up: true,
+    }
+    .red());
+}

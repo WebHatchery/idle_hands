@@ -9,9 +9,21 @@ fn seeded_potions_repeat() {
 }
 
 #[test]
+fn harder_difficulties_use_larger_grids_and_higher_targets() {
+    let standard = Potion2048::new_with_difficulty(42, PotionDifficulty::Standard);
+    let hard = Potion2048::new_with_difficulty(42, PotionDifficulty::Hard);
+    let expert = Potion2048::new_with_difficulty(42, PotionDifficulty::Expert);
+    assert_eq!(standard.cells.len(), 4 * 4);
+    assert_eq!(hard.cells.len(), 5 * 5);
+    assert_eq!(expert.cells.len(), 6 * 6);
+    assert!(standard.target() < hard.target());
+    assert!(hard.target() < expert.target());
+}
+
+#[test]
 fn merge_and_undo_restore_the_brew() {
     let mut game = Potion2048::new(1);
-    game.cells = [2, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    game.cells = vec![2, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     assert!(game.move_in(Direction::Left));
     assert_eq!(&game.cells[0..3], &[4, 4, 0]);
     assert!(game.undo());
@@ -28,7 +40,7 @@ fn potion_target_is_higher_than_original_2048() {
 #[test]
 fn hint_picks_a_best_direction_without_mutating_the_brew() {
     let mut game = Potion2048::new(1);
-    game.cells = [2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    game.cells = vec![2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     let before = game.clone();
 
     assert_eq!(game.hint_direction(), Some(Direction::Left));

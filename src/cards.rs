@@ -11,7 +11,7 @@ pub struct Card {
 
 impl Card {
     pub fn red(self) -> bool {
-        self.suit >= 2
+        matches!(self.suit, 1 | 2)
     }
 }
 

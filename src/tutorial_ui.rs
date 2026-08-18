@@ -5,7 +5,8 @@ use crate::ui::UiAction;
 use macroquad::prelude::*;
 
 pub const REPLAY_RECT: Rect = Rect::new(1080., 8., 150., 42.);
-const CONTINUE_RECT: Rect = Rect::new(900., 565., 180., 52.);
+const OVERLAY_RECT: Rect = Rect::new(250., 120., 780., 560.);
+const CONTINUE_RECT: Rect = Rect::new(800., 600., 180., 52.);
 
 pub fn clicks(p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(CONTINUE_RECT, p) {
@@ -50,10 +51,10 @@ pub fn draw_replay_button() {
 }
 pub fn draw_overlay(game: GameId) {
     draw_rectangle(
-        250.,
-        150.,
-        780.,
-        485.,
+        OVERLAY_RECT.x,
+        OVERLAY_RECT.y,
+        OVERLAY_RECT.w,
+        OVERLAY_RECT.h,
         Color::new(
             crate::theme::BACKGROUND_DEEP.r,
             crate::theme::BACKGROUND_DEEP.g,
@@ -62,10 +63,10 @@ pub fn draw_overlay(game: GameId) {
         ),
     );
     draw_rectangle_lines(
-        250.,
-        150.,
-        780.,
-        485.,
+        OVERLAY_RECT.x,
+        OVERLAY_RECT.y,
+        OVERLAY_RECT.w,
+        OVERLAY_RECT.h,
         3.,
         Color::new(0.78, 0.58, 0.30, 0.95),
     );
@@ -334,3 +335,6 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
         ],
     }
 }
+
+#[cfg(test)]
+mod tests;

@@ -9,6 +9,39 @@ const VERTICAL: usize = DOTS * SIDE;
 const BOX_COUNT: usize = SIDE * SIDE;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum DotsDifficulty {
+    Standard,
+    Hard,
+    Expert,
+}
+
+impl Default for DotsDifficulty {
+    fn default() -> Self {
+        Self::Standard
+    }
+}
+
+impl DotsDifficulty {
+    pub const ALL: [Self; 3] = [Self::Standard, Self::Hard, Self::Expert];
+
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::Standard => "STANDARD",
+            Self::Hard => "HARD",
+            Self::Expert => "EXPERT",
+        }
+    }
+
+    pub fn side(self) -> usize {
+        match self {
+            Self::Standard => 4,
+            Self::Hard => 5,
+            Self::Expert => 6,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum DotsPhase {
     Playing,
     Won,
@@ -23,13 +56,15 @@ pub enum Edge {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DotsBoxes {
-    pub horizontal: [bool; HORIZONTAL],
-    pub vertical: [bool; VERTICAL],
-    pub boxes: [u8; BOX_COUNT],
+    pub horizontal: Vec<bool>,
+    pub vertical: Vec<bool>,
+    pub boxes: Vec<u8>,
     pub scores: [u8; 2],
     pub current_player: u8,
     pub moves: u16,
     pub seed: u64,
+    #[serde(default)]
+    pub difficulty: DotsDifficulty,
     pub phase: DotsPhase,
     #[serde(skip)]
     undo: Option<Box<Self>>,
@@ -43,21 +78,28 @@ impl Default for DotsBoxes {
 
 impl DotsBoxes {
     pub fn new(seed: u64) -> Self {
+        Self::new_with_difficulty(seed, DotsDifficulty::Standard)
+    }
+
+    pub fn new_with_difficulty(seed: u64, difficulty: DotsDifficulty) -> Self {
+        let side = difficulty.side();
+        let dots = side + 1;
         Self {
-            horizontal: [false; HORIZONTAL],
-            vertical: [false; VERTICAL],
-            boxes: [0; BOX_COUNT],
+            horizontal: vec![false; dots * side],
+            vertical: vec![false; dots * side],
+            boxes: vec![0; side * side],
             scores: [0; 2],
             current_player: 0,
             moves: 0,
             seed,
+            difficulty,
             phase: DotsPhase::Playing,
             undo: None,
         }
     }
 
     pub fn reset(&mut self, seed: u64) {
-        *self = Self::new(seed);
+        *self = Self::new_with_difficulty(seed, self.difficulty);
     }
 
     pub fn play(&mut self, edge: Edge) -> bool {
@@ -106,12 +148,13 @@ impl DotsBoxes {
     }
 
     fn claim_edge(&mut self, edge: Edge) -> bool {
+        let (horizontal, vertical) = self.edge_counts();
         match edge {
-            Edge::Horizontal(index) if index < HORIZONTAL && !self.horizontal[index] => {
+            Edge::Horizontal(index) if index < horizontal && !self.horizontal[index] => {
                 self.horizontal[index] = true;
                 true
             }
-            Edge::Vertical(index) if index < VERTICAL && !self.vertical[index] => {
+            Edge::Vertical(index) if index < vertical && !self.vertical[index] => {
                 self.vertical[index] = true;
                 true
             }
@@ -120,18 +163,20 @@ impl DotsBoxes {
     }
 
     fn edge_available(&self, edge: Edge) -> bool {
+        let (horizontal, vertical) = self.edge_counts();
         match edge {
-            Edge::Horizontal(index) if index < HORIZONTAL => !self.horizontal[index],
-            Edge::Vertical(index) if index < VERTICAL => !self.vertical[index],
+            Edge::Horizontal(index) if index < horizontal => !self.horizontal[index],
+            Edge::Vertical(index) if index < vertical => !self.vertical[index],
             _ => false,
         }
     }
 
     fn claim_completed(&mut self, owner: u8) -> usize {
         let mut scored = 0;
-        for row in 0..SIDE {
-            for col in 0..SIDE {
-                let box_index = row * SIDE + col;
+        let side = self.side();
+        for row in 0..side {
+            for col in 0..side {
+                let box_index = row * side + col;
                 if self.boxes[box_index] == 0 && self.box_complete(row, col) {
                     self.boxes[box_index] = owner;
                     self.scores[(owner - 1) as usize] += 1;
@@ -143,22 +188,27 @@ impl DotsBoxes {
     }
 
     fn box_complete(&self, row: usize, col: usize) -> bool {
-        self.horizontal[row * SIDE + col]
-            && self.horizontal[(row + 1) * SIDE + col]
-            && self.vertical[row * DOTS + col]
-            && self.vertical[row * DOTS + col + 1]
+        let side = self.side();
+        let dots = side + 1;
+        self.horizontal[row * side + col]
+            && self.horizontal[(row + 1) * side + col]
+            && self.vertical[row * dots + col]
+            && self.vertical[row * dots + col + 1]
     }
 
     fn available_edges(&self) -> impl Iterator<Item = Edge> + '_ {
+        let (horizontal, vertical) = self.edge_counts();
         self.horizontal
             .iter()
             .enumerate()
+            .take(horizontal)
             .filter(|(_, used)| !**used)
             .map(|(index, _)| Edge::Horizontal(index))
             .chain(
                 self.vertical
                     .iter()
                     .enumerate()
+                    .take(vertical)
                     .filter(|(_, used)| !**used)
                     .map(|(index, _)| Edge::Vertical(index)),
             )
@@ -202,6 +252,15 @@ impl DotsBoxes {
 
     fn finished(&self) -> bool {
         self.boxes.iter().all(|owner| *owner != 0)
+    }
+
+    fn side(&self) -> usize {
+        self.difficulty.side()
+    }
+
+    fn edge_counts(&self) -> (usize, usize) {
+        let side = self.side();
+        (side * (side + 1), side * (side + 1))
     }
 
     fn finish(&mut self) {

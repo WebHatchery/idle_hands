@@ -2,77 +2,87 @@
 
 use crate::{
     accessibility,
-    flood_it::{FloodIt, FloodPhase, COLORS, SIDE},
+    flood_it::{FloodDifficulty, FloodIt, FloodPhase},
     state::AppState,
     ui::UiAction,
 };
 use macroquad::prelude::*;
 
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 struct Layout {
     board: Rect,
     hint: Rect,
     undo: Rect,
     new_game: Rect,
-    colors: [Rect; 6],
+    colors: Vec<Rect>,
+    difficulty: [Rect; 3],
 }
 
-fn layout() -> Layout {
+fn layout(color_count: u8) -> Layout {
     if crate::ui::is_compact_landscape() {
-        let colors = core::array::from_fn(|i| {
-            Rect::new(
-                620. + (i % 3) as f32 * 48.,
-                270. + (i / 3) as f32 * 48.,
-                42.,
-                42.,
-            )
-        });
         Layout {
             board: Rect::new(270., 44., 300., 300.),
             hint: Rect::new(620., 220., 105., 44.),
             undo: Rect::new(620., 110., 105., 44.),
             new_game: Rect::new(620., 165., 140., 44.),
-            colors,
+            colors: color_rects(620., 270., 42., 42., color_count as usize, 4),
+            difficulty: [
+                Rect::new(610., 52., 68., 38.),
+                Rect::new(682., 52., 68., 38.),
+                Rect::new(754., 52., 76., 38.),
+            ],
         }
     } else if crate::ui::is_portrait() {
-        let colors = core::array::from_fn(|i| {
-            Rect::new(
-                15. + (i % 3) as f32 * 55.,
-                560. + (i / 3) as f32 * 48.,
-                48.,
-                42.,
-            )
-        });
         Layout {
             board: Rect::new(15., 95., 300., 300.),
             hint: Rect::new(15., 450., 145., 44.),
             undo: Rect::new(15., 505., 145., 44.),
             new_game: Rect::new(170., 505., 145., 44.),
-            colors,
+            colors: color_rects(15., 560., 48., 42., color_count as usize, 4),
+            difficulty: [
+                Rect::new(15., 675., 90., 38.),
+                Rect::new(115., 675., 90., 38.),
+                Rect::new(215., 675., 100., 38.),
+            ],
         }
     } else {
-        let colors = core::array::from_fn(|i| {
-            Rect::new(
-                810. + (i % 3) as f32 * 52.,
-                300. + (i / 3) as f32 * 52.,
-                46.,
-                46.,
-            )
-        });
         Layout {
             board: Rect::new(350., 90., 420., 420.),
             hint: Rect::new(810., 235., 120., 44.),
             undo: Rect::new(810., 180., 120., 44.),
             new_game: Rect::new(950., 180., 140., 44.),
-            colors,
+            colors: color_rects(810., 300., 46., 46., color_count as usize, 4),
+            difficulty: [
+                Rect::new(810., 90., 85., 38.),
+                Rect::new(900., 90., 85., 38.),
+                Rect::new(990., 90., 95., 38.),
+            ],
         }
     }
 }
 
+fn color_rects(x: f32, y: f32, width: f32, height: f32, count: usize, columns: usize) -> Vec<Rect> {
+    (0..count)
+        .map(|index| {
+            Rect::new(
+                x + (index % columns) as f32 * (width + 7.),
+                y + (index / columns) as f32 * (height + 7.),
+                width,
+                height,
+            )
+        })
+        .collect()
+}
+
 pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
-    let l = layout();
+    let l = layout(_state.flood_it.color_count());
     if crate::ui::hit(Rect::new(0., 0., 110., 42.), point) {
         return vec![UiAction::Cabinet];
+    }
+    for (index, rect) in l.difficulty.iter().enumerate() {
+        if crate::ui::hit(*rect, point) {
+            return vec![UiAction::FloodDifficulty(FloodDifficulty::ALL[index])];
+        }
     }
     if crate::ui::hit(l.undo, point) {
         return vec![UiAction::FloodUndo];
@@ -92,7 +102,7 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
 }
 
 pub fn draw(state: &AppState) {
-    let l = layout();
+    let l = layout(state.flood_it.color_count());
     let game = &state.flood_it;
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
@@ -125,7 +135,13 @@ pub fn draw(state: &AppState) {
         accent(),
     );
     crate::ui::draw_text(
-        format!("{} / 24 moves  •  {}", game.moves, status(game.phase)),
+        format!(
+            "{} / {} moves  •  {}  •  {}",
+            game.moves,
+            game.move_limit(),
+            status(game.phase),
+            game.difficulty.label()
+        ),
         if compact { 430. } else { title_x },
         if compact { 28. } else { title_y + 24. },
         accessibility::text_size(body_size(), state.large_text),
@@ -138,6 +154,14 @@ pub fn draw(state: &AppState) {
     button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW FIELD", state.large_text);
+    for (index, rect) in l.difficulty.iter().enumerate() {
+        mode_button(
+            *rect,
+            ["STD", "HARD", "EXPERT"][index],
+            FloodDifficulty::ALL[index] == game.difficulty,
+            state.large_text,
+        );
+    }
     let status_y = if portrait {
         420.
     } else if compact {
@@ -158,11 +182,12 @@ pub fn draw(state: &AppState) {
 }
 
 fn draw_board(board: Rect, game: &FloodIt, high_contrast: bool) {
-    let cell = board.w / SIDE as f32;
-    for index in 0..SIDE * SIDE {
+    let side = game.side();
+    let cell = board.w / side as f32;
+    for index in 0..side * side {
         let rect = Rect::new(
-            board.x + (index % SIDE) as f32 * cell,
-            board.y + (index / SIDE) as f32 * cell,
+            board.x + (index % side) as f32 * cell,
+            board.y + (index / side) as f32 * cell,
             cell,
             cell,
         );
@@ -223,6 +248,8 @@ fn palette(color: u8, high_contrast: bool) -> Color {
             Color::new(0.05, 0.60, 1., 1.),
             Color::new(0.95, 0.20, 1., 1.),
             Color::new(1., 0.35, 0.75, 1.),
+            Color::new(0.25, 1., 0.90, 1.),
+            Color::new(0.98, 0.40, 0.08, 1.),
         ]
     } else {
         [
@@ -232,9 +259,11 @@ fn palette(color: u8, high_contrast: bool) -> Color {
             Color::new(0.32, 0.64, 0.95, 1.),
             Color::new(0.68, 0.45, 0.90, 1.),
             Color::new(0.95, 0.48, 0.72, 1.),
+            Color::new(0.28, 0.78, 0.76, 1.),
+            Color::new(0.90, 0.42, 0.24, 1.),
         ]
     };
-    palette[color as usize % COLORS as usize]
+    palette[color as usize % palette.len()]
 }
 
 fn button(rect: Rect, label: &str, large_text: bool) {
@@ -246,6 +275,24 @@ fn button(rect: Rect, label: &str, large_text: bool) {
         accessibility::text_size(11., large_text),
         WHITE,
     );
+}
+fn mode_button(rect: Rect, label: &str, selected: bool, large_text: bool) {
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        if selected { crate::theme::MOSS_DARK } else { crate::theme::SURFACE },
+    );
+    draw_rectangle_lines(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        if selected { 2. } else { 1. },
+        accent(),
+    );
+    center_text(label, rect, accessibility::text_size(10., large_text), WHITE);
 }
 fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
     let measured = crate::ui::measure_text(label, None, size as u16, 1.);

@@ -2,61 +2,84 @@
 
 use crate::{
     accessibility,
-    color_sort::{ColorSort, ColorSortPhase, TUBES},
+    color_sort::{ColorSort, ColorSortDifficulty, ColorSortPhase},
     state::AppState,
     ui::UiAction,
 };
 use macroquad::prelude::*;
 
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 struct Layout {
     board: Rect,
-    tubes: [Rect; TUBES],
+    tubes: Vec<Rect>,
     hint: Rect,
     undo: Rect,
     new_game: Rect,
+    difficulty: [Rect; 3],
 }
 
-fn layout() -> Layout {
+fn layout(tube_count: usize) -> Layout {
     if crate::ui::is_compact_landscape() {
         let board = Rect::new(220., 54., 360., 285.);
         Layout {
             board,
-            tubes: tube_rects(board),
+            tubes: tube_rects(board, tube_count),
             hint: Rect::new(630., 220., 105., 44.),
             undo: Rect::new(630., 110., 105., 44.),
             new_game: Rect::new(630., 165., 140., 44.),
+            difficulty: [
+                Rect::new(610., 52., 68., 38.),
+                Rect::new(682., 52., 68., 38.),
+                Rect::new(754., 52., 76., 38.),
+            ],
         }
     } else if crate::ui::is_portrait() {
         let board = Rect::new(15., 100., 300., 270.);
         Layout {
             board,
-            tubes: tube_rects(board),
+            tubes: tube_rects(board, tube_count),
             hint: Rect::new(15., 405., 145., 44.),
             undo: Rect::new(15., 460., 145., 44.),
             new_game: Rect::new(170., 460., 145., 44.),
+            difficulty: [
+                Rect::new(15., 515., 90., 38.),
+                Rect::new(115., 515., 90., 38.),
+                Rect::new(215., 515., 100., 38.),
+            ],
         }
     } else {
         let board = Rect::new(280., 95., 540., 360.);
         Layout {
             board,
-            tubes: tube_rects(board),
+            tubes: tube_rects(board, tube_count),
             hint: Rect::new(860., 245., 120., 44.),
             undo: Rect::new(860., 190., 120., 44.),
             new_game: Rect::new(1000., 190., 145., 44.),
+            difficulty: [
+                Rect::new(860., 95., 85., 38.),
+                Rect::new(950., 95., 85., 38.),
+                Rect::new(1040., 95., 95., 38.),
+            ],
         }
     }
 }
 
-fn tube_rects(board: Rect) -> [Rect; TUBES] {
-    let gap = board.w / TUBES as f32;
-    core::array::from_fn(|index| Rect::new(board.x + index as f32 * gap, board.y, gap, board.h))
+fn tube_rects(board: Rect, tube_count: usize) -> Vec<Rect> {
+    let gap = board.w / tube_count as f32;
+    (0..tube_count)
+        .map(|index| Rect::new(board.x + index as f32 * gap, board.y, gap, board.h))
+        .collect()
 }
 
 pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
-    let l = layout();
+    let l = layout(_state.color_sort.tubes.len());
     if crate::ui::hit(Rect::new(0., 0., 110., 42.), point) {
         return vec![UiAction::Cabinet];
+    }
+    for (index, rect) in l.difficulty.iter().enumerate() {
+        if crate::ui::hit(*rect, point) {
+            return vec![UiAction::ColorSortDifficulty(ColorSortDifficulty::ALL[index])];
+        }
     }
     for (tube, rect) in l.tubes.iter().enumerate() {
         if rect.contains(point) {
@@ -76,7 +99,7 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
 }
 
 pub fn draw(state: &AppState) {
-    let l = layout();
+    let l = layout(state.color_sort.tubes.len());
     let game = &state.color_sort;
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
@@ -109,16 +132,29 @@ pub fn draw(state: &AppState) {
         accent(),
     );
     crate::ui::draw_text(
-        format!("{} moves  •  {}", game.moves, status(game.phase)),
+        format!(
+            "{} moves  •  {}  •  {}",
+            game.moves,
+            status(game.phase),
+            game.difficulty.label()
+        ),
         if compact { 430. } else { title_x },
         if compact { 28. } else { title_y + 24. },
         accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    draw_board(l.board, l.tubes, game, state.high_contrast);
+    draw_board(l.board, &l.tubes, game, state.high_contrast);
     button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW BOARD", state.large_text);
+    for (index, rect) in l.difficulty.iter().enumerate() {
+        mode_button(
+            *rect,
+            ["STD", "HARD", "EXPERT"][index],
+            ColorSortDifficulty::ALL[index] == game.difficulty,
+            state.large_text,
+        );
+    }
     let status_y = if portrait {
         385.
     } else if compact {
@@ -138,7 +174,7 @@ pub fn draw(state: &AppState) {
     );
 }
 
-fn draw_board(board: Rect, tubes: [Rect; TUBES], game: &ColorSort, high_contrast: bool) {
+fn draw_board(board: Rect, tubes: &[Rect], game: &ColorSort, high_contrast: bool) {
     draw_rectangle(
         board.x,
         board.y,
@@ -169,7 +205,7 @@ fn draw_board(board: Rect, tubes: [Rect; TUBES], game: &ColorSort, high_contrast
             },
         );
         let tube = &game.tubes[index];
-        let slot = (rect.h - 38.) / 4.;
+        let slot = (rect.h - 38.) / crate::color_sort::CAPACITY as f32;
         for (level, &color) in tube.iter().enumerate() {
             let ball = Rect::new(
                 rect.x + 14.,
@@ -203,6 +239,8 @@ fn palette(color: u8, high_contrast: bool) -> Color {
             Color::new(1., 0.82, 0.05, 1.),
             Color::new(0.05, 0.95, 0.30, 1.),
             Color::new(0.05, 0.60, 1., 1.),
+            Color::new(0.92, 0.30, 0.96, 1.),
+            Color::new(0.98, 0.47, 0.18, 1.),
         ]
     } else {
         [
@@ -210,9 +248,11 @@ fn palette(color: u8, high_contrast: bool) -> Color {
             Color::new(0.98, 0.72, 0.28, 1.),
             Color::new(0.35, 0.82, 0.58, 1.),
             Color::new(0.32, 0.64, 0.95, 1.),
+            Color::new(0.68, 0.45, 0.90, 1.),
+            Color::new(0.95, 0.48, 0.34, 1.),
         ]
     };
-    palette[color as usize % 4]
+    palette[color as usize % palette.len()]
 }
 
 fn button(rect: Rect, label: &str, large_text: bool) {
@@ -224,6 +264,24 @@ fn button(rect: Rect, label: &str, large_text: bool) {
         accessibility::text_size(11., large_text),
         WHITE,
     );
+}
+fn mode_button(rect: Rect, label: &str, selected: bool, large_text: bool) {
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        if selected { crate::theme::MOSS_DARK } else { crate::theme::SURFACE },
+    );
+    draw_rectangle_lines(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        if selected { 2. } else { 1. },
+        accent(),
+    );
+    center_text(label, rect, accessibility::text_size(10., large_text), WHITE);
 }
 fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
     let measured = crate::ui::measure_text(label, None, size as u16, 1.);

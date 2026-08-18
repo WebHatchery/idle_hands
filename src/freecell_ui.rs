@@ -63,12 +63,11 @@ pub fn draw_freecell(state: &AppState) {
                 state.reduced_motion,
             );
         } else {
-            crate::ui::draw_text(
-                ["♣", "♦", "♥", "♠"][suit],
-                rect.x + 30.,
-                rect.y + 70.,
+            crate::card_render::draw_suit_symbol(
+                rect.center(),
                 32.,
-                Color::new(0.46, 0.37, 0.58, 1.),
+                suit as u8,
+                crate::theme::BRASS,
             );
         }
         crate::ui::draw_text(

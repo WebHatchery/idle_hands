@@ -216,7 +216,7 @@ fn draw_card(rank: u8, suit: u8, rect: Rect, high_contrast: bool, large_text: bo
         if high_contrast {
             WHITE
         } else {
-            crate::theme::SURFACE
+            crate::theme::CREAM
         },
     );
     draw_rectangle_lines(
@@ -228,11 +228,17 @@ fn draw_card(rank: u8, suit: u8, rect: Rect, high_contrast: bool, large_text: bo
         accessibility::grid_line(high_contrast),
     );
     text(
-        &format!("{}{}", rank, ["♠", "♥", "♦", "♣"][suit as usize]),
+        crate::card_render::rank_label(rank),
         rect.x + 8.,
         rect.y + rect.h * 0.68,
         accessibility::text_size(11., large_text),
-        WHITE,
+        crate::card_render::suit_color(suit, high_contrast),
+    );
+    crate::card_render::draw_suit_symbol(
+        vec2(rect.x + rect.w * 0.78, rect.y + rect.h * 0.50),
+        accessibility::text_size((rect.h * 0.52).clamp(9., 16.), large_text),
+        suit,
+        crate::card_render::suit_color(suit, high_contrast),
     );
 }
 fn status_text(status: GolfStatus) -> &'static str {

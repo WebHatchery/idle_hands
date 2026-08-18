@@ -13,6 +13,13 @@ fn claims_a_box_and_keeps_the_turn() {
 }
 
 #[test]
+fn harder_difficulties_use_larger_boards() {
+    assert_eq!(DotsBoxes::new_with_difficulty(1, DotsDifficulty::Standard).boxes.len(), 16);
+    assert_eq!(DotsBoxes::new_with_difficulty(1, DotsDifficulty::Hard).boxes.len(), 25);
+    assert_eq!(DotsBoxes::new_with_difficulty(1, DotsDifficulty::Expert).boxes.len(), 36);
+}
+
+#[test]
 fn rejects_used_edges_and_undo_restores_the_turn() {
     let mut game = DotsBoxes::new(2);
     assert!(game.play(Edge::Horizontal(0)));

@@ -2,7 +2,7 @@ use super::*;
 
 fn with_tubes(tubes: [Vec<u8>; TUBES]) -> ColorSort {
     ColorSort {
-        tubes,
+        tubes: tubes.to_vec(),
         ..Default::default()
     }
 }
@@ -16,6 +16,21 @@ fn seeded_layout_is_repeatable_and_has_six_tubes() {
         first.tubes.iter().map(Vec::len).sum::<usize>(),
         COLORS as usize * CAPACITY
     );
+}
+
+#[test]
+fn difficulty_boards_add_tubes_and_colors_without_starting_solved() {
+    for (difficulty, expected_tubes, expected_colors) in [
+        (ColorSortDifficulty::Standard, 6, 4),
+        (ColorSortDifficulty::Hard, 7, 5),
+        (ColorSortDifficulty::Expert, 8, 6),
+    ] {
+        let game = ColorSort::new_with_difficulty(19, difficulty);
+        assert_eq!(game.tubes.len(), expected_tubes);
+        assert_eq!(game.tubes.iter().map(Vec::len).sum::<usize>(), expected_colors * CAPACITY);
+        assert!(game.tubes.iter().any(|tube| tube.windows(2).any(|pair| pair[0] != pair[1])));
+        assert!(game.hint_move().is_some());
+    }
 }
 
 #[test]

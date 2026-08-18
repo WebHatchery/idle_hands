@@ -31,3 +31,16 @@ fn portrait_wrapping_keeps_long_instructions_readable() {
         }
     }
 }
+
+#[test]
+fn responsive_continue_buttons_stay_inside_their_panels() {
+    assert!(contains(PORTRAIT_PANEL, continue_rect(false)));
+    assert!(contains(LANDSCAPE_PANEL, continue_rect(true)));
+}
+
+fn contains(outer: Rect, inner: Rect) -> bool {
+    inner.x >= outer.x
+        && inner.y >= outer.y
+        && inner.right() <= outer.right()
+        && inner.bottom() <= outer.bottom()
+}

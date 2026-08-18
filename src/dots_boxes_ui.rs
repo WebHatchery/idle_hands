@@ -2,7 +2,7 @@
 
 use crate::{
     accessibility,
-    dots_boxes::{DotsBoxes, DotsPhase, Edge, SIDE},
+    dots_boxes::{DotsBoxes, DotsDifficulty, DotsPhase, Edge},
     state::AppState,
     ui::UiAction,
 };
@@ -14,6 +14,7 @@ struct Layout {
     hint: Rect,
     undo: Rect,
     new_game: Rect,
+    difficulty: [Rect; 3],
 }
 
 fn layout() -> Layout {
@@ -23,6 +24,11 @@ fn layout() -> Layout {
             hint: Rect::new(610., 225., 110., 44.),
             undo: Rect::new(610., 115., 110., 44.),
             new_game: Rect::new(610., 170., 145., 44.),
+            difficulty: [
+                Rect::new(610., 54., 68., 38.),
+                Rect::new(682., 54., 68., 38.),
+                Rect::new(754., 54., 76., 38.),
+            ],
         }
     } else if crate::ui::is_portrait() {
         Layout {
@@ -30,6 +36,11 @@ fn layout() -> Layout {
             hint: Rect::new(20., 545., 145., 44.),
             undo: Rect::new(20., 490., 145., 44.),
             new_game: Rect::new(175., 490., 165., 44.),
+            difficulty: [
+                Rect::new(20., 600., 90., 38.),
+                Rect::new(120., 600., 90., 38.),
+                Rect::new(220., 600., 100., 38.),
+            ],
         }
     } else {
         Layout {
@@ -37,6 +48,11 @@ fn layout() -> Layout {
             hint: Rect::new(810., 245., 120., 44.),
             undo: Rect::new(810., 180., 120., 44.),
             new_game: Rect::new(950., 180., 140., 44.),
+            difficulty: [
+                Rect::new(810., 105., 85., 38.),
+                Rect::new(900., 105., 85., 38.),
+                Rect::new(990., 105., 95., 38.),
+            ],
         }
     }
 }
@@ -45,6 +61,11 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     let l = layout();
     if crate::ui::hit(Rect::new(0., 0., 110., 42.), point) {
         return vec![UiAction::Cabinet];
+    }
+    for (index, rect) in l.difficulty.iter().enumerate() {
+        if crate::ui::hit(*rect, point) {
+            return vec![UiAction::DotsDifficulty(DotsDifficulty::ALL[index])];
+        }
     }
     if crate::ui::hit(l.undo, point) {
         return vec![UiAction::DotsUndo];
@@ -55,7 +76,8 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(l.new_game, point) {
         return vec![UiAction::DotsNew];
     }
-    edge_at(l.board, point).map_or_else(Vec::new, |edge| vec![UiAction::DotsEdge(edge)])
+    edge_at(l.board, point, _state.dots_boxes.difficulty.side())
+        .map_or_else(Vec::new, |edge| vec![UiAction::DotsEdge(edge)])
 }
 
 pub fn draw(state: &AppState) {
@@ -97,7 +119,7 @@ pub fn draw(state: &AppState) {
     );
     text(
         &format!(
-            "You {}  •  Red {}  Blue {}  •  {} moves",
+            "You {}  •  Red {}  Blue {}  •  {} moves  •  {}",
             if game.current_player == 0 {
                 "draw"
             } else {
@@ -105,7 +127,8 @@ pub fn draw(state: &AppState) {
             },
             game.scores[0],
             game.scores[1],
-            game.moves
+            game.moves,
+            game.difficulty.label()
         ),
         if compact { 420. } else { title_x },
         if compact { 28. } else { title_y + 24. },
@@ -138,12 +161,21 @@ pub fn draw(state: &AppState) {
     button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW BOARD", state.large_text);
+    for (index, rect) in l.difficulty.iter().enumerate() {
+        mode_button(
+            *rect,
+            ["STD", "HARD", "EXPERT"][index],
+            DotsDifficulty::ALL[index] == game.difficulty,
+            state.large_text,
+        );
+    }
 }
 
 fn draw_board(board: Rect, game: &DotsBoxes, high_contrast: bool, large_text: bool) {
-    let step = board.w / SIDE as f32;
-    for row in 0..=SIDE {
-        for col in 0..SIDE {
+    let side = game.difficulty.side();
+    let step = board.w / side as f32;
+    for row in 0..=side {
+        for col in 0..side {
             draw_line(
                 board.x + col as f32 * step,
                 board.y + row as f32 * step,
@@ -154,8 +186,8 @@ fn draw_board(board: Rect, game: &DotsBoxes, high_contrast: bool, large_text: bo
             );
         }
     }
-    for row in 0..SIDE {
-        for col in 0..=SIDE {
+    for row in 0..side {
+        for col in 0..=side {
             draw_line(
                 board.x + col as f32 * step,
                 board.y + row as f32 * step,
@@ -166,9 +198,9 @@ fn draw_board(board: Rect, game: &DotsBoxes, high_contrast: bool, large_text: bo
             );
         }
     }
-    for row in 0..SIDE {
-        for col in 0..SIDE {
-            let owner = game.boxes[row * SIDE + col];
+    for row in 0..side {
+        for col in 0..side {
+            let owner = game.boxes[row * side + col];
             if owner != 0 {
                 draw_rectangle(
                     board.x + col as f32 * step + 5.,
@@ -206,9 +238,9 @@ fn draw_board(board: Rect, game: &DotsBoxes, high_contrast: bool, large_text: bo
             }
         }
     }
-    for row in 0..=SIDE {
-        for col in 0..SIDE {
-            let index = row * SIDE + col;
+    for row in 0..=side {
+        for col in 0..side {
+            let index = row * side + col;
             if game.horizontal[index] {
                 draw_line(
                     board.x + col as f32 * step,
@@ -221,9 +253,9 @@ fn draw_board(board: Rect, game: &DotsBoxes, high_contrast: bool, large_text: bo
             }
         }
     }
-    for row in 0..SIDE {
-        for col in 0..=SIDE {
-            let index = row * (SIDE + 1) + col;
+    for row in 0..side {
+        for col in 0..=side {
+            let index = row * (side + 1) + col;
             if game.vertical[index] {
                 draw_line(
                     board.x + col as f32 * step,
@@ -236,8 +268,8 @@ fn draw_board(board: Rect, game: &DotsBoxes, high_contrast: bool, large_text: bo
             }
         }
     }
-    for row in 0..=SIDE {
-        for col in 0..=SIDE {
+    for row in 0..=side {
+        for col in 0..=side {
             draw_circle(
                 board.x + col as f32 * step,
                 board.y + row as f32 * step,
@@ -248,22 +280,22 @@ fn draw_board(board: Rect, game: &DotsBoxes, high_contrast: bool, large_text: bo
     }
 }
 
-fn edge_at(board: Rect, point: Vec2) -> Option<Edge> {
-    let step = board.w / SIDE as f32;
+fn edge_at(board: Rect, point: Vec2, side: usize) -> Option<Edge> {
+    let step = board.w / side as f32;
     let local = point - vec2(board.x, board.y);
     if local.x < -20. || local.y < -20. || local.x > board.w + 20. || local.y > board.h + 20. {
         return None;
     }
     let column = (local.x / step).floor() as usize;
     let row = (local.y / step).floor() as usize;
-    let horizontal_row = (local.y / step).round().clamp(0., SIDE as f32) as usize;
-    let vertical_column = (local.x / step).round().clamp(0., SIDE as f32) as usize;
+    let horizontal_row = (local.y / step).round().clamp(0., side as f32) as usize;
+    let vertical_column = (local.x / step).round().clamp(0., side as f32) as usize;
     let dx = (local.x - vertical_column as f32 * step).abs();
     let dy = (local.y - horizontal_row as f32 * step).abs();
-    if dy < 20. && column < SIDE {
-        Some(Edge::Horizontal(horizontal_row * SIDE + column))
-    } else if dx < 20. && row < SIDE {
-        Some(Edge::Vertical(row * (SIDE + 1) + vertical_column))
+    if dy < 20. && column < side {
+        Some(Edge::Horizontal(horizontal_row * side + column))
+    } else if dx < 20. && row < side {
+        Some(Edge::Vertical(row * (side + 1) + vertical_column))
     } else {
         None
     }
@@ -293,12 +325,13 @@ fn edge_color(index: usize, horizontal: bool, game: &DotsBoxes, high_contrast: b
 }
 
 fn edge_owner_horizontal(index: usize, game: &DotsBoxes) -> u8 {
-    for row in 0..=SIDE {
-        for col in 0..SIDE {
-            if row * SIDE + col == index {
+    let side = game.difficulty.side();
+    for row in 0..=side {
+        for col in 0..side {
+            if row * side + col == index {
                 for (box_index, owner) in game.boxes.iter().enumerate() {
-                    let box_row = box_index / SIDE;
-                    let box_col = box_index % SIDE;
+                    let box_row = box_index / side;
+                    let box_col = box_index % side;
                     if (*owner > 0) && (box_row == row || box_row + 1 == row) && box_col == col {
                         return *owner;
                     }
@@ -310,12 +343,13 @@ fn edge_owner_horizontal(index: usize, game: &DotsBoxes) -> u8 {
 }
 
 fn edge_owner_vertical(index: usize, game: &DotsBoxes) -> u8 {
-    for row in 0..SIDE {
-        for col in 0..=SIDE {
-            if row * (SIDE + 1) + col == index {
+    let side = game.difficulty.side();
+    for row in 0..side {
+        for col in 0..=side {
+            if row * (side + 1) + col == index {
                 for (box_index, owner) in game.boxes.iter().enumerate() {
-                    let box_row = box_index / SIDE;
-                    let box_col = box_index % SIDE;
+                    let box_row = box_index / side;
+                    let box_col = box_index % side;
                     if (*owner > 0) && box_row == row && (box_col == col || box_col + 1 == col) {
                         return *owner;
                     }
@@ -343,6 +377,25 @@ fn button(rect: Rect, label: &str, large_text: bool) {
         accessibility::text_size(11., large_text),
         WHITE,
     );
+}
+
+fn mode_button(rect: Rect, label: &str, selected: bool, large_text: bool) {
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        if selected { crate::theme::MOSS_DARK } else { crate::theme::SURFACE },
+    );
+    draw_rectangle_lines(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        if selected { 2. } else { 1. },
+        accent(),
+    );
+    center_text(label, rect, accessibility::text_size(10., large_text), WHITE);
 }
 
 fn center_text(label: &str, rect: Rect, size: f32, color: Color) {

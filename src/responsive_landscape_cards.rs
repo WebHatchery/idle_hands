@@ -86,12 +86,11 @@ pub fn draw_solitaire(state: &AppState) {
                 state.reduced_motion,
             );
         } else {
-            text(
-                ["C", "D", "H", "S"][suit],
-                rect.x + 29.,
-                rect.y + 58.,
+            crate::card_render::draw_suit_symbol(
+                rect.center(),
                 22.,
-                Color::new(0.46, 0.37, 0.58, 1.),
+                suit as u8,
+                crate::theme::BRASS,
             );
         }
     }
@@ -219,12 +218,11 @@ pub fn draw_freecell(state: &AppState) {
                 state.reduced_motion,
             );
         } else {
-            text(
-                ["C", "D", "H", "S"][suit],
-                rect.x + 29.,
-                rect.y + 48.,
+            crate::card_render::draw_suit_symbol(
+                rect.center(),
                 22.,
-                Color::new(0.46, 0.37, 0.58, 1.),
+                suit as u8,
+                crate::theme::BRASS,
             );
         }
     }

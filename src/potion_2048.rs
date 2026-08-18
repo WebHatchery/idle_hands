@@ -3,14 +3,49 @@
 use crate::state::Direction;
 use serde::{Deserialize, Serialize};
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum PotionDifficulty {
+    Standard,
+    Hard,
+    Expert,
+}
+
+impl Default for PotionDifficulty {
+    fn default() -> Self {
+        Self::Standard
+    }
+}
+
+impl PotionDifficulty {
+    pub const ALL: [Self; 3] = [Self::Standard, Self::Hard, Self::Expert];
+
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::Standard => "STANDARD",
+            Self::Hard => "HARD",
+            Self::Expert => "EXPERT",
+        }
+    }
+
+    fn settings(self) -> (usize, u16) {
+        match self {
+            Self::Standard => (4, 4096),
+            Self::Hard => (5, 8192),
+            Self::Expert => (6, 16384),
+        }
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Potion2048 {
-    pub cells: [u16; 16],
+    pub cells: Vec<u16>,
     pub score: u32,
     pub best: u32,
     pub seed: u64,
+    #[serde(default)]
+    pub difficulty: PotionDifficulty,
     #[serde(skip)]
-    undo: Option<([u16; 16], u32, u64)>,
+    undo: Option<(Vec<u16>, u32, u64)>,
 }
 
 impl Default for Potion2048 {
@@ -21,11 +56,17 @@ impl Default for Potion2048 {
 
 impl Potion2048 {
     pub fn new(seed: u64) -> Self {
+        Self::new_with_difficulty(seed, PotionDifficulty::Standard)
+    }
+
+    pub fn new_with_difficulty(seed: u64, difficulty: PotionDifficulty) -> Self {
+        let side = difficulty.settings().0;
         let mut game = Self {
-            cells: [0; 16],
+            cells: vec![0; side * side],
             score: 0,
             best: 0,
             seed,
+            difficulty,
             undo: None,
         };
         game.spawn();
@@ -33,17 +74,13 @@ impl Potion2048 {
         game
     }
     pub fn move_in(&mut self, direction: Direction) -> bool {
-        let before = self.cells;
+        let before = self.cells.clone();
         let before_score = self.score;
         let before_seed = self.seed;
         let mut changed = false;
-        for line in 0..4 {
-            let indices = match direction {
-                Direction::Left => [line * 4, line * 4 + 1, line * 4 + 2, line * 4 + 3],
-                Direction::Right => [line * 4 + 3, line * 4 + 2, line * 4 + 1, line * 4],
-                Direction::Up => [line, line + 4, line + 8, line + 12],
-                Direction::Down => [line + 12, line + 8, line + 4, line],
-            };
+        let side = self.side();
+        for line in 0..side {
+            let indices = line_indices(side, line, direction);
             let values: Vec<u16> = indices
                 .iter()
                 .map(|&i| self.cells[i])
@@ -116,10 +153,10 @@ impl Potion2048 {
         }
     }
     pub fn reset(&mut self, seed: u64) {
-        *self = Self::new(seed);
+        *self = Self::new_with_difficulty(seed, self.difficulty);
     }
     pub fn won(&self) -> bool {
-        self.cells.iter().any(|&value| value >= 4096)
+        self.cells.iter().any(|&value| value >= self.target())
     }
     fn spawn(&mut self) {
         let empty: Vec<usize> = self
@@ -136,6 +173,30 @@ impl Potion2048 {
         self.seed = next_seed(self.seed);
         self.cells[index] = if self.seed & 7 == 0 { 4 } else { 2 };
     }
+
+    pub fn side(&self) -> usize {
+        self.difficulty.settings().0
+    }
+
+    pub fn target(&self) -> u16 {
+        self.difficulty.settings().1
+    }
+}
+
+fn line_indices(side: usize, line: usize, direction: Direction) -> Vec<usize> {
+    let indices: Vec<usize> = match direction {
+        Direction::Left => (0..side).map(|offset| line * side + offset).collect(),
+        Direction::Right => (0..side)
+            .rev()
+            .map(|offset| line * side + offset)
+            .collect(),
+        Direction::Up => (0..side).map(|offset| line + offset * side).collect(),
+        Direction::Down => (0..side)
+            .rev()
+            .map(|offset| line + offset * side)
+            .collect(),
+    };
+    indices
 }
 fn next_seed(seed: u64) -> u64 {
     seed.wrapping_mul(6364136223846793005)

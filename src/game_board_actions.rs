@@ -2,6 +2,11 @@
 
 use super::Game;
 use crate::{sound::SoundCue, ui::UiAction};
+use macroquad::prelude::get_time;
+
+fn fresh_seed(previous: u64) -> u64 {
+    get_time().to_bits() ^ previous.rotate_left(17)
+}
 
 impl Game {
     pub(super) fn apply_board_action(&mut self, action: &UiAction) -> bool {
@@ -235,6 +240,12 @@ impl Game {
                 let seed = self.state.potion_2048.seed.wrapping_add(1);
                 self.state.potion_2048.reset(seed);
             }
+            UiAction::PotionDifficulty(difficulty) => {
+                let seed = self.state.potion_2048.seed.wrapping_add(1);
+                self.state.potion_2048 = crate::potion_2048::Potion2048::new_with_difficulty(
+                    seed, *difficulty,
+                );
+            }
             UiAction::TowerCell(index) => {
                 self.state.tiny_tower_defence.build_or_upgrade(*index);
             }
@@ -299,6 +310,12 @@ impl Game {
             UiAction::DotsNew => {
                 let seed = self.state.dots_boxes.seed.wrapping_add(1);
                 self.state.dots_boxes.reset(seed);
+            }
+            UiAction::DotsDifficulty(difficulty) => {
+                let seed = self.state.dots_boxes.seed.wrapping_add(1);
+                self.state.dots_boxes = crate::dots_boxes::DotsBoxes::new_with_difficulty(
+                    seed, *difficulty,
+                );
             }
             UiAction::SokobanMove(direction) => {
                 self.state.sokoban.move_in(*direction);
@@ -370,6 +387,12 @@ impl Game {
                 let seed = self.state.flood_it.seed.wrapping_add(1);
                 self.state.flood_it.reset(seed);
             }
+            UiAction::FloodDifficulty(difficulty) => {
+                let seed = self.state.flood_it.seed.wrapping_add(1);
+                self.state.flood_it = crate::flood_it::FloodIt::new_with_difficulty(
+                    seed, *difficulty,
+                );
+            }
             UiAction::ColorSortTap(tube) => {
                 self.state.color_sort.tap_tube(*tube);
             }
@@ -381,8 +404,14 @@ impl Game {
                 self.state.color_sort.undo();
             }
             UiAction::ColorSortNew => {
-                let seed = self.state.color_sort.seed.wrapping_add(1);
+                let seed = fresh_seed(self.state.color_sort.seed);
                 self.state.color_sort.reset(seed);
+            }
+            UiAction::ColorSortDifficulty(difficulty) => {
+                let seed = fresh_seed(self.state.color_sort.seed);
+                self.state.color_sort = crate::color_sort::ColorSort::new_with_difficulty(
+                    seed, *difficulty,
+                );
             }
             UiAction::BattleshipFire(cell) => {
                 self.state.battleship.fire(*cell);
@@ -479,6 +508,12 @@ impl Game {
             UiAction::MatchThreeNew => {
                 let seed = self.state.match_three.seed.wrapping_add(1);
                 self.state.match_three.reset(seed);
+            }
+            UiAction::MatchThreeDifficulty(difficulty) => {
+                let seed = self.state.match_three.seed.wrapping_add(1);
+                self.state.match_three = crate::match_three::MatchThree::new_with_difficulty(
+                    seed, *difficulty,
+                );
             }
             _ => return false,
         }

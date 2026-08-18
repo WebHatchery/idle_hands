@@ -2,6 +2,7 @@
 
 use crate::{
     accessibility,
+    potion_2048::PotionDifficulty,
     state::{AppState, Direction},
     ui::UiAction,
 };
@@ -14,6 +15,7 @@ struct Layout {
     hint: Rect,
     undo: Rect,
     new_game: Rect,
+    difficulty: [Rect; 3],
 }
 fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
@@ -28,6 +30,11 @@ fn layout() -> Layout {
             hint: Rect::new(680., 275., 105., 44.),
             undo: Rect::new(680., 155., 105., 44.),
             new_game: Rect::new(680., 210., 130., 44.),
+            difficulty: [
+                Rect::new(610., 60., 68., 38.),
+                Rect::new(682., 60., 68., 38.),
+                Rect::new(754., 60., 76., 38.),
+            ],
         }
     } else if crate::ui::is_portrait() {
         Layout {
@@ -41,6 +48,11 @@ fn layout() -> Layout {
             hint: Rect::new(20., 615., 145., 44.),
             undo: Rect::new(20., 555., 145., 44.),
             new_game: Rect::new(185., 555., 155., 44.),
+            difficulty: [
+                Rect::new(20., 680., 90., 38.),
+                Rect::new(120., 680., 90., 38.),
+                Rect::new(220., 680., 100., 38.),
+            ],
         }
     } else {
         Layout {
@@ -54,6 +66,11 @@ fn layout() -> Layout {
             hint: Rect::new(840., 310., 120., 44.),
             undo: Rect::new(840., 250., 120., 44.),
             new_game: Rect::new(980., 250., 150., 44.),
+            difficulty: [
+                Rect::new(840., 115., 85., 38.),
+                Rect::new(930., 115., 85., 38.),
+                Rect::new(1020., 115., 95., 38.),
+            ],
         }
     }
 }
@@ -61,6 +78,11 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     let l = layout();
     if crate::ui::hit(Rect::new(0., 0., 110., 42.), point) {
         return vec![UiAction::Cabinet];
+    }
+    for (index, rect) in l.difficulty.iter().enumerate() {
+        if crate::ui::hit(*rect, point) {
+            return vec![UiAction::PotionDifficulty(PotionDifficulty::ALL[index])];
+        }
     }
     for (index, rect) in l.arrows.iter().enumerate() {
         if rect.contains(point) {
@@ -120,9 +142,11 @@ pub fn draw(state: &AppState) {
     );
     text(
         &format!(
-            "Score {}  •  Best {}  •  {}",
+            "Score {}  •  Best {}  •  Goal {}  •  {}  •  {}",
             game.score,
             game.best,
+            game.target(),
+            game.difficulty.label(),
             state.card_hint.as_deref().unwrap_or("Reach 4096")
         ),
         if compact { 430. } else { x },
@@ -130,8 +154,8 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    let grid = crate::grid::GridLayout::new(l.board, 4, 4);
-    for index in 0..16 {
+    let grid = crate::grid::GridLayout::new(l.board, game.side(), game.side());
+    for index in 0..game.cells.len() {
         let rect = grid.cell_rect(index).unwrap();
         let value = game.cells[index];
         draw_rectangle(
@@ -173,6 +197,14 @@ pub fn draw(state: &AppState) {
     button(l.undo, "UNDO", state.large_text);
     button(l.hint, "HINT", state.large_text);
     button(l.new_game, "NEW BREW", state.large_text);
+    for (index, rect) in l.difficulty.iter().enumerate() {
+        mode_button(
+            *rect,
+            ["STD", "HARD", "EXPERT"][index],
+            PotionDifficulty::ALL[index] == game.difficulty,
+            state.large_text,
+        );
+    }
 }
 fn tile_color(value: u16, high_contrast: bool) -> Color {
     if high_contrast {
@@ -205,6 +237,30 @@ fn button(rect: Rect, label: &str, large_text: bool) {
         rect.x + rect.w * 0.5 - crate::ui::measure_text(label, None, size as u16, 1.).width * 0.5,
         rect.y + rect.h * 0.63,
         size,
+        WHITE,
+    );
+}
+fn mode_button(rect: Rect, label: &str, selected: bool, large_text: bool) {
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        if selected { crate::theme::MOSS_DARK } else { crate::theme::SURFACE },
+    );
+    draw_rectangle_lines(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        if selected { 2. } else { 1. },
+        accent(),
+    );
+    text(
+        label,
+        rect.x + rect.w * 0.5 - crate::ui::measure_text(label, None, 10, 1.).width * 0.5,
+        rect.y + rect.h * 0.63,
+        accessibility::text_size(10., large_text),
         WHITE,
     );
 }

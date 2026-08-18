@@ -185,40 +185,42 @@ fn draw_hand(
             rect.y,
             rect.w,
             rect.h,
-            if high_contrast {
+            if !(reveal || index > 0) {
+                crate::theme::SURFACE_DARK
+            } else if high_contrast {
                 WHITE
             } else {
-                crate::theme::SURFACE
+                crate::theme::CREAM
             },
         );
         draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
-        let label = if reveal || index > 0 {
-            format!("{}{}", rank(card.rank), suit(card.suit))
+        if reveal || index > 0 {
+            let color = crate::card_render::suit_color(card.suit, high_contrast);
+            text(
+                crate::card_render::rank_label(card.rank),
+                rect.x + 9.,
+                rect.y + 52.,
+                accessibility::text_size(21., large_text),
+                color,
+            );
+            crate::card_render::draw_suit_symbol(
+                vec2(rect.x + rect.w * 0.77, rect.y + rect.h * 0.49),
+                accessibility::text_size(18., large_text),
+                card.suit,
+                crate::card_render::suit_color(card.suit, high_contrast),
+            );
         } else {
-            "?".to_owned()
-        };
-        text(
-            &label,
-            rect.x + 10.,
-            rect.y + 52.,
-            accessibility::text_size(21., large_text),
-            if high_contrast { BLACK } else { WHITE },
-        );
+            text(
+                "?",
+                rect.x + 10.,
+                rect.y + 52.,
+                accessibility::text_size(21., large_text),
+                if high_contrast { BLACK } else { WHITE },
+            );
+        }
     }
 }
 
-fn rank(value: u8) -> &'static str {
-    match value {
-        1 => "A",
-        11 => "J",
-        12 => "Q",
-        13 => "K",
-        _ => "?",
-    }
-}
-fn suit(value: u8) -> &'static str {
-    ["♣", "♦", "♥", "♠"][value as usize % 4]
-}
 fn status_text(status: BlackjackStatus, player: u8, dealer: u8) -> String {
     match status {
         BlackjackStatus::Playing => format!("Your total {}  •  dealer shows one card", player),

@@ -1,11 +1,43 @@
-//! Deterministic touch-first Color Sort tube puzzle.
+//! Solvable touch-first Color Sort tube puzzle.
 
 use serde::{Deserialize, Serialize};
 
 pub const TUBES: usize = 6;
 pub const COLORS: u8 = 4;
-const CAPACITY: usize = 4;
-const SCRAMBLE_STEPS: usize = 36;
+pub const CAPACITY: usize = 4;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum ColorSortDifficulty {
+    Standard,
+    Hard,
+    Expert,
+}
+
+impl Default for ColorSortDifficulty {
+    fn default() -> Self {
+        Self::Standard
+    }
+}
+
+impl ColorSortDifficulty {
+    pub const ALL: [Self; 3] = [Self::Standard, Self::Hard, Self::Expert];
+
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::Standard => "STANDARD",
+            Self::Hard => "HARD",
+            Self::Expert => "EXPERT",
+        }
+    }
+
+    fn settings(self) -> (u8, usize, usize) {
+        match self {
+            Self::Standard => (4, 6, 52),
+            Self::Hard => (5, 7, 78),
+            Self::Expert => (6, 8, 108),
+        }
+    }
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum ColorSortPhase {
@@ -15,10 +47,12 @@ pub enum ColorSortPhase {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ColorSort {
-    pub tubes: [Vec<u8>; TUBES],
+    pub tubes: Vec<Vec<u8>>,
     pub selected: Option<usize>,
     pub moves: u16,
     pub seed: u64,
+    #[serde(default)]
+    pub difficulty: ColorSortDifficulty,
     pub phase: ColorSortPhase,
     #[serde(skip)]
     undo: Option<Box<Self>>,
@@ -31,49 +65,51 @@ impl Default for ColorSort {
 }
 
 impl ColorSort {
-    pub fn new(mut seed: u64) -> Self {
-        let mut tubes = [
-            Vec::new(),
-            Vec::new(),
-            Vec::new(),
-            Vec::new(),
-            Vec::new(),
-            Vec::new(),
-        ];
-        for color in 0..COLORS {
+    pub fn new(seed: u64) -> Self {
+        Self::new_with_difficulty(seed, ColorSortDifficulty::Standard)
+    }
+
+    pub fn new_with_difficulty(mut seed: u64, difficulty: ColorSortDifficulty) -> Self {
+        let (colors, tube_count, scramble_steps) = difficulty.settings();
+        let mut tubes = vec![Vec::new(); tube_count];
+        for color in 0..colors {
             tubes[color as usize] = vec![color; CAPACITY];
         }
-        for _ in 0..SCRAMBLE_STEPS {
-            seed = next_seed(seed);
-            let destination = (seed as usize) % TUBES;
-            seed = next_seed(seed);
-            let source = (seed as usize) % TUBES;
-            let top = tubes[destination].last().copied();
-            let below_top = tubes[destination]
-                .get(tubes[destination].len().saturating_sub(2))
-                .copied();
-            if source == destination
-                || tubes[destination].is_empty()
-                || tubes[source].len() == CAPACITY
-                || (tubes[destination].len() > 1 && top != below_top)
-            {
-                continue;
+        for attempt in 0..8 {
+            let mut candidate = tubes.clone();
+            let mut candidates_seed = seed;
+            for _ in 0..scramble_steps {
+                let moves = reverse_moves(&candidate, CAPACITY);
+                if moves.is_empty() {
+                    break;
+                }
+                candidates_seed = next_seed(candidates_seed);
+                let (source, destination, count) = moves[candidates_seed as usize % moves.len()];
+                for _ in 0..count {
+                    let value = candidate[source].pop().expect("reverse move counted");
+                    candidate[destination].push(value);
+                }
             }
-            let color = tubes[destination].pop().expect("destination checked");
-            tubes[source].push(color);
+            if !is_solved(&candidate, CAPACITY) && candidate.iter().any(|tube| is_mixed(tube)) {
+                tubes = candidate;
+                seed = candidates_seed;
+                break;
+            }
+            seed = next_seed(seed ^ attempt as u64);
         }
         Self {
             tubes,
             selected: None,
             moves: 0,
             seed,
+            difficulty,
             phase: ColorSortPhase::Playing,
             undo: None,
         }
     }
 
     pub fn tap_tube(&mut self, tube: usize) -> bool {
-        if self.phase != ColorSortPhase::Playing || tube >= TUBES {
+        if self.phase != ColorSortPhase::Playing || tube >= self.tubes.len() {
             return false;
         }
         let Some(source) = self.selected else {
@@ -125,7 +161,7 @@ impl ColorSort {
     }
 
     pub fn reset(&mut self, seed: u64) {
-        *self = Self::new(seed);
+        *self = Self::new_with_difficulty(seed, self.difficulty);
     }
 
     pub fn won(&self) -> bool {
@@ -137,11 +173,11 @@ impl ColorSort {
             return None;
         }
         let mut best: Option<(i32, usize, usize)> = None;
-        for source in 0..TUBES {
+        for source in 0..self.tubes.len() {
             if self.tubes[source].is_empty() {
                 continue;
             }
-            for destination in 0..TUBES {
+            for destination in 0..self.tubes.len() {
                 if source == destination {
                     continue;
                 }
@@ -159,10 +195,7 @@ impl ColorSort {
     }
 
     fn is_solved(&self) -> bool {
-        self.tubes.iter().all(|tube| {
-            tube.is_empty()
-                || (tube.len() == CAPACITY && tube.windows(2).all(|pair| pair[0] == pair[1]))
-        })
+        is_solved(&self.tubes, CAPACITY)
     }
 
     fn progress_score(&self) -> i32 {
@@ -185,6 +218,43 @@ impl ColorSort {
         copy.undo = None;
         copy
     }
+}
+
+fn reverse_moves(tubes: &[Vec<u8>], capacity: usize) -> Vec<(usize, usize, usize)> {
+    let mut moves = Vec::new();
+    for source in 0..tubes.len() {
+        let Some(&color) = tubes[source].last() else {
+            continue;
+        };
+        let run = tubes[source]
+            .iter()
+            .rev()
+            .take_while(|&&value| value == color)
+            .count();
+        for destination in 0..tubes.len() {
+            if source == destination
+                || tubes[destination].len() == capacity
+                || tubes[destination].last().is_some_and(|&top| top == color)
+            {
+                continue;
+            }
+            let room = capacity - tubes[destination].len();
+            for count in 1..=run.min(room) {
+                moves.push((source, destination, count));
+            }
+        }
+    }
+    moves
+}
+
+fn is_solved(tubes: &[Vec<u8>], capacity: usize) -> bool {
+    tubes.iter().all(|tube| {
+        tube.is_empty() || (tube.len() == capacity && !is_mixed(tube))
+    })
+}
+
+fn is_mixed(tube: &[u8]) -> bool {
+    tube.windows(2).any(|pair| pair[0] != pair[1])
 }
 
 fn next_seed(seed: u64) -> u64 {

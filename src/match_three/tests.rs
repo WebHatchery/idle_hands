@@ -8,6 +8,21 @@ fn seeded_boards_are_repeatable_and_start_without_matches() {
 }
 
 #[test]
+fn harder_difficulties_use_larger_fields_and_more_colors() {
+    let standard = MatchThree::new_with_difficulty(3, MatchThreeDifficulty::Standard);
+    let hard = MatchThree::new_with_difficulty(3, MatchThreeDifficulty::Hard);
+    let expert = MatchThree::new_with_difficulty(3, MatchThreeDifficulty::Expert);
+    assert_eq!(standard.cells.len(), 7 * 7);
+    assert_eq!(hard.cells.len(), 8 * 8);
+    assert_eq!(expert.cells.len(), 9 * 9);
+    assert!(standard.color_count() < hard.color_count());
+    assert!(hard.color_count() < expert.color_count());
+    assert!(find_matches_for_side(&expert.cells, expert.side())
+        .iter()
+        .all(|&matched| !matched));
+}
+
+#[test]
 fn adjacent_swap_that_creates_a_match_scores_and_moves() {
     let mut game = MatchThree::new(4);
     game.cells = vec![

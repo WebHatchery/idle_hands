@@ -12,6 +12,18 @@ fn choosing_a_color_expands_the_origin_region() {
 }
 
 #[test]
+fn harder_difficulties_use_larger_fields_and_more_colors() {
+    let standard = FloodIt::new_with_difficulty(1, FloodDifficulty::Standard);
+    let hard = FloodIt::new_with_difficulty(1, FloodDifficulty::Hard);
+    let expert = FloodIt::new_with_difficulty(1, FloodDifficulty::Expert);
+    assert_eq!(standard.cells.len(), 8 * 8);
+    assert_eq!(hard.cells.len(), 10 * 10);
+    assert_eq!(expert.cells.len(), 12 * 12);
+    assert!(standard.color_count() < hard.color_count());
+    assert!(hard.color_count() < expert.color_count());
+}
+
+#[test]
 fn rejects_the_active_color_and_invalid_colors() {
     let mut game = FloodIt::new(2);
     assert!(!game.choose(game.active_color));

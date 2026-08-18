@@ -2,7 +2,7 @@
 
 use crate::{
     accessibility,
-    match_three::{MatchThree, MatchThreePhase, SIDE},
+    match_three::{MatchThree, MatchThreeDifficulty, MatchThreePhase},
     state::AppState,
     ui::UiAction,
 };
@@ -14,6 +14,7 @@ struct Layout {
     hint: Rect,
     undo: Rect,
     new_game: Rect,
+    difficulty: [Rect; 3],
 }
 
 fn layout() -> Layout {
@@ -23,6 +24,11 @@ fn layout() -> Layout {
             hint: Rect::new(620., 110., 105., 44.),
             undo: Rect::new(620., 165., 105., 44.),
             new_game: Rect::new(735., 165., 105., 44.),
+            difficulty: [
+                Rect::new(620., 44., 62., 38.),
+                Rect::new(686., 44., 62., 38.),
+                Rect::new(752., 44., 78., 38.),
+            ],
         }
     } else if crate::ui::is_portrait() {
         Layout {
@@ -30,6 +36,11 @@ fn layout() -> Layout {
             hint: Rect::new(15., 465., 145., 44.),
             undo: Rect::new(5., 520., 145., 44.),
             new_game: Rect::new(165., 520., 170., 44.),
+            difficulty: [
+                Rect::new(15., 600., 90., 38.),
+                Rect::new(115., 600., 90., 38.),
+                Rect::new(215., 600., 100., 38.),
+            ],
         }
     } else {
         Layout {
@@ -37,6 +48,11 @@ fn layout() -> Layout {
             hint: Rect::new(810., 180., 120., 44.),
             undo: Rect::new(810., 235., 120., 44.),
             new_game: Rect::new(950., 235., 140., 44.),
+            difficulty: [
+                Rect::new(810., 90., 85., 38.),
+                Rect::new(900., 90., 85., 38.),
+                Rect::new(990., 90., 95., 38.),
+            ],
         }
     }
 }
@@ -46,12 +62,18 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(Rect::new(0., 0., 110., 42.), point) {
         return vec![UiAction::Cabinet];
     }
+    for (index, rect) in l.difficulty.iter().enumerate() {
+        if crate::ui::hit(*rect, point) {
+            return vec![UiAction::MatchThreeDifficulty(MatchThreeDifficulty::ALL[index])];
+        }
+    }
     if l.board.contains(point) {
-        let cell = l.board.w / SIDE as f32;
+        let side = _state.match_three.side();
+        let cell = l.board.w / side as f32;
         let col = ((point.x - l.board.x) / cell) as usize;
         let row = ((point.y - l.board.y) / cell) as usize;
-        if row < SIDE && col < SIDE {
-            return vec![UiAction::MatchThreeTap(row * SIDE + col)];
+        if row < side && col < side {
+            return vec![UiAction::MatchThreeTap(row * side + col)];
         }
     }
     if crate::ui::hit(l.hint, point) {
@@ -94,7 +116,13 @@ pub fn draw(state: &AppState) {
         accent(),
     );
     crate::ui::draw_text(
-        format!("{} points  •  {}", game.score, status(game.phase)),
+        format!(
+            "{} points  •  {}  •  {} / {}",
+            game.score,
+            status(game.phase),
+            game.difficulty.label(),
+            game.target_score()
+        ),
         if compact { 430. } else { title_x },
         if compact { 28. } else { title_y + 24. },
         accessibility::text_size(body_size(), state.large_text),
@@ -104,6 +132,14 @@ pub fn draw(state: &AppState) {
     button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW BOARD", state.large_text);
+    for (index, rect) in l.difficulty.iter().enumerate() {
+        mode_button(
+            *rect,
+            ["STD", "HARD", "EXPERT"][index],
+            MatchThreeDifficulty::ALL[index] == game.difficulty,
+            state.large_text,
+        );
+    }
     let status_y = if portrait {
         585.
     } else if compact {
@@ -130,11 +166,12 @@ pub fn draw(state: &AppState) {
 }
 
 fn draw_board(board: Rect, game: &MatchThree, high_contrast: bool) {
-    let cell = board.w / SIDE as f32;
-    for index in 0..SIDE * SIDE {
+    let side = game.side();
+    let cell = board.w / side as f32;
+    for index in 0..side * side {
         let rect = Rect::new(
-            board.x + (index % SIDE) as f32 * cell,
-            board.y + (index / SIDE) as f32 * cell,
+            board.x + (index % side) as f32 * cell,
+            board.y + (index / side) as f32 * cell,
             cell,
             cell,
         );
@@ -162,7 +199,7 @@ fn draw_board(board: Rect, game: &MatchThree, high_contrast: bool) {
 
 fn status(phase: MatchThreePhase) -> &'static str {
     match phase {
-        MatchThreePhase::Playing => "REACH 120 POINTS",
+        MatchThreePhase::Playing => "REACH THE TARGET",
         MatchThreePhase::Won => "FIELD CLEARED",
     }
 }
@@ -174,7 +211,9 @@ fn palette(color: u8, high_contrast: bool) -> Color {
             Color::new(0.10, 0.95, 0.30, 1.),
             Color::new(0.10, 0.55, 1., 1.),
             Color::new(1., 0.25, 0.95, 1.),
-        ][color as usize % 5]
+            Color::new(0.96, 0.42, 0.08, 1.),
+            Color::new(0.20, 0.90, 0.88, 1.),
+        ][color as usize % 7]
     } else {
         [
             Color::new(0.94, 0.35, 0.42, 1.),
@@ -182,7 +221,9 @@ fn palette(color: u8, high_contrast: bool) -> Color {
             Color::new(0.35, 0.82, 0.58, 1.),
             Color::new(0.32, 0.64, 0.95, 1.),
             Color::new(0.68, 0.45, 0.90, 1.),
-        ][color as usize % 5]
+            Color::new(0.95, 0.48, 0.25, 1.),
+            Color::new(0.28, 0.78, 0.76, 1.),
+        ][color as usize % 7]
     }
 }
 fn button(rect: Rect, label: &str, large_text: bool) {
@@ -194,6 +235,24 @@ fn button(rect: Rect, label: &str, large_text: bool) {
         accessibility::text_size(11., large_text),
         WHITE,
     );
+}
+fn mode_button(rect: Rect, label: &str, selected: bool, large_text: bool) {
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        if selected { crate::theme::MOSS_DARK } else { crate::theme::SURFACE },
+    );
+    draw_rectangle_lines(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        if selected { 2. } else { 1. },
+        accent(),
+    );
+    center_text(label, rect, accessibility::text_size(10., large_text), WHITE);
 }
 fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
     let measured = crate::ui::measure_text(label, None, size as u16, 1.);

@@ -34,21 +34,26 @@ pub(super) fn requires_new_confirmation(action: UiAction) -> bool {
             | UiAction::NimNew
             | UiAction::DungeonNew
             | UiAction::PotionNew
+            | UiAction::PotionDifficulty(_)
             | UiAction::TowerNew
             | UiAction::RogueNew
             | UiAction::DailyNew
             | UiAction::DotsNew
+            | UiAction::DotsDifficulty(_)
             | UiAction::SokobanNew
             | UiAction::MancalaNew
             | UiAction::HanoiNew
             | UiAction::NumberMatchNew
             | UiAction::FloodNew
+            | UiAction::FloodDifficulty(_)
             | UiAction::ColorSortNew
+            | UiAction::ColorSortDifficulty(_)
             | UiAction::BattleshipNew
             | UiAction::WordGridNew
             | UiAction::PipeNew
             | UiAction::MazeNew
             | UiAction::MatchThreeNew
+            | UiAction::MatchThreeDifficulty(_)
             | UiAction::WordLadderNew
     )
 }

@@ -69,12 +69,11 @@ pub fn draw_solitaire(state: &AppState) {
             };
             draw_card(rect, card, false, state.card_back, state.reduced_motion);
         } else {
-            text(
-                ["♣", "♦", "♥", "♠"][suit],
-                rect.x + 30.,
-                rect.y + 70.,
+            crate::card_render::draw_suit_symbol(
+                vec2(rect.center().x, rect.center().y),
                 32.,
-                Color::new(0.46, 0.37, 0.58, 1.),
+                suit as u8,
+                crate::theme::BRASS,
             );
         }
     }
