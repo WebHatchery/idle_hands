@@ -330,8 +330,8 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
         ],
         GameId::WordLadder => [
             "Tap letters to build a five-letter step, then tap SUBMIT.",
-            "Change exactly one letter from the last word.",
-            "Use HINT, UNDO, or NEW LADDER with the visible controls.",
+            "Change exactly one letter; the outlined tile shows which letter changed.",
+            "Climb DIRECT or visit the SCENIC waypoint; use HINT, multi-step UNDO, or NEW LADDER.",
         ],
     }
 }

@@ -534,6 +534,10 @@ impl Game {
                 let seed = self.state.word_ladder.seed.wrapping_add(1);
                 self.state.word_ladder.reset(seed);
             }
+            UiAction::WordLadderMode(mode) => {
+                let seed = self.state.word_ladder.seed.wrapping_add(1);
+                self.state.word_ladder.set_mode(*mode, seed);
+            }
             UiAction::PipeRotate(index) => {
                 self.state.pipe_loop.rotate(*index);
             }

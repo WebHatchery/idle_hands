@@ -1,13 +1,35 @@
 //! Deterministic five-letter word ladders.
 
 use serde::{Deserialize, Serialize};
+use std::collections::{HashMap, VecDeque};
 
 pub const WORD_LENGTH: usize = 5;
-pub const WORDS: [&str; 18] = [
+pub const WORDS: [&str; 22] = [
     "SLATE", "PLATE", "PLACE", "PLANE", "PLANK", "BLANK", "FLANK", "FLARE", "SHARE", "SHORE",
-    "SCORE", "SCONE", "STONE", "SHONE", "PHONE", "PHONY", "LIGHT", "NIGHT",
+    "SCORE", "SCONE", "STONE", "SHONE", "PHONE", "PHONY", "LIGHT", "NIGHT", "MIGHT", "RIGHT",
+    "SIGHT", "FIGHT",
 ];
-pub const PUZZLES: [(&str, &str); 3] = [("SLATE", "BLANK"), ("SHARE", "STONE"), ("LIGHT", "NIGHT")];
+pub const PUZZLES: [(&str, &str, &str); 3] = [
+    ("SLATE", "BLANK", "PLACE"),
+    ("SHARE", "STONE", "SCORE"),
+    ("LIGHT", "NIGHT", "RIGHT"),
+];
+
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum LadderMode {
+    #[default]
+    Direct,
+    Scenic,
+}
+
+impl LadderMode {
+    pub const fn label(self) -> &'static str {
+        match self {
+            Self::Direct => "DIRECT",
+            Self::Scenic => "SCENIC",
+        }
+    }
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum WordLadderPhase {
@@ -19,6 +41,14 @@ pub enum WordLadderPhase {
 pub struct WordLadder {
     pub start: String,
     pub target: String,
+    #[serde(default)]
+    pub waypoint: String,
+    #[serde(default)]
+    pub waypoint_reached: bool,
+    #[serde(default)]
+    pub mode: LadderMode,
+    #[serde(default)]
+    pub par: u16,
     pub current: String,
     pub guesses: Vec<String>,
     pub moves: u16,
@@ -26,7 +56,7 @@ pub struct WordLadder {
     pub phase: WordLadderPhase,
     pub message: String,
     #[serde(skip)]
-    undo: Option<Box<Self>>,
+    history: Vec<Box<Self>>,
 }
 
 impl Default for WordLadder {
@@ -37,17 +67,31 @@ impl Default for WordLadder {
 
 impl WordLadder {
     pub fn new(seed: u64) -> Self {
-        let (start, target) = PUZZLES[(seed as usize) % PUZZLES.len()];
+        Self::new_with_mode(seed, LadderMode::Direct)
+    }
+    pub fn new_with_mode(seed: u64, mode: LadderMode) -> Self {
+        let (start, target, waypoint) = PUZZLES[(seed as usize) % PUZZLES.len()];
+        let direct = shortest_path(start, target).map_or(0, |path| path.len().saturating_sub(1));
+        let scenic = shortest_path(start, waypoint).map_or(0, |path| path.len().saturating_sub(1))
+            + shortest_path(waypoint, target).map_or(0, |path| path.len().saturating_sub(1));
         Self {
             start: start.into(),
             target: target.into(),
+            waypoint: waypoint.into(),
+            waypoint_reached: false,
+            mode,
+            par: if mode == LadderMode::Scenic {
+                scenic
+            } else {
+                direct
+            } as u16,
             current: String::new(),
             guesses: Vec::new(),
             moves: 0,
             seed,
             phase: WordLadderPhase::Playing,
             message: "Change one letter at a time".into(),
-            undo: None,
+            history: Vec::new(),
         }
     }
     pub fn tap_letter(&mut self, letter: u8) -> bool {
@@ -73,56 +117,120 @@ impl WordLadder {
             self.message = "That word is not in the dictionary".into();
             return false;
         }
-        let previous = self.clone_without_undo();
         if self.guesses.last() == Some(&guess)
             || !one_away(self.guesses.last().map_or(&self.start, |word| word), &guess)
         {
             self.message = "Change exactly one letter from the last word".into();
             return false;
         }
+        if self.mode == LadderMode::Scenic && !self.waypoint_reached && guess == self.target {
+            self.message = format!("Reach {} before the target", self.waypoint);
+            return false;
+        }
+        let previous = self.clone_without_history();
         self.guesses.push(guess.clone());
         self.current.clear();
         self.moves = self.moves.saturating_add(1);
-        self.undo = Some(Box::new(previous));
+        if guess == self.waypoint {
+            self.waypoint_reached = true;
+        }
         if guess == self.target {
             self.phase = WordLadderPhase::Won;
             self.message = format!("Ladder complete in {} moves", self.moves);
         } else {
-            self.message = "Good step — keep climbing".into();
+            self.message = if self.mode == LadderMode::Scenic && self.waypoint_reached {
+                "Waypoint reached — now climb to the target".into()
+            } else {
+                "Good step — keep climbing".into()
+            };
         }
+        self.history.push(Box::new(previous));
         true
     }
     pub fn undo(&mut self) -> bool {
-        let Some(previous) = self.undo.take() else {
+        let Some(previous) = self.history.pop() else {
             return false;
         };
+        let history = std::mem::take(&mut self.history);
         *self = *previous;
+        self.history = history;
         true
     }
     pub fn reset(&mut self, seed: u64) {
-        *self = Self::new(seed);
+        *self = Self::new_with_mode(seed, self.mode);
+    }
+    pub fn set_mode(&mut self, mode: LadderMode, seed: u64) {
+        *self = Self::new_with_mode(seed, mode);
     }
     pub fn hint_word(&self) -> Option<&'static str> {
         if self.phase != WordLadderPhase::Playing {
             return None;
         }
+        self.route().and_then(|path| path.get(1).copied())
+    }
+
+    pub fn remaining_steps(&self) -> usize {
+        self.route().map_or(0, |path| path.len().saturating_sub(1))
+    }
+
+    pub fn legal_step_count(&self) -> usize {
         let from = self.guesses.last().map_or(&self.start, |word| word);
         WORDS
             .iter()
-            .copied()
-            .find(|word| *word != self.target && *word != from && one_away(from, word))
-            .or_else(|| {
-                WORDS
-                    .iter()
-                    .copied()
-                    .find(|word| *word == self.target && one_away(from, word))
-            })
+            .filter(|word| **word != from && one_away(from, word))
+            .count()
     }
-    fn clone_without_undo(&self) -> Self {
+
+    pub fn current_difference_count(&self) -> usize {
+        let from = self.guesses.last().map_or(&self.start, |word| word);
+        from.bytes()
+            .zip(self.current.bytes())
+            .filter(|(left, right)| left != right)
+            .count()
+    }
+
+    fn route(&self) -> Option<Vec<&'static str>> {
+        let from = self
+            .guesses
+            .last()
+            .map_or(self.start.as_str(), |word| word.as_str());
+        let objective = if self.mode == LadderMode::Scenic && !self.waypoint_reached {
+            self.waypoint.as_str()
+        } else {
+            self.target.as_str()
+        };
+        shortest_path(from, objective)
+    }
+
+    fn clone_without_history(&self) -> Self {
         let mut copy = self.clone();
-        copy.undo = None;
+        copy.history.clear();
         copy
     }
+}
+
+fn shortest_path(start: &str, target: &str) -> Option<Vec<&'static str>> {
+    let mut queue = VecDeque::from([start]);
+    let mut previous: HashMap<&str, Option<&str>> = HashMap::from([(start, None)]);
+    while let Some(word) = queue.pop_front() {
+        if word == target {
+            let mut path = Vec::new();
+            let mut cursor = Some(word);
+            while let Some(next) = cursor {
+                path.push(WORDS.iter().copied().find(|candidate| *candidate == next)?);
+                cursor = previous[next];
+            }
+            path.reverse();
+            return Some(path);
+        }
+        for candidate in WORDS.iter().copied() {
+            if !previous.contains_key(candidate) && one_away(word, candidate) {
+                previous.insert(candidate, Some(word));
+                queue.push_back(candidate);
+            }
+        }
+    }
+    None
 }
 
 fn one_away(a: &str, b: &str) -> bool {

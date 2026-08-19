@@ -187,6 +187,7 @@ impl Game {
             | "word_ladder_hint_accessible"
             | "word_ladder_best"
             | "word_ladder_progress"
+            | "word_ladder_routes"
             | "word_ladder_confirm" => Screen::Game(GameId::WordLadder),
             "pipe_loop" | "pipe_loop_hint" | "pipe_loop_hint_accessible" => {
                 Screen::Game(GameId::PipeLoop)

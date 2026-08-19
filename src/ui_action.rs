@@ -273,6 +273,7 @@ pub enum UiAction {
     WordLadderHint,
     WordLadderUndo,
     WordLadderNew,
+    WordLadderMode(crate::word_ladder::LadderMode),
     PipeRotate(usize),
     PipeHint,
     PipeUndo,

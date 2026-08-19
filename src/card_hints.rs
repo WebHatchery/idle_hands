@@ -610,7 +610,20 @@ pub fn word_ladder(state: &AppState) -> String {
     }
     game.hint_word().map_or_else(
         || "No single-letter step is showing — tap UNDO or NEW LADDER.".into(),
-        |word| format!("Try {} next: change one letter.", word),
+        |word| {
+            let objective =
+                if game.mode == crate::word_ladder::LadderMode::Scenic && !game.waypoint_reached {
+                    "scenic waypoint"
+                } else {
+                    "target"
+                };
+            format!(
+                "Try {} next toward the {} ({} steps remain).",
+                word,
+                objective,
+                game.remaining_steps()
+            )
+        },
     )
 }
 

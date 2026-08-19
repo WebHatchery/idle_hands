@@ -492,6 +492,20 @@ recent player and opponent removals, and complete turn history supports
 repeated undo across both sides' moves. Older saves default to NORMAL with no
 recorded take notes.
 
+### 11.21 Word Ladder route planning
+
+Word Ladder now searches the dictionary graph breadth-first, so HINT advances
+along a shortest route to the active objective instead of choosing the first
+adjacent word. The header publishes moves against par, remaining route length,
+and the number of legal next words from the current rung. DIRECT climbs
+straight to the target. SCENIC requires a puzzle-specific waypoint first—PLACE,
+SCORE, or RIGHT—and rejects an early target with the missing waypoint named;
+the LIGHT family has been expanded with MIGHT, RIGHT, SIGHT, and FIGHT to create
+real alternative routes. Each accepted row outlines its single changed letter,
+making the core rule visible without comparing whole words. Hints distinguish
+waypoint and target legs, while complete multi-step undo restores waypoint
+state as well as rows. Older saves default to DIRECT with no waypoint gate.
+
 ## 12. Historical Phase 0 Decisions
 
 The original eight-game launch scope established the current product principles:

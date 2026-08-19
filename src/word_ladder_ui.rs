@@ -4,7 +4,7 @@ use crate::{
     accessibility,
     state::AppState,
     ui::UiAction,
-    word_ladder::{WordLadder, WordLadderPhase},
+    word_ladder::{LadderMode, WordLadder, WordLadderPhase},
 };
 use macroquad::prelude::*;
 
@@ -16,6 +16,7 @@ struct Layout {
     hint: Rect,
     undo: Rect,
     new_game: Rect,
+    mode: Rect,
     columns: usize,
     key_w: f32,
     key_h: f32,
@@ -30,6 +31,7 @@ fn layout() -> Layout {
             hint: Rect::new(610., 85., 80., 42.),
             undo: Rect::new(700., 85., 80., 42.),
             new_game: Rect::new(610., 135., 170., 42.),
+            mode: Rect::new(610., 185., 170., 42.),
             columns: 13,
             key_w: 58.,
             key_h: 42.,
@@ -42,6 +44,7 @@ fn layout() -> Layout {
             hint: Rect::new(215., 425., 95., 42.),
             undo: Rect::new(15., 710., 95., 42.),
             new_game: Rect::new(115., 710., 145., 42.),
+            mode: Rect::new(270., 710., 105., 42.),
             columns: 7,
             key_w: 48.,
             key_h: 44.,
@@ -54,6 +57,7 @@ fn layout() -> Layout {
             hint: Rect::new(1020., 300., 100., 44.),
             undo: Rect::new(1130., 300., 100., 44.),
             new_game: Rect::new(790., 360., 150., 44.),
+            mode: Rect::new(950., 360., 140., 44.),
             columns: 13,
             key_w: 36.,
             key_h: 42.,
@@ -80,6 +84,12 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if crate::ui::hit(l.new_game, point) {
         return vec![UiAction::WordLadderNew];
+    }
+    if crate::ui::hit(l.mode, point) {
+        return vec![UiAction::WordLadderMode(match _state.word_ladder.mode {
+            LadderMode::Direct => LadderMode::Scenic,
+            LadderMode::Scenic => LadderMode::Direct,
+        })];
     }
     if l.keyboard.contains(point) {
         let index = ((point.y - l.keyboard.y) / l.key_h) as usize * l.columns
@@ -125,7 +135,28 @@ pub fn draw(state: &AppState) {
         accent(),
     );
     crate::ui::draw_text(
-        format!("{} moves  -  {} TO {}", game.moves, game.start, game.target),
+        if compact || portrait || screen_width() < 360. {
+            format!(
+                "{}/{} moves • {} left • {} paths • Δ{}",
+                game.moves,
+                game.par,
+                game.remaining_steps(),
+                game.legal_step_count(),
+                game.current_difference_count()
+            )
+        } else {
+            format!(
+                "{} → {}  •  Moves {}/{}  •  {} left  •  {} next  •  Input Δ{}  •  {}",
+                game.start,
+                game.target,
+                game.moves,
+                game.par,
+                game.remaining_steps(),
+                game.legal_step_count(),
+                game.current_difference_count(),
+                game.mode.label()
+            )
+        },
         if compact { 300. } else { title_x },
         if compact { 28. } else { title_y + 24. },
         accessibility::text_size(14., state.large_text),
@@ -162,8 +193,8 @@ pub fn draw(state: &AppState) {
         } else {
             390.
         },
-        105.,
-        300.,
+        if compact { 55. } else { 105. },
+        if compact { 220. } else { 300. },
     );
     draw_keyboard(l, game, state.large_text);
     button(l.back, "DELETE", state.large_text);
@@ -171,6 +202,7 @@ pub fn draw(state: &AppState) {
     button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW LADDER", state.large_text);
+    mode_button(l.mode, game.mode.label(), state.large_text);
     crate::ui::draw_text(
         state.card_hint.as_deref().unwrap_or(&game.message),
         if compact { 40. } else { title_x },
@@ -220,6 +252,27 @@ fn draw_words(game: &WordLadder, x: f32, y: f32, width: f32) {
                 1.,
                 Color::new(0.35, 0.65, 0.62, 1.),
             );
+            let prior = if row == 0 {
+                None
+            } else if row == 1 {
+                Some(game.start.as_bytes())
+            } else {
+                game.guesses.get(row - 2).map(String::as_bytes)
+            };
+            let changed = word
+                .and_then(|value| value.as_bytes().get(col))
+                .zip(prior.and_then(|value| value.get(col)))
+                .is_some_and(|(value, old)| value != old);
+            if changed {
+                draw_rectangle_lines(
+                    rect.x + 2.,
+                    rect.y + 2.,
+                    rect.w - 4.,
+                    rect.h - 4.,
+                    3.,
+                    accent(),
+                );
+            }
             if let Some(value) = word.and_then(|word| word.as_bytes().get(col)) {
                 crate::ui::draw_text(
                     (*value as char).to_string(),
@@ -240,6 +293,23 @@ fn draw_words(game: &WordLadder, x: f32, y: f32, width: f32) {
             Color::new(0.55, 1., 0.72, 1.),
         );
     }
+}
+fn mode_button(rect: Rect, label: &str, large_text: bool) {
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        Color::new(0.18, 0.34, 0.28, 1.),
+    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
+    crate::ui::draw_text(
+        label,
+        rect.x + 10.,
+        rect.y + rect.h * 0.64,
+        accessibility::text_size(11., large_text),
+        WHITE,
+    );
 }
 
 fn draw_keyboard(l: Layout, game: &WordLadder, large_text: bool) {

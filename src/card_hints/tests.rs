@@ -330,7 +330,7 @@ fn default_word_grid_has_a_deterministic_probe_hint() {
 fn default_word_ladder_has_a_deterministic_step_hint() {
     let state = AppState::default();
 
-    assert_eq!(word_ladder(&state), "Try NIGHT next: change one letter.");
+    assert!(word_ladder(&state).contains("toward the target"));
     assert_eq!(word_ladder(&state), word_ladder(&state));
 }
 

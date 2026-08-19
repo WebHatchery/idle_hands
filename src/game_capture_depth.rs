@@ -17,6 +17,7 @@ pub(super) fn apply(state: &mut AppState, scene: &str) {
         "pipe_network" => pipe_network(state),
         "maze_beacons" => maze_beacons(state),
         "nim_tactics" => nim_tactics(state),
+        "word_ladder_routes" => word_ladder_routes(state),
         _ => {}
     }
 }
@@ -276,4 +277,19 @@ fn nim_tactics(state: &mut AppState) {
     game.moves = 3;
     game.last_player_take = 1;
     game.last_ai_take = 2;
+}
+
+fn word_ladder_routes(state: &mut AppState) {
+    use crate::word_ladder::{LadderMode, WordLadder};
+    let game = &mut state.word_ladder;
+    *game = WordLadder::new_with_mode(2, LadderMode::Scenic);
+    for word in ["MIGHT", "RIGHT"] {
+        for letter in word.bytes() {
+            game.tap_letter(letter - b'A');
+        }
+        game.submit();
+    }
+    for letter in "NIG".bytes() {
+        game.tap_letter(letter - b'A');
+    }
 }
