@@ -221,7 +221,7 @@ fn status_text(status: ConnectFourStatus) -> &'static str {
         ConnectFourStatus::Playing => "Drop four in a row",
         ConnectFourStatus::Won(Disc::Red) => "Red takes the row",
         ConnectFourStatus::Won(Disc::Yellow) => "Yellow takes the row",
-        ConnectFourStatus::Won(Disc::Empty) => "The board is quiet",
+        ConnectFourStatus::Won(Disc::Empty) => "The board is settled",
         ConnectFourStatus::Draw => "The board is full",
     }
 }

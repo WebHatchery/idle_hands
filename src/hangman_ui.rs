@@ -208,7 +208,7 @@ fn status_text(status: HangmanStatus, wrong: u8) -> String {
     match status {
         HangmanStatus::Playing => format!("Wrong guesses {} / 6", wrong),
         HangmanStatus::Won => "The word is yours".into(),
-        HangmanStatus::Lost => "The quiet word slipped away".into(),
+        HangmanStatus::Lost => "The word slipped away".into(),
     }
 }
 fn button(rect: Rect, label: &str) {

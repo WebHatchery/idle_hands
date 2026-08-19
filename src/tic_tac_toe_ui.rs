@@ -214,7 +214,7 @@ fn status_text(status: TicTacToeStatus) -> &'static str {
         TicTacToeStatus::Won(Mark::X) => "You made three in a row.",
         TicTacToeStatus::Won(Mark::O) => "The cabinet made three in a row.",
         TicTacToeStatus::Won(Mark::Empty) => "The board is complete.",
-        TicTacToeStatus::Draw => "A quiet draw. Start another board to play again.",
+        TicTacToeStatus::Draw => "A draw. Start another board to play again.",
     }
 }
 

@@ -119,7 +119,7 @@ fn draw_home(state: &AppState, loaded: usize) {
         12.,
         crate::theme::SURFACE_DARK,
     );
-    text("Today's quiet", 982., 154., 17., crate::theme::INK);
+    text("Today's challenge", 982., 154., 17., crate::theme::INK);
     text("dungeon awaits  >", 982., 178., 14., crate::theme::SURFACE);
     text("Your collection", 260., 240., 15., crate::theme::INK);
     for (index, filter) in cabinet_status::CATEGORY_FILTERS.iter().copied().enumerate() {
@@ -227,7 +227,7 @@ fn draw_sidebar(state: &AppState) {
     text("IDLE", 48., 61., 34., crate::theme::CREAM);
     text("HANDS", 48., 94., 34., crate::theme::CREAM);
     text("quiet games for", 48., 119., 12., crate::theme::SECONDARY);
-    text("idle minutes", 48., 136., 12., crate::theme::SECONDARY);
+    text("idle hands", 48., 136., 12., crate::theme::SECONDARY);
     let labels = [
         "HOME",
         "ALL GAMES",

@@ -121,7 +121,7 @@ pub fn draw(state: &AppState) {
         state
             .card_hint
             .as_deref()
-            .unwrap_or("Tap any tile to rotate its quiet path"),
+            .unwrap_or("Tap any tile to rotate its path"),
         if compact { 260. } else { title_x },
         status_y,
         accessibility::text_size(body_size(), state.large_text),

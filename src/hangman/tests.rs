@@ -13,7 +13,7 @@ fn seeded_words_repeat_and_guessing_tracks_progress() {
 #[test]
 fn all_word_letters_win_the_round() {
     let mut game = Hangman::new(0);
-    for letter in b"QUIET" {
+    for letter in b"STARE" {
         assert!(game.guess(letter - b'A'));
     }
     assert_eq!(game.status, HangmanStatus::Won);

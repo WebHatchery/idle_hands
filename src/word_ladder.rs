@@ -70,7 +70,7 @@ impl WordLadder {
         }
         let guess = self.current.clone();
         if !WORDS.contains(&guess.as_str()) {
-            self.message = "That word is not in the quiet dictionary".into();
+            self.message = "That word is not in the dictionary".into();
             return false;
         }
         let previous = self.clone_without_undo();

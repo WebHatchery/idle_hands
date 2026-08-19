@@ -4,7 +4,7 @@ use macroquad::prelude::Color;
 
 pub const CARD_BACKS: [&str; 3] = ["Plum", "Moss", "Midnight"];
 pub const BOARD_THEMES: [&str; 3] = ["Walnut felt", "Moss felt", "Dawn paper"];
-pub const SOUND_SETS: [&str; 3] = ["Quiet room", "Rain on glass", "Late library"];
+pub const SOUND_SETS: [&str; 3] = ["Soft room", "Rain on glass", "Late library"];
 pub const CABINET_DECORATIONS: [&str; 3] = ["Brass key", "Pressed fern", "Moon card"];
 
 const CARD_BACK_COSTS: [u16; 3] = [0, 2, 5];

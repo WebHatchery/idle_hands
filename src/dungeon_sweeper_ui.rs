@@ -200,7 +200,7 @@ fn status_text(status: DungeonStatus, moves: u16) -> String {
     match status {
         DungeonStatus::Ready => "Tap a room to enter".into(),
         DungeonStatus::Playing => format!("Find EXIT • tap clues to chord • {} moves", moves),
-        DungeonStatus::Won => "The quiet exit is found".into(),
+        DungeonStatus::Won => "The exit is found".into(),
         DungeonStatus::Lost => "A trap closed the path".into(),
     }
 }

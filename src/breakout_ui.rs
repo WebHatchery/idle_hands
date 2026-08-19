@@ -225,7 +225,7 @@ fn status_text(status: BreakoutStatus, score: u16) -> String {
     match status {
         BreakoutStatus::Playing => format!("Score {} / 64", score),
         BreakoutStatus::Won => "The wall is clear".into(),
-        BreakoutStatus::Lost => "The ball fell quiet".into(),
+        BreakoutStatus::Lost => "The ball slipped away".into(),
     }
 }
 fn button(rect: Rect, label: &str, large_text: bool) {

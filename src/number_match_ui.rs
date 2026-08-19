@@ -197,7 +197,7 @@ fn draw_board(board: Rect, game: &NumberMatch, high_contrast: bool, large_text: 
 fn status_text(phase: NumberMatchPhase) -> &'static str {
     match phase {
         NumberMatchPhase::Playing => "Tap adjacent equal or sum-to-ten numbers",
-        NumberMatchPhase::Won => "Every quiet number has found its pair",
+        NumberMatchPhase::Won => "Every number has found its pair",
     }
 }
 

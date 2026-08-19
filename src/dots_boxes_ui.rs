@@ -362,7 +362,7 @@ fn edge_owner_vertical(index: usize, game: &DotsBoxes) -> u8 {
 
 fn status_text(phase: DotsPhase) -> &'static str {
     match phase {
-        DotsPhase::Playing => "Draw a line beside a quiet box",
+        DotsPhase::Playing => "Draw a line beside an open box",
         DotsPhase::Won => "The red boxes hold the board",
         DotsPhase::Lost => "The blue boxes hold the board",
     }

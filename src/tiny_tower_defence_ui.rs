@@ -199,7 +199,7 @@ fn wave_label(phase: TowerPhase, paused: bool) -> &'static str {
 fn status_text(phase: TowerPhase, score: u32) -> String {
     match phase {
         TowerPhase::Build => format!("Prepare the lanes  •  Score {}", score),
-        TowerPhase::Wave => format!("Stop the quiet invaders  •  Score {}", score),
+        TowerPhase::Wave => format!("Stop the invaders  •  Score {}", score),
         TowerPhase::Won => format!("The tower holds  •  Score {}", score),
         TowerPhase::Lost => format!("The gate fell  •  Score {}", score),
     }

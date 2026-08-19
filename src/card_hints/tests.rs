@@ -135,7 +135,7 @@ fn default_word_search_has_a_deterministic_hint() {
     let state = AppState::default();
     assert_eq!(
         word_search(&state),
-        "Try QUIET from row 1, column 1 to row 1, column 5."
+        "Try STILL from row 1, column 1 to row 1, column 5."
     );
     assert_eq!(word_search(&state), word_search(&state));
 }

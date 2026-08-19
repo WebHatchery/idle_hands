@@ -56,7 +56,7 @@ pub fn draw_credits() {
     crate::ui::draw_text("CREDITS", 300., 175., 46., crate::theme::BRASS);
     crate::ui::draw_text("IDLE HANDS", 305., 240., 28., WHITE);
     crate::ui::draw_text(
-        "A quiet collection for small pauses.",
+        "A warm collection for small pauses.",
         305.,
         280.,
         20.,
@@ -77,7 +77,7 @@ pub fn draw_credits() {
         crate::theme::SECONDARY,
     );
     crate::ui::draw_text(
-        "Thank you for spending a quiet minute at the cabinet.",
+        "Thank you for spending a minute at the cabinet.",
         305.,
         450.,
         19.,

@@ -1,4 +1,4 @@
-//! A deterministic real-time tower defence board for quiet cabinet sessions.
+//! A deterministic real-time tower defence board for short cabinet sessions.
 
 use serde::{Deserialize, Serialize};
 

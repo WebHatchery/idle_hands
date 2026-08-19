@@ -29,7 +29,7 @@ pub fn draw(state: &AppState) {
     text("‹ CABINET", 40., 55., 20., crate::theme::BRASS);
     text("MINESWEEPER", 40., 105., 42., crate::theme::BRASS);
     text(
-        "Read the quiet field",
+        "Read the field",
         44.,
         132.,
         18.,

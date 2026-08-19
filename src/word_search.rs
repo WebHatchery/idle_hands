@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 const SIZE: usize = 10;
 const WORD_COUNT: usize = 6;
-pub const WORDS: [&str; WORD_COUNT] = ["QUIET", "SHELF", "CARD", "PAUSE", "GAMES", "DREAM"];
+pub const WORDS: [&str; WORD_COUNT] = ["STILL", "SHELF", "CARD", "PAUSE", "GAMES", "DREAM"];
 const PLACEMENTS: [(usize, usize, isize, isize); WORD_COUNT] = [
     (0, 0, 0, 1),
     (2, 9, 1, 0),

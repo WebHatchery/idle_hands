@@ -221,7 +221,7 @@ fn draw_store(rect: Rect, stones: u8, player: bool) {
 fn status_text(phase: MancalaPhase) -> &'static str {
     match phase {
         MancalaPhase::Playing => "Sow the stones from one of your six pits",
-        MancalaPhase::Won => "Your store holds the quiet majority",
+        MancalaPhase::Won => "Your store holds the majority",
         MancalaPhase::Lost => "The cabinet gathered more stones",
     }
 }

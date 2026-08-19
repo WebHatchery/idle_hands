@@ -329,11 +329,11 @@ pub fn tic_tac_toe(state: &AppState) -> String {
 pub fn lights_out(state: &AppState) -> String {
     let game = &state.lights_out;
     if game.status == crate::lights_out::LightsOutStatus::Won {
-        return "Every light is already quiet — tap NEW BOARD to play again.".into();
+        return "Every light is already settled — tap NEW BOARD to play again.".into();
     }
     game.hint_move().map_or_else(
         || "No press is available — tap NEW BOARD to begin again.".into(),
-        |index| format!("Try square {} to quiet the field.", index + 1),
+        |index| format!("Try square {} to settle the field.", index + 1),
     )
 }
 
@@ -366,7 +366,7 @@ pub fn mastermind(state: &AppState) -> String {
             return "The code is already open — tap NEW BOARD to play again.".into();
         }
         crate::mastermind::MastermindStatus::Lost => {
-            return "The code stayed quiet — tap NEW BOARD to begin again.".into();
+            return "The code held firm — tap NEW BOARD to begin again.".into();
         }
         crate::mastermind::MastermindStatus::Playing => {}
     }

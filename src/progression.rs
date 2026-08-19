@@ -70,7 +70,7 @@ impl AchievementId {
                 GameId::Solitaire => "Card table",
                 GameId::FreeCell => "Open cells",
                 GameId::Sudoku => "Number keeper",
-                GameId::Minesweeper => "Quiet surveyor",
+                GameId::Minesweeper => "Careful surveyor",
                 GameId::Game2048 => "Tile climber",
                 GameId::Nonogram => "Pattern keeper",
                 GameId::Yahtzee => "Scorekeeper",

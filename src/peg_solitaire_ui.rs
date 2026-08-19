@@ -216,7 +216,7 @@ fn draw_board(game: &crate::peg_solitaire::PegSolitaire, layout: Layout, high_co
 
 fn status_text(status: PegSolitaireStatus) -> &'static str {
     match status {
-        PegSolitaireStatus::Playing => "Clear the quiet board",
+        PegSolitaireStatus::Playing => "Clear the board",
         PegSolitaireStatus::Won => "One peg remains",
         PegSolitaireStatus::Stuck => "No jumps remain",
     }

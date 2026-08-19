@@ -387,7 +387,7 @@ pub fn draw_reversi(state: &AppState) {
         crate::theme::BRASS,
     );
     text(
-        "Turn the board, one quiet move at a time",
+        "Turn the board, one careful move at a time",
         accessibility::text_size(12., state.large_text),
         94.,
         accessibility::text_size(12., state.large_text),

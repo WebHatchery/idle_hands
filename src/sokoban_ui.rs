@@ -244,7 +244,7 @@ fn crate_color(tile: u8, high_contrast: bool) -> Color {
 fn status_text(phase: SokobanPhase) -> &'static str {
     match phase {
         SokobanPhase::Playing => "Push each crate onto a marked square",
-        SokobanPhase::Won => "The quiet room is clear",
+        SokobanPhase::Won => "The room is clear",
     }
 }
 

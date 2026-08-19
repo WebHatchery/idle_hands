@@ -226,7 +226,7 @@ fn tile_rect(tile: Tile, layout: Layout) -> Rect {
 }
 fn status_text(status: MahjongStatus) -> &'static str {
     match status {
-        MahjongStatus::Playing => "Find the quiet pairs",
+        MahjongStatus::Playing => "Find the matching pairs",
         MahjongStatus::Won => "The tiles are clear",
         MahjongStatus::Stuck => "No free pair remains",
     }

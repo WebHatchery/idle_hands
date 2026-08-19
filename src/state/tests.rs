@@ -29,7 +29,7 @@ fn blocked_board_has_no_available_move() {
 #[test]
 fn collection_save_round_trips_game_and_profile_state() {
     let mut state = AppState {
-        profile_name: "Quiet Player".into(),
+        profile_name: "Patient Player".into(),
         ..Default::default()
     };
     state.game.score = 128;
@@ -100,7 +100,7 @@ fn collection_save_round_trips_game_and_profile_state() {
     let save = CollectionSave::from_state(&state, "1.0.0");
     let mut restored = AppState::default();
     save.apply_to(&mut restored);
-    assert_eq!(restored.profile_name, "Quiet Player");
+    assert_eq!(restored.profile_name, "Patient Player");
     assert_eq!(restored.game.score, 128);
     assert_eq!(restored.mine_records[0], Some(42));
     assert_eq!(restored.records.best_2048, 128);

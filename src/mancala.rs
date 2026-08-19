@@ -1,4 +1,4 @@
-//! Deterministic Kalah-style Mancala with a quiet local opponent.
+//! Deterministic Kalah-style Mancala with a local opponent.
 
 use serde::{Deserialize, Serialize};
 

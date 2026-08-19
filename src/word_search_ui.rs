@@ -92,7 +92,7 @@ pub fn draw(state: &AppState) {
     text("WORD SEARCH", header_x, header_y, title_size(), accent());
     let instruction = state.card_hint.as_deref().unwrap_or(match game.status {
         WordSearchStatus::Playing => "Tap two endpoints to find a word",
-        WordSearchStatus::Won => "The quiet list is complete",
+        WordSearchStatus::Won => "The list is complete",
     });
     text(
         instruction,

@@ -2,7 +2,7 @@
 
 use serde::{Deserialize, Serialize};
 
-pub const WORDS: [&str; 6] = ["QUIET", "CABINET", "PAUSE", "SHELF", "GARDEN", "MOMENT"];
+pub const WORDS: [&str; 6] = ["STARE", "CABINET", "PAUSE", "SHELF", "GARDEN", "MOMENT"];
 const MAX_WRONG: u8 = 6;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]

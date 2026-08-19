@@ -239,7 +239,7 @@ fn status_text(status: SnakeStatus, score: u16) -> String {
     match status {
         SnakeStatus::Playing => format!("Score {} / 20", score),
         SnakeStatus::Won => "The coil is complete".into(),
-        SnakeStatus::Lost => "The coil touched quiet space".into(),
+        SnakeStatus::Lost => "The coil touched empty space".into(),
     }
 }
 fn button(rect: Rect, label: &str, large_text: bool) {

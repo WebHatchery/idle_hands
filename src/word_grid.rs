@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 pub const WORD_LENGTH: usize = 5;
 pub const MAX_GUESSES: usize = 6;
 pub const WORDS: [&str; 8] = [
-    "QUIET", "SHELF", "PAUSE", "GAMES", "SMALL", "WORDS", "MOTIF", "CABIN",
+    "STILL", "SHELF", "PAUSE", "GAMES", "SMALL", "WORDS", "MOTIF", "CABIN",
 ];
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]

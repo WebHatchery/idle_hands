@@ -150,7 +150,7 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
         ],
         GameId::MemoryPairs => [
             "Tap a card to turn it face up.",
-            "Find its matching card before the board goes quiet.",
+            "Find its matching card before the board is complete.",
             "Use UNDO or NEW BOARD whenever you need it.",
         ],
         GameId::SlidingPuzzle => [
@@ -175,7 +175,7 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
         ],
         GameId::Hangman => [
             "Tap a visible letter button to guess it.",
-            "Six wrong guesses end the quiet round.",
+            "Six wrong guesses end the round.",
             "Tap NEW WORD to begin another word.",
         ],
         GameId::ConnectFour => [
@@ -249,7 +249,7 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
             "Use POTION, UNDO, or NEW ROOM with the visible controls.",
         ],
         GameId::DailyDungeon => [
-            "Tap a direction to reveal the next quiet room.",
+            "Tap a direction to reveal the next room.",
             "Recover three runes, avoid the one-use traps, then reach EXIT.",
             "Use UNDO or NEW DAY with the visible controls.",
         ],
@@ -259,7 +259,7 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
             "Claim more squares than the cabinet; use UNDO or NEW BOARD.",
         ],
         GameId::Sokoban => [
-            "Tap a direction to walk across the quiet room.",
+            "Tap a direction to walk across the room.",
             "Push every crate onto a marked square; crates cannot be pulled.",
             "Use UNDO or NEW ROOM with the visible controls.",
         ],
@@ -300,11 +300,11 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
         ],
         GameId::PipeLoop => [
             "Tap a pipe tile to rotate it clockwise.",
-            "Join the full quiet path to match the connected solution.",
+            "Join the full path to match the connected solution.",
             "Use UNDO or NEW LOOP with the visible controls.",
         ],
         GameId::MazeWalk => [
-            "Tap a visible direction to move the quiet traveler.",
+            "Tap a visible direction to move the traveler.",
             "Follow the open path to the glowing exit square.",
             "Use UNDO or NEW MAZE with the visible controls.",
         ],

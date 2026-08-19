@@ -24,7 +24,7 @@ pub fn breakout(state: &AppState) -> String {
             return "The wall is clear — tap NEW BOARD to play again.".into()
         }
         crate::breakout::BreakoutStatus::Lost => {
-            return "The ball fell quiet — tap NEW BOARD to begin again.".into()
+            return "The ball slipped away — tap NEW BOARD to begin again.".into()
         }
         crate::breakout::BreakoutStatus::Playing => {}
     }
@@ -43,7 +43,7 @@ pub fn higher_lower(state: &AppState) -> String {
     let game = &state.higher_lower;
     match game.status {
         crate::higher_lower::HigherLowerStatus::Won => {
-            return "The quiet run is yours — tap NEW ROUND to play again.".into()
+            return "The run is yours — tap NEW ROUND to play again.".into()
         }
         crate::higher_lower::HigherLowerStatus::Lost => {
             return "The next card slipped away — tap NEW ROUND to begin again.".into()
@@ -80,7 +80,7 @@ pub fn dungeon_sweeper(state: &AppState) -> String {
     let game = &state.dungeon_sweeper;
     match game.status {
         crate::dungeon_sweeper::DungeonStatus::Won => {
-            return "The quiet exit is found — tap NEW DUNGEON to play again.".into()
+            return "The exit is found — tap NEW DUNGEON to play again.".into()
         }
         crate::dungeon_sweeper::DungeonStatus::Lost => {
             return "A trap closed the path — tap NEW DUNGEON to begin again.".into()
@@ -233,7 +233,7 @@ pub fn dots_boxes(state: &AppState) -> String {
 pub fn sokoban(state: &AppState) -> String {
     let game = &state.sokoban;
     if game.won() {
-        return "The quiet room is clear — tap NEW ROOM to play again.".into();
+        return "The room is clear — tap NEW ROOM to play again.".into();
     }
     game.hint_direction().map_or_else(
         || "No route remains — tap NEW ROOM to begin again.".into(),
@@ -283,7 +283,7 @@ pub fn hanoi(state: &AppState) -> String {
 pub fn number_match(state: &AppState) -> String {
     let game = &state.number_match;
     if game.won() {
-        return "Every quiet number has found its pair — tap NEW BOARD to play again.".into();
+        return "Every number has found its pair — tap NEW BOARD to play again.".into();
     }
     game.hint_pair().map_or_else(
         || "No adjacent pair remains — tap NEW BOARD to begin again.".into(),
@@ -328,7 +328,7 @@ pub fn color_sort(state: &AppState) -> String {
 pub fn battleship(state: &AppState) -> String {
     let game = &state.battleship;
     if game.won() {
-        return "The quiet fleet is found — tap NEW FLEET to play again.".into();
+        return "The fleet is found — tap NEW FLEET to play again.".into();
     }
     game.hint_cell().map_or_else(
         || "Every water cell is searched — tap NEW FLEET to begin again.".into(),
@@ -340,7 +340,7 @@ pub fn word_grid(state: &AppState) -> String {
     let game = &state.word_grid;
     match game.phase {
         crate::word_grid::WordGridPhase::Won => {
-            return "The quiet word is found — tap NEW WORD to play again.".into()
+            return "The word is found — tap NEW WORD to play again.".into()
         }
         crate::word_grid::WordGridPhase::Lost => {
             return "The word is revealed — tap NEW WORD to begin again.".into()
@@ -356,7 +356,7 @@ pub fn word_grid(state: &AppState) -> String {
 pub fn pipe_loop(state: &AppState) -> String {
     let game = &state.pipe_loop;
     if game.won() {
-        return "The quiet loop is joined — tap NEW LOOP to play again.".into();
+        return "The loop is joined — tap NEW LOOP to play again.".into();
     }
     game.hint_rotation().map_or_else(
         || "No rotation remains — tap NEW LOOP to begin again.".into(),
@@ -373,7 +373,7 @@ pub fn pipe_loop(state: &AppState) -> String {
 pub fn maze_walk(state: &AppState) -> String {
     let game = &state.maze_walk;
     if game.won() {
-        return "The quiet exit is found — tap NEW MAZE to play again.".into();
+        return "The exit is found — tap NEW MAZE to play again.".into();
     }
     game.hint_direction().map_or_else(
         || "No route remains — tap NEW MAZE to begin again.".into(),

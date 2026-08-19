@@ -97,7 +97,7 @@ pub fn draw(state: &AppState) {
         accent(),
     );
     let instruction = if game.status == LightsOutStatus::Won {
-        "The cabinet is quiet. Start another board or play it again."
+        "The cabinet is settled. Start another board or play it again."
     } else {
         "Tap a light to toggle it and its four neighbors."
     };

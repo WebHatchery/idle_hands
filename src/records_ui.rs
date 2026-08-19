@@ -26,7 +26,7 @@ pub fn draw_records(state: &AppState) {
     );
     crate::ui::draw_text("RECORDS", 170., 125., 46., crate::theme::BRASS);
     crate::ui::draw_text(
-        "Quiet milestones from every drawer",
+        "Milestones from every drawer",
         174.,
         153.,
         19.,

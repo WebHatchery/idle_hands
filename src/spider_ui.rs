@@ -131,7 +131,7 @@ pub fn draw(state: &AppState) {
     };
     text(
         if game.status == SpiderStatus::Won {
-            "Eight quiet webs cleared"
+            "Eight webs cleared"
         } else {
             "Build descending runs in one suit"
         },

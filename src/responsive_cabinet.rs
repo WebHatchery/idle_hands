@@ -54,7 +54,7 @@ pub fn clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
 fn draw_home(state: &AppState, loaded: usize) {
     text("IDLE HANDS", 77., 35., 23., crate::theme::CREAM);
     text(
-        "quiet games for idle minutes",
+        "quiet games for idle hands",
         96.,
         51.,
         8.,

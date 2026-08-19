@@ -42,7 +42,7 @@ pub fn draw_records(state: &AppState) {
         crate::theme::BACKGROUND_DEEP,
     );
     text("RECORDS", 20., 62., 29., crate::theme::BRASS);
-    text("Quiet milestones", 22., 88., 13., crate::theme::SECONDARY);
+    text("Milestones", 22., 88., 13., crate::theme::SECONDARY);
     let earned = state.achievements.iter().filter(|earned| **earned).count();
     let completed = completed_games(&state.records);
     text(
@@ -366,7 +366,7 @@ pub fn draw_credits() {
     text("CREDITS", 20., 115., 29., crate::theme::BRASS);
     text("IDLE HANDS", 22., 165., 22., WHITE);
     text(
-        "A quiet collection for",
+        "A warm collection for",
         22.,
         210.,
         15.,
@@ -388,7 +388,7 @@ pub fn draw_credits() {
         crate::theme::SECONDARY,
     );
     text(
-        "Designed for touch and quiet minutes.",
+        "Designed for touch and small pauses.",
         22.,
         390.,
         13.,

@@ -180,7 +180,7 @@ pub fn draw(state: &AppState) {
 
 fn status_text(status: MemoryStatus, pairs: u8) -> String {
     match status {
-        MemoryStatus::Playing => format!("Find the quiet pairs  •  {} of 8 found", pairs),
+        MemoryStatus::Playing => format!("Find the pairs  •  {} of 8 found", pairs),
         MemoryStatus::Won => "Every pair is resting. Start another board to play again.".into(),
     }
 }

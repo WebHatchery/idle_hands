@@ -20,18 +20,18 @@ fn seeded_target_is_repeatable_and_input_is_touch_complete() {
 #[test]
 fn duplicate_aware_feedback_marks_exact_present_and_absent_letters() {
     let mut game = WordGrid::new(0);
-    enter(&mut game, "EERIE");
+    enter(&mut game, "LLAMA");
     assert_eq!(game.feedback[0][0], LetterState::Present);
-    assert_eq!(game.feedback[0][1], LetterState::Absent);
+    assert_eq!(game.feedback[0][1], LetterState::Present);
     assert_eq!(game.feedback[0][2], LetterState::Absent);
-    assert_eq!(game.feedback[0][3], LetterState::Present);
+    assert_eq!(game.feedback[0][3], LetterState::Absent);
     assert_eq!(game.feedback[0][4], LetterState::Absent);
 }
 
 #[test]
 fn correct_guess_wins_and_finished_games_reject_input() {
     let mut game = WordGrid::new(0);
-    enter(&mut game, "QUIET");
+    enter(&mut game, "STILL");
     assert!(game.won());
     assert!(!game.tap_letter(0));
     assert!(!game.submit());
@@ -54,7 +54,7 @@ fn reset_changes_the_seeded_word_and_clears_rows() {
     let mut game = WordGrid::new(0);
     enter(&mut game, "SHELF");
     game.reset(1);
-    assert_ne!(game.target, "QUIET");
+    assert_ne!(game.target, "STILL");
     assert!(game.guesses.is_empty());
     assert_eq!(game.moves, 0);
 }

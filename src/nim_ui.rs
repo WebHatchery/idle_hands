@@ -114,7 +114,7 @@ pub fn draw(state: &AppState) {
     text("‹ CABINET", 8., 30., 13., muted(), state.large_text);
     text("NIM", title_x, title_y, 27., accent(), state.large_text);
     text(
-        "Take the final stone from the quiet heaps",
+        "Take the final stone from the heaps",
         if compact() { 390. } else { title_x },
         if compact() { 52. } else { title_y + 25. },
         13.,

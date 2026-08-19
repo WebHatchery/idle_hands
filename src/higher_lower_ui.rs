@@ -183,7 +183,7 @@ pub fn draw(state: &AppState) {
 fn status_text(status: HigherLowerStatus, score: u16) -> String {
     match status {
         HigherLowerStatus::Playing => format!("Score {} / 10", score),
-        HigherLowerStatus::Won => "The quiet run is yours".into(),
+        HigherLowerStatus::Won => "The run is yours".into(),
         HigherLowerStatus::Lost => "The next card slipped away".into(),
     }
 }

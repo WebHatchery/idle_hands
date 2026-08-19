@@ -340,7 +340,7 @@ pub fn draw_credits() {
     text("CREDITS", 205., 62., 28., crate::theme::BRASS);
     text("IDLE HANDS", 205., 115., 20., WHITE);
     text(
-        "A quiet collection for small pauses.",
+        "A warm collection for small pauses.",
         205.,
         155.,
         14.,
@@ -354,7 +354,7 @@ pub fn draw_credits() {
         crate::theme::SECONDARY,
     );
     text(
-        "Designed for touch and quiet minutes.",
+        "Designed for touch and small pauses.",
         205.,
         260.,
         13.,
