@@ -344,8 +344,11 @@ impl UiAction {
                 | Self::BlackjackNew
                 | Self::SpiderSolitaireNew
                 | Self::PyramidNew
+                | Self::PyramidDrawRule(_)
                 | Self::TriPeaksNew
+                | Self::TriPeaksRule(_)
                 | Self::NimNew
+                | Self::NimRule(_)
                 | Self::DungeonNew
                 | Self::DungeonDifficulty(_)
                 | Self::PotionNew
@@ -370,9 +373,13 @@ impl UiAction {
                 | Self::ColorSortDifficulty(_)
                 | Self::BattleshipNew
                 | Self::WordGridNew
+                | Self::WordGridMode(_)
                 | Self::WordLadderNew
+                | Self::WordLadderMode(_)
                 | Self::PipeNew
+                | Self::PipePattern(_)
                 | Self::MazeNew
+                | Self::MazeMode(_)
                 | Self::MatchThreeNew
                 | Self::MatchThreeDifficulty(_)
         )

@@ -36,8 +36,11 @@ pub(super) fn requires_new_confirmation(action: UiAction) -> bool {
             | UiAction::BlackjackNew
             | UiAction::SpiderSolitaireNew
             | UiAction::PyramidNew
+            | UiAction::PyramidDrawRule(_)
             | UiAction::TriPeaksNew
+            | UiAction::TriPeaksRule(_)
             | UiAction::NimNew
+            | UiAction::NimRule(_)
             | UiAction::DungeonNew
             | UiAction::DungeonDifficulty(_)
             | UiAction::PotionNew
@@ -62,10 +65,14 @@ pub(super) fn requires_new_confirmation(action: UiAction) -> bool {
             | UiAction::ColorSortDifficulty(_)
             | UiAction::BattleshipNew
             | UiAction::WordGridNew
+            | UiAction::WordGridMode(_)
             | UiAction::PipeNew
+            | UiAction::PipePattern(_)
             | UiAction::MazeNew
+            | UiAction::MazeMode(_)
             | UiAction::MatchThreeNew
             | UiAction::MatchThreeDifficulty(_)
             | UiAction::WordLadderNew
+            | UiAction::WordLadderMode(_)
     )
 }

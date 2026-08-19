@@ -65,3 +65,26 @@ fn new_game_actions_require_confirmation_but_existing_restart_does_not() {
         ui::UiAction::Restart
     ));
 }
+
+#[test]
+fn depth_mode_controls_confirm_before_discarding_an_active_round() {
+    let actions = [
+        ui::UiAction::PyramidDrawRule(crate::pyramid::PyramidDraw::Three),
+        ui::UiAction::TriPeaksRule(crate::tri_peaks::TriPeaksRule::Wrap),
+        ui::UiAction::NimRule(crate::nim::NimRule::Misere),
+        ui::UiAction::WordGridMode(crate::word_grid::WordGridMode::Hard),
+        ui::UiAction::WordLadderMode(crate::word_ladder::LadderMode::Scenic),
+        ui::UiAction::PipePattern(crate::pipe_loop::PipePattern::Trunk),
+        ui::UiAction::MazeMode(crate::maze_walk::MazeMode::Fog),
+    ];
+    for action in actions {
+        assert!(
+            action.starts_new_round(),
+            "{action:?} must register a new round"
+        );
+        assert!(
+            game_restart::requires_new_confirmation(action),
+            "{action:?} must confirm before replacing progress"
+        );
+    }
+}
