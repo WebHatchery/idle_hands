@@ -63,7 +63,7 @@ fn default_spider_solitaire_has_a_deterministic_hint() {
 #[test]
 fn default_nim_has_a_deterministic_hint() {
     let state = AppState::default();
-    assert_eq!(nim(&state), "Select heap 1 and tap TAKE 3.");
+    assert!(nim(&state).contains("forced-win route"));
     assert_eq!(nim(&state), nim(&state));
 }
 

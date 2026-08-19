@@ -478,6 +478,20 @@ dots recording explored ground. Movement, beacon collection, and discovery
 share complete multi-step undo. Older saves without beacons stay compatible as
 open EXPLORE routes to their original exit.
 
+### 11.20 Nim endgame rules
+
+Nim now solves its actual bounded game tree: a move removes one to three stones
+from one of three heaps, so the earlier unrestricted-XOR shortcut no longer
+drives either hints or the cabinet opponent. Selecting a heap labels every
+legal take `SAFE` when it begins a forced win against perfect replies or `RISK`
+when the cabinet can force the ending. HINT uses the same deterministic solver.
+The rule control starts a fresh NORMAL duel, where taking the final stone wins,
+or MISERE, where taking it loses; the opponent applies the correct terminal
+rule and selects a forced route whenever one exists. The UI records the most
+recent player and opponent removals, and complete turn history supports
+repeated undo across both sides' moves. Older saves default to NORMAL with no
+recorded take notes.
+
 ## 12. Historical Phase 0 Decisions
 
 The original eight-game launch scope established the current product principles:

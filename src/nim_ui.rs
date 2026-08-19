@@ -1,6 +1,11 @@
 //! Responsive touch presentation for Nim.
 
-use crate::{accessibility, nim::NimStatus, state::AppState, ui::UiAction};
+use crate::{
+    accessibility,
+    nim::{NimRule, NimStatus},
+    state::AppState,
+    ui::UiAction,
+};
 use macroquad::prelude::*;
 
 fn portrait() -> bool {
@@ -53,24 +58,27 @@ fn take_rect(amount: usize) -> Rect {
     Rect::new(x, y, width, 48.)
 }
 
-fn bottom_rects() -> (Rect, Rect, Rect) {
+fn bottom_rects() -> (Rect, Rect, Rect, Rect) {
     if portrait() {
         (
-            Rect::new(5., 650., 80., 42.),
-            Rect::new(95., 650., 105., 42.),
-            Rect::new(210., 650., 125., 42.),
+            Rect::new(5., 650., 70., 42.),
+            Rect::new(82., 650., 78., 42.),
+            Rect::new(167., 650., 105., 42.),
+            Rect::new(279., 650., 96., 42.),
         )
     } else if compact() {
         (
             Rect::new(385., 335., 105., 40.),
             Rect::new(505., 335., 105., 40.),
             Rect::new(625., 335., 105., 40.),
+            Rect::new(735., 335., 100., 40.),
         )
     } else {
         (
-            Rect::new(740., 625., 120., 42.),
-            Rect::new(880., 625., 120., 42.),
-            Rect::new(1020., 625., 140., 42.),
+            Rect::new(600., 625., 120., 42.),
+            Rect::new(735., 625., 120., 42.),
+            Rect::new(870., 625., 140., 42.),
+            Rect::new(1025., 625., 130., 42.),
         )
     }
 }
@@ -89,7 +97,7 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
             return vec![UiAction::NimTake(amount as u8 + 1)];
         }
     }
-    let (hint, undo, new_board) = bottom_rects();
+    let (hint, undo, new_board, rule) = bottom_rects();
     if hint.contains(point) {
         return vec![UiAction::NimHint];
     }
@@ -98,6 +106,12 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if new_board.contains(point) {
         return vec![UiAction::NimNew];
+    }
+    if rule.contains(point) {
+        return vec![UiAction::NimRule(match _state.nim.rule {
+            NimRule::Normal => NimRule::Misere,
+            NimRule::Misere => NimRule::Normal,
+        })];
     }
     vec![]
 }
@@ -114,7 +128,10 @@ pub fn draw(state: &AppState) {
     text("‹ CABINET", 8., 30., 13., muted(), state.large_text);
     text("NIM", title_x, title_y, 27., accent(), state.large_text);
     text(
-        "Take the final stone from the heaps",
+        match game.rule {
+            NimRule::Normal => "Take the final stone to win",
+            NimRule::Misere => "Leave the final stone to win",
+        },
         if compact() { 390. } else { title_x },
         if compact() { 52. } else { title_y + 25. },
         13.,
@@ -122,7 +139,7 @@ pub fn draw(state: &AppState) {
         state.large_text,
     );
     text(
-        status(game.status),
+        status(game.status, game.rule),
         if portrait() { 12. } else { 30. },
         if portrait() {
             145.
@@ -175,22 +192,43 @@ pub fn draw(state: &AppState) {
         );
     }
     for amount in 0..3 {
+        let preview = game
+            .selected_heap
+            .and_then(|heap| game.move_is_winning(heap, amount as u8 + 1));
         button(
             take_rect(amount),
-            &format!("TAKE {}", amount + 1),
+            &format!(
+                "TAKE {}{}",
+                amount + 1,
+                preview.map_or("", |safe| if safe { " SAFE" } else { " RISK" })
+            ),
             state.large_text,
         );
     }
-    let (hint, undo, new_board) = bottom_rects();
+    let (hint, undo, new_board, rule) = bottom_rects();
     button(hint, "HINT", state.large_text);
     button(undo, "UNDO", state.large_text);
     button(new_board, "NEW BOARD", state.large_text);
+    mode_button(rule, game.rule.label(), state.large_text);
     let detail = state
         .card_hint
         .as_deref()
-        .unwrap_or_else(|| instruction(game.status));
+        .unwrap_or_else(|| instruction(game.status, game.rule));
+    let turn_note = if portrait() && game.last_player_take > 0 {
+        format!(
+            "M{} • YOU {} / CPU {} • SAFE = forced win",
+            game.moves, game.last_player_take, game.last_ai_take
+        )
+    } else if game.last_player_take > 0 {
+        format!(
+            "Moves {}  •  Last YOU {} / CABINET {}  •  {}",
+            game.moves, game.last_player_take, game.last_ai_take, detail
+        )
+    } else {
+        format!("Moves {}  •  {}", game.moves, detail)
+    };
     text(
-        &format!("Moves {}  •  {}", game.moves, detail),
+        &turn_note,
         if portrait() || compact() { 12. } else { 30. },
         if portrait() {
             625.
@@ -205,20 +243,37 @@ pub fn draw(state: &AppState) {
     );
 }
 
-fn status(status: NimStatus) -> &'static str {
-    match status {
-        NimStatus::Playing => "YOUR TURN",
-        NimStatus::Won => "HEAPS CLEAR",
-        NimStatus::Lost => "THE CABINET TOOK THE LAST STONE",
+fn status(status: NimStatus, rule: NimRule) -> &'static str {
+    match (status, rule) {
+        (NimStatus::Playing, _) => "YOUR TURN",
+        (NimStatus::Won, NimRule::Normal) => "YOU TOOK THE FINAL STONE",
+        (NimStatus::Won, NimRule::Misere) => "THE CABINET TOOK THE FINAL STONE",
+        (NimStatus::Lost, NimRule::Normal) => "THE CABINET TOOK THE FINAL STONE",
+        (NimStatus::Lost, NimRule::Misere) => "YOU TOOK THE FINAL STONE",
     }
 }
 
-fn instruction(status: NimStatus) -> &'static str {
-    match status {
-        NimStatus::Playing => "Select a heap, then take 1–3",
-        NimStatus::Won => "You took the final stone",
-        NimStatus::Lost => "Start a new board to try again",
+fn instruction(status: NimStatus, rule: NimRule) -> &'static str {
+    match (status, rule) {
+        (NimStatus::Playing, NimRule::Normal) => "Select a heap; SAFE previews a forced win",
+        (NimStatus::Playing, NimRule::Misere) => {
+            "Avoid the final stone; SAFE previews a forced win"
+        }
+        (NimStatus::Won, _) => "The heap duel is yours",
+        (NimStatus::Lost, _) => "Start a new board to try again",
     }
+}
+
+fn mode_button(rect: Rect, label: &str, large_text: bool) {
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        Color::new(0.22, 0.30, 0.20, 1.),
+    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
+    text(label, rect.x + 10., rect.y + 27., 10., WHITE, large_text);
 }
 
 fn stone_color(index: u8) -> Color {

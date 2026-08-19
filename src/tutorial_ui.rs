@@ -325,8 +325,8 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
         ],
         GameId::Nim => [
             "Tap a non-empty heap to select it.",
-            "Tap TAKE 1, TAKE 2, or TAKE 3 to remove stones.",
-            "Take the final stone; use UNDO or NEW BOARD when needed.",
+            "Tap TAKE 1–3; SAFE marks a forced win and RISK means the cabinet can answer.",
+            "Take last in NORMAL or avoid last in MISERE; use HINT, multi-step UNDO, or NEW BOARD.",
         ],
         GameId::WordLadder => [
             "Tap letters to build a five-letter step, then tap SUBMIT.",

@@ -274,25 +274,16 @@ pub fn nim(state: &AppState) -> String {
         crate::nim::NimStatus::Lost => return "Tap NEW BOARD to begin another heap set.".into(),
         crate::nim::NimStatus::Playing => {}
     }
-    let xor = game.heaps.iter().fold(0, |total, heap| total ^ heap);
-    let best = game
-        .heaps
-        .iter()
-        .enumerate()
-        .find_map(|(heap, &stones)| {
-            let target = stones ^ xor;
-            (target < stones && stones - target <= 3).then_some((heap, stones - target))
-        })
-        .or_else(|| {
-            game.heaps
-                .iter()
-                .enumerate()
-                .find(|(_, stones)| **stones > 0)
-                .map(|(heap, stones)| (heap, (*stones).min(3)))
-        });
-    best.map_or_else(
+    game.hint_move().map_or_else(
         || "No stones remain — tap NEW BOARD to begin again.".into(),
-        |(heap, amount)| format!("Select heap {} and tap TAKE {}.", heap + 1, amount),
+        |(heap, amount)| {
+            format!(
+                "Select heap {} and tap TAKE {} for a forced-win route under {} rules.",
+                heap + 1,
+                amount,
+                game.rule.label()
+            )
+        },
     )
 }
 

@@ -217,6 +217,10 @@ impl Game {
                 let seed = self.state.nim.seed.wrapping_add(1);
                 self.state.nim.reset(seed);
             }
+            UiAction::NimRule(rule) => {
+                let seed = self.state.nim.seed.wrapping_add(1);
+                self.state.nim.set_rule(*rule, seed);
+            }
             UiAction::DungeonCell(index) => {
                 if self.state.mine_flag_mode {
                     self.state.dungeon_sweeper.toggle_flag(*index);

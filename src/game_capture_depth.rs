@@ -16,6 +16,7 @@ pub(super) fn apply(state: &mut AppState, scene: &str) {
         "word_grid_deduction" => word_grid_deduction(state),
         "pipe_network" => pipe_network(state),
         "maze_beacons" => maze_beacons(state),
+        "nim_tactics" => nim_tactics(state),
         _ => {}
     }
 }
@@ -255,4 +256,24 @@ fn maze_beacons(state: &mut AppState) {
         game.step(direction);
     }
     game.moves = 11;
+}
+
+fn nim_tactics(state: &mut AppState) {
+    use crate::nim::{Nim, NimRule};
+    let game = &mut state.nim;
+    *game = Nim::new(0x4E1D);
+    game.rule = NimRule::Misere;
+    for heaps in [[5, 5, 5], [5, 4, 3], [4, 4, 3], [4, 3, 2], [0, 1, 2]] {
+        game.heaps = heaps;
+        let Some((heap, amount)) = game.hint_move() else {
+            continue;
+        };
+        if game.move_is_winning(heap, amount) == Some(true) {
+            game.selected_heap = Some(heap);
+            break;
+        }
+    }
+    game.moves = 3;
+    game.last_player_take = 1;
+    game.last_ai_take = 2;
 }

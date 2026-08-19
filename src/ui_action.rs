@@ -187,6 +187,7 @@ pub enum UiAction {
     NimHint,
     NimUndo,
     NimNew,
+    NimRule(crate::nim::NimRule),
     DungeonCell(usize),
     DungeonToggleFlag,
     DungeonHint,
