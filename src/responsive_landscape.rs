@@ -1,6 +1,7 @@
 //! Medium landscape layouts for short touch screens.
 
 use crate::{
+    game_2048::Game2048Size,
     palette_ui,
     state::{AppState, Direction},
     ui::UiAction,
@@ -30,14 +31,32 @@ pub fn draw_2048(state: &AppState) {
         12.,
         WHITE,
     );
+    for (index, board_size) in Game2048Size::ALL.iter().enumerate() {
+        let rect = Rect::new(380. + index as f32 * 100., 75., 90., 40.);
+        panel(
+            rect,
+            if *board_size == game.board_size {
+                crate::theme::LEATHER
+            } else {
+                crate::theme::GAME_PANEL
+            },
+        );
+        text(board_size.label(), rect.x + 18., rect.y + 26., 10., WHITE);
+    }
     let board = Rect::new(12., 65., 320., 320.);
     panel(board, crate::theme::GAME_PANEL);
-    for index in 0..16 {
+    let dimension = game.board_size.dimension();
+    let tile_size = if dimension == 4 { 72. } else { 54. };
+    let gap = 6.;
+    let grid_side = tile_size * dimension as f32 + gap * (dimension - 1) as f32;
+    let origin_x = board.x + (board.w - grid_side) * 0.5;
+    let origin_y = board.y + (board.h - grid_side) * 0.5;
+    for index in 0..game.cells.len() {
         let rect = Rect::new(
-            board.x + 8. + (index % 4) as f32 * 78.,
-            board.y + 8. + (index / 4) as f32 * 78.,
-            72.,
-            72.,
+            origin_x + (index % dimension) as f32 * (tile_size + gap),
+            origin_y + (index / dimension) as f32 * (tile_size + gap),
+            tile_size,
+            tile_size,
         );
         let value = game.cells[index];
         draw_rectangle(
@@ -49,7 +68,17 @@ pub fn draw_2048(state: &AppState) {
         );
         if value > 0 {
             let label = value.to_string();
-            let size = if value < 100 { 25. } else { 19. };
+            let size = if value < 100 {
+                if dimension == 4 {
+                    25.
+                } else {
+                    20.
+                }
+            } else if dimension == 4 {
+                19.
+            } else {
+                17.
+            };
             let width = crate::ui::measure_text(&label, None, size as u16, 1.).width;
             text(
                 &label,
@@ -138,6 +167,13 @@ pub fn game2048_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     if crate::ui::hit(Rect::new(590., 205., 110., 46.), p) {
         return vec![UiAction::Game2048Hint];
+    }
+    for (index, board_size) in Game2048Size::ALL.iter().enumerate() {
+        if crate::ui::hit(Rect::new(380. + index as f32 * 100., 75., 90., 40.), p)
+            && state.game.board_size != *board_size
+        {
+            return vec![UiAction::Game2048Size(*board_size)];
+        }
     }
     for (index, direction) in [
         Direction::Up,

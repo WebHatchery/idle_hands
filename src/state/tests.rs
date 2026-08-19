@@ -12,7 +12,7 @@ fn new_board_has_two_tiles_and_is_seeded() {
 #[test]
 fn horizontal_move_merges_once_and_can_undo() {
     let mut game = Game2048::new(1);
-    game.cells = [2, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    game.cells = vec![2, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     assert!(game.move_in(Direction::Left));
     assert_eq!(&game.cells[0..3], &[4, 4, 0]);
     assert!(game.undo());
@@ -22,7 +22,7 @@ fn horizontal_move_merges_once_and_can_undo() {
 #[test]
 fn blocked_board_has_no_available_move() {
     let mut game = Game2048::new(1);
-    game.cells = [2, 4, 2, 4, 4, 2, 4, 2, 2, 4, 2, 4, 4, 2, 4, 2];
+    game.cells = vec![2, 4, 2, 4, 4, 2, 4, 2, 2, 4, 2, 4, 4, 2, 4, 2];
     assert!(!game.can_move());
 }
 

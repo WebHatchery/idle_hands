@@ -29,6 +29,7 @@ pub enum UiAction {
     Load,
     Move(Direction),
     Game2048Hint,
+    Game2048Size(crate::game_2048::Game2048Size),
     Undo,
     Restart,
     ConfirmRestart,

@@ -15,6 +15,7 @@ use crate::favorites_ui;
 use crate::fivefold_ui;
 use crate::flood_it_ui;
 use crate::freecell_ui;
+use crate::game_2048::Game2048Size;
 use crate::hangman_ui;
 use crate::hanoi_ui;
 use crate::higher_lower_ui;
@@ -509,15 +510,34 @@ fn draw_2048(state: &AppState) {
         18.,
         crate::theme::SECONDARY,
     );
+    text("BOARD SIZE", 400., 145., 13., crate::theme::BRASS);
+    for (index, board_size) in Game2048Size::ALL.iter().enumerate() {
+        let rect = Rect::new(400. + index as f32 * 155., 150., 145., 34.);
+        panel(
+            rect,
+            if *board_size == g.board_size {
+                crate::theme::LEATHER
+            } else {
+                crate::theme::GAME_PANEL
+            },
+        );
+        text(board_size.label(), rect.x + 43., rect.y + 22., 12., WHITE);
+    }
     score_box(Rect::new(830., 68., 120., 66.), "SCORE", g.score);
     score_box(Rect::new(965., 68., 120., 66.), "BEST", g.best);
     panel(Rect::new(830., 160., 360., 380.), crate::theme::GAME_PANEL);
-    for i in 0..16 {
+    let dimension = g.board_size.dimension();
+    let tile_size = if dimension == 4 { 76. } else { 60. };
+    let gap = 8.;
+    let grid_side = tile_size * dimension as f32 + gap * (dimension - 1) as f32;
+    let origin_x = 830. + (360. - grid_side) * 0.5;
+    let origin_y = 160. + (380. - grid_side) * 0.5;
+    for i in 0..g.cells.len() {
         let r = Rect::new(
-            850. + (i % 4) as f32 * 84.,
-            180. + (i / 4) as f32 * 84.,
-            76.,
-            76.,
+            origin_x + (i % dimension) as f32 * (tile_size + gap),
+            origin_y + (i / dimension) as f32 * (tile_size + gap),
+            tile_size,
+            tile_size,
         );
         let v = g.cells[i];
         draw_rectangle(
@@ -530,11 +550,23 @@ fn draw_2048(state: &AppState) {
         if v > 0 {
             let label = v.to_string();
             let fs = if v < 100 {
-                30.
+                if dimension == 4 {
+                    30.
+                } else {
+                    24.
+                }
             } else if v < 1000 {
-                25.
+                if dimension == 4 {
+                    25.
+                } else {
+                    21.
+                }
             } else {
-                20.
+                if dimension == 4 {
+                    20.
+                } else {
+                    18.
+                }
             };
             let tw = crate::ui::measure_text(&label, None, fs as u16, 1.0).width;
             text(
@@ -625,6 +657,13 @@ fn game_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     if hit(Rect::new(400., 450., 140., 48.), p) {
         out.push(UiAction::Game2048Hint)
+    }
+    for (index, board_size) in Game2048Size::ALL.iter().enumerate() {
+        if hit(Rect::new(400. + index as f32 * 155., 150., 145., 34.), p)
+            && state.game.board_size != *board_size
+        {
+            out.push(UiAction::Game2048Size(*board_size));
+        }
     }
     if state.confirm_restart {
         if hit(Rect::new(380., 340., 150., 44.), p) {

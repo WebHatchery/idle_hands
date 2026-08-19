@@ -3,7 +3,8 @@ use crate::ui::UiAction;
 pub(super) fn requires_new_confirmation(action: UiAction) -> bool {
     matches!(
         action,
-        UiAction::SolitaireNew
+        UiAction::Game2048Size(_)
+            | UiAction::SolitaireNew
             | UiAction::MineRestart
             | UiAction::MinePreset(_)
             | UiAction::SudokuDifficulty(_)

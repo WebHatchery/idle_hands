@@ -326,6 +326,12 @@ impl Game {
             ui::UiAction::Game2048Hint => {
                 self.state.card_hint = Some(card_hints::game_2048(&self.state));
             }
+            ui::UiAction::Game2048Size(board_size) => {
+                self.state.game = crate::state::Game2048::new_with_size(
+                    self.state.game.seed.wrapping_add(1),
+                    board_size,
+                );
+            }
             ui::UiAction::Move(direction) => self.try_move(direction),
             ui::UiAction::MineReveal(index) => {
                 self.state.minesweeper.reveal(index);
