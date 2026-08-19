@@ -9,6 +9,17 @@ use crate::{
 };
 use macroquad::prelude::*;
 
+const DESKTOP_BOARD: Rect = Rect {
+    x: 320.,
+    y: 175.,
+    w: 500.,
+    h: 500.,
+};
+
+fn desktop_grid(size: usize) -> GridLayout {
+    GridLayout::new(Rect::new(415., 255., 395., 395.), size, size)
+}
+
 fn text(s: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(s, x, y, crate::ui::readable_text_size(size), color);
 }
@@ -46,13 +57,11 @@ pub fn draw_nonogram(state: &AppState) {
         );
         text(preset.label(), rect.x + 15., rect.y + 22., 14., WHITE);
     }
-    let board = Rect::new(320., 175., 500., 500.);
-    panel(board, accessibility::board_fill(state.high_contrast));
-    let grid = GridLayout::new(
-        Rect::new(board.x + 10., board.y + 10., board.w - 20., board.h - 20.),
-        game.size,
-        game.size,
+    panel(
+        DESKTOP_BOARD,
+        accessibility::board_fill(state.high_contrast),
     );
+    let grid = desktop_grid(game.size);
     let cell = grid.cell_width;
     for index in 0..game.marks.len() {
         let cell_rect = grid.cell_rect(index).unwrap();
@@ -87,6 +96,42 @@ pub fn draw_nonogram(state: &AppState) {
                 } else {
                     Color::new(0.65, 0.58, 0.76, 1.)
                 },
+            );
+        }
+    }
+    let clue_size = accessibility::text_size((cell * 0.34).min(15.), state.large_text);
+    let clue_color = if state.high_contrast {
+        WHITE
+    } else {
+        crate::theme::CREAM
+    };
+    for (row, clue) in game.row_clues.iter().enumerate() {
+        let label = clue
+            .iter()
+            .map(|value| value.to_string())
+            .collect::<Vec<_>>()
+            .join(" ");
+        text(
+            &label,
+            grid.bounds.x - 78.,
+            grid.bounds.y + row as f32 * grid.cell_height + grid.cell_height * 0.68,
+            clue_size,
+            clue_color,
+        );
+    }
+    let clue_line_height = clue_size + 2.;
+    let column_clue_bottom = grid.bounds.y - 10.;
+    for (column, clue) in game.column_clues.iter().enumerate() {
+        let x = grid.bounds.x + column as f32 * grid.cell_width + grid.cell_width * 0.5
+            - clue_size * 0.2;
+        for (index, value) in clue.iter().enumerate() {
+            let from_bottom = clue.len() - index - 1;
+            text(
+                &value.to_string(),
+                x,
+                column_clue_bottom - from_bottom as f32 * clue_line_height,
+                clue_size,
+                clue_color,
             );
         }
     }
@@ -137,27 +182,9 @@ pub fn draw_nonogram(state: &AppState) {
     text("UNDO", 1084., 306., 16., WHITE);
     panel(Rect::new(850., 335., 320., 28.), crate::theme::SURFACE);
     text("HINT", 995., 355., 14., WHITE);
-    text("Rows", 850., 400., 17., crate::theme::BRASS);
-    for (index, clue) in game.row_clues.iter().take(6).enumerate() {
-        text(
-            &clue
-                .iter()
-                .map(|value| value.to_string())
-                .collect::<Vec<_>>()
-                .join(" "),
-            850.,
-            430. + index as f32 * 26.,
-            accessibility::text_size(15., state.large_text),
-            if state.high_contrast {
-                WHITE
-            } else {
-                crate::theme::SECONDARY
-            },
-        );
-    }
 }
 
-pub fn nonogram_clicks(_state: &AppState, p: Vec2) -> Vec<UiAction> {
+pub fn nonogram_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if Rect::new(20., 20., 180., 50.).contains(p) {
         return vec![UiAction::Cabinet];
     }
@@ -175,23 +202,13 @@ pub fn nonogram_clicks(_state: &AppState, p: Vec2) -> Vec<UiAction> {
     if Rect::new(850., 335., 320., 28.).contains(p) {
         return vec![UiAction::NonogramHint];
     }
-    let board = Rect::new(320., 175., 500., 500.);
-    let grid = GridLayout::new(
-        Rect::new(board.x + 10., board.y + 10., board.w - 20., board.h - 20.),
-        _state.nonogram.size,
-        _state.nonogram.size,
-    );
+    let grid = desktop_grid(state.nonogram.size);
     grid.index_at(p)
         .map_or_else(Vec::new, |index| vec![UiAction::NonogramCell(index)])
 }
 
 pub fn drag_actions(state: &AppState, start: Vec2, end: Vec2) -> Vec<UiAction> {
-    let board = Rect::new(320., 175., 500., 500.);
-    let grid = GridLayout::new(
-        Rect::new(board.x + 10., board.y + 10., board.w - 20., board.h - 20.),
-        state.nonogram.size,
-        state.nonogram.size,
-    );
+    let grid = desktop_grid(state.nonogram.size);
     let to_cell = |point: Vec2| -> Option<(usize, usize)> { grid.coordinate_at(point) };
     let (start, end) = match (to_cell(start), to_cell(end)) {
         (Some(start), Some(end)) => (start, end),

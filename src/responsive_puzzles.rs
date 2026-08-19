@@ -105,6 +105,13 @@ pub fn draw_nonogram(state: &AppState) {
         }
     }
     let (origin_x, origin_y) = origin(state);
+    let clue_size = accessibility::text_size((layout.cell_width * 0.30).min(11.), state.large_text);
+    let clue_line_height = clue_size + 1.;
+    let clue_color = if state.high_contrast {
+        WHITE
+    } else {
+        crate::theme::CREAM
+    };
     for (local, clue) in game
         .row_clues
         .iter()
@@ -121,12 +128,8 @@ pub fn draw_nonogram(state: &AppState) {
             &label,
             7.,
             190. + local as f32 * layout.cell_height + layout.cell_height * 0.62,
-            accessibility::text_size((layout.cell_height * 0.30).min(11.), state.large_text),
-            if state.high_contrast {
-                WHITE
-            } else {
-                crate::theme::CREAM
-            },
+            clue_size,
+            clue_color,
         );
     }
     for (local, clue) in game
@@ -136,22 +139,18 @@ pub fn draw_nonogram(state: &AppState) {
         .take(visible)
         .enumerate()
     {
-        let label = clue
-            .iter()
-            .map(|value| value.to_string())
-            .collect::<Vec<_>>()
-            .join(" ");
-        text(
-            &label,
-            46. + local as f32 * layout.cell_width,
-            178.,
-            accessibility::text_size((layout.cell_width * 0.28).min(10.), state.large_text),
-            if state.high_contrast {
-                WHITE
-            } else {
-                crate::theme::CREAM
-            },
-        );
+        let x = layout.bounds.x + local as f32 * layout.cell_width + layout.cell_width * 0.5
+            - clue_size * 0.2;
+        for (index, value) in clue.iter().enumerate() {
+            let from_bottom = clue.len() - index - 1;
+            text(
+                &value.to_string(),
+                x,
+                layout.bounds.y - 5. - from_bottom as f32 * clue_line_height,
+                clue_size,
+                clue_color,
+            );
+        }
     }
     text(
         if game.status == NonogramStatus::Won {

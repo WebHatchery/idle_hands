@@ -355,7 +355,7 @@ pub fn draw_nonogram(state: &AppState) {
     panel(NONO_BOARD, accessibility::board_fill(state.high_contrast));
     let layout = nonogram_grid(state);
     let visible = crate::nonogram::visible_size(game.size, state.nonogram_zoomed);
-    let (_, origin_y) = nonogram_origin(state);
+    let (origin_x, origin_y) = nonogram_origin(state);
     for local in 0..visible * visible {
         let index = nonogram_global_index(state, local);
         let cell = layout.cell_rect(local).unwrap();
@@ -379,6 +379,13 @@ pub fn draw_nonogram(state: &AppState) {
             );
         }
     }
+    let clue_size = accessibility::text_size((layout.cell_width * 0.32).min(11.), state.large_text);
+    let clue_line_height = clue_size + 1.;
+    let clue_color = if state.high_contrast {
+        WHITE
+    } else {
+        crate::theme::CREAM
+    };
     for (local, clue) in game
         .row_clues
         .iter()
@@ -393,10 +400,30 @@ pub fn draw_nonogram(state: &AppState) {
                 .collect::<Vec<_>>()
                 .join(" "),
             15.,
-            105. + local as f32 * layout.cell_height,
-            9.,
-            crate::theme::CREAM,
+            layout.bounds.y + local as f32 * layout.cell_height + layout.cell_height * 0.68,
+            clue_size,
+            clue_color,
         );
+    }
+    for (local, clue) in game
+        .column_clues
+        .iter()
+        .skip(origin_x)
+        .take(visible)
+        .enumerate()
+    {
+        let x = layout.bounds.x + local as f32 * layout.cell_width + layout.cell_width * 0.5
+            - clue_size * 0.2;
+        for (index, value) in clue.iter().enumerate() {
+            let from_bottom = clue.len() - index - 1;
+            text(
+                &value.to_string(),
+                x,
+                layout.bounds.y - 5. - from_bottom as f32 * clue_line_height,
+                clue_size,
+                clue_color,
+            );
+        }
     }
     text(
         if game.status == NonogramStatus::Won {
