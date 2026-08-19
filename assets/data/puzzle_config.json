@@ -23,9 +23,9 @@
   },
   "match_three": {
     "difficulties": [
-      { "id": "standard", "side": 7, "colors": 5, "target_score": 120 },
-      { "id": "hard", "side": 8, "colors": 6, "target_score": 240 },
-      { "id": "expert", "side": 9, "colors": 7, "target_score": 360 }
+      { "id": "standard", "side": 7, "colors": 5, "target_score": 120, "move_limit": 18 },
+      { "id": "hard", "side": 8, "colors": 6, "target_score": 240, "move_limit": 24 },
+      { "id": "expert", "side": 9, "colors": 7, "target_score": 360, "move_limit": 30 }
     ]
   }
 }

@@ -386,6 +386,9 @@ pub fn match_three(state: &AppState) -> String {
     if game.won() {
         return "The color field is clear — tap NEW BOARD to play again.".into();
     }
+    if game.phase == crate::match_three::MatchThreePhase::Lost {
+        return "No moves remain — tap NEW BOARD or choose a difficulty to try again.".into();
+    }
     game.hint_swap().map_or_else(
         || "No matching swap remains — tap NEW BOARD to begin again.".into(),
         |(first, second)| format!("Swap tiles {} and {}.", first + 1, second + 1),

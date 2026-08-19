@@ -2,7 +2,7 @@
 
 use crate::{
     accessibility,
-    match_three::{MatchThree, MatchThreeDifficulty, MatchThreePhase},
+    match_three::{MatchThree, MatchThreeDifficulty, MatchThreePhase, MatchThreeSpecial},
     state::AppState,
     ui::UiAction,
 };
@@ -117,14 +117,25 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
-    crate::ui::draw_text(
+    let summary = if compact {
         format!(
-            "{} points  •  {}  •  {} / {}",
+            "{} pts  •  {} moves  •  target {}",
             game.score,
+            game.moves_left(),
+            game.target_score()
+        )
+    } else {
+        format!(
+            "{} points  •  {} moves  •  {}  •  {}  •  target {}",
+            game.score,
+            game.moves_left(),
             status(game.phase),
             game.difficulty.label(),
             game.target_score()
-        ),
+        )
+    };
+    crate::ui::draw_text(
+        summary,
         if compact { 430. } else { title_x },
         if compact { 28. } else { title_y + 24. },
         accessibility::text_size(body_size(), state.large_text),
@@ -149,11 +160,20 @@ pub fn draw(state: &AppState) {
     } else {
         545.
     };
+    let guidance = state.card_hint.clone().unwrap_or_else(|| {
+        if game.last_cascade > 1 {
+            format!(
+                "Cascade x{} — each fall scored a larger bonus",
+                game.last_cascade
+            )
+        } else if game.reshuffles > 0 {
+            "No swaps remained — the field reshuffled itself".into()
+        } else {
+            "Match 4 for line arrows; match 5 or a cross for a burst".into()
+        }
+    });
     crate::ui::draw_text(
-        state
-            .card_hint
-            .as_deref()
-            .unwrap_or("Tap two adjacent tiles to clear matching colors"),
+        guidance,
         if compact {
             250.
         } else if portrait {
@@ -196,6 +216,7 @@ fn draw_board(board: Rect, game: &MatchThree, high_contrast: bool) {
                 line_color(high_contrast)
             },
         );
+        draw_special(rect, game.special_at(index), high_contrast);
     }
 }
 
@@ -203,6 +224,52 @@ fn status(phase: MatchThreePhase) -> &'static str {
     match phase {
         MatchThreePhase::Playing => "REACH THE TARGET",
         MatchThreePhase::Won => "FIELD CLEARED",
+        MatchThreePhase::Lost => "OUT OF MOVES",
+    }
+}
+fn draw_special(rect: Rect, special: MatchThreeSpecial, high_contrast: bool) {
+    let ink = if high_contrast {
+        BLACK
+    } else {
+        Color::new(0.12, 0.10, 0.18, 0.9)
+    };
+    let center = vec2(rect.x + rect.w * 0.5, rect.y + rect.h * 0.5);
+    match special {
+        MatchThreeSpecial::None => {}
+        MatchThreeSpecial::Row => {
+            draw_line(rect.x + 7., center.y, rect.right() - 7., center.y, 4., ink);
+            draw_triangle(
+                vec2(rect.x + 4., center.y),
+                vec2(rect.x + 11., center.y - 5.),
+                vec2(rect.x + 11., center.y + 5.),
+                ink,
+            );
+            draw_triangle(
+                vec2(rect.right() - 4., center.y),
+                vec2(rect.right() - 11., center.y - 5.),
+                vec2(rect.right() - 11., center.y + 5.),
+                ink,
+            );
+        }
+        MatchThreeSpecial::Column => {
+            draw_line(center.x, rect.y + 7., center.x, rect.bottom() - 7., 4., ink);
+            draw_triangle(
+                vec2(center.x, rect.y + 4.),
+                vec2(center.x - 5., rect.y + 11.),
+                vec2(center.x + 5., rect.y + 11.),
+                ink,
+            );
+            draw_triangle(
+                vec2(center.x, rect.bottom() - 4.),
+                vec2(center.x - 5., rect.bottom() - 11.),
+                vec2(center.x + 5., rect.bottom() - 11.),
+                ink,
+            );
+        }
+        MatchThreeSpecial::Burst => {
+            draw_poly(center.x, center.y, 8, rect.w * 0.22, 22.5, ink);
+            draw_circle(center.x, center.y, rect.w * 0.08, WHITE);
+        }
     }
 }
 fn palette(color: u8, high_contrast: bool) -> Color {

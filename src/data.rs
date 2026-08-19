@@ -94,6 +94,7 @@ pub struct MatchThreeDifficultyConfig {
     pub side: usize,
     pub colors: u8,
     pub target_score: u16,
+    pub move_limit: u16,
 }
 
 impl Default for ColorSortConfig {
@@ -181,18 +182,21 @@ impl Default for MatchThreeConfig {
                     side: 7,
                     colors: 5,
                     target_score: 120,
+                    move_limit: 18,
                 },
                 MatchThreeDifficultyConfig {
                     id: "hard".into(),
                     side: 8,
                     colors: 6,
                     target_score: 240,
+                    move_limit: 24,
                 },
                 MatchThreeDifficultyConfig {
                     id: "expert".into(),
                     side: 9,
                     colors: 7,
                     target_score: 360,
+                    move_limit: 30,
                 },
             ],
         }
@@ -219,7 +223,10 @@ impl PuzzleConfig {
             "match_three",
             &self.match_three.difficulties,
             |difficulty| {
-                difficulty.side > 0 && difficulty.colors > 0 && difficulty.target_score > 0
+                difficulty.side > 0
+                    && difficulty.colors > 0
+                    && difficulty.target_score > 0
+                    && difficulty.move_limit > 0
             },
         )?;
         Ok(())

@@ -310,8 +310,8 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
         ],
         GameId::MatchThree => [
             "Tap two adjacent tiles to swap their positions.",
-            "Clear groups of three or more matching colors to reach the target.",
-            "Use UNDO or NEW BOARD with the visible controls.",
+            "Match four for a line arrow; match five or a cross for a burst tile.",
+            "Reach the target before moves run out. Tap HINT, UNDO, or NEW BOARD as needed.",
         ],
         GameId::Pyramid => [
             "Tap a king, or tap an exposed card to select it.",

@@ -181,7 +181,8 @@ impl Game {
             | "match_three_accessible"
             | "match_three_confirm"
             | "match_three_hint"
-            | "match_three_hint_accessible" => Screen::Game(GameId::MatchThree),
+            | "match_three_hint_accessible"
+            | "match_three_specials" => Screen::Game(GameId::MatchThree),
             "mastermind_accessible" => Screen::Game(GameId::Mastermind),
             "help" => Screen::Help,
             "records"
@@ -263,6 +264,22 @@ impl Game {
         if scene == "match_three_confirm" {
             self.state.confirm_restart = true;
             self.state.pending_restart = Some(crate::ui::UiAction::MatchThreeNew);
+        }
+        if scene == "match_three_specials" {
+            use crate::match_three::MatchThreeSpecial;
+            let game = &mut self.state.match_three;
+            game.specials = vec![MatchThreeSpecial::None; game.cells.len()];
+            for (index, special) in [
+                (16, MatchThreeSpecial::Row),
+                (24, MatchThreeSpecial::Burst),
+                (32, MatchThreeSpecial::Column),
+            ] {
+                game.specials[index] = special;
+            }
+            game.score = 90;
+            game.moves = 6;
+            game.last_cascade = 3;
+            game.best_cascade = 3;
         }
         if scene == "minesweeper_confirm" {
             self.state.confirm_restart = true;

@@ -221,6 +221,16 @@ Tower Defence are the continuously moving games. Dungeon Sweeper is grouped
 with Logic, Battleship with Board, and One Room Roguelike with Misc. Higher or
 Lower remains grouped with Cards.
 
+### 11.1 Match Three depth pass
+
+Match Three is a short score chase with a visible move budget. Matching four
+tiles creates a row or column clear aligned to the run; matching five tiles or
+crossing two runs creates a local burst. A marked tile fires when it joins a
+match or is swapped, and chained falling matches earn an increasing cascade
+multiplier. Stable boards with no legal swap reshuffle deterministically so a
+round never ends through an unreadable deadlock. Standard, Hard, and Expert
+increase field size, color count, target score, and available moves together.
+
 ## 12. Historical Phase 0 Decisions
 
 The original eight-game launch scope established the current product principles:
