@@ -14,6 +14,7 @@ pub(super) fn apply(state: &mut AppState, scene: &str) {
         "color_sort_runs" => color_sort_runs(state),
         "battleship_sonar" => battleship_sonar(state),
         "word_grid_deduction" => word_grid_deduction(state),
+        "pipe_network" => pipe_network(state),
         _ => {}
     }
 }
@@ -228,4 +229,16 @@ fn word_grid_deduction(state: &mut AppState) {
     for letter in "STI".bytes() {
         game.tap_letter(letter - b'A');
     }
+}
+
+fn pipe_network(state: &mut AppState) {
+    use crate::pipe_loop::{PipeLoop, PipePattern, PipePhase};
+    let game = &mut state.pipe_loop;
+    *game = PipeLoop::new_with_pattern(0x715E, PipePattern::Trunk);
+    game.pipes = game.solution.clone();
+    game.phase = PipePhase::Playing;
+    for index in [13, 18, 24] {
+        game.rotate(index);
+    }
+    game.moves = 17;
 }

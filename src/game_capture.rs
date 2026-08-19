@@ -191,6 +191,7 @@ impl Game {
             "pipe_loop" | "pipe_loop_hint" | "pipe_loop_hint_accessible" => {
                 Screen::Game(GameId::PipeLoop)
             }
+            "pipe_network" => Screen::Game(GameId::PipeLoop),
             "pipe_loop_accessible" => Screen::Game(GameId::PipeLoop),
             "maze_walk" | "maze_walk_hint" | "maze_walk_hint_accessible" => {
                 Screen::Game(GameId::MazeWalk)

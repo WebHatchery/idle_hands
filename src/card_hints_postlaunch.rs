@@ -490,9 +490,11 @@ pub fn pipe_loop(state: &AppState) -> String {
         || "No rotation remains — tap NEW LOOP to begin again.".into(),
         |(index, count)| {
             format!(
-                "Rotate tile {} {}.",
+                "Rotate tile {} {} ({} powered, {} leaks remain).",
                 index + 1,
-                if count == 1 { "once" } else { "times" }
+                if count == 1 { "once" } else { "multiple times" },
+                game.connected_count(),
+                game.leak_count()
             )
         },
     )

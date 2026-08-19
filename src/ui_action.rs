@@ -276,6 +276,7 @@ pub enum UiAction {
     PipeHint,
     PipeUndo,
     PipeNew,
+    PipePattern(crate::pipe_loop::PipePattern),
     MazeStep(crate::state::Direction),
     MazeHint,
     MazeUndo,

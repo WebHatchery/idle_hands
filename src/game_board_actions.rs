@@ -544,6 +544,10 @@ impl Game {
                 let seed = self.state.pipe_loop.seed.wrapping_add(1);
                 self.state.pipe_loop.reset(seed);
             }
+            UiAction::PipePattern(pattern) => {
+                let seed = self.state.pipe_loop.seed.wrapping_add(1);
+                self.state.pipe_loop.set_pattern(*pattern, seed);
+            }
             UiAction::MazeStep(direction) => {
                 self.state.maze_walk.step(*direction);
             }

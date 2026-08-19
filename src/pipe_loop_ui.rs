@@ -2,7 +2,7 @@
 
 use crate::{
     accessibility,
-    pipe_loop::{PipeLoop, PipePhase, SIDE},
+    pipe_loop::{PipeLoop, PipePattern, PipePhase, SIDE},
     state::AppState,
     ui::UiAction,
 };
@@ -14,6 +14,7 @@ struct Layout {
     hint: Rect,
     undo: Rect,
     new_game: Rect,
+    pattern: Rect,
 }
 
 fn layout() -> Layout {
@@ -23,6 +24,7 @@ fn layout() -> Layout {
             hint: Rect::new(620., 220., 105., 44.),
             undo: Rect::new(620., 110., 105., 44.),
             new_game: Rect::new(620., 165., 140., 44.),
+            pattern: Rect::new(735., 220., 95., 44.),
         }
     } else if crate::ui::is_portrait() {
         Layout {
@@ -30,6 +32,7 @@ fn layout() -> Layout {
             hint: Rect::new(15., 440., 145., 44.),
             undo: Rect::new(15., 495., 145., 44.),
             new_game: Rect::new(170., 495., 145., 44.),
+            pattern: Rect::new(170., 440., 145., 44.),
         }
     } else {
         Layout {
@@ -37,6 +40,7 @@ fn layout() -> Layout {
             hint: Rect::new(810., 245., 120., 44.),
             undo: Rect::new(810., 180., 120., 44.),
             new_game: Rect::new(950., 180., 140., 44.),
+            pattern: Rect::new(950., 245., 140., 44.),
         }
     }
 }
@@ -62,6 +66,12 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if crate::ui::hit(l.new_game, point) {
         return vec![UiAction::PipeNew];
+    }
+    if crate::ui::hit(l.pattern, point) {
+        return vec![UiAction::PipePattern(match _state.pipe_loop.pattern {
+            PipePattern::Serpent => PipePattern::Trunk,
+            PipePattern::Trunk => PipePattern::Serpent,
+        })];
     }
     Vec::new()
 }
@@ -99,8 +109,26 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
+    let scoreline = if compact || screen_width() < 360. {
+        format!(
+            "{}/25 live • {} leaks • {}/{} turns",
+            game.connected_count(),
+            game.leak_count(),
+            game.moves,
+            game.par
+        )
+    } else {
+        format!(
+            "Powered {}/25  •  Leaks {}  •  Rotations {}/{}  •  {}",
+            game.connected_count(),
+            game.leak_count(),
+            game.moves,
+            game.par,
+            game.pattern.label()
+        )
+    };
     crate::ui::draw_text(
-        format!("{} rotations  •  {}", game.moves, status(game.phase)),
+        scoreline,
         if compact { 430. } else { title_x },
         if compact { 28. } else { title_y + 24. },
         accessibility::text_size(body_size(), state.large_text),
@@ -110,6 +138,7 @@ pub fn draw(state: &AppState) {
     button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW LOOP", state.large_text);
+    mode_button(l.pattern, game.pattern.label(), state.large_text);
     let status_y = if portrait {
         420.
     } else if compact {
@@ -118,10 +147,13 @@ pub fn draw(state: &AppState) {
         545.
     };
     crate::ui::draw_text(
-        state
-            .card_hint
-            .as_deref()
-            .unwrap_or("Tap any tile to rotate its path"),
+        state.card_hint.as_deref().unwrap_or(
+            if screen_width() < 360. && game.phase == PipePhase::Playing {
+                "Close red leaks to power all 25"
+            } else {
+                status(game.phase)
+            },
+        ),
         if compact { 260. } else { title_x },
         status_y,
         accessibility::text_size(body_size(), state.large_text),
@@ -131,6 +163,7 @@ pub fn draw(state: &AppState) {
 
 fn draw_board(board: Rect, game: &PipeLoop, high_contrast: bool) {
     let cell = board.w / SIDE as f32;
+    let powered = game.powered_mask();
     for index in 0..SIDE * SIDE {
         let rect = Rect::new(
             board.x + (index % SIDE) as f32 * cell,
@@ -154,7 +187,12 @@ fn draw_board(board: Rect, game: &PipeLoop, high_contrast: bool) {
             line_color(high_contrast),
         );
         let center = vec2(rect.x + rect.w * 0.5, rect.y + rect.h * 0.5);
-        draw_circle(center.x, center.y, cell * 0.10, accent());
+        draw_circle(
+            center.x,
+            center.y,
+            cell * 0.10,
+            if powered[index] { accent() } else { muted() },
+        );
         let mask = game.pipes[index];
         let endpoints = [
             (mask & 1 != 0, vec2(center.x, rect.y)),
@@ -162,7 +200,7 @@ fn draw_board(board: Rect, game: &PipeLoop, high_contrast: bool) {
             (mask & 4 != 0, vec2(center.x, rect.bottom())),
             (mask & 8 != 0, vec2(rect.x, center.y)),
         ];
-        for (connected, endpoint) in endpoints {
+        for (side, (connected, endpoint)) in endpoints.into_iter().enumerate() {
             if connected {
                 draw_line(
                     center.x,
@@ -170,8 +208,21 @@ fn draw_board(board: Rect, game: &PipeLoop, high_contrast: bool) {
                     endpoint.x,
                     endpoint.y,
                     cell * 0.12,
-                    pipe_color(high_contrast),
+                    if powered[index] {
+                        pipe_color(high_contrast)
+                    } else {
+                        muted()
+                    },
                 );
+                let bit = [1, 2, 4, 8][side];
+                if game.has_leak(index, bit) {
+                    draw_circle(
+                        endpoint.x.clamp(rect.x + 4., rect.right() - 4.),
+                        endpoint.y.clamp(rect.y + 4., rect.bottom() - 4.),
+                        cell * 0.055,
+                        Color::new(0.95, 0.25, 0.24, 1.),
+                    );
+                }
             }
         }
     }
@@ -179,9 +230,20 @@ fn draw_board(board: Rect, game: &PipeLoop, high_contrast: bool) {
 
 fn status(phase: PipePhase) -> &'static str {
     match phase {
-        PipePhase::Playing => "JOIN THE PATH",
-        PipePhase::Won => "PATH COMPLETE",
+        PipePhase::Playing => "Rotate tiles until all 25 are powered and every red leak closes",
+        PipePhase::Won => "Network complete — tap NEW LOOP",
     }
+}
+fn mode_button(rect: Rect, label: &str, large_text: bool) {
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        Color::new(0.22, 0.30, 0.20, 1.),
+    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
+    center_text(label, rect, accessibility::text_size(9., large_text), WHITE);
 }
 fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);

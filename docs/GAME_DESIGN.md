@@ -448,6 +448,21 @@ and includes every confirmed letter at its known minimum multiplicity; the
 specific violated rule remains on screen. Submitted rows use a complete undo
 history. Older saves open in CLASSIC with no pending rule notice.
 
+### 11.18 Pipe Loop network rules
+
+Pipe Loop now judges the visible network instead of requiring every tile to
+match one hidden orientation array. Starting at the upper-left source, power
+travels only across mutual pipe connections. The header publishes powered
+tiles out of twenty-five and the number of exposed pipe ends; a win requires
+all tiles powered with zero leaks. Powered lines are bright, disconnected lines
+are muted, and every pipe aimed at a wall or a neighbor without a reciprocal
+connection receives a red endpoint cap. The pattern control starts a fresh
+SERPENT path or a TRUNK network whose central riser connects five horizontal
+branches, creating different junction and routing constraints. Each scramble
+records the clockwise solution par, while hints report both power and leak
+progress. Rotations use complete multi-step undo. Older saves default to the
+SERPENT label and retain their original solvable orientation data.
+
 ## 12. Historical Phase 0 Decisions
 
 The original eight-game launch scope established the current product principles:

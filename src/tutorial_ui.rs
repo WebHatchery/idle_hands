@@ -300,8 +300,8 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
         ],
         GameId::PipeLoop => [
             "Tap a pipe tile to rotate it clockwise.",
-            "Join the full path to match the connected solution.",
-            "Use UNDO or NEW LOOP with the visible controls.",
+            "Bright pipes are powered; red endpoint caps mark leaks that must be closed.",
+            "Power all 25 in SERPENT or TRUNK; use HINT, multi-step UNDO, or NEW LOOP.",
         ],
         GameId::MazeWalk => [
             "Tap a visible direction to move the traveler.",
