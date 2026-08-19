@@ -142,6 +142,7 @@ pub enum UiAction {
     MahjongSolitaireUndo,
     MahjongSolitaireNew,
     SnakeStep(crate::snake::SnakeDirection),
+    SnakeMode(crate::snake::SnakeMode),
     SnakePause,
     SnakeHint,
     SnakeUndo,
@@ -305,6 +306,7 @@ impl UiAction {
                 | Self::PegSolitaireNew
                 | Self::MahjongSolitaireNew
                 | Self::SnakeNew
+                | Self::SnakeMode(_)
                 | Self::BreakoutNew
                 | Self::HigherLowerNew
                 | Self::KlondikeGolfNew

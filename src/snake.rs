@@ -6,6 +6,43 @@ pub const WIDTH: i32 = 16;
 pub const HEIGHT: i32 = 12;
 const TARGET_SCORE: u16 = 20;
 const MOVE_INTERVAL: f32 = 0.20;
+const GARDEN_ROCKS: usize = 12;
+
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub enum SnakeMode {
+    #[default]
+    Classic,
+    Wrap,
+    Garden,
+}
+
+impl SnakeMode {
+    pub const ALL: [Self; 3] = [Self::Classic, Self::Wrap, Self::Garden];
+
+    pub const fn label(self) -> &'static str {
+        match self {
+            Self::Classic => "CLASSIC",
+            Self::Wrap => "WRAP",
+            Self::Garden => "GARDEN",
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub enum FoodKind {
+    #[default]
+    Berry,
+    Gold,
+}
+
+impl FoodKind {
+    pub const fn value(self) -> u16 {
+        match self {
+            Self::Berry => 1,
+            Self::Gold => 3,
+        }
+    }
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum SnakeDirection {
@@ -34,13 +71,28 @@ pub enum SnakeStatus {
     Lost,
 }
 
-type Snapshot = (Vec<u16>, SnakeDirection, u16, u16, u16, SnakeStatus, u64);
+type Snapshot = (
+    Vec<u16>,
+    SnakeDirection,
+    u16,
+    FoodKind,
+    u16,
+    u16,
+    SnakeStatus,
+    u64,
+);
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Snake {
     pub body: Vec<u16>,
     pub direction: SnakeDirection,
     pub food: u16,
+    #[serde(default)]
+    pub food_kind: FoodKind,
+    #[serde(default)]
+    pub mode: SnakeMode,
+    #[serde(default)]
+    pub obstacles: Vec<u16>,
     pub score: u16,
     pub moves: u16,
     pub status: SnakeStatus,
@@ -61,11 +113,18 @@ impl Default for Snake {
 
 impl Snake {
     pub fn new(seed: u64) -> Self {
+        Self::new_with_mode(seed, SnakeMode::Classic)
+    }
+
+    pub fn new_with_mode(seed: u64, mode: SnakeMode) -> Self {
         let center = (HEIGHT / 2 * WIDTH + WIDTH / 2) as u16;
         let mut game = Self {
             body: vec![center, center - 1, center - 2],
             direction: SnakeDirection::Right,
             food: 0,
+            food_kind: FoodKind::Berry,
+            mode,
+            obstacles: Vec::new(),
             score: 0,
             moves: 0,
             status: SnakeStatus::Playing,
@@ -74,6 +133,7 @@ impl Snake {
             undo: None,
             elapsed: 0.,
         };
+        game.place_obstacles();
         game.food = game.next_food();
         game
     }
@@ -100,8 +160,8 @@ impl Snake {
         }
         self.elapsed += dt.max(0.);
         let mut advanced = false;
-        while self.elapsed >= MOVE_INTERVAL && self.status == SnakeStatus::Playing {
-            self.elapsed -= MOVE_INTERVAL;
+        while self.elapsed >= self.move_interval() && self.status == SnakeStatus::Playing {
+            self.elapsed -= self.move_interval();
             advanced |= self.advance_one();
         }
         advanced
@@ -123,6 +183,7 @@ impl Snake {
             self.body.clone(),
             self.direction,
             self.food,
+            self.food_kind,
             self.score,
             self.moves,
             self.status,
@@ -137,14 +198,21 @@ impl Snake {
             SnakeDirection::Down => (1, 0),
             SnakeDirection::Left => (0, -1),
         };
-        let next_row = row + row_step;
-        let next_column = column + column_step;
+        let mut next_row = row + row_step;
+        let mut next_column = column + column_step;
         self.moves = self.moves.saturating_add(1);
-        if !(0..HEIGHT).contains(&next_row) || !(0..WIDTH).contains(&next_column) {
+        if self.mode == SnakeMode::Wrap {
+            next_row = next_row.rem_euclid(HEIGHT);
+            next_column = next_column.rem_euclid(WIDTH);
+        } else if !(0..HEIGHT).contains(&next_row) || !(0..WIDTH).contains(&next_column) {
             self.status = SnakeStatus::Lost;
             return true;
         }
         let next = (next_row * WIDTH + next_column) as u16;
+        if self.obstacles.contains(&next) {
+            self.status = SnakeStatus::Lost;
+            return true;
+        }
         let eating = next == self.food;
         if self.body.contains(&next) && (eating || self.body[..self.body.len() - 1].contains(&next))
         {
@@ -153,11 +221,16 @@ impl Snake {
         }
         self.body.insert(0, next);
         if eating {
-            self.score = self.score.saturating_add(1);
+            self.score = self.score.saturating_add(self.food_kind.value());
             if self.score >= TARGET_SCORE {
                 self.status = SnakeStatus::Won;
             } else {
                 self.food = self.next_food();
+                self.food_kind = if (self.score + 1).is_multiple_of(5) {
+                    FoodKind::Gold
+                } else {
+                    FoodKind::Berry
+                };
             }
         } else {
             self.body.pop();
@@ -187,10 +260,13 @@ impl Snake {
     }
 
     pub fn undo(&mut self) -> bool {
-        if let Some((body, direction, food, score, moves, status, seed)) = self.undo.take() {
+        if let Some((body, direction, food, food_kind, score, moves, status, seed)) =
+            self.undo.take()
+        {
             self.body = body;
             self.direction = direction;
             self.food = food;
+            self.food_kind = food_kind;
             self.score = score;
             self.moves = moves;
             self.status = status;
@@ -203,7 +279,7 @@ impl Snake {
     }
 
     pub fn reset(&mut self, seed: u64) {
-        *self = Self::new(seed);
+        *self = Self::new_with_mode(seed, self.mode);
     }
 
     fn next_food(&mut self) -> u16 {
@@ -213,7 +289,7 @@ impl Snake {
                 .wrapping_mul(6364136223846793005)
                 .wrapping_add(1442695040888963407);
             let candidate = (self.seed % (WIDTH * HEIGHT) as u64) as u16;
-            if !self.body.contains(&candidate) {
+            if !self.body.contains(&candidate) && !self.obstacles.contains(&candidate) {
                 return candidate;
             }
         }
@@ -230,18 +306,22 @@ impl Snake {
             SnakeDirection::Down => (1, 0),
             SnakeDirection::Left => (0, -1),
         };
-        let next_row = row + row_step;
-        let next_column = column + column_step;
-        (0..HEIGHT)
-            .contains(&next_row)
-            .then_some(())
-            .filter(|_| (0..WIDTH).contains(&next_column))
-            .map(|_| (next_row * WIDTH + next_column) as u16)
+        let mut next_row = row + row_step;
+        let mut next_column = column + column_step;
+        if self.mode == SnakeMode::Wrap {
+            next_row = next_row.rem_euclid(HEIGHT);
+            next_column = next_column.rem_euclid(WIDTH);
+        } else if !(0..HEIGHT).contains(&next_row) || !(0..WIDTH).contains(&next_column) {
+            return None;
+        }
+        Some((next_row * WIDTH + next_column) as u16)
     }
 
     fn is_safe(&self, next: u16) -> bool {
         let eating = next == self.food;
-        !self.body.contains(&next) || (!eating && !self.body[..self.body.len() - 1].contains(&next))
+        !self.obstacles.contains(&next)
+            && (!self.body.contains(&next)
+                || (!eating && !self.body[..self.body.len() - 1].contains(&next)))
     }
 
     fn food_distance(&self, next: u16) -> i32 {
@@ -249,7 +329,57 @@ impl Snake {
         let column = i32::from(next) % WIDTH;
         let food_row = i32::from(self.food) / WIDTH;
         let food_column = i32::from(self.food) % WIDTH;
-        (row - food_row).abs() + (column - food_column).abs()
+        let row_distance = (row - food_row).abs();
+        let column_distance = (column - food_column).abs();
+        if self.mode == SnakeMode::Wrap {
+            row_distance.min(HEIGHT - row_distance) + column_distance.min(WIDTH - column_distance)
+        } else {
+            row_distance + column_distance
+        }
+    }
+
+    pub const fn target_score() -> u16 {
+        TARGET_SCORE
+    }
+
+    pub fn speed_stage(&self) -> u16 {
+        self.score / 5 + 1
+    }
+
+    fn move_interval(&self) -> f32 {
+        let base = match self.mode {
+            SnakeMode::Classic => MOVE_INTERVAL,
+            SnakeMode::Wrap => MOVE_INTERVAL - 0.02,
+            SnakeMode::Garden => MOVE_INTERVAL + 0.02,
+        };
+        (base - f32::from(self.score / 5) * 0.015).max(0.10)
+    }
+
+    fn place_obstacles(&mut self) {
+        if self.mode != SnakeMode::Garden {
+            return;
+        }
+        let center_row = HEIGHT / 2;
+        for _ in 0..WIDTH * HEIGHT * 2 {
+            if self.obstacles.len() >= GARDEN_ROCKS {
+                break;
+            }
+            self.seed = self
+                .seed
+                .wrapping_mul(6364136223846793005)
+                .wrapping_add(1442695040888963407);
+            let candidate = (self.seed % (WIDTH * HEIGHT) as u64) as u16;
+            let row = i32::from(candidate) / WIDTH;
+            let column = i32::from(candidate) % WIDTH;
+            let safe_opening =
+                row == center_row && (WIDTH / 2 - 3..=WIDTH / 2 + 3).contains(&column);
+            if !safe_opening
+                && !self.body.contains(&candidate)
+                && !self.obstacles.contains(&candidate)
+            {
+                self.obstacles.push(candidate);
+            }
+        }
     }
 }
 

@@ -68,6 +68,10 @@ impl Game {
             UiAction::SnakeStep(direction) => {
                 self.state.snake.set_direction(*direction);
             }
+            UiAction::SnakeMode(mode) => {
+                let seed = self.state.snake.seed.wrapping_add(1);
+                self.state.snake = crate::snake::Snake::new_with_mode(seed, *mode);
+            }
             UiAction::SnakePause => {
                 self.state.snake.toggle_pause();
             }

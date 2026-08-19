@@ -2,7 +2,7 @@
 
 use crate::{
     accessibility,
-    snake::{SnakeDirection, SnakeStatus, HEIGHT, WIDTH},
+    snake::{FoodKind, Snake, SnakeDirection, SnakeMode, SnakeStatus, HEIGHT, WIDTH},
     state::AppState,
     ui::UiAction,
 };
@@ -20,6 +20,7 @@ struct Layout {
     undo: Rect,
     pause: Rect,
     new_game: Rect,
+    modes: [Rect; 3],
 }
 
 fn layout() -> Layout {
@@ -27,27 +28,37 @@ fn layout() -> Layout {
         Layout {
             board: Rect::new(20., 48., 384., 288.),
             cell: 24.,
-            up: Rect::new(500., 130., 58., 42.),
-            left: Rect::new(435., 178., 58., 42.),
-            down: Rect::new(500., 178., 58., 42.),
-            right: Rect::new(565., 178., 58., 42.),
+            up: Rect::new(500., 145., 58., 44.),
+            left: Rect::new(435., 195., 58., 44.),
+            down: Rect::new(500., 195., 58., 44.),
+            right: Rect::new(565., 195., 58., 44.),
             hint: Rect::new(435., 300., 90., 38.),
             undo: Rect::new(435., 250., 90., 38.),
             pause: Rect::new(535., 300., 110., 38.),
             new_game: Rect::new(535., 250., 110., 38.),
+            modes: [
+                Rect::new(435., 60., 66., 44.),
+                Rect::new(505., 60., 62., 44.),
+                Rect::new(571., 60., 74., 44.),
+            ],
         }
     } else if crate::ui::is_portrait() {
         Layout {
             board: Rect::new(10., 105., 340., 255.),
             cell: 21.25,
-            up: Rect::new(145., 400., 65., 40.),
-            left: Rect::new(70., 445., 65., 40.),
-            down: Rect::new(145., 445., 65., 40.),
-            right: Rect::new(220., 445., 65., 40.),
+            up: Rect::new(145., 425., 65., 44.),
+            left: Rect::new(70., 475., 65., 44.),
+            down: Rect::new(145., 475., 65., 44.),
+            right: Rect::new(220., 475., 65., 44.),
             hint: Rect::new(20., 590., 145., 42.),
             undo: Rect::new(20., 535., 145., 42.),
             pause: Rect::new(185., 590., 165., 42.),
             new_game: Rect::new(185., 535., 165., 42.),
+            modes: [
+                Rect::new(10., 370., 104., 44.),
+                Rect::new(123., 370., 104., 44.),
+                Rect::new(236., 370., 114., 44.),
+            ],
         }
     } else {
         Layout {
@@ -61,6 +72,11 @@ fn layout() -> Layout {
             undo: Rect::new(1010., 330., 95., 42.),
             pause: Rect::new(1120., 385., 110., 42.),
             new_game: Rect::new(1120., 330., 110., 42.),
+            modes: [
+                Rect::new(1010., 100., 68., 44.),
+                Rect::new(1083., 100., 64., 44.),
+                Rect::new(1152., 100., 78., 44.),
+            ],
         }
     }
 }
@@ -69,6 +85,11 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     let layout = layout();
     if crate::ui::hit(back_rect(), point) {
         return vec![UiAction::Cabinet];
+    }
+    for (index, rect) in layout.modes.iter().enumerate() {
+        if crate::ui::hit(*rect, point) {
+            return vec![UiAction::SnakeMode(SnakeMode::ALL[index])];
+        }
     }
     for (rect, direction) in [
         (layout.up, SnakeDirection::Up),
@@ -130,12 +151,16 @@ pub fn draw(state: &AppState) {
         accent(),
     );
     text(
-        &status_text(game.status, game.score),
+        &status_text(game),
         if compact { 435. } else { header_x },
         if compact { 30. } else { header_y + 25. },
         accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
+    for (index, rect) in layout.modes.iter().enumerate() {
+        let mode = SnakeMode::ALL[index];
+        mode_button(*rect, mode, game.mode == mode, state.large_text);
+    }
     draw_rectangle(
         layout.board.x,
         layout.board.y,
@@ -155,18 +180,54 @@ pub fn draw(state: &AppState) {
             );
         }
     }
+    for &obstacle in &game.obstacles {
+        let row = i32::from(obstacle) / WIDTH;
+        let column = i32::from(obstacle) % WIDTH;
+        let x = layout.board.x + column as f32 * layout.cell;
+        let y = layout.board.y + row as f32 * layout.cell;
+        draw_rectangle(
+            x + 3.,
+            y + 3.,
+            layout.cell - 6.,
+            layout.cell - 6.,
+            crate::theme::SURFACE,
+        );
+        draw_line(
+            x + 6.,
+            y + 6.,
+            x + layout.cell - 6.,
+            y + layout.cell - 6.,
+            2.,
+            muted(),
+        );
+        draw_line(
+            x + layout.cell - 6.,
+            y + 6.,
+            x + 6.,
+            y + layout.cell - 6.,
+            2.,
+            muted(),
+        );
+    }
     let food_row = i32::from(game.food) / WIDTH;
     let food_column = i32::from(game.food) % WIDTH;
-    draw_circle(
-        layout.board.x + food_column as f32 * layout.cell + layout.cell / 2.,
-        layout.board.y + food_row as f32 * layout.cell + layout.cell / 2.,
-        layout.cell * 0.28,
-        if state.high_contrast {
-            Color::new(1., 0.12, 0.18, 1.)
-        } else {
-            Color::new(0.98, 0.35, 0.35, 1.)
-        },
-    );
+    let food_x = layout.board.x + food_column as f32 * layout.cell + layout.cell / 2.;
+    let food_y = layout.board.y + food_row as f32 * layout.cell + layout.cell / 2.;
+    if game.food_kind == FoodKind::Gold {
+        draw_poly(food_x, food_y, 5, layout.cell * 0.34, -90., accent());
+        draw_circle(food_x, food_y, layout.cell * 0.10, WHITE);
+    } else {
+        draw_circle(
+            food_x,
+            food_y,
+            layout.cell * 0.28,
+            if state.high_contrast {
+                Color::new(1., 0.12, 0.18, 1.)
+            } else {
+                Color::new(0.98, 0.35, 0.35, 1.)
+            },
+        );
+    }
     for (part, &cell) in game.body.iter().enumerate() {
         let row = i32::from(cell) / WIDTH;
         let column = i32::from(cell) % WIDTH;
@@ -189,6 +250,9 @@ pub fn draw(state: &AppState) {
                 }
             },
         );
+        if part == 0 {
+            draw_head_eyes(layout, row, column, game.direction, state.high_contrast);
+        }
     }
     text(
         &format!(
@@ -208,9 +272,9 @@ pub fn draw(state: &AppState) {
             360.
         },
         if compact {
-            90.
+            120.
         } else if portrait {
-            385.
+            650.
         } else {
             600.
         },
@@ -235,12 +299,84 @@ pub fn draw(state: &AppState) {
     button(layout.new_game, "NEW BOARD", state.large_text);
 }
 
-fn status_text(status: SnakeStatus, score: u16) -> String {
-    match status {
-        SnakeStatus::Playing => format!("Score {} / 20", score),
+fn status_text(game: &Snake) -> String {
+    match game.status {
+        SnakeStatus::Playing => format!(
+            "{}  •  Score {} / {}  •  Pace {}",
+            game.mode.label(),
+            game.score,
+            Snake::target_score(),
+            game.speed_stage()
+        ),
         SnakeStatus::Won => "The coil is complete".into(),
-        SnakeStatus::Lost => "The coil touched empty space".into(),
+        SnakeStatus::Lost => "The coil struck an obstacle".into(),
     }
+}
+fn mode_button(rect: Rect, mode: SnakeMode, selected: bool, large_text: bool) {
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        if selected {
+            crate::theme::MOSS_DARK
+        } else {
+            crate::theme::SURFACE
+        },
+    );
+    draw_rectangle_lines(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        if selected { 2. } else { 1. },
+        accent(),
+    );
+    let label = match mode {
+        SnakeMode::Classic => "CLASSIC",
+        SnakeMode::Wrap => "WRAP",
+        SnakeMode::Garden => "GARDEN",
+    };
+    center_text(label, rect, accessibility::text_size(8., large_text), WHITE);
+}
+
+fn draw_head_eyes(
+    layout: Layout,
+    row: i32,
+    column: i32,
+    direction: SnakeDirection,
+    high_contrast: bool,
+) {
+    let center = vec2(
+        layout.board.x + (column as f32 + 0.5) * layout.cell,
+        layout.board.y + (row as f32 + 0.5) * layout.cell,
+    );
+    let (forward, side) = match direction {
+        SnakeDirection::Up => (vec2(0., -1.), vec2(1., 0.)),
+        SnakeDirection::Right => (vec2(1., 0.), vec2(0., 1.)),
+        SnakeDirection::Down => (vec2(0., 1.), vec2(1., 0.)),
+        SnakeDirection::Left => (vec2(-1., 0.), vec2(0., 1.)),
+    };
+    let ink = if high_contrast {
+        BLACK
+    } else {
+        crate::theme::BACKGROUND
+    };
+    for offset in [-1., 1.] {
+        let eye = center + forward * layout.cell * 0.18 + side * layout.cell * 0.15 * offset;
+        draw_circle(eye.x, eye.y, (layout.cell * 0.055).max(1.2), ink);
+    }
+}
+
+fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
+    let measured = crate::ui::measure_text(label, None, size as u16, 1.);
+    text(
+        label,
+        rect.x + (rect.w - measured.width) * 0.5,
+        rect.y + rect.h * 0.64,
+        size,
+        color,
+    );
 }
 fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);

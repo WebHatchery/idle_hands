@@ -82,7 +82,9 @@ impl Game {
             | "mahjong_solitaire_hint"
             | "mahjong_solitaire_hint_accessible" => Screen::Game(GameId::MahjongSolitaire),
             "mahjong_solitaire_accessible" => Screen::Game(GameId::MahjongSolitaire),
-            "snake" | "snake_hint" | "snake_hint_accessible" => Screen::Game(GameId::Snake),
+            "snake" | "snake_hint" | "snake_hint_accessible" | "snake_garden" => {
+                Screen::Game(GameId::Snake)
+            }
             "snake_accessible" => Screen::Game(GameId::Snake),
             "breakout" | "breakout_hint" | "breakout_hint_accessible" | "breakout_wall_two" => {
                 Screen::Game(GameId::Breakout)
@@ -247,6 +249,17 @@ impl Game {
                     game.brick_health[index] = health;
                 }
             }
+        }
+        if scene == "snake_garden" {
+            use crate::snake::{FoodKind, Snake, SnakeMode};
+            let game = &mut self.state.snake;
+            *game = Snake::new_with_mode(0x5A4D_0001, SnakeMode::Garden);
+            game.body = vec![104, 103, 102, 101, 100, 99, 98];
+            game.score = 9;
+            game.food = 72;
+            game.food_kind = FoodKind::Gold;
+            game.obstacles.retain(|cell| *cell != game.food);
+            game.paused = true;
         }
         if scene == "tiny_tower_roles" {
             use crate::tiny_tower_defence::{Enemy, EnemyKind, TowerKind, TowerPhase};

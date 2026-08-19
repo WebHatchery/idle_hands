@@ -13,7 +13,17 @@ pub fn snake(state: &AppState) -> String {
     }
     game.hint_direction().map_or_else(
         || "No safe turn remains — tap NEW BOARD to begin again.".into(),
-        |direction| format!("Try {} toward the food.", snake_direction_label(direction)),
+        |direction| {
+            format!(
+                "Try {} toward the {}.",
+                snake_direction_label(direction),
+                if game.food_kind == crate::snake::FoodKind::Gold {
+                    "gold food"
+                } else {
+                    "food"
+                }
+            )
+        },
     )
 }
 

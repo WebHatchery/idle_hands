@@ -252,6 +252,17 @@ move two cells, and wave five adds high-health armored enemies. Letter labels,
 colors, and armor rings keep both tower and enemy roles readable without relying
 on color alone, including at phone scale.
 
+### 11.4 Snake cabinet variants
+
+Snake offers three visible rulesets around the same touch steering. CLASSIC has
+solid edges, WRAP joins opposite edges into a faster looping field, and GARDEN
+uses a slower opening pace with twelve deterministic rock cells outside the
+safe starting lane. Food never spawns inside the coil or a rock. Every fifth
+point prepares a clearly starred gold food worth three points, while each
+five-point band raises the pace. The head has directional eyes, rocks use crossed
+marks, and mode names remain visible so these states are not conveyed by color
+alone.
+
 ## 12. Historical Phase 0 Decisions
 
 The original eight-game launch scope established the current product principles:

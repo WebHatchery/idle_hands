@@ -25,6 +25,7 @@ pub(super) fn requires_new_confirmation(action: UiAction) -> bool {
             | UiAction::PegSolitaireNew
             | UiAction::MahjongSolitaireNew
             | UiAction::SnakeNew
+            | UiAction::SnakeMode(_)
             | UiAction::BreakoutNew
             | UiAction::HigherLowerNew
             | UiAction::KlondikeGolfNew

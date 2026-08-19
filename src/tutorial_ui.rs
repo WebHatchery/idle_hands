@@ -199,9 +199,9 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
             "Clear every pair; use UNDO or NEW BOARD with the visible controls.",
         ],
         GameId::Snake => [
-            "Tap a visible direction button to steer while the coil moves automatically.",
-            "Eat red food, avoid the walls, and tap PAUSE when you need a break.",
-            "Use UNDO or NEW BOARD with the visible controls.",
+            "Tap CLASSIC, WRAP, or GARDEN, then use the visible direction buttons to steer.",
+            "WRAP crosses edges; GARDEN adds rocks. Gold food is worth three and the pace rises.",
+            "Reach 20; tap PAUSE, UNDO, or NEW BOARD with the visible controls.",
         ],
         GameId::Breakout => [
             "Tap LEFT, STAY, or RIGHT to steer while the ball moves automatically.",
