@@ -469,7 +469,15 @@ pub fn hangman(state: &AppState) -> String {
     }
     game.hint_letter().map_or_else(
         || "No unguessed candidate letter remains — tap NEW WORD to begin again.".into(),
-        |letter| format!("Try the {} key.", char::from(b'A' + letter)),
+        |letter| {
+            format!(
+                "Try {} across {} remaining {} words; REVEAL is still available ×{}.",
+                char::from(b'A' + letter),
+                game.candidate_count(),
+                game.category.label(),
+                game.reveals
+            )
+        },
     )
 }
 

@@ -21,6 +21,20 @@ impl Game {
                 let seed = self.state.hangman.seed.wrapping_add(1);
                 self.state.hangman.reset(seed);
             }
+            UiAction::HangmanReveal => {
+                self.state.hangman.reveal();
+            }
+            UiAction::HangmanUndo => {
+                self.state.hangman.undo();
+            }
+            UiAction::HangmanCategory(category) => {
+                let seed = self.state.hangman.seed.wrapping_add(1);
+                self.state.hangman.set_category(*category, seed);
+            }
+            UiAction::HangmanRule(rule) => {
+                let seed = self.state.hangman.seed.wrapping_add(1);
+                self.state.hangman.set_rule(*rule, seed);
+            }
             UiAction::ConnectFourDrop(column) => self.apply_connect_four_drop(*column),
             UiAction::ConnectFourHint => {
                 self.state.card_hint = Some(crate::card_hints::connect_four(&self.state));

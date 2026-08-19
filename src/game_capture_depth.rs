@@ -20,6 +20,7 @@ pub(super) fn apply(state: &mut AppState, scene: &str) {
         "word_ladder_routes" => word_ladder_routes(state),
         "pyramid_chains" => pyramid_chains(state),
         "tri_peaks_runs" => tri_peaks_runs(state),
+        "hangman_depth" => hangman_depth(state),
         _ => {}
     }
 }
@@ -342,4 +343,13 @@ fn tri_peaks_runs(state: &mut AppState) {
         suit: 0,
         face_up: true,
     });
+}
+
+fn hangman_depth(state: &mut AppState) {
+    use crate::hangman::{Hangman, HangmanCategory, HangmanRule};
+    let game = &mut state.hangman;
+    *game = Hangman::new_with_options(4, HangmanCategory::Nature, HangmanRule::Rapid);
+    for letter in [b'O', b'R', b'C', b'B', b'H', b'A'] {
+        game.guess(letter - b'A');
+    }
 }

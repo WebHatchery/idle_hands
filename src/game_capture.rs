@@ -65,7 +65,9 @@ impl Game {
             "word_search" | "word_search_hint" | "word_search_hint_accessible" => {
                 Screen::Game(GameId::WordSearch)
             }
-            "hangman" | "hangman_hint" | "hangman_hint_accessible" => Screen::Game(GameId::Hangman),
+            "hangman" | "hangman_hint" | "hangman_hint_accessible" | "hangman_depth" => {
+                Screen::Game(GameId::Hangman)
+            }
             "connect_four" | "connect_four_hint" | "connect_four_hint_accessible" => {
                 Screen::Game(GameId::ConnectFour)
             }

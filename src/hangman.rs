@@ -2,8 +2,79 @@
 
 use serde::{Deserialize, Serialize};
 
-pub const WORDS: [&str; 6] = ["STARE", "CABINET", "PAUSE", "SHELF", "GARDEN", "MOMENT"];
-const MAX_WRONG: u8 = 6;
+pub const CABINET_WORDS: [&str; 8] = [
+    "STARE", "CABINET", "PAUSE", "SHELF", "MOMENT", "BUTTON", "POCKET", "VELVET",
+];
+pub const NATURE_WORDS: [&str; 8] = [
+    "GARDEN", "FOREST", "RIVER", "MEADOW", "ORCHARD", "PETAL", "THUNDER", "WILLOW",
+];
+pub const VOYAGE_WORDS: [&str; 8] = [
+    "ANCHOR", "COMPASS", "HARBOR", "ISLAND", "JOURNEY", "SAILOR", "TIDE", "VESSEL",
+];
+
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum HangmanCategory {
+    #[default]
+    Cabinet,
+    Nature,
+    Voyage,
+}
+
+impl HangmanCategory {
+    pub const fn label(self) -> &'static str {
+        match self {
+            Self::Cabinet => "CABINET",
+            Self::Nature => "NATURE",
+            Self::Voyage => "VOYAGE",
+        }
+    }
+
+    pub const fn next(self) -> Self {
+        match self {
+            Self::Cabinet => Self::Nature,
+            Self::Nature => Self::Voyage,
+            Self::Voyage => Self::Cabinet,
+        }
+    }
+
+    pub const fn words(self) -> &'static [&'static str] {
+        match self {
+            Self::Cabinet => &CABINET_WORDS,
+            Self::Nature => &NATURE_WORDS,
+            Self::Voyage => &VOYAGE_WORDS,
+        }
+    }
+}
+
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum HangmanRule {
+    #[default]
+    Classic,
+    Rapid,
+}
+
+impl HangmanRule {
+    pub const fn label(self) -> &'static str {
+        match self {
+            Self::Classic => "CLASSIC 6",
+            Self::Rapid => "RAPID 4 ×2",
+        }
+    }
+
+    pub const fn max_wrong(self) -> u8 {
+        match self {
+            Self::Classic => 6,
+            Self::Rapid => 4,
+        }
+    }
+
+    const fn score_multiplier(self) -> u32 {
+        match self {
+            Self::Classic => 1,
+            Self::Rapid => 2,
+        }
+    }
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum HangmanStatus {
@@ -11,6 +82,18 @@ pub enum HangmanStatus {
     Won,
     Lost,
 }
+
+type Snapshot = (
+    [bool; 26],
+    [bool; 26],
+    u8,
+    u16,
+    HangmanStatus,
+    u32,
+    u8,
+    u8,
+    u8,
+);
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Hangman {
@@ -21,6 +104,20 @@ pub struct Hangman {
     pub moves: u16,
     pub status: HangmanStatus,
     pub seed: u64,
+    #[serde(default)]
+    pub category: HangmanCategory,
+    #[serde(default)]
+    pub rule: HangmanRule,
+    #[serde(default)]
+    pub score: u32,
+    #[serde(default)]
+    pub combo: u8,
+    #[serde(default)]
+    pub best_combo: u8,
+    #[serde(default = "default_reveals")]
+    pub reveals: u8,
+    #[serde(skip)]
+    history: Vec<Snapshot>,
 }
 
 impl Default for Hangman {
@@ -31,7 +128,12 @@ impl Default for Hangman {
 
 impl Hangman {
     pub fn new(seed: u64) -> Self {
-        let word = WORDS[(seed as usize) % WORDS.len()].to_owned();
+        Self::new_with_options(seed, HangmanCategory::Cabinet, HangmanRule::Classic)
+    }
+
+    pub fn new_with_options(seed: u64, category: HangmanCategory, rule: HangmanRule) -> Self {
+        let words = category.words();
+        let word = words[(seed as usize) % words.len()].to_owned();
         Self {
             word,
             guessed: [false; 26],
@@ -40,6 +142,13 @@ impl Hangman {
             moves: 0,
             status: HangmanStatus::Playing,
             seed,
+            category,
+            rule,
+            score: 0,
+            combo: 0,
+            best_combo: 0,
+            reveals: default_reveals(),
+            history: Vec::new(),
         }
     }
 
@@ -47,52 +156,78 @@ impl Hangman {
         if letter >= 26 || self.status != HangmanStatus::Playing || self.guessed[letter as usize] {
             return false;
         }
-        self.guessed[letter as usize] = true;
-        self.moves += 1;
-        let character = b'A' + letter;
-        if self.word.bytes().any(|candidate| candidate == character) {
-            if self
-                .word
-                .bytes()
-                .all(|candidate| self.guessed[(candidate - b'A') as usize])
-            {
-                self.status = HangmanStatus::Won;
-            }
-        } else {
-            self.wrong[letter as usize] = true;
-            self.wrong_count += 1;
-            if self.wrong_count >= MAX_WRONG {
-                self.status = HangmanStatus::Lost;
-            }
+        self.snapshot();
+        self.apply_letter(letter, true);
+        true
+    }
+
+    pub fn reveal(&mut self) -> bool {
+        if self.status != HangmanStatus::Playing || self.reveals == 0 {
+            return false;
         }
+        let Some(letter) = self
+            .word
+            .bytes()
+            .map(|letter| letter - b'A')
+            .find(|&letter| !self.guessed[letter as usize])
+        else {
+            return false;
+        };
+        self.snapshot();
+        self.reveals -= 1;
+        self.combo = 0;
+        self.apply_letter(letter, false);
+        true
+    }
+
+    pub fn undo(&mut self) -> bool {
+        let Some((guessed, wrong, wrong_count, moves, status, score, combo, best_combo, reveals)) =
+            self.history.pop()
+        else {
+            return false;
+        };
+        self.guessed = guessed;
+        self.wrong = wrong;
+        self.wrong_count = wrong_count;
+        self.moves = moves;
+        self.status = status;
+        self.score = score;
+        self.combo = combo;
+        self.best_combo = best_combo;
+        self.reveals = reveals;
         true
     }
 
     pub fn reset(&mut self, seed: u64) {
-        *self = Self::new(seed);
+        *self = Self::new_with_options(seed, self.category, self.rule);
+    }
+
+    pub fn set_category(&mut self, category: HangmanCategory, seed: u64) {
+        *self = Self::new_with_options(seed, category, self.rule);
+    }
+
+    pub fn set_rule(&mut self, rule: HangmanRule, seed: u64) {
+        *self = Self::new_with_options(seed, self.category, rule);
     }
 
     pub fn hint_letter(&self) -> Option<u8> {
         if self.status != HangmanStatus::Playing {
             return None;
         }
-        let candidates: Vec<&str> = WORDS
+        let mut frequency = [0usize; 26];
+        for word in self
+            .category
+            .words()
             .iter()
             .copied()
-            .filter(|word| {
-                word.bytes().all(|letter| {
-                    !self.wrong[(letter - b'A') as usize]
-                        && (!self.guessed[(letter - b'A') as usize]
-                            || self.word.bytes().any(|known| known == letter))
-                })
-            })
-            .collect();
-        let mut frequency = [0usize; 26];
-        for word in candidates {
+            .filter(|word| self.matches_candidate(word))
+        {
+            let mut counted = [false; 26];
             for letter in word.bytes() {
                 let index = (letter - b'A') as usize;
-                if !self.guessed[index] {
+                if !self.guessed[index] && !counted[index] {
                     frequency[index] += 1;
+                    counted[index] = true;
                 }
             }
         }
@@ -104,9 +239,89 @@ impl Hangman {
             .map(|(letter, _)| letter as u8)
     }
 
+    pub fn candidate_count(&self) -> usize {
+        self.category
+            .words()
+            .iter()
+            .filter(|word| self.matches_candidate(word))
+            .count()
+    }
+
     pub fn is_revealed(&self, character: u8) -> bool {
         character < 26 && self.guessed[character as usize]
     }
+
+    fn apply_letter(&mut self, letter: u8, scores: bool) {
+        self.guessed[letter as usize] = true;
+        self.moves = self.moves.saturating_add(1);
+        let character = b'A' + letter;
+        let matches = self
+            .word
+            .bytes()
+            .filter(|&candidate| candidate == character)
+            .count() as u32;
+        if matches > 0 {
+            if scores {
+                self.combo = self.combo.saturating_add(1);
+                self.best_combo = self.best_combo.max(self.combo);
+                self.score = self.score.saturating_add(
+                    matches * 10 * u32::from(self.combo) * self.rule.score_multiplier(),
+                );
+            }
+            if self
+                .word
+                .bytes()
+                .all(|candidate| self.guessed[(candidate - b'A') as usize])
+            {
+                self.status = HangmanStatus::Won;
+                self.score = self.score.saturating_add(
+                    u32::from(self.rule.max_wrong() - self.wrong_count)
+                        * 25
+                        * self.rule.score_multiplier(),
+                );
+            }
+        } else {
+            self.combo = 0;
+            self.wrong[letter as usize] = true;
+            self.wrong_count = self.wrong_count.saturating_add(1);
+            if self.wrong_count >= self.rule.max_wrong() {
+                self.status = HangmanStatus::Lost;
+            }
+        }
+    }
+
+    fn matches_candidate(&self, candidate: &str) -> bool {
+        candidate.len() == self.word.len()
+            && self
+                .word
+                .bytes()
+                .zip(candidate.bytes())
+                .all(|(answer, proposed)| {
+                    let answer_index = (answer - b'A') as usize;
+                    let proposed_index = (proposed - b'A') as usize;
+                    !self.wrong[proposed_index]
+                        && (!self.guessed[answer_index] || proposed == answer)
+                        && (!self.guessed[proposed_index] || proposed == answer)
+                })
+    }
+
+    fn snapshot(&mut self) {
+        self.history.push((
+            self.guessed,
+            self.wrong,
+            self.wrong_count,
+            self.moves,
+            self.status,
+            self.score,
+            self.combo,
+            self.best_combo,
+            self.reveals,
+        ));
+    }
+}
+
+const fn default_reveals() -> u8 {
+    1
 }
 
 #[cfg(test)]

@@ -20,6 +20,8 @@ pub(super) fn requires_new_confirmation(action: UiAction) -> bool {
             | UiAction::SpiderNew
             | UiAction::WordSearchNew
             | UiAction::HangmanNew
+            | UiAction::HangmanCategory(_)
+            | UiAction::HangmanRule(_)
             | UiAction::ConnectFourNew
             | UiAction::CheckersNew
             | UiAction::PegSolitaireNew

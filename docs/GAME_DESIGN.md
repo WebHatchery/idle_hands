@@ -536,6 +536,21 @@ move's next run and point value or recommend the bridge when no natural route
 remains. Full undo restores score, run, rule state, and bridge charge, while
 older saves default to STRICT with one bridge.
 
+### 11.24 Hangman word-room rules
+
+Hangman now offers three eight-word rooms—CABINET, NATURE, and VOYAGE—through
+a visible category control. CLASSIC permits six errors; RAPID permits four but
+doubles letter, chain, and survival-bonus points. Consecutive correct guesses
+build a chain multiplier while an incorrect letter breaks it, and the header
+shows score, current and best chain, and the number of dictionary candidates
+still consistent with every revealed position and excluded letter. Each word
+also carries one REVEAL charge that safely exposes the next hidden letter
+without awarding chain points. HINT remains non-mutating and recommends the
+highest-coverage unguessed letter within the active room. Guess and reveal
+history supports repeated UNDO, including failure pressure, points, chains,
+and charge refunds. Older saves default to CABINET, CLASSIC, zero score, and
+one reveal.
+
 ## 12. Historical Phase 0 Decisions
 
 The original eight-game launch scope established the current product principles:

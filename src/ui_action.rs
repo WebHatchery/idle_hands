@@ -123,6 +123,10 @@ pub enum UiAction {
     HangmanGuess(u8),
     HangmanHint,
     HangmanNew,
+    HangmanReveal,
+    HangmanUndo,
+    HangmanCategory(crate::hangman::HangmanCategory),
+    HangmanRule(crate::hangman::HangmanRule),
     ConnectFourDrop(usize),
     ConnectFourHint,
     ConnectFourUndo,
@@ -319,6 +323,8 @@ impl UiAction {
                 | Self::SpiderNew
                 | Self::WordSearchNew
                 | Self::HangmanNew
+                | Self::HangmanCategory(_)
+                | Self::HangmanRule(_)
                 | Self::ConnectFourNew
                 | Self::CheckersNew
                 | Self::PegSolitaireNew

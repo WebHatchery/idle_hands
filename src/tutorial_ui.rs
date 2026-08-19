@@ -174,9 +174,9 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
             "Use CLEAR or NEW BOARD with the visible controls.",
         ],
         GameId::Hangman => [
-            "Tap a visible letter button to guess it.",
-            "Six wrong guesses end the round.",
-            "Tap NEW WORD to begin another word.",
+            "Tap a visible letter button. Correct guesses build a score chain; a wrong guess breaks it.",
+            "Tap CABINET, NATURE, or VOYAGE for a new word set. RAPID allows four errors and doubles points.",
+            "Tap REVEAL for one free letter, or use HINT, UNDO, and NEW WORD with the visible controls.",
         ],
         GameId::ConnectFour => [
             "Tap a numbered column to drop your red disc.",
