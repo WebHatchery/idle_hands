@@ -2,7 +2,7 @@
 
 use crate::{
     accessibility,
-    higher_lower::{Guess, HigherLowerStatus},
+    higher_lower::{Guess, HigherLowerRule, HigherLowerStatus},
     state::AppState,
     ui::UiAction,
 };
@@ -15,6 +15,8 @@ struct Layout {
     hint: Rect,
     undo: Rect,
     new_game: Rect,
+    cash_out: Rect,
+    rule: Rect,
 }
 fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
@@ -24,6 +26,8 @@ fn layout() -> Layout {
             hint: Rect::new(430., 335., 100., 40.),
             undo: Rect::new(430., 275., 100., 40.),
             new_game: Rect::new(540., 275., 130., 40.),
+            cash_out: Rect::new(540., 335., 130., 40.),
+            rule: Rect::new(680., 275., 145., 40.),
         }
     } else if crate::ui::is_portrait() {
         Layout {
@@ -32,6 +36,8 @@ fn layout() -> Layout {
             hint: Rect::new(20., 565., 145., 42.),
             undo: Rect::new(20., 510., 145., 42.),
             new_game: Rect::new(185., 510., 165., 42.),
+            cash_out: Rect::new(185., 565., 165., 42.),
+            rule: Rect::new(20., 620., 330., 42.),
         }
     } else {
         Layout {
@@ -40,6 +46,8 @@ fn layout() -> Layout {
             hint: Rect::new(650., 490., 120., 44.),
             undo: Rect::new(650., 430., 120., 44.),
             new_game: Rect::new(790., 430., 150., 44.),
+            cash_out: Rect::new(790., 490., 150., 44.),
+            rule: Rect::new(960., 430., 180., 44.),
         }
     }
 }
@@ -63,7 +71,15 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(l.new_game, point) {
         return vec![UiAction::HigherLowerNew];
     }
-    let _ = state;
+    if crate::ui::hit(l.cash_out, point) {
+        return vec![UiAction::HigherLowerCashOut];
+    }
+    if crate::ui::hit(l.rule, point) {
+        return vec![UiAction::HigherLowerRule(match state.higher_lower.rule {
+            HigherLowerRule::Friendly => HigherLowerRule::House,
+            HigherLowerRule::House => HigherLowerRule::Friendly,
+        })];
+    }
     vec![]
 }
 pub fn draw(state: &AppState) {
@@ -100,7 +116,7 @@ pub fn draw(state: &AppState) {
         accent(),
     );
     text(
-        &status_text(game.status, game.score),
+        &status_text(game),
         if compact { 430. } else { hx },
         if compact { 30. } else { hy + 25. },
         accessibility::text_size(body_size(), state.large_text),
@@ -153,8 +169,9 @@ pub fn draw(state: &AppState) {
     );
     text(
         &format!(
-            "Score {} / 10  •  {}",
+            "Run {} / 10 • Pot {} • {}",
             game.score,
+            game.pot,
             state.card_hint.as_deref().unwrap_or("Next card hidden")
         ),
         if compact {
@@ -174,17 +191,68 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
-    button(l.higher, "HIGHER", state.large_text);
-    button(l.lower, "LOWER", state.large_text);
+    choice_button(
+        l.higher,
+        &format!("HIGHER {}%", game.chance(Guess::Higher)),
+        game.chance(Guess::Higher) >= game.chance(Guess::Lower),
+        state.large_text,
+    );
+    choice_button(
+        l.lower,
+        &format!("LOWER {}%", game.chance(Guess::Lower)),
+        game.chance(Guess::Lower) >= game.chance(Guess::Higher),
+        state.large_text,
+    );
     button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW ROUND", state.large_text);
+    button(
+        l.cash_out,
+        &format!("CASH OUT {}", game.pot),
+        state.large_text,
+    );
+    button(l.rule, game.rule.label(), state.large_text);
+    draw_run_meter(
+        game.score,
+        if portrait { 20. } else { hx },
+        if portrait {
+            665.
+        } else if compact {
+            80.
+        } else {
+            560.
+        },
+    );
 }
-fn status_text(status: HigherLowerStatus, score: u16) -> String {
-    match status {
-        HigherLowerStatus::Playing => format!("Score {} / 10", score),
-        HigherLowerStatus::Won => "The run is yours".into(),
+fn status_text(game: &crate::higher_lower::HigherLower) -> String {
+    match game.status {
+        HigherLowerStatus::Playing => format!("Run {} / 10 • Pot {}", game.score, game.pot),
+        HigherLowerStatus::Won if game.cashed_out => format!("Cashed out {}", game.banked),
+        HigherLowerStatus::Won => format!("Perfect run banked {}", game.banked),
         HigherLowerStatus::Lost => "The next card slipped away".into(),
+    }
+}
+fn choice_button(rect: Rect, label: &str, safer: bool, large_text: bool) {
+    button(rect, label, large_text);
+    if safer {
+        draw_rectangle_lines(
+            rect.x + 2.,
+            rect.y + 2.,
+            rect.w - 4.,
+            rect.h - 4.,
+            3.,
+            safe(),
+        );
+    }
+}
+fn draw_run_meter(score: u16, x: f32, y: f32) {
+    for step in 0..10 {
+        let fill = if step < score as usize {
+            safe()
+        } else {
+            crate::theme::SURFACE
+        };
+        draw_rectangle(x + step as f32 * 18., y, 14., 8., fill);
     }
 }
 fn button(rect: Rect, label: &str, large_text: bool) {
@@ -220,6 +288,9 @@ fn accent() -> Color {
 }
 fn muted() -> Color {
     crate::theme::SECONDARY
+}
+fn safe() -> Color {
+    Color::from_rgba(80, 224, 126, 255)
 }
 fn back_rect() -> Rect {
     Rect::new(0., 0., 110., 42.)

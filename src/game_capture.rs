@@ -92,9 +92,10 @@ impl Game {
                 Screen::Game(GameId::Breakout)
             }
             "breakout_accessible" => Screen::Game(GameId::Breakout),
-            "higher_lower" | "higher_lower_hint" | "higher_lower_hint_accessible" => {
-                Screen::Game(GameId::HigherLower)
-            }
+            "higher_lower"
+            | "higher_lower_hint"
+            | "higher_lower_hint_accessible"
+            | "higher_lower_stakes" => Screen::Game(GameId::HigherLower),
             "higher_lower_accessible" => Screen::Game(GameId::HigherLower),
             "klondike_golf" => Screen::Game(GameId::KlondikeGolf),
             "klondike_golf_accessible" => Screen::Game(GameId::KlondikeGolf),

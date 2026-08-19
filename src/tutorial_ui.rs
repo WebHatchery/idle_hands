@@ -209,9 +209,9 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
             "You have three balls. Tap LAUNCH after a miss, or PAUSE, UNDO, and NEW BOARD as needed.",
         ],
         GameId::HigherLower => [
-            "Tap HIGHER or LOWER to guess the hidden next card.",
-            "Reach ten correct guesses; ties count as correct.",
-            "Use UNDO or NEW ROUND with the visible controls.",
+            "Tap HIGHER or LOWER; each button shows its exact chance and green marks the safer side.",
+            "Correct cards grow the pot. After two, tap CASH OUT to bank it, or reach ten for a perfect run.",
+            "FRIENDLY wins ties. HOUSE loses ties but pays double. HINT, UNDO, and NEW ROUND stay visible.",
         ],
         GameId::KlondikeGolf => [
             "Tap a top card one rank above or below the waste.",

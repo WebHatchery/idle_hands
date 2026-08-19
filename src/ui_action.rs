@@ -160,6 +160,8 @@ pub enum UiAction {
     HigherLowerHint,
     HigherLowerUndo,
     HigherLowerNew,
+    HigherLowerCashOut,
+    HigherLowerRule(crate::higher_lower::HigherLowerRule),
     KlondikeGolfColumn(usize),
     KlondikeGolfStock,
     KlondikeGolfHint,
@@ -333,6 +335,7 @@ impl UiAction {
                 | Self::SnakeMode(_)
                 | Self::BreakoutNew
                 | Self::HigherLowerNew
+                | Self::HigherLowerRule(_)
                 | Self::KlondikeGolfNew
                 | Self::BlackjackNew
                 | Self::SpiderSolitaireNew

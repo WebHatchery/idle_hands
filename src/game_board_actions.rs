@@ -131,6 +131,13 @@ impl Game {
                 let seed = self.state.higher_lower.seed.wrapping_add(1);
                 self.state.higher_lower.reset(seed);
             }
+            UiAction::HigherLowerCashOut => {
+                self.state.higher_lower.cash_out();
+            }
+            UiAction::HigherLowerRule(rule) => {
+                let seed = self.state.higher_lower.seed.wrapping_add(1);
+                self.state.higher_lower.set_rule(*rule, seed);
+            }
             UiAction::KlondikeGolfColumn(column) => {
                 self.state.klondike_golf.tap_column(*column);
             }

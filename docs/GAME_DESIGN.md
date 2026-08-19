@@ -551,6 +551,20 @@ history supports repeated UNDO, including failure pressure, points, chains,
 and charge refunds. Older saves default to CABINET, CLASSIC, zero score, and
 one reveal.
 
+### 11.25 Higher or Lower stakes
+
+Higher or Lower now publishes the exact winning percentage on both guess
+buttons and outlines the safer side in green. Each correct card increases an
+unbanked pot by ten times the current run length; after two correct guesses the
+visible CASH OUT control may end the round and bank that pot, while continuing
+risks losing it all. Completing the original ten-card run banks automatically.
+FRIENDLY keeps ties as wins. HOUSE makes ties lose but doubles all pot growth,
+so the mode changes both the displayed odds and reward curve. A ten-step meter
+makes run progress redundant with the numeric status. Hints name the exact
+safer percentage and remind an eligible player that cashing out is available.
+Multi-step undo restores hidden-card RNG state, run, pot, bank, and cash-out
+status. Older saves default to FRIENDLY with no accumulated or banked pot.
+
 ## 12. Historical Phase 0 Decisions
 
 The original eight-game launch scope established the current product principles:

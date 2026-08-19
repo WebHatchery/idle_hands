@@ -65,7 +65,18 @@ pub fn higher_lower(state: &AppState) -> String {
     }
     game.hint_guess().map_or_else(
         || "No odds hint is available — tap NEW ROUND to begin again.".into(),
-        |guess| format!("Best odds: {}; card hidden.", guess_label(guess)),
+        |guess| {
+            format!(
+                "Best odds: {} at {}%; card hidden.{}",
+                guess_label(guess),
+                game.chance(guess),
+                if game.score >= 2 {
+                    " CASH OUT banks the current pot."
+                } else {
+                    ""
+                }
+            )
+        },
     )
 }
 

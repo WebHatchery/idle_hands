@@ -30,6 +30,7 @@ pub(super) fn requires_new_confirmation(action: UiAction) -> bool {
             | UiAction::SnakeMode(_)
             | UiAction::BreakoutNew
             | UiAction::HigherLowerNew
+            | UiAction::HigherLowerRule(_)
             | UiAction::KlondikeGolfNew
             | UiAction::BlackjackNew
             | UiAction::SpiderSolitaireNew

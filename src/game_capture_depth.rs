@@ -21,6 +21,7 @@ pub(super) fn apply(state: &mut AppState, scene: &str) {
         "pyramid_chains" => pyramid_chains(state),
         "tri_peaks_runs" => tri_peaks_runs(state),
         "hangman_depth" => hangman_depth(state),
+        "higher_lower_stakes" => higher_lower_stakes(state),
         _ => {}
     }
 }
@@ -352,4 +353,15 @@ fn hangman_depth(state: &mut AppState) {
     for letter in [b'O', b'R', b'C', b'B', b'H', b'A'] {
         game.guess(letter - b'A');
     }
+}
+
+fn higher_lower_stakes(state: &mut AppState) {
+    use crate::higher_lower::{HigherLower, HigherLowerRule};
+    let game = &mut state.higher_lower;
+    *game = HigherLower::new(0xC4AD_2500);
+    game.rule = HigherLowerRule::House;
+    game.current = 5;
+    game.score = 4;
+    game.moves = 4;
+    game.pot = 200;
 }
