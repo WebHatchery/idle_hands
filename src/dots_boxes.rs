@@ -54,6 +54,10 @@ pub enum Edge {
 pub struct DotsBoxes {
     pub horizontal: Vec<bool>,
     pub vertical: Vec<bool>,
+    #[serde(default)]
+    pub horizontal_owners: Vec<u8>,
+    #[serde(default)]
+    pub vertical_owners: Vec<u8>,
     pub boxes: Vec<u8>,
     pub scores: [u8; 2],
     pub current_player: u8,
@@ -101,6 +105,8 @@ impl DotsBoxes {
         Self {
             horizontal: vec![false; dots * side],
             vertical: vec![false; dots * side],
+            horizontal_owners: vec![0; dots * side],
+            vertical_owners: vec![0; dots * side],
             boxes: vec![0; side * side],
             scores: [0; 2],
             current_player: 0,
@@ -123,7 +129,7 @@ impl DotsBoxes {
         }
         let previous = self.clone_without_undo();
         self.undo = Some(Box::new(previous));
-        self.claim_edge(edge);
+        self.claim_edge(edge, self.current_player + 1);
         self.moves = self.moves.saturating_add(1);
         let scored = self.claim_completed(self.current_player + 1);
         if self.finished() {
@@ -141,7 +147,7 @@ impl DotsBoxes {
         }
         self.available_edges()
             .find(|&edge| self.would_complete(edge))
-            .or_else(|| self.available_edges().next())
+            .or_else(|| self.best_safe_edge())
     }
 
     pub fn undo(&mut self) -> bool {
@@ -162,15 +168,18 @@ impl DotsBoxes {
         copy
     }
 
-    fn claim_edge(&mut self, edge: Edge) -> bool {
+    fn claim_edge(&mut self, edge: Edge, owner: u8) -> bool {
+        self.ensure_owner_lengths();
         let (horizontal, vertical) = self.edge_counts();
         match edge {
             Edge::Horizontal(index) if index < horizontal && !self.horizontal[index] => {
                 self.horizontal[index] = true;
+                self.horizontal_owners[index] = owner;
                 true
             }
             Edge::Vertical(index) if index < vertical && !self.vertical[index] => {
                 self.vertical[index] = true;
+                self.vertical_owners[index] = owner;
                 true
             }
             _ => false,
@@ -231,22 +240,12 @@ impl DotsBoxes {
 
     fn cpu_turn(&mut self) {
         while self.phase == DotsPhase::Playing && self.current_player == 1 {
-            let edge = self
-                .available_edges()
-                .find(|edge| self.would_complete(*edge))
-                .or_else(|| {
-                    let available: Vec<_> = self.available_edges().collect();
-                    if available.is_empty() {
-                        None
-                    } else {
-                        Some(available[(self.seed as usize) % available.len()])
-                    }
-                });
+            let edge = self.choose_cpu_edge();
             let Some(edge) = edge else {
                 self.finish();
                 break;
             };
-            self.claim_edge(edge);
+            self.claim_edge(edge, 2);
             self.moves = self.moves.saturating_add(1);
             let scored = self.claim_completed(2);
             if self.finished() {
@@ -257,9 +256,9 @@ impl DotsBoxes {
         }
     }
 
-    fn would_complete(&self, edge: Edge) -> bool {
+    pub fn would_complete(&self, edge: Edge) -> bool {
         let mut copy = self.clone_without_undo();
-        if !copy.claim_edge(edge) {
+        if !copy.claim_edge(edge, 2) {
             return false;
         }
         copy.claim_completed(2) > 0
@@ -273,6 +272,91 @@ impl DotsBoxes {
         self.side
     }
 
+    pub fn box_edge_count(&self, row: usize, col: usize) -> u8 {
+        if row >= self.side || col >= self.side {
+            return 0;
+        }
+        let dots = self.side + 1;
+        [
+            self.horizontal[row * self.side + col],
+            self.horizontal[(row + 1) * self.side + col],
+            self.vertical[row * dots + col],
+            self.vertical[row * dots + col + 1],
+        ]
+        .into_iter()
+        .filter(|drawn| *drawn)
+        .count() as u8
+    }
+
+    pub fn edge_owner(&self, edge: Edge) -> u8 {
+        match edge {
+            Edge::Horizontal(index) => self.horizontal_owners.get(index).copied().unwrap_or(0),
+            Edge::Vertical(index) => self.vertical_owners.get(index).copied().unwrap_or(0),
+        }
+    }
+
+    fn choose_cpu_edge(&self) -> Option<Edge> {
+        if let Some(edge) = self
+            .available_edges()
+            .find(|edge| self.would_complete(*edge))
+        {
+            return Some(edge);
+        }
+        let available: Vec<_> = self.available_edges().collect();
+        if available.is_empty() {
+            return None;
+        }
+        match self.difficulty {
+            DotsDifficulty::Standard => Some(available[(self.seed as usize) % available.len()]),
+            DotsDifficulty::Hard => {
+                let safe: Vec<_> = available
+                    .iter()
+                    .copied()
+                    .filter(|edge| self.edge_risk(*edge) == 0)
+                    .collect();
+                let choices = if safe.is_empty() { &available } else { &safe };
+                Some(choices[(self.seed as usize) % choices.len()])
+            }
+            DotsDifficulty::Expert => available.into_iter().min_by_key(|edge| {
+                (
+                    self.edge_risk(*edge),
+                    edge_order(*edge).wrapping_add(self.seed as usize) % 10_000,
+                )
+            }),
+        }
+    }
+
+    fn best_safe_edge(&self) -> Option<Edge> {
+        self.available_edges()
+            .min_by_key(|edge| (self.edge_risk(*edge), edge_order(*edge)))
+    }
+
+    pub fn edge_risk(&self, edge: Edge) -> u8 {
+        let before = self.danger_box_count();
+        let mut copy = self.clone_without_undo();
+        if !copy.claim_edge(edge, self.current_player + 1) {
+            return u8::MAX;
+        }
+        copy.danger_box_count().saturating_sub(before)
+    }
+
+    fn danger_box_count(&self) -> u8 {
+        let side = self.side();
+        (0..side)
+            .flat_map(|row| (0..side).map(move |col| (row, col)))
+            .filter(|(row, col)| {
+                self.boxes[row * side + col] == 0 && self.box_edge_count(*row, *col) == 3
+            })
+            .count()
+            .min(u8::MAX as usize) as u8
+    }
+
+    fn ensure_owner_lengths(&mut self) {
+        let (horizontal, vertical) = self.edge_counts();
+        self.horizontal_owners.resize(horizontal, 0);
+        self.vertical_owners.resize(vertical, 0);
+    }
+
     fn edge_counts(&self) -> (usize, usize) {
         let side = self.side();
         (side * (side + 1), side * (side + 1))
@@ -284,6 +368,13 @@ impl DotsBoxes {
         } else {
             DotsPhase::Lost
         };
+    }
+}
+
+fn edge_order(edge: Edge) -> usize {
+    match edge {
+        Edge::Horizontal(index) => index,
+        Edge::Vertical(index) => 10_000 + index,
     }
 }
 

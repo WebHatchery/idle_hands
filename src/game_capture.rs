@@ -145,6 +145,7 @@ impl Game {
             "dots_boxes" | "dots_boxes_hint" | "dots_boxes_hint_accessible" => {
                 Screen::Game(GameId::DotsBoxes)
             }
+            "dots_tactics" => Screen::Game(GameId::DotsBoxes),
             "dots_boxes_accessible" => Screen::Game(GameId::DotsBoxes),
             "sokoban" | "sokoban_hint" | "sokoban_hint_accessible" => Screen::Game(GameId::Sokoban),
             "sokoban_accessible" => Screen::Game(GameId::Sokoban),
@@ -419,6 +420,23 @@ impl Game {
             game.best_combo = 6;
             game.catalysts_brewed = 2;
             game.last_merges = 2;
+        }
+        if scene == "dots_tactics" {
+            use crate::dots_boxes::{DotsBoxes, DotsDifficulty};
+            let game = &mut self.state.dots_boxes;
+            *game = DotsBoxes::new_with_difficulty(0x00D0_7B12, DotsDifficulty::Hard);
+            game.scores = [1, 1];
+            game.moves = 18;
+            game.boxes[0] = 1;
+            game.boxes[1] = 2;
+            for (index, owner) in [(0, 1), (1, 2), (5, 2), (6, 1), (12, 1), (17, 2)] {
+                game.horizontal[index] = true;
+                game.horizontal_owners[index] = owner;
+            }
+            for (index, owner) in [(0, 1), (1, 2), (2, 2), (14, 1)] {
+                game.vertical[index] = true;
+                game.vertical_owners[index] = owner;
+            }
         }
         if scene == "solitaire_peek" {
             self.capture_solitaire_peek = true;

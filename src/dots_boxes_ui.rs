@@ -25,9 +25,9 @@ fn layout() -> Layout {
             undo: Rect::new(610., 115., 110., 44.),
             new_game: Rect::new(610., 170., 145., 44.),
             difficulty: [
-                Rect::new(610., 54., 68., 38.),
-                Rect::new(682., 54., 68., 38.),
-                Rect::new(754., 54., 76., 38.),
+                Rect::new(610., 54., 68., 44.),
+                Rect::new(682., 54., 68., 44.),
+                Rect::new(754., 54., 76., 44.),
             ],
         }
     } else if crate::ui::is_portrait() {
@@ -37,9 +37,9 @@ fn layout() -> Layout {
             undo: Rect::new(20., 490., 145., 44.),
             new_game: Rect::new(175., 490., 165., 44.),
             difficulty: [
-                Rect::new(20., 600., 90., 38.),
-                Rect::new(120., 600., 90., 38.),
-                Rect::new(220., 600., 100., 38.),
+                Rect::new(20., 600., 90., 44.),
+                Rect::new(120., 600., 90., 44.),
+                Rect::new(220., 600., 100., 44.),
             ],
         }
     } else {
@@ -49,9 +49,9 @@ fn layout() -> Layout {
             undo: Rect::new(810., 180., 120., 44.),
             new_game: Rect::new(950., 180., 140., 44.),
             difficulty: [
-                Rect::new(810., 105., 85., 38.),
-                Rect::new(900., 105., 85., 38.),
-                Rect::new(990., 105., 95., 38.),
+                Rect::new(810., 105., 85., 44.),
+                Rect::new(900., 105., 85., 44.),
+                Rect::new(990., 105., 95., 44.),
             ],
         }
     }
@@ -117,8 +117,16 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
-    text(
-        &format!(
+    let score_status = if compact {
+        format!(
+            "Red {}  •  Blue {}  •  {} moves  •  {}",
+            game.scores[0],
+            game.scores[1],
+            game.moves,
+            game.difficulty.label()
+        )
+    } else {
+        format!(
             "You {}  •  Red {}  Blue {}  •  {} moves  •  {}",
             if game.current_player == 0 {
                 "draw"
@@ -129,9 +137,12 @@ pub fn draw(state: &AppState) {
             game.scores[1],
             game.moves,
             game.difficulty.label()
-        ),
-        if compact { 420. } else { title_x },
-        if compact { 28. } else { title_y + 24. },
+        )
+    };
+    text(
+        &score_status,
+        if compact { 70. } else { title_x },
+        if compact { 55. } else { title_y + 24. },
         accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
@@ -235,6 +246,23 @@ fn draw_board(board: Rect, game: &DotsBoxes, high_contrast: bool, large_text: bo
                     ),
                     WHITE,
                 );
+            } else if game.box_edge_count(row, col) == 3 {
+                let center = vec2(
+                    board.x + (col as f32 + 0.5) * step,
+                    board.y + (row as f32 + 0.5) * step,
+                );
+                draw_circle_lines(center.x, center.y, step * 0.16, 2., accent());
+                center_text(
+                    "!",
+                    Rect::new(
+                        board.x + col as f32 * step,
+                        board.y + row as f32 * step,
+                        step,
+                        step,
+                    ),
+                    accessibility::text_size(10., large_text),
+                    accent(),
+                );
             }
         }
     }
@@ -303,9 +331,9 @@ fn edge_at(board: Rect, point: Vec2, side: usize) -> Option<Edge> {
 
 fn edge_color(index: usize, horizontal: bool, game: &DotsBoxes, high_contrast: bool) -> Color {
     let owner = if horizontal {
-        edge_owner_horizontal(index, game)
+        game.edge_owner(Edge::Horizontal(index))
     } else {
-        edge_owner_vertical(index, game)
+        game.edge_owner(Edge::Vertical(index))
     };
     if owner == 1 {
         if high_contrast {
@@ -322,42 +350,6 @@ fn edge_color(index: usize, horizontal: bool, game: &DotsBoxes, high_contrast: b
     } else {
         WHITE
     }
-}
-
-fn edge_owner_horizontal(index: usize, game: &DotsBoxes) -> u8 {
-    let side = game.side();
-    for row in 0..=side {
-        for col in 0..side {
-            if row * side + col == index {
-                for (box_index, owner) in game.boxes.iter().enumerate() {
-                    let box_row = box_index / side;
-                    let box_col = box_index % side;
-                    if (*owner > 0) && (box_row == row || box_row + 1 == row) && box_col == col {
-                        return *owner;
-                    }
-                }
-            }
-        }
-    }
-    0
-}
-
-fn edge_owner_vertical(index: usize, game: &DotsBoxes) -> u8 {
-    let side = game.side();
-    for row in 0..side {
-        for col in 0..=side {
-            if row * (side + 1) + col == index {
-                for (box_index, owner) in game.boxes.iter().enumerate() {
-                    let box_row = box_index / side;
-                    let box_col = box_index % side;
-                    if (*owner > 0) && box_row == row && (box_col == col || box_col + 1 == col) {
-                        return *owner;
-                    }
-                }
-            }
-        }
-    }
-    0
 }
 
 fn status_text(phase: DotsPhase) -> &'static str {

@@ -255,8 +255,8 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
         ],
         GameId::DotsBoxes => [
             "Tap a gap between two dots to draw one edge.",
-            "Complete a square to claim it and keep your turn.",
-            "Claim more squares than the cabinet; use UNDO or NEW BOARD.",
+            "Complete a square to keep your turn; a circled ! warns that one edge remains.",
+            "HARD avoids gifts and EXPERT minimizes forced chains; use HINT, UNDO, or NEW BOARD.",
         ],
         GameId::Sokoban => [
             "Tap a direction to walk across the room.",

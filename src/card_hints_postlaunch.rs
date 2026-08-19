@@ -266,12 +266,21 @@ pub fn dots_boxes(state: &AppState) -> String {
     }
     game.hint_edge().map_or_else(
         || "No edge remains — tap NEW BOARD to begin again.".into(),
-        |edge| match edge {
-            crate::dots_boxes::Edge::Horizontal(index) => {
-                format!("Draw horizontal edge {}.", index + 1)
-            }
-            crate::dots_boxes::Edge::Vertical(index) => {
-                format!("Draw vertical edge {}.", index + 1)
+        |edge| {
+            let purpose = if game.would_complete(edge) {
+                "Close a box with"
+            } else if game.edge_risk(edge) == 0 {
+                "Keep the board safe with"
+            } else {
+                "No safe line remains; sacrifice"
+            };
+            match edge {
+                crate::dots_boxes::Edge::Horizontal(index) => {
+                    format!("{} horizontal edge {}.", purpose, index + 1)
+                }
+                crate::dots_boxes::Edge::Vertical(index) => {
+                    format!("{} vertical edge {}.", purpose, index + 1)
+                }
             }
         },
     )

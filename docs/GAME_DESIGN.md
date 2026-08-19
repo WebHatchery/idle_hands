@@ -317,6 +317,20 @@ diamond with a letter label rather than color alone. Combo state, best chain,
 catalysts brewed, score, RNG, and the prior board all restore through UNDO, and
 older saves begin with an empty chain.
 
+### 11.9 Dots & Boxes opponent styles
+
+Dots & Boxes difficulty now changes opponent policy in addition to board size.
+STANDARD takes available boxes and otherwise keeps its seeded casual choice.
+HARD takes boxes, avoids moves that create a three-sided gift whenever a safe
+edge remains, and falls back to a seeded sacrifice. EXPERT evaluates every
+available edge and minimizes the number of immediate gifts before applying its
+deterministic tie break. The player hint follows the same tactical order: close
+a box, choose a zero-gift edge, then name the forced sacrifice. Unclaimed boxes
+with three sides display a circled exclamation mark to make chain danger
+legible at phone scale. Horizontal and vertical edges now persist their actual
+drawer, so red and blue line ownership no longer changes later when an adjacent
+box is claimed; legacy boards expand the new owner arrays on their next move.
+
 ## 12. Historical Phase 0 Decisions
 
 The original eight-game launch scope established the current product principles:
