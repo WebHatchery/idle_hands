@@ -390,9 +390,18 @@ pub fn flood_it(state: &AppState) -> String {
         }
         crate::flood_it::FloodPhase::Playing => {}
     }
+    if game.surges > 0 {
+        return "Tap SURGE to take the strongest forecast without spending a move.".into();
+    }
     game.hint_color().map_or_else(
         || "No color change remains — tap NEW FIELD to begin again.".into(),
-        |color| format!("Choose {} to grow the region.", flood_color_label(color)),
+        |color| {
+            format!(
+                "Choose {} to gain {} cells.",
+                flood_color_label(color),
+                game.preview_gain(color)
+            )
+        },
     )
 }
 

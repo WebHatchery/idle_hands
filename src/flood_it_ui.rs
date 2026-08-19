@@ -14,6 +14,7 @@ struct Layout {
     hint: Rect,
     undo: Rect,
     new_game: Rect,
+    surge: Rect,
     colors: Vec<Rect>,
     difficulty: [Rect; 3],
 }
@@ -25,6 +26,7 @@ fn layout(color_count: u8) -> Layout {
             hint: Rect::new(620., 220., 105., 44.),
             undo: Rect::new(620., 110., 105., 44.),
             new_game: Rect::new(620., 165., 140., 44.),
+            surge: Rect::new(735., 220., 100., 44.),
             colors: color_rects(620., 270., 42., 42., color_count as usize, 4),
             difficulty: [
                 Rect::new(610., 52., 68., 38.),
@@ -38,6 +40,7 @@ fn layout(color_count: u8) -> Layout {
             hint: Rect::new(15., 450., 145., 44.),
             undo: Rect::new(15., 505., 145., 44.),
             new_game: Rect::new(170., 505., 145., 44.),
+            surge: Rect::new(170., 450., 145., 44.),
             colors: color_rects(15., 560., 48., 42., color_count as usize, 4),
             difficulty: [
                 Rect::new(15., 675., 90., 38.),
@@ -51,6 +54,7 @@ fn layout(color_count: u8) -> Layout {
             hint: Rect::new(810., 235., 120., 44.),
             undo: Rect::new(810., 180., 120., 44.),
             new_game: Rect::new(950., 180., 140., 44.),
+            surge: Rect::new(950., 235., 140., 44.),
             colors: color_rects(810., 300., 46., 46., color_count as usize, 4),
             difficulty: [
                 Rect::new(810., 90., 85., 38.),
@@ -93,6 +97,9 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(l.new_game, point) {
         return vec![UiAction::FloodNew];
     }
+    if crate::ui::hit(l.surge, point) {
+        return vec![UiAction::FloodSurge];
+    }
     for (color, rect) in l.colors.iter().enumerate() {
         if rect.contains(point) {
             return vec![UiAction::FloodColor(color as u8)];
@@ -134,14 +141,39 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
-    crate::ui::draw_text(
+    let flooded = game.region_size() * 100 / game.cells.len();
+    let scoreline = if compact {
         format!(
-            "{} / {} moves  •  {}  •  {}",
+            "{}% • M{}/{} • C{} • S{}",
+            flooded,
             game.moves,
             game.move_limit(),
-            status(game.phase),
+            game.combo,
+            game.surges
+        )
+    } else if portrait {
+        format!(
+            "{}% • M{}/{} • P{} • C{} • S{}",
+            flooded,
+            game.moves,
+            game.move_limit(),
+            game.points,
+            game.combo,
+            game.surges
+        )
+    } else {
+        format!(
+            "{}% flooded  •  Moves {}/{}  •  Points {}  •  Chain {}  •  {}",
+            flooded,
+            game.moves,
+            game.move_limit(),
+            game.points,
+            game.combo,
             game.difficulty.label()
-        ),
+        )
+    };
+    crate::ui::draw_text(
+        scoreline,
         if compact { 430. } else { title_x },
         if compact { 28. } else { title_y + 24. },
         accessibility::text_size(body_size(), state.large_text),
@@ -149,11 +181,18 @@ pub fn draw(state: &AppState) {
     );
     draw_board(l.board, game, state.high_contrast);
     for (color, rect) in l.colors.iter().enumerate() {
-        draw_color(*rect, color as u8, game.active_color, state.high_contrast);
+        draw_color(
+            *rect,
+            color as u8,
+            game.active_color,
+            game.preview_gain(color as u8),
+            state.high_contrast,
+        );
     }
     button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW FIELD", state.large_text);
+    button(l.surge, &format!("SURGE {}", game.surges), state.large_text);
     for (index, rect) in l.difficulty.iter().enumerate() {
         mode_button(
             *rect,
@@ -170,10 +209,7 @@ pub fn draw(state: &AppState) {
         545.
     };
     crate::ui::draw_text(
-        state
-            .card_hint
-            .as_deref()
-            .unwrap_or("Tap a color to grow the top-left region"),
+        state.card_hint.as_deref().unwrap_or(status_text(game)),
         if compact { 270. } else { title_x },
         status_y,
         accessibility::text_size(body_size(), state.large_text),
@@ -184,6 +220,7 @@ pub fn draw(state: &AppState) {
 fn draw_board(board: Rect, game: &FloodIt, high_contrast: bool) {
     let side = game.side();
     let cell = board.w / side as f32;
+    let region = game.region_mask();
     for index in 0..side * side {
         let rect = Rect::new(
             board.x + (index % side) as f32 * cell,
@@ -203,13 +240,17 @@ fn draw_board(board: Rect, game: &FloodIt, high_contrast: bool) {
             rect.y,
             rect.w,
             rect.h,
-            1.,
-            accessibility::grid_line(high_contrast),
+            if region[index] { 2. } else { 1. },
+            if region[index] {
+                WHITE
+            } else {
+                accessibility::grid_line(high_contrast)
+            },
         );
     }
 }
 
-fn draw_color(rect: Rect, color: u8, active: u8, high_contrast: bool) {
+fn draw_color(rect: Rect, color: u8, active: u8, gain: usize, high_contrast: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -229,13 +270,25 @@ fn draw_color(rect: Rect, color: u8, active: u8, high_contrast: bool) {
             line_color(high_contrast)
         },
     );
+    center_text(
+        if color == active {
+            "NOW".into()
+        } else {
+            format!("+{}", gain)
+        }
+        .as_str(),
+        rect,
+        10.,
+        crate::theme::BACKGROUND,
+    );
 }
 
-fn status(phase: FloodPhase) -> &'static str {
-    match phase {
-        FloodPhase::Playing => "FILL THE FIELD",
-        FloodPhase::Won => "FIELD COMPLETE",
-        FloodPhase::Lost => "MOVE LIMIT REACHED",
+fn status_text(game: &FloodIt) -> &'static str {
+    match game.phase {
+        FloodPhase::Playing if game.surges > 0 => "Tap SURGE for the best forecast without a move",
+        FloodPhase::Playing => "Button numbers forecast how many cells will join",
+        FloodPhase::Won => "The field is one color",
+        FloodPhase::Lost => "Move limit reached • Tap UNDO or NEW FIELD",
     }
 }
 

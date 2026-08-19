@@ -436,6 +436,9 @@ impl Game {
                 let seed = self.state.flood_it.seed.wrapping_add(1);
                 self.state.flood_it.reset(seed);
             }
+            UiAction::FloodSurge => {
+                self.state.flood_it.use_surge();
+            }
             UiAction::FloodDifficulty(difficulty) => {
                 let seed = self.state.flood_it.seed.wrapping_add(1);
                 self.state.flood_it = crate::flood_it::FloodIt::new_with_config(

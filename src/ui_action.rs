@@ -247,6 +247,7 @@ pub enum UiAction {
     FloodHint,
     FloodUndo,
     FloodNew,
+    FloodSurge,
     FloodDifficulty(crate::flood_it::FloodDifficulty),
     ColorSortTap(usize),
     ColorSortHint,

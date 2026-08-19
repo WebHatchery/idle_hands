@@ -386,6 +386,22 @@ The complete UNDO history can rewind the decision, while two REMIX charges
 rebuild the remaining count into a fresh guaranteed set of adjacent pairs and
 can themselves be undone. Older saves resume with NEAR and two charges.
 
+### 11.14 Flood It forecasts and surges
+
+Flood It's color buttons now publish the exact number of cells that each choice
+would add to the top-left territory, while the territory itself receives a
+white cell outline. These redundant cues make both the current footprint and
+the next growth options readable without inferring connectivity from color
+alone. Every move that gains cells extends a chain; gained cells are multiplied
+by the chain length for points, while a zero-growth color breaks it. A gain of
+at least half the board width advances momentum, and three consecutive strong
+gains earn a stored SURGE, capped at two. Tapping the visible SURGE control
+applies the best current forecast without consuming a move, but still extends
+the growth chain. Move limits therefore remain the primary win pressure while
+efficient route planning creates a second resource arc. Forecasts, territory,
+chains, momentum, surges, and full multi-step undo are deterministic and older
+saves migrate to an uncharged field.
+
 ## 12. Historical Phase 0 Decisions
 
 The original eight-game launch scope established the current product principles:

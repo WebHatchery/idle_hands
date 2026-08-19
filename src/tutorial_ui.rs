@@ -279,9 +279,9 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
             "Chain pairs for points; if NO LINKS appears, tap multi-step UNDO or REMIX.",
         ],
         GameId::FloodIt => [
-            "Tap one of the visible colors to expand the top-left region.",
-            "Fill every square before the move counter runs out.",
-            "Use UNDO or NEW FIELD with the visible controls.",
+            "Tap a color; its +number forecasts how many cells join the outlined region.",
+            "Chain growing moves for points; three strong gains earn a free SURGE.",
+            "Fill the field before the limit; tap SURGE, HINT, multi-step UNDO, or NEW FIELD.",
         ],
         GameId::ColorSort => [
             "Tap a tube, then tap a matching color or empty tube.",
