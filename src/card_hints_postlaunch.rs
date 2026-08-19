@@ -507,7 +507,19 @@ pub fn maze_walk(state: &AppState) -> String {
     }
     game.hint_direction().map_or_else(
         || "No route remains — tap NEW MAZE to begin again.".into(),
-        |direction| format!("Walk {} toward the exit.", direction_label(direction)),
+        |direction| {
+            let objective = if game.collected.len() < game.beacons.len() {
+                "the next beacon"
+            } else {
+                "the unlocked exit"
+            };
+            format!(
+                "Walk {} toward {} ({} steps away).",
+                direction_label(direction),
+                objective,
+                game.distance_to_objective()
+            )
+        },
     )
 }
 

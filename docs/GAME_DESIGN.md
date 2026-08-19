@@ -463,6 +463,21 @@ records the clockwise solution par, while hints report both power and leak
 progress. Rotations use complete multi-step undo. Older saves default to the
 SERPENT label and retain their original solvable orientation data.
 
+### 11.19 Maze Walk beacon routes
+
+Maze Walk now places two deterministic beacons in every seven-by-seven maze.
+Both `B` cells must be visited before the goal changes from locked `L` to exit
+`E`; reaching it early leaves the run active. The current objective is always
+the nearest uncollected beacon, then the exit, and HINT follows an exact
+shortest path to it. The header publishes beacon progress, moves against the
+optimal two-beacon route par, and remaining objective distance. Legal visible
+direction controls are bright while wall-blocked controls are dim, so touch
+navigation does not require reading wall pixels. EXPLORE shows the full maze;
+FOG shows only visited cells and immediate neighbors, with persistent footstep
+dots recording explored ground. Movement, beacon collection, and discovery
+share complete multi-step undo. Older saves without beacons stay compatible as
+open EXPLORE routes to their original exit.
+
 ## 12. Historical Phase 0 Decisions
 
 The original eight-game launch scope established the current product principles:

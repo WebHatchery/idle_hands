@@ -281,6 +281,7 @@ pub enum UiAction {
     MazeHint,
     MazeUndo,
     MazeNew,
+    MazeMode(crate::maze_walk::MazeMode),
     MatchThreeTap(usize),
     MatchThreeHint,
     MatchThreeUndo,

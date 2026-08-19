@@ -15,6 +15,7 @@ pub(super) fn apply(state: &mut AppState, scene: &str) {
         "battleship_sonar" => battleship_sonar(state),
         "word_grid_deduction" => word_grid_deduction(state),
         "pipe_network" => pipe_network(state),
+        "maze_beacons" => maze_beacons(state),
         _ => {}
     }
 }
@@ -241,4 +242,17 @@ fn pipe_network(state: &mut AppState) {
         game.rotate(index);
     }
     game.moves = 17;
+}
+
+fn maze_beacons(state: &mut AppState) {
+    use crate::maze_walk::{MazeMode, MazeWalk};
+    let game = &mut state.maze_walk;
+    *game = MazeWalk::new_with_mode(0, MazeMode::Fog);
+    for _ in 0..7 {
+        let Some(direction) = game.hint_direction() else {
+            break;
+        };
+        game.step(direction);
+    }
+    game.moves = 11;
 }

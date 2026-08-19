@@ -196,6 +196,7 @@ impl Game {
             "maze_walk" | "maze_walk_hint" | "maze_walk_hint_accessible" => {
                 Screen::Game(GameId::MazeWalk)
             }
+            "maze_beacons" => Screen::Game(GameId::MazeWalk),
             "match_three"
             | "match_three_accessible"
             | "match_three_confirm"

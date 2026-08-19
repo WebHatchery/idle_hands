@@ -304,9 +304,9 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
             "Power all 25 in SERPENT or TRUNK; use HINT, multi-step UNDO, or NEW LOOP.",
         ],
         GameId::MazeWalk => [
-            "Tap a visible direction to move the traveler.",
-            "Follow the open path to the glowing exit square.",
-            "Use UNDO or NEW MAZE with the visible controls.",
+            "Tap a bright visible direction control; dim controls are blocked by walls.",
+            "Collect both B beacons before entering the E exit; L means it is still locked.",
+            "Try EXPLORE or FOG, and use HINT, multi-step UNDO, or NEW MAZE.",
         ],
         GameId::MatchThree => [
             "Tap two adjacent tiles to swap their positions.",

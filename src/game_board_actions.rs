@@ -562,6 +562,10 @@ impl Game {
                 let seed = self.state.maze_walk.seed.wrapping_add(1);
                 self.state.maze_walk.reset(seed);
             }
+            UiAction::MazeMode(mode) => {
+                let seed = self.state.maze_walk.seed.wrapping_add(1);
+                self.state.maze_walk.set_mode(*mode, seed);
+            }
             UiAction::MatchThreeTap(index) => {
                 self.state.match_three.tap(*index);
             }

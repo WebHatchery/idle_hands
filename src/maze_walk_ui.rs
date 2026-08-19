@@ -2,7 +2,7 @@
 
 use crate::{
     accessibility,
-    maze_walk::{MazePhase, MazeWalk, SIDE},
+    maze_walk::{MazeMode, MazePhase, MazeWalk, SIDE},
     state::{AppState, Direction},
     ui::UiAction,
 };
@@ -15,6 +15,7 @@ struct Layout {
     hint: Rect,
     undo: Rect,
     new_game: Rect,
+    mode: Rect,
 }
 
 fn layout() -> Layout {
@@ -30,10 +31,11 @@ fn layout() -> Layout {
             hint: Rect::new(620., 275., 105., 44.),
             undo: Rect::new(620., 220., 105., 44.),
             new_game: Rect::new(735., 220., 105., 44.),
+            mode: Rect::new(735., 275., 105., 44.),
         }
     } else if crate::ui::is_portrait() {
         Layout {
-            board: Rect::new(15., 85., 300., 300.),
+            board: Rect::new(15., 105., 300., 300.),
             arrows: [
                 Rect::new(15., 420., 70., 44.),
                 Rect::new(90., 420., 70., 44.),
@@ -43,6 +45,7 @@ fn layout() -> Layout {
             hint: Rect::new(15., 475., 145., 44.),
             undo: Rect::new(5., 530., 145., 44.),
             new_game: Rect::new(165., 530., 170., 44.),
+            mode: Rect::new(170., 475., 145., 44.),
         }
     } else {
         Layout {
@@ -56,6 +59,7 @@ fn layout() -> Layout {
             hint: Rect::new(810., 365., 120., 44.),
             undo: Rect::new(810., 310., 120., 44.),
             new_game: Rect::new(950., 310., 140., 44.),
+            mode: Rect::new(950., 365., 140., 44.),
         }
     }
 }
@@ -85,6 +89,12 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if crate::ui::hit(l.new_game, point) {
         return vec![UiAction::MazeNew];
+    }
+    if crate::ui::hit(l.mode, point) {
+        return vec![UiAction::MazeMode(match _state.maze_walk.mode {
+            MazeMode::Explorer => MazeMode::Fog,
+            MazeMode::Fog => MazeMode::Explorer,
+        })];
     }
     Vec::new()
 }
@@ -116,8 +126,28 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
+    let scoreline = if compact || screen_width() < 360. {
+        format!(
+            "B{}/{} • {}/{} moves • {} away",
+            game.collected.len(),
+            game.beacons.len(),
+            game.moves,
+            game.par,
+            game.distance_to_objective()
+        )
+    } else {
+        format!(
+            "Beacons {}/{}  •  Moves {}/{}  •  Next {} away  •  {}",
+            game.collected.len(),
+            game.beacons.len(),
+            game.moves,
+            game.par,
+            game.distance_to_objective(),
+            game.mode.label()
+        )
+    };
     crate::ui::draw_text(
-        format!("{} moves  •  {}", game.moves, status(game.phase)),
+        scoreline,
         if compact { 430. } else { title_x },
         if compact { 28. } else { title_y + 24. },
         accessibility::text_size(body_size(), state.large_text),
@@ -125,15 +155,23 @@ pub fn draw(state: &AppState) {
     );
     draw_board(l.board, game, state.high_contrast);
     for (index, rect) in l.arrows.iter().enumerate() {
-        button(
+        let direction = [
+            Direction::Left,
+            Direction::Up,
+            Direction::Right,
+            Direction::Down,
+        ][index];
+        direction_button(
             *rect,
             ["LEFT", "UP", "RIGHT", "DOWN"][index],
+            game.can_step(direction),
             state.large_text,
         );
     }
     button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW MAZE", state.large_text);
+    mode_button(l.mode, game.mode.label(), state.large_text);
     let status_y = if portrait {
         610.
     } else if compact {
@@ -142,10 +180,13 @@ pub fn draw(state: &AppState) {
         545.
     };
     crate::ui::draw_text(
-        state
-            .card_hint
-            .as_deref()
-            .unwrap_or("Tap a direction to walk to the glowing exit"),
+        state.card_hint.as_deref().unwrap_or(
+            if screen_width() < 360. && game.phase == MazePhase::Playing {
+                "Collect both B beacons, then reach E"
+            } else {
+                status(game)
+            },
+        ),
         if compact { 250. } else { title_x },
         status_y,
         accessibility::text_size(body_size(), state.large_text),
@@ -162,6 +203,24 @@ fn draw_board(board: Rect, game: &MazeWalk, high_contrast: bool) {
             cell,
             cell,
         );
+        if !game.is_visible(index) {
+            draw_rectangle(
+                rect.x,
+                rect.y,
+                rect.w,
+                rect.h,
+                Color::new(0.04, 0.035, 0.06, 1.),
+            );
+            draw_rectangle_lines(
+                rect.x,
+                rect.y,
+                rect.w,
+                rect.h,
+                1.,
+                line_color(high_contrast),
+            );
+            continue;
+        }
         draw_rectangle(
             rect.x,
             rect.y,
@@ -228,6 +287,35 @@ fn draw_board(board: Rect, game: &MazeWalk, high_contrast: bool) {
         }
         if index == game.goal {
             draw_circle(rect.center().x, rect.center().y, cell * 0.16, accent());
+            center_text(
+                if game.collected.len() == game.beacons.len() {
+                    "E"
+                } else {
+                    "L"
+                },
+                rect,
+                cell * 0.18,
+                crate::theme::BACKGROUND,
+            );
+        }
+        if game.beacons.contains(&index) {
+            let collected = game.collected.contains(&index);
+            draw_circle_lines(
+                rect.center().x,
+                rect.center().y,
+                cell * 0.18,
+                3.,
+                if collected { muted() } else { accent() },
+            );
+            center_text(
+                "B",
+                rect,
+                cell * 0.18,
+                if collected { muted() } else { accent() },
+            );
+        }
+        if game.visited.get(index).copied().unwrap_or(false) && index != game.player {
+            draw_circle(rect.center().x, rect.center().y, cell * 0.045, muted());
         }
         if index == game.player {
             draw_circle(
@@ -240,11 +328,57 @@ fn draw_board(board: Rect, game: &MazeWalk, high_contrast: bool) {
     }
 }
 
-fn status(phase: MazePhase) -> &'static str {
-    match phase {
-        MazePhase::Playing => "FIND THE EXIT",
-        MazePhase::Won => "EXIT FOUND",
+fn status(game: &MazeWalk) -> &'static str {
+    match game.phase {
+        MazePhase::Playing if game.collected.len() < game.beacons.len() => {
+            "Follow visible direction controls to collect both B beacons"
+        }
+        MazePhase::Playing => "Both beacons held — follow visible controls to the E exit",
+        MazePhase::Won => "Route complete — tap NEW MAZE",
     }
+}
+fn direction_button(rect: Rect, label: &str, open: bool, large_text: bool) {
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        if open {
+            Color::new(0.22, 0.34, 0.23, 1.)
+        } else {
+            Color::new(0.15, 0.12, 0.16, 1.)
+        },
+    );
+    draw_rectangle_lines(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        1.,
+        if open { accent() } else { muted() },
+    );
+    center_text(
+        label,
+        rect,
+        accessibility::text_size(12., large_text),
+        if open { WHITE } else { muted() },
+    );
+}
+fn mode_button(rect: Rect, label: &str, large_text: bool) {
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        Color::new(0.22, 0.30, 0.20, 1.),
+    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
+    center_text(
+        label,
+        rect,
+        accessibility::text_size(10., large_text),
+        WHITE,
+    );
 }
 fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
