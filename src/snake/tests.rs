@@ -49,3 +49,31 @@ fn hint_is_empty_after_the_snake_finishes() {
 
     assert_eq!(game.hint_direction(), None);
 }
+
+#[test]
+fn elapsed_time_drives_movement_and_pause_stops_the_coil() {
+    let mut game = Snake::new(1);
+    let start = game.body.clone();
+
+    assert!(!game.tick(0.15));
+    assert_eq!(game.body, start);
+    assert!(game.tick(0.02));
+    assert_ne!(game.body, start);
+
+    assert!(game.toggle_pause());
+    let paused = game.body.clone();
+    assert!(!game.tick(1.));
+    assert_eq!(game.body, paused);
+    assert!(game.toggle_pause());
+    assert!(game.tick(0.17));
+    assert_ne!(game.body, paused);
+}
+
+#[test]
+fn legacy_saves_default_to_an_active_coil() {
+    let mut value = serde_json::to_value(Snake::new(1)).unwrap();
+    value.as_object_mut().unwrap().remove("paused");
+    let restored: Snake = serde_json::from_value(value).unwrap();
+
+    assert!(!restored.paused);
+}

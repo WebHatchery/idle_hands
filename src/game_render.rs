@@ -1,0 +1,31 @@
+//! Host-level frame rendering for the game shell.
+
+use super::Game;
+use crate::{cosmetics, ui};
+use macroquad::prelude::*;
+use macroquad_toolkit::notifications::{NotificationAnchor, NotificationRenderConfig};
+
+impl Game {
+    pub fn draw(&mut self) {
+        clear_background(cosmetics::background(self.state.board_theme));
+        let viewport = ui::viewport();
+        let (layout_width, layout_height) = ui::layout_size();
+        viewport.begin();
+        ui::draw(&self.state, &self.data, self.assets.len());
+        if self.transition > 0. {
+            draw_rectangle(
+                0.,
+                0.,
+                layout_width,
+                layout_height,
+                Color::new(0.02, 0.015, 0.035, self.transition),
+            );
+        }
+        set_default_camera();
+        self.notifications
+            .draw_with_config(&NotificationRenderConfig {
+                anchor: NotificationAnchor::BottomRight,
+                ..Default::default()
+            });
+    }
+}

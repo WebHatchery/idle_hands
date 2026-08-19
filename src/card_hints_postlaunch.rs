@@ -134,7 +134,13 @@ pub fn tiny_tower_defence(state: &AppState) -> String {
             crate::tiny_tower_defence::TowerHint::Build(index) => {
                 format!("Build at room {}.", index + 1)
             }
-            crate::tiny_tower_defence::TowerHint::Advance => "Tap ADVANCE to fire towers.".into(),
+            crate::tiny_tower_defence::TowerHint::WaveControl => {
+                if game.paused {
+                    "The wave is paused — tap RESUME when you are ready.".into()
+                } else {
+                    "The wave is moving — tap PAUSE when you need a break.".into()
+                }
+            }
         },
     )
 }

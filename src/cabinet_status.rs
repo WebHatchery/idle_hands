@@ -90,6 +90,7 @@ pub fn category_filter(game: GameId) -> u8 {
         | GameId::MemoryPairs => 3,
         GameId::Sudoku
         | GameId::Minesweeper
+        | GameId::DungeonSweeper
         | GameId::Nonogram
         | GameId::LightsOut
         | GameId::PegSolitaire
@@ -104,7 +105,8 @@ pub fn category_filter(game: GameId) -> u8 {
         | GameId::Mancala
         | GameId::Hanoi
         | GameId::Nim
-        | GameId::DailyDungeon => 5,
+        | GameId::DailyDungeon
+        | GameId::Battleship => 5,
         GameId::WordSearch
         | GameId::Hangman
         | GameId::WordGrid
@@ -112,17 +114,13 @@ pub fn category_filter(game: GameId) -> u8 {
         | GameId::NumberMatch
         | GameId::Mastermind
         | GameId::MazeWalk => 6,
-        GameId::Snake
-        | GameId::Breakout
-        | GameId::DungeonSweeper
-        | GameId::TinyTowerDefence
-        | GameId::OneRoomRoguelike
-        | GameId::Battleship => 7,
+        GameId::Snake | GameId::Breakout | GameId::TinyTowerDefence => 7,
         GameId::DotsBoxes
         | GameId::ColorSort
         | GameId::Potion2048
         | GameId::MatchThree
-        | GameId::FloodIt => 8,
+        | GameId::FloodIt
+        | GameId::OneRoomRoguelike => 8,
     }
 }
 

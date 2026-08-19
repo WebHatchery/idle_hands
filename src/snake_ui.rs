@@ -1,4 +1,4 @@
-//! Responsive presentation and touch routing for turn-based Snake.
+//! Responsive presentation and touch routing for real-time Snake.
 
 use crate::{
     accessibility,
@@ -18,6 +18,7 @@ struct Layout {
     right: Rect,
     hint: Rect,
     undo: Rect,
+    pause: Rect,
     new_game: Rect,
 }
 
@@ -32,6 +33,7 @@ fn layout() -> Layout {
             right: Rect::new(565., 178., 58., 42.),
             hint: Rect::new(435., 300., 90., 38.),
             undo: Rect::new(435., 250., 90., 38.),
+            pause: Rect::new(535., 300., 110., 38.),
             new_game: Rect::new(535., 250., 110., 38.),
         }
     } else if crate::ui::is_portrait() {
@@ -44,6 +46,7 @@ fn layout() -> Layout {
             right: Rect::new(220., 445., 65., 40.),
             hint: Rect::new(20., 590., 145., 42.),
             undo: Rect::new(20., 535., 145., 42.),
+            pause: Rect::new(185., 590., 165., 42.),
             new_game: Rect::new(185., 535., 165., 42.),
         }
     } else {
@@ -56,6 +59,7 @@ fn layout() -> Layout {
             right: Rect::new(1150., 238., 65., 42.),
             hint: Rect::new(1010., 385., 95., 42.),
             undo: Rect::new(1010., 330., 95., 42.),
+            pause: Rect::new(1120., 385., 110., 42.),
             new_game: Rect::new(1120., 330., 110., 42.),
         }
     }
@@ -78,6 +82,9 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if crate::ui::hit(layout.undo, point) {
         return vec![UiAction::SnakeUndo];
+    }
+    if crate::ui::hit(layout.pause, point) {
+        return vec![UiAction::SnakePause];
     }
     if crate::ui::hit(layout.hint, point) {
         return vec![UiAction::SnakeHint];
@@ -187,10 +194,11 @@ pub fn draw(state: &AppState) {
         &format!(
             "Score {}  •  {}",
             game.score,
-            state
-                .card_hint
-                .as_deref()
-                .unwrap_or("Tap a direction to move")
+            state.card_hint.as_deref().unwrap_or(if game.paused {
+                "Paused — tap RESUME"
+            } else {
+                "Auto-running — tap a direction to turn"
+            })
         ),
         if compact {
             435.
@@ -219,6 +227,11 @@ pub fn draw(state: &AppState) {
     }
     button(layout.hint, "HINT", state.large_text);
     button(layout.undo, "UNDO", state.large_text);
+    button(
+        layout.pause,
+        if game.paused { "RESUME" } else { "PAUSE" },
+        state.large_text,
+    );
     button(layout.new_game, "NEW BOARD", state.large_text);
 }
 

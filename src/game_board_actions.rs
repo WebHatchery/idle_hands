@@ -64,7 +64,10 @@ impl Game {
                 self.state.mahjong_solitaire.reset(seed);
             }
             UiAction::SnakeStep(direction) => {
-                self.state.snake.step(*direction);
+                self.state.snake.set_direction(*direction);
+            }
+            UiAction::SnakePause => {
+                self.state.snake.toggle_pause();
             }
             UiAction::SnakeHint => {
                 self.state.card_hint = Some(crate::card_hints::snake(&self.state));
@@ -78,7 +81,10 @@ impl Game {
                 self.state.snake.reset(seed);
             }
             UiAction::BreakoutStep(movement) => {
-                self.state.breakout.step(*movement);
+                self.state.breakout.set_control(*movement);
+            }
+            UiAction::BreakoutPause => {
+                self.state.breakout.toggle_pause();
             }
             UiAction::BreakoutHint => {
                 self.state.card_hint = Some(crate::card_hints::breakout(&self.state));
@@ -249,7 +255,7 @@ impl Game {
                 self.state.tiny_tower_defence.build_or_upgrade(*index);
             }
             UiAction::TowerWave => {
-                self.state.tiny_tower_defence.start_or_advance();
+                self.state.tiny_tower_defence.start_or_toggle_pause();
             }
             UiAction::TowerHint => {
                 self.state.card_hint = Some(crate::card_hints::tiny_tower_defence(&self.state));

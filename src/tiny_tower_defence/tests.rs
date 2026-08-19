@@ -77,7 +77,7 @@ fn undo_restores_build_and_target_wave_can_win() {
 }
 
 #[test]
-fn hint_recommends_build_then_advance_without_mutating_the_tower() {
+fn hint_recommends_build_then_wave_control_without_mutating_the_tower() {
     let mut game = TinyTowerDefence::new(1);
     let before = game.clone();
 
@@ -87,7 +87,7 @@ fn hint_recommends_build_then_advance_without_mutating_the_tower() {
 
     assert!(game.start_or_advance());
     let before_wave = game.clone();
-    assert_eq!(game.hint_action(), Some(TowerHint::Advance));
+    assert_eq!(game.hint_action(), Some(TowerHint::WaveControl));
     assert_eq!(game.enemies, before_wave.enemies);
     assert_eq!(game.tick, before_wave.tick);
 }
@@ -98,4 +98,33 @@ fn hint_is_empty_after_tower_defence_ends() {
     game.phase = TowerPhase::Won;
 
     assert_eq!(game.hint_action(), None);
+}
+
+#[test]
+fn elapsed_time_advances_waves_and_pause_stops_the_invaders() {
+    let mut game = TinyTowerDefence::new(1);
+    assert!(game.start_or_advance());
+    let start = game.enemies.clone();
+
+    assert!(!game.tick(0.39));
+    assert_eq!(game.enemies, start);
+    assert!(game.tick(0.02));
+    assert_ne!(game.enemies, start);
+
+    assert!(game.start_or_toggle_pause());
+    let paused = game.enemies.clone();
+    assert!(!game.tick(1.));
+    assert_eq!(game.enemies, paused);
+    assert!(game.start_or_toggle_pause());
+    assert!(game.tick(0.41));
+    assert_ne!(game.enemies, paused);
+}
+
+#[test]
+fn legacy_saves_default_to_an_active_wave() {
+    let mut value = serde_json::to_value(TinyTowerDefence::new(1)).unwrap();
+    value.as_object_mut().unwrap().remove("paused");
+    let restored: TinyTowerDefence = serde_json::from_value(value).unwrap();
+
+    assert!(!restored.paused);
 }

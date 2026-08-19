@@ -324,7 +324,8 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 ## Phase 20 — Thirteenth post-launch cabinet game
 
 - [x] Add Snake as a twenty-first deterministic, touch-complete cabinet game
-  with visible turn controls, food growth, collision states, undo, and reset.
+  with visible real-time direction controls, food growth, collision states,
+  undo, and reset.
   - [x] Cover seeded starts, direction rejection, movement, wall collision,
     food growth, undo, and reset behavior with focused rule tests.
   - [x] Add persisted active state and best-score records with snapshot,
@@ -335,7 +336,8 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 ## Phase 21 — Fourteenth post-launch cabinet game
 
 - [x] Add Breakout as a twenty-second deterministic, touch-complete cabinet
-  game with visible paddle controls, brick collisions, undo, and reset.
+  game with visible real-time paddle controls, brick collisions, undo, and
+  reset.
   - [x] Cover seeded layouts, paddle steps, brick field setup, wall and paddle
     collision states, undo, and reset behavior with focused rule tests.
   - [x] Add persisted active state and best-score records with snapshot,
@@ -416,8 +418,8 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 ## Phase 28 — Twenty-first post-launch cabinet game
 
 - [x] Add Tiny Tower Defence as a twenty-ninth deterministic, touch-complete
-  cabinet game with five quiet lanes, build and upgrade towers, wave ticks,
-  enemy leaks, undo, reset, and an eight-wave target.
+  cabinet game with five quiet lanes, build and upgrade towers, elapsed-time
+  waves, enemy leaks, undo, reset, and an eight-wave target.
   - [x] Cover seeded waves, tower costs, shots, leaks, undo, loss, and the
     target-wave victory boundary with focused rule tests.
   - [x] Add persisted active state and best-wave records with snapshot,
@@ -735,11 +737,11 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 ## Phase 58 — Arcade accessibility
 
 - [x] Extend the persisted High Contrast and Large Text settings to Snake,
-  Breakout, and Higher or Lower.
+  Breakout, and Tiny Tower Defence.
   - [x] Improve playfields, grid lines, symbols, labels, and touch controls
     without changing the underlying game rules.
   - [x] Capture and verify accessible desktop, portrait, and medium-landscape
-    scenes for all three arcade games.
+    scenes for all three real-time arcade games.
 
 ## Phase 59 — Card and strategy accessibility
 
@@ -1004,7 +1006,7 @@ sizes, covered by rule tests, and passes `publish.ps1`.
 ## Phase 90 — Tiny Tower Defence discoverability polish
 
 - [x] Add a deterministic non-mutating HINT action that recommends an
-  affordable central build cell or ADVANCE during a wave.
+  affordable central build cell or the live wave control during a wave.
   - [x] Wire desktop, portrait, and compact-landscape controls and feedback.
   - [x] Cover phase-aware recommendations, state preservation, hint
     determinism, capture aliases, and responsive layouts.
@@ -1372,3 +1374,15 @@ contract, shared confirmation safety, responsive capture coverage, and the
 
 - [x] Resize the portrait 2048 restart confirmation actions and add a seeded
   confirmation capture route with matching hit regions.
+
+## Phase 145 — Real-time arcade reorganization
+
+- [x] Convert Snake, Breakout, and Tiny Tower Defence from action-stepped
+  simulations to elapsed-time rounds with visible PAUSE/RESUME controls and
+  touch-complete tutorials.
+  - [x] Preserve legacy serialized board state while keeping runtime timing
+    data out of collection saves and snapshots.
+  - [x] Move Dungeon Sweeper to Logic, Battleship to Board, and One Room
+    Roguelike to Misc so Arcade contains only continuously moving games.
+  - [x] Add category membership regression coverage and update the product
+    documentation and hint language.

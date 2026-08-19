@@ -164,10 +164,11 @@ pub fn draw(state: &AppState) {
         muted(),
     );
     text(
-        state
-            .card_hint
-            .as_deref()
-            .unwrap_or("Tap empty cells to build • tap towers to upgrade"),
+        state.card_hint.as_deref().unwrap_or(if game.paused {
+            "Wave paused — tap RESUME"
+        } else {
+            "Tap empty cells to build • tap towers to upgrade"
+        }),
         if compact { 220. } else { title_x },
         if portrait {
             640.
@@ -179,16 +180,17 @@ pub fn draw(state: &AppState) {
         body_size(),
         muted(),
     );
-    button(l.wave, wave_label(game.phase));
+    button(l.wave, wave_label(game.phase, game.paused));
     button(l.hint, "HINT");
     button(l.undo, "UNDO");
     button(l.new_game, "NEW TOWER");
 }
 
-fn wave_label(phase: TowerPhase) -> &'static str {
+fn wave_label(phase: TowerPhase, paused: bool) -> &'static str {
     match phase {
         TowerPhase::Build => "START WAVE",
-        TowerPhase::Wave => "ADVANCE",
+        TowerPhase::Wave if paused => "RESUME",
+        TowerPhase::Wave => "PAUSE",
         TowerPhase::Won => "WAVE 8 CLEAR",
         TowerPhase::Lost => "LANES LOST",
     }

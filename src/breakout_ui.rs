@@ -1,4 +1,4 @@
-//! Responsive presentation and touch routing for turn-based Breakout.
+//! Responsive presentation and touch routing for real-time Breakout.
 
 use crate::{
     accessibility,
@@ -17,6 +17,7 @@ struct Layout {
     stay: Rect,
     hint: Rect,
     undo: Rect,
+    pause: Rect,
     new_game: Rect,
 }
 fn layout() -> Layout {
@@ -29,6 +30,7 @@ fn layout() -> Layout {
             right: Rect::new(615., 180., 80., 42.),
             hint: Rect::new(435., 300., 90., 38.),
             undo: Rect::new(435., 250., 90., 38.),
+            pause: Rect::new(535., 300., 110., 38.),
             new_game: Rect::new(535., 250., 110., 38.),
         }
     } else if crate::ui::is_portrait() {
@@ -40,6 +42,7 @@ fn layout() -> Layout {
             right: Rect::new(250., 400., 80., 42.),
             hint: Rect::new(20., 530., 145., 42.),
             undo: Rect::new(20., 475., 145., 42.),
+            pause: Rect::new(185., 530., 165., 42.),
             new_game: Rect::new(185., 475., 165., 42.),
         }
     } else {
@@ -51,6 +54,7 @@ fn layout() -> Layout {
             right: Rect::new(1170., 220., 55., 42.),
             hint: Rect::new(1010., 345., 95., 42.),
             undo: Rect::new(1010., 290., 95., 42.),
+            pause: Rect::new(1120., 345., 110., 42.),
             new_game: Rect::new(1120., 290., 110., 42.),
         }
     }
@@ -71,6 +75,9 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if crate::ui::hit(l.undo, point) {
         return vec![UiAction::BreakoutUndo];
+    }
+    if crate::ui::hit(l.pause, point) {
+        return vec![UiAction::BreakoutPause];
     }
     if crate::ui::hit(l.hint, point) {
         return vec![UiAction::BreakoutHint];
@@ -157,14 +164,15 @@ pub fn draw(state: &AppState) {
             );
         }
     }
+    let (ball_x, ball_y) = game.ball_position();
     draw_circle(
-        l.board.x + game.ball_x as f32 * l.cell + l.cell / 2.,
-        l.board.y + game.ball_y as f32 * l.cell + l.cell / 2.,
+        l.board.x + ball_x * l.cell + l.cell / 2.,
+        l.board.y + ball_y * l.cell + l.cell / 2.,
         l.cell * 0.25,
         accent(),
     );
     draw_rectangle(
-        l.board.x + (game.paddle - 2) as f32 * l.cell,
+        l.board.x + (game.paddle_position() - 2.) * l.cell,
         l.board.y + (HEIGHT - 1) as f32 * l.cell,
         l.cell * 5.,
         l.cell * 0.55,
@@ -178,10 +186,11 @@ pub fn draw(state: &AppState) {
         &format!(
             "Score {}  •  {}",
             game.score,
-            state
-                .card_hint
-                .as_deref()
-                .unwrap_or("Tap LEFT, STAY, or RIGHT")
+            state.card_hint.as_deref().unwrap_or(if game.paused {
+                "Paused — tap RESUME"
+            } else {
+                "Auto-running — tap LEFT, STAY, or RIGHT"
+            })
         ),
         if compact {
             435.
@@ -205,6 +214,11 @@ pub fn draw(state: &AppState) {
     button(l.right, "RIGHT", state.large_text);
     button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
+    button(
+        l.pause,
+        if game.paused { "RESUME" } else { "PAUSE" },
+        state.large_text,
+    );
     button(l.new_game, "NEW BOARD", state.large_text);
 }
 fn status_text(status: BreakoutStatus, score: u16) -> String {

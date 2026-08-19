@@ -52,3 +52,31 @@ fn hint_is_empty_after_breakout_ends() {
 
     assert_eq!(game.hint_move(), None);
 }
+
+#[test]
+fn elapsed_time_moves_the_ball_and_pause_stops_the_round() {
+    let mut game = Breakout::new(1);
+    let start = game.ball_position();
+
+    assert!(game.tick(0.1));
+    assert_ne!(game.ball_position(), start);
+
+    assert!(game.toggle_pause());
+    let paused = game.ball_position();
+    assert!(!game.tick(1.));
+    assert_eq!(game.ball_position(), paused);
+    assert!(game.toggle_pause());
+    assert!(game.tick(0.1));
+    assert_ne!(game.ball_position(), paused);
+}
+
+#[test]
+fn legacy_saves_default_to_an_active_breakout() {
+    let mut value = serde_json::to_value(Breakout::new(1)).unwrap();
+    value.as_object_mut().unwrap().remove("control");
+    value.as_object_mut().unwrap().remove("paused");
+    let restored: Breakout = serde_json::from_value(value).unwrap();
+
+    assert_eq!(restored.control, PaddleMove::Stay);
+    assert!(!restored.paused);
+}

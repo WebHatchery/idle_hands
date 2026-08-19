@@ -30,10 +30,19 @@ fn category_filters_partition_the_whole_collection() {
     assert!(matches_filter(&state, GameId::Solitaire, 3));
     assert!(matches_filter(&state, GameId::Sudoku, 4));
     assert!(matches_filter(&state, GameId::WordSearch, 6));
+    assert!(matches_filter(&state, GameId::Snake, 7));
+    assert!(matches_filter(&state, GameId::Breakout, 7));
+    assert!(matches_filter(&state, GameId::TinyTowerDefence, 7));
+    assert!(!matches_filter(&state, GameId::DungeonSweeper, 7));
+    assert!(!matches_filter(&state, GameId::Battleship, 7));
+    assert!(!matches_filter(&state, GameId::OneRoomRoguelike, 7));
+    assert!(matches_filter(&state, GameId::DungeonSweeper, 4));
+    assert!(matches_filter(&state, GameId::Battleship, 5));
+    assert!(matches_filter(&state, GameId::OneRoomRoguelike, 8));
     assert_eq!(filter_count(&state, 3), 12);
-    assert_eq!(filter_count(&state, 4), 9);
-    assert_eq!(filter_count(&state, 5), 8);
+    assert_eq!(filter_count(&state, 4), 10);
+    assert_eq!(filter_count(&state, 5), 9);
     assert_eq!(filter_count(&state, 6), 7);
-    assert_eq!(filter_count(&state, 7), 6);
-    assert_eq!(filter_count(&state, 8), 5);
+    assert_eq!(filter_count(&state, 7), 3);
+    assert_eq!(filter_count(&state, 8), 6);
 }

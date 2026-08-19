@@ -12,9 +12,7 @@ use crate::{
 use crate::{minesweeper_ui, nonogram_ui, responsive_landscape_games, responsive_puzzles, ui};
 use macroquad::prelude::*;
 use macroquad_toolkit::assets::AssetManager;
-use macroquad_toolkit::notifications::{
-    NotificationAnchor, NotificationManager, NotificationRenderConfig,
-};
+use macroquad_toolkit::notifications::NotificationManager;
 use macroquad_toolkit::persistence::{
     load_from_slot_with_migration, save_to_slot_with_version, slot_exists,
 };
@@ -28,6 +26,10 @@ mod game_capture;
 mod game_navigation;
 #[path = "game_progression.rs"]
 mod game_progression;
+#[path = "game_realtime.rs"]
+mod game_realtime;
+#[path = "game_render.rs"]
+mod game_render;
 #[path = "game_restart.rs"]
 mod game_restart;
 
@@ -79,6 +81,7 @@ impl Game {
                 Some(self.state.mine_records[slot].map_or(time, |best| best.min(time)));
             self.state.records.minesweeper[slot] = self.state.mine_records[slot];
         }
+        self.tick_realtime(dt);
         if is_mouse_button_pressed(MouseButton::Left) {
             let viewport = ui::viewport();
             self.pointer
@@ -185,28 +188,6 @@ impl Game {
         }
         self.update_navigation_scroll();
         let _ = dt;
-    }
-    pub fn draw(&mut self) {
-        clear_background(cosmetics::background(self.state.board_theme));
-        let viewport = ui::viewport();
-        let (layout_width, layout_height) = ui::layout_size();
-        viewport.begin();
-        ui::draw(&self.state, &self.data, self.assets.len());
-        if self.transition > 0. {
-            draw_rectangle(
-                0.,
-                0.,
-                layout_width,
-                layout_height,
-                Color::new(0.02, 0.015, 0.035, self.transition),
-            );
-        }
-        set_default_camera();
-        self.notifications
-            .draw_with_config(&NotificationRenderConfig {
-                anchor: NotificationAnchor::BottomRight,
-                ..Default::default()
-            });
     }
     fn apply(&mut self, action: ui::UiAction) {
         let previous_screen = self.state.screen;

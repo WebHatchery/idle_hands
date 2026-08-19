@@ -1,4 +1,4 @@
-//! A deterministic, turn-based tower defence board for quiet cabinet sessions.
+//! A deterministic real-time tower defence board for quiet cabinet sessions.
 
 use serde::{Deserialize, Serialize};
 
@@ -7,6 +7,7 @@ const HEIGHT: usize = 5;
 const TARGET_WAVE: u8 = 8;
 const STARTING_GOLD: u16 = 12;
 const STARTING_LIVES: u8 = 3;
+const WAVE_INTERVAL: f32 = 0.4;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Enemy {
@@ -26,10 +27,21 @@ pub enum TowerPhase {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TowerHint {
     Build(usize),
-    Advance,
+    WaveControl,
 }
 
-type Snapshot = (Vec<u8>, Vec<Enemy>, u16, u8, u8, u32, u64, TowerPhase, u16);
+type Snapshot = (
+    Vec<u8>,
+    Vec<Enemy>,
+    u16,
+    u8,
+    u8,
+    u32,
+    u64,
+    TowerPhase,
+    u16,
+    bool,
+);
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TinyTowerDefence {
@@ -42,8 +54,12 @@ pub struct TinyTowerDefence {
     pub seed: u64,
     pub phase: TowerPhase,
     pub tick: u16,
+    #[serde(default)]
+    pub paused: bool,
     #[serde(skip)]
     history: Vec<Snapshot>,
+    #[serde(skip)]
+    elapsed: f32,
 }
 
 impl Default for TinyTowerDefence {
@@ -64,7 +80,9 @@ impl TinyTowerDefence {
             seed,
             phase: TowerPhase::Build,
             tick: 0,
+            paused: false,
             history: Vec::new(),
+            elapsed: 0.,
         }
     }
 
@@ -105,7 +123,7 @@ impl TinyTowerDefence {
                     })
                     .map(TowerHint::Build)
             }
-            TowerPhase::Wave if !self.enemies.is_empty() => Some(TowerHint::Advance),
+            TowerPhase::Wave if !self.enemies.is_empty() => Some(TowerHint::WaveControl),
             TowerPhase::Wave | TowerPhase::Won | TowerPhase::Lost => None,
         }
     }
@@ -126,16 +144,45 @@ impl TinyTowerDefence {
         true
     }
 
+    #[cfg(test)]
     pub fn start_or_advance(&mut self) -> bool {
         match self.phase {
             TowerPhase::Build => self.start_wave(),
-            TowerPhase::Wave => self.advance_wave(),
+            TowerPhase::Wave => self.advance_wave(true),
             TowerPhase::Won | TowerPhase::Lost => false,
         }
     }
 
+    pub fn start_or_toggle_pause(&mut self) -> bool {
+        match self.phase {
+            TowerPhase::Build => self.start_wave(),
+            TowerPhase::Wave => {
+                self.paused = !self.paused;
+                if self.paused {
+                    self.elapsed = 0.;
+                }
+                true
+            }
+            TowerPhase::Won | TowerPhase::Lost => false,
+        }
+    }
+
+    pub fn tick(&mut self, dt: f32) -> bool {
+        if self.phase != TowerPhase::Wave || self.paused || self.enemies.is_empty() {
+            return false;
+        }
+        self.elapsed += dt.max(0.);
+        let mut advanced = false;
+        while self.elapsed >= WAVE_INTERVAL && self.phase == TowerPhase::Wave {
+            self.elapsed -= WAVE_INTERVAL;
+            self.advance_wave_state();
+            advanced = true;
+        }
+        advanced
+    }
+
     pub fn undo(&mut self) -> bool {
-        if let Some((towers, enemies, gold, lives, wave, score, seed, phase, tick)) =
+        if let Some((towers, enemies, gold, lives, wave, score, seed, phase, tick, paused)) =
             self.history.pop()
         {
             self.towers = towers;
@@ -147,6 +194,8 @@ impl TinyTowerDefence {
             self.seed = seed;
             self.phase = phase;
             self.tick = tick;
+            self.paused = paused;
+            self.elapsed = 0.;
             true
         } else {
             false
@@ -173,14 +222,24 @@ impl TinyTowerDefence {
             });
         }
         self.phase = TowerPhase::Wave;
+        self.paused = false;
+        self.elapsed = 0.;
         true
     }
 
-    fn advance_wave(&mut self) -> bool {
+    #[cfg(test)]
+    fn advance_wave(&mut self, record_undo: bool) -> bool {
         if self.enemies.is_empty() {
             return false;
         }
-        self.snapshot();
+        if record_undo {
+            self.snapshot();
+        }
+        self.advance_wave_state();
+        true
+    }
+
+    fn advance_wave_state(&mut self) {
         self.tick = self.tick.saturating_add(1);
         self.fire_towers();
         let mut remaining = Vec::with_capacity(self.enemies.len());
@@ -208,7 +267,9 @@ impl TinyTowerDefence {
                 self.phase = TowerPhase::Build;
             }
         }
-        true
+        if self.phase != TowerPhase::Wave {
+            self.elapsed = 0.;
+        }
     }
 
     fn fire_towers(&mut self) {
@@ -262,6 +323,7 @@ impl TinyTowerDefence {
             self.seed,
             self.phase,
             self.tick,
+            self.paused,
         ));
     }
 }

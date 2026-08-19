@@ -32,6 +32,11 @@ Roguelike, Daily Dungeon, Dots & Boxes, Sokoban, Mancala, Hanoi, Number Match,
 Flood It, Color Sort, Battleship, Word Grid, Pipe Loop, Maze Walk, Match Three,
 Pyramid, TriPeaks, Nim, and Word Ladder.
 
+The cabinet groups the collection into Cards, Logic, Board, Word, Arcade, and
+Misc. Arcade is reserved for the continuously moving games: Snake, Breakout,
+and Tiny Tower Defence. Dungeon Sweeper belongs with Logic, Battleship with
+Board, and One Room Roguelike with Misc; Higher or Lower remains a Cards game.
+
 ## Product Principles
 
 - **Touch is complete, not supplemental.** Every game, tutorial, menu, undo,
@@ -60,6 +65,8 @@ Pyramid, TriPeaks, Nim, and Word Ladder.
   easy to scan.
 - **Clear classic rules.** Familiar games remain recognisable. Any themed
   presentation is cosmetic and never hides state needed to play.
+- **Real-time means real-time.** Arcade rounds advance from the frame clock,
+  include visible pause controls, and remain fully playable with touch alone.
 - **Deterministic where useful.** Seeded deals and puzzles can be replayed and
   tested. Randomness is owned by each game session rather than ambient runtime
   calls.

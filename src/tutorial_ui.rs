@@ -199,13 +199,13 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
             "Clear every pair; use UNDO or NEW BOARD with the visible controls.",
         ],
         GameId::Snake => [
-            "Tap a visible direction button to move the coil one step.",
-            "Eat red food, avoid the walls, and grow toward twenty points.",
+            "Tap a visible direction button to steer while the coil moves automatically.",
+            "Eat red food, avoid the walls, and tap PAUSE when you need a break.",
             "Use UNDO or NEW BOARD with the visible controls.",
         ],
         GameId::Breakout => [
-            "Tap LEFT, STAY, or RIGHT to move the paddle and step the ball.",
-            "Bounce the ball into every brick; keep the paddle below it.",
+            "Tap LEFT, STAY, or RIGHT to steer while the ball moves automatically.",
+            "Bounce the ball into every brick; tap PAUSE when you need a break.",
             "Use UNDO or NEW BOARD with the visible controls.",
         ],
         GameId::HigherLower => [
@@ -240,7 +240,7 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
         ],
         GameId::TinyTowerDefence => [
             "Tap an empty lane cell to build, or a tower to upgrade.",
-            "Tap START WAVE, then ADVANCE to stop enemies at the quiet gate.",
+            "Tap START WAVE; towers fire and enemies advance automatically. PAUSE stops them.",
             "Reach wave 8; use UNDO or NEW TOWER with visible controls.",
         ],
         GameId::OneRoomRoguelike => [

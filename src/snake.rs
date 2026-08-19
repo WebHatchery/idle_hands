@@ -1,10 +1,11 @@
-//! Deterministic turn-based Snake with visible touch direction controls.
+//! Deterministic real-time Snake with visible touch direction controls.
 
 use serde::{Deserialize, Serialize};
 
 pub const WIDTH: i32 = 16;
 pub const HEIGHT: i32 = 12;
 const TARGET_SCORE: u16 = 20;
+const MOVE_INTERVAL: f32 = 0.16;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum SnakeDirection {
@@ -44,8 +45,12 @@ pub struct Snake {
     pub moves: u16,
     pub status: SnakeStatus,
     pub seed: u64,
+    #[serde(default)]
+    pub paused: bool,
     #[serde(skip)]
     undo: Option<Snapshot>,
+    #[serde(skip)]
+    elapsed: f32,
 }
 
 impl Default for Snake {
@@ -65,16 +70,55 @@ impl Snake {
             moves: 0,
             status: SnakeStatus::Playing,
             seed,
+            paused: false,
             undo: None,
+            elapsed: 0.,
         };
         game.food = game.next_food();
         game
     }
 
-    pub fn step(&mut self, direction: SnakeDirection) -> bool {
+    pub fn set_direction(&mut self, direction: SnakeDirection) -> bool {
         if self.status != SnakeStatus::Playing || direction.opposite(self.direction) {
             return false;
         }
+        self.direction = direction;
+        true
+    }
+
+    #[cfg(test)]
+    pub fn step(&mut self, direction: SnakeDirection) -> bool {
+        if !self.set_direction(direction) {
+            return false;
+        }
+        self.advance_one()
+    }
+
+    pub fn tick(&mut self, dt: f32) -> bool {
+        if self.status != SnakeStatus::Playing || self.paused {
+            return false;
+        }
+        self.elapsed += dt.max(0.);
+        let mut advanced = false;
+        while self.elapsed >= MOVE_INTERVAL && self.status == SnakeStatus::Playing {
+            self.elapsed -= MOVE_INTERVAL;
+            advanced |= self.advance_one();
+        }
+        advanced
+    }
+
+    pub fn toggle_pause(&mut self) -> bool {
+        if self.status != SnakeStatus::Playing {
+            return false;
+        }
+        self.paused = !self.paused;
+        if self.paused {
+            self.elapsed = 0.;
+        }
+        true
+    }
+
+    fn advance_one(&mut self) -> bool {
         self.undo = Some((
             self.body.clone(),
             self.direction,
@@ -84,11 +128,10 @@ impl Snake {
             self.status,
             self.seed,
         ));
-        self.direction = direction;
         let head = self.body[0] as i32;
         let row = head / WIDTH;
         let column = head % WIDTH;
-        let (row_step, column_step) = match direction {
+        let (row_step, column_step) = match self.direction {
             SnakeDirection::Up => (-1, 0),
             SnakeDirection::Right => (0, 1),
             SnakeDirection::Down => (1, 0),
@@ -152,6 +195,7 @@ impl Snake {
             self.moves = moves;
             self.status = status;
             self.seed = seed;
+            self.elapsed = 0.;
             true
         } else {
             false

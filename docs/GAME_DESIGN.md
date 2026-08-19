@@ -32,6 +32,9 @@ touch contracts.
    puzzles, and cosmetic stamps add continuity without obligation.
 5. **Rules before decoration.** Art and animation reinforce state; they never
    obscure legal moves, marks, values, or scoring.
+6. **Arcade rounds are live.** Snake, Breakout, and Tiny Tower Defence advance
+   from elapsed time, expose visible pause/resume controls, and never require a
+   keyboard or repeated taps to keep the simulation moving.
 
 ## 3. Collection Loop
 
@@ -212,6 +215,11 @@ Pipe Loop, Maze Walk, Match Three, Pyramid, TriPeaks, Nim, and Word Ladder.
 The former candidate list is now represented in the shipped cabinet. Ongoing
 post-launch work focuses on polish, accessibility, balance, and additional
 cabinet ideas only when they improve the quiet, touch-first collection.
+
+The cabinet's Arcade shelf is intentionally narrow: Snake, Breakout, and Tiny
+Tower Defence are the continuously moving games. Dungeon Sweeper is grouped
+with Logic, Battleship with Board, and One Room Roguelike with Misc. Higher or
+Lower remains grouped with Cards.
 
 ## 12. Historical Phase 0 Decisions
 
