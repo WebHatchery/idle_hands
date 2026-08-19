@@ -1,7 +1,7 @@
 //! Responsive touch presentation for Mancala.
 
 use crate::{
-    mancala::{AiLevel, Mancala, MancalaPhase},
+    mancala::{AiLevel, Mancala, MancalaPhase, MancalaVariant, MovePreview},
     state::AppState,
     ui::UiAction,
 };
@@ -14,31 +14,42 @@ struct Layout {
     undo: Rect,
     new_game: Rect,
     levels: [Rect; 3],
+    variants: [Rect; 3],
 }
 
 fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             board: Rect::new(220., 48., 390., 245.),
-            hint: Rect::new(640., 215., 100., 44.),
-            undo: Rect::new(640., 105., 100., 44.),
-            new_game: Rect::new(640., 160., 135., 44.),
+            hint: Rect::new(620., 201., 100., 44.),
+            undo: Rect::new(620., 149., 100., 44.),
+            new_game: Rect::new(730., 149., 110., 44.),
             levels: [
-                Rect::new(640., 50., 90., 42.),
-                Rect::new(740., 50., 90., 42.),
-                Rect::new(640., 95., 90., 42.),
+                Rect::new(620., 50., 64., 40.),
+                Rect::new(689., 50., 64., 40.),
+                Rect::new(758., 50., 72., 40.),
+            ],
+            variants: [
+                Rect::new(620., 97., 64., 40.),
+                Rect::new(689., 97., 72., 40.),
+                Rect::new(766., 97., 64., 40.),
             ],
         }
     } else if crate::ui::is_portrait() {
         Layout {
             board: Rect::new(15., 110., 300., 230.),
-            hint: Rect::new(15., 410., 145., 44.),
-            undo: Rect::new(15., 465., 145., 44.),
-            new_game: Rect::new(170., 465., 145., 44.),
+            hint: Rect::new(15., 465., 145., 44.),
+            undo: Rect::new(15., 520., 145., 44.),
+            new_game: Rect::new(170., 520., 145., 44.),
             levels: [
                 Rect::new(15., 355., 90., 42.),
                 Rect::new(112., 355., 90., 42.),
                 Rect::new(209., 355., 90., 42.),
+            ],
+            variants: [
+                Rect::new(15., 410., 90., 42.),
+                Rect::new(112., 410., 90., 42.),
+                Rect::new(209., 410., 90., 42.),
             ],
         }
     } else {
@@ -51,6 +62,11 @@ fn layout() -> Layout {
                 Rect::new(850., 125., 90., 42.),
                 Rect::new(950., 125., 90., 42.),
                 Rect::new(1050., 125., 90., 42.),
+            ],
+            variants: [
+                Rect::new(850., 310., 90., 42.),
+                Rect::new(950., 310., 90., 42.),
+                Rect::new(1050., 310., 90., 42.),
             ],
         }
     }
@@ -83,6 +99,18 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
             return vec![UiAction::MancalaLevel(level)];
         }
     }
+    for (index, variant) in [
+        MancalaVariant::Quick,
+        MancalaVariant::Classic,
+        MancalaVariant::Grand,
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        if crate::ui::hit(l.variants[index], point) {
+            return vec![UiAction::MancalaVariant(variant)];
+        }
+    }
     Vec::new()
 }
 
@@ -107,11 +135,19 @@ pub fn draw(state: &AppState) {
     };
     text("‹ CABINET", 8., 30., 13., muted());
     text("MANCALA", title_x, title_y, title_size(), accent());
+    let scoreline = if portrait {
+        format!(
+            "Y{} • C{} • M{} • Cap{} • E{}",
+            game.pits[6], game.pits[13], game.moves, game.captured_stones, game.extra_turns
+        )
+    } else {
+        format!(
+            "You {}  •  Cabinet {}  •  Moves {}  •  Captured {}  •  Bonuses {}",
+            game.pits[6], game.pits[13], game.moves, game.captured_stones, game.extra_turns
+        )
+    };
     text(
-        &format!(
-            "Your store {}  •  Cabinet {}  •  {} moves",
-            game.pits[6], game.pits[13], game.moves
-        ),
+        &scoreline,
         if compact { 430. } else { title_x },
         if compact { 28. } else { title_y + 24. },
         body_size(),
@@ -125,7 +161,7 @@ pub fn draw(state: &AppState) {
             .unwrap_or(status_text(game.phase)),
         if compact { 220. } else { title_x },
         if portrait {
-            370.
+            625.
         } else if compact {
             320.
         } else {
@@ -144,6 +180,13 @@ pub fn draw(state: &AppState) {
     ]) {
         button_selected(*rect, label, game.ai_level == level);
     }
+    for (rect, (label, variant)) in l.variants.iter().zip([
+        ("QUICK", MancalaVariant::Quick),
+        ("CLASSIC", MancalaVariant::Classic),
+        ("GRAND", MancalaVariant::Grand),
+    ]) {
+        button_selected(*rect, label, game.variant == variant);
+    }
 }
 
 fn draw_board(board: Rect, game: &Mancala) {
@@ -156,39 +199,61 @@ fn draw_board(board: Rect, game: &Mancala) {
     );
     draw_rectangle_lines(board.x, board.y, board.w, board.h, 2., accent());
     for pit in 0..6 {
-        draw_pit(pit_rect(board, pit, false), game.pits[12 - pit], false);
-        draw_pit(pit_rect(board, pit, true), game.pits[pit], true);
+        draw_pit(
+            pit_rect(board, pit, false),
+            game.pits[12 - pit],
+            false,
+            None,
+        );
+        draw_pit(
+            pit_rect(board, pit, true),
+            game.pits[pit],
+            true,
+            game.move_preview(pit),
+        );
     }
+    let store_width = if crate::ui::is_portrait() {
+        36.
+    } else if crate::ui::is_compact_landscape() {
+        42.
+    } else {
+        48.
+    };
     draw_store(
-        Rect::new(board.x + 8., board.y + 64., 48., 132.),
+        Rect::new(board.x + 7., board.y + 64., store_width, 132.),
         game.pits[13],
         false,
     );
     draw_store(
-        Rect::new(board.x + board.w - 56., board.y + 64., 48., 132.),
+        Rect::new(
+            board.right() - store_width - 7.,
+            board.y + 64.,
+            store_width,
+            132.,
+        ),
         game.pits[6],
         true,
     );
+    text("CABINET", board.x + 9., board.y + 214., 8., muted());
     text(
-        "CABINET",
-        board.x + board.w - 53.,
+        "YOU",
+        board.right() - store_width,
         board.y + 214.,
         8.,
         muted(),
     );
-    text("YOU", board.x + 17., board.y + 214., 8., muted());
 }
 
 fn pit_rect(board: Rect, pit: usize, player: bool) -> Rect {
     let step = if crate::ui::is_portrait() {
-        40.
+        35.5
     } else if crate::ui::is_compact_landscape() {
         45.
     } else {
         60.
     };
     let width = if crate::ui::is_portrait() {
-        34.
+        28.
     } else if crate::ui::is_compact_landscape() {
         40.
     } else {
@@ -196,7 +261,7 @@ fn pit_rect(board: Rect, pit: usize, player: bool) -> Rect {
     };
     let x = board.x
         + if crate::ui::is_portrait() {
-            58.
+            47.
         } else if crate::ui::is_compact_landscape() {
             68.
         } else {
@@ -211,7 +276,7 @@ fn pit_rect(board: Rect, pit: usize, player: bool) -> Rect {
     Rect::new(x, y, width, 60.)
 }
 
-fn draw_pit(rect: Rect, stones: u8, player: bool) {
+fn draw_pit(rect: Rect, stones: u8, player: bool, preview: Option<MovePreview>) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -230,6 +295,24 @@ fn draw_pit(rect: Rect, stones: u8, player: bool) {
         if crate::ui::is_portrait() { 16. } else { 20. },
         WHITE,
     );
+    if let Some(preview) = preview {
+        let marker = if preview.extra_turn {
+            Some("E")
+        } else if preview.captured > 0 {
+            Some("C")
+        } else {
+            None
+        };
+        if let Some(marker) = marker {
+            draw_circle(rect.right() - 4., rect.y + 5., 8., accent());
+            center_text(
+                marker,
+                Rect::new(rect.right() - 12., rect.y - 3., 16., 16.),
+                9.,
+                crate::theme::BACKGROUND,
+            );
+        }
+    }
 }
 
 fn draw_store(rect: Rect, stones: u8, player: bool) {

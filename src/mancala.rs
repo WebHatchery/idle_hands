@@ -20,8 +20,42 @@ pub enum AiLevel {
     Expert,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum MancalaVariant {
+    Quick,
+    Classic,
+    Grand,
+}
+
+impl MancalaVariant {
+    pub fn starting_stones(self) -> u8 {
+        match self {
+            Self::Quick => 3,
+            Self::Classic => 4,
+            Self::Grand => 5,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct MovePreview {
+    pub store_gain: u8,
+    pub captured: u8,
+    pub extra_turn: bool,
+}
+
+#[derive(Debug, Clone, Copy)]
+struct SowResult {
+    last: usize,
+    captured: u8,
+}
+
 fn default_ai_level() -> AiLevel {
     AiLevel::Sharp
+}
+
+fn default_variant() -> MancalaVariant {
+    MancalaVariant::Classic
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -31,6 +65,12 @@ pub struct Mancala {
     pub seed: u64,
     #[serde(default = "default_ai_level")]
     pub ai_level: AiLevel,
+    #[serde(default = "default_variant")]
+    pub variant: MancalaVariant,
+    #[serde(default)]
+    pub captured_stones: u16,
+    #[serde(default)]
+    pub extra_turns: u16,
     pub phase: MancalaPhase,
     #[serde(skip)]
     undo: Option<Box<Self>>,
@@ -44,7 +84,11 @@ impl Default for Mancala {
 
 impl Mancala {
     pub fn new(seed: u64) -> Self {
-        let mut pits = vec![4; 14];
+        Self::new_with_variant(seed, MancalaVariant::Classic)
+    }
+
+    pub fn new_with_variant(seed: u64, variant: MancalaVariant) -> Self {
+        let mut pits = vec![variant.starting_stones(); 14];
         pits[PLAYER_STORE] = 0;
         pits[OPPONENT_STORE] = 0;
         Self {
@@ -52,6 +96,9 @@ impl Mancala {
             moves: 0,
             seed,
             ai_level: AiLevel::Sharp,
+            variant,
+            captured_stones: 0,
+            extra_turns: 0,
             phase: MancalaPhase::Playing,
             undo: None,
         }
@@ -63,11 +110,17 @@ impl Mancala {
         }
         let previous = self.clone_without_undo();
         self.undo = Some(Box::new(previous));
-        let last = self.sow(pit, true);
+        let result = self.sow(pit, true);
+        self.captured_stones = self
+            .captured_stones
+            .saturating_add(u16::from(result.captured));
+        if result.last == PLAYER_STORE {
+            self.extra_turns = self.extra_turns.saturating_add(1);
+        }
         self.moves = self.moves.saturating_add(1);
         if self.side_empty(true) {
             self.finish();
-        } else if last != PLAYER_STORE {
+        } else if result.last != PLAYER_STORE {
             self.cpu_turn();
         }
         true
@@ -83,11 +136,18 @@ impl Mancala {
 
     pub fn reset(&mut self, seed: u64) {
         let ai_level = self.ai_level;
-        *self = Self::new(seed);
+        let variant = self.variant;
+        *self = Self::new_with_variant(seed, variant);
         self.ai_level = ai_level;
     }
 
     pub fn set_ai_level(&mut self, ai_level: AiLevel) {
+        self.ai_level = ai_level;
+    }
+
+    pub fn set_variant(&mut self, variant: MancalaVariant, seed: u64) {
+        let ai_level = self.ai_level;
+        *self = Self::new_with_variant(seed, variant);
         self.ai_level = ai_level;
     }
 
@@ -104,17 +164,29 @@ impl Mancala {
             if self.pits[pit] == 0 {
                 continue;
             }
-            let mut trial = self.clone_without_undo();
-            let before_store = trial.pits[PLAYER_STORE];
-            let last = trial.sow(pit, true);
-            let store_gain = trial.pits[PLAYER_STORE] as i32 - before_store as i32;
-            let extra_turn = (last == PLAYER_STORE) as i32;
-            let score = extra_turn * 1_000 + store_gain * 100 + trial.pits[PLAYER_STORE] as i32;
+            let preview = self.move_preview(pit)?;
+            let score = i32::from(preview.extra_turn) * 1_000
+                + i32::from(preview.captured) * 140
+                + i32::from(preview.store_gain) * 100;
             if best.is_none_or(|(best_score, _)| score > best_score) {
                 best = Some((score, pit));
             }
         }
         best.map(|(_, pit)| pit)
+    }
+
+    pub fn move_preview(&self, pit: usize) -> Option<MovePreview> {
+        if self.phase != MancalaPhase::Playing || pit >= PLAYER_STORE || self.pits[pit] == 0 {
+            return None;
+        }
+        let mut trial = self.clone_without_undo();
+        let before_store = trial.pits[PLAYER_STORE];
+        let result = trial.sow(pit, true);
+        Some(MovePreview {
+            store_gain: trial.pits[PLAYER_STORE] - before_store,
+            captured: result.captured,
+            extra_turn: result.last == PLAYER_STORE,
+        })
     }
 
     fn clone_without_undo(&self) -> Self {
@@ -123,7 +195,7 @@ impl Mancala {
         copy
     }
 
-    fn sow(&mut self, pit: usize, player: bool) -> usize {
+    fn sow(&mut self, pit: usize, player: bool) -> SowResult {
         let mut stones = self.pits[pit];
         self.pits[pit] = 0;
         let store = if player { PLAYER_STORE } else { OPPONENT_STORE };
@@ -139,15 +211,20 @@ impl Mancala {
             self.pits[index] += 1;
             stones -= 1;
         }
+        let mut captured = 0;
         if index >= start && index < end && self.pits[index] == 1 {
             let opposite = 12 - index;
             if self.pits[opposite] > 0 {
-                self.pits[store] += self.pits[opposite] + 1;
+                captured = self.pits[opposite] + 1;
+                self.pits[store] += captured;
                 self.pits[opposite] = 0;
                 self.pits[index] = 0;
             }
         }
-        index
+        SowResult {
+            last: index,
+            captured,
+        }
     }
 
     fn cpu_turn(&mut self) {
@@ -161,36 +238,59 @@ impl Mancala {
             }
             let pit = match self.ai_level {
                 AiLevel::Gentle => available[0],
-                AiLevel::Sharp => {
-                    self.seed = self
-                        .seed
-                        .wrapping_mul(6364136223846793005)
-                        .wrapping_add(1442695040888963407);
-                    available[(self.seed as usize) % available.len()]
-                }
+                AiLevel::Sharp => available
+                    .iter()
+                    .copied()
+                    .max_by_key(|&pit| self.cpu_move_value(pit, 0))
+                    .unwrap_or(available[0]),
                 AiLevel::Expert => available
                     .iter()
                     .copied()
-                    .max_by_key(|&pit| self.cpu_move_value(pit))
+                    .max_by_key(|&pit| self.cpu_move_value(pit, 2))
                     .unwrap_or(available[0]),
             };
-            let last = self.sow(pit, false);
+            let result = self.sow(pit, false);
             if self.side_empty(false) {
                 self.finish();
                 return;
             }
-            if last != OPPONENT_STORE {
+            if result.last != OPPONENT_STORE {
                 return;
             }
         }
     }
 
-    fn cpu_move_value(&self, pit: usize) -> i32 {
+    fn cpu_move_value(&self, pit: usize, depth: u8) -> i32 {
         let mut trial = self.clone_without_undo();
         let before_store = trial.pits[OPPONENT_STORE];
-        let last = trial.sow(pit, false);
+        let result = trial.sow(pit, false);
         let gain = i32::from(trial.pits[OPPONENT_STORE] - before_store);
-        gain * 100 + i32::from(last == OPPONENT_STORE) * 1_000
+        let mut value = gain * 100
+            + i32::from(result.captured) * 40
+            + i32::from(result.last == OPPONENT_STORE) * 1_000;
+        if depth > 0 && result.last == OPPONENT_STORE && !trial.side_empty(false) {
+            value += (OPPONENT_START..OPPONENT_STORE)
+                .filter(|&next| trial.pits[next] > 0)
+                .map(|next| trial.cpu_move_value(next, depth - 1))
+                .max()
+                .unwrap_or(0)
+                / 2;
+        } else if depth > 0 {
+            value -= trial.best_player_reply_value() / 2;
+        }
+        value
+    }
+
+    fn best_player_reply_value(&self) -> i32 {
+        (0..PLAYER_STORE)
+            .filter_map(|pit| self.move_preview(pit))
+            .map(|preview| {
+                i32::from(preview.extra_turn) * 800
+                    + i32::from(preview.captured) * 140
+                    + i32::from(preview.store_gain) * 100
+            })
+            .max()
+            .unwrap_or(0)
     }
 
     fn side_empty(&self, player: bool) -> bool {

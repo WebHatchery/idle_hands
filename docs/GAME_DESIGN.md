@@ -344,6 +344,20 @@ local and full-room recovery. NEXT ROOM is separate from RESTART, preventing a
 failed position from silently advancing to a different puzzle. The hint solver
 continues to prove every authored room within its stated par.
 
+### 11.11 Mancala openings and tactics
+
+Mancala offers three board lengths without changing the familiar six-pit
+shape: QUICK starts each pit with three stones, CLASSIC with four, and GRAND
+with five. Switching the visible variant begins a confirmed fresh board while
+preserving the chosen opponent strength. Legal player pits preview an E when
+their last stone earns another turn and a C when the move captures the opposite
+stones, making Kalah's two defining tactics learnable without opening a rules
+screen. The header records captured stones and bonus turns for the current
+board. GENTLE sows the first available pit, SHARP prioritizes immediate store
+gain, captures, and extra turns, and EXPERT looks through chained bonus moves
+while discounting choices that expose a strong player reply. Hints use the same
+capture-aware tactical values and name the concrete reward they found.
+
 ## 12. Historical Phase 0 Decisions
 
 The original eight-game launch scope established the current product principles:

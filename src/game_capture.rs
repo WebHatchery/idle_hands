@@ -151,7 +151,9 @@ impl Game {
                 Screen::Game(GameId::Sokoban)
             }
             "sokoban_accessible" => Screen::Game(GameId::Sokoban),
-            "mancala" | "mancala_hint" | "mancala_hint_accessible" => Screen::Game(GameId::Mancala),
+            "mancala" | "mancala_hint" | "mancala_hint_accessible" | "mancala_tactics" => {
+                Screen::Game(GameId::Mancala)
+            }
             "hanoi" | "hanoi_hint" | "hanoi_hint_accessible" => Screen::Game(GameId::Hanoi),
             "number_match" | "number_match_hint" | "number_match_hint_accessible" => {
                 Screen::Game(GameId::NumberMatch)
@@ -461,6 +463,34 @@ impl Game {
             game.moves = 11;
             game.pushes = 4;
             game.phase = SokobanPhase::Stuck;
+        }
+        if scene == "mancala_tactics" {
+            use crate::mancala::{AiLevel, Mancala, MancalaVariant};
+            let game = &mut self.state.mancala;
+            *game = Mancala::new_with_variant(0x4D41_4E43_4100, MancalaVariant::Grand);
+            game.ai_level = AiLevel::Expert;
+            game.pits = vec![0; 14];
+            for (index, stones) in [
+                (0, 1),
+                (1, 0),
+                (2, 7),
+                (3, 2),
+                (4, 1),
+                (5, 1),
+                (6, 16),
+                (7, 4),
+                (8, 2),
+                (9, 6),
+                (10, 0),
+                (11, 5),
+                (12, 3),
+                (13, 12),
+            ] {
+                game.pits[index] = stones;
+            }
+            game.moves = 14;
+            game.captured_stones = 11;
+            game.extra_turns = 3;
         }
         if scene == "solitaire_peek" {
             self.capture_solitaire_peek = true;

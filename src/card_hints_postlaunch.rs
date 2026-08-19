@@ -322,7 +322,16 @@ pub fn mancala(state: &AppState) -> String {
     }
     game.hint_pit().map_or_else(
         || "No stones remain — tap NEW BOARD to begin again.".into(),
-        |pit| format!("Sow pit {} for the strongest next turn.", pit + 1),
+        |pit| {
+            let preview = game.move_preview(pit);
+            if preview.is_some_and(|move_| move_.extra_turn) {
+                format!("Sow pit {} to land in your store and play again.", pit + 1)
+            } else if let Some(captured) = preview.map(|move_| move_.captured).filter(|&n| n > 0) {
+                format!("Sow pit {} to capture {} stones.", pit + 1, captured)
+            } else {
+                format!("Sow pit {} for the strongest next turn.", pit + 1)
+            }
+        },
     )
 }
 

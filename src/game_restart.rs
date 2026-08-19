@@ -47,6 +47,7 @@ pub(super) fn requires_new_confirmation(action: UiAction) -> bool {
             | UiAction::SokobanRestart
             | UiAction::SokobanNew
             | UiAction::MancalaNew
+            | UiAction::MancalaVariant(_)
             | UiAction::HanoiNew
             | UiAction::NumberMatchNew
             | UiAction::FloodNew

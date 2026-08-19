@@ -379,6 +379,10 @@ impl Game {
                 self.state.mancala.reset(seed);
             }
             UiAction::MancalaLevel(level) => self.state.mancala.set_ai_level(*level),
+            UiAction::MancalaVariant(variant) => {
+                let seed = self.state.mancala.seed.wrapping_add(1);
+                self.state.mancala.set_variant(*variant, seed);
+            }
             UiAction::HanoiPeg(peg) => {
                 self.state.hanoi.tap_peg(*peg);
             }

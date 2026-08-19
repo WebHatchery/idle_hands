@@ -231,6 +231,7 @@ pub enum UiAction {
     MancalaUndo,
     MancalaNew,
     MancalaLevel(crate::mancala::AiLevel),
+    MancalaVariant(crate::mancala::MancalaVariant),
     HanoiPeg(usize),
     HanoiHint,
     HanoiUndo,
@@ -332,6 +333,7 @@ impl UiAction {
                 | Self::SokobanRestart
                 | Self::SokobanNew
                 | Self::MancalaNew
+                | Self::MancalaVariant(_)
                 | Self::HanoiNew
                 | Self::NumberMatchNew
                 | Self::FloodNew

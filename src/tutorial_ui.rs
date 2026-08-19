@@ -264,9 +264,9 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
             "Beat PAR across six rooms, then tap NEXT ROOM after each clear.",
         ],
         GameId::Mancala => [
-            "Tap one of your six stone pits to sow its stones.",
-            "A final stone in your store grants another turn.",
-            "Gather more stones than the cabinet; use UNDO or NEW BOARD.",
+            "Tap QUICK, CLASSIC, or GRAND for three, four, or five opening stones per pit.",
+            "Tap one of your six pits: E earns another turn and C previews a capture.",
+            "GENTLE, SHARP, and EXPERT change cabinet tactics; gather the majority.",
         ],
         GameId::Hanoi => [
             "Tap a peg to select its top disk, then tap a destination peg.",
