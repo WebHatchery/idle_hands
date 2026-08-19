@@ -209,6 +209,7 @@ pub enum UiAction {
     RogueHint,
     RogueUndo,
     RogueNew,
+    RogueClass(crate::one_room_roguelike::HeroClass),
     DailyMove(Direction),
     DailyHint,
     DailyUndo,
@@ -320,6 +321,7 @@ impl UiAction {
                 | Self::PotionDifficulty(_)
                 | Self::TowerNew
                 | Self::RogueNew
+                | Self::RogueClass(_)
                 | Self::DailyNew
                 | Self::DotsNew
                 | Self::DotsDifficulty(_)

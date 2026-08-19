@@ -39,6 +39,7 @@ pub(super) fn requires_new_confirmation(action: UiAction) -> bool {
             | UiAction::PotionDifficulty(_)
             | UiAction::TowerNew
             | UiAction::RogueNew
+            | UiAction::RogueClass(_)
             | UiAction::DailyNew
             | UiAction::DotsNew
             | UiAction::DotsDifficulty(_)

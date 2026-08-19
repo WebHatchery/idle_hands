@@ -166,7 +166,7 @@ pub fn one_room_roguelike(state: &AppState) -> String {
     let game = &state.one_room_roguelike;
     match game.phase {
         crate::one_room_roguelike::RoomPhase::Won => {
-            return "The run is complete — tap NEW RUN to play again.".into()
+            return "All five rooms are clear — tap NEW RUN or choose a hero to play again.".into()
         }
         crate::one_room_roguelike::RoomPhase::Lost => {
             return "The run claims you — tap NEW RUN to begin again.".into()
@@ -177,7 +177,11 @@ pub fn one_room_roguelike(state: &AppState) -> String {
     game.hint_action().map_or_else(
         || "No room action is available — tap NEW RUN to begin again.".into(),
         |hint| match hint {
-            crate::one_room_roguelike::RogueHint::Strike => "STRIKE the adjacent enemy.".into(),
+            crate::one_room_roguelike::RogueHint::Strike => format!(
+                "Tap STRIKE. {} deals {} damage.",
+                game.hero_class.label(),
+                game.attack_damage()
+            ),
             crate::one_room_roguelike::RogueHint::Potion => "DRINK POTION to recover.".into(),
             crate::one_room_roguelike::RogueHint::Move(direction) => {
                 let target = if game.phase == crate::one_room_roguelike::RoomPhase::Stairs {

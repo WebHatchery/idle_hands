@@ -263,6 +263,19 @@ five-point band raises the pace. The head has directional eyes, rocks use crosse
 marks, and mode names remain visible so these states are not conveyed by color
 alone.
 
+### 11.5 One Room Roguelike expedition
+
+One Room Roguelike is a five-room expedition with a visible ending. Before a
+run, the player can tap BLADE for three-damage strikes, WARDEN for fourteen
+health and one point of protection from every hit, or ALCHEMIST for an extra
+potion and six-point healing. That choice persists when NEW RUN reseeds the
+rooms. Guards hold position, Stalkers step toward the hero before attacking,
+and Brutes trade speed for heavier hits and larger health pools. Deeper seeded
+rooms mix these archetypes, while the fifth guarantees a Brute. Letter labels,
+separate colors, and the Brute's outer ring keep the roster readable without
+depending on color. Clearing a room reveals its staircase; entering the fifth
+staircase completes the run and records the score.
+
 ## 12. Historical Phase 0 Decisions
 
 The original eight-game launch scope established the current product principles:

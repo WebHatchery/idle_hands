@@ -297,6 +297,11 @@ impl Game {
                 let seed = self.state.one_room_roguelike.seed.wrapping_add(1);
                 self.state.one_room_roguelike.reset(seed);
             }
+            UiAction::RogueClass(hero_class) => {
+                let seed = self.state.one_room_roguelike.seed.wrapping_add(1);
+                self.state.one_room_roguelike =
+                    crate::one_room_roguelike::OneRoomRoguelike::new_with_class(seed, *hero_class);
+            }
             UiAction::DailyMove(direction) => {
                 self.state.daily_dungeon.move_in(*direction);
             }

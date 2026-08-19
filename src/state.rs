@@ -243,7 +243,7 @@ impl GameId {
             Self::DungeonSweeper => "Find the exit",
             Self::Potion2048 => "Brew the next tile",
             Self::TinyTowerDefence => "Keep the lanes",
-            Self::OneRoomRoguelike => "Clear one room",
+            Self::OneRoomRoguelike => "Survive five rooms",
             Self::DailyDungeon => "Recover the daily runes",
             Self::DotsBoxes => "Draw the squares",
             Self::Sokoban => "Push the crates",

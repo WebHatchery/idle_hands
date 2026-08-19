@@ -244,9 +244,9 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
             "Tap START WAVE and survive wave 8. PAUSE, UNDO, and NEW TOWER remain visible.",
         ],
         GameId::OneRoomRoguelike => [
-            "Tap a direction to explore; tap STRIKE when an enemy is beside you.",
-            "Collect the cache, defeat every enemy, then reach the EXIT.",
-            "Use POTION, UNDO, or NEW ROOM with the visible controls.",
+            "Tap BLADE, WARDEN, or ALCHEMIST to begin with a different hero talent.",
+            "Tap directions to explore; defeat G guards, moving S stalkers, and tough B brutes.",
+            "Clear five rooms and tap onto STAIRS; POTION, UNDO, and NEW RUN stay visible.",
         ],
         GameId::DailyDungeon => [
             "Tap a direction to reveal the next room.",

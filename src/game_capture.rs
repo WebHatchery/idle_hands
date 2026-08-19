@@ -132,7 +132,8 @@ impl Game {
             }
             "one_room_roguelike"
             | "one_room_roguelike_hint"
-            | "one_room_roguelike_hint_accessible" => Screen::Game(GameId::OneRoomRoguelike),
+            | "one_room_roguelike_hint_accessible"
+            | "rogue_roles" => Screen::Game(GameId::OneRoomRoguelike),
             "one_room_roguelike_accessible" => Screen::Game(GameId::OneRoomRoguelike),
             "daily_dungeon" | "daily_dungeon_hint" | "daily_dungeon_hint_accessible" => {
                 Screen::Game(GameId::DailyDungeon)
@@ -301,6 +302,38 @@ impl Game {
                     health: 5,
                     kind: EnemyKind::Armored,
                     slow_ticks: 0,
+                },
+            ];
+        }
+        if scene == "rogue_roles" {
+            use crate::one_room_roguelike::{EnemyKind, HeroClass, OneRoomRoguelike, RoomEnemy};
+            let game = &mut self.state.one_room_roguelike;
+            *game = OneRoomRoguelike::new_with_class(0x0E_700005, HeroClass::Warden);
+            game.room = 4;
+            game.health = 9;
+            game.potions = 1;
+            game.score = 224;
+            game.turns = 19;
+            game.player = 24;
+            game.treasure = 38;
+            game.enemies = vec![
+                RoomEnemy {
+                    position: 9,
+                    health: 4,
+                    damage: 2,
+                    kind: EnemyKind::Guard,
+                },
+                RoomEnemy {
+                    position: 17,
+                    health: 4,
+                    damage: 2,
+                    kind: EnemyKind::Stalker,
+                },
+                RoomEnemy {
+                    position: 31,
+                    health: 8,
+                    damage: 3,
+                    kind: EnemyKind::Brute,
                 },
             ];
         }

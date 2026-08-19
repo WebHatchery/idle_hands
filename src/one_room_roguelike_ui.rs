@@ -2,7 +2,7 @@
 
 use crate::{
     accessibility,
-    one_room_roguelike::{OneRoomRoguelike, RoomPhase},
+    one_room_roguelike::{EnemyKind, HeroClass, OneRoomRoguelike, RoomPhase},
     state::{AppState, Direction},
     ui::UiAction,
 };
@@ -17,6 +17,7 @@ struct Layout {
     hint: Rect,
     undo: Rect,
     new_game: Rect,
+    classes: [Rect; 3],
 }
 
 fn layout() -> Layout {
@@ -34,21 +35,31 @@ fn layout() -> Layout {
             hint: Rect::new(610., 230., 110., 44.),
             undo: Rect::new(610., 120., 110., 44.),
             new_game: Rect::new(610., 175., 145., 44.),
+            classes: [
+                Rect::new(90., 55., 62., 44.),
+                Rect::new(157., 55., 62., 44.),
+                Rect::new(224., 55., 62., 44.),
+            ],
         }
     } else if crate::ui::is_portrait() {
         Layout {
-            board: Rect::new(40., 130., 320., 320.),
+            board: Rect::new(53., 145., 294., 294.),
             directions: [
-                Rect::new(40., 470., 68., 44.),
-                Rect::new(124., 470., 68., 44.),
-                Rect::new(208., 470., 68., 44.),
-                Rect::new(292., 470., 68., 44.),
+                Rect::new(40., 465., 68., 44.),
+                Rect::new(124., 465., 68., 44.),
+                Rect::new(208., 465., 68., 44.),
+                Rect::new(292., 465., 68., 44.),
             ],
-            strike: Rect::new(40., 525., 145., 44.),
-            potion: Rect::new(195., 525., 165., 44.),
-            hint: Rect::new(40., 635., 145., 42.),
-            undo: Rect::new(40., 580., 145., 44.),
-            new_game: Rect::new(195., 580., 165., 44.),
+            strike: Rect::new(40., 520., 145., 44.),
+            potion: Rect::new(195., 520., 165., 44.),
+            hint: Rect::new(40., 630., 145., 44.),
+            undo: Rect::new(40., 575., 145., 44.),
+            new_game: Rect::new(195., 575., 165., 44.),
+            classes: [
+                Rect::new(20., 96., 112., 44.),
+                Rect::new(144., 96., 112., 44.),
+                Rect::new(268., 96., 112., 44.),
+            ],
         }
     } else {
         Layout {
@@ -64,6 +75,11 @@ fn layout() -> Layout {
             hint: Rect::new(810., 350., 120., 44.),
             undo: Rect::new(810., 285., 120., 44.),
             new_game: Rect::new(950., 285., 140., 44.),
+            classes: [
+                Rect::new(810., 82., 90., 44.),
+                Rect::new(910., 82., 90., 44.),
+                Rect::new(1010., 82., 100., 44.),
+            ],
         }
     }
 }
@@ -99,6 +115,11 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if crate::ui::hit(l.new_game, point) {
         return vec![UiAction::RogueNew];
+    }
+    for (rect, hero_class) in l.classes.iter().zip(HeroClass::ALL) {
+        if crate::ui::hit(*rect, point) {
+            return vec![UiAction::RogueClass(hero_class)];
+        }
     }
     vec![]
 }
@@ -140,11 +161,30 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
+    let run_status = if compact {
+        format!(
+            "R {}/{}  HP {}/{}  P {}  S {}",
+            game.room,
+            OneRoomRoguelike::target_room(),
+            game.health,
+            game.max_health(),
+            game.potions,
+            game.score
+        )
+    } else {
+        format!(
+            "{}  •  Room {} / {}  •  Health {} / {}  •  Potions {}  •  Score {}",
+            game.hero_class.label(),
+            game.room,
+            OneRoomRoguelike::target_room(),
+            game.health,
+            game.max_health(),
+            game.potions,
+            game.score
+        )
+    };
     text(
-        &format!(
-            "Room {}  •  Health {} / 10  •  Potions {}  •  Score {}",
-            game.room, game.health, game.potions, game.score
-        ),
+        &run_status,
         if compact { 430. } else { title_x },
         if compact { 28. } else { title_y + 24. },
         accessibility::text_size(body_size(), state.large_text),
@@ -191,16 +231,22 @@ pub fn draw(state: &AppState) {
     }
     for enemy in &game.enemies {
         if let Some(rect) = grid.cell_rect(enemy.position) {
-            let label = format!("E{}", enemy.health);
+            let label = format!("{}{}", enemy_label(enemy.kind), enemy.health);
+            let enemy_color = enemy_color(enemy.kind, state.high_contrast);
+            if enemy.kind == EnemyKind::Brute {
+                draw_circle_lines(
+                    rect.x + rect.w * 0.5,
+                    rect.y + rect.h * 0.5,
+                    rect.w.min(rect.h) * 0.34,
+                    3.,
+                    Color::new(1., 0.65, 0.18, 1.),
+                );
+            }
             draw_circle(
                 rect.x + rect.w * 0.5,
                 rect.y + rect.h * 0.5,
                 rect.w.min(rect.h) * 0.27,
-                if state.high_contrast {
-                    Color::new(1., 0.12, 0.20, 1.)
-                } else {
-                    Color::new(0.62, 0.22, 0.35, 1.)
-                },
+                enemy_color,
             );
             center_text(&label, rect, small_size(state.large_text), WHITE);
         }
@@ -216,7 +262,12 @@ pub fn draw(state: &AppState) {
                 Color::new(0.26, 0.60, 0.48, 1.)
             },
         );
-        center_text("@", rect, cell_size(state.large_text), WHITE);
+        center_text(
+            hero_label(game.hero_class),
+            rect,
+            cell_size(state.large_text),
+            WHITE,
+        );
     }
     text(
         state
@@ -225,7 +276,7 @@ pub fn draw(state: &AppState) {
             .unwrap_or(&status_text(game.phase, game.turns)),
         if compact { 300. } else { title_x },
         if portrait {
-            460.
+            448.
         } else if compact {
             355.
         } else {
@@ -242,6 +293,41 @@ pub fn draw(state: &AppState) {
     button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW RUN", state.large_text);
+    for (rect, hero_class) in l.classes.iter().zip(HeroClass::ALL) {
+        class_button(
+            *rect,
+            hero_class,
+            hero_class == game.hero_class,
+            state.large_text,
+        );
+    }
+}
+
+fn hero_label(hero_class: HeroClass) -> &'static str {
+    match hero_class {
+        HeroClass::Blade => "B",
+        HeroClass::Warden => "W",
+        HeroClass::Alchemist => "A",
+    }
+}
+
+fn enemy_label(kind: EnemyKind) -> &'static str {
+    match kind {
+        EnemyKind::Guard => "G",
+        EnemyKind::Stalker => "S",
+        EnemyKind::Brute => "B",
+    }
+}
+
+fn enemy_color(kind: EnemyKind, high_contrast: bool) -> Color {
+    match (kind, high_contrast) {
+        (EnemyKind::Guard, false) => Color::new(0.62, 0.22, 0.35, 1.),
+        (EnemyKind::Stalker, false) => Color::new(0.28, 0.45, 0.72, 1.),
+        (EnemyKind::Brute, false) => Color::new(0.72, 0.31, 0.16, 1.),
+        (EnemyKind::Guard, true) => Color::new(1., 0.12, 0.20, 1.),
+        (EnemyKind::Stalker, true) => Color::new(0.10, 0.65, 1., 1.),
+        (EnemyKind::Brute, true) => Color::new(1., 0.42, 0.05, 1.),
+    }
 }
 
 fn cell_fill(index: usize, game: &OneRoomRoguelike, high_contrast: bool) -> Color {
@@ -268,7 +354,7 @@ fn cell_fill(index: usize, game: &OneRoomRoguelike, high_contrast: bool) -> Colo
 
 fn status_text(phase: RoomPhase, turns: u16) -> String {
     match phase {
-        RoomPhase::Exploring => format!("Clear the room  •  {} turns", turns),
+        RoomPhase::Exploring => format!("G guard  •  S stalker  •  B brute  •  {} turns", turns),
         RoomPhase::Stairs => format!("The room is clear  •  Move to STAIRS  •  {} turns", turns),
         RoomPhase::Won => format!("The run is complete  •  {} turns", turns),
         RoomPhase::Lost => format!("The run claims you  •  {} turns", turns),
@@ -283,6 +369,34 @@ fn button(rect: Rect, label: &str, large_text: bool) {
         rect,
         accessibility::text_size(11., large_text),
         WHITE,
+    );
+}
+
+fn class_button(rect: Rect, hero_class: HeroClass, selected: bool, large_text: bool) {
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        if selected {
+            Color::new(0.30, 0.23, 0.12, 1.)
+        } else {
+            crate::theme::SURFACE
+        },
+    );
+    draw_rectangle_lines(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        if selected { 3. } else { 1. },
+        accent(),
+    );
+    center_text(
+        hero_class.label(),
+        rect,
+        accessibility::text_size(if crate::ui::is_portrait() { 8. } else { 9. }, large_text),
+        if selected { accent() } else { WHITE },
     );
 }
 
