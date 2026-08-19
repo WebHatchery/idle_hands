@@ -70,7 +70,7 @@ pub fn draw(state: &AppState) {
             rect.y,
             rect.w,
             rect.h,
-            if col % 3 == 0 || row % 3 == 0 { 2. } else { 1. },
+            1.,
             crate::accessibility::grid_line(state.high_contrast),
         );
         if game.values[index] != 0 {
@@ -86,6 +86,25 @@ pub fn draw(state: &AppState) {
                 },
             );
         }
+    }
+    for boundary in 0..=3 {
+        let offset = boundary as f32 * cell * 3.;
+        draw_line(
+            board.x + 4. + offset,
+            board.y + 4.,
+            board.x + 4. + offset,
+            board.y + 4. + cell * 9.,
+            3.5,
+            crate::accessibility::grid_line(state.high_contrast),
+        );
+        draw_line(
+            board.x + 4.,
+            board.y + 4. + offset,
+            board.x + 4. + cell * 9.,
+            board.y + 4. + offset,
+            3.5,
+            crate::accessibility::grid_line(state.high_contrast),
+        );
     }
     text(
         if state.sudoku_note_mode {

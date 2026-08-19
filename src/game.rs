@@ -47,6 +47,7 @@ pub struct Game {
 }
 impl Game {
     pub async fn new() -> Self {
+        macroquad_toolkit::rng::srand(get_time().to_bits());
         let data = GameData::load().expect("Idle Hands embedded data failed to load");
         let mut assets = AssetManager::new();
         let placeholder = Image::gen_image_color(16, 16, crate::theme::SURFACE_DARK);

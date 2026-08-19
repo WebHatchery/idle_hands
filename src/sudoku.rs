@@ -1,11 +1,12 @@
-//! Deterministic Sudoku board state for the first collection puzzle.
+//! Randomized Sudoku board state for the first collection puzzle.
 
+use macroquad_toolkit::rng::{random_u64, SeededRng};
 use serde::{Deserialize, Serialize};
 
 const PUZZLE: &str =
     "530070000600195000098000060800060003400803001700020006060000280000419005000080079";
 const EASY: &str =
-    "534678912672195348198342567859761423426853791713924856961537284287419000000000000";
+    "534670000672195000098300060850760003420803001710020006960000280200419005300080079";
 const HARD: &str =
     "005300000800000020070010500400005300010070006003200080060500009004000030000009700";
 
@@ -29,6 +30,14 @@ impl SudokuDifficulty {
             Self::Easy => "EASY",
             Self::Medium => "MEDIUM",
             Self::Hard => "HARD",
+        }
+    }
+
+    fn source(self) -> &'static str {
+        match self {
+            Self::Easy => EASY,
+            Self::Medium => PUZZLE,
+            Self::Hard => HARD,
         }
     }
 }
@@ -59,16 +68,12 @@ impl Sudoku {
         Self::with_difficulty(SudokuDifficulty::Medium)
     }
     pub fn with_difficulty(difficulty: SudokuDifficulty) -> Self {
-        let source = match difficulty {
-            SudokuDifficulty::Easy => EASY,
-            SudokuDifficulty::Medium => PUZZLE,
-            SudokuDifficulty::Hard => HARD,
-        };
-        let puzzle: Vec<u8> = source.bytes().map(|digit| digit - b'0').collect();
+        let mut rng = SeededRng::new(random_u64());
+        let puzzle = randomized_puzzle(difficulty.source(), &mut rng);
         assert_eq!(
             count_solutions(&puzzle, 2),
             1,
-            "Sudoku catalog puzzle is not unique"
+            "Generated Sudoku puzzle is not unique"
         );
         Self {
             difficulty,
@@ -209,6 +214,39 @@ fn count_solutions(puzzle: &[u8], limit: u8) -> u8 {
     let mut board = [0u8; 81];
     board.copy_from_slice(puzzle);
     solve_count(&mut board, 0, limit)
+}
+
+fn randomized_puzzle(source: &str, rng: &mut SeededRng) -> Vec<u8> {
+    let source: Vec<u8> = source.bytes().map(|digit| digit - b'0').collect();
+    assert_eq!(source.len(), 81, "Sudoku source must contain 81 cells");
+    let rows = shuffled_units(rng);
+    let columns = shuffled_units(rng);
+    let mut digits: Vec<u8> = (1..=9).collect();
+    rng.shuffle(&mut digits);
+    let mut puzzle = vec![0; 81];
+    for (row, &source_row) in rows.iter().enumerate() {
+        for (column, &source_column) in columns.iter().enumerate() {
+            let value = source[source_row * 9 + source_column];
+            puzzle[row * 9 + column] = if value == 0 {
+                0
+            } else {
+                digits[value as usize - 1]
+            };
+        }
+    }
+    puzzle
+}
+
+fn shuffled_units(rng: &mut SeededRng) -> Vec<usize> {
+    let mut units: Vec<Vec<usize>> = (0..3)
+        .map(|unit| {
+            let mut members = (0..3).map(|offset| unit * 3 + offset).collect::<Vec<_>>();
+            rng.shuffle(&mut members);
+            members
+        })
+        .collect();
+    rng.shuffle(&mut units);
+    units.into_iter().flatten().collect()
 }
 
 fn solve_count(board: &mut [u8; 81], found: u8, limit: u8) -> u8 {

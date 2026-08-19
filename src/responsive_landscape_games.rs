@@ -211,7 +211,7 @@ pub fn draw_sudoku(state: &AppState) {
             rect.y,
             rect.w,
             rect.h,
-            if row % 3 == 0 || col % 3 == 0 { 2. } else { 1. },
+            1.,
             accessibility::grid_line(state.high_contrast),
         );
         let value = game.values[index];
@@ -239,6 +239,25 @@ pub fn draw_sudoku(state: &AppState) {
                 Color::new(0.63, 0.95, 0.72, 1.),
             );
         }
+    }
+    for boundary in 0..=3 {
+        let offset = boundary as f32 * cell * 3.;
+        draw_line(
+            10. + offset,
+            28.,
+            10. + offset,
+            388.,
+            3.5,
+            accessibility::grid_line(state.high_contrast),
+        );
+        draw_line(
+            10.,
+            28. + offset,
+            370.,
+            28. + offset,
+            3.5,
+            accessibility::grid_line(state.high_contrast),
+        );
     }
     text(
         match game.status {

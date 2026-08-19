@@ -57,11 +57,7 @@ pub fn draw_sudoku(state: &AppState) {
             rect.y,
             rect.w,
             rect.h,
-            if index % 3 == 0 || index / 9 % 3 == 0 {
-                2.
-            } else {
-                1.
-            },
+            1.,
             accessibility::grid_line(state.high_contrast),
         );
         let value = game.values[index];
@@ -86,6 +82,25 @@ pub fn draw_sudoku(state: &AppState) {
                 Color::new(0.63, 0.58, 0.72, 1.),
             );
         }
+    }
+    for boundary in 0..=3 {
+        let offset = boundary as f32 * grid.cell_width * 3.;
+        draw_line(
+            grid.bounds.x + offset,
+            grid.bounds.y,
+            grid.bounds.x + offset,
+            grid.bounds.bottom(),
+            4.,
+            accessibility::grid_line(state.high_contrast),
+        );
+        draw_line(
+            grid.bounds.x,
+            grid.bounds.y + offset,
+            grid.bounds.right(),
+            grid.bounds.y + offset,
+            4.,
+            accessibility::grid_line(state.high_contrast),
+        );
     }
     let instruction = state
         .card_hint
