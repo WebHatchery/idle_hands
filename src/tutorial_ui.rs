@@ -289,9 +289,9 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
             "Seal every color tube; use HINT, multi-step UNDO, or NEW BOARD.",
         ],
         GameId::Battleship => [
-            "Tap an unknown square to search for the hidden fleet.",
-            "Find all five ship squares; hits show as crosses and misses as dots.",
-            "Use UNDO or NEW FLEET with the visible controls.",
+            "Tap unknown water to fire, or tap SONAR then a cell to sweep its 3 × 3 area.",
+            "SONAR marks contacts ! and clear water ~; sunk vessels change to gold S marks.",
+            "Sink all three ships; chain hits for points and use multi-step UNDO or NEW FLEET.",
         ],
         GameId::WordGrid => [
             "Tap letters to build a five-letter guess, then tap SUBMIT.",

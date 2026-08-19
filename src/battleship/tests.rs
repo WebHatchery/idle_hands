@@ -1,11 +1,13 @@
 use super::*;
 
 #[test]
-fn seeded_layouts_are_repeatable_and_hold_two_non_overlapping_ships() {
+fn seeded_layouts_are_repeatable_and_hold_three_non_overlapping_ships() {
     let first = Battleship::new(0);
     assert_eq!(first.ships, Battleship::new(0).ships);
     assert_eq!(first.ships.iter().filter(|cell| **cell == 1).count(), 3);
     assert_eq!(first.ships.iter().filter(|cell| **cell == 2).count(), 2);
+    assert_eq!(first.ships.iter().filter(|cell| **cell == 3).count(), 2);
+    assert_eq!(first.ship_count(), 3);
     assert_ne!(first.ships, Battleship::new(1).ships);
 }
 
@@ -34,6 +36,55 @@ fn undo_restores_the_unfired_cell_and_move_count() {
 }
 
 #[test]
+fn hit_chains_score_more_and_sinking_adds_a_bonus() {
+    let mut game = Battleship::new(0);
+    assert!(game.fire(1));
+    assert_eq!((game.streak, game.score), (1, 10));
+    assert!(game.fire(2));
+    assert_eq!((game.streak, game.score), (2, 30));
+    assert!(game.fire(3));
+    assert!(game.ship_sunk(1));
+    assert_eq!((game.streak, game.best_streak, game.score), (3, 3, 85));
+    assert_eq!(game.sunk_ships(), 1);
+    assert!(game.fire(0));
+    assert_eq!(game.streak, 0);
+}
+
+#[test]
+fn sonar_sweeps_a_clamped_three_by_three_area_and_finds_contacts() {
+    let mut game = Battleship::new(0);
+    assert!(game.toggle_sonar());
+    assert!(game.sonar_armed);
+    assert!(game.fire(2));
+    assert!(!game.sonar_armed);
+    assert_eq!(game.sonar_charges, 1);
+    assert!(game.is_scanned(1));
+    assert!(game.is_scanned(2));
+    assert!(game.is_scanned(8));
+    assert!(!game.is_scanned(20));
+    assert_eq!(game.contact_count(), 3);
+    assert_eq!(game.shots[2], Shot::Unknown);
+    assert_eq!(game.moves, 0);
+    assert_eq!(game.hint_cell(), Some(1));
+}
+
+#[test]
+fn sonar_and_shots_share_a_full_undo_history() {
+    let mut game = Battleship::new(1);
+    assert!(game.toggle_sonar());
+    assert!(game.fire(0));
+    assert!(game.fire(1));
+    assert_eq!(game.moves, 1);
+    assert!(game.undo());
+    assert_eq!(game.moves, 0);
+    assert!(game.is_scanned(0));
+    assert!(game.undo());
+    assert_eq!(game.sonar_charges, 2);
+    assert!(!game.is_scanned(0));
+    assert!(!game.undo());
+}
+
+#[test]
 fn firing_all_ship_cells_wins_and_finished_games_stop() {
     let mut game = Battleship::new(3);
     for cell in 0..CELLS {
@@ -53,6 +104,28 @@ fn reset_starts_a_new_hidden_fleet() {
     assert_ne!(old, game.ships);
     assert_eq!(game.moves, 0);
     assert_eq!(game.hits(), 0);
+    assert_eq!(game.sonar_charges, 2);
+}
+
+#[test]
+fn legacy_saves_receive_two_sonar_sweeps_and_safe_empty_intel() {
+    let original = Battleship::new(2);
+    let mut value = serde_json::to_value(&original).unwrap();
+    let object = value.as_object_mut().unwrap();
+    for field in [
+        "streak",
+        "best_streak",
+        "score",
+        "sonar_charges",
+        "sonar_armed",
+        "scanned",
+    ] {
+        object.remove(field);
+    }
+    let restored: Battleship = serde_json::from_value(value).unwrap();
+    assert_eq!(restored.sonar_charges, 2);
+    assert_eq!(restored.score, 0);
+    assert!(!restored.is_scanned(0));
 }
 
 #[test]

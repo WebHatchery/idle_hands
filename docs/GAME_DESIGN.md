@@ -418,6 +418,21 @@ complete move history supports repeated UNDO across pours and scoring state.
 Legacy puzzles derive their sealed tubes directly from their existing contents
 and begin without a chain.
 
+### 11.16 Battleship fleet intelligence
+
+Battleship now hides three vessels across seven segments: a three-cell flagship
+and two two-cell escorts. Hits build a score chain worth ten points times the
+current chain, misses reset it, and finishing any vessel awards a further
+twenty-five points. The header separates segment hits from fully sunk ships,
+while a sunk vessel's cells turn gold and carry `S` instead of the ordinary hit
+cross. Each fleet also carries two SONAR charges. Tapping the visible SONAR
+control arms it, and the next board tap sweeps the surrounding 3 × 3 area
+without firing: clear scanned water receives a wave mark and hidden occupied
+cells receive a `!` contact. Those contacts still require deliberate shots.
+Hints prioritize known sonar contacts before hit neighbors and checkerboard
+searching. Sonar sweeps and shots share the complete multi-step undo history,
+and older saves receive two unused charges with an empty scan record.
+
 ## 12. Historical Phase 0 Decisions
 
 The original eight-game launch scope established the current product principles:

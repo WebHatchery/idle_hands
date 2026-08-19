@@ -12,6 +12,7 @@ pub(super) fn apply(state: &mut AppState, scene: &str) {
         "number_match_links" => number_match_links(state),
         "flood_surges" => flood_surges(state),
         "color_sort_runs" => color_sort_runs(state),
+        "battleship_sonar" => battleship_sonar(state),
         _ => {}
     }
 }
@@ -190,4 +191,25 @@ fn color_sort_runs(state: &mut AppState) {
     game.combo = 3;
     game.best_combo = 5;
     game.points = 118;
+}
+
+fn battleship_sonar(state: &mut AppState) {
+    use crate::battleship::{Battleship, Shot};
+    let game = &mut state.battleship;
+    *game = Battleship::new(0xBA77_1E50);
+    game.shots[1] = Shot::Hit;
+    game.shots[2] = Shot::Hit;
+    game.shots[14] = Shot::Hit;
+    game.shots[20] = Shot::Hit;
+    game.shots[0] = Shot::Miss;
+    game.shots[6] = Shot::Miss;
+    game.scanned = vec![false; crate::battleship::CELLS];
+    for cell in [7, 8, 9, 13, 14, 15, 19, 20, 21, 27, 28, 29, 33, 34, 35] {
+        game.scanned[cell] = true;
+    }
+    game.moves = 6;
+    game.streak = 2;
+    game.best_streak = 3;
+    game.score = 105;
+    game.sonar_charges = 1;
 }

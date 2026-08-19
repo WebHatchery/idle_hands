@@ -435,9 +435,26 @@ pub fn battleship(state: &AppState) -> String {
     if game.won() {
         return "The fleet is found — tap NEW FLEET to play again.".into();
     }
+    if game.sonar_armed {
+        return "SONAR armed — tap a water cell to sweep its 3 × 3 area.".into();
+    }
     game.hint_cell().map_or_else(
         || "Every water cell is searched — tap NEW FLEET to begin again.".into(),
-        |cell| format!("Fire at cell {}.", battleship_cell_label(cell)),
+        |cell| {
+            if game.is_scanned(cell) && game.ships[cell] != 0 {
+                format!(
+                    "SONAR contact confirmed at {} — fire there.",
+                    battleship_cell_label(cell)
+                )
+            } else if game.sonar_charges > 0 && game.hits() == 0 {
+                format!(
+                    "Sweep near {} with SONAR, or fire there directly.",
+                    battleship_cell_label(cell)
+                )
+            } else {
+                format!("Fire at cell {}.", battleship_cell_label(cell))
+            }
+        },
     )
 }
 

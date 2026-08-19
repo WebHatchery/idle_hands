@@ -314,7 +314,7 @@ fn default_color_sort_has_a_deterministic_hint() {
 fn default_battleship_has_a_deterministic_hint() {
     let state = AppState::default();
 
-    assert!(battleship(&state).contains("Fire at cell"));
+    assert!(battleship(&state).contains("Sweep near"));
     assert_eq!(battleship(&state), battleship(&state));
 }
 

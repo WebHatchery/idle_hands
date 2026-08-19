@@ -175,6 +175,7 @@ impl Game {
             "battleship" | "battleship_hint" | "battleship_hint_accessible" => {
                 Screen::Game(GameId::Battleship)
             }
+            "battleship_sonar" => Screen::Game(GameId::Battleship),
             "battleship_accessible" => Screen::Game(GameId::Battleship),
             "word_grid" | "word_grid_hint" | "word_grid_hint_accessible" => {
                 Screen::Game(GameId::WordGrid)

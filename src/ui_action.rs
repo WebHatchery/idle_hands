@@ -255,6 +255,7 @@ pub enum UiAction {
     ColorSortNew,
     ColorSortDifficulty(crate::color_sort::ColorSortDifficulty),
     BattleshipFire(usize),
+    BattleshipSonar,
     BattleshipHint,
     BattleshipUndo,
     BattleshipNew,

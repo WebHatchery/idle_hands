@@ -472,6 +472,9 @@ impl Game {
             UiAction::BattleshipFire(cell) => {
                 self.state.battleship.fire(*cell);
             }
+            UiAction::BattleshipSonar => {
+                self.state.battleship.toggle_sonar();
+            }
             UiAction::BattleshipHint => {
                 self.state.card_hint = Some(crate::card_hints::battleship(&self.state));
                 return true;

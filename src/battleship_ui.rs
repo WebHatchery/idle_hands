@@ -11,6 +11,7 @@ use macroquad::prelude::*;
 #[derive(Clone, Copy)]
 struct Layout {
     board: Rect,
+    sonar: Rect,
     hint: Rect,
     undo: Rect,
     new_game: Rect,
@@ -20,6 +21,7 @@ fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             board: Rect::new(270., 44., 300., 300.),
+            sonar: Rect::new(735., 220., 90., 44.),
             hint: Rect::new(620., 220., 105., 44.),
             undo: Rect::new(620., 110., 105., 44.),
             new_game: Rect::new(620., 165., 140., 44.),
@@ -27,6 +29,7 @@ fn layout() -> Layout {
     } else if crate::ui::is_portrait() {
         Layout {
             board: Rect::new(15., 95., 300., 300.),
+            sonar: Rect::new(170., 440., 145., 44.),
             hint: Rect::new(15., 440., 145., 44.),
             undo: Rect::new(15., 495., 145., 44.),
             new_game: Rect::new(170., 495., 145., 44.),
@@ -34,6 +37,7 @@ fn layout() -> Layout {
     } else {
         Layout {
             board: Rect::new(350., 90., 420., 420.),
+            sonar: Rect::new(950., 245., 140., 44.),
             hint: Rect::new(810., 245., 120., 44.),
             undo: Rect::new(810., 180., 120., 44.),
             new_game: Rect::new(950., 180., 140., 44.),
@@ -56,6 +60,9 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if crate::ui::hit(l.hint, point) {
         return vec![UiAction::BattleshipHint];
+    }
+    if crate::ui::hit(l.sonar, point) {
+        return vec![UiAction::BattleshipSonar];
     }
     if crate::ui::hit(l.undo, point) {
         return vec![UiAction::BattleshipUndo];
@@ -99,8 +106,27 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
+    let scoreline = if compact || screen_width() < 360. {
+        format!(
+            "{}/{} sunk • P{} • C{}",
+            game.sunk_ships(),
+            game.ship_count(),
+            game.score,
+            game.streak
+        )
+    } else {
+        format!(
+            "Ships {}/{}  •  Hits {}/{}  •  Points {}  •  Chain {}",
+            game.sunk_ships(),
+            game.ship_count(),
+            game.hits(),
+            game.ship_cells(),
+            game.score,
+            game.streak
+        )
+    };
     crate::ui::draw_text(
-        format!("{} / 5 hits  •  {}", game.hits(), status(game.phase)),
+        scoreline,
         if compact { 430. } else { title_x },
         if compact { 28. } else { title_y + 24. },
         accessibility::text_size(body_size(), state.large_text),
@@ -108,6 +134,12 @@ pub fn draw(state: &AppState) {
     );
     draw_board(l.board, game, state.high_contrast, state.large_text);
     button(l.hint, "HINT", state.large_text);
+    mode_button(
+        l.sonar,
+        &format!("SONAR ×{}", game.sonar_charges),
+        game.sonar_armed,
+        state.large_text,
+    );
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW FLEET", state.large_text);
     let status_y = if portrait {
@@ -118,10 +150,7 @@ pub fn draw(state: &AppState) {
         545.
     };
     crate::ui::draw_text(
-        state
-            .card_hint
-            .as_deref()
-            .unwrap_or("Tap unknown waters to search for the fleet"),
+        state.card_hint.as_deref().unwrap_or(status_text(game)),
         if compact { 270. } else { title_x },
         status_y,
         accessibility::text_size(body_size(), state.large_text),
@@ -139,15 +168,23 @@ fn draw_board(board: Rect, game: &Battleship, high_contrast: bool, large_text: b
             cell,
         );
         let shot = game.shots[index];
+        let sunk = shot == Shot::Hit && game.ship_sunk(game.ships[index]);
+        let scanned = game.is_scanned(index);
+        let contact = scanned && game.ships[index] != 0 && shot == Shot::Unknown;
         let fill = match shot {
             Shot::Unknown => {
-                if high_contrast {
+                if contact {
+                    Color::new(0.38, 0.28, 0.10, 1.)
+                } else if scanned {
+                    Color::new(0.08, 0.30, 0.38, 1.)
+                } else if high_contrast {
                     Color::new(0.05, 0.24, 0.42, 1.)
                 } else {
                     Color::new(0.11, 0.18, 0.30, 1.)
                 }
             }
             Shot::Miss => accessibility::board_fill(high_contrast),
+            Shot::Hit if sunk => Color::new(0.54, 0.42, 0.18, 1.),
             Shot::Hit => {
                 if high_contrast {
                     Color::new(1., 0.15, 0.20, 1.)
@@ -176,17 +213,59 @@ fn draw_board(board: Rect, game: &Battleship, high_contrast: bool, large_text: b
                 accessibility::text_size(30., large_text),
                 muted(),
             ),
-            Shot::Hit => center_text("×", rect, accessibility::text_size(24., large_text), WHITE),
+            Shot::Hit => center_text(
+                if sunk { "S" } else { "×" },
+                rect,
+                accessibility::text_size(24., large_text),
+                WHITE,
+            ),
+            Shot::Unknown if contact => center_text(
+                "!",
+                rect,
+                accessibility::text_size(20., large_text),
+                accent(),
+            ),
+            Shot::Unknown if scanned => center_text(
+                "~",
+                rect,
+                accessibility::text_size(18., large_text),
+                muted(),
+            ),
             Shot::Unknown => {}
         }
     }
 }
 
-fn status(phase: BattleshipPhase) -> &'static str {
-    match phase {
-        BattleshipPhase::Playing => "SEARCH THE WATERS",
-        BattleshipPhase::Won => "FLEET FOUND",
+fn status_text(game: &Battleship) -> &'static str {
+    match game.phase {
+        BattleshipPhase::Playing if game.sonar_armed => "Tap the center of a 3 × 3 SONAR sweep",
+        BattleshipPhase::Playing if game.contact_count() > 0 => {
+            "SONAR contact ! marks a ship segment — tap it to fire"
+        }
+        BattleshipPhase::Playing => "Tap unknown waters to fire, or arm SONAR",
+        BattleshipPhase::Won => "Every vessel has been sunk",
     }
+}
+
+fn mode_button(rect: Rect, label: &str, active: bool, large_text: bool) {
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        if active {
+            Color::new(0.22, 0.36, 0.22, 1.)
+        } else {
+            crate::theme::SURFACE
+        },
+    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
+    center_text(
+        label,
+        rect,
+        accessibility::text_size(11., large_text),
+        WHITE,
+    );
 }
 fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
