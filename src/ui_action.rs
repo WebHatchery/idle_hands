@@ -91,6 +91,8 @@ pub enum UiAction {
     LightsOutHint,
     LightsOutUndo,
     LightsOutNew,
+    LightsOutGuide,
+    LightsOutDifficulty(crate::lights_out::LightsDifficulty),
     TicTacToePress(usize),
     TicTacToeHint,
     TicTacToeUndo,
@@ -318,6 +320,7 @@ impl UiAction {
                 | Self::FivefoldNew
                 | Self::ReversiNew
                 | Self::LightsOutNew
+                | Self::LightsOutDifficulty(_)
                 | Self::TicTacToeNew
                 | Self::MemoryPairsNew
                 | Self::SlidingPuzzleNew

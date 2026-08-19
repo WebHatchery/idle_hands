@@ -332,7 +332,14 @@ pub fn lights_out(state: &AppState) -> String {
     }
     game.hint_move().map_or_else(
         || "No press is available — tap NEW BOARD to begin again.".into(),
-        |index| format!("Try square {} to settle the field.", index + 1),
+        |index| {
+            format!(
+                "Press row {}, column {}; it begins an exact {}-press route.",
+                index / crate::lights_out::SIZE + 1,
+                index % crate::lights_out::SIZE + 1,
+                game.minimum_solution().len()
+            )
+        },
     )
 }
 

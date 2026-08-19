@@ -13,6 +13,7 @@ pub(super) fn requires_new_confirmation(action: UiAction) -> bool {
             | UiAction::FivefoldNew
             | UiAction::ReversiNew
             | UiAction::LightsOutNew
+            | UiAction::LightsOutDifficulty(_)
             | UiAction::TicTacToeNew
             | UiAction::MemoryPairsNew
             | UiAction::SlidingPuzzleNew

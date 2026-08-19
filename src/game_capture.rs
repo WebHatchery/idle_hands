@@ -45,7 +45,8 @@ impl Game {
             "lights_out"
             | "lights_out_accessible"
             | "lights_out_hint"
-            | "lights_out_hint_accessible" => Screen::Game(GameId::LightsOut),
+            | "lights_out_hint_accessible"
+            | "lights_out_solver" => Screen::Game(GameId::LightsOut),
             "tic_tac_toe" | "tic_tac_toe_hint" => Screen::Game(GameId::TicTacToe),
             "tic_tac_toe_accessible" | "tic_tac_toe_hint_accessible" => {
                 Screen::Game(GameId::TicTacToe)

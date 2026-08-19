@@ -565,6 +565,21 @@ safer percentage and remind an eligible player that cashing out is available.
 Multi-step undo restores hidden-card RNG state, run, pot, bank, and cash-out
 status. Older saves default to FRIENDLY with no accumulated or banked pot.
 
+### 11.26 Lights Out exact routes
+
+Lights Out now solves the five-by-five cross-toggle system exactly by trying
+all thirty-two possible first rows and chasing every remaining row. Generated
+boards record the shortest solution length as PAR, while the live status shows
+moves, lit cells, and the shortest number of presses still remaining. HINT
+names the row and column of a switch on that exact route rather than greedily
+choosing the largest immediate reduction. The visible GUIDE control outlines
+every switch in one current shortest solution in green; because presses
+commute, those outlined switches may be tapped in any order and are recomputed
+after every move. CLASSIC applies twelve deterministic scramble presses, while
+DENSE applies twenty for a different board distribution. Move history now
+supports repeated UNDO. Older saves default to CLASSIC with GUIDE off and
+derive a live par when their stored par is absent.
+
 ## 12. Historical Phase 0 Decisions
 
 The original eight-game launch scope established the current product principles:

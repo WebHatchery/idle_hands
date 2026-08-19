@@ -139,9 +139,9 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
             "Tap PASS only when no legal square remains.",
         ],
         GameId::LightsOut => [
-            "Tap a light to toggle its cross.",
-            "Turn every light off to complete the board.",
-            "Use UNDO or NEW BOARD when you need it.",
+            "Tap a light to toggle its cross. Turn every light off; MOVES and PAR track efficiency.",
+            "Tap GUIDE to outline every switch in a current shortest route, or HINT for its exact first press.",
+            "Tap CLASSIC 12 or DENSE 20 for a new scramble. Use repeated UNDO or NEW BOARD as needed.",
         ],
         GameId::TicTacToe => [
             "Tap an empty square to place your X.",

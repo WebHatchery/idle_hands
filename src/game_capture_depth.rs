@@ -22,6 +22,7 @@ pub(super) fn apply(state: &mut AppState, scene: &str) {
         "tri_peaks_runs" => tri_peaks_runs(state),
         "hangman_depth" => hangman_depth(state),
         "higher_lower_stakes" => higher_lower_stakes(state),
+        "lights_out_solver" => lights_out_solver(state),
         _ => {}
     }
 }
@@ -364,4 +365,15 @@ fn higher_lower_stakes(state: &mut AppState) {
     game.score = 4;
     game.moves = 4;
     game.pot = 200;
+}
+
+fn lights_out_solver(state: &mut AppState) {
+    use crate::lights_out::{LightsDifficulty, LightsOut};
+    let game = &mut state.lights_out;
+    *game = LightsOut::new_with_difficulty(0x11A7_2500, LightsDifficulty::Dense);
+    let opening: Vec<usize> = game.minimum_solution().into_iter().take(2).collect();
+    for index in opening {
+        game.press(index);
+    }
+    game.guide = true;
 }

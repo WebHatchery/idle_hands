@@ -35,6 +35,13 @@ impl Game {
                 let seed = self.state.hangman.seed.wrapping_add(1);
                 self.state.hangman.set_rule(*rule, seed);
             }
+            UiAction::LightsOutGuide => {
+                self.state.lights_out.toggle_guide();
+            }
+            UiAction::LightsOutDifficulty(difficulty) => {
+                let seed = self.state.lights_out.seed.wrapping_add(1);
+                self.state.lights_out.set_difficulty(*difficulty, seed);
+            }
             UiAction::ConnectFourDrop(column) => self.apply_connect_four_drop(*column),
             UiAction::ConnectFourHint => {
                 self.state.card_hint = Some(crate::card_hints::connect_four(&self.state));

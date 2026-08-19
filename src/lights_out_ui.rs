@@ -1,6 +1,11 @@
 //! Responsive presentation and touch routing for Lights Out.
 
-use crate::{accessibility, lights_out::LightsOutStatus, state::AppState, ui::UiAction};
+use crate::{
+    accessibility,
+    lights_out::{LightsDifficulty, LightsOutStatus},
+    state::AppState,
+    ui::UiAction,
+};
 use macroquad::prelude::*;
 
 #[derive(Clone, Copy)]
@@ -10,6 +15,8 @@ struct Layout {
     reset: Rect,
     undo: Rect,
     hint: Rect,
+    guide: Rect,
+    difficulty: Rect,
 }
 
 fn layout() -> Layout {
@@ -20,22 +27,34 @@ fn layout() -> Layout {
             reset: Rect::new(370., 125., 150., 48.),
             undo: Rect::new(370., 185., 150., 48.),
             hint: Rect::new(530., 185., 150., 48.),
+            guide: Rect::new(530., 125., 150., 48.),
+            difficulty: Rect::new(370., 245., 310., 48.),
         }
     } else if crate::ui::is_portrait() {
+        let width = screen_width().min(370.);
+        let height = screen_height();
+        let side = (width - 20.).min(if height < 650. { 200. } else { 320. });
+        let top = if height < 650. { 100. } else { 145. };
+        let controls_y = top + side + 42.;
+        let control_w = (width - 32.) / 3.;
         Layout {
-            board: Rect::new(20., 145., 320., 320.),
-            cell: 64.,
-            reset: Rect::new(20., 510., 155., 48.),
-            undo: Rect::new(185., 510., 155., 48.),
-            hint: Rect::new(20., 570., 155., 48.),
+            board: Rect::new(10., top, side, side),
+            cell: side / 5.,
+            reset: Rect::new(10., controls_y, control_w, 44.),
+            undo: Rect::new(16. + control_w, controls_y, control_w, 44.),
+            hint: Rect::new(22. + control_w * 2., controls_y, control_w, 44.),
+            guide: Rect::new(10., controls_y + 52., control_w, 44.),
+            difficulty: Rect::new(16. + control_w, controls_y + 52., control_w * 2. + 6., 44.),
         }
     } else {
         Layout {
             board: Rect::new(390., 130., 500., 500.),
             cell: 100.,
-            reset: Rect::new(440., 650., 180., 48.),
-            undo: Rect::new(650., 650., 180., 48.),
-            hint: Rect::new(860., 650., 180., 48.),
+            reset: Rect::new(920., 180., 190., 48.),
+            undo: Rect::new(920., 240., 190., 48.),
+            hint: Rect::new(920., 300., 190., 48.),
+            guide: Rect::new(920., 360., 190., 48.),
+            difficulty: Rect::new(920., 420., 190., 48.),
         }
     }
 }
@@ -53,6 +72,17 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if crate::ui::hit(layout.hint, point) {
         return vec![UiAction::LightsOutHint];
+    }
+    if crate::ui::hit(layout.guide, point) {
+        return vec![UiAction::LightsOutGuide];
+    }
+    if crate::ui::hit(layout.difficulty, point) {
+        return vec![UiAction::LightsOutDifficulty(
+            match state.lights_out.difficulty {
+                LightsDifficulty::Classic => LightsDifficulty::Dense,
+                LightsDifficulty::Dense => LightsDifficulty::Classic,
+            },
+        )];
     }
     if layout.board.contains(point) {
         let column = ((point.x - layout.board.x) / layout.cell) as usize;
@@ -135,20 +165,38 @@ pub fn draw(state: &AppState) {
             2.,
             accessibility::grid_line(state.high_contrast),
         );
+        if game.optimal_contains(index) {
+            draw_rectangle_lines(
+                rect.x + 3.,
+                rect.y + 3.,
+                rect.w - 6.,
+                rect.h - 6.,
+                4.,
+                guide_color(),
+            );
+        }
         if game.cells[index] {
             draw_circle(rect.center().x, rect.center().y, layout.cell * 0.15, WHITE);
         }
     }
     text(
-        &format!("MOVES  {}", game.moves),
+        &format!(
+            "MOVES {} • PAR {} • {} LIT • {} LEFT",
+            game.moves,
+            game.displayed_par(),
+            game.lit_count(),
+            game.minimum_solution().len()
+        ),
         layout.board.x,
-        layout.board.bottom() + 28.,
+        layout.board.bottom() + 25.,
         accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
     button(layout.reset, "NEW BOARD", state.large_text);
     button(layout.undo, "UNDO", state.large_text);
     button(layout.hint, "HINT", state.large_text);
+    active_button(layout.guide, "GUIDE", game.guide, state.large_text);
+    button(layout.difficulty, game.difficulty.label(), state.large_text);
 }
 
 fn back_rect() -> Rect {
@@ -165,7 +213,11 @@ fn header_y() -> f32 {
     if crate::ui::is_compact_landscape() {
         35.
     } else if crate::ui::is_portrait() {
-        105.
+        if screen_height() < 650. {
+            55.
+        } else {
+            105.
+        }
     } else {
         72.
     }
@@ -180,8 +232,19 @@ fn header_x(layout: Layout) -> f32 {
 }
 
 fn button(rect: Rect, label: &str, large_text: bool) {
+    active_button(rect, label, false, large_text);
+}
+
+fn active_button(rect: Rect, label: &str, active: bool, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
-    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., accent());
+    draw_rectangle_lines(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        if active { 4. } else { 2. },
+        if active { guide_color() } else { accent() },
+    );
     text(
         label,
         rect.x + 16.,
@@ -201,6 +264,10 @@ fn accent() -> Color {
 
 fn muted() -> Color {
     crate::theme::SECONDARY
+}
+
+fn guide_color() -> Color {
+    Color::from_rgba(80, 224, 126, 255)
 }
 
 fn title_size() -> f32 {
