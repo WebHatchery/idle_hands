@@ -259,10 +259,6 @@ impl OneRoomRoguelike {
         self.phase == RoomPhase::Won
     }
 
-    pub fn finished(&self) -> bool {
-        self.won() || self.phase == RoomPhase::Lost
-    }
-
     fn resolve_strike(&mut self, enemy: usize) {
         self.turns = self.turns.saturating_add(1);
         let damage = self.attack_damage();
