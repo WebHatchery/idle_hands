@@ -221,25 +221,30 @@ impl MatchThree {
                     self.cells[index] = EMPTY;
                 }
             }
-            let side = self.side();
-            for col in 0..side {
-                let mut filled: Vec<u8> = (0..side)
-                    .rev()
-                    .filter_map(|row| {
-                        let value = self.cells[row * side + col];
-                        (value != EMPTY).then_some(value)
-                    })
-                    .collect();
-                for row in (0..side).rev() {
-                    self.cells[row * side + col] = filled.pop().unwrap_or_else(|| {
-                        self.seed = next_seed(self.seed);
-                        (self.seed % self.color_count() as u64) as u8
-                    });
-                }
-            }
+            self.collapse_columns();
         }
         if self.score >= self.target_score() {
             self.phase = MatchThreePhase::Won;
+        }
+    }
+
+    fn collapse_columns(&mut self) {
+        let side = self.side();
+        for col in 0..side {
+            // Read survivors from the top down, then place them from the
+            // bottom up. This keeps each tile's vertical order as it falls.
+            let mut filled: Vec<u8> = (0..side)
+                .filter_map(|row| {
+                    let value = self.cells[row * side + col];
+                    (value != EMPTY).then_some(value)
+                })
+                .collect();
+            for row in (0..side).rev() {
+                self.cells[row * side + col] = filled.pop().unwrap_or_else(|| {
+                    self.seed = next_seed(self.seed);
+                    (self.seed % self.color_count() as u64) as u8
+                });
+            }
         }
     }
 

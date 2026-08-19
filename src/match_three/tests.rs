@@ -48,6 +48,28 @@ fn adjacent_swap_that_creates_a_match_scores_and_moves() {
 }
 
 #[test]
+fn cleared_spaces_collapse_survivors_and_refill_only_from_the_top() {
+    let mut game = MatchThree::new(4);
+    let side = game.side();
+    for row in 0..side {
+        game.cells[row * side] = row as u8;
+    }
+    game.cells[2 * side] = EMPTY;
+    game.cells[4 * side] = EMPTY;
+
+    game.collapse_columns();
+
+    assert_eq!(
+        (2..side)
+            .map(|row| game.cells[row * side])
+            .collect::<Vec<_>>(),
+        vec![0, 1, 3, 5, 6]
+    );
+    assert!(game.cells[0] < game.color_count());
+    assert!(game.cells[side] < game.color_count());
+}
+
+#[test]
 fn rejects_non_adjacent_and_matchless_swaps() {
     let mut game = MatchThree::new(5);
     assert!(game.tap(0));
