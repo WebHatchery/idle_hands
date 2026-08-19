@@ -18,6 +18,7 @@ pub(super) fn apply(state: &mut AppState, scene: &str) {
         "maze_beacons" => maze_beacons(state),
         "nim_tactics" => nim_tactics(state),
         "word_ladder_routes" => word_ladder_routes(state),
+        "pyramid_chains" => pyramid_chains(state),
         _ => {}
     }
 }
@@ -292,4 +293,22 @@ fn word_ladder_routes(state: &mut AppState) {
     for letter in "NIG".bytes() {
         game.tap_letter(letter - b'A');
     }
+}
+
+fn pyramid_chains(state: &mut AppState) {
+    use crate::pyramid::{Pyramid, PyramidDraw};
+    let game = &mut state.pyramid;
+    *game = Pyramid::new(0x51A0_2200);
+    game.draw_rule = PyramidDraw::Three;
+    if let Some(card) = game.pyramid[21].as_mut() {
+        card.rank = 5;
+    }
+    if let Some(card) = game.pyramid[22].as_mut() {
+        card.rank = 8;
+    }
+    game.selected = Some(21);
+    game.points = 140;
+    game.combo = 3;
+    game.best_combo = 4;
+    game.moves = 12;
 }

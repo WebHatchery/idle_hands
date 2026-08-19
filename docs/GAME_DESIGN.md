@@ -506,6 +506,20 @@ making the core rule visible without comparing whole words. Hints distinguish
 waypoint and target legs, while complete multi-step undo restores waypoint
 state as well as rows. Older saves default to DIRECT with no waypoint gate.
 
+### 11.22 Pyramid stock economy
+
+Pyramid now outlines every exposed king when nothing is selected and outlines
+all legal exposed partners after a card is selected, making the total-thirteen
+rule visible across the overlapping tableau and waste. Consecutive clears build
+a chain: removed cards score ten points each times the chain length, while any
+stock action breaks the chain. DRAW 1 preserves fine stock control; DRAW 3
+reveals up to three cards per tap with only the top waste card playable. Once
+the stock empties, its visible control becomes RECYCLE and may turn the full
+waste over exactly once before the deal can become stuck. The header publishes
+available pairs, points, chain, and remaining recycle. Undo snapshots restore
+all of this economy, and older saves default to DRAW 1, zero score, and one
+unused recycle.
+
 ## 12. Historical Phase 0 Decisions
 
 The original eight-game launch scope established the current product principles:

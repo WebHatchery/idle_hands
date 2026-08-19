@@ -185,6 +185,10 @@ impl Game {
                 let seed = self.state.pyramid.seed.wrapping_add(1);
                 self.state.pyramid.reset(seed);
             }
+            UiAction::PyramidDrawRule(rule) => {
+                let seed = self.state.pyramid.seed.wrapping_add(1);
+                self.state.pyramid.set_draw_rule(*rule, seed);
+            }
             UiAction::TriPeaksTap(index) => {
                 self.state.tri_peaks.tap(*index);
             }

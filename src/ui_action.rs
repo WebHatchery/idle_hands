@@ -177,6 +177,7 @@ pub enum UiAction {
     PyramidHint,
     PyramidUndo,
     PyramidNew,
+    PyramidDrawRule(crate::pyramid::PyramidDraw),
     TriPeaksTap(usize),
     TriPeaksStock,
     TriPeaksHint,

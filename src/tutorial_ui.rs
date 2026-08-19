@@ -314,9 +314,9 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
             "Reach the target before moves run out. Tap HINT, UNDO, or NEW BOARD as needed.",
         ],
         GameId::Pyramid => [
-            "Tap a king, or tap an exposed card to select it.",
-            "Pair two exposed cards whose ranks total thirteen.",
-            "Tap STOCK for another card; use UNDO or NEW PYRAMID visibly.",
+            "Tap an outlined king, or select a card to outline exposed partners totaling 13.",
+            "Chain clears for points; STOCK breaks the chain and DRAW 3 reveals three cards.",
+            "Clear all 28 cards; empty stock can RECYCLE once. Use HINT, UNDO, or NEW PYRAMID.",
         ],
         GameId::TriPeaks => [
             "Tap an exposed card one rank above or below the waste.",

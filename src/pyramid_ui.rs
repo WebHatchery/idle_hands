@@ -1,6 +1,11 @@
 //! Responsive touch presentation for Pyramid Solitaire.
 
-use crate::{accessibility, pyramid::PyramidStatus, state::AppState, ui::UiAction};
+use crate::{
+    accessibility,
+    pyramid::{PyramidDraw, PyramidStatus},
+    state::AppState,
+    ui::UiAction,
+};
 use macroquad::prelude::*;
 
 #[derive(Clone, Copy)]
@@ -16,6 +21,7 @@ struct Layout {
     hint: Rect,
     undo: Rect,
     new_game: Rect,
+    draw_rule: Rect,
 }
 
 impl Layout {
@@ -48,9 +54,10 @@ fn layout() -> Layout {
             card_gap: 4.,
             stock: Rect::new(650., 72., 62., 62.),
             waste: Rect::new(722., 72., 62., 62.),
-            hint: Rect::new(530., 280., 105., 40.),
-            undo: Rect::new(650., 280., 105., 40.),
-            new_game: Rect::new(765., 280., 105., 40.),
+            hint: Rect::new(570., 280., 80., 40.),
+            undo: Rect::new(658., 280., 80., 40.),
+            new_game: Rect::new(746., 280., 90., 40.),
+            draw_rule: Rect::new(650., 140., 134., 40.),
         }
     } else if crate::ui::is_portrait() {
         Layout {
@@ -65,6 +72,7 @@ fn layout() -> Layout {
             hint: Rect::new(154., 90., 100., 64.),
             undo: Rect::new(20., 650., 145., 42.),
             new_game: Rect::new(185., 650., 145., 42.),
+            draw_rule: Rect::new(264., 90., 100., 64.),
         }
     } else {
         Layout {
@@ -79,6 +87,7 @@ fn layout() -> Layout {
             hint: Rect::new(810., 250., 105., 44.),
             undo: Rect::new(930., 250., 100., 44.),
             new_game: Rect::new(1045., 250., 125., 44.),
+            draw_rule: Rect::new(930., 315., 140., 44.),
         }
     }
 }
@@ -102,6 +111,12 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if crate::ui::hit(l.new_game, point) {
         return vec![UiAction::PyramidNew];
+    }
+    if crate::ui::hit(l.draw_rule, point) {
+        return vec![UiAction::PyramidDrawRule(match _state.pyramid.draw_rule {
+            PyramidDraw::One => PyramidDraw::Three,
+            PyramidDraw::Three => PyramidDraw::One,
+        })];
     }
     for index in (0..28).rev() {
         if l.card_rect(index).contains(point) {
@@ -144,9 +159,27 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(if portrait { 25. } else { 30. }, state.large_text),
         accent(),
     );
+    let scoreline = if compact || portrait {
+        format!(
+            "{} pairs • P{} • C{} • R{}",
+            game.available_pair_count(),
+            game.points,
+            game.combo,
+            game.redeals_remaining
+        )
+    } else {
+        format!(
+            "{} • {} pairs • P{} • Chain {} • Recycle {}",
+            status_text(game.status),
+            game.available_pair_count(),
+            game.points,
+            game.combo,
+            game.redeals_remaining
+        )
+    };
     text(
-        status_text(game.status),
-        if compact { 650. } else { title_x },
+        &scoreline,
+        if compact { 450. } else { title_x },
         if compact { 30. } else { title_y + 25. },
         accessibility::text_size(12., state.large_text),
         muted(),
@@ -154,7 +187,11 @@ pub fn draw(state: &AppState) {
     draw_slot(l.stock, game.stock.last().copied(), false, state);
     draw_slot(l.waste, game.waste.last().copied(), true, state);
     text(
-        "STOCK",
+        if game.stock.is_empty() && game.redeals_remaining > 0 {
+            "RECYCLE"
+        } else {
+            "STOCK"
+        },
         l.stock.x,
         l.stock.bottom() + 15.,
         accessibility::text_size(10., state.large_text),
@@ -178,10 +215,25 @@ pub fn draw(state: &AppState) {
                 state.high_contrast,
                 state.large_text,
             );
+            if preview_target(game, index) {
+                let rect = l.card_rect(index);
+                draw_rectangle_lines(
+                    rect.x + 2.,
+                    rect.y + 2.,
+                    rect.w - 4.,
+                    rect.h - 4.,
+                    3.,
+                    Color::new(0.45, 0.95, 0.60, 1.),
+                );
+            }
         }
     }
     text(
-        &format!("Moves {}  •  Pair exposed cards to make 13", game.moves),
+        &format!(
+            "Moves {}  •  {}  •  Pair exposed cards to make 13",
+            game.moves,
+            game.draw_rule.label()
+        ),
         if portrait { 10. } else { title_x },
         if portrait {
             595.
@@ -218,6 +270,52 @@ pub fn draw(state: &AppState) {
     button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW PYRAMID", state.large_text);
+    mode_button(l.draw_rule, game.draw_rule.label(), state.large_text);
+
+    if preview_target(game, crate::pyramid::WASTE_INDEX) {
+        draw_rectangle_lines(
+            l.waste.x + 2.,
+            l.waste.y + 2.,
+            l.waste.w - 4.,
+            l.waste.h - 4.,
+            3.,
+            Color::new(0.45, 0.95, 0.60, 1.),
+        );
+    }
+}
+
+fn preview_target(game: &crate::pyramid::Pyramid, index: usize) -> bool {
+    if !game.available(index) {
+        return false;
+    }
+    if let Some(selected) = game.selected {
+        game.legal_pair(selected, index)
+    } else {
+        let card = if index == crate::pyramid::WASTE_INDEX {
+            game.waste.last().copied()
+        } else {
+            game.pyramid.get(index).copied().flatten()
+        };
+        card.is_some_and(|card| card.rank == 13)
+    }
+}
+
+fn mode_button(rect: Rect, label: &str, large_text: bool) {
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        Color::new(0.22, 0.30, 0.20, 1.),
+    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
+    text(
+        label,
+        rect.x + 10.,
+        rect.y + rect.h * 0.62,
+        accessibility::text_size(10., large_text),
+        WHITE,
+    );
 }
 
 fn draw_slot(rect: Rect, card: Option<crate::cards::Card>, back: bool, state: &AppState) {

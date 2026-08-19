@@ -108,7 +108,7 @@ impl Game {
             "spider_solitaire_hint" | "spider_solitaire_hint_accessible" => {
                 Screen::Game(GameId::SpiderSolitaire)
             }
-            "pyramid" => Screen::Game(GameId::Pyramid),
+            "pyramid" | "pyramid_chains" => Screen::Game(GameId::Pyramid),
             "pyramid_accessible" => Screen::Game(GameId::Pyramid),
             "pyramid_hint" | "pyramid_hint_accessible" => Screen::Game(GameId::Pyramid),
             "tri_peaks" | "tri_peaks_accessible" => Screen::Game(GameId::TriPeaks),
