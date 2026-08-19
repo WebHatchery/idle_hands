@@ -122,7 +122,7 @@ impl Game {
                 Screen::Game(GameId::Potion2048)
             }
             "potion_2048_accessible" => Screen::Game(GameId::Potion2048),
-            "tiny_tower_defence" | "tiny_tower_defence_hint" => {
+            "tiny_tower_defence" | "tiny_tower_defence_hint" | "tiny_tower_roles" => {
                 Screen::Game(GameId::TinyTowerDefence)
             }
             "tiny_tower_defence_accessible" | "tiny_tower_defence_hint_accessible" => {
@@ -247,6 +247,49 @@ impl Game {
                     game.brick_health[index] = health;
                 }
             }
+        }
+        if scene == "tiny_tower_roles" {
+            use crate::tiny_tower_defence::{Enemy, EnemyKind, TowerKind, TowerPhase};
+            let game = &mut self.state.tiny_tower_defence;
+            game.wave = 5;
+            game.gold = 4;
+            game.score = 180;
+            game.phase = TowerPhase::Wave;
+            game.paused = true;
+            game.selected_kind = TowerKind::Burst;
+            game.towers = vec![0; 35];
+            game.tower_kinds = vec![TowerKind::Bolt; 35];
+            for (index, kind) in [
+                (9, TowerKind::Bolt),
+                (17, TowerKind::Frost),
+                (25, TowerKind::Burst),
+            ] {
+                game.towers[index] = 2;
+                game.tower_kinds[index] = kind;
+            }
+            game.enemies = vec![
+                Enemy {
+                    row: 0,
+                    column: 2,
+                    health: 2,
+                    kind: EnemyKind::Grunt,
+                    slow_ticks: 0,
+                },
+                Enemy {
+                    row: 2,
+                    column: 3,
+                    health: 2,
+                    kind: EnemyKind::Swift,
+                    slow_ticks: 1,
+                },
+                Enemy {
+                    row: 4,
+                    column: 4,
+                    health: 5,
+                    kind: EnemyKind::Armored,
+                    slow_ticks: 0,
+                },
+            ];
         }
         if scene == "solitaire_peek" {
             self.capture_solitaire_peek = true;

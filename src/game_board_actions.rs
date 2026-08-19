@@ -256,6 +256,9 @@ impl Game {
             UiAction::TowerCell(index) => {
                 self.state.tiny_tower_defence.build_or_upgrade(*index);
             }
+            UiAction::TowerSelectKind(kind) => {
+                self.state.tiny_tower_defence.select_kind(*kind);
+            }
             UiAction::TowerWave => {
                 self.state.tiny_tower_defence.start_or_toggle_pause();
             }

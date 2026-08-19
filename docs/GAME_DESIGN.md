@@ -241,6 +241,17 @@ for the next serve. Paddle contact changes horizontal travel according to where
 the ball lands, letting LEFT, STAY, and RIGHT shape the next angle instead of
 only following it. Each later wall moves slightly faster.
 
+### 11.3 Tiny Tower Defence roles and wave roster
+
+Tiny Tower Defence asks the player to compose a defence rather than stack one
+generic tower. BOLT deals focused damage along its lane, FROST trades damage for
+range and a movement delay, and BURST reaches adjacent lanes around its target.
+Each role has a visible build selector, its own cost, and three upgrade levels.
+Early waves teach ordinary invaders, wave three introduces fast enemies that
+move two cells, and wave five adds high-health armored enemies. Letter labels,
+colors, and armor rings keep both tower and enemy roles readable without relying
+on color alone, including at phone scale.
+
 ## 12. Historical Phase 0 Decisions
 
 The original eight-game launch scope established the current product principles:

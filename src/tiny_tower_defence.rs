@@ -14,6 +14,38 @@ pub struct Enemy {
     pub row: u8,
     pub column: u8,
     pub health: u8,
+    #[serde(default)]
+    pub kind: EnemyKind,
+    #[serde(default)]
+    pub slow_ticks: u8,
+}
+
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub enum EnemyKind {
+    #[default]
+    Grunt,
+    Swift,
+    Armored,
+}
+
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub enum TowerKind {
+    #[default]
+    Bolt,
+    Frost,
+    Burst,
+}
+
+impl TowerKind {
+    pub const ALL: [Self; 3] = [Self::Bolt, Self::Frost, Self::Burst];
+
+    pub const fn label(self) -> &'static str {
+        match self {
+            Self::Bolt => "BOLT",
+            Self::Frost => "FROST",
+            Self::Burst => "BURST",
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -26,12 +58,13 @@ pub enum TowerPhase {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TowerHint {
-    Build(usize),
+    Build(usize, TowerKind),
     WaveControl,
 }
 
 type Snapshot = (
     Vec<u8>,
+    Vec<TowerKind>,
     Vec<Enemy>,
     u16,
     u8,
@@ -41,11 +74,14 @@ type Snapshot = (
     TowerPhase,
     u16,
     bool,
+    TowerKind,
 );
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TinyTowerDefence {
     pub towers: Vec<u8>,
+    #[serde(default)]
+    pub tower_kinds: Vec<TowerKind>,
     pub enemies: Vec<Enemy>,
     pub gold: u16,
     pub lives: u8,
@@ -56,6 +92,8 @@ pub struct TinyTowerDefence {
     pub tick: u16,
     #[serde(default)]
     pub paused: bool,
+    #[serde(default)]
+    pub selected_kind: TowerKind,
     #[serde(skip)]
     history: Vec<Snapshot>,
     #[serde(skip)]
@@ -72,6 +110,7 @@ impl TinyTowerDefence {
     pub fn new(seed: u64) -> Self {
         Self {
             towers: vec![0; WIDTH * HEIGHT],
+            tower_kinds: vec![TowerKind::Bolt; WIDTH * HEIGHT],
             enemies: Vec::new(),
             gold: STARTING_GOLD,
             lives: STARTING_LIVES,
@@ -81,6 +120,7 @@ impl TinyTowerDefence {
             phase: TowerPhase::Build,
             tick: 0,
             paused: false,
+            selected_kind: TowerKind::Bolt,
             history: Vec::new(),
             elapsed: 0.,
         }
@@ -100,28 +140,54 @@ impl TinyTowerDefence {
 
     pub fn tower_cost(&self, index: usize) -> Option<u16> {
         let level = *self.towers.get(index)?;
-        if level == 0 {
-            Some(3)
-        } else if level < 3 {
-            Some(2 + u16::from(level))
+        let kind = if level == 0 {
+            self.selected_kind
         } else {
-            None
+            self.tower_kind(index)
+        };
+        tower_cost(kind, level)
+    }
+
+    pub fn tower_kind(&self, index: usize) -> TowerKind {
+        self.tower_kinds.get(index).copied().unwrap_or_default()
+    }
+
+    pub fn select_kind(&mut self, kind: TowerKind) -> bool {
+        if self.phase != TowerPhase::Build || self.selected_kind == kind {
+            return false;
         }
+        self.selected_kind = kind;
+        true
     }
 
     pub fn hint_action(&self) -> Option<TowerHint> {
         match self.phase {
             TowerPhase::Build => {
                 let center = (HEIGHT / 2, WIDTH / 2);
+                let recommended = self.recommended_kind();
                 (0..self.towers.len())
                     .filter(|&index| self.valid_build_cell(index))
-                    .filter(|&index| self.tower_cost(index).is_some_and(|cost| cost <= self.gold))
+                    .filter(|&index| {
+                        let kind = if self.towers[index] == 0 {
+                            recommended
+                        } else {
+                            self.tower_kind(index)
+                        };
+                        tower_cost(kind, self.towers[index]).is_some_and(|cost| cost <= self.gold)
+                    })
                     .min_by_key(|&index| {
                         let row = index / WIDTH;
                         let column = index % WIDTH;
                         row.abs_diff(center.0) + column.abs_diff(center.1)
                     })
-                    .map(TowerHint::Build)
+                    .map(|index| {
+                        let kind = if self.towers[index] == 0 {
+                            recommended
+                        } else {
+                            self.tower_kind(index)
+                        };
+                        TowerHint::Build(index, kind)
+                    })
             }
             TowerPhase::Wave if !self.enemies.is_empty() => Some(TowerHint::WaveControl),
             TowerPhase::Wave | TowerPhase::Won | TowerPhase::Lost => None,
@@ -139,7 +205,11 @@ impl TinyTowerDefence {
             return false;
         }
         self.snapshot();
+        self.ensure_tower_kinds();
         self.gold -= cost;
+        if self.towers[index] == 0 {
+            self.tower_kinds[index] = self.selected_kind;
+        }
         self.towers[index] = self.towers[index].saturating_add(1);
         true
     }
@@ -182,10 +252,23 @@ impl TinyTowerDefence {
     }
 
     pub fn undo(&mut self) -> bool {
-        if let Some((towers, enemies, gold, lives, wave, score, seed, phase, tick, paused)) =
-            self.history.pop()
+        if let Some((
+            towers,
+            tower_kinds,
+            enemies,
+            gold,
+            lives,
+            wave,
+            score,
+            seed,
+            phase,
+            tick,
+            paused,
+            selected_kind,
+        )) = self.history.pop()
         {
             self.towers = towers;
+            self.tower_kinds = tower_kinds;
             self.enemies = enemies;
             self.gold = gold;
             self.lives = lives;
@@ -195,6 +278,7 @@ impl TinyTowerDefence {
             self.phase = phase;
             self.tick = tick;
             self.paused = paused;
+            self.selected_kind = selected_kind;
             self.elapsed = 0.;
             true
         } else {
@@ -213,12 +297,21 @@ impl TinyTowerDefence {
     fn start_wave(&mut self) -> bool {
         self.snapshot();
         self.enemies.clear();
-        for _ in 0..self.wave.saturating_add(1) {
+        for enemy_index in 0..self.wave.saturating_add(1) {
             let row = (self.next_random() as usize % HEIGHT) as u8;
+            let kind = if self.wave >= 5 && enemy_index % 3 == 2 {
+                EnemyKind::Armored
+            } else if self.wave >= 3 && enemy_index % 3 == 1 {
+                EnemyKind::Swift
+            } else {
+                EnemyKind::Grunt
+            };
             self.enemies.push(Enemy {
                 row,
                 column: 0,
-                health: 1 + self.wave / 3,
+                health: 1 + self.wave / 3 + u8::from(kind == EnemyKind::Armored) * 2,
+                kind,
+                slow_ticks: 0,
             });
         }
         self.phase = TowerPhase::Wave;
@@ -248,7 +341,12 @@ impl TinyTowerDefence {
                 self.score = self.score.saturating_add(10);
                 self.gold = self.gold.saturating_add(2);
             } else {
-                enemy.column = enemy.column.saturating_add(1);
+                if enemy.slow_ticks > 0 {
+                    enemy.slow_ticks = enemy.slow_ticks.saturating_sub(1);
+                } else {
+                    let steps = if enemy.kind == EnemyKind::Swift { 2 } else { 1 };
+                    enemy.column = enemy.column.saturating_add(steps);
+                }
                 if usize::from(enemy.column) >= WIDTH - 1 {
                     self.lives = self.lives.saturating_sub(1);
                 } else {
@@ -273,6 +371,7 @@ impl TinyTowerDefence {
     }
 
     fn fire_towers(&mut self) {
+        self.ensure_tower_kinds();
         for index in 0..self.towers.len() {
             let level = self.towers[index];
             if level == 0 {
@@ -280,19 +379,55 @@ impl TinyTowerDefence {
             }
             let row = index / WIDTH;
             let column = index % WIDTH;
+            let kind = self.tower_kinds[index];
+            let range = match kind {
+                TowerKind::Bolt => 3,
+                TowerKind::Frost => 2 + usize::from(level),
+                TowerKind::Burst => 2,
+            };
             let target = self
                 .enemies
                 .iter()
                 .enumerate()
                 .filter(|(_, enemy)| {
-                    usize::from(enemy.row) == row
+                    let row_distance = row.abs_diff(usize::from(enemy.row));
+                    row_distance <= usize::from(kind == TowerKind::Burst)
                         && enemy.health > 0
-                        && column.abs_diff(usize::from(enemy.column)) <= 3
+                        && column.abs_diff(usize::from(enemy.column)) <= range
                 })
-                .min_by_key(|(_, enemy)| column.abs_diff(usize::from(enemy.column)))
+                .min_by_key(|(_, enemy)| {
+                    (
+                        column.abs_diff(usize::from(enemy.column)),
+                        row.abs_diff(usize::from(enemy.row)),
+                    )
+                })
                 .map(|(enemy, _)| enemy);
             if let Some(target) = target {
-                self.enemies[target].health = self.enemies[target].health.saturating_sub(level);
+                match kind {
+                    TowerKind::Bolt => {
+                        self.enemies[target].health =
+                            self.enemies[target].health.saturating_sub(level);
+                    }
+                    TowerKind::Frost => {
+                        self.enemies[target].health = self.enemies[target].health.saturating_sub(1);
+                        self.enemies[target].slow_ticks = self.enemies[target]
+                            .slow_ticks
+                            .max(1 + level.saturating_sub(1) / 2);
+                    }
+                    TowerKind::Burst => {
+                        let target_row = self.enemies[target].row;
+                        let target_column = self.enemies[target].column;
+                        let damage = 1 + level.saturating_sub(1) / 2;
+                        for enemy in &mut self.enemies {
+                            if enemy.health > 0
+                                && enemy.row.abs_diff(target_row) <= 1
+                                && enemy.column.abs_diff(target_column) <= 1
+                            {
+                                enemy.health = enemy.health.saturating_sub(damage);
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -315,6 +450,7 @@ impl TinyTowerDefence {
     fn snapshot(&mut self) {
         self.history.push((
             self.towers.clone(),
+            self.tower_kinds.clone(),
             self.enemies.clone(),
             self.gold,
             self.lives,
@@ -324,8 +460,35 @@ impl TinyTowerDefence {
             self.phase,
             self.tick,
             self.paused,
+            self.selected_kind,
         ));
     }
+
+    fn ensure_tower_kinds(&mut self) {
+        if self.tower_kinds.len() != self.towers.len() {
+            self.tower_kinds = vec![TowerKind::Bolt; self.towers.len()];
+        }
+    }
+
+    fn recommended_kind(&self) -> TowerKind {
+        match self.wave {
+            1..=2 => TowerKind::Bolt,
+            3..=4 => TowerKind::Frost,
+            _ => TowerKind::Burst,
+        }
+    }
+}
+
+fn tower_cost(kind: TowerKind, level: u8) -> Option<u16> {
+    if level >= 3 {
+        return None;
+    }
+    let base = match kind {
+        TowerKind::Bolt => 3,
+        TowerKind::Frost => 4,
+        TowerKind::Burst => 5,
+    };
+    Some(base + u16::from(level.saturating_sub(1)))
 }
 
 #[cfg(test)]

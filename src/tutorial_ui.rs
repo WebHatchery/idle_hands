@@ -239,9 +239,9 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
             "Use UNDO or NEW BREW with the visible controls.",
         ],
         GameId::TinyTowerDefence => [
-            "Tap an empty lane cell to build, or a tower to upgrade.",
-            "Tap START WAVE; towers fire and enemies advance automatically. PAUSE stops them.",
-            "Reach wave 8; use UNDO or NEW TOWER with visible controls.",
+            "Tap BOLT, FROST, or BURST, then tap an empty lane cell to build.",
+            "Bolt hits hard, Frost slows, and Burst splashes nearby lanes; tap a tower to upgrade it.",
+            "Tap START WAVE and survive wave 8. PAUSE, UNDO, and NEW TOWER remain visible.",
         ],
         GameId::OneRoomRoguelike => [
             "Tap a direction to explore; tap STRIKE when an enemy is beside you.",

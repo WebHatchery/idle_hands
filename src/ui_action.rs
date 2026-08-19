@@ -197,6 +197,7 @@ pub enum UiAction {
     PotionNew,
     PotionDifficulty(crate::potion_2048::PotionDifficulty),
     TowerCell(usize),
+    TowerSelectKind(crate::tiny_tower_defence::TowerKind),
     TowerWave,
     TowerHint,
     TowerUndo,

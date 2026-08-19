@@ -134,8 +134,12 @@ pub fn tiny_tower_defence(state: &AppState) -> String {
     game.hint_action().map_or_else(
         || "No tower action is available — tap NEW TOWER to begin again.".into(),
         |hint| match hint {
-            crate::tiny_tower_defence::TowerHint::Build(index) => {
-                format!("Build at room {}.", index + 1)
+            crate::tiny_tower_defence::TowerHint::Build(index, kind) => {
+                format!(
+                    "Select {}, then build or upgrade room {}.",
+                    kind.label(),
+                    index + 1
+                )
             }
             crate::tiny_tower_defence::TowerHint::WaveControl => {
                 if game.paused {
