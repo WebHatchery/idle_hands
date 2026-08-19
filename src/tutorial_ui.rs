@@ -259,9 +259,9 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
             "HARD avoids gifts and EXPERT minimizes forced chains; use HINT, UNDO, or NEW BOARD.",
         ],
         GameId::Sokoban => [
-            "Tap a direction to walk across the room.",
-            "Push every crate onto a marked square; crates cannot be pulled.",
-            "Use UNDO or NEW ROOM with the visible controls.",
+            "Tap UP, LEFT, DOWN, or RIGHT to walk and push; crates cannot be pulled.",
+            "A red X marks a cornered crate; tap UNDO or RESTART to recover.",
+            "Beat PAR across six rooms, then tap NEXT ROOM after each clear.",
         ],
         GameId::Mancala => [
             "Tap one of your six stone pits to sow its stones.",

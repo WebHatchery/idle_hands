@@ -113,5 +113,76 @@ fn every_authored_room_has_a_bounded_hint_solution() {
             }
         }
         assert!(game.won(), "authored level {level} should be solvable");
+        assert!(
+            game.moves <= game.par_moves(),
+            "level {level} shortest route {} exceeds par {}",
+            game.moves,
+            game.par_moves()
+        );
     }
+}
+
+#[test]
+fn multiple_undos_walk_back_more_than_one_step() {
+    let mut game = Sokoban::new(1);
+    let start = game.player;
+    assert!(game.move_in(Direction::Up));
+    let after_one = game.player;
+    assert!(game.move_in(Direction::Left));
+
+    assert!(game.undo());
+    assert_eq!(game.player, after_one);
+    assert!(game.undo());
+    assert_eq!(game.player, start);
+    assert!(!game.undo());
+}
+
+#[test]
+fn pushing_an_unsolved_crate_into_a_corner_marks_the_room_stuck() {
+    let mut game = Sokoban::new(1);
+    game.tiles = vec![1; CELLS];
+    for row in 0..HEIGHT {
+        for col in 0..WIDTH {
+            if row == 0 || col == 0 || row + 1 == HEIGHT || col + 1 == WIDTH {
+                game.tiles[row * WIDTH + col] = 0;
+            }
+        }
+    }
+    game.player = WIDTH + 3;
+    game.tiles[WIDTH + 2] = 3;
+    game.tiles[2 * WIDTH + 2] = 2;
+    game.crates = 1;
+
+    assert!(game.move_in(Direction::Left));
+    assert_eq!(game.phase, SokobanPhase::Stuck);
+    assert!(game.is_deadlocked_crate(WIDTH + 1));
+    assert_eq!(game.hint_direction(), None);
+    assert!(game.undo());
+    assert_eq!(game.phase, SokobanPhase::Playing);
+}
+
+#[test]
+fn target_crates_never_count_as_corner_deadlocks() {
+    let mut game = Sokoban::new(1);
+    game.tiles[WIDTH + 1] = 4;
+    assert!(!game.is_deadlocked_crate(WIDTH + 1));
+}
+
+#[test]
+fn pushes_and_clear_rank_track_the_solve() {
+    let mut game = Sokoban::new_with_level(1, 3);
+    assert!(game.move_in(Direction::Up));
+
+    assert!(game.won());
+    assert_eq!(game.pushes, 1);
+    assert_eq!(game.moves, 1);
+    assert_eq!(game.clear_rank(), "GOLD");
+}
+
+#[test]
+fn legacy_saves_default_to_zero_pushes() {
+    let mut value = serde_json::to_value(Sokoban::new(1)).unwrap();
+    value.as_object_mut().unwrap().remove("pushes");
+    let loaded: Sokoban = serde_json::from_value(value).unwrap();
+    assert_eq!(loaded.pushes, 0);
 }

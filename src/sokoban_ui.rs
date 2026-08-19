@@ -14,6 +14,7 @@ struct Layout {
     directions: [Rect; 4],
     hint: Rect,
     undo: Rect,
+    restart: Rect,
     new_game: Rect,
 }
 
@@ -29,7 +30,22 @@ fn layout() -> Layout {
             ],
             hint: Rect::new(610., 220., 110., 44.),
             undo: Rect::new(610., 110., 110., 44.),
+            restart: Rect::new(610., 275., 145., 44.),
             new_game: Rect::new(610., 165., 145., 44.),
+        }
+    } else if crate::ui::is_portrait() && screen_height() < 700. {
+        Layout {
+            board: Rect::new(32., 96., 256., 256.),
+            directions: [
+                Rect::new(15., 360., 62., 44.),
+                Rect::new(91., 360., 62., 44.),
+                Rect::new(167., 360., 62., 44.),
+                Rect::new(243., 360., 62., 44.),
+            ],
+            hint: Rect::new(15., 468., 140., 44.),
+            undo: Rect::new(15., 414., 140., 44.),
+            restart: Rect::new(165., 468., 140., 44.),
+            new_game: Rect::new(165., 414., 140., 44.),
         }
     } else if crate::ui::is_portrait() {
         Layout {
@@ -42,6 +58,7 @@ fn layout() -> Layout {
             ],
             hint: Rect::new(15., 580., 145., 44.),
             undo: Rect::new(15., 525., 145., 44.),
+            restart: Rect::new(170., 580., 145., 44.),
             new_game: Rect::new(170., 525., 145., 44.),
         }
     } else {
@@ -55,6 +72,7 @@ fn layout() -> Layout {
             ],
             hint: Rect::new(810., 270., 120., 44.),
             undo: Rect::new(810., 205., 120., 44.),
+            restart: Rect::new(950., 270., 140., 44.),
             new_game: Rect::new(950., 205., 140., 44.),
         }
     }
@@ -82,6 +100,9 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if crate::ui::hit(l.undo, point) {
         return vec![UiAction::SokobanUndo];
+    }
+    if crate::ui::hit(l.restart, point) {
+        return vec![UiAction::SokobanRestart];
     }
     if crate::ui::hit(l.new_game, point) {
         return vec![UiAction::SokobanNew];
@@ -124,12 +145,16 @@ pub fn draw(state: &AppState) {
     );
     text(
         &format!(
-            "Level {}  •  Crates {}  •  {} moves  •  {}",
+            "Room {}/{}  •  Moves {}/{}  •  Pushes {}  •  {}",
             game.level + 1,
-            game.crates,
+            crate::sokoban::LEVEL_COUNT,
             game.moves,
+            game.par_moves(),
+            game.pushes,
             if game.won() {
-                "ROOM CLEAR"
+                game.clear_rank()
+            } else if game.phase == SokobanPhase::Stuck {
+                "CORNERED"
             } else {
                 "PUSH TO MARKS"
             }
@@ -147,7 +172,11 @@ pub fn draw(state: &AppState) {
             .unwrap_or(status_text(game.phase)),
         if compact { 270. } else { title_x },
         if portrait {
-            480.
+            if screen_height() < 700. {
+                535.
+            } else {
+                480.
+            }
         } else if compact {
             365.
         } else {
@@ -161,7 +190,8 @@ pub fn draw(state: &AppState) {
         button(*rect, label, state.large_text);
     }
     button(l.undo, "UNDO", state.large_text);
-    button(l.new_game, "NEW ROOM", state.large_text);
+    button(l.restart, "RESTART", state.large_text);
+    button(l.new_game, "NEXT ROOM", state.large_text);
 }
 
 fn draw_board(board: Rect, game: &Sokoban, high_contrast: bool, large_text: bool) {
@@ -192,20 +222,42 @@ fn draw_board(board: Rect, game: &Sokoban, high_contrast: bool, large_text: bool
                 line_color(high_contrast),
             );
             if tile == 2 || tile == 4 {
-                center_text(
-                    "○",
-                    rect,
-                    cell_size(large_text),
+                draw_circle_lines(
+                    rect.x + rect.w * 0.5,
+                    rect.y + rect.h * 0.5,
+                    rect.w * 0.22,
+                    2.,
                     if high_contrast { WHITE } else { accent() },
                 );
             }
             if tile == 3 || tile == 4 {
-                center_text(
-                    "■",
-                    rect,
-                    cell_size(large_text),
+                let inset = rect.w * 0.19;
+                draw_rectangle(
+                    rect.x + inset,
+                    rect.y + inset,
+                    rect.w - inset * 2.,
+                    rect.h - inset * 2.,
                     crate_color(tile, high_contrast),
                 );
+                if game.is_deadlocked_crate(index) {
+                    let warning = if high_contrast { YELLOW } else { RED };
+                    draw_line(
+                        rect.x + inset,
+                        rect.y + inset,
+                        rect.right() - inset,
+                        rect.bottom() - inset,
+                        3.,
+                        warning,
+                    );
+                    draw_line(
+                        rect.right() - inset,
+                        rect.y + inset,
+                        rect.x + inset,
+                        rect.bottom() - inset,
+                        3.,
+                        warning,
+                    );
+                }
             }
             if index == game.player {
                 center_text("@", rect, cell_size(large_text), WHITE);
@@ -245,7 +297,8 @@ fn crate_color(tile: u8, high_contrast: bool) -> Color {
 fn status_text(phase: SokobanPhase) -> &'static str {
     match phase {
         SokobanPhase::Playing => "Push each crate onto a marked square",
-        SokobanPhase::Won => "The room is clear",
+        SokobanPhase::Won => "Room clear • Tap NEXT ROOM",
+        SokobanPhase::Stuck => "A crate is cornered • Tap UNDO or RESTART",
     }
 }
 

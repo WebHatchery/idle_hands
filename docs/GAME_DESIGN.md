@@ -331,6 +331,19 @@ legible at phone scale. Horizontal and vertical edges now persist their actual
 drawer, so red and blue line ownership no longer changes later when an adjacent
 box is claimed; legacy boards expand the new owner arrays on their next move.
 
+### 11.10 Sokoban warehouse route
+
+Sokoban is a six-room authored warehouse route instead of a repeating set of
+three openings. Each room publishes a par move count and awards GOLD, SILVER,
+or BRONZE when cleared, while separate move and push totals make walking
+efficiency and crate commitment visible. UNDO keeps the complete move history,
+so the player can rewind several decisions rather than only the latest step.
+Pushing an unsolved crate into a wall corner marks it with a red X and enters a
+clear CORNERED state; the still-visible UNDO and RESTART controls provide both
+local and full-room recovery. NEXT ROOM is separate from RESTART, preventing a
+failed position from silently advancing to a different puzzle. The hint solver
+continues to prove every authored room within its stated par.
+
 ## 12. Historical Phase 0 Decisions
 
 The original eight-game launch scope established the current product principles:

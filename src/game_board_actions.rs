@@ -356,6 +356,10 @@ impl Game {
             UiAction::SokobanUndo => {
                 self.state.sokoban.undo();
             }
+            UiAction::SokobanRestart => {
+                let seed = self.state.sokoban.seed;
+                self.state.sokoban.reset(seed);
+            }
             UiAction::SokobanNew => {
                 let seed = self.state.sokoban.seed.wrapping_add(1);
                 self.state.sokoban.reset_next(seed);

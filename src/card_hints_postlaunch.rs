@@ -289,10 +289,17 @@ pub fn dots_boxes(state: &AppState) -> String {
 pub fn sokoban(state: &AppState) -> String {
     let game = &state.sokoban;
     if game.won() {
-        return "The room is clear — tap NEW ROOM to play again.".into();
+        return format!(
+            "{} clear in {} moves — tap NEXT ROOM.",
+            game.clear_rank(),
+            game.moves
+        );
+    }
+    if game.phase == crate::sokoban::SokobanPhase::Stuck {
+        return "A crate is cornered — tap UNDO or RESTART.".into();
     }
     game.hint_direction().map_or_else(
-        || "No route remains — tap NEW ROOM to begin again.".into(),
+        || "No route remains — tap UNDO or RESTART.".into(),
         |direction| {
             format!(
                 "Move {} to place the next crate.",

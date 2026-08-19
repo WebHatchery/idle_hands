@@ -147,7 +147,9 @@ impl Game {
             }
             "dots_tactics" => Screen::Game(GameId::DotsBoxes),
             "dots_boxes_accessible" => Screen::Game(GameId::DotsBoxes),
-            "sokoban" | "sokoban_hint" | "sokoban_hint_accessible" => Screen::Game(GameId::Sokoban),
+            "sokoban" | "sokoban_hint" | "sokoban_hint_accessible" | "sokoban_deadlock" => {
+                Screen::Game(GameId::Sokoban)
+            }
             "sokoban_accessible" => Screen::Game(GameId::Sokoban),
             "mancala" | "mancala_hint" | "mancala_hint_accessible" => Screen::Game(GameId::Mancala),
             "hanoi" | "hanoi_hint" | "hanoi_hint_accessible" => Screen::Game(GameId::Hanoi),
@@ -437,6 +439,28 @@ impl Game {
                 game.vertical[index] = true;
                 game.vertical_owners[index] = owner;
             }
+        }
+        if scene == "sokoban_deadlock" {
+            use crate::sokoban::{Sokoban, SokobanPhase, HEIGHT, WIDTH};
+            let game = &mut self.state.sokoban;
+            *game = Sokoban::new_with_level(0x50C0_BA0B, 4);
+            game.tiles = vec![1; WIDTH * HEIGHT];
+            for row in 0..HEIGHT {
+                for col in 0..WIDTH {
+                    if row == 0 || col == 0 || row + 1 == HEIGHT || col + 1 == WIDTH {
+                        game.tiles[row * WIDTH + col] = 0;
+                    }
+                }
+            }
+            game.player = 4 * WIDTH + 4;
+            game.crates = 2;
+            game.tiles[WIDTH + 1] = 3;
+            game.tiles[WIDTH + 5] = 2;
+            game.tiles[2 * WIDTH + 4] = 3;
+            game.tiles[2 * WIDTH + 5] = 2;
+            game.moves = 11;
+            game.pushes = 4;
+            game.phase = SokobanPhase::Stuck;
         }
         if scene == "solitaire_peek" {
             self.capture_solitaire_peek = true;

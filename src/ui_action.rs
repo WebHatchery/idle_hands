@@ -224,6 +224,7 @@ pub enum UiAction {
     SokobanMove(Direction),
     SokobanHint,
     SokobanUndo,
+    SokobanRestart,
     SokobanNew,
     MancalaPit(usize),
     MancalaHint,
@@ -328,6 +329,7 @@ impl UiAction {
                 | Self::DailyNew
                 | Self::DotsNew
                 | Self::DotsDifficulty(_)
+                | Self::SokobanRestart
                 | Self::SokobanNew
                 | Self::MancalaNew
                 | Self::HanoiNew

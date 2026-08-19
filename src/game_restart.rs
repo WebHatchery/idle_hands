@@ -44,6 +44,7 @@ pub(super) fn requires_new_confirmation(action: UiAction) -> bool {
             | UiAction::DailyNew
             | UiAction::DotsNew
             | UiAction::DotsDifficulty(_)
+            | UiAction::SokobanRestart
             | UiAction::SokobanNew
             | UiAction::MancalaNew
             | UiAction::HanoiNew

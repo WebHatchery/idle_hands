@@ -7,7 +7,8 @@ use std::collections::VecDeque;
 pub const WIDTH: usize = 8;
 pub const HEIGHT: usize = 8;
 const CELLS: usize = WIDTH * HEIGHT;
-pub const LEVEL_COUNT: u8 = 3;
+pub const LEVEL_COUNT: u8 = 6;
+const PAR_MOVES: [u16; LEVEL_COUNT as usize] = [10, 12, 20, 2, 8, 8];
 
 const LEVELS: [[&str; HEIGHT]; LEVEL_COUNT as usize] = [
     [
@@ -22,12 +23,25 @@ const LEVELS: [[&str; HEIGHT]; LEVEL_COUNT as usize] = [
         "########", "# .    #", "# $ $ .#", "#   @  #", "# .    #", "#      #", "#      #",
         "########",
     ],
+    [
+        "########", "#  .   #", "#  $   #", "#  @   #", "#      #", "#      #", "#      #",
+        "########",
+    ],
+    [
+        "########", "# . .  #", "# $ $  #", "#  @   #", "#      #", "#      #", "#      #",
+        "########",
+    ],
+    [
+        "########", "#  ..  #", "#  $$  #", "#   @  #", "#      #", "#      #", "#      #",
+        "########",
+    ],
 ];
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum SokobanPhase {
     Playing,
     Won,
+    Stuck,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -36,12 +50,14 @@ pub struct Sokoban {
     pub player: usize,
     pub crates: u8,
     pub moves: u16,
+    #[serde(default)]
+    pub pushes: u16,
     pub seed: u64,
     #[serde(default)]
     pub level: u8,
     pub phase: SokobanPhase,
     #[serde(skip)]
-    undo: Option<Box<Self>>,
+    history: Vec<Box<Self>>,
 }
 
 impl Default for Sokoban {
@@ -88,10 +104,11 @@ impl Sokoban {
             player,
             crates,
             moves: 0,
+            pushes: 0,
             seed,
             level,
             phase: SokobanPhase::Playing,
-            undo: None,
+            history: Vec::new(),
         }
     }
 
@@ -101,6 +118,22 @@ impl Sokoban {
 
     pub fn reset_next(&mut self, seed: u64) {
         *self = Self::new_with_level(seed, (self.level + 1) % LEVEL_COUNT);
+    }
+
+    pub fn par_moves(&self) -> u16 {
+        PAR_MOVES[self.level as usize % PAR_MOVES.len()]
+    }
+
+    pub fn clear_rank(&self) -> &'static str {
+        if !self.won() {
+            "—"
+        } else if self.moves <= self.par_moves() {
+            "GOLD"
+        } else if self.moves <= self.par_moves().saturating_add(4) {
+            "SILVER"
+        } else {
+            "BRONZE"
+        }
     }
 
     pub fn move_in(&mut self, direction: Direction) -> bool {
@@ -127,20 +160,27 @@ impl Sokoban {
             self.tiles[next] = if self.is_target(next) { 2 } else { 1 };
             pushed = true;
         }
-        self.undo = Some(Box::new(previous));
         self.player = next;
         self.moves = self.moves.saturating_add(1);
-        if pushed && self.tiles.iter().filter(|tile| **tile == 4).count() == self.crates as usize {
-            self.phase = SokobanPhase::Won;
+        if pushed {
+            self.pushes = self.pushes.saturating_add(1);
+            if self.tiles.iter().filter(|tile| **tile == 4).count() == self.crates as usize {
+                self.phase = SokobanPhase::Won;
+            } else if self.has_deadlock() {
+                self.phase = SokobanPhase::Stuck;
+            }
         }
+        self.history.push(Box::new(previous));
         true
     }
 
     pub fn undo(&mut self) -> bool {
-        let Some(previous) = self.undo.take() else {
+        let Some(previous) = self.history.pop() else {
             return false;
         };
+        let history = std::mem::take(&mut self.history);
         *self = *previous;
+        self.history = history;
         true
     }
 
@@ -149,7 +189,7 @@ impl Sokoban {
     }
 
     pub fn hint_direction(&self) -> Option<Direction> {
-        if self.won() {
+        if self.phase != SokobanPhase::Playing {
             return None;
         }
         let mut queue = VecDeque::from([(self.clone_without_undo(), None)]);
@@ -182,7 +222,7 @@ impl Sokoban {
 
     fn clone_without_undo(&self) -> Self {
         let mut copy = self.clone();
-        copy.undo = None;
+        copy.history.clear();
         copy
     }
 
@@ -204,6 +244,29 @@ impl Sokoban {
             Direction::Left => (row, col.checked_sub(1)?),
         };
         (row < HEIGHT && col < WIDTH).then_some(row * WIDTH + col)
+    }
+
+    pub fn is_deadlocked_crate(&self, index: usize) -> bool {
+        if !self.is_crate(index) || self.is_target(index) {
+            return false;
+        }
+        let vertical_wall = [Direction::Up, Direction::Down]
+            .into_iter()
+            .any(|direction| {
+                self.neighbor(index, direction)
+                    .map_or(true, |cell| self.tiles[cell] == 0)
+            });
+        let horizontal_wall = [Direction::Left, Direction::Right]
+            .into_iter()
+            .any(|direction| {
+                self.neighbor(index, direction)
+                    .map_or(true, |cell| self.tiles[cell] == 0)
+            });
+        vertical_wall && horizontal_wall
+    }
+
+    fn has_deadlock(&self) -> bool {
+        (0..self.tiles.len()).any(|index| self.is_deadlocked_crate(index))
     }
 }
 
