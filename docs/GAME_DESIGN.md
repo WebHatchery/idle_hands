@@ -433,6 +433,21 @@ Hints prioritize known sonar contacts before hit neighbors and checkerboard
 searching. Sonar sweeps and shots share the complete multi-step undo history,
 and older saves receive two unused charges with an empty scan record.
 
+### 11.17 Word Grid deduction modes
+
+Word Grid's target library now contains twenty-four five-letter cabinet words.
+After every submission the game filters that library against the complete,
+duplicate-aware feedback history and publishes the number of candidates still
+possible. HINT recommends a non-answer probe whose distinct letters occur most
+often across that remaining set. Tile corners redundantly label feedback with
+`=` for exact, `?` for present elsewhere, and `X` for absent, so deduction does
+not depend on green, gold, and grey alone. The visible mode control starts a
+fresh puzzle in CLASSIC or HARD. HARD rejects a submitted row unless it keeps
+all exact positions, moves known-present letters out of disproven positions,
+and includes every confirmed letter at its known minimum multiplicity; the
+specific violated rule remains on screen. Submitted rows use a complete undo
+history. Older saves open in CLASSIC with no pending rule notice.
+
 ## 12. Historical Phase 0 Decisions
 
 The original eight-game launch scope established the current product principles:

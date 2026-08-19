@@ -13,6 +13,7 @@ pub(super) fn apply(state: &mut AppState, scene: &str) {
         "flood_surges" => flood_surges(state),
         "color_sort_runs" => color_sort_runs(state),
         "battleship_sonar" => battleship_sonar(state),
+        "word_grid_deduction" => word_grid_deduction(state),
         _ => {}
     }
 }
@@ -212,4 +213,19 @@ fn battleship_sonar(state: &mut AppState) {
     game.best_streak = 3;
     game.score = 105;
     game.sonar_charges = 1;
+}
+
+fn word_grid_deduction(state: &mut AppState) {
+    use crate::word_grid::{WordGrid, WordGridMode};
+    let game = &mut state.word_grid;
+    *game = WordGrid::new_with_mode(0, WordGridMode::Hard);
+    for word in ["SHELF", "SMALL"] {
+        for letter in word.bytes() {
+            game.tap_letter(letter - b'A');
+        }
+        game.submit();
+    }
+    for letter in "STI".bytes() {
+        game.tap_letter(letter - b'A');
+    }
 }

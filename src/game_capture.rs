@@ -180,6 +180,7 @@ impl Game {
             "word_grid" | "word_grid_hint" | "word_grid_hint_accessible" => {
                 Screen::Game(GameId::WordGrid)
             }
+            "word_grid_deduction" => Screen::Game(GameId::WordGrid),
             "word_grid_accessible" => Screen::Game(GameId::WordGrid),
             "word_ladder"
             | "word_ladder_hint"

@@ -265,6 +265,7 @@ pub enum UiAction {
     WordGridHint,
     WordGridUndo,
     WordGridNew,
+    WordGridMode(crate::word_grid::WordGridMode),
     WordLadderLetter(u8),
     WordLadderBackspace,
     WordLadderSubmit,

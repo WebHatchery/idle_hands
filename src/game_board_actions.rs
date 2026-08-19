@@ -506,6 +506,10 @@ impl Game {
                 let seed = self.state.word_grid.seed.wrapping_add(1);
                 self.state.word_grid.reset(seed);
             }
+            UiAction::WordGridMode(mode) => {
+                let seed = self.state.word_grid.seed.wrapping_add(1);
+                self.state.word_grid.set_mode(*mode, seed);
+            }
             UiAction::WordLadderLetter(letter) => {
                 self.state.word_ladder.tap_letter(*letter);
             }

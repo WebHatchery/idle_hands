@@ -4,7 +4,7 @@ use crate::{
     accessibility,
     state::AppState,
     ui::UiAction,
-    word_grid::{LetterState, WordGrid, WordGridPhase, MAX_GUESSES, WORD_LENGTH},
+    word_grid::{LetterState, WordGrid, WordGridMode, WordGridPhase, MAX_GUESSES, WORD_LENGTH},
 };
 use macroquad::prelude::*;
 
@@ -20,6 +20,7 @@ struct Layout {
     hint: Rect,
     undo: Rect,
     new_game: Rect,
+    mode: Rect,
 }
 
 fn layout() -> Layout {
@@ -35,6 +36,7 @@ fn layout() -> Layout {
             hint: Rect::new(560., 140., 100., 44.),
             undo: Rect::new(560., 90., 100., 44.),
             new_game: Rect::new(670., 90., 150., 44.),
+            mode: Rect::new(670., 140., 150., 44.),
         }
     } else if crate::ui::is_portrait() {
         Layout {
@@ -48,6 +50,7 @@ fn layout() -> Layout {
             hint: Rect::new(235., 420., 100., 44.),
             undo: Rect::new(15., 700., 100., 44.),
             new_game: Rect::new(125., 700., 150., 44.),
+            mode: Rect::new(285., 700., 90., 44.),
         }
     } else {
         Layout {
@@ -61,6 +64,7 @@ fn layout() -> Layout {
             hint: Rect::new(1000., 370., 100., 44.),
             undo: Rect::new(1000., 250., 100., 44.),
             new_game: Rect::new(760., 310., 150., 44.),
+            mode: Rect::new(920., 310., 110., 44.),
         }
     }
 }
@@ -84,6 +88,12 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if crate::ui::hit(l.new_game, point) {
         return vec![UiAction::WordGridNew];
+    }
+    if crate::ui::hit(l.mode, point) {
+        return vec![UiAction::WordGridMode(match _state.word_grid.mode {
+            WordGridMode::Classic => WordGridMode::Hard,
+            WordGridMode::Hard => WordGridMode::Classic,
+        })];
     }
     if l.keyboard.contains(point) {
         let column = ((point.x - l.keyboard.x) / l.key_w) as usize;
@@ -129,8 +139,23 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
+    let scoreline = if compact || screen_width() < 360. {
+        format!(
+            "{}/6 • {} left • {}",
+            game.moves,
+            game.remaining_words().len(),
+            game.mode.label()
+        )
+    } else {
+        format!(
+            "Guesses {}/6  •  {} candidates  •  {}",
+            game.moves,
+            game.remaining_words().len(),
+            game.mode.label()
+        )
+    };
     crate::ui::draw_text(
-        format!("{} / 6 guesses  -  {}", game.moves, status(game.phase)),
+        scoreline,
         if compact { 430. } else { title_x },
         if compact { 28. } else { title_y + 24. },
         accessibility::text_size(body_size(), state.large_text),
@@ -143,19 +168,23 @@ pub fn draw(state: &AppState) {
     button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW WORD", state.large_text);
-    let status_y = if portrait {
-        497.
+    mode_button(l.mode, game.mode.label(), state.large_text);
+    let (status_x, status_y) = if portrait {
+        (title_x, 497.)
     } else if compact {
-        285.
+        (300., 220.)
     } else {
-        560.
+        (760., 450.)
     };
     crate::ui::draw_text(
-        state
-            .card_hint
-            .as_deref()
-            .unwrap_or("Build five letters, then tap SUBMIT"),
-        if compact { 245. } else { title_x },
+        state.card_hint.as_deref().unwrap_or_else(|| {
+            if game.notice.is_empty() {
+                status(game.phase)
+            } else {
+                &game.notice
+            }
+        }),
+        status_x,
         status_y,
         accessibility::text_size(body_size(), state.large_text),
         muted(),
@@ -211,6 +240,19 @@ fn draw_board(board: Rect, game: &WordGrid, high_contrast: bool, large_text: boo
                     ),
                     WHITE,
                 );
+                if state != LetterState::Unknown {
+                    center_text(
+                        match state {
+                            LetterState::Correct => "=",
+                            LetterState::Present => "?",
+                            LetterState::Absent => "X",
+                            LetterState::Unknown => "",
+                        },
+                        Rect::new(rect.x + rect.w * 0.62, rect.y, rect.w * 0.35, rect.h * 0.4),
+                        accessibility::text_size(9., large_text),
+                        WHITE,
+                    );
+                }
             }
         }
     }
@@ -251,10 +293,22 @@ fn draw_keyboard(l: Layout, game: &WordGrid, high_contrast: bool, large_text: bo
 
 fn status(phase: WordGridPhase) -> &'static str {
     match phase {
-        WordGridPhase::Playing => "SOLVE THE WORD",
-        WordGridPhase::Won => "WORD FOUND",
-        WordGridPhase::Lost => "WORD REVEALED",
+        WordGridPhase::Playing => "Build five letters, then tap SUBMIT",
+        WordGridPhase::Won => "Word found — tap NEW WORD",
+        WordGridPhase::Lost => "Word revealed — tap NEW WORD",
     }
+}
+
+fn mode_button(rect: Rect, label: &str, large_text: bool) {
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        Color::new(0.22, 0.30, 0.20, 1.),
+    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
+    center_text(label, rect, accessibility::text_size(9., large_text), WHITE);
 }
 fn tile_color(state: LetterState, high_contrast: bool) -> Color {
     if high_contrast {

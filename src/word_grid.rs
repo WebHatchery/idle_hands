@@ -4,9 +4,27 @@ use serde::{Deserialize, Serialize};
 
 pub const WORD_LENGTH: usize = 5;
 pub const MAX_GUESSES: usize = 6;
-pub const WORDS: [&str; 8] = [
-    "STILL", "SHELF", "PAUSE", "GAMES", "SMALL", "WORDS", "MOTIF", "CABIN",
+pub const WORDS: [&str; 24] = [
+    "STILL", "SHELF", "PAUSE", "GAMES", "SMALL", "WORDS", "MOTIF", "CABIN", "QUIET", "STACK",
+    "BOARD", "TOUCH", "PIXEL", "QUEST", "ROUND", "BRASS", "VAULT", "CHARM", "LEVEL", "TRACK",
+    "SCORE", "LIGHT", "FRAME", "STONE",
 ];
+
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum WordGridMode {
+    #[default]
+    Classic,
+    Hard,
+}
+
+impl WordGridMode {
+    pub const fn label(self) -> &'static str {
+        match self {
+            Self::Classic => "CLASSIC",
+            Self::Hard => "HARD",
+        }
+    }
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum LetterState {
@@ -32,9 +50,13 @@ pub struct WordGrid {
     pub used: [LetterState; 26],
     pub moves: u16,
     pub seed: u64,
+    #[serde(default)]
+    pub mode: WordGridMode,
+    #[serde(default)]
+    pub notice: String,
     pub phase: WordGridPhase,
     #[serde(skip)]
-    undo: Option<Box<Self>>,
+    history: Vec<Box<Self>>,
 }
 
 impl Default for WordGrid {
@@ -45,6 +67,10 @@ impl Default for WordGrid {
 
 impl WordGrid {
     pub fn new(seed: u64) -> Self {
+        Self::new_with_mode(seed, WordGridMode::Classic)
+    }
+
+    pub fn new_with_mode(seed: u64, mode: WordGridMode) -> Self {
         let target = WORDS[(seed as usize) % WORDS.len()].to_owned();
         Self {
             target,
@@ -54,8 +80,10 @@ impl WordGrid {
             used: [LetterState::Unknown; 26],
             moves: 0,
             seed,
+            mode,
+            notice: String::new(),
             phase: WordGridPhase::Playing,
-            undo: None,
+            history: Vec::new(),
         }
     }
 
@@ -65,6 +93,7 @@ impl WordGrid {
             return false;
         }
         self.current.push((b'A' + letter) as char);
+        self.notice.clear();
         true
     }
 
@@ -72,6 +101,7 @@ impl WordGrid {
         if self.phase != WordGridPhase::Playing || self.current.pop().is_none() {
             return false;
         }
+        self.notice.clear();
         true
     }
 
@@ -79,7 +109,13 @@ impl WordGrid {
         if self.phase != WordGridPhase::Playing || self.current.len() != WORD_LENGTH {
             return false;
         }
-        let previous = self.clone_without_undo();
+        if self.mode == WordGridMode::Hard {
+            if let Some(message) = self.hard_violation(&self.current) {
+                self.notice = message;
+                return false;
+            }
+        }
+        let previous = self.clone_without_history();
         let guess = self.current.clone();
         let result = score_guess(&self.target, &guess);
         for (index, state) in result.iter().enumerate() {
@@ -90,25 +126,32 @@ impl WordGrid {
         self.feedback.push(result);
         self.current.clear();
         self.moves = self.moves.saturating_add(1);
-        self.undo = Some(Box::new(previous));
+        self.notice.clear();
         if guess == self.target {
             self.phase = WordGridPhase::Won;
         } else if self.guesses.len() >= MAX_GUESSES {
             self.phase = WordGridPhase::Lost;
         }
+        self.history.push(Box::new(previous));
         true
     }
 
     pub fn undo(&mut self) -> bool {
-        let Some(previous) = self.undo.take() else {
+        let Some(previous) = self.history.pop() else {
             return false;
         };
+        let history = std::mem::take(&mut self.history);
         *self = *previous;
+        self.history = history;
         true
     }
 
     pub fn reset(&mut self, seed: u64) {
-        *self = Self::new(seed);
+        *self = Self::new_with_mode(seed, self.mode);
+    }
+
+    pub fn set_mode(&mut self, mode: WordGridMode, seed: u64) {
+        *self = Self::new_with_mode(seed, mode);
     }
 
     pub fn won(&self) -> bool {
@@ -119,30 +162,100 @@ impl WordGrid {
         if self.phase != WordGridPhase::Playing {
             return None;
         }
+        let remaining = self.remaining_words();
         WORDS
             .iter()
             .copied()
             .filter(|candidate| *candidate != self.target)
             .filter(|candidate| !self.guesses.iter().any(|guess| guess == candidate))
-            .find(|candidate| {
+            .max_by_key(|candidate| probe_score(candidate, &remaining))
+    }
+
+    pub fn remaining_words(&self) -> Vec<&'static str> {
+        WORDS
+            .iter()
+            .copied()
+            .filter(|candidate| {
                 self.guesses
                     .iter()
                     .enumerate()
                     .all(|(index, guess)| score_guess(candidate, guess) == self.feedback[index])
             })
-            .or_else(|| {
-                WORDS.iter().copied().find(|candidate| {
-                    *candidate != self.target
-                        && !self.guesses.iter().any(|guess| guess == candidate)
-                })
-            })
+            .collect()
     }
 
-    fn clone_without_undo(&self) -> Self {
+    pub fn hard_violation(&self, guess: &str) -> Option<String> {
+        if guess.len() != WORD_LENGTH || self.guesses.is_empty() {
+            return None;
+        }
+        let bytes = guess.as_bytes();
+        let mut required = [0u8; 26];
+        for (prior, feedback) in self.guesses.iter().zip(&self.feedback) {
+            let prior_bytes = prior.as_bytes();
+            let mut row_required = [0u8; 26];
+            for index in 0..WORD_LENGTH {
+                match feedback[index] {
+                    LetterState::Correct if bytes[index] != prior_bytes[index] => {
+                        return Some(format!(
+                            "HARD: keep {} in slot {}",
+                            prior_bytes[index] as char,
+                            index + 1
+                        ));
+                    }
+                    LetterState::Present if bytes[index] == prior_bytes[index] => {
+                        return Some(format!(
+                            "HARD: move {} out of slot {}",
+                            prior_bytes[index] as char,
+                            index + 1
+                        ));
+                    }
+                    LetterState::Present | LetterState::Correct => {
+                        row_required[(prior_bytes[index] - b'A') as usize] += 1;
+                    }
+                    LetterState::Unknown | LetterState::Absent => {}
+                }
+            }
+            for index in 0..26 {
+                required[index] = required[index].max(row_required[index]);
+            }
+        }
+        for (letter, &count) in required.iter().enumerate() {
+            let actual = bytes
+                .iter()
+                .filter(|&&value| value == b'A' + letter as u8)
+                .count();
+            if actual < count as usize {
+                return Some(format!("HARD: include {}", (b'A' + letter as u8) as char));
+            }
+        }
+        None
+    }
+
+    fn clone_without_history(&self) -> Self {
         let mut copy = self.clone();
-        copy.undo = None;
+        copy.history.clear();
         copy
     }
+}
+
+fn probe_score(probe: &str, remaining: &[&str]) -> usize {
+    let mut seen = [false; 26];
+    probe
+        .bytes()
+        .filter_map(|letter| {
+            let index = (letter - b'A') as usize;
+            if std::mem::replace(&mut seen[index], true) {
+                None
+            } else {
+                Some(
+                    remaining
+                        .iter()
+                        .filter(|word| word.as_bytes().contains(&letter))
+                        .count(),
+                )
+            }
+        })
+        .sum()
 }
 
 fn score_guess(target: &str, guess: &str) -> [LetterState; WORD_LENGTH] {

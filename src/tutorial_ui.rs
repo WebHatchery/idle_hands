@@ -295,8 +295,8 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
         ],
         GameId::WordGrid => [
             "Tap letters to build a five-letter guess, then tap SUBMIT.",
-            "Green letters are exact; gold letters belong elsewhere in the word.",
-            "Use BACKSPACE, UNDO, or NEW WORD with the visible controls.",
+            "Tiles use = for exact, ? for present, and X for absent; the header counts candidates.",
+            "HARD binds every clue; use HINT, BACKSPACE, multi-step UNDO, or NEW WORD.",
         ],
         GameId::PipeLoop => [
             "Tap a pipe tile to rotate it clockwise.",

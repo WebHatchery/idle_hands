@@ -471,7 +471,13 @@ pub fn word_grid(state: &AppState) -> String {
     }
     game.hint_word().map_or_else(
         || "No probe remains — tap NEW WORD to begin again.".into(),
-        |word| format!("Try {} as a probe.", word),
+        |word| {
+            format!(
+                "{} candidates remain — try {} to test the strongest letter spread.",
+                game.remaining_words().len(),
+                word
+            )
+        },
     )
 }
 

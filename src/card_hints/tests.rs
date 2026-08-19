@@ -322,7 +322,7 @@ fn default_battleship_has_a_deterministic_hint() {
 fn default_word_grid_has_a_deterministic_probe_hint() {
     let state = AppState::default();
 
-    assert!(word_grid(&state).contains("Try "));
+    assert!(word_grid(&state).contains("candidates remain"));
     assert_eq!(word_grid(&state), word_grid(&state));
 }
 
