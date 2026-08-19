@@ -18,7 +18,7 @@ fn replay_rect(compact_landscape: bool) -> Rect {
     if compact_landscape {
         Rect::new(700., 2., 130., 44.)
     } else {
-        Rect::new(245., 10., 105., 44.)
+        Rect::new(245., 0., 105., 44.)
     }
 }
 

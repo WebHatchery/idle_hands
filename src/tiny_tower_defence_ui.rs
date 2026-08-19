@@ -27,7 +27,7 @@ fn layout() -> Layout {
         }
     } else if crate::ui::is_portrait() {
         Layout {
-            board: Rect::new(20., 140., 360., 300.),
+            board: Rect::new(10., 140., 340., 300.),
             wave: Rect::new(20., 470., 165., 44.),
             hint: Rect::new(20., 580., 145., 42.),
             undo: Rect::new(20., 525., 145., 44.),

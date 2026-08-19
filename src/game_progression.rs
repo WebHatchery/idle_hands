@@ -57,7 +57,9 @@ impl Game {
             records.fivefold_best_total =
                 records.fivefold_best_total.max(self.state.fivefold.total());
         }
-        if self.state.reversi.status == crate::reversi::ReversiStatus::Won {
+        if self.state.reversi.status == crate::reversi::ReversiStatus::Won
+            && self.state.reversi.winner == Some(1)
+        {
             records.reversi_best_score = records
                 .reversi_best_score
                 .max(self.state.reversi.score(1) as u8);
@@ -258,7 +260,7 @@ impl Game {
                     }),
             );
         }
-        if self.state.one_room_roguelike.finished() {
+        if self.state.one_room_roguelike.won() {
             records.one_room_roguelike_best_score = Some(
                 records
                     .one_room_roguelike_best_score
@@ -437,6 +439,7 @@ impl Game {
             self.notifications
                 .success("2048 reached — keep playing or start a fresh board");
         }
+        self.update_records();
         self.save_autosave();
     }
 }

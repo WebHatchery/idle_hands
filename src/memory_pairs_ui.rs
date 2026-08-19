@@ -222,7 +222,7 @@ fn back_rect() -> Rect {
     if crate::ui::is_compact_landscape() {
         Rect::new(10., 8., 100., 30.)
     } else if crate::ui::is_portrait() {
-        Rect::new(10., 52., 110., 30.)
+        Rect::new(0., 0., 110., 42.)
     } else {
         Rect::new(48., 28., 130., 36.)
     }

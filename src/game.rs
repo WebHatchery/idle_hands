@@ -65,7 +65,7 @@ impl Game {
             transition: 0.,
             confirmation_bypass: false,
         };
-        game.state.color_sort.reset(get_time().to_bits());
+        game.initialize_launch_state();
         game.load_autosave();
         game
     }

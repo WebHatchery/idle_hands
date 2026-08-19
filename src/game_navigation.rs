@@ -2,9 +2,28 @@
 
 use super::Game;
 use crate::state::{GameId, Screen};
-use macroquad::prelude::{mouse_wheel, Vec2};
+use macroquad::prelude::{get_time, mouse_wheel, Vec2};
+use macroquad_toolkit::persistence::slot_exists;
 
 impl Game {
+    pub(super) fn initialize_launch_state(&mut self) {
+        let collection_slot = &self.data.config.save_slot;
+        let has_saved_state = slot_exists(&self.data.config.game_name, collection_slot)
+            || slot_exists(
+                &self.data.config.game_name,
+                &format!("{}_profile", collection_slot),
+            )
+            || GameId::ALL.iter().any(|game| {
+                slot_exists(
+                    &self.data.config.game_name,
+                    &format!("{}_{}", collection_slot, game.save_key()),
+                )
+            });
+        if !has_saved_state {
+            self.state = crate::state::AppState::new_random(&self.data, get_time().to_bits());
+        }
+    }
+
     pub(super) fn apply_navigation_drag(&mut self, start: Vec2, end: Vec2) {
         if (end.y - start.y).abs() <= 24.0 {
             return;

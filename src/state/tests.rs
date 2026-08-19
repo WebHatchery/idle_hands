@@ -1,5 +1,6 @@
 use super::*;
 use crate::cards::Card;
+use crate::data::GameData;
 
 #[test]
 fn new_board_has_two_tiles_and_is_seeded() {
@@ -7,6 +8,17 @@ fn new_board_has_two_tiles_and_is_seeded() {
     let second = Game2048::new(42);
     assert_eq!(first.cells, second.cells);
     assert_eq!(first.cells.iter().filter(|&&value| value != 0).count(), 2);
+}
+
+#[test]
+fn random_launch_state_changes_seeded_games() {
+    let data = GameData::load().unwrap();
+    let first = AppState::new_random(&data, 11);
+    let second = AppState::new_random(&data, 12);
+    assert_ne!(first.game.cells, second.game.cells);
+    assert_ne!(first.solitaire.seed, second.solitaire.seed);
+    assert_ne!(first.color_sort.seed, second.color_sort.seed);
+    assert_ne!(first.maze_walk.seed, second.maze_walk.seed);
 }
 
 #[test]

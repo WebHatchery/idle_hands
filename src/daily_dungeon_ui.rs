@@ -33,16 +33,16 @@ fn layout() -> Layout {
         }
     } else if crate::ui::is_portrait() {
         Layout {
-            board: Rect::new(40., 125., 320., 320.),
+            board: Rect::new(20., 125., 320., 320.),
             directions: [
-                Rect::new(40., 465., 68., 44.),
-                Rect::new(124., 465., 68., 44.),
-                Rect::new(208., 465., 68., 44.),
-                Rect::new(292., 465., 68., 44.),
+                Rect::new(20., 465., 68., 44.),
+                Rect::new(104., 465., 68., 44.),
+                Rect::new(188., 465., 68., 44.),
+                Rect::new(272., 465., 68., 44.),
             ],
-            hint: Rect::new(40., 580., 145., 42.),
-            undo: Rect::new(40., 525., 145., 44.),
-            new_game: Rect::new(195., 525., 165., 44.),
+            hint: Rect::new(20., 580., 145., 42.),
+            undo: Rect::new(20., 525., 145., 44.),
+            new_game: Rect::new(185., 525., 155., 44.),
         }
     } else {
         Layout {

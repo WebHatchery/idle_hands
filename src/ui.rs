@@ -592,10 +592,17 @@ fn draw_2048(state: &AppState) {
         16.,
         Color::new(0.55, 0.50, 0.64, 1.),
     );
-    for (i, label) in ["↑", "←", "↓", "→"].iter().enumerate() {
+    for (i, label) in ["UP", "LEFT", "DOWN", "RIGHT"].iter().enumerate() {
         let r = Rect::new(830. + i as f32 * 90., 615., 78., 46.);
         panel(r, crate::theme::SURFACE_DARK);
-        text(label, r.x + 28., r.y + 33., 26., crate::theme::BRASS);
+        let width = crate::ui::measure_text(label, None, 14, 1.0).width;
+        text(
+            label,
+            r.x + (r.w - width) * 0.5,
+            r.y + 30.,
+            14.,
+            crate::theme::BRASS,
+        );
     }
     panel(
         Rect::new(400., 190., 300., 160.),

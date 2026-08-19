@@ -202,7 +202,9 @@ fn status_text(status: MastermindStatus, row: u8) -> String {
     match status {
         MastermindStatus::Playing => format!("Build a four-color code  -  GUESS {}/10", row + 1),
         MastermindStatus::Won => "The code is open. Start another board to play again.".into(),
-        MastermindStatus::Lost => "The code stayed hidden. Start another board to try again.".into(),
+        MastermindStatus::Lost => {
+            "The code stayed hidden. Start another board to try again.".into()
+        }
     }
 }
 
@@ -233,7 +235,7 @@ fn back_rect() -> Rect {
     if crate::ui::is_compact_landscape() {
         Rect::new(10., 6., 100., 28.)
     } else if crate::ui::is_portrait() {
-        Rect::new(10., 42., 110., 30.)
+        Rect::new(0., 0., 110., 42.)
     } else {
         Rect::new(48., 24., 130., 34.)
     }
