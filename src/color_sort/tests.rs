@@ -1,41 +1,54 @@
 use super::*;
 
-fn with_tubes(tubes: [Vec<u8>; TUBES]) -> ColorSort {
+fn with_tubes(tubes: Vec<Vec<u8>>) -> ColorSort {
     ColorSort {
-        tubes: tubes.to_vec(),
+        tubes,
         ..Default::default()
     }
 }
 
 #[test]
 fn seeded_layout_is_repeatable_and_has_six_tubes() {
-    let first = ColorSort::new(7);
-    assert_eq!(first.tubes, ColorSort::new(7).tubes);
-    assert_eq!(first.tubes.len(), TUBES);
+    let data = crate::data::GameData::load().unwrap();
+    let first =
+        ColorSort::new_with_config(7, ColorSortDifficulty::Standard, &data.puzzles.color_sort);
+    assert_eq!(
+        first.tubes,
+        ColorSort::new_with_config(7, ColorSortDifficulty::Standard, &data.puzzles.color_sort)
+            .tubes
+    );
+    let standard = &data.puzzles.color_sort.difficulties[0];
+    assert_eq!(first.tubes.len(), standard.tubes);
     assert_eq!(
         first.tubes.iter().map(Vec::len).sum::<usize>(),
-        COLORS as usize * CAPACITY
+        standard.colors as usize * data.puzzles.color_sort.capacity
     );
 }
 
 #[test]
 fn difficulty_boards_add_tubes_and_colors_without_starting_solved() {
-    for (difficulty, expected_tubes, expected_colors) in [
-        (ColorSortDifficulty::Standard, 6, 4),
-        (ColorSortDifficulty::Hard, 7, 5),
-        (ColorSortDifficulty::Expert, 8, 6),
-    ] {
-        let game = ColorSort::new_with_difficulty(19, difficulty);
-        assert_eq!(game.tubes.len(), expected_tubes);
-        assert_eq!(game.tubes.iter().map(Vec::len).sum::<usize>(), expected_colors * CAPACITY);
-        assert!(game.tubes.iter().any(|tube| tube.windows(2).any(|pair| pair[0] != pair[1])));
+    let data = crate::data::GameData::load().unwrap();
+    for (difficulty, expected) in ColorSortDifficulty::ALL
+        .into_iter()
+        .zip(data.puzzles.color_sort.difficulties.iter())
+    {
+        let game = ColorSort::new_with_config(19, difficulty, &data.puzzles.color_sort);
+        assert_eq!(game.tubes.len(), expected.tubes);
+        assert_eq!(
+            game.tubes.iter().map(Vec::len).sum::<usize>(),
+            expected.colors as usize * data.puzzles.color_sort.capacity
+        );
+        assert!(game
+            .tubes
+            .iter()
+            .any(|tube| tube.windows(2).any(|pair| pair[0] != pair[1])));
         assert!(game.hint_move().is_some());
     }
 }
 
 #[test]
 fn tap_selects_then_moves_matching_top_run_into_empty_tube() {
-    let mut game = with_tubes([
+    let mut game = with_tubes(vec![
         vec![0, 1, 1],
         vec![],
         vec![2; 4],
@@ -53,7 +66,14 @@ fn tap_selects_then_moves_matching_top_run_into_empty_tube() {
 
 #[test]
 fn rejects_full_and_mismatched_destinations() {
-    let mut game = with_tubes([vec![0], vec![1], vec![2; 4], vec![3; 4], vec![], vec![]]);
+    let mut game = with_tubes(vec![
+        vec![0],
+        vec![1],
+        vec![2; 4],
+        vec![3; 4],
+        vec![],
+        vec![],
+    ]);
     assert!(game.tap_tube(0));
     assert!(!game.tap_tube(1));
     assert!(!game.tap_tube(2));
@@ -62,7 +82,14 @@ fn rejects_full_and_mismatched_destinations() {
 
 #[test]
 fn undo_restores_the_previous_tubes_and_selection() {
-    let mut game = with_tubes([vec![0], vec![], vec![1; 4], vec![2; 4], vec![3; 4], vec![]]);
+    let mut game = with_tubes(vec![
+        vec![0],
+        vec![],
+        vec![1; 4],
+        vec![2; 4],
+        vec![3; 4],
+        vec![],
+    ]);
     assert!(game.tap_tube(0));
     assert!(game.tap_tube(1));
     assert!(game.undo());
@@ -73,7 +100,7 @@ fn undo_restores_the_previous_tubes_and_selection() {
 
 #[test]
 fn solved_tubes_finish_the_game() {
-    let mut game = with_tubes([
+    let mut game = with_tubes(vec![
         vec![0; 4],
         vec![1; 4],
         vec![2; 4],

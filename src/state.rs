@@ -48,6 +48,8 @@ use crate::word_ladder::WordLadder;
 use crate::word_search::WordSearch;
 use serde::{Deserialize, Serialize};
 
+#[path = "state_initialization.rs"]
+mod state_initialization;
 #[path = "state_profile.rs"]
 mod state_profile;
 pub use state_profile::ProfileSave;

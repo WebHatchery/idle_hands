@@ -242,9 +242,8 @@ impl Game {
             }
             UiAction::PotionDifficulty(difficulty) => {
                 let seed = self.state.potion_2048.seed.wrapping_add(1);
-                self.state.potion_2048 = crate::potion_2048::Potion2048::new_with_difficulty(
-                    seed, *difficulty,
-                );
+                self.state.potion_2048 =
+                    crate::potion_2048::Potion2048::new_with_difficulty(seed, *difficulty);
             }
             UiAction::TowerCell(index) => {
                 self.state.tiny_tower_defence.build_or_upgrade(*index);
@@ -313,8 +312,10 @@ impl Game {
             }
             UiAction::DotsDifficulty(difficulty) => {
                 let seed = self.state.dots_boxes.seed.wrapping_add(1);
-                self.state.dots_boxes = crate::dots_boxes::DotsBoxes::new_with_difficulty(
-                    seed, *difficulty,
+                self.state.dots_boxes = crate::dots_boxes::DotsBoxes::new_with_config(
+                    seed,
+                    *difficulty,
+                    &self.data.puzzles.dots_boxes,
                 );
             }
             UiAction::SokobanMove(direction) => {
@@ -389,8 +390,10 @@ impl Game {
             }
             UiAction::FloodDifficulty(difficulty) => {
                 let seed = self.state.flood_it.seed.wrapping_add(1);
-                self.state.flood_it = crate::flood_it::FloodIt::new_with_difficulty(
-                    seed, *difficulty,
+                self.state.flood_it = crate::flood_it::FloodIt::new_with_config(
+                    seed,
+                    *difficulty,
+                    &self.data.puzzles.flood_it,
                 );
             }
             UiAction::ColorSortTap(tube) => {
@@ -409,8 +412,10 @@ impl Game {
             }
             UiAction::ColorSortDifficulty(difficulty) => {
                 let seed = fresh_seed(self.state.color_sort.seed);
-                self.state.color_sort = crate::color_sort::ColorSort::new_with_difficulty(
-                    seed, *difficulty,
+                self.state.color_sort = crate::color_sort::ColorSort::new_with_config(
+                    seed,
+                    *difficulty,
+                    &self.data.puzzles.color_sort,
                 );
             }
             UiAction::BattleshipFire(cell) => {
@@ -511,8 +516,10 @@ impl Game {
             }
             UiAction::MatchThreeDifficulty(difficulty) => {
                 let seed = self.state.match_three.seed.wrapping_add(1);
-                self.state.match_three = crate::match_three::MatchThree::new_with_difficulty(
-                    seed, *difficulty,
+                self.state.match_three = crate::match_three::MatchThree::new_with_config(
+                    seed,
+                    *difficulty,
+                    &self.data.puzzles.match_three,
                 );
             }
             _ => return false,

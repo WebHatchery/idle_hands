@@ -7,7 +7,13 @@ fn card_rect(x: f32, y: f32) -> Rect {
     Rect::new(x, y, 92., 116.)
 }
 fn panel(rect: Rect, fill: Color) {
-    draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::drawer_surface(fill));
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        crate::theme::drawer_surface(fill),
+    );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
 fn draw_card(rect: Rect, card: Card, selected: bool, reduced_motion: bool) {

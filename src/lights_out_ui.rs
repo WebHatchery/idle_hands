@@ -180,13 +180,7 @@ fn header_x(layout: Layout) -> f32 {
 }
 
 fn button(rect: Rect, label: &str, large_text: bool) {
-    draw_rectangle(
-        rect.x,
-        rect.y,
-        rect.w,
-        rect.h,
-        crate::theme::SURFACE,
-    );
+    draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., accent());
     text(
         label,

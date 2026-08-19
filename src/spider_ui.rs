@@ -157,14 +157,7 @@ pub fn draw(state: &AppState) {
             155. + completed as f32 * 42.
         };
         let rect = Rect::new(x, layout.stock.y, 30., layout.stock.h);
-        draw_rectangle_lines(
-            rect.x,
-            rect.y,
-            rect.w,
-            rect.h,
-            1.,
-            crate::theme::BRASS,
-        );
+        draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., crate::theme::BRASS);
         if completed < game.completed as usize {
             text("✓", rect.x + 7., rect.y + rect.h * 0.58, 18., accent());
         }

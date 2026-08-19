@@ -7,7 +7,7 @@ use macroquad_toolkit::notifications::NotificationManager;
 
 impl Game {
     pub fn begin_capture_scene(&mut self, scene: &str) {
-        self.state = crate::state::AppState::default();
+        self.state = crate::state::AppState::new(&self.data);
         self.notifications = NotificationManager::new();
         let scene = scene
             .strip_prefix("portrait_")

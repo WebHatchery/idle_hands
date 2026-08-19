@@ -2,9 +2,7 @@
 
 use serde::{Deserialize, Serialize};
 
-pub const TUBES: usize = 6;
-pub const COLORS: u8 = 4;
-pub const CAPACITY: usize = 4;
+use crate::data::ColorSortConfig;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum ColorSortDifficulty {
@@ -30,11 +28,11 @@ impl ColorSortDifficulty {
         }
     }
 
-    fn settings(self) -> (u8, usize, usize) {
+    fn index(self) -> usize {
         match self {
-            Self::Standard => (4, 6, 52),
-            Self::Hard => (5, 7, 78),
-            Self::Expert => (6, 8, 108),
+            Self::Standard => 0,
+            Self::Hard => 1,
+            Self::Expert => 2,
         }
     }
 }
@@ -53,6 +51,14 @@ pub struct ColorSort {
     pub seed: u64,
     #[serde(default)]
     pub difficulty: ColorSortDifficulty,
+    #[serde(default = "default_capacity")]
+    capacity: usize,
+    #[serde(default = "default_colors")]
+    colors: u8,
+    #[serde(default = "default_tube_count")]
+    tube_count: usize,
+    #[serde(default = "default_scramble_steps")]
+    scramble_steps: usize,
     pub phase: ColorSortPhase,
     #[serde(skip)]
     undo: Option<Box<Self>>,
@@ -69,17 +75,46 @@ impl ColorSort {
         Self::new_with_difficulty(seed, ColorSortDifficulty::Standard)
     }
 
-    pub fn new_with_difficulty(mut seed: u64, difficulty: ColorSortDifficulty) -> Self {
-        let (colors, tube_count, scramble_steps) = difficulty.settings();
+    pub fn new_with_difficulty(seed: u64, difficulty: ColorSortDifficulty) -> Self {
+        Self::new_with_config(seed, difficulty, &ColorSortConfig::default())
+    }
+
+    pub fn new_with_config(
+        seed: u64,
+        difficulty: ColorSortDifficulty,
+        config: &ColorSortConfig,
+    ) -> Self {
+        let settings = config
+            .difficulties
+            .get(difficulty.index())
+            .expect("validated Color Sort difficulty configuration");
+        Self::new_with_settings(
+            seed,
+            difficulty,
+            config.capacity,
+            settings.colors,
+            settings.tubes,
+            settings.scramble_steps,
+        )
+    }
+
+    fn new_with_settings(
+        mut seed: u64,
+        difficulty: ColorSortDifficulty,
+        capacity: usize,
+        colors: u8,
+        tube_count: usize,
+        scramble_steps: usize,
+    ) -> Self {
         let mut tubes = vec![Vec::new(); tube_count];
         for color in 0..colors {
-            tubes[color as usize] = vec![color; CAPACITY];
+            tubes[color as usize] = vec![color; capacity];
         }
         for attempt in 0..8 {
             let mut candidate = tubes.clone();
             let mut candidates_seed = seed;
             for _ in 0..scramble_steps {
-                let moves = reverse_moves(&candidate, CAPACITY);
+                let moves = reverse_moves(&candidate, capacity);
                 if moves.is_empty() {
                     break;
                 }
@@ -90,7 +125,7 @@ impl ColorSort {
                     candidate[destination].push(value);
                 }
             }
-            if !is_solved(&candidate, CAPACITY) && candidate.iter().any(|tube| is_mixed(tube)) {
+            if !is_solved(&candidate, capacity) && candidate.iter().any(|tube| is_mixed(tube)) {
                 tubes = candidate;
                 seed = candidates_seed;
                 break;
@@ -103,6 +138,10 @@ impl ColorSort {
             moves: 0,
             seed,
             difficulty,
+            capacity,
+            colors,
+            tube_count,
+            scramble_steps,
             phase: ColorSortPhase::Playing,
             undo: None,
         }
@@ -127,7 +166,7 @@ impl ColorSort {
             self.selected = None;
             return false;
         };
-        if self.tubes[tube].len() == CAPACITY
+        if self.tubes[tube].len() == self.capacity
             || self.tubes[tube].last().is_some_and(|&top| top != color)
         {
             return false;
@@ -137,7 +176,7 @@ impl ColorSort {
             .rev()
             .take_while(|&&value| value == color)
             .count();
-        let count = run.min(CAPACITY - self.tubes[tube].len());
+        let count = run.min(self.capacity - self.tubes[tube].len());
         let previous = self.clone_without_undo();
         for _ in 0..count {
             let value = self.tubes[source].pop().expect("run counted");
@@ -161,11 +200,22 @@ impl ColorSort {
     }
 
     pub fn reset(&mut self, seed: u64) {
-        *self = Self::new_with_difficulty(seed, self.difficulty);
+        *self = Self::new_with_settings(
+            seed,
+            self.difficulty,
+            self.capacity,
+            self.colors,
+            self.tube_count,
+            self.scramble_steps,
+        );
     }
 
     pub fn won(&self) -> bool {
         self.phase == ColorSortPhase::Won
+    }
+
+    pub fn capacity(&self) -> usize {
+        self.capacity
     }
 
     pub fn hint_move(&self) -> Option<(usize, usize)> {
@@ -195,14 +245,16 @@ impl ColorSort {
     }
 
     fn is_solved(&self) -> bool {
-        is_solved(&self.tubes, CAPACITY)
+        is_solved(&self.tubes, self.capacity)
     }
 
     fn progress_score(&self) -> i32 {
         let completed = self
             .tubes
             .iter()
-            .filter(|tube| tube.len() == CAPACITY && tube.windows(2).all(|pair| pair[0] == pair[1]))
+            .filter(|tube| {
+                tube.len() == self.capacity && tube.windows(2).all(|pair| pair[0] == pair[1])
+            })
             .count() as i32;
         let uniform = self
             .tubes
@@ -248,9 +300,9 @@ fn reverse_moves(tubes: &[Vec<u8>], capacity: usize) -> Vec<(usize, usize, usize
 }
 
 fn is_solved(tubes: &[Vec<u8>], capacity: usize) -> bool {
-    tubes.iter().all(|tube| {
-        tube.is_empty() || (tube.len() == capacity && !is_mixed(tube))
-    })
+    tubes
+        .iter()
+        .all(|tube| tube.is_empty() || (tube.len() == capacity && !is_mixed(tube)))
 }
 
 fn is_mixed(tube: &[u8]) -> bool {
@@ -260,6 +312,22 @@ fn is_mixed(tube: &[u8]) -> bool {
 fn next_seed(seed: u64) -> u64 {
     seed.wrapping_mul(6364136223846793005)
         .wrapping_add(1442695040888963407)
+}
+
+fn default_capacity() -> usize {
+    ColorSortConfig::default().capacity
+}
+
+fn default_colors() -> u8 {
+    ColorSortConfig::default().difficulties[0].colors
+}
+
+fn default_tube_count() -> usize {
+    ColorSortConfig::default().difficulties[0].tubes
+}
+
+fn default_scramble_steps() -> usize {
+    ColorSortConfig::default().difficulties[0].scramble_steps
 }
 
 #[cfg(test)]

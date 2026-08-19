@@ -1,0 +1,31 @@
+{
+  "color_sort": {
+    "capacity": 4,
+    "difficulties": [
+      { "id": "standard", "colors": 4, "tubes": 6, "scramble_steps": 52 },
+      { "id": "hard", "colors": 5, "tubes": 7, "scramble_steps": 78 },
+      { "id": "expert", "colors": 6, "tubes": 8, "scramble_steps": 108 }
+    ]
+  },
+  "dots_boxes": {
+    "difficulties": [
+      { "id": "standard", "side": 4 },
+      { "id": "hard", "side": 5 },
+      { "id": "expert", "side": 6 }
+    ]
+  },
+  "flood_it": {
+    "difficulties": [
+      { "id": "standard", "side": 8, "colors": 6, "move_limit": 24 },
+      { "id": "hard", "side": 10, "colors": 7, "move_limit": 32 },
+      { "id": "expert", "side": 12, "colors": 8, "move_limit": 40 }
+    ]
+  },
+  "match_three": {
+    "difficulties": [
+      { "id": "standard", "side": 7, "colors": 5, "target_score": 120 },
+      { "id": "hard", "side": 8, "colors": 6, "target_score": 240 },
+      { "id": "expert", "side": 9, "colors": 7, "target_score": 360 }
+    ]
+  }
+}

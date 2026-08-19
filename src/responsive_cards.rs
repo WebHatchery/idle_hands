@@ -16,7 +16,13 @@ const CARD_H: f32 = 58.;
 const COL_GAP: f32 = 7.;
 
 fn panel(rect: Rect, fill: Color) {
-    draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::drawer_surface(fill));
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        crate::theme::drawer_surface(fill),
+    );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
 

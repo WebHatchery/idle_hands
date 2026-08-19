@@ -106,7 +106,12 @@ pub fn potion_2048(state: &AppState) -> String {
         return "The master potion is brewed — tap NEW BREW to play again.".into();
     }
     game.hint_direction().map_or_else(
-        || format!("No merge remains — tap NEW BREW to reach {} again.", game.target()),
+        || {
+            format!(
+                "No merge remains — tap NEW BREW to reach {} again.",
+                game.target()
+            )
+        },
         |direction| format!("Best move: {}.", potion_direction_label(direction)),
     )
 }

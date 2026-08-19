@@ -14,9 +14,14 @@ fn claims_a_box_and_keeps_the_turn() {
 
 #[test]
 fn harder_difficulties_use_larger_boards() {
-    assert_eq!(DotsBoxes::new_with_difficulty(1, DotsDifficulty::Standard).boxes.len(), 16);
-    assert_eq!(DotsBoxes::new_with_difficulty(1, DotsDifficulty::Hard).boxes.len(), 25);
-    assert_eq!(DotsBoxes::new_with_difficulty(1, DotsDifficulty::Expert).boxes.len(), 36);
+    let data = crate::data::GameData::load().unwrap();
+    for (difficulty, expected) in DotsDifficulty::ALL
+        .into_iter()
+        .zip(data.puzzles.dots_boxes.difficulties.iter())
+    {
+        let game = DotsBoxes::new_with_config(1, difficulty, &data.puzzles.dots_boxes);
+        assert_eq!(game.boxes.len(), expected.side * expected.side);
+    }
 }
 
 #[test]
@@ -33,14 +38,15 @@ fn rejects_used_edges_and_undo_restores_the_turn() {
 fn cpu_turn_is_deterministic_and_can_finish_a_board() {
     let mut first = DotsBoxes::new(42);
     let mut second = DotsBoxes::new(42);
-    for index in 0..(HORIZONTAL + VERTICAL) {
+    let horizontal_edges = first.horizontal.len();
+    for index in 0..(first.horizontal.len() + first.vertical.len()) {
         if first.phase != DotsPhase::Playing {
             break;
         }
-        let edge = if index < 20 {
+        let edge = if index < horizontal_edges {
             Edge::Horizontal(index)
         } else {
-            Edge::Vertical(index - 20)
+            Edge::Vertical(index - horizontal_edges)
         };
         first.play(edge);
         second.play(edge);
@@ -48,7 +54,7 @@ fn cpu_turn_is_deterministic_and_can_finish_a_board() {
     assert_eq!(first.horizontal, second.horizontal);
     assert_eq!(first.vertical, second.vertical);
     assert_ne!(first.phase, DotsPhase::Playing);
-    assert!(first.scores.iter().sum::<u8>() as usize == BOX_COUNT);
+    assert_eq!(first.scores.iter().sum::<u8>() as usize, first.boxes.len());
 }
 
 #[test]

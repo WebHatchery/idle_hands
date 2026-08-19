@@ -8,7 +8,13 @@ use crate::{
 use macroquad::prelude::*;
 
 fn panel(rect: Rect, fill: Color) {
-    draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::drawer_surface(fill));
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        crate::theme::drawer_surface(fill),
+    );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
 fn button(rect: Rect, label: &str, active: bool) {
@@ -139,7 +145,7 @@ pub fn draw_fivefold(state: &AppState) {
                 if selected {
                     crate::theme::LEATHER
                 } else {
-                crate::theme::GAME_PANEL
+                    crate::theme::GAME_PANEL
                 },
             );
         }

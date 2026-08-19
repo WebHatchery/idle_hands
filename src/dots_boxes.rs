@@ -2,11 +2,7 @@
 
 use serde::{Deserialize, Serialize};
 
-pub const SIDE: usize = 4;
-const DOTS: usize = SIDE + 1;
-const HORIZONTAL: usize = DOTS * SIDE;
-const VERTICAL: usize = DOTS * SIDE;
-const BOX_COUNT: usize = SIDE * SIDE;
+use crate::data::DotsBoxesConfig;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum DotsDifficulty {
@@ -32,11 +28,11 @@ impl DotsDifficulty {
         }
     }
 
-    pub fn side(self) -> usize {
+    fn index(self) -> usize {
         match self {
-            Self::Standard => 4,
-            Self::Hard => 5,
-            Self::Expert => 6,
+            Self::Standard => 0,
+            Self::Hard => 1,
+            Self::Expert => 2,
         }
     }
 }
@@ -65,6 +61,8 @@ pub struct DotsBoxes {
     pub seed: u64,
     #[serde(default)]
     pub difficulty: DotsDifficulty,
+    #[serde(default = "default_side")]
+    side: usize,
     pub phase: DotsPhase,
     #[serde(skip)]
     undo: Option<Box<Self>>,
@@ -82,7 +80,23 @@ impl DotsBoxes {
     }
 
     pub fn new_with_difficulty(seed: u64, difficulty: DotsDifficulty) -> Self {
-        let side = difficulty.side();
+        Self::new_with_config(seed, difficulty, &DotsBoxesConfig::default())
+    }
+
+    pub fn new_with_config(
+        seed: u64,
+        difficulty: DotsDifficulty,
+        config: &DotsBoxesConfig,
+    ) -> Self {
+        let side = config
+            .difficulties
+            .get(difficulty.index())
+            .expect("validated Dots and Boxes difficulty configuration")
+            .side;
+        Self::new_with_settings(seed, difficulty, side)
+    }
+
+    fn new_with_settings(seed: u64, difficulty: DotsDifficulty, side: usize) -> Self {
         let dots = side + 1;
         Self {
             horizontal: vec![false; dots * side],
@@ -93,13 +107,14 @@ impl DotsBoxes {
             moves: 0,
             seed,
             difficulty,
+            side,
             phase: DotsPhase::Playing,
             undo: None,
         }
     }
 
     pub fn reset(&mut self, seed: u64) {
-        *self = Self::new_with_difficulty(seed, self.difficulty);
+        *self = Self::new_with_settings(seed, self.difficulty, self.side);
     }
 
     pub fn play(&mut self, edge: Edge) -> bool {
@@ -254,8 +269,8 @@ impl DotsBoxes {
         self.boxes.iter().all(|owner| *owner != 0)
     }
 
-    fn side(&self) -> usize {
-        self.difficulty.side()
+    pub fn side(&self) -> usize {
+        self.side
     }
 
     fn edge_counts(&self) -> (usize, usize) {
@@ -270,6 +285,10 @@ impl DotsBoxes {
             DotsPhase::Lost
         };
     }
+}
+
+fn default_side() -> usize {
+    DotsBoxesConfig::default().difficulties[0].side
 }
 
 #[cfg(test)]

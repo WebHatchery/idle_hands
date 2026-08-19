@@ -4,10 +4,7 @@ use std::collections::VecDeque;
 
 use serde::{Deserialize, Serialize};
 
-pub const SIDE: usize = 8;
-pub const COLORS: u8 = 6;
-const CELLS: usize = SIDE * SIDE;
-const MOVE_LIMIT: u16 = 24;
+use crate::data::FloodItConfig;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum FloodDifficulty {
@@ -33,11 +30,11 @@ impl FloodDifficulty {
         }
     }
 
-    pub fn settings(self) -> (usize, u8, u16) {
+    fn index(self) -> usize {
         match self {
-            Self::Standard => (8, 6, 24),
-            Self::Hard => (10, 7, 32),
-            Self::Expert => (12, 8, 40),
+            Self::Standard => 0,
+            Self::Hard => 1,
+            Self::Expert => 2,
         }
     }
 }
@@ -57,6 +54,12 @@ pub struct FloodIt {
     pub seed: u64,
     #[serde(default)]
     pub difficulty: FloodDifficulty,
+    #[serde(default = "default_side")]
+    side: usize,
+    #[serde(default = "default_colors")]
+    colors: u8,
+    #[serde(default = "default_move_limit")]
+    move_limit: u16,
     pub phase: FloodPhase,
     #[serde(skip)]
     undo: Option<Box<Self>>,
@@ -73,8 +76,31 @@ impl FloodIt {
         Self::new_with_difficulty(seed, FloodDifficulty::Standard)
     }
 
-    pub fn new_with_difficulty(mut seed: u64, difficulty: FloodDifficulty) -> Self {
-        let (side, colors, _) = difficulty.settings();
+    pub fn new_with_difficulty(seed: u64, difficulty: FloodDifficulty) -> Self {
+        Self::new_with_config(seed, difficulty, &FloodItConfig::default())
+    }
+
+    pub fn new_with_config(seed: u64, difficulty: FloodDifficulty, config: &FloodItConfig) -> Self {
+        let settings = config
+            .difficulties
+            .get(difficulty.index())
+            .expect("validated Flood It difficulty configuration");
+        Self::new_with_settings(
+            seed,
+            difficulty,
+            settings.side,
+            settings.colors,
+            settings.move_limit,
+        )
+    }
+
+    fn new_with_settings(
+        mut seed: u64,
+        difficulty: FloodDifficulty,
+        side: usize,
+        colors: u8,
+        move_limit: u16,
+    ) -> Self {
         let mut cells = Vec::with_capacity(side * side);
         for _ in 0..side * side {
             seed = seed
@@ -88,6 +114,9 @@ impl FloodIt {
             moves: 0,
             seed,
             difficulty,
+            side,
+            colors,
+            move_limit,
             phase: FloodPhase::Playing,
             undo: None,
         }
@@ -136,7 +165,13 @@ impl FloodIt {
     }
 
     pub fn reset(&mut self, seed: u64) {
-        *self = Self::new(seed);
+        *self = Self::new_with_settings(
+            seed,
+            self.difficulty,
+            self.side,
+            self.colors,
+            self.move_limit,
+        );
     }
 
     pub fn won(&self) -> bool {
@@ -171,15 +206,15 @@ impl FloodIt {
     }
 
     pub fn side(&self) -> usize {
-        self.difficulty.settings().0
+        self.side
     }
 
     pub fn color_count(&self) -> u8 {
-        self.difficulty.settings().1
+        self.colors
     }
 
     pub fn move_limit(&self) -> u16 {
-        self.difficulty.settings().2
+        self.move_limit
     }
 }
 
@@ -214,6 +249,18 @@ fn neighbors(index: usize, side: usize) -> impl Iterator<Item = usize> {
     ]
     .into_iter()
     .flatten()
+}
+
+fn default_side() -> usize {
+    FloodItConfig::default().difficulties[0].side
+}
+
+fn default_colors() -> u8 {
+    FloodItConfig::default().difficulties[0].colors
+}
+
+fn default_move_limit() -> u16 {
+    FloodItConfig::default().difficulties[0].move_limit
 }
 
 #[cfg(test)]

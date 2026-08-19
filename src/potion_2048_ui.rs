@@ -246,7 +246,11 @@ fn mode_button(rect: Rect, label: &str, selected: bool, large_text: bool) {
         rect.y,
         rect.w,
         rect.h,
-        if selected { crate::theme::MOSS_DARK } else { crate::theme::SURFACE },
+        if selected {
+            crate::theme::MOSS_DARK
+        } else {
+            crate::theme::SURFACE
+        },
     );
     draw_rectangle_lines(
         rect.x,

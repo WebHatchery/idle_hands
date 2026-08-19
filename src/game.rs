@@ -49,8 +49,8 @@ impl Game {
         assets.set_placeholder_texture_direct(Texture2D::from_image(&placeholder));
         assets.load_texture_configs(&data.texture_manifest).await;
         let mut game = Self {
+            state: AppState::new(&data),
             data,
-            state: AppState::default(),
             assets,
             notifications: NotificationManager::new(),
             pointer: PointerTracker::default(),
@@ -704,7 +704,7 @@ impl Game {
             }
             ui::UiAction::ResetData => self.state.confirm_reset = true,
             ui::UiAction::ConfirmResetData => {
-                self.state = AppState::default();
+                self.state = AppState::new(&self.data);
             }
             ui::UiAction::CancelResetData => self.state.confirm_reset = false,
             _ => unreachable!("board action was already handled"),

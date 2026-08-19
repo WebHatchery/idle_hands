@@ -2,11 +2,9 @@
 
 use serde::{Deserialize, Serialize};
 
-pub const SIDE: usize = 7;
-pub const COLORS: u8 = 5;
-const CELLS: usize = SIDE * SIDE;
+use crate::data::MatchThreeConfig;
+
 const EMPTY: u8 = u8::MAX;
-const TARGET_SCORE: u16 = 120;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum MatchThreeDifficulty {
@@ -32,11 +30,11 @@ impl MatchThreeDifficulty {
         }
     }
 
-    fn settings(self) -> (usize, u8, u16) {
+    fn index(self) -> usize {
         match self {
-            Self::Standard => (7, 5, 120),
-            Self::Hard => (8, 6, 240),
-            Self::Expert => (9, 7, 360),
+            Self::Standard => 0,
+            Self::Hard => 1,
+            Self::Expert => 2,
         }
     }
 }
@@ -56,6 +54,12 @@ pub struct MatchThree {
     pub seed: u64,
     #[serde(default)]
     pub difficulty: MatchThreeDifficulty,
+    #[serde(default = "default_side")]
+    side: usize,
+    #[serde(default = "default_colors")]
+    colors: u8,
+    #[serde(default = "default_target_score")]
+    target_score: u16,
     pub phase: MatchThreePhase,
     #[serde(skip)]
     undo: Option<Box<Self>>,
@@ -72,8 +76,35 @@ impl MatchThree {
         Self::new_with_difficulty(seed, MatchThreeDifficulty::Standard)
     }
 
-    pub fn new_with_difficulty(mut seed: u64, difficulty: MatchThreeDifficulty) -> Self {
-        let (side, colors, _) = difficulty.settings();
+    pub fn new_with_difficulty(seed: u64, difficulty: MatchThreeDifficulty) -> Self {
+        Self::new_with_config(seed, difficulty, &MatchThreeConfig::default())
+    }
+
+    pub fn new_with_config(
+        seed: u64,
+        difficulty: MatchThreeDifficulty,
+        config: &MatchThreeConfig,
+    ) -> Self {
+        let settings = config
+            .difficulties
+            .get(difficulty.index())
+            .expect("validated Match Three difficulty configuration");
+        Self::new_with_settings(
+            seed,
+            difficulty,
+            settings.side,
+            settings.colors,
+            settings.target_score,
+        )
+    }
+
+    fn new_with_settings(
+        mut seed: u64,
+        difficulty: MatchThreeDifficulty,
+        side: usize,
+        colors: u8,
+        target_score: u16,
+    ) -> Self {
         let mut cells = vec![0; side * side];
         for index in 0..side * side {
             seed = next_seed(seed);
@@ -90,6 +121,9 @@ impl MatchThree {
             moves: 0,
             seed,
             difficulty,
+            side,
+            colors,
+            target_score,
             phase: MatchThreePhase::Playing,
             undo: None,
         }
@@ -135,7 +169,13 @@ impl MatchThree {
     }
 
     pub fn reset(&mut self, seed: u64) {
-        *self = Self::new_with_difficulty(seed, self.difficulty);
+        *self = Self::new_with_settings(
+            seed,
+            self.difficulty,
+            self.side,
+            self.colors,
+            self.target_score,
+        );
     }
     pub fn won(&self) -> bool {
         self.phase == MatchThreePhase::Won
@@ -210,20 +250,16 @@ impl MatchThree {
     }
 
     pub fn side(&self) -> usize {
-        self.difficulty.settings().0
+        self.side
     }
 
     pub fn color_count(&self) -> u8 {
-        self.difficulty.settings().1
+        self.colors
     }
 
     pub fn target_score(&self) -> u16 {
-        self.difficulty.settings().2
+        self.target_score
     }
-}
-
-fn creates_match(cells: &[u8], index: usize, color: u8) -> bool {
-    creates_match_for_side(cells, index, color, SIDE)
 }
 
 fn creates_match_for_side(cells: &[u8], index: usize, color: u8, side: usize) -> bool {
@@ -233,18 +269,10 @@ fn creates_match_for_side(cells: &[u8], index: usize, color: u8, side: usize) ->
         || (row >= 2 && cells[index - side] == color && cells[index - side * 2] == color)
 }
 
-fn adjacent(first: usize, second: usize) -> bool {
-    adjacent_for_side(first, second, SIDE)
-}
-
 fn adjacent_for_side(first: usize, second: usize, side: usize) -> bool {
     let row_delta = (first / side).abs_diff(second / side);
     let col_delta = (first % side).abs_diff(second % side);
     row_delta + col_delta == 1
-}
-
-fn find_matches(cells: &[u8]) -> Vec<bool> {
-    find_matches_for_side(cells, SIDE)
 }
 
 fn find_matches_for_side(cells: &[u8], side: usize) -> Vec<bool> {
@@ -288,6 +316,18 @@ fn find_matches_for_side(cells: &[u8], side: usize) -> Vec<bool> {
 fn next_seed(seed: u64) -> u64 {
     seed.wrapping_mul(6364136223846793005)
         .wrapping_add(1442695040888963407)
+}
+
+fn default_side() -> usize {
+    MatchThreeConfig::default().difficulties[0].side
+}
+
+fn default_colors() -> u8 {
+    MatchThreeConfig::default().difficulties[0].colors
+}
+
+fn default_target_score() -> u16 {
+    MatchThreeConfig::default().difficulties[0].target_score
 }
 
 #[cfg(test)]

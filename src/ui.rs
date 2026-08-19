@@ -511,10 +511,7 @@ fn draw_2048(state: &AppState) {
     );
     score_box(Rect::new(830., 68., 120., 66.), "SCORE", g.score);
     score_box(Rect::new(965., 68., 120., 66.), "BEST", g.best);
-    panel(
-        Rect::new(830., 160., 360., 380.),
-        crate::theme::GAME_PANEL,
-    );
+    panel(Rect::new(830., 160., 360., 380.), crate::theme::GAME_PANEL);
     for i in 0..16 {
         let r = Rect::new(
             850. + (i % 4) as f32 * 84.,

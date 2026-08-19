@@ -6,7 +6,13 @@ use crate::ui::UiAction;
 use macroquad::prelude::*;
 
 fn panel(rect: Rect, fill: Color) {
-    draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::drawer_surface(fill));
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        crate::theme::drawer_surface(fill),
+    );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
 fn value(value: Option<u32>) -> String {

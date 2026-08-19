@@ -7,7 +7,13 @@ fn text(s: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(s, x, y, crate::ui::readable_text_size(size), color);
 }
 fn panel(rect: Rect, fill: Color) {
-    draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::drawer_surface(fill));
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        crate::theme::drawer_surface(fill),
+    );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
 
@@ -135,10 +141,7 @@ pub fn draw_sudoku(state: &AppState) {
         },
     );
     text("TOGGLE PENCIL", 880., 496., 16., WHITE);
-    panel(
-        Rect::new(1080., 465., 110., 48.),
-            crate::theme::LEATHER,
-    );
+    panel(Rect::new(1080., 465., 110., 48.), crate::theme::LEATHER);
     text("ERASE", 1108., 496., 16., WHITE);
     panel(
         Rect::new(850., 530., 140., 44.),

@@ -64,7 +64,9 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     for (index, rect) in l.difficulty.iter().enumerate() {
         if crate::ui::hit(*rect, point) {
-            return vec![UiAction::MatchThreeDifficulty(MatchThreeDifficulty::ALL[index])];
+            return vec![UiAction::MatchThreeDifficulty(
+                MatchThreeDifficulty::ALL[index],
+            )];
         }
     }
     if l.board.contains(point) {
@@ -242,7 +244,11 @@ fn mode_button(rect: Rect, label: &str, selected: bool, large_text: bool) {
         rect.y,
         rect.w,
         rect.h,
-        if selected { crate::theme::MOSS_DARK } else { crate::theme::SURFACE },
+        if selected {
+            crate::theme::MOSS_DARK
+        } else {
+            crate::theme::SURFACE
+        },
     );
     draw_rectangle_lines(
         rect.x,
@@ -252,7 +258,12 @@ fn mode_button(rect: Rect, label: &str, selected: bool, large_text: bool) {
         if selected { 2. } else { 1. },
         accent(),
     );
-    center_text(label, rect, accessibility::text_size(10., large_text), WHITE);
+    center_text(
+        label,
+        rect,
+        accessibility::text_size(10., large_text),
+        WHITE,
+    );
 }
 fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
     let measured = crate::ui::measure_text(label, None, size as u16, 1.);

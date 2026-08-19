@@ -186,15 +186,9 @@ impl Potion2048 {
 fn line_indices(side: usize, line: usize, direction: Direction) -> Vec<usize> {
     let indices: Vec<usize> = match direction {
         Direction::Left => (0..side).map(|offset| line * side + offset).collect(),
-        Direction::Right => (0..side)
-            .rev()
-            .map(|offset| line * side + offset)
-            .collect(),
+        Direction::Right => (0..side).rev().map(|offset| line * side + offset).collect(),
         Direction::Up => (0..side).map(|offset| line + offset * side).collect(),
-        Direction::Down => (0..side)
-            .rev()
-            .map(|offset| line + offset * side)
-            .collect(),
+        Direction::Down => (0..side).rev().map(|offset| line + offset * side).collect(),
     };
     indices
 }

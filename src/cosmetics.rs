@@ -56,14 +56,8 @@ pub fn background(theme: u8) -> Color {
 
 pub fn card_back_colors(back: u8) -> (Color, Color) {
     match back as usize % CARD_BACKS.len() {
-        1 => (
-            crate::theme::MOSS_DARK,
-            crate::theme::MOSS,
-        ),
-        2 => (
-            crate::theme::SLATE_BRONZE,
-            crate::theme::BRASS,
-        ),
+        1 => (crate::theme::MOSS_DARK, crate::theme::MOSS),
+        2 => (crate::theme::SLATE_BRONZE, crate::theme::BRASS),
         _ => (crate::theme::LEATHER, crate::theme::BRASS),
     }
 }

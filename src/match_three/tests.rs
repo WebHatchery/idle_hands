@@ -4,17 +4,29 @@ use super::*;
 fn seeded_boards_are_repeatable_and_start_without_matches() {
     let first = MatchThree::new(3);
     assert_eq!(first.cells, MatchThree::new(3).cells);
-    assert!(find_matches(&first.cells).iter().all(|&matched| !matched));
+    assert!(find_matches_for_side(&first.cells, first.side())
+        .iter()
+        .all(|&matched| !matched));
 }
 
 #[test]
 fn harder_difficulties_use_larger_fields_and_more_colors() {
-    let standard = MatchThree::new_with_difficulty(3, MatchThreeDifficulty::Standard);
-    let hard = MatchThree::new_with_difficulty(3, MatchThreeDifficulty::Hard);
-    let expert = MatchThree::new_with_difficulty(3, MatchThreeDifficulty::Expert);
-    assert_eq!(standard.cells.len(), 7 * 7);
-    assert_eq!(hard.cells.len(), 8 * 8);
-    assert_eq!(expert.cells.len(), 9 * 9);
+    let data = crate::data::GameData::load().unwrap();
+    let games: Vec<_> = MatchThreeDifficulty::ALL
+        .into_iter()
+        .map(|difficulty| MatchThree::new_with_config(3, difficulty, &data.puzzles.match_three))
+        .collect();
+    for (game, expected) in games
+        .iter()
+        .zip(data.puzzles.match_three.difficulties.iter())
+    {
+        assert_eq!(game.cells.len(), expected.side * expected.side);
+        assert_eq!(game.color_count(), expected.colors);
+        assert_eq!(game.target_score(), expected.target_score);
+    }
+    let standard = &games[0];
+    let hard = &games[1];
+    let expert = &games[2];
     assert!(standard.color_count() < hard.color_count());
     assert!(hard.color_count() < expert.color_count());
     assert!(find_matches_for_side(&expert.cells, expert.side())
@@ -51,9 +63,10 @@ fn undo_restores_a_successful_swap_and_reset_clears_progress() {
     let mut game = MatchThree::new(6);
     let before = game.cells.clone();
     let mut moved = false;
-    'outer: for first in 0..CELLS {
-        for second in 0..CELLS {
-            if adjacent(first, second) {
+    let side = game.side();
+    'outer: for first in 0..game.cells.len() {
+        for second in 0..game.cells.len() {
+            if adjacent_for_side(first, second, side) {
                 game.selected = Some(first);
                 if game.tap(second) {
                     moved = true;

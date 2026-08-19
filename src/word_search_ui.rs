@@ -118,14 +118,7 @@ pub fn draw(state: &AppState) {
                 crate::theme::GAME_PANEL
             };
             draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
-            draw_rectangle_lines(
-                rect.x,
-                rect.y,
-                rect.w,
-                rect.h,
-                1.,
-                crate::theme::WALNUT,
-            );
+            draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., crate::theme::WALNUT);
             let letter = char::from(b'A' + game.cells[index]);
             let size = if portrait {
                 16.

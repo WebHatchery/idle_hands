@@ -76,7 +76,7 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(l.new_game, point) {
         return vec![UiAction::DotsNew];
     }
-    edge_at(l.board, point, _state.dots_boxes.difficulty.side())
+    edge_at(l.board, point, _state.dots_boxes.side())
         .map_or_else(Vec::new, |edge| vec![UiAction::DotsEdge(edge)])
 }
 
@@ -172,7 +172,7 @@ pub fn draw(state: &AppState) {
 }
 
 fn draw_board(board: Rect, game: &DotsBoxes, high_contrast: bool, large_text: bool) {
-    let side = game.difficulty.side();
+    let side = game.side();
     let step = board.w / side as f32;
     for row in 0..=side {
         for col in 0..side {
@@ -325,7 +325,7 @@ fn edge_color(index: usize, horizontal: bool, game: &DotsBoxes, high_contrast: b
 }
 
 fn edge_owner_horizontal(index: usize, game: &DotsBoxes) -> u8 {
-    let side = game.difficulty.side();
+    let side = game.side();
     for row in 0..=side {
         for col in 0..side {
             if row * side + col == index {
@@ -343,7 +343,7 @@ fn edge_owner_horizontal(index: usize, game: &DotsBoxes) -> u8 {
 }
 
 fn edge_owner_vertical(index: usize, game: &DotsBoxes) -> u8 {
-    let side = game.difficulty.side();
+    let side = game.side();
     for row in 0..side {
         for col in 0..=side {
             if row * (side + 1) + col == index {
@@ -385,7 +385,11 @@ fn mode_button(rect: Rect, label: &str, selected: bool, large_text: bool) {
         rect.y,
         rect.w,
         rect.h,
-        if selected { crate::theme::MOSS_DARK } else { crate::theme::SURFACE },
+        if selected {
+            crate::theme::MOSS_DARK
+        } else {
+            crate::theme::SURFACE
+        },
     );
     draw_rectangle_lines(
         rect.x,
@@ -395,7 +399,12 @@ fn mode_button(rect: Rect, label: &str, selected: bool, large_text: bool) {
         if selected { 2. } else { 1. },
         accent(),
     );
-    center_text(label, rect, accessibility::text_size(10., large_text), WHITE);
+    center_text(
+        label,
+        rect,
+        accessibility::text_size(10., large_text),
+        WHITE,
+    );
 }
 
 fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
