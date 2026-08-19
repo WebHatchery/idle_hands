@@ -21,6 +21,7 @@ fn strike_damages_and_then_clears_adjacent_enemy() {
     assert_eq!(game.enemies[0].health, 1);
     assert!(game.strike());
     assert!(game.enemies.is_empty());
+    assert_eq!(game.phase, RoomPhase::Stairs);
     assert_eq!(game.score, 10);
 }
 
@@ -41,14 +42,27 @@ fn potion_restores_health_and_enemy_can_defeat_player() {
 }
 
 #[test]
-fn clearing_room_and_reaching_exit_wins() {
+fn clearing_room_and_reaching_stairs_enters_a_harder_room() {
     let mut game = OneRoomRoguelike::new(1);
     game.enemies.clear();
     game.treasure = EMPTY;
     game.player = game.exit + 1;
     assert!(game.move_in(Direction::Left));
-    assert!(game.won());
+    assert_eq!(game.phase, RoomPhase::Exploring);
+    assert_eq!(game.room, 2);
     assert_eq!(game.score, 50);
+    assert_eq!(game.enemies.len(), 5);
+    assert!(game.enemies.iter().any(|enemy| enemy.damage == 1));
+}
+
+#[test]
+fn cleared_room_hint_points_to_stairs() {
+    let mut game = OneRoomRoguelike::new(1);
+    game.enemies.clear();
+    assert!(game.move_in(Direction::Up));
+
+    assert_eq!(game.phase, RoomPhase::Stairs);
+    assert!(matches!(game.hint_action(), Some(RogueHint::Move(_))));
 }
 
 #[test]

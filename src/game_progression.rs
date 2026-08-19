@@ -258,7 +258,7 @@ impl Game {
                     }),
             );
         }
-        if self.state.one_room_roguelike.won() {
+        if self.state.one_room_roguelike.finished() {
             records.one_room_roguelike_best_score = Some(
                 records
                     .one_room_roguelike_best_score

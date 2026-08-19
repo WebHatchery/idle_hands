@@ -142,8 +142,8 @@ pub fn draw(state: &AppState) {
     );
     text(
         &format!(
-            "Health {} / 10  •  Potions {}  •  Score {}",
-            game.health, game.potions, game.score
+            "Room {}  •  Health {} / 10  •  Potions {}  •  Score {}",
+            game.room, game.health, game.potions, game.score
         ),
         if compact { 430. } else { title_x },
         if compact { 28. } else { title_y + 24. },
@@ -170,7 +170,16 @@ pub fn draw(state: &AppState) {
             line_color(state.high_contrast),
         );
         if index == game.exit {
-            center_text("EXIT", rect, small_size(state.large_text), accent());
+            center_text(
+                if game.phase == RoomPhase::Stairs {
+                    "STAIRS"
+                } else {
+                    "EXIT"
+                },
+                rect,
+                small_size(state.large_text),
+                accent(),
+            );
         } else if index == game.treasure {
             center_text(
                 "C",
@@ -232,12 +241,16 @@ pub fn draw(state: &AppState) {
     button(l.potion, "POTION", state.large_text);
     button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
-    button(l.new_game, "NEW ROOM", state.large_text);
+    button(l.new_game, "NEW RUN", state.large_text);
 }
 
 fn cell_fill(index: usize, game: &OneRoomRoguelike, high_contrast: bool) -> Color {
     if index == game.exit {
-        if high_contrast {
+        if game.phase == RoomPhase::Stairs && high_contrast {
+            Color::new(0.80, 0.52, 0.05, 1.)
+        } else if game.phase == RoomPhase::Stairs {
+            Color::new(0.48, 0.29, 0.16, 1.)
+        } else if high_contrast {
             Color::new(0.50, 0.38, 0.05, 1.)
         } else {
             Color::new(0.32, 0.23, 0.17, 1.)
@@ -256,8 +269,9 @@ fn cell_fill(index: usize, game: &OneRoomRoguelike, high_contrast: bool) -> Colo
 fn status_text(phase: RoomPhase, turns: u16) -> String {
     match phase {
         RoomPhase::Exploring => format!("Clear the room  •  {} turns", turns),
-        RoomPhase::Won => format!("The room is quiet  •  {} turns", turns),
-        RoomPhase::Lost => format!("The room claims you  •  {} turns", turns),
+        RoomPhase::Stairs => format!("The room is clear  •  Move to STAIRS  •  {} turns", turns),
+        RoomPhase::Won => format!("The run is complete  •  {} turns", turns),
+        RoomPhase::Lost => format!("The run claims you  •  {} turns", turns),
     }
 }
 

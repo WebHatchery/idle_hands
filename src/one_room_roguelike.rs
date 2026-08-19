@@ -1,4 +1,4 @@
-//! Deterministic one-room exploration with short, turn-based combat.
+//! Deterministic room-to-room exploration with short, turn-based combat.
 
 use crate::state::Direction;
 use serde::{Deserialize, Serialize};
@@ -7,6 +7,8 @@ const SIZE: usize = 7;
 const CELLS: usize = SIZE * SIZE;
 const START_HEALTH: u8 = 10;
 const START_POTIONS: u8 = 2;
+const START_ROOM: u16 = 1;
+const START_ENEMY_HEALTH: [u8; 4] = [3, 4, 4, 5];
 const EMPTY: usize = usize::MAX;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -19,6 +21,7 @@ pub struct RoomEnemy {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum RoomPhase {
     Exploring,
+    Stairs,
     Won,
     Lost,
 }
@@ -40,6 +43,7 @@ type Snapshot = (
     u16,
     u64,
     RoomPhase,
+    u16,
 );
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -54,6 +58,8 @@ pub struct OneRoomRoguelike {
     pub turns: u16,
     pub seed: u64,
     pub phase: RoomPhase,
+    #[serde(default = "starting_room")]
+    pub room: u16,
     #[serde(skip)]
     history: Vec<Snapshot>,
 }
@@ -77,6 +83,7 @@ impl OneRoomRoguelike {
             turns: 0,
             seed,
             phase: RoomPhase::Exploring,
+            room: START_ROOM,
             history: Vec::new(),
         };
         room.place_room();
@@ -88,7 +95,7 @@ impl OneRoomRoguelike {
     }
 
     pub fn move_in(&mut self, direction: Direction) -> bool {
-        if self.phase != RoomPhase::Exploring {
+        if !matches!(self.phase, RoomPhase::Exploring | RoomPhase::Stairs) {
             return false;
         }
         let Some(destination) = self.destination(direction) else {
@@ -96,6 +103,10 @@ impl OneRoomRoguelike {
         };
         self.snapshot();
         if let Some(enemy) = self.enemy_at(destination) {
+            if self.phase != RoomPhase::Exploring {
+                self.history.pop();
+                return false;
+            }
             self.resolve_strike(enemy);
         } else {
             self.player = destination;
@@ -109,14 +120,16 @@ impl OneRoomRoguelike {
     }
 
     pub fn hint_action(&self) -> Option<RogueHint> {
-        if self.phase != RoomPhase::Exploring {
+        if !matches!(self.phase, RoomPhase::Exploring | RoomPhase::Stairs) {
             return None;
         }
-        if let Some(enemy) = self.adjacent_enemy() {
-            if self.health <= 4 && self.potions > 0 && self.enemies[enemy].damage > 0 {
-                return Some(RogueHint::Potion);
+        if self.phase == RoomPhase::Exploring {
+            if let Some(enemy) = self.adjacent_enemy() {
+                if self.health <= 4 && self.potions > 0 && self.enemies[enemy].damage > 0 {
+                    return Some(RogueHint::Potion);
+                }
+                return Some(RogueHint::Strike);
             }
-            return Some(RogueHint::Strike);
         }
         [
             Direction::Up,
@@ -158,7 +171,7 @@ impl OneRoomRoguelike {
     }
 
     pub fn undo(&mut self) -> bool {
-        if let Some((player, enemies, treasure, health, potions, score, turns, seed, phase)) =
+        if let Some((player, enemies, treasure, health, potions, score, turns, seed, phase, room)) =
             self.history.pop()
         {
             self.player = player;
@@ -170,6 +183,7 @@ impl OneRoomRoguelike {
             self.turns = turns;
             self.seed = seed;
             self.phase = phase;
+            self.room = room;
             true
         } else {
             false
@@ -184,11 +198,15 @@ impl OneRoomRoguelike {
         self.phase == RoomPhase::Won
     }
 
+    pub fn finished(&self) -> bool {
+        self.won() || self.phase == RoomPhase::Lost
+    }
+
     fn resolve_strike(&mut self, enemy: usize) {
         self.turns = self.turns.saturating_add(1);
         if self.enemies[enemy].health <= 2 {
             self.enemies.remove(enemy);
-            self.score = self.score.saturating_add(10);
+            self.score = self.score.saturating_add(self.enemy_score());
         } else {
             self.enemies[enemy].health -= 2;
         }
@@ -214,9 +232,11 @@ impl OneRoomRoguelike {
     }
 
     fn finish_if_at_exit(&mut self) {
-        if self.player == self.exit && self.enemies.is_empty() {
-            self.phase = RoomPhase::Won;
-            self.score = self.score.saturating_add(50);
+        if self.phase == RoomPhase::Exploring && self.enemies.is_empty() {
+            self.phase = RoomPhase::Stairs;
+        }
+        if self.phase == RoomPhase::Stairs && self.player == self.exit {
+            self.enter_next_room();
         }
     }
 
@@ -224,7 +244,7 @@ impl OneRoomRoguelike {
         if self.player == self.treasure {
             self.treasure = EMPTY;
             self.potions = self.potions.saturating_add(1);
-            self.score = self.score.saturating_add(5);
+            self.score = self.score.saturating_add(self.treasure_score());
         }
     }
 
@@ -253,17 +273,56 @@ impl OneRoomRoguelike {
     }
 
     fn place_room(&mut self) {
+        self.enemies.clear();
         let mut occupied = vec![self.player, self.exit];
-        for health in [3, 4, 4, 5] {
+        for index in 0..self.enemy_count() {
             let position = self.open_position(&occupied);
             occupied.push(position);
             self.enemies.push(RoomEnemy {
                 position,
-                health,
-                damage: 1,
+                health: self.enemy_health(index),
+                damage: self.enemy_damage(),
             });
         }
         self.treasure = self.open_position(&occupied);
+    }
+
+    fn enter_next_room(&mut self) {
+        self.score = self.score.saturating_add(self.room_clear_score());
+        self.room = self.room.saturating_add(1);
+        self.player = Self::center();
+        self.exit = CELLS - SIZE;
+        self.treasure = EMPTY;
+        self.phase = RoomPhase::Exploring;
+        self.place_room();
+    }
+
+    fn enemy_count(&self) -> usize {
+        4 + self.room.saturating_sub(1).min(4) as usize
+    }
+
+    fn enemy_health(&self, index: usize) -> u8 {
+        if self.room == START_ROOM && index < START_ENEMY_HEALTH.len() {
+            START_ENEMY_HEALTH[index]
+        } else {
+            3 + ((index + self.room as usize) % 3) as u8
+        }
+    }
+
+    fn enemy_damage(&self) -> u8 {
+        1 + (self.room.saturating_sub(1) / 3).min(2) as u8
+    }
+
+    fn enemy_score(&self) -> u32 {
+        10 + u32::from(self.room.saturating_sub(1)) * 2
+    }
+
+    fn treasure_score(&self) -> u32 {
+        5 + u32::from(self.room.saturating_sub(1))
+    }
+
+    fn room_clear_score(&self) -> u32 {
+        50 + u32::from(self.room.saturating_sub(1)) * 10
     }
 
     fn open_position(&mut self, occupied: &[usize]) -> usize {
@@ -306,8 +365,13 @@ impl OneRoomRoguelike {
             self.turns,
             self.seed,
             self.phase,
+            self.room,
         ));
     }
+}
+
+fn starting_room() -> u16 {
+    START_ROOM
 }
 
 #[cfg(test)]
