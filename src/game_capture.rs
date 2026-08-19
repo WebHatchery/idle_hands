@@ -54,7 +54,8 @@ impl Game {
             "memory_pairs"
             | "memory_pairs_accessible"
             | "memory_pairs_hint"
-            | "memory_pairs_hint_accessible" => Screen::Game(GameId::MemoryPairs),
+            | "memory_pairs_hint_accessible"
+            | "memory_pairs_memory" => Screen::Game(GameId::MemoryPairs),
             "sliding_puzzle"
             | "sliding_puzzle_accessible"
             | "sliding_puzzle_hint"

@@ -5,14 +5,23 @@ use serde::{Deserialize, Serialize};
 const CELLS: usize = 16;
 const PAIRS: usize = CELLS / 2;
 
-type MemoryUndo = (
-    [MemoryCard; CELLS],
-    [Option<usize>; 2],
-    bool,
-    u8,
-    u16,
-    MemoryStatus,
-);
+#[derive(Debug, Clone, Copy)]
+struct MemoryUndo {
+    cards: [MemoryCard; CELLS],
+    selected: [Option<usize>; 2],
+    mismatch_waiting: bool,
+    matched_pairs: u8,
+    moves: u16,
+    status: MemoryStatus,
+    seen: [bool; CELLS],
+    score: u32,
+    combo: u8,
+    best_combo: u8,
+    mistakes: u8,
+    peeks: u8,
+    peeked: [Option<usize>; 2],
+    peek_waiting: bool,
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub struct MemoryCard {
@@ -36,8 +45,24 @@ pub struct MemoryPairs {
     pub moves: u16,
     pub seed: u64,
     pub status: MemoryStatus,
+    #[serde(default)]
+    pub seen: [bool; CELLS],
+    #[serde(default)]
+    pub score: u32,
+    #[serde(default)]
+    pub combo: u8,
+    #[serde(default)]
+    pub best_combo: u8,
+    #[serde(default)]
+    pub mistakes: u8,
+    #[serde(default = "default_peeks")]
+    pub peeks: u8,
+    #[serde(default)]
+    pub peeked: [Option<usize>; 2],
+    #[serde(default)]
+    pub peek_waiting: bool,
     #[serde(skip)]
-    undo: Option<MemoryUndo>,
+    history: Vec<MemoryUndo>,
 }
 
 impl Default for MemoryPairs {
@@ -70,7 +95,15 @@ impl MemoryPairs {
             moves: 0,
             seed,
             status: MemoryStatus::Playing,
-            undo: None,
+            seen: [false; CELLS],
+            score: 0,
+            combo: 0,
+            best_combo: 0,
+            mistakes: 0,
+            peeks: default_peeks(),
+            peeked: [None, None],
+            peek_waiting: false,
+            history: Vec::new(),
         }
     }
 
@@ -78,6 +111,10 @@ impl MemoryPairs {
         if index >= CELLS || self.status == MemoryStatus::Won || self.cards[index].matched {
             return false;
         }
+        if self.selected.contains(&Some(index)) && !self.peek_waiting {
+            return false;
+        }
+        self.snapshot();
         if self.mismatch_waiting {
             for selected in self.selected.into_iter().flatten() {
                 self.cards[selected].face_up = false;
@@ -85,18 +122,17 @@ impl MemoryPairs {
             self.selected = [None, None];
             self.mismatch_waiting = false;
         }
-        if self.selected.contains(&Some(index)) {
-            return false;
+        if self.peek_waiting {
+            for peeked in self.peeked.into_iter().flatten() {
+                if !self.cards[peeked].matched {
+                    self.cards[peeked].face_up = false;
+                }
+            }
+            self.peeked = [None, None];
+            self.peek_waiting = false;
         }
-        self.undo = Some((
-            self.cards,
-            self.selected,
-            self.mismatch_waiting,
-            self.matched_pairs,
-            self.moves,
-            self.status,
-        ));
         self.cards[index].face_up = true;
+        self.seen[index] = true;
         if let Some(first) = self.selected[0] {
             self.selected[1] = Some(index);
             self.moves = self.moves.saturating_add(1);
@@ -104,12 +140,18 @@ impl MemoryPairs {
                 self.cards[first].matched = true;
                 self.cards[index].matched = true;
                 self.matched_pairs += 1;
+                self.combo = self.combo.saturating_add(1);
+                self.best_combo = self.best_combo.max(self.combo);
+                self.score = self.score.saturating_add(20 * u32::from(self.combo));
                 self.selected = [None, None];
                 if self.matched_pairs as usize == PAIRS {
                     self.status = MemoryStatus::Won;
                 }
             } else {
                 self.mismatch_waiting = true;
+                self.combo = 0;
+                self.mistakes = self.mistakes.saturating_add(1);
+                self.score = self.score.saturating_sub(5);
             }
         } else {
             self.selected[0] = Some(index);
@@ -118,15 +160,21 @@ impl MemoryPairs {
     }
 
     pub fn undo(&mut self) -> bool {
-        if let Some((cards, selected, mismatch_waiting, matched_pairs, moves, status)) =
-            self.undo.take()
-        {
-            self.cards = cards;
-            self.selected = selected;
-            self.mismatch_waiting = mismatch_waiting;
-            self.matched_pairs = matched_pairs;
-            self.moves = moves;
-            self.status = status;
+        if let Some(snapshot) = self.history.pop() {
+            self.cards = snapshot.cards;
+            self.selected = snapshot.selected;
+            self.mismatch_waiting = snapshot.mismatch_waiting;
+            self.matched_pairs = snapshot.matched_pairs;
+            self.moves = snapshot.moves;
+            self.status = snapshot.status;
+            self.seen = snapshot.seen;
+            self.score = snapshot.score;
+            self.combo = snapshot.combo;
+            self.best_combo = snapshot.best_combo;
+            self.mistakes = snapshot.mistakes;
+            self.peeks = snapshot.peeks;
+            self.peeked = snapshot.peeked;
+            self.peek_waiting = snapshot.peek_waiting;
             true
         } else {
             false
@@ -142,17 +190,85 @@ impl MemoryPairs {
             return None;
         }
         for first in 0..CELLS {
-            if self.cards[first].matched {
+            if self.cards[first].matched || !self.seen[first] {
                 continue;
             }
             if let Some(second) = ((first + 1)..CELLS).find(|&index| {
-                !self.cards[index].matched && self.cards[index].pair == self.cards[first].pair
+                !self.cards[index].matched
+                    && self.seen[index]
+                    && self.cards[index].pair == self.cards[first].pair
             }) {
                 return Some((first, second));
             }
         }
         None
     }
+
+    pub fn hint_choice(&self) -> Option<usize> {
+        if let Some(first) = self.selected[0] {
+            if let Some(index) = (0..CELLS).find(|&index| {
+                index != first
+                    && self.seen[index]
+                    && !self.cards[index].matched
+                    && self.cards[index].pair == self.cards[first].pair
+            }) {
+                return Some(index);
+            }
+        }
+        self.hint_pair()
+            .map(|(first, _)| first)
+            .or_else(|| (0..CELLS).find(|&index| !self.cards[index].matched && !self.seen[index]))
+    }
+
+    pub fn peek(&mut self) -> bool {
+        if self.status != MemoryStatus::Playing || self.peeks == 0 || self.peek_waiting {
+            return false;
+        }
+        let choices: Vec<usize> = (0..CELLS)
+            .filter(|&index| {
+                !self.cards[index].matched && !self.cards[index].face_up && !self.seen[index]
+            })
+            .collect();
+        if choices.len() < 2 {
+            return false;
+        }
+        self.snapshot();
+        self.peeks -= 1;
+        self.peeked = [Some(choices[0]), Some(choices[1])];
+        for index in choices.into_iter().take(2) {
+            self.cards[index].face_up = true;
+            self.seen[index] = true;
+        }
+        self.peek_waiting = true;
+        true
+    }
+
+    pub fn seen_count(&self) -> usize {
+        self.seen.iter().filter(|seen| **seen).count()
+    }
+
+    fn snapshot(&mut self) {
+        self.history.push(MemoryUndo {
+            cards: self.cards,
+            selected: self.selected,
+            mismatch_waiting: self.mismatch_waiting,
+            matched_pairs: self.matched_pairs,
+            moves: self.moves,
+            status: self.status,
+            seen: self.seen,
+            score: self.score,
+            combo: self.combo,
+            best_combo: self.best_combo,
+            mistakes: self.mistakes,
+            peeks: self.peeks,
+            peeked: self.peeked,
+            peek_waiting: self.peek_waiting,
+        });
+    }
+}
+
+const fn default_peeks() -> u8 {
+    1
 }
 
 fn next_seed(seed: u64) -> u64 {

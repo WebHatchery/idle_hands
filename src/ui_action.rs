@@ -102,6 +102,7 @@ pub enum UiAction {
     MemoryPairsHint,
     MemoryPairsUndo,
     MemoryPairsNew,
+    MemoryPairsPeek,
     SlidingPuzzleMove(usize),
     SlidingPuzzleHint,
     SlidingPuzzleUndo,

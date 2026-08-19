@@ -149,9 +149,9 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
             "Use UNDO or NEW BOARD when you need it.",
         ],
         GameId::MemoryPairs => [
-            "Tap a card to turn it face up.",
-            "Find its matching card before the board is complete.",
-            "Use UNDO or NEW BOARD whenever you need it.",
+            "Tap a card to turn it up. A corner dot marks a face-down card you have already seen.",
+            "Consecutive pairs build score; a mismatch costs five and breaks the chain.",
+            "Tap PEEK once to study two cards until your next tap. HINT uses only remembered cards; UNDO is repeatable.",
         ],
         GameId::SlidingPuzzle => [
             "Tap a tile beside the empty space.",

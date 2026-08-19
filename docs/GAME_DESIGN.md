@@ -580,6 +580,21 @@ DENSE applies twenty for a different board distribution. Move history now
 supports repeated UNDO. Older saves default to CLASSIC with GUIDE off and
 derive a live par when their stored par is absent.
 
+### 11.27 Memory Pairs learned information
+
+Memory Pairs now records which positions the player has actually seen. A small
+gold corner dot marks a previously viewed face-down card without revealing its
+identity, and HINT may name a pair only when both positions are in that learned
+set; otherwise it recommends an unseen position rather than reading hidden
+cards. Consecutive successful pairs build a chain and score twenty times its
+length, while a mismatch costs five points, increments mistakes, and breaks the
+chain. Each board carries one PEEK charge that temporarily exposes two unknown
+cards until the next ordinary selection, adding a deliberate study moment
+without matching them automatically. The header shows score, chain, pair
+progress, moves, and seen-card count. Full multi-step undo restores cards,
+learned positions, mismatch and peek displays, score, chain, mistakes, and the
+peek charge. Older saves begin with no learned positions or score and one peek.
+
 ## 12. Historical Phase 0 Decisions
 
 The original eight-game launch scope established the current product principles:

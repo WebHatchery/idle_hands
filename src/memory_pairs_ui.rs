@@ -10,6 +10,7 @@ struct Layout {
     new_board: Rect,
     undo: Rect,
     hint: Rect,
+    peek: Rect,
 }
 
 fn layout() -> Layout {
@@ -20,22 +21,31 @@ fn layout() -> Layout {
             new_board: Rect::new(350., 125., 155., 48.),
             undo: Rect::new(350., 185., 155., 48.),
             hint: Rect::new(350., 245., 155., 48.),
+            peek: Rect::new(515., 245., 155., 48.),
         }
     } else if crate::ui::is_portrait() {
+        let width = screen_width().min(370.);
+        let height = screen_height();
+        let side = (width - 20.).min(if height < 650. { 200. } else { 340. });
+        let top = if height < 650. { 100. } else { 130. };
+        let controls_y = top + side + 42.;
+        let control_w = (width - 26.) * 0.5;
         Layout {
-            board: Rect::new(10., 130., 340., 340.),
-            cell: 85.,
-            new_board: Rect::new(10., 525., 160., 48.),
-            undo: Rect::new(180., 525., 160., 48.),
-            hint: Rect::new(10., 585., 160., 48.),
+            board: Rect::new(10., top, side, side),
+            cell: side / 4.,
+            new_board: Rect::new(10., controls_y, control_w, 44.),
+            undo: Rect::new(16. + control_w, controls_y, control_w, 44.),
+            hint: Rect::new(10., controls_y + 52., control_w, 44.),
+            peek: Rect::new(16. + control_w, controls_y + 52., control_w, 44.),
         }
     } else {
         Layout {
             board: Rect::new(380., 120., 520., 520.),
             cell: 130.,
-            new_board: Rect::new(440., 650., 180., 48.),
-            undo: Rect::new(650., 650., 180., 48.),
-            hint: Rect::new(860., 650., 180., 48.),
+            new_board: Rect::new(930., 200., 190., 48.),
+            undo: Rect::new(930., 260., 190., 48.),
+            hint: Rect::new(930., 320., 190., 48.),
+            peek: Rect::new(930., 380., 190., 48.),
         }
     }
 }
@@ -54,6 +64,9 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(layout.hint, point) {
         return vec![UiAction::MemoryPairsHint];
     }
+    if crate::ui::hit(layout.peek, point) {
+        return vec![UiAction::MemoryPairsPeek];
+    }
     if layout.board.contains(point) && state.memory_pairs.status != MemoryStatus::Won {
         let column = ((point.x - layout.board.x) / layout.cell) as usize;
         let row = ((point.y - layout.board.y) / layout.cell) as usize;
@@ -70,7 +83,11 @@ pub fn draw(state: &AppState) {
     let header_y = if crate::ui::is_compact_landscape() {
         35.
     } else if crate::ui::is_portrait() {
-        87.
+        if screen_height() < 650. {
+            55.
+        } else {
+            87.
+        }
     } else {
         72.
     };
@@ -164,10 +181,20 @@ pub fn draw(state: &AppState) {
                     Color::new(0.60, 0.48, 0.78, 1.)
                 },
             );
+            if game.seen[index] {
+                draw_circle(rect.x + rect.w - 10., rect.y + 10., 4., accent());
+            }
         }
     }
     text(
-        &format!("MOVES  {}  •  PAIRS  {}/8", game.moves, game.matched_pairs),
+        &format!(
+            "MOVES {} • PAIRS {}/8 • SCORE {} • CHAIN {} • SEEN {}",
+            game.moves,
+            game.matched_pairs,
+            game.score,
+            game.combo,
+            game.seen_count()
+        ),
         layout.board.x,
         layout.board.bottom() + 28.,
         accessibility::text_size(body_size(), state.large_text),
@@ -176,6 +203,11 @@ pub fn draw(state: &AppState) {
     button(layout.new_board, "NEW BOARD", state.large_text);
     button(layout.undo, "UNDO", state.large_text);
     button(layout.hint, "HINT", state.large_text);
+    button(
+        layout.peek,
+        &format!("PEEK ×{}", game.peeks),
+        state.large_text,
+    );
 }
 
 fn status_text(status: MemoryStatus, pairs: u8) -> String {

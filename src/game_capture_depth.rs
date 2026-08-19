@@ -23,6 +23,7 @@ pub(super) fn apply(state: &mut AppState, scene: &str) {
         "hangman_depth" => hangman_depth(state),
         "higher_lower_stakes" => higher_lower_stakes(state),
         "lights_out_solver" => lights_out_solver(state),
+        "memory_pairs_memory" => memory_pairs_memory(state),
         _ => {}
     }
 }
@@ -376,4 +377,27 @@ fn lights_out_solver(state: &mut AppState) {
         game.press(index);
     }
     game.guide = true;
+}
+
+fn memory_pairs_memory(state: &mut AppState) {
+    use crate::memory_pairs::MemoryPairs;
+    let game = &mut state.memory_pairs;
+    *game = MemoryPairs::new(0x4D45_4D25);
+    for (index, card) in game.cards.iter_mut().enumerate() {
+        if card.pair < 2 {
+            card.matched = true;
+            card.face_up = true;
+            game.seen[index] = true;
+        }
+    }
+    game.matched_pairs = 2;
+    for index in [0, 2, 5, 7, 9] {
+        game.seen[index] = true;
+    }
+    game.score = 75;
+    game.combo = 2;
+    game.best_combo = 3;
+    game.mistakes = 1;
+    game.moves = 5;
+    game.peek();
 }

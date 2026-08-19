@@ -348,9 +348,16 @@ pub fn memory_pairs(state: &AppState) -> String {
     if game.status == crate::memory_pairs::MemoryStatus::Won {
         return "Every pair is already resting — tap NEW BOARD to play again.".into();
     }
-    game.hint_pair().map_or_else(
-        || "No unmatched pair remains — tap NEW BOARD to begin again.".into(),
-        |(first, second)| format!("Pair cards {} and {}.", first + 1, second + 1),
+    if let Some((first, second)) = game.hint_pair() {
+        return format!(
+            "You have seen a pair: cards {} and {}.",
+            first + 1,
+            second + 1
+        );
+    }
+    game.hint_choice().map_or_else(
+        || "No unmatched card remains — tap NEW BOARD to begin again.".into(),
+        |index| format!("No known pair yet; inspect unseen card {}.", index + 1),
     )
 }
 
