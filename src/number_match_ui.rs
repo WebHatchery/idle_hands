@@ -2,7 +2,7 @@
 
 use crate::{
     accessibility,
-    number_match::{NumberMatch, NumberMatchPhase, SIDE},
+    number_match::{LinkRule, NumberMatch, NumberMatchPhase, SIDE},
     state::AppState,
     ui::UiAction,
 };
@@ -14,6 +14,8 @@ struct Layout {
     hint: Rect,
     undo: Rect,
     new_game: Rect,
+    remix: Rect,
+    rules: [Rect; 3],
 }
 
 fn layout() -> Layout {
@@ -23,13 +25,25 @@ fn layout() -> Layout {
             hint: Rect::new(620., 220., 105., 44.),
             undo: Rect::new(620., 110., 105., 44.),
             new_game: Rect::new(620., 165., 140., 44.),
+            remix: Rect::new(620., 275., 140., 44.),
+            rules: [
+                Rect::new(610., 50., 70., 44.),
+                Rect::new(685., 50., 70., 44.),
+                Rect::new(760., 50., 78., 44.),
+            ],
         }
     } else if crate::ui::is_portrait() {
         Layout {
             board: Rect::new(15., 105., 300., 300.),
-            hint: Rect::new(15., 460., 145., 44.),
-            undo: Rect::new(15., 515., 145., 44.),
-            new_game: Rect::new(170., 515., 145., 44.),
+            hint: Rect::new(15., 530., 145., 44.),
+            undo: Rect::new(15., 475., 145., 44.),
+            new_game: Rect::new(170., 475., 145., 44.),
+            remix: Rect::new(170., 530., 145., 44.),
+            rules: [
+                Rect::new(15., 420., 90., 44.),
+                Rect::new(112., 420., 90., 44.),
+                Rect::new(209., 420., 90., 44.),
+            ],
         }
     } else {
         Layout {
@@ -37,6 +51,12 @@ fn layout() -> Layout {
             hint: Rect::new(810., 245., 120., 44.),
             undo: Rect::new(810., 180., 120., 44.),
             new_game: Rect::new(950., 180., 140., 44.),
+            remix: Rect::new(950., 245., 140., 44.),
+            rules: [
+                Rect::new(810., 115., 90., 44.),
+                Rect::new(910., 115., 90., 44.),
+                Rect::new(1010., 115., 100., 44.),
+            ],
         }
     }
 }
@@ -62,6 +82,17 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if crate::ui::hit(l.new_game, point) {
         return vec![UiAction::NumberMatchNew];
+    }
+    if crate::ui::hit(l.remix, point) {
+        return vec![UiAction::NumberMatchRemix];
+    }
+    for (index, rule) in [LinkRule::Neighbors, LinkRule::Lines, LinkRule::Diagonals]
+        .into_iter()
+        .enumerate()
+    {
+        if crate::ui::hit(l.rules[index], point) {
+            return vec![UiAction::NumberMatchRule(rule)];
+        }
     }
     Vec::new()
 }
@@ -99,17 +130,31 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
-    text(
-        &format!(
-            "{} pairs  •  {} moves  •  {}",
+    let scoreline = if compact {
+        format!(
+            "P{} • Pts{} • C{} • {}",
             game.score,
-            game.moves,
+            game.points,
+            game.combo,
+            rule_label(game.rule)
+        )
+    } else {
+        format!(
+            "Pairs {}  •  Points {}  •  Chain {}  •  {}",
+            game.score,
+            game.points,
+            game.combo,
             if game.won() {
                 "GRID CLEAR"
+            } else if game.phase == NumberMatchPhase::Stuck {
+                "NO LINKS"
             } else {
                 "PAIR THE NUMBERS"
             }
-        ),
+        )
+    };
+    text(
+        &scoreline,
         if compact { 430. } else { title_x },
         if compact { 28. } else { title_y + 24. },
         accessibility::text_size(body_size(), state.large_text),
@@ -117,13 +162,10 @@ pub fn draw(state: &AppState) {
     );
     draw_board(l.board, game, state.high_contrast, state.large_text);
     text(
-        state
-            .card_hint
-            .as_deref()
-            .unwrap_or(status_text(game.phase)),
+        state.card_hint.as_deref().unwrap_or(status_text(game)),
         if compact { 270. } else { title_x },
         if portrait {
-            430.
+            600.
         } else if compact {
             365.
         } else {
@@ -135,6 +177,18 @@ pub fn draw(state: &AppState) {
     button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW BOARD", state.large_text);
+    button(
+        l.remix,
+        &format!("REMIX {}", game.remixes_left),
+        state.large_text,
+    );
+    for (rect, (label, rule)) in l.rules.iter().zip([
+        ("NEAR", LinkRule::Neighbors),
+        ("LINES", LinkRule::Lines),
+        ("DIAGONAL", LinkRule::Diagonals),
+    ]) {
+        button_selected(*rect, label, game.rule == rule, state.large_text);
+    }
 }
 
 fn draw_board(board: Rect, game: &NumberMatch, high_contrast: bool, large_text: bool) {
@@ -149,6 +203,9 @@ fn draw_board(board: Rect, game: &NumberMatch, high_contrast: bool, large_text: 
                 cell,
             );
             let selected = game.selected == Some(index);
+            let linked = game
+                .selected
+                .is_some_and(|first| game.can_pair(first, index));
             draw_rectangle(
                 rect.x,
                 rect.y,
@@ -175,9 +232,11 @@ fn draw_board(board: Rect, game: &NumberMatch, high_contrast: bool, large_text: 
                 rect.y,
                 rect.w,
                 rect.h,
-                1.,
+                if linked { 3. } else { 1. },
                 if selected {
                     accent()
+                } else if linked {
+                    Color::new(0.45, 0.90, 0.58, 1.)
                 } else {
                     line_color(high_contrast)
                 },
@@ -194,10 +253,23 @@ fn draw_board(board: Rect, game: &NumberMatch, high_contrast: bool, large_text: 
     }
 }
 
-fn status_text(phase: NumberMatchPhase) -> &'static str {
-    match phase {
-        NumberMatchPhase::Playing => "Tap adjacent equal or sum-to-ten numbers",
+fn status_text(game: &NumberMatch) -> &'static str {
+    match game.phase {
+        NumberMatchPhase::Playing => match game.rule {
+            LinkRule::Neighbors => "Tap neighboring equal or sum-to-ten numbers",
+            LinkRule::Lines => "Pair through clear rows or columns",
+            LinkRule::Diagonals => "Pair through clear rows, columns, or diagonals",
+        },
         NumberMatchPhase::Won => "Every number has found its pair",
+        NumberMatchPhase::Stuck => "No links remain • Tap UNDO or REMIX",
+    }
+}
+
+fn rule_label(rule: LinkRule) -> &'static str {
+    match rule {
+        LinkRule::Neighbors => "NEAR",
+        LinkRule::Lines => "LINES",
+        LinkRule::Diagonals => "DIAGONAL",
     }
 }
 
@@ -210,6 +282,21 @@ fn button(rect: Rect, label: &str, large_text: bool) {
         accessibility::text_size(11., large_text),
         WHITE,
     );
+}
+fn button_selected(rect: Rect, label: &str, selected: bool, large_text: bool) {
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        if selected {
+            Color::new(0.45, 0.25, 0.42, 1.)
+        } else {
+            crate::theme::SURFACE
+        },
+    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
+    center_text(label, rect, accessibility::text_size(9., large_text), WHITE);
 }
 fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
     let measured = crate::ui::measure_text(label, None, size as u16, 1.);

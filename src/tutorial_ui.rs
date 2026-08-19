@@ -274,9 +274,9 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
             "Move the numbered tower to the far peg; use HINT, multi-step UNDO, or RESTART.",
         ],
         GameId::NumberMatch => [
-            "Tap a number, then tap an adjacent number to pair it.",
-            "Equal numbers or pairs totaling ten disappear together.",
-            "Clear the grid; use UNDO or NEW BOARD with the visible controls.",
+            "Tap NEAR, LINES, or DIAGONAL to choose which clear paths may connect a pair.",
+            "Tap equal numbers or numbers totaling ten; green outlines show valid links.",
+            "Chain pairs for points; if NO LINKS appears, tap multi-step UNDO or REMIX.",
         ],
         GameId::FloodIt => [
             "Tap one of the visible colors to expand the top-left region.",

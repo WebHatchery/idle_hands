@@ -415,6 +415,13 @@ impl Game {
                 let seed = self.state.number_match.seed.wrapping_add(1);
                 self.state.number_match.reset(seed);
             }
+            UiAction::NumberMatchRemix => {
+                self.state.number_match.remix();
+            }
+            UiAction::NumberMatchRule(rule) => {
+                let seed = self.state.number_match.seed.wrapping_add(1);
+                self.state.number_match.set_rule(*rule, seed);
+            }
             UiAction::FloodColor(color) => {
                 self.state.flood_it.choose(*color);
             }

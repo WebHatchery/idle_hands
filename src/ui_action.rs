@@ -241,6 +241,8 @@ pub enum UiAction {
     NumberMatchHint,
     NumberMatchUndo,
     NumberMatchNew,
+    NumberMatchRemix,
+    NumberMatchRule(crate::number_match::LinkRule),
     FloodColor(u8),
     FloodHint,
     FloodUndo,
@@ -338,6 +340,7 @@ impl UiAction {
                 | Self::HanoiNew
                 | Self::HanoiDisks(_)
                 | Self::NumberMatchNew
+                | Self::NumberMatchRule(_)
                 | Self::FloodNew
                 | Self::FloodDifficulty(_)
                 | Self::ColorSortNew

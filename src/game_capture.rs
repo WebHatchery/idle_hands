@@ -160,6 +160,7 @@ impl Game {
             "number_match" | "number_match_hint" | "number_match_hint_accessible" => {
                 Screen::Game(GameId::NumberMatch)
             }
+            "number_match_links" => Screen::Game(GameId::NumberMatch),
             "number_match_accessible" => Screen::Game(GameId::NumberMatch),
             "flood_it" | "flood_it_hint" | "flood_it_hint_accessible" => {
                 Screen::Game(GameId::FloodIt)
@@ -501,6 +502,33 @@ impl Game {
             game.stacks = [vec![7, 6, 5], vec![4, 3], vec![2, 1]];
             game.selected = Some(2);
             game.moves = 18;
+        }
+        if scene == "number_match_links" {
+            use crate::number_match::{LinkRule, NumberMatch};
+            let game = &mut self.state.number_match;
+            *game = NumberMatch::new_with_rule(0x4E55_4D42_4552, LinkRule::Lines);
+            game.cells = vec![0; 36];
+            for (index, value) in [
+                (0, 4),
+                (5, 6),
+                (7, 3),
+                (10, 3),
+                (12, 8),
+                (13, 2),
+                (20, 5),
+                (26, 5),
+                (30, 1),
+                (31, 9),
+            ] {
+                game.cells[index] = value;
+            }
+            game.selected = Some(0);
+            game.moves = 13;
+            game.score = 13;
+            game.points = 280;
+            game.combo = 4;
+            game.best_combo = 6;
+            game.remixes_left = 1;
         }
         if scene == "solitaire_peek" {
             self.capture_solitaire_peek = true;

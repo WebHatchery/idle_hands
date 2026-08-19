@@ -51,6 +51,7 @@ pub(super) fn requires_new_confirmation(action: UiAction) -> bool {
             | UiAction::HanoiNew
             | UiAction::HanoiDisks(_)
             | UiAction::NumberMatchNew
+            | UiAction::NumberMatchRule(_)
             | UiAction::FloodNew
             | UiAction::FloodDifficulty(_)
             | UiAction::ColorSortNew

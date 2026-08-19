@@ -371,6 +371,21 @@ transfer, while RESTART preserves the current disk trial. The breadth-first
 hint solver supports the full seven-disk state space and each selectable tower
 is verified by following its shortest route to completion.
 
+### 11.13 Number Match link rules
+
+Number Match boards are built from deterministic horizontal and vertical
+domino pairs inside varied two-by-two blocks, replacing the original row of
+eighteen obvious pairings while retaining a known complete route. NEAR permits
+only neighboring cells, LINES also connects equal or sum-ten numbers through
+cleared horizontal and vertical space, and DIAGONAL adds clear diagonal paths.
+After one number is selected, every currently valid partner gains a green
+outline. Consecutive clears build a chain worth ten, twenty, thirty, and more
+points; an invalid reselection breaks that chain. An alternate pairing can
+strand the remaining values, which now produces an explicit NO LINKS state.
+The complete UNDO history can rewind the decision, while two REMIX charges
+rebuild the remaining count into a fresh guaranteed set of adjacent pairs and
+can themselves be undone. Older saves resume with NEAR and two charges.
+
 ## 12. Historical Phase 0 Decisions
 
 The original eight-game launch scope established the current product principles:

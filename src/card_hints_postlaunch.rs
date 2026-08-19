@@ -358,8 +358,14 @@ pub fn hanoi(state: &AppState) -> String {
 
 pub fn number_match(state: &AppState) -> String {
     let game = &state.number_match;
-    if game.won() {
-        return "Every number has found its pair — tap NEW BOARD to play again.".into();
+    match game.phase {
+        crate::number_match::NumberMatchPhase::Won => {
+            return "Every number has found its pair — tap NEW BOARD to play again.".into()
+        }
+        crate::number_match::NumberMatchPhase::Stuck => {
+            return "No links remain — tap UNDO or REMIX to recover.".into()
+        }
+        crate::number_match::NumberMatchPhase::Playing => {}
     }
     game.hint_pair().map_or_else(
         || "No adjacent pair remains — tap NEW BOARD to begin again.".into(),

@@ -9,6 +9,22 @@ const CELLS: usize = SIDE * SIDE;
 pub enum NumberMatchPhase {
     Playing,
     Won,
+    Stuck,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum LinkRule {
+    Neighbors,
+    Lines,
+    Diagonals,
+}
+
+fn default_rule() -> LinkRule {
+    LinkRule::Neighbors
+}
+
+fn default_remixes() -> u8 {
+    2
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -17,10 +33,20 @@ pub struct NumberMatch {
     pub selected: Option<usize>,
     pub moves: u16,
     pub score: u16,
+    #[serde(default)]
+    pub points: u32,
+    #[serde(default)]
+    pub combo: u16,
+    #[serde(default)]
+    pub best_combo: u16,
+    #[serde(default = "default_rule")]
+    pub rule: LinkRule,
+    #[serde(default = "default_remixes")]
+    pub remixes_left: u8,
     pub seed: u64,
     pub phase: NumberMatchPhase,
     #[serde(skip)]
-    undo: Option<Box<Self>>,
+    history: Vec<Box<Self>>,
 }
 
 impl Default for NumberMatch {
@@ -31,21 +57,43 @@ impl Default for NumberMatch {
 
 impl NumberMatch {
     pub fn new(seed: u64) -> Self {
+        Self::new_with_rule(seed, LinkRule::Neighbors)
+    }
+
+    pub fn new_with_rule(seed: u64, rule: LinkRule) -> Self {
         let mut cells = vec![0; CELLS];
-        for pair in 0..(CELLS / 2) {
-            let first = ((seed.wrapping_add(pair as u64) % 9) + 1) as u8;
-            let second = if pair % 3 == 0 { 10 - first } else { first };
-            cells[pair * 2] = first;
-            cells[pair * 2 + 1] = second;
+        let mut pair = 0;
+        for block_row in 0..(SIDE / 2) {
+            for block_col in 0..(SIDE / 2) {
+                let vertical = random_word(seed, pair) & 1 == 1;
+                for offset in 0..2 {
+                    let row = block_row * 2;
+                    let col = block_col * 2;
+                    let (first, second) = if vertical {
+                        (row * SIDE + col + offset, (row + 1) * SIDE + col + offset)
+                    } else {
+                        ((row + offset) * SIDE + col, (row + offset) * SIDE + col + 1)
+                    };
+                    let value = ((random_word(seed, pair + 17) % 9) + 1) as u8;
+                    cells[first] = value;
+                    cells[second] = if pair % 3 == 0 { 10 - value } else { value };
+                    pair += 1;
+                }
+            }
         }
         Self {
             cells,
             selected: None,
             moves: 0,
             score: 0,
+            points: 0,
+            combo: 0,
+            best_combo: 0,
+            rule,
+            remixes_left: 2,
             seed,
             phase: NumberMatchPhase::Playing,
-            undo: None,
+            history: Vec::new(),
         }
     }
 
@@ -61,33 +109,75 @@ impl NumberMatch {
             self.selected = None;
             return true;
         }
-        if !self.adjacent(previous, index) || !self.valid_pair(previous, index) {
+        if !self.can_pair(previous, index) {
             self.selected = Some(index);
+            self.combo = 0;
             return true;
         }
-        let snapshot = self.clone_without_undo();
-        self.undo = Some(Box::new(snapshot));
+        let mut snapshot = self.clone_without_undo();
+        snapshot.selected = None;
         self.cells[previous] = 0;
         self.cells[index] = 0;
         self.selected = None;
         self.moves = self.moves.saturating_add(1);
         self.score = self.score.saturating_add(1);
+        self.combo = self.combo.saturating_add(1);
+        self.best_combo = self.best_combo.max(self.combo);
+        self.points = self
+            .points
+            .saturating_add(10_u32.saturating_mul(u32::from(self.combo)));
         if self.cells.iter().all(|&value| value == 0) {
             self.phase = NumberMatchPhase::Won;
+        } else if self.hint_pair().is_none() {
+            self.phase = NumberMatchPhase::Stuck;
         }
+        self.history.push(Box::new(snapshot));
         true
     }
 
     pub fn undo(&mut self) -> bool {
-        let Some(previous) = self.undo.take() else {
+        let Some(previous) = self.history.pop() else {
             return false;
         };
+        let history = std::mem::take(&mut self.history);
         *self = *previous;
+        self.history = history;
         true
     }
 
     pub fn reset(&mut self, seed: u64) {
-        *self = Self::new(seed);
+        *self = Self::new_with_rule(seed, self.rule);
+    }
+
+    pub fn set_rule(&mut self, rule: LinkRule, seed: u64) {
+        *self = Self::new_with_rule(seed, rule);
+    }
+
+    pub fn remix(&mut self) -> bool {
+        if self.phase == NumberMatchPhase::Won || self.remixes_left == 0 {
+            return false;
+        }
+        let remaining = self.cells.iter().filter(|&&value| value != 0).count();
+        if remaining == 0 || remaining % 2 != 0 {
+            return false;
+        }
+        let snapshot = self.clone_without_undo();
+        self.cells.fill(0);
+        self.seed = self
+            .seed
+            .wrapping_mul(6364136223846793005)
+            .wrapping_add(1442695040888963407);
+        for pair in 0..(remaining / 2) {
+            let value = ((random_word(self.seed, pair) % 9) + 1) as u8;
+            self.cells[pair * 2] = value;
+            self.cells[pair * 2 + 1] = if pair % 2 == 0 { value } else { 10 - value };
+        }
+        self.selected = None;
+        self.combo = 0;
+        self.remixes_left -= 1;
+        self.phase = NumberMatchPhase::Playing;
+        self.history.push(Box::new(snapshot));
+        true
     }
 
     pub fn won(&self) -> bool {
@@ -102,16 +192,8 @@ impl NumberMatch {
             if self.cells[first] == 0 {
                 continue;
             }
-            let row = first / SIDE;
-            let col = first % SIDE;
-            for second in [
-                (col + 1 < SIDE).then_some(first + 1),
-                (row + 1 < SIDE).then_some(first + SIDE),
-            ]
-            .into_iter()
-            .flatten()
-            {
-                if self.cells[second] != 0 && self.valid_pair(first, second) {
+            for second in (first + 1)..CELLS {
+                if self.can_pair(first, second) {
                     return Some((first, second));
                 }
             }
@@ -119,23 +201,81 @@ impl NumberMatch {
         None
     }
 
-    fn adjacent(&self, first: usize, second: usize) -> bool {
+    pub fn can_pair(&self, first: usize, second: usize) -> bool {
+        if first >= CELLS
+            || second >= CELLS
+            || first == second
+            || self.cells[first] == 0
+            || self.cells[second] == 0
+            || !self.valid_pair(first, second)
+        {
+            return false;
+        }
         let first_row = first / SIDE;
         let first_col = first % SIDE;
         let second_row = second / SIDE;
         let second_col = second % SIDE;
-        first_row.abs_diff(second_row) + first_col.abs_diff(second_col) == 1
+        let row_distance = first_row.abs_diff(second_row);
+        let col_distance = first_col.abs_diff(second_col);
+        if row_distance + col_distance == 1 {
+            return true;
+        }
+        match self.rule {
+            LinkRule::Neighbors => false,
+            LinkRule::Lines => {
+                (first_row == second_row || first_col == second_col)
+                    && self.path_is_clear(first, second)
+            }
+            LinkRule::Diagonals => {
+                (first_row == second_row || first_col == second_col || row_distance == col_distance)
+                    && self.path_is_clear(first, second)
+            }
+        }
     }
 
     fn valid_pair(&self, first: usize, second: usize) -> bool {
         self.cells[first] == self.cells[second] || self.cells[first] + self.cells[second] == 10
     }
 
+    fn path_is_clear(&self, first: usize, second: usize) -> bool {
+        let first_row = first / SIDE;
+        let first_col = first % SIDE;
+        let second_row = second / SIDE;
+        let second_col = second % SIDE;
+        let row_step = step(first_row, second_row);
+        let col_step = step(first_col, second_col);
+        let mut row = first_row as isize + row_step;
+        let mut col = first_col as isize + col_step;
+        while row != second_row as isize || col != second_col as isize {
+            if self.cells[row as usize * SIDE + col as usize] != 0 {
+                return false;
+            }
+            row += row_step;
+            col += col_step;
+        }
+        true
+    }
+
     fn clone_without_undo(&self) -> Self {
         let mut copy = self.clone();
-        copy.undo = None;
+        copy.history.clear();
         copy
     }
+}
+
+fn step(from: usize, to: usize) -> isize {
+    match from.cmp(&to) {
+        std::cmp::Ordering::Less => 1,
+        std::cmp::Ordering::Equal => 0,
+        std::cmp::Ordering::Greater => -1,
+    }
+}
+
+fn random_word(seed: u64, index: usize) -> u64 {
+    seed.wrapping_add(index as u64)
+        .wrapping_mul(6364136223846793005)
+        .wrapping_add(1442695040888963407)
+        ^ seed.rotate_left((index % 63) as u32 + 1)
 }
 
 #[cfg(test)]
