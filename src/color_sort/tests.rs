@@ -144,3 +144,80 @@ fn hint_is_empty_after_color_sort_ends() {
 
     assert_eq!(game.hint_move(), None);
 }
+
+#[test]
+fn pour_preview_reports_run_capacity_and_sealing() {
+    let game = with_tubes(vec![
+        vec![0, 1, 1],
+        vec![1, 1],
+        vec![2; 4],
+        vec![3; 4],
+        vec![0],
+        vec![],
+    ]);
+    assert_eq!(
+        game.pour_preview(0, 1),
+        Some(PourPreview {
+            count: 2,
+            stacks_match: true,
+            completes_tube: true,
+        })
+    );
+    assert_eq!(game.pour_preview(0, 5).unwrap().count, 2);
+}
+
+#[test]
+fn completed_tubes_are_sealed_as_sources() {
+    let mut game = with_tubes(vec![
+        vec![0; 4],
+        vec![1, 2],
+        vec![1, 1],
+        vec![2, 2],
+        vec![],
+        vec![],
+    ]);
+    assert!(game.is_complete_tube(0));
+    assert_eq!(game.completed_tubes(), 1);
+    assert!(!game.tap_tube(0));
+    assert_eq!(game.selected, None);
+}
+
+#[test]
+fn matching_pours_build_points_and_full_undo_history() {
+    let mut game = with_tubes(vec![
+        vec![0, 1, 1],
+        vec![],
+        vec![1, 1],
+        vec![2; 4],
+        vec![3; 4],
+        vec![0],
+    ]);
+    game.tap_tube(0);
+    game.tap_tube(1);
+    assert_eq!(game.combo, 1);
+    assert_eq!(game.points, 2);
+    game.tap_tube(2);
+    game.tap_tube(1);
+    assert_eq!(game.combo, 2);
+    assert_eq!(game.points, 16);
+    assert!(game.is_complete_tube(1));
+
+    assert!(game.undo());
+    assert_eq!(game.points, 2);
+    assert!(game.undo());
+    assert_eq!(game.points, 0);
+    assert!(!game.undo());
+}
+
+#[test]
+fn legacy_saves_default_to_an_unchained_sort() {
+    let mut value = serde_json::to_value(ColorSort::new(15)).unwrap();
+    let object = value.as_object_mut().unwrap();
+    for field in ["last_poured", "combo", "best_combo", "points"] {
+        object.remove(field);
+    }
+    let loaded: ColorSort = serde_json::from_value(value).unwrap();
+    assert_eq!(loaded.last_poured, 0);
+    assert_eq!(loaded.combo, 0);
+    assert_eq!(loaded.points, 0);
+}

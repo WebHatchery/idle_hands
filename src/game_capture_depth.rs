@@ -11,6 +11,7 @@ pub(super) fn apply(state: &mut AppState, scene: &str) {
         "hanoi_master" => hanoi_master(state),
         "number_match_links" => number_match_links(state),
         "flood_surges" => flood_surges(state),
+        "color_sort_runs" => color_sort_runs(state),
         _ => {}
     }
 }
@@ -167,4 +168,26 @@ fn flood_surges(state: &mut AppState) {
     game.points = 486;
     game.momentum = 2;
     game.surges = 1;
+}
+
+fn color_sort_runs(state: &mut AppState) {
+    use crate::color_sort::{ColorSort, ColorSortDifficulty};
+    let game = &mut state.color_sort;
+    *game = ColorSort::new_with_difficulty(0x0043_4F4C_4F52, ColorSortDifficulty::Expert);
+    game.tubes = vec![
+        vec![0, 1, 1],
+        vec![2, 3, 3],
+        vec![4, 5],
+        vec![],
+        vec![0, 0, 0, 0],
+        vec![2, 2],
+        vec![4, 4],
+        vec![5, 5],
+    ];
+    game.selected = Some(0);
+    game.moves = 22;
+    game.last_poured = 2;
+    game.combo = 3;
+    game.best_combo = 5;
+    game.points = 118;
 }

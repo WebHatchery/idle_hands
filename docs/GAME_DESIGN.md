@@ -402,6 +402,22 @@ efficient route planning creates a second resource arc. Forecasts, territory,
 chains, momentum, surges, and full multi-step undo are deterministic and older
 saves migrate to an uncharged field.
 
+### 11.15 Color Sort sealed runs
+
+Color Sort now treats a full uniform tube as sealed: it remains part of the
+win condition but can no longer be selected as a source and accidentally
+unbuilt. Selecting any other tube outlines every legal destination in green
+and labels it with the number of top layers that will pour, including partial
+pours limited by remaining capacity. Each colored layer also carries a stable
+letter, so Expert's six-color layout does not rely on hue alone. Pouring onto
+an empty tube begins a chain at one; successive matching-stack pours extend the
+chain and multiply the number of moved layers, while sealing a tube adds a
+ten-point reward. The header records sealed progress, points, and chain length.
+Hints name the exact run size and whether the destination will seal, and the
+complete move history supports repeated UNDO across pours and scoring state.
+Legacy puzzles derive their sealed tubes directly from their existing contents
+and begin without a chain.
+
 ## 12. Historical Phase 0 Decisions
 
 The original eight-game launch scope established the current product principles:

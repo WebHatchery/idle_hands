@@ -43,6 +43,13 @@ pub enum ColorSortPhase {
     Won,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct PourPreview {
+    pub count: usize,
+    pub stacks_match: bool,
+    pub completes_tube: bool,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ColorSort {
     pub tubes: Vec<Vec<u8>>,
@@ -59,9 +66,17 @@ pub struct ColorSort {
     tube_count: usize,
     #[serde(default = "default_scramble_steps")]
     scramble_steps: usize,
+    #[serde(default)]
+    pub last_poured: u8,
+    #[serde(default)]
+    pub combo: u16,
+    #[serde(default)]
+    pub best_combo: u16,
+    #[serde(default)]
+    pub points: u32,
     pub phase: ColorSortPhase,
     #[serde(skip)]
-    undo: Option<Box<Self>>,
+    history: Vec<Box<Self>>,
 }
 
 impl Default for ColorSort {
@@ -142,8 +157,12 @@ impl ColorSort {
             colors,
             tube_count,
             scramble_steps,
+            last_poured: 0,
+            combo: 0,
+            best_combo: 0,
+            points: 0,
             phase: ColorSortPhase::Playing,
-            undo: None,
+            history: Vec::new(),
         }
     }
 
@@ -152,7 +171,7 @@ impl ColorSort {
             return false;
         }
         let Some(source) = self.selected else {
-            if self.tubes[tube].is_empty() {
+            if self.tubes[tube].is_empty() || self.is_complete_tube(tube) {
                 return false;
             }
             self.selected = Some(tube);
@@ -162,40 +181,42 @@ impl ColorSort {
             self.selected = None;
             return true;
         }
-        let Some(&color) = self.tubes[source].last() else {
-            self.selected = None;
+        let Some(preview) = self.pour_preview(source, tube) else {
             return false;
         };
-        if self.tubes[tube].len() == self.capacity
-            || self.tubes[tube].last().is_some_and(|&top| top != color)
-        {
-            return false;
-        }
-        let run = self.tubes[source]
-            .iter()
-            .rev()
-            .take_while(|&&value| value == color)
-            .count();
-        let count = run.min(self.capacity - self.tubes[tube].len());
-        let previous = self.clone_without_undo();
-        for _ in 0..count {
+        let mut previous = self.clone_without_undo();
+        previous.selected = None;
+        for _ in 0..preview.count {
             let value = self.tubes[source].pop().expect("run counted");
             self.tubes[tube].push(value);
         }
-        self.undo = Some(Box::new(previous));
         self.moves = self.moves.saturating_add(1);
+        self.last_poured = preview.count.min(u8::MAX as usize) as u8;
+        self.combo = if preview.stacks_match {
+            self.combo.saturating_add(1).max(1)
+        } else {
+            1
+        };
+        self.best_combo = self.best_combo.max(self.combo);
+        self.points = self
+            .points
+            .saturating_add((preview.count as u32).saturating_mul(u32::from(self.combo)))
+            .saturating_add(u32::from(preview.completes_tube) * 10);
         self.selected = None;
         if self.is_solved() {
             self.phase = ColorSortPhase::Won;
         }
+        self.history.push(Box::new(previous));
         true
     }
 
     pub fn undo(&mut self) -> bool {
-        let Some(previous) = self.undo.take() else {
+        let Some(previous) = self.history.pop() else {
             return false;
         };
+        let history = std::mem::take(&mut self.history);
         *self = *previous;
+        self.history = history;
         true
     }
 
@@ -218,13 +239,56 @@ impl ColorSort {
         self.capacity
     }
 
+    pub fn completed_tubes(&self) -> usize {
+        (0..self.tubes.len())
+            .filter(|&tube| self.is_complete_tube(tube))
+            .count()
+    }
+
+    pub fn is_complete_tube(&self, tube: usize) -> bool {
+        self.tubes
+            .get(tube)
+            .is_some_and(|contents| contents.len() == self.capacity && !is_mixed(contents))
+    }
+
+    pub fn pour_preview(&self, source: usize, destination: usize) -> Option<PourPreview> {
+        if source >= self.tubes.len()
+            || destination >= self.tubes.len()
+            || source == destination
+            || self.tubes[source].is_empty()
+            || self.is_complete_tube(source)
+            || self.tubes[destination].len() == self.capacity
+        {
+            return None;
+        }
+        let color = *self.tubes[source].last()?;
+        if self.tubes[destination]
+            .last()
+            .is_some_and(|&top| top != color)
+        {
+            return None;
+        }
+        let run = self.tubes[source]
+            .iter()
+            .rev()
+            .take_while(|&&value| value == color)
+            .count();
+        let count = run.min(self.capacity - self.tubes[destination].len());
+        let stacks_match = !self.tubes[destination].is_empty();
+        Some(PourPreview {
+            count,
+            stacks_match,
+            completes_tube: self.tubes[destination].len() + count == self.capacity,
+        })
+    }
+
     pub fn hint_move(&self) -> Option<(usize, usize)> {
         if self.phase != ColorSortPhase::Playing {
             return None;
         }
         let mut best: Option<(i32, usize, usize)> = None;
         for source in 0..self.tubes.len() {
-            if self.tubes[source].is_empty() {
+            if self.tubes[source].is_empty() || self.is_complete_tube(source) {
                 continue;
             }
             for destination in 0..self.tubes.len() {
@@ -267,7 +331,7 @@ impl ColorSort {
 
     fn clone_without_undo(&self) -> Self {
         let mut copy = self.clone();
-        copy.undo = None;
+        copy.history.clear();
         copy
     }
 }

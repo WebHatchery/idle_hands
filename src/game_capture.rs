@@ -170,6 +170,7 @@ impl Game {
             "color_sort" | "color_sort_hint" | "color_sort_hint_accessible" => {
                 Screen::Game(GameId::ColorSort)
             }
+            "color_sort_runs" => Screen::Game(GameId::ColorSort),
             "color_sort_accessible" => Screen::Game(GameId::ColorSort),
             "battleship" | "battleship_hint" | "battleship_hint_accessible" => {
                 Screen::Game(GameId::Battleship)

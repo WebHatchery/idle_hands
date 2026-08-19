@@ -412,7 +412,21 @@ pub fn color_sort(state: &AppState) -> String {
     }
     game.hint_move().map_or_else(
         || "No legal tube move remains — tap NEW BOARD to begin again.".into(),
-        |(source, destination)| format!("Move tube {} to tube {}.", source + 1, destination + 1),
+        |(source, destination)| {
+            let preview = game.pour_preview(source, destination).unwrap();
+            format!(
+                "Pour {} layer{} from tube {} to tube {}{}.",
+                preview.count,
+                if preview.count == 1 { "" } else { "s" },
+                source + 1,
+                destination + 1,
+                if preview.completes_tube {
+                    " to seal it"
+                } else {
+                    ""
+                }
+            )
+        },
     )
 }
 

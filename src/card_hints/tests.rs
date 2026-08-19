@@ -306,7 +306,7 @@ fn default_flood_it_has_a_deterministic_hint() {
 fn default_color_sort_has_a_deterministic_hint() {
     let state = AppState::default();
 
-    assert!(color_sort(&state).contains("Move tube"));
+    assert!(color_sort(&state).contains("Pour"));
     assert_eq!(color_sort(&state), color_sort(&state));
 }
 

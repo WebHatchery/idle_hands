@@ -133,13 +133,28 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
-    crate::ui::draw_text(
+    let scoreline = if compact || screen_width() < 360. {
         format!(
-            "{} moves  •  {}  •  {}",
+            "M{} • {}/{} sealed • P{} • C{}",
             game.moves,
-            status(game.phase),
+            game.completed_tubes(),
+            game.tubes.len().saturating_sub(2),
+            game.points,
+            game.combo
+        )
+    } else {
+        format!(
+            "Moves {}  •  Sealed {}/{}  •  Points {}  •  Chain {}  •  {}",
+            game.moves,
+            game.completed_tubes(),
+            game.tubes.len().saturating_sub(2),
+            game.points,
+            game.combo,
             game.difficulty.label()
-        ),
+        )
+    };
+    crate::ui::draw_text(
+        scoreline,
         if compact { 430. } else { title_x },
         if compact { 28. } else { title_y + 24. },
         accessibility::text_size(body_size(), state.large_text),
@@ -165,10 +180,7 @@ pub fn draw(state: &AppState) {
         480.
     };
     crate::ui::draw_text(
-        state
-            .card_hint
-            .as_deref()
-            .unwrap_or("Tap a source tube, then a matching destination"),
+        state.card_hint.as_deref().unwrap_or(status_text(game)),
         if compact { 220. } else { title_x },
         status_y,
         accessibility::text_size(body_size(), state.large_text),
@@ -194,14 +206,23 @@ fn draw_board(board: Rect, tubes: &[Rect], game: &ColorSort, high_contrast: bool
     );
     for (index, rect) in tubes.iter().enumerate() {
         let selected = game.selected == Some(index);
+        let preview = game
+            .selected
+            .and_then(|source| game.pour_preview(source, index));
         draw_rectangle_lines(
             rect.x + 8.,
             rect.y + 8.,
             rect.w - 16.,
             rect.h - 16.,
-            if selected { 3. } else { 1. },
+            if selected || preview.is_some() {
+                3.
+            } else {
+                1.
+            },
             if selected {
                 accent()
+            } else if preview.is_some() {
+                Color::new(0.45, 0.90, 0.58, 1.)
             } else {
                 line_color(high_contrast)
             },
@@ -223,14 +244,44 @@ fn draw_board(board: Rect, tubes: &[Rect], game: &ColorSort, high_contrast: bool
                 palette(color, high_contrast),
             );
             draw_rectangle_lines(ball.x, ball.y, ball.w, ball.h, 1., WHITE);
+            center_text(
+                &((b'A' + color) as char).to_string(),
+                ball,
+                10.,
+                crate::theme::BACKGROUND,
+            );
+        }
+        center_text(
+            &(index + 1).to_string(),
+            Rect::new(rect.x, rect.bottom() - 26., rect.w, 20.),
+            9.,
+            muted(),
+        );
+        if game.is_complete_tube(index) {
+            center_text(
+                "SEALED",
+                Rect::new(rect.x, rect.y + 10., rect.w, 22.),
+                8.,
+                accent(),
+            );
+        } else if let Some(preview) = preview {
+            center_text(
+                &format!("+{}", preview.count),
+                Rect::new(rect.x, rect.y + 10., rect.w, 22.),
+                10.,
+                Color::new(0.45, 0.90, 0.58, 1.),
+            );
         }
     }
 }
 
-fn status(phase: ColorSortPhase) -> &'static str {
-    match phase {
-        ColorSortPhase::Playing => "SORT THE COLORS",
-        ColorSortPhase::Won => "TUBES COMPLETE",
+fn status_text(game: &ColorSort) -> &'static str {
+    match game.phase {
+        ColorSortPhase::Playing if game.selected.is_some() => {
+            "Green tubes accept the selected top run"
+        }
+        ColorSortPhase::Playing => "Tap an unsealed source, then a matching or empty tube",
+        ColorSortPhase::Won => "Every color tube is sealed",
     }
 }
 

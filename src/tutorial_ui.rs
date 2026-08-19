@@ -284,9 +284,9 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
             "Fill the field before the limit; tap SURGE, HINT, multi-step UNDO, or NEW FIELD.",
         ],
         GameId::ColorSort => [
-            "Tap a tube, then tap a matching color or empty tube.",
-            "Sort every color into a full, single-color tube.",
-            "Use UNDO or NEW BOARD with the visible controls.",
+            "Tap an unsealed tube; green tubes preview where its full top run can pour.",
+            "Letters identify colors; matching pours build a chain and full tubes seal.",
+            "Seal every color tube; use HINT, multi-step UNDO, or NEW BOARD.",
         ],
         GameId::Battleship => [
             "Tap an unknown square to search for the hidden fleet.",
