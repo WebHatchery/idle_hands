@@ -55,7 +55,7 @@ fn elapsed_time_drives_movement_and_pause_stops_the_coil() {
     let mut game = Snake::new(1);
     let start = game.body.clone();
 
-    assert!(!game.tick(0.15));
+    assert!(!game.tick(0.19));
     assert_eq!(game.body, start);
     assert!(game.tick(0.02));
     assert_ne!(game.body, start);
@@ -65,7 +65,7 @@ fn elapsed_time_drives_movement_and_pause_stops_the_coil() {
     assert!(!game.tick(1.));
     assert_eq!(game.body, paused);
     assert!(game.toggle_pause());
-    assert!(game.tick(0.17));
+    assert!(game.tick(0.21));
     assert_ne!(game.body, paused);
 }
 

@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 pub const WIDTH: i32 = 16;
 pub const HEIGHT: i32 = 12;
 const TARGET_SCORE: u16 = 20;
-const MOVE_INTERVAL: f32 = 0.16;
+const MOVE_INTERVAL: f32 = 0.20;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum SnakeDirection {
