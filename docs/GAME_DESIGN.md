@@ -520,6 +520,22 @@ available pairs, points, chain, and remaining recycle. Undo snapshots restore
 all of this economy, and older saves default to DRAW 1, zero score, and one
 unused recycle.
 
+### 11.23 TriPeaks route economy
+
+TriPeaks now outlines every currently playable exposed card in green. Tableau
+clears build a run whose point value rises by ten per step, and clearing one of
+the three peak cards adds a fifty-point summit bonus; drawing from STOCK
+deliberately breaks the run. The visible rule control starts a fresh STRICT
+deal or an `A↔K WRAP` deal where ace and king are adjacent, changing route
+planning at both ends of the rank cycle. Each deal also carries one BRIDGE:
+tapping its visible control arms it, and the next exposed tableau card may be
+played regardless of rank. A bridge remains available when an empty stock
+would otherwise make the deal stuck, is charged only by a successful clear,
+and can be cancelled by tapping the control again. Hints name the outlined
+move's next run and point value or recommend the bridge when no natural route
+remains. Full undo restores score, run, rule state, and bridge charge, while
+older saves default to STRICT with one bridge.
+
 ## 12. Historical Phase 0 Decisions
 
 The original eight-game launch scope established the current product principles:

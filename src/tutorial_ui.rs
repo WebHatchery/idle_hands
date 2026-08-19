@@ -319,9 +319,9 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
             "Clear all 28 cards; empty stock can RECYCLE once. Use HINT, UNDO, or NEW PYRAMID.",
         ],
         GameId::TriPeaks => [
-            "Tap an exposed card one rank above or below the waste.",
-            "Clear all three peaks before the stock runs out.",
-            "Tap STOCK when no card can play; use UNDO or NEW TRIPEAKS.",
+            "Tap a green outlined card one rank above or below the waste; A↔K WRAP also links ace and king.",
+            "Chain tableau clears for rising points. Tap STOCK for a new waste card, but it breaks the run.",
+            "Tap BRIDGE, then any exposed card, once per deal. Clear all peaks; HINT and UNDO remain visible.",
         ],
         GameId::Nim => [
             "Tap a non-empty heap to select it.",

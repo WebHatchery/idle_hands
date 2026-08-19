@@ -1,6 +1,11 @@
 //! Responsive touch presentation for TriPeaks Solitaire.
 
-use crate::{accessibility, state::AppState, tri_peaks::TriPeaksStatus, ui::UiAction};
+use crate::{
+    accessibility,
+    state::AppState,
+    tri_peaks::{TriPeaksRule, TriPeaksStatus},
+    ui::UiAction,
+};
 use macroquad::prelude::*;
 
 #[derive(Clone, Copy)]
@@ -16,6 +21,8 @@ struct Layout {
     hint: Rect,
     undo: Rect,
     new_game: Rect,
+    bridge: Rect,
+    rule: Rect,
 }
 
 impl Layout {
@@ -56,23 +63,30 @@ fn layout() -> Layout {
             gap: 4.,
             stock: Rect::new(650., 72., 62., 62.),
             waste: Rect::new(722., 72., 62., 62.),
-            hint: Rect::new(530., 280., 105., 40.),
-            undo: Rect::new(650., 280., 105., 40.),
-            new_game: Rect::new(765., 280., 105., 40.),
+            hint: Rect::new(570., 280., 80., 40.),
+            undo: Rect::new(658., 280., 80., 40.),
+            new_game: Rect::new(746., 280., 90., 40.),
+            bridge: Rect::new(650., 140., 62., 40.),
+            rule: Rect::new(720., 140., 116., 40.),
         }
     } else if crate::ui::is_portrait() {
+        let width = screen_width();
+        let bottom = screen_height() - 54.;
+        let bottom_button_w = (width - 32.) * 0.5;
         Layout {
-            base_x: 20.,
+            base_x: if width < 350. { 9. } else { 20. },
             top: 158.,
             card_w: 30.,
             card_h: 48.,
             row_gap: 25.,
             gap: 3.,
-            stock: Rect::new(18., 78., 46., 64.),
-            waste: Rect::new(72., 78., 46., 64.),
-            hint: Rect::new(126., 78., 100., 64.),
-            undo: Rect::new(20., 650., 145., 42.),
-            new_game: Rect::new(185., 650., 145., 42.),
+            stock: Rect::new(8., 78., 46., 64.),
+            waste: Rect::new(60., 78., 46., 64.),
+            hint: Rect::new(112., 78., 60., 64.),
+            undo: Rect::new(10., bottom, bottom_button_w, 42.),
+            new_game: Rect::new(22. + bottom_button_w, bottom, bottom_button_w, 42.),
+            bridge: Rect::new(178., 78., 64., 64.),
+            rule: Rect::new(248., 78., if width < 350. { 64. } else { 76. }, 64.),
         }
     } else {
         Layout {
@@ -82,11 +96,13 @@ fn layout() -> Layout {
             card_h: 82.,
             row_gap: 45.,
             gap: 5.,
-            stock: Rect::new(930., 120., 82., 100.),
-            waste: Rect::new(1030., 120., 82., 100.),
-            hint: Rect::new(810., 250., 105., 44.),
-            undo: Rect::new(930., 250., 100., 44.),
-            new_game: Rect::new(1045., 250., 125., 44.),
+            stock: Rect::new(970., 120., 82., 100.),
+            waste: Rect::new(1070., 120., 82., 100.),
+            hint: Rect::new(970., 250., 82., 44.),
+            undo: Rect::new(1070., 250., 82., 44.),
+            new_game: Rect::new(970., 370., 182., 44.),
+            bridge: Rect::new(970., 310., 82., 44.),
+            rule: Rect::new(1070., 310., 82., 44.),
         }
     }
 }
@@ -110,6 +126,15 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if crate::ui::hit(l.new_game, point) {
         return vec![UiAction::TriPeaksNew];
+    }
+    if crate::ui::hit(l.bridge, point) {
+        return vec![UiAction::TriPeaksBridge];
+    }
+    if crate::ui::hit(l.rule, point) {
+        return vec![UiAction::TriPeaksRule(match _state.tri_peaks.rule {
+            TriPeaksRule::Strict => TriPeaksRule::Wrap,
+            TriPeaksRule::Wrap => TriPeaksRule::Strict,
+        })];
     }
     for index in (0..28).rev() {
         if l.card_rect(index).contains(point) {
@@ -148,7 +173,7 @@ pub fn draw(state: &AppState) {
     );
     text(
         status_text(game.status),
-        if compact { 650. } else { title_x },
+        if compact { 450. } else { title_x },
         if compact { 30. } else { title_y + 24. },
         scaled(12., state),
         muted(),
@@ -171,8 +196,9 @@ pub fn draw(state: &AppState) {
     );
     for index in 0..28 {
         if let Some(card) = game.tableau[index] {
+            let rect = l.card_rect(index);
             crate::card_render::draw_card_accessible(
-                l.card_rect(index),
+                rect,
                 card,
                 false,
                 state.card_back,
@@ -180,16 +206,41 @@ pub fn draw(state: &AppState) {
                 state.high_contrast,
                 state.large_text,
             );
+            if game.can_play(index) {
+                draw_rectangle_lines(
+                    rect.x + 2.,
+                    rect.y + 2.,
+                    rect.w - 4.,
+                    rect.h - 4.,
+                    3.,
+                    playable(),
+                );
+            }
         }
     }
     text(
-        &format!(
-            "Moves {}  •  Play one rank above or below the waste",
-            game.moves
-        ),
+        &if compact || portrait {
+            format!(
+                "{} plays • P{} • R{} • B{}",
+                game.playable_count(),
+                game.points,
+                game.run,
+                game.bridges
+            )
+        } else {
+            format!(
+                "Moves {} • {} plays • Points {} • Run {} (best {}) • Bridge {}",
+                game.moves,
+                game.playable_count(),
+                game.points,
+                game.run,
+                game.best_run,
+                game.bridges
+            )
+        },
         if portrait { 10. } else { title_x },
         if portrait {
-            585.
+            l.undo.y - 48.
         } else if compact {
             340.
         } else {
@@ -201,12 +252,12 @@ pub fn draw(state: &AppState) {
     let detail = state
         .card_hint
         .as_deref()
-        .unwrap_or("Clear all three peaks before the stock runs out.");
+        .unwrap_or("Green cards play. Chain clears; STOCK breaks the run.");
     text(
         detail,
         if portrait { 10. } else { title_x },
         if portrait {
-            610.
+            l.undo.y - 24.
         } else if compact {
             362.
         } else {
@@ -222,6 +273,24 @@ pub fn draw(state: &AppState) {
     button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW TRIPEAKS", state.large_text);
+    button_active(
+        l.bridge,
+        &format!("BRIDGE ×{}", game.bridges),
+        game.bridge_armed,
+        state.large_text,
+    );
+    button(
+        l.rule,
+        if portrait {
+            match game.rule {
+                TriPeaksRule::Strict => "STRICT",
+                TriPeaksRule::Wrap => "A↔K",
+            }
+        } else {
+            game.rule.label()
+        },
+        state.large_text,
+    );
 }
 
 fn draw_slot(rect: Rect, card: Option<crate::cards::Card>, state: &AppState) {
@@ -248,14 +317,25 @@ fn draw_slot(rect: Rect, card: Option<crate::cards::Card>, state: &AppState) {
 }
 
 fn button(rect: Rect, label: &str, large_text: bool) {
+    button_active(rect, label, false, large_text);
+}
+
+fn button_active(rect: Rect, label: &str, active: bool, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
-    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
+    draw_rectangle_lines(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        if active { 3. } else { 1. },
+        if active { playable() } else { accent() },
+    );
     text(
         label,
-        rect.x + 10.,
-        rect.y + 28.,
+        rect.x + 6.,
+        rect.y + rect.h * 0.62,
         accessibility::text_size(10., large_text),
-        WHITE,
+        if active { playable() } else { WHITE },
     );
 }
 
@@ -281,6 +361,10 @@ fn accent() -> Color {
 
 fn muted() -> Color {
     crate::theme::SECONDARY
+}
+
+fn playable() -> Color {
+    Color::from_rgba(80, 224, 126, 255)
 }
 
 fn back_rect() -> Rect {

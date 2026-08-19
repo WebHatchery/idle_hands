@@ -19,6 +19,7 @@ pub(super) fn apply(state: &mut AppState, scene: &str) {
         "nim_tactics" => nim_tactics(state),
         "word_ladder_routes" => word_ladder_routes(state),
         "pyramid_chains" => pyramid_chains(state),
+        "tri_peaks_runs" => tri_peaks_runs(state),
         _ => {}
     }
 }
@@ -311,4 +312,34 @@ fn pyramid_chains(state: &mut AppState) {
     game.combo = 3;
     game.best_combo = 4;
     game.moves = 12;
+}
+
+fn tri_peaks_runs(state: &mut AppState) {
+    use crate::{
+        cards::Card,
+        tri_peaks::{TriPeaks, TriPeaksRule},
+    };
+    let game = &mut state.tri_peaks;
+    *game = TriPeaks::new(0x7A1F_2200);
+    game.rule = TriPeaksRule::Wrap;
+    game.points = 180;
+    game.run = 4;
+    game.best_run = 6;
+    game.moves = 10;
+    game.bridges = 1;
+    game.tableau[18] = Some(Card {
+        rank: 1,
+        suit: 1,
+        face_up: true,
+    });
+    game.tableau[19] = Some(Card {
+        rank: 12,
+        suit: 2,
+        face_up: true,
+    });
+    game.waste.push(Card {
+        rank: 13,
+        suit: 0,
+        face_up: true,
+    });
 }

@@ -205,6 +205,13 @@ impl Game {
                 let seed = self.state.tri_peaks.seed.wrapping_add(1);
                 self.state.tri_peaks.reset(seed);
             }
+            UiAction::TriPeaksRule(rule) => {
+                let seed = self.state.tri_peaks.seed.wrapping_add(1);
+                self.state.tri_peaks.set_rule(*rule, seed);
+            }
+            UiAction::TriPeaksBridge => {
+                self.state.tri_peaks.toggle_bridge();
+            }
             UiAction::NimSelect(heap) => {
                 self.state.nim.select_heap(*heap);
             }

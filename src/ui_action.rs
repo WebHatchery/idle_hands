@@ -183,6 +183,8 @@ pub enum UiAction {
     TriPeaksHint,
     TriPeaksUndo,
     TriPeaksNew,
+    TriPeaksRule(crate::tri_peaks::TriPeaksRule),
+    TriPeaksBridge,
     NimSelect(usize),
     NimTake(u8),
     NimHint,

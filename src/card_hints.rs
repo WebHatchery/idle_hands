@@ -195,7 +195,15 @@ pub fn tri_peaks(state: &AppState) -> String {
         return "The three peaks are already clear.".into();
     }
     if let Some(index) = (0..28).find(|&index| game.can_play(index)) {
-        return format!("Try the playable peak card at position {}.", index + 1);
+        return format!(
+            "Play outlined card {} to extend the run to {} for {} points.",
+            index + 1,
+            game.run + 1,
+            10 * u32::from(game.run + 1) + if index < 3 { 50 } else { 0 }
+        );
+    }
+    if game.bridges > 0 {
+        return "Tap BRIDGE, then any exposed card, to rescue this route.".into();
     }
     if !game.stock.is_empty() {
         "Tap STOCK to reveal another card.".into()
