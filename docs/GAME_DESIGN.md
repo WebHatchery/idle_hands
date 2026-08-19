@@ -289,6 +289,20 @@ remain visible and hints route around them when another step is available.
 Single-use springs restore one heart, and the final score rewards hearts and
 unused scout charges after all three runes reach the exit.
 
+### 11.7 Dungeon Sweeper relic routes
+
+Dungeon Sweeper no longer lets the guaranteed-safe exit end a run on the first
+tap. Each generated floor hides relic rooms away from the opening and exit, and
+the exit unlocks only after every relic is revealed. EXPLORER places ten traps,
+grants three hearts, and asks for two relics; DELVER uses twelve traps, two
+hearts, and three relics; PERIL uses fifteen traps, one heart, and three relics.
+A trap now consumes a heart and becomes a visible crossed room, so Explorer and
+Delver can recover instead of every mistake ending immediately. Chords resolve
+each room against the remaining heart supply. Revealed relics use a K plus their
+small trap clue, and an early exit visibly reads LOCK. Difficulty buttons start
+new seeded floors through the same restart confirmation as NEW DUNGEON, while
+legacy in-progress floors retain their original open-exit objective.
+
 ## 12. Historical Phase 0 Decisions
 
 The original eight-game launch scope established the current product principles:

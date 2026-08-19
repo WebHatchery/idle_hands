@@ -240,7 +240,7 @@ impl GameId {
             Self::KlondikeGolf => "Clear the columns",
             Self::Blackjack => "Hold the hand",
             Self::SpiderSolitaire => "Build suited webs",
-            Self::DungeonSweeper => "Find the exit",
+            Self::DungeonSweeper => "Recover relics and escape",
             Self::Potion2048 => "Brew the next tile",
             Self::TinyTowerDefence => "Keep the lanes",
             Self::OneRoomRoguelike => "Survive five rooms",

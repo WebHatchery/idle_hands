@@ -119,7 +119,8 @@ impl Game {
             "dungeon_sweeper"
             | "dungeon_sweeper_accessible"
             | "dungeon_sweeper_hint"
-            | "dungeon_sweeper_hint_accessible" => Screen::Game(GameId::DungeonSweeper),
+            | "dungeon_sweeper_hint_accessible"
+            | "dungeon_relics" => Screen::Game(GameId::DungeonSweeper),
             "potion_2048" | "potion_2048_hint" | "potion_2048_hint_accessible" => {
                 Screen::Game(GameId::Potion2048)
             }
@@ -358,6 +359,39 @@ impl Game {
             for index in [0, 1, 6, 7, 8, 14, 15, 20] {
                 game.revealed[index] = true;
             }
+        }
+        if scene == "dungeon_relics" {
+            use crate::dungeon_sweeper::{
+                DungeonCell, DungeonDifficulty, DungeonStatus, DungeonSweeper,
+            };
+            let game = &mut self.state.dungeon_sweeper;
+            *game = DungeonSweeper::new_with_difficulty(0xD0A6_0004, DungeonDifficulty::Explorer);
+            game.first_reveal = true;
+            game.status = DungeonStatus::Playing;
+            game.hearts = 2;
+            game.moves = 11;
+            game.relics = vec![18, 45];
+            game.collected_relics = vec![18];
+            game.required_relics = 2;
+            game.cells = vec![DungeonCell::Hidden; 64];
+            for (index, clue) in [
+                (0, 0),
+                (1, 1),
+                (8, 0),
+                (9, 1),
+                (10, 2),
+                (16, 1),
+                (17, 2),
+                (18, 2),
+                (24, 1),
+                (25, 2),
+                (63, 1),
+            ] {
+                game.cells[index] = DungeonCell::Revealed(clue);
+            }
+            game.cells[27] = DungeonCell::Revealed(9);
+            game.cells[35] = DungeonCell::FlaggedTrap;
+            game.cells[45] = DungeonCell::Hidden;
         }
         if scene == "solitaire_peek" {
             self.capture_solitaire_peek = true;

@@ -105,7 +105,9 @@ pub fn dungeon_sweeper(state: &AppState) -> String {
         || "No safe room remains — tap NEW DUNGEON to begin again.".into(),
         |index| {
             if index == game.exit {
-                "Tap EXIT to enter safely.".into()
+                "All relics are held — tap EXIT to leave the dungeon.".into()
+            } else if game.relics.contains(&index) && !game.collected_relics.contains(&index) {
+                format!("Room {} holds a safe relic.", index + 1)
             } else {
                 format!("Room {} is safe to reveal.", index + 1)
             }

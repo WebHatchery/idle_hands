@@ -192,6 +192,7 @@ pub enum UiAction {
     DungeonHint,
     DungeonUndo,
     DungeonNew,
+    DungeonDifficulty(crate::dungeon_sweeper::DungeonDifficulty),
     PotionMove(Direction),
     PotionHint,
     PotionUndo,
@@ -318,6 +319,7 @@ impl UiAction {
                 | Self::TriPeaksNew
                 | Self::NimNew
                 | Self::DungeonNew
+                | Self::DungeonDifficulty(_)
                 | Self::PotionNew
                 | Self::PotionDifficulty(_)
                 | Self::TowerNew

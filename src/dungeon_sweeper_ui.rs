@@ -2,7 +2,7 @@
 
 use crate::{
     accessibility,
-    dungeon_sweeper::{DungeonCell, DungeonStatus},
+    dungeon_sweeper::{DungeonCell, DungeonDifficulty, DungeonStatus},
     state::AppState,
     ui::UiAction,
 };
@@ -15,23 +15,34 @@ struct Layout {
     hint: Rect,
     undo: Rect,
     new_game: Rect,
+    difficulties: [Rect; 3],
 }
 fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             board: Rect::new(250., 66., 560., 280.),
-            flag: Rect::new(18., 170., 100., 42.),
-            hint: Rect::new(18., 330., 100., 40.),
-            undo: Rect::new(18., 225., 100., 40.),
-            new_game: Rect::new(18., 278., 120., 40.),
+            flag: Rect::new(18., 170., 100., 44.),
+            hint: Rect::new(18., 326., 100., 44.),
+            undo: Rect::new(18., 222., 100., 44.),
+            new_game: Rect::new(18., 274., 120., 44.),
+            difficulties: [
+                Rect::new(18., 66., 68., 44.),
+                Rect::new(92., 66., 68., 44.),
+                Rect::new(166., 66., 68., 44.),
+            ],
         }
     } else if crate::ui::is_portrait() {
         Layout {
-            board: Rect::new(20., 145., 320., 320.),
+            board: Rect::new(20., 155., 320., 320.),
             flag: Rect::new(20., 500., 145., 44.),
-            hint: Rect::new(20., 620., 145., 42.),
-            undo: Rect::new(20., 560., 145., 42.),
-            new_game: Rect::new(185., 560., 165., 42.),
+            hint: Rect::new(20., 620., 145., 44.),
+            undo: Rect::new(20., 560., 145., 44.),
+            new_game: Rect::new(185., 560., 165., 44.),
+            difficulties: [
+                Rect::new(20., 105., 100., 44.),
+                Rect::new(130., 105., 100., 44.),
+                Rect::new(240., 105., 100., 44.),
+            ],
         }
     } else {
         Layout {
@@ -40,6 +51,11 @@ fn layout() -> Layout {
             hint: Rect::new(820., 510., 120., 44.),
             undo: Rect::new(820., 450., 120., 44.),
             new_game: Rect::new(950., 450., 150., 44.),
+            difficulties: [
+                Rect::new(820., 120., 100., 44.),
+                Rect::new(930., 120., 100., 44.),
+                Rect::new(1040., 120., 100., 44.),
+            ],
         }
     }
 }
@@ -59,6 +75,11 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if crate::ui::hit(l.new_game, point) {
         return vec![UiAction::DungeonNew];
+    }
+    for (rect, difficulty) in l.difficulties.iter().zip(DungeonDifficulty::ALL) {
+        if crate::ui::hit(*rect, point) {
+            return vec![UiAction::DungeonDifficulty(difficulty)];
+        }
     }
     if let Some(index) = crate::grid::GridLayout::new(l.board, 8, 8).index_at(point) {
         return vec![UiAction::DungeonCell(index)];
@@ -93,8 +114,27 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
+    let run_status = if compact {
+        format!(
+            "{}  •  H{}  •  K{}/{}  •  {} moves",
+            game.difficulty.label(),
+            game.hearts,
+            game.relics_found(),
+            game.relic_total(),
+            game.moves
+        )
+    } else {
+        format!(
+            "{}  •  H{}  •  Relics {}/{}  •  {}",
+            game.difficulty.label(),
+            game.hearts,
+            game.relics_found(),
+            game.relic_total(),
+            status_text(game.status, game.moves)
+        )
+    };
     text(
-        &status_text(game.status, game.moves),
+        &run_status,
         if compact { 430. } else { x },
         if compact { 52. } else { y + 25. },
         accessibility::text_size(body_size(), state.large_text),
@@ -129,7 +169,7 @@ pub fn draw(state: &AppState) {
         );
         let show_trap = matches!(game.status, DungeonStatus::Lost)
             && matches!(cell, DungeonCell::Trap | DungeonCell::FlaggedTrap);
-        if show_trap {
+        if show_trap || matches!(cell, DungeonCell::Revealed(9)) {
             text(
                 "×",
                 rect.x + rect.w * 0.34,
@@ -139,12 +179,42 @@ pub fn draw(state: &AppState) {
             );
         } else if index == game.exit && revealed {
             text(
-                "E",
+                if game.relics_found() >= game.relic_total() {
+                    "E"
+                } else {
+                    "LOCK"
+                },
+                rect.x
+                    + if game.relics_found() >= game.relic_total() {
+                        rect.w * 0.34
+                    } else {
+                        rect.w * 0.12
+                    },
+                rect.y + rect.h * 0.67,
+                if game.relics_found() >= game.relic_total() {
+                    cell_size(state.large_text)
+                } else {
+                    accessibility::text_size(8., state.large_text)
+                },
+                accent(),
+            );
+        } else if revealed && game.relics.contains(&index) {
+            text(
+                "K",
                 rect.x + rect.w * 0.34,
                 rect.y + rect.h * 0.67,
                 cell_size(state.large_text),
-                accent(),
+                Color::new(0.30, 0.92, 0.88, 1.),
             );
+            if let DungeonCell::Revealed(number) = cell {
+                text(
+                    &number.to_string(),
+                    rect.right() - rect.w * 0.25,
+                    rect.y + rect.h * 0.26,
+                    accessibility::text_size(8., state.large_text),
+                    WHITE,
+                );
+            }
         } else if let DungeonCell::Revealed(number) = cell {
             text(
                 &number.to_string(),
@@ -154,11 +224,22 @@ pub fn draw(state: &AppState) {
                 WHITE,
             );
         } else if matches!(cell, DungeonCell::Flagged | DungeonCell::FlaggedTrap) {
-            text(
-                "⚑",
-                rect.x + rect.w * 0.30,
-                rect.y + rect.h * 0.66,
-                cell_size(state.large_text),
+            let pole_x = rect.x + rect.w * 0.40;
+            let top = rect.y + rect.h * 0.25;
+            let bottom = rect.y + rect.h * 0.74;
+            draw_line(pole_x, top, pole_x, bottom, 2., accent());
+            draw_triangle(
+                vec2(pole_x, top),
+                vec2(rect.x + rect.w * 0.72, rect.y + rect.h * 0.38),
+                vec2(pole_x, rect.y + rect.h * 0.50),
+                accent(),
+            );
+            draw_line(
+                rect.x + rect.w * 0.28,
+                bottom,
+                rect.x + rect.w * 0.58,
+                bottom,
+                2.,
                 accent(),
             );
         }
@@ -169,7 +250,10 @@ pub fn draw(state: &AppState) {
             "Traps flagged {} / {}  •  {}",
             game.flagged_count(),
             game.traps,
-            state.card_hint.as_deref().unwrap_or("Find the EXIT")
+            state
+                .card_hint
+                .as_deref()
+                .unwrap_or("Find relics, then EXIT")
         ),
         if compact { 18. } else { x },
         if portrait {
@@ -194,6 +278,14 @@ pub fn draw(state: &AppState) {
     button(l.hint, "HINT", state.large_text);
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW DUNGEON", state.large_text);
+    for (rect, difficulty) in l.difficulties.iter().zip(DungeonDifficulty::ALL) {
+        difficulty_button(
+            *rect,
+            difficulty,
+            difficulty == game.difficulty,
+            state.large_text,
+        );
+    }
 }
 use crate::grid::GridLayout;
 fn status_text(status: DungeonStatus, moves: u16) -> String {
@@ -213,6 +305,41 @@ fn button(rect: Rect, label: &str, large_text: bool) {
         rect.y + 29.,
         accessibility::text_size(11., large_text),
         WHITE,
+    );
+}
+fn difficulty_button(rect: Rect, difficulty: DungeonDifficulty, selected: bool, large_text: bool) {
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        if selected {
+            Color::new(0.30, 0.23, 0.12, 1.)
+        } else {
+            crate::theme::SURFACE
+        },
+    );
+    draw_rectangle_lines(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        if selected { 3. } else { 1. },
+        accent(),
+    );
+    text(
+        difficulty.label(),
+        rect.x + 6.,
+        rect.y + 28.,
+        accessibility::text_size(
+            if crate::ui::is_compact_landscape() {
+                7.
+            } else {
+                8.
+            },
+            large_text,
+        ),
+        if selected { accent() } else { WHITE },
     );
 }
 fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {

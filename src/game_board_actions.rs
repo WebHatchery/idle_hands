@@ -238,6 +238,11 @@ impl Game {
                 let seed = self.state.dungeon_sweeper.seed.wrapping_add(1);
                 self.state.dungeon_sweeper.reset(seed);
             }
+            UiAction::DungeonDifficulty(difficulty) => {
+                let seed = self.state.dungeon_sweeper.seed.wrapping_add(1);
+                self.state.dungeon_sweeper =
+                    crate::dungeon_sweeper::DungeonSweeper::new_with_difficulty(seed, *difficulty);
+            }
             UiAction::PotionMove(direction) => {
                 self.state.potion_2048.move_in(*direction);
             }

@@ -229,9 +229,9 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
             "Clear eight suited runs; use UNDO or NEW DEAL visibly.",
         ],
         GameId::DungeonSweeper => [
-            "Tap a room to reveal its trap clue.",
-            "Use FLAG MODE, then tap a revealed clue to chord nearby rooms.",
-            "Reach EXIT; use UNDO or NEW DUNGEON with visible controls.",
+            "Tap EXPLORER, DELVER, or PERIL to choose hearts, traps, and required relics.",
+            "Reveal rooms for clues; K marks a relic. FLAG MODE and clue taps safely chord rooms.",
+            "Collect every K to unlock EXIT; HINT, UNDO, and NEW DUNGEON stay visible.",
         ],
         GameId::Potion2048 => [
             "Tap a visible direction to slide the potions.",
