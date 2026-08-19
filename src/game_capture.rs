@@ -135,9 +135,10 @@ impl Game {
             | "one_room_roguelike_hint_accessible"
             | "rogue_roles" => Screen::Game(GameId::OneRoomRoguelike),
             "one_room_roguelike_accessible" => Screen::Game(GameId::OneRoomRoguelike),
-            "daily_dungeon" | "daily_dungeon_hint" | "daily_dungeon_hint_accessible" => {
-                Screen::Game(GameId::DailyDungeon)
-            }
+            "daily_dungeon"
+            | "daily_dungeon_hint"
+            | "daily_dungeon_hint_accessible"
+            | "daily_scouting" => Screen::Game(GameId::DailyDungeon),
             "daily_dungeon_accessible" => Screen::Game(GameId::DailyDungeon),
             "dots_boxes" | "dots_boxes_hint" | "dots_boxes_hint_accessible" => {
                 Screen::Game(GameId::DotsBoxes)
@@ -336,6 +337,27 @@ impl Game {
                     kind: EnemyKind::Brute,
                 },
             ];
+        }
+        if scene == "daily_scouting" {
+            use crate::daily_dungeon::{DailyDungeon, DailyRule, DailyTile};
+            let game = &mut self.state.daily_dungeon;
+            *game = DailyDungeon::new(1);
+            game.rule = DailyRule::Forager;
+            game.player = 14;
+            game.hearts = 2;
+            game.scouts = 1;
+            game.runes_found = 1;
+            game.moves = 8;
+            game.score = 37;
+            game.tiles = vec![DailyTile::Floor; 36];
+            game.tiles[8] = DailyTile::Rune;
+            game.tiles[15] = DailyTile::Trap;
+            game.tiles[20] = DailyTile::Spring;
+            game.tiles[35] = DailyTile::Exit;
+            game.revealed = vec![false; 36];
+            for index in [0, 1, 6, 7, 8, 14, 15, 20] {
+                game.revealed[index] = true;
+            }
         }
         if scene == "solitaire_peek" {
             self.capture_solitaire_peek = true;

@@ -249,9 +249,9 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
             "Clear five rooms and tap onto STAIRS; POTION, UNDO, and NEW RUN stay visible.",
         ],
         GameId::DailyDungeon => [
-            "Tap a direction to reveal the next room.",
-            "Recover three runes, avoid the one-use traps, then reach EXIT.",
-            "Use UNDO or NEW DAY with the visible controls.",
+            "Each day is WAYFINDER, FORAGER, or DAREDEVIL with a different trap and SCOUT supply.",
+            "Tap SCOUT to reveal adjacent rooms; entering one unseen earns extra bravery score.",
+            "Find three runes, use + springs, and reach EXIT; HINT, UNDO, and NEW DAY stay visible.",
         ],
         GameId::DotsBoxes => [
             "Tap a gap between two dots to draw one edge.",

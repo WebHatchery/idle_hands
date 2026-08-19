@@ -276,6 +276,19 @@ separate colors, and the Brute's outer ring keep the roster readable without
 depending on color. Clearing a room reveals its staircase; entering the fifth
 staircase completes the run and records the score.
 
+### 11.6 Daily Dungeon conditions and scouting
+
+Daily Dungeon now rotates a deterministic condition with the day's seed.
+WAYFINDER supplies three scouts against eight traps, FORAGER supplies two
+scouts and two healing springs against seven traps, and DAREDEVIL supplies one
+scout against nine traps while doubling the bravery reward. SCOUT spends one
+charge and reveals every adjacent room without triggering it; highlighted
+unknown neighbors show its exact reach. Entering a room before scouting earns
+bravery score, so information has an explicit opportunity cost. Revealed traps
+remain visible and hints route around them when another step is available.
+Single-use springs restore one heart, and the final score rewards hearts and
+unused scout charges after all three runes reach the exit.
+
 ## 12. Historical Phase 0 Decisions
 
 The original eight-game launch scope established the current product principles:

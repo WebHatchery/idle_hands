@@ -211,6 +211,7 @@ pub enum UiAction {
     RogueNew,
     RogueClass(crate::one_room_roguelike::HeroClass),
     DailyMove(Direction),
+    DailyScout,
     DailyHint,
     DailyUndo,
     DailyNew,

@@ -13,6 +13,7 @@ struct Layout {
     board: Rect,
     directions: [Rect; 4],
     hint: Rect,
+    scout: Rect,
     undo: Rect,
     new_game: Rect,
 }
@@ -28,6 +29,7 @@ fn layout() -> Layout {
                 Rect::new(18., 223., 62., 44.),
             ],
             hint: Rect::new(610., 235., 110., 44.),
+            scout: Rect::new(105., 145., 145., 44.),
             undo: Rect::new(610., 125., 110., 44.),
             new_game: Rect::new(610., 180., 145., 44.),
         }
@@ -40,7 +42,8 @@ fn layout() -> Layout {
                 Rect::new(188., 465., 68., 44.),
                 Rect::new(272., 465., 68., 44.),
             ],
-            hint: Rect::new(20., 580., 145., 42.),
+            hint: Rect::new(20., 580., 145., 44.),
+            scout: Rect::new(185., 580., 155., 44.),
             undo: Rect::new(20., 525., 145., 44.),
             new_game: Rect::new(185., 525., 155., 44.),
         }
@@ -54,6 +57,7 @@ fn layout() -> Layout {
                 Rect::new(1026., 145., 62., 44.),
             ],
             hint: Rect::new(810., 285., 120., 44.),
+            scout: Rect::new(950., 285., 140., 44.),
             undo: Rect::new(810., 220., 120., 44.),
             new_game: Rect::new(950., 220., 140., 44.),
         }
@@ -82,6 +86,9 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if crate::ui::hit(l.hint, point) {
         return vec![UiAction::DailyHint];
+    }
+    if crate::ui::hit(l.scout, point) {
+        return vec![UiAction::DailyScout];
     }
     if crate::ui::hit(l.new_game, point) {
         return vec![UiAction::DailyNew];
@@ -126,14 +133,29 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
-    text(
-        &format!(
-            "Day {:04}  •  Hearts {}  •  Runes {} / {}",
+    let run_status = if compact {
+        format!(
+            "{}  •  D{:04}  •  H{}  •  R{}/{}  •  S{}",
+            dungeon.rule.label(),
             dungeon.challenge,
             dungeon.hearts,
             dungeon.runes_found,
-            DailyDungeon::rune_total()
-        ),
+            DailyDungeon::rune_total(),
+            dungeon.scouts
+        )
+    } else {
+        format!(
+            "{}  •  Day {:04}  •  Hearts {}  •  Runes {} / {}  •  Scouts {}",
+            dungeon.rule.label(),
+            dungeon.challenge,
+            dungeon.hearts,
+            dungeon.runes_found,
+            DailyDungeon::rune_total(),
+            dungeon.scouts
+        )
+    };
+    text(
+        &run_status,
         if compact { 430. } else { title_x },
         if compact { 28. } else { title_y + 24. },
         accessibility::text_size(body_size(), state.large_text),
@@ -157,6 +179,19 @@ pub fn draw(state: &AppState) {
             1.,
             line_color(state.high_contrast),
         );
+        if dungeon.scouts > 0
+            && !dungeon.revealed[index]
+            && grid_distance(index, dungeon.player) == 1
+        {
+            draw_rectangle_lines(
+                rect.x + 2.,
+                rect.y + 2.,
+                rect.w - 4.,
+                rect.h - 4.,
+                2.,
+                accent(),
+            );
+        }
         if index == dungeon.player {
             center_text("@", rect, cell_size(state.large_text), WHITE);
         } else if index == dungeon.tiles.len() - 1 {
@@ -180,6 +215,12 @@ pub fn draw(state: &AppState) {
                 DailyTile::Exit => {
                     center_text("EXIT", rect, small_size(state.large_text), accent())
                 }
+                DailyTile::Spring => center_text(
+                    "+",
+                    rect,
+                    cell_size(state.large_text),
+                    Color::new(0.30, 0.90, 0.55, 1.),
+                ),
                 DailyTile::Floor => {}
             }
         }
@@ -205,6 +246,11 @@ pub fn draw(state: &AppState) {
         button(*rect, label, state.large_text);
     }
     button(l.hint, "HINT", state.large_text);
+    button(
+        l.scout,
+        &format!("SCOUT {}", dungeon.scouts),
+        state.large_text,
+    );
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW DAY", state.large_text);
 }
@@ -233,10 +279,18 @@ fn cell_fill(index: usize, dungeon: &DailyDungeon, high_contrast: bool) -> Color
     }
 }
 
+fn grid_distance(first: usize, second: usize) -> usize {
+    let size = DailyDungeon::size();
+    (first / size).abs_diff(second / size) + (first % size).abs_diff(second % size)
+}
+
 fn status_text(phase: DailyPhase, moves: u16, score: u32) -> String {
     match phase {
         DailyPhase::Exploring => {
-            format!("Reveal the route  •  {} moves  •  {} score", moves, score)
+            format!(
+                "Scout or risk hidden rooms  •  {} actions  •  {} score",
+                moves, score
+            )
         }
         DailyPhase::Won => format!("The daily route is clear  •  {} score", score),
         DailyPhase::Lost => format!("The traps closed in  •  {} score", score),

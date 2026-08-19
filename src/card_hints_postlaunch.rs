@@ -210,19 +210,30 @@ pub fn daily_dungeon(state: &AppState) -> String {
         }
         crate::daily_dungeon::DailyPhase::Exploring => {}
     }
-    game.hint_direction().map_or_else(
+    game.hint_action().map_or_else(
         || "No route hint is available — tap NEW DAY to begin again.".into(),
-        |direction| {
-            let target = if game.runes_found < crate::daily_dungeon::DailyDungeon::rune_total() {
-                "a rune"
-            } else {
-                "EXIT"
-            };
-            format!(
-                "Move {} toward {}.",
-                daily_direction_label(direction),
-                target
-            )
+        |hint| match hint {
+            crate::daily_dungeon::DailyHint::Scout => {
+                "Tap SCOUT to reveal the neighboring rooms without entering them.".into()
+            }
+            crate::daily_dungeon::DailyHint::Move(direction) => {
+                let target = if game.hearts < 3
+                    && game.tiles.iter().enumerate().any(|(index, tile)| {
+                        game.revealed[index]
+                            && matches!(tile, crate::daily_dungeon::DailyTile::Spring)
+                    }) {
+                    "the revealed spring"
+                } else if game.runes_found < crate::daily_dungeon::DailyDungeon::rune_total() {
+                    "a rune"
+                } else {
+                    "EXIT"
+                };
+                format!(
+                    "Move {} toward {} while avoiding revealed traps.",
+                    daily_direction_label(direction),
+                    target
+                )
+            }
         },
     )
 }
