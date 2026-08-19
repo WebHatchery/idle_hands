@@ -205,8 +205,8 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
         ],
         GameId::Breakout => [
             "Tap LEFT, STAY, or RIGHT to steer while the ball moves automatically.",
-            "Bounce the ball into every brick; tap PAUSE when you need a break.",
-            "Use UNDO or NEW BOARD with the visible controls.",
+            "Clear three patterned walls. Armored bricks need two or three hits.",
+            "You have three balls. Tap LAUNCH after a miss, or PAUSE, UNDO, and NEW BOARD as needed.",
         ],
         GameId::HigherLower => [
             "Tap HIGHER or LOWER to guess the hidden next card.",

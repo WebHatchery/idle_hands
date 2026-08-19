@@ -17,9 +17,20 @@ impl Game {
                 }
             }
             Screen::Game(GameId::Breakout) => {
-                let previous = self.state.breakout.status;
+                let previous = (
+                    self.state.breakout.status,
+                    self.state.breakout.level,
+                    self.state.breakout.lives,
+                    self.state.breakout.serve_ready,
+                );
                 self.state.breakout.tick(dt);
-                if self.state.breakout.status != previous {
+                let current = (
+                    self.state.breakout.status,
+                    self.state.breakout.level,
+                    self.state.breakout.lives,
+                    self.state.breakout.serve_ready,
+                );
+                if current != previous {
                     self.finish_realtime_round();
                 }
             }

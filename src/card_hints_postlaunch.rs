@@ -21,12 +21,15 @@ pub fn breakout(state: &AppState) -> String {
     let game = &state.breakout;
     match game.status {
         crate::breakout::BreakoutStatus::Won => {
-            return "The wall is clear — tap NEW BOARD to play again.".into()
+            return "All three walls are clear — tap NEW BOARD to play again.".into()
         }
         crate::breakout::BreakoutStatus::Lost => {
-            return "The ball slipped away — tap NEW BOARD to begin again.".into()
+            return "No balls remain — tap NEW BOARD to begin again.".into()
         }
         crate::breakout::BreakoutStatus::Playing => {}
+    }
+    if game.serve_ready {
+        return format!("Wall {} is ready — tap LAUNCH.", game.level);
     }
     game.hint_move().map_or_else(
         || "No paddle move is available — tap NEW BOARD to begin again.".into(),

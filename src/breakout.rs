@@ -6,6 +6,8 @@ pub const WIDTH: i8 = 16;
 pub const HEIGHT: i8 = 12;
 const BRICK_ROWS: i8 = 4;
 const BRICK_COUNT: usize = WIDTH as usize * BRICK_ROWS as usize;
+const TARGET_LEVEL: u8 = 3;
+const STARTING_LIVES: u8 = 3;
 const PHYSICS_STEP: f32 = 1. / 120.;
 #[cfg(test)]
 const LEGACY_STEP: f32 = 0.25;
@@ -27,11 +29,29 @@ pub enum BreakoutStatus {
     Lost,
 }
 
-type Snapshot = (Vec<bool>, i8, i8, i8, i8, i8, u16, u16, BreakoutStatus);
+#[derive(Debug, Clone)]
+struct Snapshot {
+    bricks: Vec<bool>,
+    brick_health: Vec<u8>,
+    paddle: i8,
+    ball_x: i8,
+    ball_y: i8,
+    velocity_x: i8,
+    velocity_y: i8,
+    score: u16,
+    moves: u16,
+    lives: u8,
+    level: u8,
+    status: BreakoutStatus,
+    paused: bool,
+    serve_ready: bool,
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Breakout {
     pub bricks: Vec<bool>,
+    #[serde(default)]
+    pub brick_health: Vec<u8>,
     pub paddle: i8,
     pub ball_x: i8,
     pub ball_y: i8,
@@ -39,14 +59,20 @@ pub struct Breakout {
     pub velocity_y: i8,
     pub score: u16,
     pub moves: u16,
+    #[serde(default = "default_lives")]
+    pub lives: u8,
+    #[serde(default = "default_level")]
+    pub level: u8,
     pub status: BreakoutStatus,
     pub seed: u64,
     #[serde(default)]
     pub control: PaddleMove,
     #[serde(default)]
     pub paused: bool,
+    #[serde(default)]
+    pub serve_ready: bool,
     #[serde(skip)]
-    undo: Option<Snapshot>,
+    undo: Option<Box<Snapshot>>,
     #[serde(skip)]
     elapsed: f32,
     #[serde(skip)]
@@ -67,8 +93,9 @@ impl Default for Breakout {
 
 impl Breakout {
     pub fn new(seed: u64) -> Self {
-        Self {
-            bricks: vec![true; BRICK_COUNT],
+        let mut game = Self {
+            bricks: vec![false; BRICK_COUNT],
+            brick_health: vec![0; BRICK_COUNT],
             paddle: WIDTH / 2,
             ball_x: WIDTH / 2,
             ball_y: HEIGHT - 3,
@@ -76,17 +103,22 @@ impl Breakout {
             velocity_y: -1,
             score: 0,
             moves: 0,
+            lives: STARTING_LIVES,
+            level: 1,
             status: BreakoutStatus::Playing,
             seed,
             control: PaddleMove::Stay,
             paused: false,
+            serve_ready: false,
             undo: None,
             elapsed: 0.,
             precise_paddle: f32::from(WIDTH / 2),
             precise_ball_x: f32::from(WIDTH / 2),
             precise_ball_y: f32::from(HEIGHT - 3),
             runtime_initialized: true,
-        }
+        };
+        game.build_wall();
+        game
     }
 
     pub fn set_control(&mut self, movement: PaddleMove) -> bool {
@@ -134,7 +166,12 @@ impl Breakout {
         if self.status != BreakoutStatus::Playing {
             return false;
         }
-        self.paused = !self.paused;
+        if self.serve_ready {
+            self.serve_ready = false;
+            self.paused = false;
+        } else {
+            self.paused = !self.paused;
+        }
         if self.paused {
             self.elapsed = 0.;
         }
@@ -142,7 +179,7 @@ impl Breakout {
     }
 
     pub fn hint_move(&self) -> Option<PaddleMove> {
-        if self.status != BreakoutStatus::Playing {
+        if self.status != BreakoutStatus::Playing || self.serve_ready {
             return None;
         }
         let projected = self.projected_ball_x();
@@ -156,27 +193,21 @@ impl Breakout {
     }
 
     pub fn undo(&mut self) -> bool {
-        if let Some((
-            bricks,
-            paddle,
-            ball_x,
-            ball_y,
-            velocity_x,
-            velocity_y,
-            score,
-            moves,
-            status,
-        )) = self.undo.take()
-        {
-            self.bricks = bricks;
-            self.paddle = paddle;
-            self.ball_x = ball_x;
-            self.ball_y = ball_y;
-            self.velocity_x = velocity_x;
-            self.velocity_y = velocity_y;
-            self.score = score;
-            self.moves = moves;
-            self.status = status;
+        if let Some(snapshot) = self.undo.take() {
+            self.bricks = snapshot.bricks;
+            self.brick_health = snapshot.brick_health;
+            self.paddle = snapshot.paddle;
+            self.ball_x = snapshot.ball_x;
+            self.ball_y = snapshot.ball_y;
+            self.velocity_x = snapshot.velocity_x;
+            self.velocity_y = snapshot.velocity_y;
+            self.score = snapshot.score;
+            self.moves = snapshot.moves;
+            self.lives = snapshot.lives;
+            self.level = snapshot.level;
+            self.status = snapshot.status;
+            self.paused = snapshot.paused;
+            self.serve_ready = snapshot.serve_ready;
             self.elapsed = 0.;
             self.runtime_initialized = false;
             true
@@ -205,7 +236,23 @@ impl Breakout {
         }
     }
 
+    pub const fn target_level() -> u8 {
+        TARGET_LEVEL
+    }
+
+    pub fn remaining_bricks(&self) -> usize {
+        self.bricks.iter().filter(|brick| **brick).count()
+    }
+
+    pub fn brick_health(&self, index: usize) -> u8 {
+        self.brick_health
+            .get(index)
+            .copied()
+            .unwrap_or_else(|| u8::from(self.bricks.get(index).copied().unwrap_or(false)))
+    }
+
     fn ensure_runtime(&mut self) {
+        self.ensure_brick_health();
         if self.runtime_initialized {
             if (f32::from(self.paddle) - self.precise_paddle).abs() > 0.6
                 || (f32::from(self.ball_x) - self.precise_ball_x).abs() > 0.6
@@ -225,17 +272,22 @@ impl Breakout {
 
     fn capture_undo(&mut self) {
         self.sync_persisted();
-        self.undo = Some((
-            self.bricks.clone(),
-            self.paddle,
-            self.ball_x,
-            self.ball_y,
-            self.velocity_x,
-            self.velocity_y,
-            self.score,
-            self.moves,
-            self.status,
-        ));
+        self.undo = Some(Box::new(Snapshot {
+            bricks: self.bricks.clone(),
+            brick_health: self.brick_health.clone(),
+            paddle: self.paddle,
+            ball_x: self.ball_x,
+            ball_y: self.ball_y,
+            velocity_x: self.velocity_x,
+            velocity_y: self.velocity_y,
+            score: self.score,
+            moves: self.moves,
+            lives: self.lives,
+            level: self.level,
+            status: self.status,
+            paused: self.paused,
+            serve_ready: self.serve_ready,
+        }));
     }
 
     #[cfg(test)]
@@ -256,8 +308,9 @@ impl Breakout {
         };
         self.precise_paddle = (self.precise_paddle + paddle_delta * PADDLE_SPEED * dt)
             .clamp(2., f32::from(WIDTH - 3));
-        self.precise_ball_x += f32::from(self.velocity_x) * BALL_SPEED * dt;
-        self.precise_ball_y += f32::from(self.velocity_y) * BALL_SPEED * dt;
+        let ball_speed = BALL_SPEED + f32::from(self.level.saturating_sub(1)) * 0.65;
+        self.precise_ball_x += f32::from(self.velocity_x) * ball_speed * dt;
+        self.precise_ball_y += f32::from(self.velocity_y) * ball_speed * dt;
         self.moves = self.moves.saturating_add(1);
 
         if self.precise_ball_x <= 0. {
@@ -279,8 +332,7 @@ impl Breakout {
             && self.bricks[brick_row as usize * WIDTH as usize + brick_column as usize]
         {
             let index = brick_row as usize * WIDTH as usize + brick_column as usize;
-            self.bricks[index] = false;
-            self.score = self.score.saturating_add(1);
+            self.damage_brick(index);
             let moving_down = self.velocity_y > 0;
             self.velocity_y = -self.velocity_y;
             self.precise_ball_y = if moving_down {
@@ -288,20 +340,94 @@ impl Breakout {
             } else {
                 f32::from(brick_row + 2) + 0.01
             };
-            if self.bricks.iter().all(|brick| !brick) {
-                self.status = BreakoutStatus::Won;
+            if self.remaining_bricks() == 0 {
+                self.complete_wall();
                 return;
             }
         }
 
         if self.precise_ball_y >= f32::from(HEIGHT - 1) && self.velocity_y > 0 {
             if (self.precise_ball_x - self.precise_paddle).abs() <= 2. {
+                let impact = self.precise_ball_x - self.precise_paddle;
                 self.precise_ball_y = f32::from(HEIGHT - 1) - 0.01;
                 self.velocity_y = -self.velocity_y.abs();
+                if impact < -0.6 {
+                    self.velocity_x = -1;
+                } else if impact > 0.6 {
+                    self.velocity_x = 1;
+                }
             } else {
-                self.status = BreakoutStatus::Lost;
+                self.lives = self.lives.saturating_sub(1);
+                if self.lives == 0 {
+                    self.status = BreakoutStatus::Lost;
+                } else {
+                    self.prepare_serve();
+                }
             }
         }
+    }
+
+    fn damage_brick(&mut self, index: usize) {
+        self.ensure_brick_health();
+        let Some(health) = self.brick_health.get_mut(index) else {
+            return;
+        };
+        *health = health.saturating_sub(1);
+        self.score = self.score.saturating_add(1);
+        self.bricks[index] = *health > 0;
+    }
+
+    fn complete_wall(&mut self) {
+        if self.level >= TARGET_LEVEL {
+            self.status = BreakoutStatus::Won;
+            self.paused = false;
+            self.serve_ready = false;
+            return;
+        }
+        self.level = self.level.saturating_add(1);
+        self.build_wall();
+        self.prepare_serve();
+    }
+
+    fn prepare_serve(&mut self) {
+        self.paddle = WIDTH / 2;
+        self.ball_x = WIDTH / 2;
+        self.ball_y = HEIGHT - 3;
+        self.velocity_x = if self.seed.wrapping_add(u64::from(self.level)) & 1 == 0 {
+            1
+        } else {
+            -1
+        };
+        self.velocity_y = -1;
+        self.control = PaddleMove::Stay;
+        self.paused = true;
+        self.serve_ready = true;
+        self.elapsed = 0.;
+        self.precise_paddle = f32::from(self.paddle);
+        self.precise_ball_x = f32::from(self.ball_x);
+        self.precise_ball_y = f32::from(self.ball_y);
+        self.runtime_initialized = true;
+    }
+
+    fn build_wall(&mut self) {
+        self.bricks.resize(BRICK_COUNT, false);
+        self.brick_health.resize(BRICK_COUNT, 0);
+        let offset = (self.seed % WIDTH as u64) as usize;
+        for row in 0..BRICK_ROWS as usize {
+            for column in 0..WIDTH as usize {
+                let health = wall_health(self.level, row, column, offset);
+                let index = row * WIDTH as usize + column;
+                self.brick_health[index] = health;
+                self.bricks[index] = health > 0;
+            }
+        }
+    }
+
+    fn ensure_brick_health(&mut self) {
+        if self.brick_health.len() == self.bricks.len() {
+            return;
+        }
+        self.brick_health = self.bricks.iter().map(|brick| u8::from(*brick)).collect();
     }
 
     fn sync_persisted(&mut self) {
@@ -323,6 +449,44 @@ impl Breakout {
         }
         x
     }
+}
+
+fn wall_health(level: u8, row: usize, column: usize, offset: usize) -> u8 {
+    match level {
+        1 => 1,
+        2 => {
+            let shifted = (column + offset) % WIDTH as usize;
+            if (row + shifted).is_multiple_of(5) {
+                0
+            } else if row == 0 || shifted.is_multiple_of(4) {
+                2
+            } else {
+                1
+            }
+        }
+        _ => {
+            let shifted = (column + offset) % WIDTH as usize;
+            if row == 0 || row == BRICK_ROWS as usize - 1 {
+                if shifted.is_multiple_of(3) {
+                    3
+                } else {
+                    2
+                }
+            } else if shifted % 4 == 1 || shifted % 4 == 2 {
+                2
+            } else {
+                0
+            }
+        }
+    }
+}
+
+const fn default_lives() -> u8 {
+    STARTING_LIVES
+}
+
+const fn default_level() -> u8 {
+    1
 }
 
 #[cfg(test)]

@@ -231,6 +231,16 @@ multiplier. Stable boards with no legal swap reshuffle deterministically so a
 round never ends through an unreadable deadlock. Standard, Hard, and Expert
 increase field size, color count, target score, and available moves together.
 
+### 11.2 Breakout wall run
+
+Breakout is a three-wall run rather than a single uniform clear. The opening
+wall teaches the field, while later seeded patterns introduce gaps and armored
+bricks that take two or three hits. The player carries score and three lives
+through the run; a miss consumes one life and presents a visible LAUNCH control
+for the next serve. Paddle contact changes horizontal travel according to where
+the ball lands, letting LEFT, STAY, and RIGHT shape the next angle instead of
+only following it. Each later wall moves slightly faster.
+
 ## 12. Historical Phase 0 Decisions
 
 The original eight-game launch scope established the current product principles:

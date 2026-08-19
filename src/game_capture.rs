@@ -84,7 +84,7 @@ impl Game {
             "mahjong_solitaire_accessible" => Screen::Game(GameId::MahjongSolitaire),
             "snake" | "snake_hint" | "snake_hint_accessible" => Screen::Game(GameId::Snake),
             "snake_accessible" => Screen::Game(GameId::Snake),
-            "breakout" | "breakout_hint" | "breakout_hint_accessible" => {
+            "breakout" | "breakout_hint" | "breakout_hint_accessible" | "breakout_wall_two" => {
                 Screen::Game(GameId::Breakout)
             }
             "breakout_accessible" => Screen::Game(GameId::Breakout),
@@ -224,6 +224,29 @@ impl Game {
         }
         if scene == "solitaire_selected" {
             self.state.solitaire.select_tableau(0, 0);
+        }
+        if scene == "breakout_wall_two" {
+            let game = &mut self.state.breakout;
+            game.level = 2;
+            game.lives = 2;
+            game.score = 64;
+            game.paused = true;
+            game.serve_ready = true;
+            game.bricks = vec![false; 64];
+            game.brick_health = vec![0; 64];
+            for index in 0_usize..64 {
+                let row = index / 16;
+                let column = index % 16;
+                if !(row + column).is_multiple_of(5) {
+                    let health = if row == 0 || column.is_multiple_of(4) {
+                        2
+                    } else {
+                        1
+                    };
+                    game.bricks[index] = true;
+                    game.brick_health[index] = health;
+                }
+            }
         }
         if scene == "solitaire_peek" {
             self.capture_solitaire_peek = true;

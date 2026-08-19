@@ -122,7 +122,7 @@ pub fn draw(state: &AppState) {
         accent(),
     );
     text(
-        &status_text(game.status, game.score),
+        &status_text(game),
         if compact { 435. } else { hx },
         if compact { 30. } else { hy + 25. },
         accessibility::text_size(body_size(), state.large_text),
@@ -151,17 +151,40 @@ pub fn draw(state: &AppState) {
         if *brick {
             let row = index as i8 / WIDTH;
             let column = index as i8 % WIDTH;
-            draw_rectangle(
+            let health = game.brick_health(index);
+            let fill = if state.high_contrast {
+                match health {
+                    1 => Color::new(1., 0.15, 0.20, 1.),
+                    2 => Color::new(1., 0.70, 0.05, 1.),
+                    _ => Color::new(0.20, 0.90, 1., 1.),
+                }
+            } else {
+                match health {
+                    1 => Color::new(0.78, 0.30 + row as f32 * 0.05, 0.38, 1.),
+                    2 => Color::new(0.88, 0.58, 0.24, 1.),
+                    _ => Color::new(0.38, 0.70, 0.78, 1.),
+                }
+            };
+            let brick = Rect::new(
                 l.board.x + column as f32 * l.cell + 2.,
                 l.board.y + (row + 1) as f32 * l.cell + 2.,
                 l.cell - 4.,
                 l.cell - 4.,
-                if state.high_contrast {
-                    Color::new(1., 0.12 + row as f32 * 0.04, 0.18, 1.)
-                } else {
-                    Color::new(0.78, 0.30 + row as f32 * 0.05, 0.38, 1.)
-                },
             );
+            draw_rectangle(brick.x, brick.y, brick.w, brick.h, fill);
+            if health > 1 {
+                draw_rectangle_lines(brick.x, brick.y, brick.w, brick.h, 2., accent());
+                for pip in 0..health.min(3) {
+                    draw_circle(
+                        brick.x
+                            + brick.w * 0.5
+                            + (f32::from(pip) - f32::from(health - 1) * 0.5) * 7.,
+                        brick.y + brick.h * 0.5,
+                        2.2,
+                        accessibility::board_fill(state.high_contrast),
+                    );
+                }
+            }
         }
     }
     let (ball_x, ball_y) = game.ball_position();
@@ -184,10 +207,15 @@ pub fn draw(state: &AppState) {
     );
     text(
         &format!(
-            "Score {}  •  {}",
+            "Score {}  •  {} bricks  •  {}",
             game.score,
+            game.remaining_bricks(),
             state.card_hint.as_deref().unwrap_or(if game.paused {
-                "Paused — tap RESUME"
+                if game.serve_ready {
+                    "Ready — tap LAUNCH"
+                } else {
+                    "Paused — tap RESUME"
+                }
             } else {
                 "Auto-running — tap LEFT, STAY, or RIGHT"
             })
@@ -216,16 +244,27 @@ pub fn draw(state: &AppState) {
     button(l.undo, "UNDO", state.large_text);
     button(
         l.pause,
-        if game.paused { "RESUME" } else { "PAUSE" },
+        if game.serve_ready {
+            "LAUNCH"
+        } else if game.paused {
+            "RESUME"
+        } else {
+            "PAUSE"
+        },
         state.large_text,
     );
     button(l.new_game, "NEW BOARD", state.large_text);
 }
-fn status_text(status: BreakoutStatus, score: u16) -> String {
-    match status {
-        BreakoutStatus::Playing => format!("Score {} / 64", score),
-        BreakoutStatus::Won => "The wall is clear".into(),
-        BreakoutStatus::Lost => "The ball slipped away".into(),
+fn status_text(game: &crate::breakout::Breakout) -> String {
+    match game.status {
+        BreakoutStatus::Playing => format!(
+            "Wall {} / {}  •  {} lives",
+            game.level,
+            crate::breakout::Breakout::target_level(),
+            game.lives
+        ),
+        BreakoutStatus::Won => "All three walls are clear".into(),
+        BreakoutStatus::Lost => "No balls remain".into(),
     }
 }
 fn button(rect: Rect, label: &str, large_text: bool) {
