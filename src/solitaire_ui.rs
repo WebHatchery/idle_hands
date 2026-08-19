@@ -1,7 +1,19 @@
 //! Touch-first Klondike presentation.
 
-use crate::{cards::Card, solitaire::CardSource, state::AppState, ui::UiAction};
+use crate::{
+    cards::Card,
+    solitaire::{CardSource, Solitaire},
+    state::AppState,
+    ui::UiAction,
+};
 use macroquad::prelude::*;
+
+const TOP_ROW_Y: f32 = 150.;
+const TABLEAU_LABEL_Y: f32 = 305.;
+const TABLEAU_TOP: f32 = 315.;
+const TABLEAU_BOTTOM: f32 = 606.;
+const MAX_TABLEAU_GAP: f32 = 30.;
+const MIN_TABLEAU_GAP: f32 = 12.;
 
 fn text(s: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(s, x, y, crate::ui::readable_text_size(size), color);
@@ -13,10 +25,24 @@ fn draw_card(rect: Rect, card: Card, selected: bool, back_style: u8, reduced_mot
     crate::card_render::draw_card(rect, card, selected, back_style, reduced_motion);
 }
 
+fn tableau_gap(game: &Solitaire) -> f32 {
+    let deepest = game
+        .tableau
+        .iter()
+        .map(|column| column.len().saturating_sub(1))
+        .max()
+        .unwrap_or(0);
+    if deepest == 0 {
+        return MAX_TABLEAU_GAP;
+    }
+    ((TABLEAU_BOTTOM - TABLEAU_TOP - 116.) / deepest as f32).clamp(MIN_TABLEAU_GAP, MAX_TABLEAU_GAP)
+}
+
 pub fn draw_solitaire(state: &AppState) {
     let game = &state.solitaire;
-    text("‹ CABINET", 40., 55., 20., crate::theme::BRASS);
-    text("SOLITAIRE", 40., 105., 44., crate::theme::BRASS);
+    let tableau_gap = tableau_gap(game);
+    text("‹ CABINET", 40., 43., 20., crate::theme::BRASS);
+    text("SOLITAIRE", 40., 93., 44., crate::theme::BRASS);
     text(
         if game.status == crate::solitaire::SolitaireStatus::Won {
             "Table cleared"
@@ -24,42 +50,48 @@ pub fn draw_solitaire(state: &AppState) {
             "Build the four foundations"
         },
         44.,
-        132.,
+        120.,
         18.,
         crate::theme::SECONDARY,
     );
     text(
         game.ruleset.label(),
         44.,
-        153.,
+        141.,
         14.,
         Color::new(0.63, 0.95, 0.72, 1.),
     );
-    panel(card_rect(60., 175.), crate::theme::SURFACE);
+    panel(card_rect(60., TOP_ROW_Y), crate::theme::SURFACE);
     if let Some(card) = game.stock.last() {
         draw_card(
-            card_rect(60., 175.),
+            card_rect(60., TOP_ROW_Y),
             *card,
             false,
             state.card_back,
             state.reduced_motion,
         );
     }
-    text("STOCK", 68., 309., 13., crate::theme::SECONDARY);
+    text("STOCK", 68., TOP_ROW_Y + 134., 13., crate::theme::SECONDARY);
     if let Some(card) = game.waste.last() {
         draw_card(
-            card_rect(170., 175.),
+            card_rect(170., TOP_ROW_Y),
             *card,
             game.selected == Some(CardSource::Waste),
             state.card_back,
             state.reduced_motion,
         );
     } else {
-        panel(card_rect(170., 175.), crate::theme::GAME_PANEL);
+        panel(card_rect(170., TOP_ROW_Y), crate::theme::GAME_PANEL);
     }
-    text("WASTE", 180., 309., 13., crate::theme::SECONDARY);
+    text(
+        "WASTE",
+        180.,
+        TOP_ROW_Y + 134.,
+        13.,
+        crate::theme::SECONDARY,
+    );
     for suit in 0..4 {
-        let rect = card_rect(690. + suit as f32 * 105., 175.);
+        let rect = card_rect(690. + suit as f32 * 105., TOP_ROW_Y);
         panel(rect, crate::theme::GAME_PANEL);
         if game.foundations[suit] > 0 {
             let card = Card {
@@ -82,17 +114,17 @@ pub fn draw_solitaire(state: &AppState) {
         text(
             &(column + 1).to_string(),
             x + 38.,
-            335.,
+            TABLEAU_LABEL_Y,
             15.,
             Color::new(0.63, 0.58, 0.72, 1.),
         );
         for (depth, card) in game.tableau[column].iter().enumerate() {
-            let rect = card_rect(x, 345. + depth as f32 * 30.);
+            let rect = card_rect(x, TABLEAU_TOP + depth as f32 * tableau_gap);
             let selected = game.selected == Some(CardSource::Tableau(column, depth));
             draw_card(rect, *card, selected, state.card_back, state.reduced_motion);
         }
         if game.tableau[column].is_empty() {
-            panel(card_rect(x, 345.), crate::theme::GAME_PANEL);
+            panel(card_rect(x, TABLEAU_TOP), crate::theme::GAME_PANEL);
         }
     }
     text(
@@ -135,17 +167,18 @@ fn panel(rect: Rect, fill: Color) {
 }
 
 pub fn solitaire_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
+    let tableau_gap = tableau_gap(&state.solitaire);
     if Rect::new(20., 20., 180., 50.).contains(p) {
         return vec![UiAction::Cabinet];
     }
-    if card_rect(60., 175.).contains(p) {
+    if card_rect(60., TOP_ROW_Y).contains(p) {
         return vec![UiAction::SolitaireStock];
     }
-    if card_rect(170., 175.).contains(p) {
+    if card_rect(170., TOP_ROW_Y).contains(p) {
         return vec![UiAction::SolitaireWaste];
     }
     for suit in 0..4 {
-        if card_rect(690. + suit as f32 * 105., 175.).contains(p) {
+        if card_rect(690. + suit as f32 * 105., TOP_ROW_Y).contains(p) {
             return vec![UiAction::SolitaireFoundation(suit)];
         }
     }
@@ -160,11 +193,13 @@ pub fn solitaire_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     for column in 0..7 {
         let x = 35. + column as f32 * 120.;
-        if p.x >= x && p.x <= x + 92. && p.y >= 335. {
+        if p.x >= x && p.x <= x + 92. && p.y >= TABLEAU_LABEL_Y {
             let depth = if state.solitaire.tableau[column].is_empty() {
                 0
+            } else if p.y < TABLEAU_TOP {
+                0
             } else {
-                (((p.y - 345.) / 30.).floor() as usize)
+                (((p.y - TABLEAU_TOP) / tableau_gap).floor() as usize)
                     .min(state.solitaire.tableau[column].len() - 1)
             };
             return vec![UiAction::SolitaireTableau(column, depth)];
