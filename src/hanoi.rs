@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::VecDeque;
 
 const DEFAULT_DISKS: u8 = 5;
-const DISK_VARIANTS: [u8; 3] = [3, 4, 5];
+const DISK_VARIANTS: [u8; 3] = [3, 5, 7];
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum HanoiPhase {
@@ -22,7 +22,7 @@ pub struct Hanoi {
     pub disks: u8,
     pub phase: HanoiPhase,
     #[serde(skip)]
-    undo: Option<Box<Self>>,
+    history: Vec<Box<Self>>,
 }
 
 impl Default for Hanoi {
@@ -42,7 +42,7 @@ impl Hanoi {
     }
 
     pub fn new_with_disks(seed: u64, disks: u8) -> Self {
-        let disks = disks.clamp(3, DEFAULT_DISKS);
+        let disks = disks.clamp(3, 7);
         let stack = (1..=disks).rev().collect();
         Self {
             stacks: [stack, Vec::new(), Vec::new()],
@@ -51,7 +51,7 @@ impl Hanoi {
             seed,
             disks,
             phase: HanoiPhase::Playing,
-            undo: None,
+            history: Vec::new(),
         }
     }
 
@@ -78,8 +78,8 @@ impl Hanoi {
             self.selected = None;
             return false;
         }
-        let previous = self.clone_without_undo();
-        self.undo = Some(Box::new(previous));
+        let mut previous = self.clone_without_undo();
+        previous.selected = None;
         self.stacks[source].pop();
         self.stacks[peg].push(disk);
         self.moves = self.moves.saturating_add(1);
@@ -87,14 +87,17 @@ impl Hanoi {
         if self.stacks[2].len() == self.disks as usize {
             self.phase = HanoiPhase::Won;
         }
+        self.history.push(Box::new(previous));
         true
     }
 
     pub fn undo(&mut self) -> bool {
-        let Some(previous) = self.undo.take() else {
+        let Some(previous) = self.history.pop() else {
             return false;
         };
+        let history = std::mem::take(&mut self.history);
         *self = *previous;
+        self.history = history;
         true
     }
 
@@ -102,16 +105,40 @@ impl Hanoi {
         *self = Self::new_with_disks(seed, self.disks);
     }
 
-    pub fn reset_next(&mut self, seed: u64) {
-        let index = DISK_VARIANTS
-            .iter()
-            .position(|candidate| *candidate == self.disks)
-            .unwrap_or(DISK_VARIANTS.len() - 1);
-        *self = Self::new_with_disks(seed, DISK_VARIANTS[(index + 1) % DISK_VARIANTS.len()]);
+    pub fn set_disks(&mut self, disks: u8, seed: u64) {
+        *self = Self::new_with_disks(seed, disks);
     }
 
     pub fn won(&self) -> bool {
         self.phase == HanoiPhase::Won
+    }
+
+    pub fn optimal_moves(&self) -> u16 {
+        (1_u16 << self.disks) - 1
+    }
+
+    pub fn clear_rank(&self) -> &'static str {
+        if !self.won() {
+            "OPEN"
+        } else if self.moves == self.optimal_moves() {
+            "PERFECT"
+        } else if self.moves <= self.optimal_moves().saturating_add(u16::from(self.disks)) {
+            "CLOSE"
+        } else {
+            "CLEAR"
+        }
+    }
+
+    pub fn can_move(&self, source: usize, destination: usize) -> bool {
+        if source >= 3 || destination >= 3 || source == destination {
+            return false;
+        }
+        let Some(&disk) = self.stacks[source].last() else {
+            return false;
+        };
+        self.stacks[destination]
+            .last()
+            .is_none_or(|&top| top > disk)
     }
 
     pub fn hint_move(&self) -> Option<(usize, usize)> {
@@ -151,7 +178,7 @@ impl Hanoi {
 
     fn clone_without_undo(&self) -> Self {
         let mut copy = self.clone();
-        copy.undo = None;
+        copy.history.clear();
         copy
     }
 }

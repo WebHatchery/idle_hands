@@ -338,10 +338,14 @@ pub fn mancala(state: &AppState) -> String {
 pub fn hanoi(state: &AppState) -> String {
     let game = &state.hanoi;
     if game.won() {
-        return "All five disks rest on the far peg — tap NEW BOARD to play again.".into();
+        return format!(
+            "{} tower in {} moves — choose 3, 5, or 7 DISKS, or tap RESTART.",
+            game.clear_rank(),
+            game.moves
+        );
     }
     game.hint_move().map_or_else(
-        || "No legal route remains — tap NEW BOARD to begin again.".into(),
+        || "No legal route remains — tap RESTART to begin again.".into(),
         |(source, destination)| {
             format!(
                 "Move a disk from peg {} to peg {}.",

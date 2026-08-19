@@ -236,6 +236,7 @@ pub enum UiAction {
     HanoiHint,
     HanoiUndo,
     HanoiNew,
+    HanoiDisks(u8),
     NumberMatchTap(usize),
     NumberMatchHint,
     NumberMatchUndo,
@@ -335,6 +336,7 @@ impl UiAction {
                 | Self::MancalaNew
                 | Self::MancalaVariant(_)
                 | Self::HanoiNew
+                | Self::HanoiDisks(_)
                 | Self::NumberMatchNew
                 | Self::FloodNew
                 | Self::FloodDifficulty(_)

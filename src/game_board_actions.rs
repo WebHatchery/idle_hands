@@ -395,7 +395,11 @@ impl Game {
             }
             UiAction::HanoiNew => {
                 let seed = self.state.hanoi.seed.wrapping_add(1);
-                self.state.hanoi.reset_next(seed);
+                self.state.hanoi.reset(seed);
+            }
+            UiAction::HanoiDisks(disks) => {
+                let seed = self.state.hanoi.seed.wrapping_add(1);
+                self.state.hanoi.set_disks(*disks, seed);
             }
             UiAction::NumberMatchTap(index) => {
                 self.state.number_match.tap(*index);

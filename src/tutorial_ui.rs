@@ -269,9 +269,9 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
             "GENTLE, SHARP, and EXPERT change cabinet tactics; gather the majority.",
         ],
         GameId::Hanoi => [
-            "Tap a peg to select its top disk, then tap a destination peg.",
-            "Never place a larger disk on a smaller one.",
-            "Move all five disks to the far peg; use UNDO or NEW BOARD.",
+            "Tap 3 DISKS, 5 DISKS, or 7 DISKS to choose the tower and its par.",
+            "Tap a source peg; green rings are legal destinations and red rings are blocked.",
+            "Move the numbered tower to the far peg; use HINT, multi-step UNDO, or RESTART.",
         ],
         GameId::NumberMatch => [
             "Tap a number, then tap an adjacent number to pair it.",

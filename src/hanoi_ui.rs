@@ -14,6 +14,7 @@ struct Layout {
     hint: Rect,
     undo: Rect,
     new_game: Rect,
+    disk_choices: [Rect; 3],
 }
 
 fn layout() -> Layout {
@@ -25,15 +26,25 @@ fn layout() -> Layout {
             hint: Rect::new(635., 220., 105., 44.),
             undo: Rect::new(635., 110., 105., 44.),
             new_game: Rect::new(635., 165., 140., 44.),
+            disk_choices: [
+                Rect::new(625., 50., 67., 44.),
+                Rect::new(697., 50., 67., 44.),
+                Rect::new(769., 50., 67., 44.),
+            ],
         }
     } else if crate::ui::is_portrait() {
         let board = Rect::new(15., 105., 300., 285.);
         Layout {
             board,
             pegs: peg_rects(board),
-            hint: Rect::new(15., 440., 145., 44.),
-            undo: Rect::new(15., 495., 145., 44.),
-            new_game: Rect::new(170., 495., 145., 44.),
+            hint: Rect::new(15., 455., 145., 44.),
+            undo: Rect::new(15., 510., 145., 44.),
+            new_game: Rect::new(170., 510., 145., 44.),
+            disk_choices: [
+                Rect::new(15., 400., 90., 44.),
+                Rect::new(112., 400., 90., 44.),
+                Rect::new(209., 400., 90., 44.),
+            ],
         }
     } else {
         let board = Rect::new(300., 100., 500., 330.);
@@ -43,6 +54,11 @@ fn layout() -> Layout {
             hint: Rect::new(850., 245., 120., 44.),
             undo: Rect::new(850., 190., 120., 44.),
             new_game: Rect::new(990., 190., 145., 44.),
+            disk_choices: [
+                Rect::new(850., 125., 90., 44.),
+                Rect::new(950., 125., 90., 44.),
+                Rect::new(1050., 125., 90., 44.),
+            ],
         }
     }
 }
@@ -65,6 +81,11 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if crate::ui::hit(l.new_game, point) {
         return vec![UiAction::HanoiNew];
+    }
+    for (index, disks) in [3, 5, 7].into_iter().enumerate() {
+        if crate::ui::hit(l.disk_choices[index], point) {
+            return vec![UiAction::HanoiDisks(disks)];
+        }
     }
     Vec::new()
 }
@@ -92,11 +113,12 @@ pub fn draw(state: &AppState) {
     text("HANOI", title_x, title_y, title_size(), accent());
     text(
         &format!(
-            "{} disks  •  {} moves  •  {}",
+            "{} disks  •  Moves {}/{}  •  {}",
             game.disks,
             game.moves,
+            game.optimal_moves(),
             if game.won() {
-                "ROOM CLEAR"
+                game.clear_rank()
             } else {
                 "MOVE THE DISKS"
             }
@@ -114,7 +136,7 @@ pub fn draw(state: &AppState) {
             .unwrap_or(status_text(game.phase)),
         if compact { 230. } else { title_x },
         if portrait {
-            410.
+            575.
         } else if compact {
             340.
         } else {
@@ -125,7 +147,10 @@ pub fn draw(state: &AppState) {
     );
     button(l.hint, "HINT");
     button(l.undo, "UNDO");
-    button(l.new_game, "NEW BOARD");
+    button(l.new_game, "RESTART");
+    for (rect, disks) in l.disk_choices.iter().zip([3, 5, 7]) {
+        button_selected(*rect, &format!("{} DISKS", disks), game.disks == disks);
+    }
 }
 
 fn peg_rects(board: Rect) -> [Rect; 3] {
@@ -161,6 +186,18 @@ fn draw_board(board: Rect, game: &Hanoi) {
         );
         if game.selected == Some(peg) {
             draw_circle(center, post_top - 12., 8., accent());
+        } else if let Some(source) = game.selected {
+            draw_circle_lines(
+                center,
+                post_top - 12.,
+                9.,
+                3.,
+                if game.can_move(source, peg) {
+                    Color::new(0.45, 0.90, 0.58, 1.)
+                } else {
+                    Color::new(0.95, 0.35, 0.38, 1.)
+                },
+            );
         }
         for (level, disk) in game.stacks[peg].iter().enumerate() {
             let width = board.w * (0.08 + *disk as f32 * 0.025);
@@ -173,6 +210,12 @@ fn draw_board(board: Rect, game: &Hanoi) {
                 disk_color(*disk),
             );
             draw_rectangle_lines(center - width / 2., y, width, disk_height() - 3., 1., WHITE);
+            center_text(
+                &disk.to_string(),
+                Rect::new(center - width / 2., y, width, disk_height() - 3.),
+                11.,
+                crate::theme::BACKGROUND,
+            );
         }
     }
 }
@@ -192,6 +235,8 @@ fn disk_color(disk: u8) -> Color {
         Color::new(0.95, 0.63, 0.35, 1.),
         Color::new(0.84, 0.48, 0.80, 1.),
         crate::theme::BRASS,
+        Color::new(0.40, 0.84, 0.84, 1.),
+        Color::new(0.94, 0.44, 0.56, 1.),
     ];
     colors[(disk.saturating_sub(1) as usize).min(colors.len() - 1)]
 }
@@ -199,7 +244,7 @@ fn disk_color(disk: u8) -> Color {
 fn status_text(phase: HanoiPhase) -> &'static str {
     match phase {
         HanoiPhase::Playing => "Tap a source peg, then a destination peg",
-        HanoiPhase::Won => "All five disks rest on the far peg",
+        HanoiPhase::Won => "Tower complete • Choose a disk count or tap RESTART",
     }
 }
 
@@ -207,6 +252,22 @@ fn button(rect: Rect, label: &str) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     center_text(label, rect, 11., WHITE);
+}
+
+fn button_selected(rect: Rect, label: &str, selected: bool) {
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        if selected {
+            Color::new(0.45, 0.25, 0.42, 1.)
+        } else {
+            crate::theme::SURFACE
+        },
+    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
+    center_text(label, rect, 9., WHITE);
 }
 
 fn center_text(label: &str, rect: Rect, size: f32, color: Color) {

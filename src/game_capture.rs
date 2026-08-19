@@ -154,7 +154,9 @@ impl Game {
             "mancala" | "mancala_hint" | "mancala_hint_accessible" | "mancala_tactics" => {
                 Screen::Game(GameId::Mancala)
             }
-            "hanoi" | "hanoi_hint" | "hanoi_hint_accessible" => Screen::Game(GameId::Hanoi),
+            "hanoi" | "hanoi_hint" | "hanoi_hint_accessible" | "hanoi_master" => {
+                Screen::Game(GameId::Hanoi)
+            }
             "number_match" | "number_match_hint" | "number_match_hint_accessible" => {
                 Screen::Game(GameId::NumberMatch)
             }
@@ -491,6 +493,14 @@ impl Game {
             game.moves = 14;
             game.captured_stones = 11;
             game.extra_turns = 3;
+        }
+        if scene == "hanoi_master" {
+            use crate::hanoi::Hanoi;
+            let game = &mut self.state.hanoi;
+            *game = Hanoi::new_with_disks(0x0048_414E_4F49, 7);
+            game.stacks = [vec![7, 6, 5], vec![4, 3], vec![2, 1]];
+            game.selected = Some(2);
+            game.moves = 18;
         }
         if scene == "solitaire_peek" {
             self.capture_solitaire_peek = true;

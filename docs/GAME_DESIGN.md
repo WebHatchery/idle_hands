@@ -358,6 +358,19 @@ gain, captures, and extra turns, and EXPERT looks through chained bonus moves
 while discounting choices that expose a strong player reply. Hints use the same
 capture-aware tactical values and name the concrete reward they found.
 
+### 11.12 Hanoi tower trials
+
+Hanoi exposes three, five, and seven-disk towers as visible touch choices. Their
+optimal targets scale from seven to thirty-one to one hundred twenty-seven
+moves, and a completed tower receives PERFECT, CLOSE, or CLEAR feedback against
+that target. Every disk carries its size number in addition to a distinct width
+and color. Selecting a source marks each other peg with a green legal ring or a
+red blocked ring before the destination tap, teaching the size constraint in
+the board itself. UNDO retains the full move history rather than only the last
+transfer, while RESTART preserves the current disk trial. The breadth-first
+hint solver supports the full seven-disk state space and each selectable tower
+is verified by following its shortest route to completion.
+
 ## 12. Historical Phase 0 Decisions
 
 The original eight-game launch scope established the current product principles:
