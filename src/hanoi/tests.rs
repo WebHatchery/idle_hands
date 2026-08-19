@@ -112,3 +112,21 @@ fn following_hints_solves_the_hanoi_room() {
     assert!(game.won());
     assert_eq!(game.hint_move(), None);
 }
+
+#[test]
+fn rotating_disk_variants_remains_solvable() {
+    for disks in [3, 4, 5] {
+        let mut game = Hanoi::new_with_disks(1, disks);
+        for _ in 0..31 {
+            let Some((source, destination)) = game.hint_move() else {
+                break;
+            };
+            assert!(game.tap_peg(source));
+            assert!(game.tap_peg(destination));
+            if game.won() {
+                break;
+            }
+        }
+        assert!(game.won(), "{disks}-disk room should be solvable");
+    }
+}

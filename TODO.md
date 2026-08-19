@@ -2,17 +2,17 @@
 
 ## Future agent tasks
 
-- [ ] Add optional elapsed-time and best-time records to classic games where
+- [x] Add optional elapsed-time and best-time records to classic games where
       speed improves replay, keeping pause, save, and touch behavior verified.
-- [ ] Add selectable AI strengths to Tic-Tac-Toe, Connect Four, Checkers, and
+- [x] Add selectable AI strengths to Tic-Tac-Toe, Connect Four, Checkers, and
       Mancala while preserving deterministic seeded tests and touch controls.
-- [ ] Add authored level rotation or seeded variants for the intentionally fixed
+- [x] Add authored level rotation or seeded variants for the intentionally fixed
       Nonogram, Sokoban, and Hanoi openings if more startup variety is desired.
-- [ ] Replace the vector-only presentation with an authored sprite/texture
+- [x] Replace the vector-only presentation with an authored sprite/texture
       pass where art direction requires it; update `assets/`, the texture
       manifest, the asset registry, and responsive verification captures.
-- [ ] Add automated portrait and compact-landscape bounds assertions for every
+- [x] Add automated portrait and compact-landscape bounds assertions for every
       game, including hit-target overlap checks for shared tutorial/back UI.
-- [ ] Re-run the full 47-scene capture harness after adding a game or
+- [x] Re-run the full 47-scene capture harness after adding a game or
       difficulty, keeping `GameId::ALL`, snapshots, records, and achievements
       in lockstep.

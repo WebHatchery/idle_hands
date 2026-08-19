@@ -13,11 +13,24 @@ pub enum MancalaPhase {
     Lost,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum AiLevel {
+    Gentle,
+    Sharp,
+    Expert,
+}
+
+fn default_ai_level() -> AiLevel {
+    AiLevel::Sharp
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Mancala {
     pub pits: Vec<u8>,
     pub moves: u16,
     pub seed: u64,
+    #[serde(default = "default_ai_level")]
+    pub ai_level: AiLevel,
     pub phase: MancalaPhase,
     #[serde(skip)]
     undo: Option<Box<Self>>,
@@ -38,6 +51,7 @@ impl Mancala {
             pits,
             moves: 0,
             seed,
+            ai_level: AiLevel::Sharp,
             phase: MancalaPhase::Playing,
             undo: None,
         }
@@ -68,7 +82,13 @@ impl Mancala {
     }
 
     pub fn reset(&mut self, seed: u64) {
+        let ai_level = self.ai_level;
         *self = Self::new(seed);
+        self.ai_level = ai_level;
+    }
+
+    pub fn set_ai_level(&mut self, ai_level: AiLevel) {
+        self.ai_level = ai_level;
     }
 
     pub fn won(&self) -> bool {
@@ -139,11 +159,21 @@ impl Mancala {
                 self.finish();
                 return;
             }
-            self.seed = self
-                .seed
-                .wrapping_mul(6364136223846793005)
-                .wrapping_add(1442695040888963407);
-            let pit = available[(self.seed as usize) % available.len()];
+            let pit = match self.ai_level {
+                AiLevel::Gentle => available[0],
+                AiLevel::Sharp => {
+                    self.seed = self
+                        .seed
+                        .wrapping_mul(6364136223846793005)
+                        .wrapping_add(1442695040888963407);
+                    available[(self.seed as usize) % available.len()]
+                }
+                AiLevel::Expert => available
+                    .iter()
+                    .copied()
+                    .max_by_key(|&pit| self.cpu_move_value(pit))
+                    .unwrap_or(available[0]),
+            };
             let last = self.sow(pit, false);
             if self.side_empty(false) {
                 self.finish();
@@ -153,6 +183,14 @@ impl Mancala {
                 return;
             }
         }
+    }
+
+    fn cpu_move_value(&self, pit: usize) -> i32 {
+        let mut trial = self.clone_without_undo();
+        let before_store = trial.pits[OPPONENT_STORE];
+        let last = trial.sow(pit, false);
+        let gain = i32::from(trial.pits[OPPONENT_STORE] - before_store);
+        gain * 100 + i32::from(last == OPPONENT_STORE) * 1_000
     }
 
     fn side_empty(&self, player: bool) -> bool {

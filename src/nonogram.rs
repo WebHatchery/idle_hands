@@ -27,6 +27,7 @@ impl NonogramPreset {
 }
 
 pub const FOCUS_WINDOW: usize = 9;
+pub const VARIANT_COUNT: u8 = 4;
 
 pub fn visible_size(size: usize, zoomed: bool) -> usize {
     if zoomed {
@@ -76,6 +77,8 @@ pub struct Nonogram {
     pub selected: Option<usize>,
     pub moves: u32,
     pub best_moves: Option<u32>,
+    #[serde(default)]
+    pub variant: u8,
     pub status: NonogramStatus,
     #[serde(skip)]
     history: Vec<(Vec<NonogramMark>, u32, NonogramStatus)>,
@@ -88,12 +91,29 @@ impl Default for Nonogram {
 }
 impl Nonogram {
     pub fn new(preset: NonogramPreset) -> Self {
+        Self::new_with_variant(preset, 0)
+    }
+
+    pub fn new_with_seed(preset: NonogramPreset, seed: u64) -> Self {
+        Self::new_with_variant(preset, variant_from_seed(seed))
+    }
+
+    pub fn new_with_variant(preset: NonogramPreset, variant: u8) -> Self {
         let size = preset.size();
+        let variant = variant % VARIANT_COUNT;
         let solution: Vec<bool> = (0..size * size)
             .map(|index| {
                 let x = index % size;
                 let y = index / size;
-                x == y || x + y + 1 == size || (y == size / 2 && x.is_multiple_of(3))
+                match variant {
+                    0 => x == y || x + y + 1 == size || (y == size / 2 && x.is_multiple_of(3)),
+                    1 => x == 0 || y == 0 || x + 1 == size || y + 1 == size || x == y,
+                    2 => {
+                        let center = size / 2;
+                        x.abs_diff(center) + y.abs_diff(center) <= center
+                    }
+                    _ => (x + y) % 2 == 0 || x == size / 2 || y == size / 2,
+                }
             })
             .collect();
         let row_clues = (0..size)
@@ -113,6 +133,7 @@ impl Nonogram {
             selected: None,
             moves: 0,
             best_moves: None,
+            variant,
             status: NonogramStatus::Playing,
             history: Vec::new(),
         }
@@ -181,6 +202,11 @@ impl Nonogram {
             );
         }
     }
+}
+
+fn variant_from_seed(seed: u64) -> u8 {
+    let mixed = seed ^ seed.rotate_left(17) ^ 0x9E37_79B9_7F4A_7C15;
+    (mixed.wrapping_mul(0xBF58_476D_1CE4_E5B9) % u64::from(VARIANT_COUNT)) as u8
 }
 
 pub fn stroke_indices(size: usize, start: (usize, usize), end: (usize, usize)) -> Vec<usize> {

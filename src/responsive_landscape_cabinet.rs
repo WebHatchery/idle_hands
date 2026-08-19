@@ -19,10 +19,27 @@ const CATEGORY_RECTS: [Rect; 6] = [
 ];
 const PAGE_SIZE: usize = 16;
 
-pub fn draw(state: &AppState, _data: &GameData, loaded: usize) {
+pub fn draw(
+    state: &AppState,
+    _data: &GameData,
+    loaded: usize,
+    cabinet_texture: Option<&Texture2D>,
+) {
     draw_rectangle(0., 0., 844., 390., crate::theme::BACKGROUND_DEEP);
     draw_rectangle(154., 5., 685., 380., crate::theme::PAPER);
     draw_rectangle_lines(154., 5., 685., 380., 2., crate::theme::BORDER);
+    if let Some(texture) = cabinet_texture {
+        draw_texture_ex(
+            texture,
+            154.,
+            5.,
+            Color::new(1., 1., 1., 0.16),
+            DrawTextureParams {
+                dest_size: Some(vec2(685., 380.)),
+                ..Default::default()
+            },
+        );
+    }
     draw_sidebar(state);
     if state.cabinet_filter == 0 {
         draw_home(state, loaded);

@@ -20,11 +20,28 @@ const CATEGORY_RECTS: [Rect; 6] = [
     Rect::new(880., 400., 292., 132.),
 ];
 
-pub fn draw(state: &AppState, _data: &GameData, loaded: usize) {
+pub fn draw(
+    state: &AppState,
+    _data: &GameData,
+    loaded: usize,
+    cabinet_texture: Option<&Texture2D>,
+) {
     draw_wood_frame();
     draw_sidebar(state);
     draw_rectangle(MAIN.x, MAIN.y, MAIN.w, MAIN.h, crate::theme::PAPER);
     draw_rectangle_lines(MAIN.x, MAIN.y, MAIN.w, MAIN.h, 3., crate::theme::BORDER);
+    if let Some(texture) = cabinet_texture {
+        draw_texture_ex(
+            texture,
+            MAIN.x,
+            MAIN.y,
+            Color::new(1., 1., 1., 0.14),
+            DrawTextureParams {
+                dest_size: Some(vec2(MAIN.w, MAIN.h)),
+                ..Default::default()
+            },
+        );
+    }
     draw_paper_grain();
     if state.cabinet_filter == 0 {
         draw_home(state, loaded);

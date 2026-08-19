@@ -37,6 +37,10 @@ impl AppState {
         state.minesweeper = crate::minesweeper::Minesweeper::beginner(seed_at(seed, 1));
         state.sudoku =
             crate::sudoku::Sudoku::with_difficulty(crate::sudoku::SudokuDifficulty::Medium);
+        state.nonogram = crate::nonogram::Nonogram::new_with_seed(
+            crate::nonogram::NonogramPreset::Medium,
+            seed_at(seed, 45),
+        );
         state.solitaire = crate::solitaire::Solitaire::new(seed_at(seed, 2));
         state.freecell = crate::freecell::FreeCell::new(seed_at(seed, 3));
         state.fivefold = crate::fivefold::Fivefold::new(seed_at(seed, 4));
@@ -73,9 +77,9 @@ impl AppState {
             DotsDifficulty::Standard,
             &data.puzzles.dots_boxes,
         );
-        state.sokoban = crate::sokoban::Sokoban::new(seed_at(seed, 30));
+        state.sokoban = crate::sokoban::Sokoban::new_with_seed(seed_at(seed, 30));
         state.mancala = crate::mancala::Mancala::new(seed_at(seed, 31));
-        state.hanoi = crate::hanoi::Hanoi::new(seed_at(seed, 32));
+        state.hanoi = crate::hanoi::Hanoi::new_with_seed(seed_at(seed, 32));
         state.number_match = crate::number_match::NumberMatch::new(seed_at(seed, 33));
         state.flood_it = FloodIt::new_with_config(
             seed_at(seed, 34),

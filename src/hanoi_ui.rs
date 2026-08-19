@@ -92,7 +92,8 @@ pub fn draw(state: &AppState) {
     text("HANOI", title_x, title_y, title_size(), accent());
     text(
         &format!(
-            "{} moves  •  {}",
+            "{} disks  •  {} moves  •  {}",
+            game.disks,
             game.moves,
             if game.won() {
                 "ROOM CLEAR"

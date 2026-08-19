@@ -50,6 +50,17 @@ pub enum CheckersStatus {
     Draw,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum AiLevel {
+    Gentle,
+    Sharp,
+    Expert,
+}
+
+fn default_ai_level() -> AiLevel {
+    AiLevel::Sharp
+}
+
 type Snapshot = (Vec<Piece>, Side, CheckersStatus, u16, u64);
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -59,6 +70,8 @@ pub struct Checkers {
     pub status: CheckersStatus,
     pub moves: u16,
     pub seed: u64,
+    #[serde(default = "default_ai_level")]
+    pub ai_level: AiLevel,
     pub selected: Option<usize>,
     #[serde(default)]
     forced_capture: Option<usize>,
@@ -91,6 +104,7 @@ impl Checkers {
             status: CheckersStatus::Playing,
             moves: 0,
             seed,
+            ai_level: AiLevel::Sharp,
             selected: None,
             forced_capture: None,
             undo: None,
@@ -136,7 +150,13 @@ impl Checkers {
     }
 
     pub fn reset(&mut self, seed: u64) {
+        let ai_level = self.ai_level;
         *self = Self::new(seed);
+        self.ai_level = ai_level;
+    }
+
+    pub fn set_ai_level(&mut self, ai_level: AiLevel) {
+        self.ai_level = ai_level;
     }
 
     pub fn hint_move(&self) -> Option<(usize, usize)> {
@@ -250,10 +270,18 @@ impl Checkers {
                 }
             }
         }
-        candidates.sort_by_key(|&(from, to)| {
-            let capture = (from / SIZE).abs_diff(to / SIZE) == 2;
-            (!capture, to.abs_diff(28), to)
-        });
+        match self.ai_level {
+            AiLevel::Gentle => candidates.sort_by_key(|&(from, to)| (from, to)),
+            AiLevel::Sharp => candidates.sort_by_key(|&(from, to)| {
+                let capture = (from / SIZE).abs_diff(to / SIZE) == 2;
+                (!capture, to.abs_diff(28), to)
+            }),
+            AiLevel::Expert => candidates.sort_by_key(|&(from, to)| {
+                let capture = (from / SIZE).abs_diff(to / SIZE) == 2;
+                let promotion = to / SIZE == SIZE - 1;
+                (!capture, !promotion, to.abs_diff(28), to)
+            }),
+        }
         candidates.into_iter().next()
     }
 

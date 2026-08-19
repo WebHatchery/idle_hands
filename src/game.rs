@@ -88,6 +88,7 @@ impl Game {
             self.state.records.minesweeper[slot] = self.state.mine_records[slot];
         }
         self.tick_realtime(dt);
+        self.tick_elapsed(dt);
         if is_mouse_button_pressed(MouseButton::Left) {
             let viewport = ui::viewport();
             self.pointer
@@ -398,7 +399,8 @@ impl Game {
                 self.state.nonogram.undo();
             }
             ui::UiAction::NonogramPreset(preset) => {
-                self.state.nonogram = crate::nonogram::Nonogram::new(preset);
+                let variant = self.state.nonogram.variant.wrapping_add(1);
+                self.state.nonogram = crate::nonogram::Nonogram::new_with_variant(preset, variant);
                 self.state.nonogram_zoomed = false;
                 self.state.nonogram_focus = (0, 0);
             }
@@ -565,6 +567,9 @@ impl Game {
             ui::UiAction::TicTacToeNew => {
                 let seed = self.state.tic_tac_toe.seed.wrapping_add(1);
                 self.state.tic_tac_toe.reset(seed);
+            }
+            ui::UiAction::TicTacToeLevel(level) => {
+                self.state.tic_tac_toe.set_ai_level(level);
             }
             ui::UiAction::MemoryPairsSelect(index) => {
                 self.state.memory_pairs.select(index);

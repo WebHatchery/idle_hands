@@ -28,13 +28,7 @@ pub fn draw(state: &AppState) {
     let game = &state.minesweeper;
     text("‹ CABINET", 40., 55., 20., crate::theme::BRASS);
     text("MINESWEEPER", 40., 105., 42., crate::theme::BRASS);
-    text(
-        "Read the field",
-        44.,
-        132.,
-        18.,
-        crate::theme::SECONDARY,
-    );
+    text("Read the field", 44., 132., 18., crate::theme::SECONDARY);
     let board = Rect::new(350., 155., 450., 450.);
     panel(board, accessibility::board_fill(state.high_contrast));
     let grid = GridLayout::new(

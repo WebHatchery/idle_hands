@@ -124,7 +124,8 @@ pub fn draw(state: &AppState) {
     );
     text(
         &format!(
-            "Crates {}  •  {} moves  •  {}",
+            "Level {}  •  Crates {}  •  {} moves  •  {}",
+            game.level + 1,
             game.crates,
             game.moves,
             if game.won() {

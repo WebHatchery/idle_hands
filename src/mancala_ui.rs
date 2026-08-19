@@ -1,7 +1,7 @@
 //! Responsive touch presentation for Mancala.
 
 use crate::{
-    mancala::{Mancala, MancalaPhase},
+    mancala::{AiLevel, Mancala, MancalaPhase},
     state::AppState,
     ui::UiAction,
 };
@@ -13,6 +13,7 @@ struct Layout {
     hint: Rect,
     undo: Rect,
     new_game: Rect,
+    levels: [Rect; 3],
 }
 
 fn layout() -> Layout {
@@ -22,6 +23,11 @@ fn layout() -> Layout {
             hint: Rect::new(640., 215., 100., 44.),
             undo: Rect::new(640., 105., 100., 44.),
             new_game: Rect::new(640., 160., 135., 44.),
+            levels: [
+                Rect::new(640., 50., 90., 42.),
+                Rect::new(740., 50., 90., 42.),
+                Rect::new(640., 95., 90., 42.),
+            ],
         }
     } else if crate::ui::is_portrait() {
         Layout {
@@ -29,6 +35,11 @@ fn layout() -> Layout {
             hint: Rect::new(15., 410., 145., 44.),
             undo: Rect::new(15., 465., 145., 44.),
             new_game: Rect::new(170., 465., 145., 44.),
+            levels: [
+                Rect::new(15., 355., 90., 42.),
+                Rect::new(112., 355., 90., 42.),
+                Rect::new(209., 355., 90., 42.),
+            ],
         }
     } else {
         Layout {
@@ -36,6 +47,11 @@ fn layout() -> Layout {
             hint: Rect::new(850., 245., 120., 44.),
             undo: Rect::new(850., 190., 120., 44.),
             new_game: Rect::new(990., 190., 145., 44.),
+            levels: [
+                Rect::new(850., 125., 90., 42.),
+                Rect::new(950., 125., 90., 42.),
+                Rect::new(1050., 125., 90., 42.),
+            ],
         }
     }
 }
@@ -58,6 +74,14 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if crate::ui::hit(l.new_game, point) {
         return vec![UiAction::MancalaNew];
+    }
+    for (index, level) in [AiLevel::Gentle, AiLevel::Sharp, AiLevel::Expert]
+        .into_iter()
+        .enumerate()
+    {
+        if crate::ui::hit(l.levels[index], point) {
+            return vec![UiAction::MancalaLevel(level)];
+        }
     }
     Vec::new()
 }
@@ -113,6 +137,13 @@ pub fn draw(state: &AppState) {
     button(l.hint, "HINT");
     button(l.undo, "UNDO");
     button(l.new_game, "NEW BOARD");
+    for (rect, (label, level)) in l.levels.iter().zip([
+        ("GENTLE", AiLevel::Gentle),
+        ("SHARP", AiLevel::Sharp),
+        ("EXPERT", AiLevel::Expert),
+    ]) {
+        button_selected(*rect, label, game.ai_level == level);
+    }
 }
 
 fn draw_board(board: Rect, game: &Mancala) {
@@ -230,6 +261,21 @@ fn button(rect: Rect, label: &str) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     center_text(label, rect, 11., WHITE);
+}
+fn button_selected(rect: Rect, label: &str, selected: bool) {
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        if selected {
+            Color::new(0.45, 0.25, 0.42, 1.)
+        } else {
+            crate::theme::SURFACE
+        },
+    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
+    center_text(label, rect, 10., WHITE);
 }
 
 fn center_text(label: &str, rect: Rect, size: f32, color: Color) {

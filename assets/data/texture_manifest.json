@@ -1,1 +1,7 @@
-[]
+[
+  {
+    "key": "cabinet_texture",
+    "path": "assets/art/cabinet_texture.png",
+    "filter": "linear"
+  }
+]

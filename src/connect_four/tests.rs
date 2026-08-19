@@ -48,3 +48,11 @@ fn hint_column_finds_an_immediate_red_win() {
     game.cells[5 * COLUMNS + 2] = Disc::Red;
     assert_eq!(game.hint_column(), Some(3));
 }
+
+#[test]
+fn ai_strengths_are_persisted_across_a_new_board() {
+    let mut game = ConnectFour::new(42);
+    game.set_ai_level(AiLevel::Expert);
+    game.reset(43);
+    assert_eq!(game.ai_level, AiLevel::Expert);
+}

@@ -95,6 +95,7 @@ pub enum UiAction {
     TicTacToeHint,
     TicTacToeUndo,
     TicTacToeNew,
+    TicTacToeLevel(crate::tic_tac_toe::AiLevel),
     MemoryPairsSelect(usize),
     MemoryPairsHint,
     MemoryPairsUndo,
@@ -126,10 +127,12 @@ pub enum UiAction {
     ConnectFourHint,
     ConnectFourUndo,
     ConnectFourNew,
+    ConnectFourLevel(crate::connect_four::AiLevel),
     CheckersTap(usize),
     CheckersHint,
     CheckersUndo,
     CheckersNew,
+    CheckersLevel(crate::checkers::AiLevel),
     PegSolitaireTap(usize),
     PegSolitaireHint,
     PegSolitaireUndo,
@@ -221,6 +224,7 @@ pub enum UiAction {
     MancalaHint,
     MancalaUndo,
     MancalaNew,
+    MancalaLevel(crate::mancala::AiLevel),
     HanoiPeg(usize),
     HanoiHint,
     HanoiUndo,
@@ -268,4 +272,69 @@ pub enum UiAction {
     MatchThreeUndo,
     MatchThreeNew,
     MatchThreeDifficulty(crate::match_three::MatchThreeDifficulty),
+}
+
+impl UiAction {
+    pub fn starts_new_round(self) -> bool {
+        matches!(
+            self,
+            Self::Open(_)
+                | Self::ContinueGame
+                | Self::Restart
+                | Self::ConfirmRestart
+                | Self::Game2048Size(_)
+                | Self::MineRestart
+                | Self::MinePreset(_)
+                | Self::SudokuDifficulty(_)
+                | Self::NonogramPreset(_)
+                | Self::SolitaireNew
+                | Self::FreeCellNew
+                | Self::FivefoldNew
+                | Self::ReversiNew
+                | Self::LightsOutNew
+                | Self::TicTacToeNew
+                | Self::MemoryPairsNew
+                | Self::SlidingPuzzleNew
+                | Self::MastermindNew
+                | Self::SpiderNew
+                | Self::WordSearchNew
+                | Self::HangmanNew
+                | Self::ConnectFourNew
+                | Self::CheckersNew
+                | Self::PegSolitaireNew
+                | Self::MahjongSolitaireNew
+                | Self::SnakeNew
+                | Self::BreakoutNew
+                | Self::HigherLowerNew
+                | Self::KlondikeGolfNew
+                | Self::BlackjackNew
+                | Self::SpiderSolitaireNew
+                | Self::PyramidNew
+                | Self::TriPeaksNew
+                | Self::NimNew
+                | Self::DungeonNew
+                | Self::PotionNew
+                | Self::PotionDifficulty(_)
+                | Self::TowerNew
+                | Self::RogueNew
+                | Self::DailyNew
+                | Self::DotsNew
+                | Self::DotsDifficulty(_)
+                | Self::SokobanNew
+                | Self::MancalaNew
+                | Self::HanoiNew
+                | Self::NumberMatchNew
+                | Self::FloodNew
+                | Self::FloodDifficulty(_)
+                | Self::ColorSortNew
+                | Self::ColorSortDifficulty(_)
+                | Self::BattleshipNew
+                | Self::WordGridNew
+                | Self::WordLadderNew
+                | Self::PipeNew
+                | Self::MazeNew
+                | Self::MatchThreeNew
+                | Self::MatchThreeDifficulty(_)
+        )
+    }
 }

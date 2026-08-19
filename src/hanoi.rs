@@ -3,7 +3,8 @@
 use serde::{Deserialize, Serialize};
 use std::collections::VecDeque;
 
-const DISKS: usize = 5;
+const DEFAULT_DISKS: u8 = 5;
+const DISK_VARIANTS: [u8; 3] = [3, 4, 5];
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum HanoiPhase {
@@ -17,6 +18,8 @@ pub struct Hanoi {
     pub selected: Option<usize>,
     pub moves: u16,
     pub seed: u64,
+    #[serde(default = "default_disks")]
+    pub disks: u8,
     pub phase: HanoiPhase,
     #[serde(skip)]
     undo: Option<Box<Self>>,
@@ -30,11 +33,23 @@ impl Default for Hanoi {
 
 impl Hanoi {
     pub fn new(seed: u64) -> Self {
+        Self::new_with_disks(seed, DEFAULT_DISKS)
+    }
+
+    pub fn new_with_seed(seed: u64) -> Self {
+        let index = ((seed ^ seed.rotate_left(19)) % DISK_VARIANTS.len() as u64) as usize;
+        Self::new_with_disks(seed, DISK_VARIANTS[index])
+    }
+
+    pub fn new_with_disks(seed: u64, disks: u8) -> Self {
+        let disks = disks.clamp(3, DEFAULT_DISKS);
+        let stack = (1..=disks).rev().collect();
         Self {
-            stacks: [vec![5, 4, 3, 2, 1], Vec::new(), Vec::new()],
+            stacks: [stack, Vec::new(), Vec::new()],
             selected: None,
             moves: 0,
             seed,
+            disks,
             phase: HanoiPhase::Playing,
             undo: None,
         }
@@ -69,7 +84,7 @@ impl Hanoi {
         self.stacks[peg].push(disk);
         self.moves = self.moves.saturating_add(1);
         self.selected = None;
-        if self.stacks[2].len() == DISKS {
+        if self.stacks[2].len() == self.disks as usize {
             self.phase = HanoiPhase::Won;
         }
         true
@@ -84,7 +99,15 @@ impl Hanoi {
     }
 
     pub fn reset(&mut self, seed: u64) {
-        *self = Self::new(seed);
+        *self = Self::new_with_disks(seed, self.disks);
+    }
+
+    pub fn reset_next(&mut self, seed: u64) {
+        let index = DISK_VARIANTS
+            .iter()
+            .position(|candidate| *candidate == self.disks)
+            .unwrap_or(DISK_VARIANTS.len() - 1);
+        *self = Self::new_with_disks(seed, DISK_VARIANTS[(index + 1) % DISK_VARIANTS.len()]);
     }
 
     pub fn won(&self) -> bool {
@@ -116,7 +139,7 @@ impl Hanoi {
                     next[source].pop();
                     next[destination].push(disk);
                     let first = first.or(Some((source, destination)));
-                    if next[2].len() == DISKS {
+                    if next[2].len() == self.disks as usize {
                         return first;
                     }
                     queue.push_back((next, first));
@@ -131,6 +154,10 @@ impl Hanoi {
         copy.undo = None;
         copy
     }
+}
+
+fn default_disks() -> u8 {
+    DEFAULT_DISKS
 }
 
 #[cfg(test)]

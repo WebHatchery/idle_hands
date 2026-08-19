@@ -72,3 +72,11 @@ fn hint_is_empty_after_mancala_ends() {
 
     assert_eq!(game.hint_pit(), None);
 }
+
+#[test]
+fn ai_strengths_change_only_the_opponent_policy() {
+    let mut game = Mancala::new(8);
+    game.set_ai_level(AiLevel::Expert);
+    assert_eq!(game.ai_level, AiLevel::Expert);
+    assert_eq!(game.pits, Mancala::new(8).pits);
+}

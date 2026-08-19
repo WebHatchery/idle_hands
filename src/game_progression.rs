@@ -1,9 +1,42 @@
 //! Record, feedback, and movement helpers for the game host.
 
 use super::Game;
-use crate::{progression, sound::SoundCue, state::Direction};
+use crate::{
+    progression,
+    sound::SoundCue,
+    state::{Direction, GameId, Screen},
+};
 
 impl Game {
+    pub(super) fn tick_elapsed(&mut self, dt: f32) {
+        self.state.records.ensure_time_slots();
+        let Screen::Game(game) = self.state.screen else {
+            return;
+        };
+        if !is_timed_game(game)
+            || self.state.tutorial.is_some()
+            || self.state.confirm_restart
+            || self.state.confirm_reset
+            || round_is_complete(&self.state, game)
+        {
+            return;
+        }
+        self.state.records.elapsed_remainder += dt.max(0.0);
+        let whole_seconds = self.state.records.elapsed_remainder.floor() as u32;
+        if whole_seconds > 0 {
+            self.state.records.elapsed_remainder -= whole_seconds as f32;
+            self.state.records.elapsed_seconds[game.index()] =
+                self.state.records.elapsed_seconds[game.index()].saturating_add(whole_seconds);
+        }
+    }
+
+    pub(super) fn reset_elapsed(&mut self) {
+        if let Screen::Game(game) = self.state.screen {
+            self.state.records.reset_time(game.index());
+            self.state.records.elapsed_remainder = 0.0;
+        }
+    }
+
     pub(super) fn play_feedback(&self, cue: SoundCue) {
         if self.state.sound {
             self.sounds.play(self.state.sound_set, cue);
@@ -11,6 +44,11 @@ impl Game {
     }
 
     pub(super) fn update_records(&mut self) {
+        if let Screen::Game(game) = self.state.screen {
+            if round_is_complete(&self.state, game) {
+                self.state.records.record_time(game.index());
+            }
+        }
         let records = &mut self.state.records;
         records.best_2048 = records.best_2048.max(self.state.game.best);
         let sudoku_index = match self.state.sudoku.difficulty {
@@ -441,5 +479,83 @@ impl Game {
         }
         self.update_records();
         self.save_autosave();
+    }
+}
+
+pub(super) fn is_timed_game(game: GameId) -> bool {
+    !matches!(
+        game,
+        GameId::Snake | GameId::Breakout | GameId::TinyTowerDefence
+    )
+}
+
+fn round_is_complete(state: &crate::state::AppState, game: GameId) -> bool {
+    match game {
+        GameId::Game2048 => state.game.won(),
+        GameId::Minesweeper => state.minesweeper.status == crate::minesweeper::MineStatus::Won,
+        GameId::Sudoku => state.sudoku.status == crate::sudoku::SudokuStatus::Won,
+        GameId::Nonogram => state.nonogram.status == crate::nonogram::NonogramStatus::Won,
+        GameId::Solitaire => state.solitaire.status == crate::solitaire::SolitaireStatus::Won,
+        GameId::FreeCell => state.freecell.status == crate::freecell::FreeCellStatus::Won,
+        GameId::Yahtzee => state.fivefold.status == crate::fivefold::FivefoldStatus::Complete,
+        GameId::Reversi => state.reversi.status == crate::reversi::ReversiStatus::Won,
+        GameId::LightsOut => state.lights_out.status == crate::lights_out::LightsOutStatus::Won,
+        GameId::TicTacToe => {
+            state.tic_tac_toe.status
+                == crate::tic_tac_toe::TicTacToeStatus::Won(crate::tic_tac_toe::Mark::X)
+        }
+        GameId::MemoryPairs => state.memory_pairs.status == crate::memory_pairs::MemoryStatus::Won,
+        GameId::SlidingPuzzle => {
+            state.sliding_puzzle.status == crate::sliding_puzzle::SlidingStatus::Won
+        }
+        GameId::Mastermind => state.mastermind.status == crate::mastermind::MastermindStatus::Won,
+        GameId::Spider => state.spider.status == crate::spider::SpiderStatus::Won,
+        GameId::WordSearch => state.word_search.status == crate::word_search::WordSearchStatus::Won,
+        GameId::Hangman => state.hangman.status == crate::hangman::HangmanStatus::Won,
+        GameId::ConnectFour => {
+            state.connect_four.status
+                == crate::connect_four::ConnectFourStatus::Won(crate::connect_four::Disc::Red)
+        }
+        GameId::Checkers => {
+            state.checkers.status
+                == crate::checkers::CheckersStatus::Won(crate::checkers::Side::Red)
+        }
+        GameId::PegSolitaire => {
+            state.peg_solitaire.status == crate::peg_solitaire::PegSolitaireStatus::Won
+        }
+        GameId::MahjongSolitaire => {
+            state.mahjong_solitaire.status == crate::mahjong_solitaire::MahjongStatus::Won
+        }
+        GameId::HigherLower => {
+            state.higher_lower.status == crate::higher_lower::HigherLowerStatus::Won
+        }
+        GameId::KlondikeGolf => state.klondike_golf.status == crate::klondike_golf::GolfStatus::Won,
+        GameId::Blackjack => state.blackjack.status == crate::blackjack::BlackjackStatus::Won,
+        GameId::SpiderSolitaire => {
+            state.spider_solitaire.status == crate::spider_solitaire::SpiderSolitaireStatus::Won
+        }
+        GameId::DungeonSweeper => {
+            state.dungeon_sweeper.status == crate::dungeon_sweeper::DungeonStatus::Won
+        }
+        GameId::Potion2048 => state.potion_2048.won(),
+        GameId::OneRoomRoguelike => state.one_room_roguelike.won(),
+        GameId::DailyDungeon => state.daily_dungeon.won(),
+        GameId::DotsBoxes => state.dots_boxes.won(),
+        GameId::Sokoban => state.sokoban.won(),
+        GameId::Mancala => state.mancala.won(),
+        GameId::Hanoi => state.hanoi.won(),
+        GameId::NumberMatch => state.number_match.won(),
+        GameId::FloodIt => state.flood_it.won(),
+        GameId::ColorSort => state.color_sort.won(),
+        GameId::Battleship => state.battleship.won(),
+        GameId::WordGrid => state.word_grid.won(),
+        GameId::PipeLoop => state.pipe_loop.won(),
+        GameId::MazeWalk => state.maze_walk.won(),
+        GameId::MatchThree => state.match_three.won(),
+        GameId::Pyramid => state.pyramid.status == crate::pyramid::PyramidStatus::Won,
+        GameId::TriPeaks => state.tri_peaks.status == crate::tri_peaks::TriPeaksStatus::Won,
+        GameId::Nim => state.nim.won(),
+        GameId::WordLadder => state.word_ladder.phase == crate::word_ladder::WordLadderPhase::Won,
+        GameId::Snake | GameId::Breakout | GameId::TinyTowerDefence => false,
     }
 }

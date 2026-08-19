@@ -87,6 +87,8 @@ mod progression;
 mod pyramid;
 mod pyramid_ui;
 mod records_ui;
+#[cfg(test)]
+mod responsive_bounds;
 mod responsive_cabinet;
 mod responsive_cards;
 mod responsive_fivefold;

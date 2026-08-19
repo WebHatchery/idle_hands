@@ -98,3 +98,20 @@ fn following_hints_solves_the_default_room() {
     assert!(game.won());
     assert_eq!(game.hint_direction(), None);
 }
+
+#[test]
+fn every_authored_room_has_a_bounded_hint_solution() {
+    for level in 0..LEVEL_COUNT {
+        let mut game = Sokoban::new_with_level(99, level);
+        for _ in 0..96 {
+            let Some(direction) = game.hint_direction() else {
+                break;
+            };
+            assert!(game.move_in(direction));
+            if game.won() {
+                break;
+            }
+        }
+        assert!(game.won(), "authored level {level} should be solvable");
+    }
+}

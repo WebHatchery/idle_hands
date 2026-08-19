@@ -3,7 +3,7 @@
 use crate::{
     accessibility,
     state::AppState,
-    tic_tac_toe::{Mark, TicTacToeStatus},
+    tic_tac_toe::{AiLevel, Mark, TicTacToeStatus},
     ui::UiAction,
 };
 use macroquad::prelude::*;
@@ -15,6 +15,7 @@ struct Layout {
     new_board: Rect,
     undo: Rect,
     hint: Rect,
+    levels: [Rect; 3],
 }
 
 fn layout() -> Layout {
@@ -25,6 +26,11 @@ fn layout() -> Layout {
             new_board: Rect::new(370., 125., 150., 48.),
             undo: Rect::new(370., 185., 150., 48.),
             hint: Rect::new(530., 185., 150., 48.),
+            levels: [
+                Rect::new(370., 65., 100., 42.),
+                Rect::new(480., 65., 100., 42.),
+                Rect::new(590., 65., 100., 42.),
+            ],
         }
     } else if crate::ui::is_portrait() {
         Layout {
@@ -33,6 +39,11 @@ fn layout() -> Layout {
             new_board: Rect::new(20., 510., 155., 48.),
             undo: Rect::new(185., 510., 155., 48.),
             hint: Rect::new(20., 570., 155., 48.),
+            levels: [
+                Rect::new(20., 470., 100., 42.),
+                Rect::new(130., 470., 100., 42.),
+                Rect::new(240., 470., 100., 42.),
+            ],
         }
     } else {
         Layout {
@@ -41,6 +52,11 @@ fn layout() -> Layout {
             new_board: Rect::new(440., 650., 180., 48.),
             undo: Rect::new(650., 650., 180., 48.),
             hint: Rect::new(860., 650., 180., 48.),
+            levels: [
+                Rect::new(440., 72., 180., 42.),
+                Rect::new(650., 72., 180., 42.),
+                Rect::new(860., 72., 180., 42.),
+            ],
         }
     }
 }
@@ -58,6 +74,14 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if crate::ui::hit(layout.hint, point) {
         return vec![UiAction::TicTacToeHint];
+    }
+    for (index, level) in [AiLevel::Gentle, AiLevel::Sharp, AiLevel::Expert]
+        .into_iter()
+        .enumerate()
+    {
+        if crate::ui::hit(layout.levels[index], point) {
+            return vec![UiAction::TicTacToeLevel(level)];
+        }
     }
     if layout.board.contains(point) && state.tic_tac_toe.status == TicTacToeStatus::Playing {
         let column = ((point.x - layout.board.x) / layout.cell) as usize;
@@ -165,6 +189,13 @@ pub fn draw(state: &AppState) {
     button(layout.new_board, "NEW BOARD", state.large_text);
     button(layout.undo, "UNDO", state.large_text);
     button(layout.hint, "HINT", state.large_text);
+    for (rect, (label, level)) in layout.levels.iter().zip([
+        ("GENTLE", AiLevel::Gentle),
+        ("SHARP", AiLevel::Sharp),
+        ("EXPERT", AiLevel::Expert),
+    ]) {
+        button_selected(*rect, label, game.ai_level == level, state.large_text);
+    }
     if let Some(hint) = state.card_hint.as_deref() {
         let (x, y) = if crate::ui::is_compact_landscape() {
             (530., 250.)
@@ -242,6 +273,28 @@ fn button(rect: Rect, label: &str, large_text: bool) {
         rect.x + 16.,
         rect.y + rect.h * 0.64,
         accessibility::text_size(body_size(), large_text),
+        WHITE,
+    );
+}
+
+fn button_selected(rect: Rect, label: &str, selected: bool, large_text: bool) {
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        if selected {
+            Color::new(0.45, 0.25, 0.42, 1.)
+        } else {
+            Color::new(0.20, 0.14, 0.31, 1.)
+        },
+    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., accent());
+    text(
+        label,
+        rect.x + 12.,
+        rect.y + rect.h * 0.64,
+        accessibility::text_size(10., large_text),
         WHITE,
     );
 }

@@ -152,7 +152,8 @@ pub fn draw_nonogram(state: &AppState) {
     );
     text(
         &format!(
-            "Moves: {}  Best: {}",
+            "Variant {}  •  Moves: {}  Best: {}",
+            game.variant + 1,
             game.moves,
             game.best_moves
                 .map_or("—".to_owned(), |best| best.to_string())

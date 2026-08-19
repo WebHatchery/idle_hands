@@ -2,7 +2,7 @@
 
 use crate::{
     accessibility,
-    checkers::{CheckersStatus, Piece, Side},
+    checkers::{AiLevel, CheckersStatus, Piece, Side},
     state::AppState,
     ui::UiAction,
 };
@@ -15,6 +15,7 @@ struct Layout {
     hint: Rect,
     undo: Rect,
     new_game: Rect,
+    levels: [Rect; 3],
 }
 
 fn layout() -> Layout {
@@ -25,6 +26,11 @@ fn layout() -> Layout {
             hint: Rect::new(350., 275., 290., 42.),
             undo: Rect::new(350., 220., 120., 42.),
             new_game: Rect::new(490., 220., 150., 42.),
+            levels: [
+                Rect::new(350., 65., 90., 42.),
+                Rect::new(450., 65., 90., 42.),
+                Rect::new(550., 65., 90., 42.),
+            ],
         }
     } else if crate::ui::is_portrait() {
         Layout {
@@ -33,6 +39,11 @@ fn layout() -> Layout {
             hint: Rect::new(20., 590., 330., 42.),
             undo: Rect::new(20., 535., 145., 42.),
             new_game: Rect::new(185., 535., 165., 42.),
+            levels: [
+                Rect::new(10., 462., 105., 42.),
+                Rect::new(120., 462., 105., 42.),
+                Rect::new(230., 462., 105., 42.),
+            ],
         }
     } else {
         Layout {
@@ -41,6 +52,11 @@ fn layout() -> Layout {
             hint: Rect::new(950., 500., 290., 44.),
             undo: Rect::new(950., 560., 120., 44.),
             new_game: Rect::new(1090., 560., 150., 44.),
+            levels: [
+                Rect::new(950., 95., 90., 42.),
+                Rect::new(1050., 95., 90., 42.),
+                Rect::new(1150., 95., 90., 42.),
+            ],
         }
     }
 }
@@ -58,6 +74,14 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if crate::ui::hit(layout.hint, point) {
         return vec![UiAction::CheckersHint];
+    }
+    for (index, level) in [AiLevel::Gentle, AiLevel::Sharp, AiLevel::Expert]
+        .into_iter()
+        .enumerate()
+    {
+        if crate::ui::hit(layout.levels[index], point) {
+            return vec![UiAction::CheckersLevel(level)];
+        }
     }
     if layout.board.contains(point) {
         let column = ((point.x - layout.board.x) / layout.cell) as usize;
@@ -156,6 +180,13 @@ pub fn draw(state: &AppState) {
     button(layout.undo, "UNDO", state.large_text);
     button(layout.new_game, "NEW BOARD", state.large_text);
     button(layout.hint, "HINT", state.large_text);
+    for (rect, (label, level)) in layout.levels.iter().zip([
+        ("GENTLE", AiLevel::Gentle),
+        ("SHARP", AiLevel::Sharp),
+        ("EXPERT", AiLevel::Expert),
+    ]) {
+        button_selected(*rect, label, game.ai_level == level, state.large_text);
+    }
 }
 
 fn draw_board(game: &crate::checkers::Checkers, layout: Layout, high_contrast: bool) {
@@ -267,6 +298,27 @@ fn button(rect: Rect, label: &str, large_text: bool) {
         rect.x + 12.,
         rect.y + 28.,
         accessibility::text_size(11., large_text),
+        WHITE,
+    );
+}
+fn button_selected(rect: Rect, label: &str, selected: bool, large_text: bool) {
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        if selected {
+            Color::new(0.45, 0.25, 0.42, 1.)
+        } else {
+            crate::theme::SURFACE
+        },
+    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
+    text(
+        label,
+        rect.x + 10.,
+        rect.y + 28.,
+        accessibility::text_size(10., large_text),
         WHITE,
     );
 }

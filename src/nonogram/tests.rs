@@ -60,3 +60,16 @@ fn hint_cell_identifies_the_first_empty_solution_mark_without_mutating() {
     assert!(filled);
     assert_eq!(game.marks, before);
 }
+
+#[test]
+fn authored_variants_keep_their_clues_and_solutions_distinct() {
+    let variants: Vec<_> = (0..VARIANT_COUNT)
+        .map(|variant| Nonogram::new_with_variant(NonogramPreset::Medium, variant))
+        .collect();
+    assert!(variants
+        .windows(2)
+        .all(|pair| pair[0].solution != pair[1].solution));
+    assert!(variants
+        .iter()
+        .all(|game| game.row_clues.iter().any(|clue| clue != &[0])));
+}

@@ -66,3 +66,13 @@ fn hint_move_finds_a_mandatory_capture_without_mutating() {
     assert_eq!(game.hint_move(), Some((5 * SIZE, 3 * SIZE + 2)));
     assert_eq!(game.cells, before);
 }
+
+#[test]
+fn ai_strengths_keep_seeded_board_state_stable() {
+    let mut game = Checkers::new(7);
+    let before = game.cells.clone();
+    game.set_ai_level(AiLevel::Expert);
+    game.reset(7);
+    assert_eq!(game.ai_level, AiLevel::Expert);
+    assert_eq!(game.cells, before);
+}

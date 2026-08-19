@@ -2,7 +2,7 @@
 
 use crate::{
     accessibility,
-    connect_four::{ConnectFourStatus, Disc},
+    connect_four::{AiLevel, ConnectFourStatus, Disc},
     state::AppState,
     ui::UiAction,
 };
@@ -16,6 +16,7 @@ struct Layout {
     hint: Rect,
     undo: Rect,
     new_game: Rect,
+    levels: [Rect; 3],
 }
 
 fn layout() -> Layout {
@@ -27,6 +28,11 @@ fn layout() -> Layout {
             hint: Rect::new(430., 265., 290., 42.),
             undo: Rect::new(430., 210., 120., 42.),
             new_game: Rect::new(570., 210., 150., 42.),
+            levels: [
+                Rect::new(430., 65., 90., 42.),
+                Rect::new(530., 65., 90., 42.),
+                Rect::new(630., 65., 90., 42.),
+            ],
         }
     } else if crate::ui::is_portrait() {
         Layout {
@@ -36,6 +42,11 @@ fn layout() -> Layout {
             hint: Rect::new(20., 575., 330., 42.),
             undo: Rect::new(20., 520., 145., 42.),
             new_game: Rect::new(185., 520., 165., 42.),
+            levels: [
+                Rect::new(10., 468., 105., 42.),
+                Rect::new(120., 468., 105., 42.),
+                Rect::new(230., 468., 105., 42.),
+            ],
         }
     } else {
         Layout {
@@ -45,6 +56,11 @@ fn layout() -> Layout {
             hint: Rect::new(950., 540., 290., 44.),
             undo: Rect::new(950., 600., 120., 44.),
             new_game: Rect::new(1090., 600., 150., 44.),
+            levels: [
+                Rect::new(950., 105., 90., 42.),
+                Rect::new(1050., 105., 90., 42.),
+                Rect::new(1150., 105., 90., 42.),
+            ],
         }
     }
 }
@@ -62,6 +78,14 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if crate::ui::hit(layout.hint, point) {
         return vec![UiAction::ConnectFourHint];
+    }
+    for (index, level) in [AiLevel::Gentle, AiLevel::Sharp, AiLevel::Expert]
+        .into_iter()
+        .enumerate()
+    {
+        if crate::ui::hit(layout.levels[index], point) {
+            return vec![UiAction::ConnectFourLevel(level)];
+        }
     }
     if layout.drops.contains(point) || layout.board.contains(point) {
         let column = ((point.x - layout.board.x) / layout.cell).clamp(0., 6.99) as usize;
@@ -195,6 +219,13 @@ pub fn draw(state: &AppState) {
     button(layout.undo, "UNDO", state.large_text);
     button(layout.new_game, "NEW BOARD", state.large_text);
     button(layout.hint, "HINT", state.large_text);
+    for (rect, (label, level)) in layout.levels.iter().zip([
+        ("GENTLE", AiLevel::Gentle),
+        ("SHARP", AiLevel::Sharp),
+        ("EXPERT", AiLevel::Expert),
+    ]) {
+        button_selected(*rect, label, game.ai_level == level, state.large_text);
+    }
 }
 
 fn disc_color(disc: Disc, high_contrast: bool) -> Color {
@@ -233,6 +264,27 @@ fn button(rect: Rect, label: &str, large_text: bool) {
         rect.x + 12.,
         rect.y + 28.,
         accessibility::text_size(11., large_text),
+        WHITE,
+    );
+}
+fn button_selected(rect: Rect, label: &str, selected: bool, large_text: bool) {
+    draw_rectangle(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        if selected {
+            Color::new(0.45, 0.25, 0.42, 1.)
+        } else {
+            crate::theme::SURFACE
+        },
+    );
+    draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
+    text(
+        label,
+        rect.x + 10.,
+        rect.y + 28.,
+        accessibility::text_size(10., large_text),
         WHITE,
     );
 }

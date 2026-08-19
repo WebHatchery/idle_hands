@@ -2,8 +2,16 @@
 
 use serde::{Deserialize, Serialize};
 
+use crate::state::GameId;
+
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct CollectionRecords {
+    #[serde(default)]
+    pub elapsed_seconds: Vec<u32>,
+    #[serde(default)]
+    pub best_time_seconds: Vec<Option<u32>>,
+    #[serde(default)]
+    pub elapsed_remainder: f32,
     pub best_2048: u32,
     pub minesweeper: [Option<u32>; 4],
     pub sudoku: [Option<u32>; 3],
@@ -91,3 +99,38 @@ pub struct CollectionRecords {
     #[serde(default)]
     pub word_ladder_best_moves: Option<u16>,
 }
+
+impl CollectionRecords {
+    pub fn ensure_time_slots(&mut self) {
+        self.elapsed_seconds.resize(GameId::ALL.len(), 0);
+        self.best_time_seconds.resize(GameId::ALL.len(), None);
+    }
+
+    pub fn record_time(&mut self, game_index: usize) {
+        self.ensure_time_slots();
+        if game_index >= self.elapsed_seconds.len() {
+            return;
+        }
+        let elapsed = self.elapsed_seconds[game_index];
+        self.best_time_seconds[game_index] =
+            Some(self.best_time_seconds[game_index].map_or(elapsed, |best| best.min(elapsed)));
+    }
+
+    pub fn reset_time(&mut self, game_index: usize) {
+        self.ensure_time_slots();
+        if let Some(elapsed) = self.elapsed_seconds.get_mut(game_index) {
+            *elapsed = 0;
+        }
+    }
+
+    pub fn current_time(&self, game_index: usize) -> u32 {
+        self.elapsed_seconds.get(game_index).copied().unwrap_or(0)
+    }
+
+    pub fn best_time(&self, game_index: usize) -> Option<u32> {
+        self.best_time_seconds.get(game_index).copied().flatten()
+    }
+}
+
+#[cfg(test)]
+mod tests;

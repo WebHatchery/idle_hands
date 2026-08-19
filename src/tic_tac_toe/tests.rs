@@ -55,3 +55,14 @@ fn a_completed_game_rejects_more_moves_and_undo_restores_the_turn() {
     assert_eq!(game.status, TicTacToeStatus::Playing);
     assert_eq!(game.cells[2], Mark::Empty);
 }
+
+#[test]
+fn ai_strengths_are_selectable_without_changing_seeded_openings() {
+    let mut game = TicTacToe::new(7);
+    for level in [AiLevel::Gentle, AiLevel::Sharp, AiLevel::Expert] {
+        game.set_ai_level(level);
+        assert_eq!(game.ai_level, level);
+        game.reset(7);
+        assert_eq!(game.ai_level, level);
+    }
+}

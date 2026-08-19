@@ -7,6 +7,22 @@ use std::collections::VecDeque;
 pub const WIDTH: usize = 8;
 pub const HEIGHT: usize = 8;
 const CELLS: usize = WIDTH * HEIGHT;
+pub const LEVEL_COUNT: u8 = 3;
+
+const LEVELS: [[&str; HEIGHT]; LEVEL_COUNT as usize] = [
+    [
+        "########", "# .    #", "# $    #", "#   $ .#", "#      #", "#  @   #", "#      #",
+        "########",
+    ],
+    [
+        "########", "#  .   #", "#  $   #", "#  @   #", "# . $  #", "#      #", "#      #",
+        "########",
+    ],
+    [
+        "########", "# .    #", "# $ $ .#", "#   @  #", "# .    #", "#      #", "#      #",
+        "########",
+    ],
+];
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum SokobanPhase {
@@ -21,6 +37,8 @@ pub struct Sokoban {
     pub crates: u8,
     pub moves: u16,
     pub seed: u64,
+    #[serde(default)]
+    pub level: u8,
     pub phase: SokobanPhase,
     #[serde(skip)]
     undo: Option<Box<Self>>,
@@ -34,11 +52,17 @@ impl Default for Sokoban {
 
 impl Sokoban {
     pub fn new(seed: u64) -> Self {
+        Self::new_with_level(seed, 0)
+    }
+
+    pub fn new_with_seed(seed: u64) -> Self {
+        Self::new_with_level(seed, level_from_seed(seed))
+    }
+
+    pub fn new_with_level(seed: u64, level: u8) -> Self {
         let mut tiles = vec![0; CELLS];
-        let rows = [
-            "########", "# .    #", "# $    #", "#   $ .#", "#      #", "#  @   #", "#      #",
-            "########",
-        ];
+        let level = level % LEVEL_COUNT;
+        let rows = LEVELS[level as usize];
         let mut player = 0;
         let mut crates = 0;
         for (row, line) in rows.iter().enumerate() {
@@ -65,13 +89,18 @@ impl Sokoban {
             crates,
             moves: 0,
             seed,
+            level,
             phase: SokobanPhase::Playing,
             undo: None,
         }
     }
 
     pub fn reset(&mut self, seed: u64) {
-        *self = Self::new(seed);
+        *self = Self::new_with_level(seed, self.level);
+    }
+
+    pub fn reset_next(&mut self, seed: u64) {
+        *self = Self::new_with_level(seed, (self.level + 1) % LEVEL_COUNT);
     }
 
     pub fn move_in(&mut self, direction: Direction) -> bool {
@@ -176,6 +205,10 @@ impl Sokoban {
         };
         (row < HEIGHT && col < WIDTH).then_some(row * WIDTH + col)
     }
+}
+
+fn level_from_seed(seed: u64) -> u8 {
+    ((seed ^ seed.rotate_left(23)) % u64::from(LEVEL_COUNT)) as u8
 }
 
 #[cfg(test)]

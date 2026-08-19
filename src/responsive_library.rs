@@ -365,13 +365,7 @@ pub fn draw_credits() {
     );
     text("CREDITS", 20., 115., 29., crate::theme::BRASS);
     text("IDLE HANDS", 22., 165., 22., WHITE);
-    text(
-        "A warm collection for",
-        22.,
-        210.,
-        15.,
-        crate::theme::CREAM,
-    );
+    text("A warm collection for", 22., 210., 15., crate::theme::CREAM);
     text("small pauses.", 22., 235., 15., crate::theme::CREAM);
     text(
         "Built with Rust, macroquad,",

@@ -355,14 +355,21 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Settings => settings_ui::settings_clicks(state, p),
     }
 }
-pub fn draw(state: &AppState, data: &GameData, loaded_assets: usize) {
+pub fn draw(
+    state: &AppState,
+    data: &GameData,
+    loaded_assets: usize,
+    cabinet_texture: Option<&Texture2D>,
+) {
     TOUCH_SCALE.with(|scale| scale.set(viewport().scale));
     match state.screen {
         Screen::Cabinet if is_compact_landscape() => {
-            responsive_landscape_cabinet::draw(state, data, loaded_assets)
+            responsive_landscape_cabinet::draw(state, data, loaded_assets, cabinet_texture)
         }
-        Screen::Cabinet if is_portrait() => responsive_cabinet::draw(state, data, loaded_assets),
-        Screen::Cabinet => cabinet_ui::draw(state, data, loaded_assets),
+        Screen::Cabinet if is_portrait() => {
+            responsive_cabinet::draw(state, data, loaded_assets, cabinet_texture)
+        }
+        Screen::Cabinet => cabinet_ui::draw(state, data, loaded_assets, cabinet_texture),
         Screen::Game(GameId::Game2048) if is_compact_landscape() => {
             responsive_landscape::draw_2048(state)
         }

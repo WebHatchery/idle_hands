@@ -1,4 +1,6 @@
 {
   "version": 1,
-  "assets": []
+  "assets": [
+    "assets/art/cabinet_texture.png"
+  ]
 }

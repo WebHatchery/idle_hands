@@ -28,6 +28,7 @@ impl Game {
             }
             UiAction::ConnectFourUndo => self.apply_connect_four_undo(),
             UiAction::ConnectFourNew => self.apply_connect_four_new(),
+            UiAction::ConnectFourLevel(level) => self.state.connect_four.set_ai_level(*level),
             UiAction::CheckersTap(square) => self.apply_checkers_tap(*square),
             UiAction::CheckersHint => {
                 self.state.card_hint = Some(crate::card_hints::checkers(&self.state));
@@ -35,6 +36,7 @@ impl Game {
             }
             UiAction::CheckersUndo => self.apply_checkers_undo(),
             UiAction::CheckersNew => self.apply_checkers_new(),
+            UiAction::CheckersLevel(level) => self.state.checkers.set_ai_level(*level),
             UiAction::PegSolitaireTap(square) => {
                 self.state.peg_solitaire.tap(*square);
             }
@@ -336,7 +338,7 @@ impl Game {
             }
             UiAction::SokobanNew => {
                 let seed = self.state.sokoban.seed.wrapping_add(1);
-                self.state.sokoban.reset(seed);
+                self.state.sokoban.reset_next(seed);
             }
             UiAction::MancalaPit(pit) => {
                 self.state.mancala.play(*pit);
@@ -352,6 +354,7 @@ impl Game {
                 let seed = self.state.mancala.seed.wrapping_add(1);
                 self.state.mancala.reset(seed);
             }
+            UiAction::MancalaLevel(level) => self.state.mancala.set_ai_level(*level),
             UiAction::HanoiPeg(peg) => {
                 self.state.hanoi.tap_peg(*peg);
             }
@@ -364,7 +367,7 @@ impl Game {
             }
             UiAction::HanoiNew => {
                 let seed = self.state.hanoi.seed.wrapping_add(1);
-                self.state.hanoi.reset(seed);
+                self.state.hanoi.reset_next(seed);
             }
             UiAction::NumberMatchTap(index) => {
                 self.state.number_match.tap(*index);
@@ -538,6 +541,9 @@ impl Game {
         previous_screen: crate::state::Screen,
         action: UiAction,
     ) {
+        if action.starts_new_round() {
+            self.reset_elapsed();
+        }
         if self.state.screen != previous_screen {
             self.transition = if self.state.reduced_motion { 0. } else { 1. };
         }
