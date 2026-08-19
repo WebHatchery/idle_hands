@@ -303,6 +303,20 @@ small trap clue, and an early exit visibly reads LOCK. Difficulty buttons start
 new seeded floors through the same restart confirmation as NEW DUNGEON, while
 legacy in-progress floors retain their original open-exit objective.
 
+### 11.8 Potion 2048 reaction chains
+
+Potion 2048 rewards consecutive moves that actually merge ingredients. The
+first reaction scores normally, the second doubles its reaction value, and the
+multiplier continues until a slide without a merge breaks the chain. Completing
+the visible chain brews a C catalyst in place of the normal spawned potion. A
+catalyst reacts with any neighboring tier and produces twice that tier; two
+catalysts produce a basic two-point potion. STANDARD brews C after three linked
+reaction moves, HARD after four, and EXPERT after five, giving their larger
+boards distinct planning rhythms as well as higher goals. Catalysts use a brass
+diamond with a letter label rather than color alone. Combo state, best chain,
+catalysts brewed, score, RNG, and the prior board all restore through UNDO, and
+older saves begin with an empty chain.
+
 ## 12. Historical Phase 0 Decisions
 
 The original eight-game launch scope established the current product principles:

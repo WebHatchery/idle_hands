@@ -34,6 +34,25 @@ impl PotionDifficulty {
             Self::Expert => (6, 16384),
         }
     }
+
+    pub const fn catalyst_chain(self) -> u8 {
+        match self {
+            Self::Standard => 3,
+            Self::Hard => 4,
+            Self::Expert => 5,
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+struct Snapshot {
+    cells: Vec<u16>,
+    score: u32,
+    seed: u64,
+    combo: u8,
+    best_combo: u8,
+    catalysts_brewed: u16,
+    last_merges: u8,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -44,8 +63,16 @@ pub struct Potion2048 {
     pub seed: u64,
     #[serde(default)]
     pub difficulty: PotionDifficulty,
+    #[serde(default)]
+    pub combo: u8,
+    #[serde(default)]
+    pub best_combo: u8,
+    #[serde(default)]
+    pub catalysts_brewed: u16,
+    #[serde(default)]
+    pub last_merges: u8,
     #[serde(skip)]
-    undo: Option<(Vec<u16>, u32, u64)>,
+    undo: Option<Snapshot>,
 }
 
 impl Default for Potion2048 {
@@ -67,17 +94,27 @@ impl Potion2048 {
             best: 0,
             seed,
             difficulty,
+            combo: 0,
+            best_combo: 0,
+            catalysts_brewed: 0,
+            last_merges: 0,
             undo: None,
         };
-        game.spawn();
-        game.spawn();
+        game.spawn(false);
+        game.spawn(false);
         game
     }
     pub fn move_in(&mut self, direction: Direction) -> bool {
         let before = self.cells.clone();
         let before_score = self.score;
         let before_seed = self.seed;
+        let before_combo = self.combo;
+        let before_best_combo = self.best_combo;
+        let before_catalysts = self.catalysts_brewed;
+        let before_last_merges = self.last_merges;
         let mut changed = false;
+        let mut raw_gain = 0_u32;
+        let mut merge_count = 0_u8;
         let side = self.side();
         for line in 0..side {
             let indices = line_indices(side, line, direction);
@@ -89,9 +126,13 @@ impl Potion2048 {
             let mut merged = Vec::with_capacity(4);
             let mut index = 0;
             while index < values.len() {
-                if index + 1 < values.len() && values[index] == values[index + 1] {
-                    merged.push(values[index] * 2);
-                    self.score = self.score.saturating_add(values[index] as u32 * 2);
+                let result = (index + 1 < values.len())
+                    .then(|| reaction(values[index], values[index + 1]))
+                    .flatten();
+                if let Some(result) = result {
+                    merged.push(result);
+                    raw_gain = raw_gain.saturating_add(u32::from(result));
+                    merge_count = merge_count.saturating_add(1);
                     index += 2;
                 } else {
                     merged.push(values[index]);
@@ -107,8 +148,31 @@ impl Potion2048 {
             }
         }
         if changed {
-            self.undo = Some((before, before_score, before_seed));
-            self.spawn();
+            self.undo = Some(Snapshot {
+                cells: before,
+                score: before_score,
+                seed: before_seed,
+                combo: before_combo,
+                best_combo: before_best_combo,
+                catalysts_brewed: before_catalysts,
+                last_merges: before_last_merges,
+            });
+            if merge_count > 0 {
+                self.combo = self.combo.saturating_add(1);
+                self.best_combo = self.best_combo.max(self.combo);
+                self.score = self
+                    .score
+                    .saturating_add(raw_gain.saturating_mul(u32::from(self.combo)));
+            } else {
+                self.combo = 0;
+            }
+            self.last_merges = merge_count;
+            let catalyst =
+                self.combo > 0 && self.combo.is_multiple_of(self.difficulty.catalyst_chain());
+            if catalyst {
+                self.catalysts_brewed = self.catalysts_brewed.saturating_add(1);
+            }
+            self.spawn(catalyst);
             self.best = self.best.max(self.score);
         }
         changed
@@ -143,10 +207,14 @@ impl Potion2048 {
         best
     }
     pub fn undo(&mut self) -> bool {
-        if let Some((cells, score, seed)) = self.undo.take() {
-            self.cells = cells;
-            self.score = score;
-            self.seed = seed;
+        if let Some(snapshot) = self.undo.take() {
+            self.cells = snapshot.cells;
+            self.score = snapshot.score;
+            self.seed = snapshot.seed;
+            self.combo = snapshot.combo;
+            self.best_combo = snapshot.best_combo;
+            self.catalysts_brewed = snapshot.catalysts_brewed;
+            self.last_merges = snapshot.last_merges;
             true
         } else {
             false
@@ -158,7 +226,7 @@ impl Potion2048 {
     pub fn won(&self) -> bool {
         self.cells.iter().any(|&value| value >= self.target())
     }
-    fn spawn(&mut self) {
+    fn spawn(&mut self, catalyst: bool) {
         let empty: Vec<usize> = self
             .cells
             .iter()
@@ -171,7 +239,13 @@ impl Potion2048 {
         self.seed = next_seed(self.seed);
         let index = empty[(self.seed as usize) % empty.len()];
         self.seed = next_seed(self.seed);
-        self.cells[index] = if self.seed & 7 == 0 { 4 } else { 2 };
+        self.cells[index] = if catalyst {
+            1
+        } else if self.seed & 7 == 0 {
+            4
+        } else {
+            2
+        };
     }
 
     pub fn side(&self) -> usize {
@@ -180,6 +254,16 @@ impl Potion2048 {
 
     pub fn target(&self) -> u16 {
         self.difficulty.settings().1
+    }
+}
+
+fn reaction(first: u16, second: u16) -> Option<u16> {
+    if first == second {
+        Some(first.saturating_mul(2))
+    } else if first == 1 || second == 1 {
+        Some(first.max(second).saturating_mul(2))
+    } else {
+        None
     }
 }
 

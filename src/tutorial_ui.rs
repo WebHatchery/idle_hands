@@ -235,8 +235,8 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
         ],
         GameId::Potion2048 => [
             "Tap a visible direction to slide the potions.",
-            "Matching potions merge; brew a 4096 tile to finish.",
-            "Use UNDO or NEW BREW with the visible controls.",
+            "Consecutive merging moves multiply score and fill the visible Chain counter.",
+            "Complete the Chain to brew a C catalyst that merges with any tier; UNDO and NEW BREW stay visible.",
         ],
         GameId::TinyTowerDefence => [
             "Tap BOLT, FROST, or BURST, then tap an empty lane cell to build.",

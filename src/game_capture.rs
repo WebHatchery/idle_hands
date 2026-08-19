@@ -121,9 +121,10 @@ impl Game {
             | "dungeon_sweeper_hint"
             | "dungeon_sweeper_hint_accessible"
             | "dungeon_relics" => Screen::Game(GameId::DungeonSweeper),
-            "potion_2048" | "potion_2048_hint" | "potion_2048_hint_accessible" => {
-                Screen::Game(GameId::Potion2048)
-            }
+            "potion_2048"
+            | "potion_2048_hint"
+            | "potion_2048_hint_accessible"
+            | "potion_catalyst" => Screen::Game(GameId::Potion2048),
             "potion_2048_accessible" => Screen::Game(GameId::Potion2048),
             "tiny_tower_defence" | "tiny_tower_defence_hint" | "tiny_tower_roles" => {
                 Screen::Game(GameId::TinyTowerDefence)
@@ -392,6 +393,32 @@ impl Game {
             game.cells[27] = DungeonCell::Revealed(9);
             game.cells[35] = DungeonCell::FlaggedTrap;
             game.cells[45] = DungeonCell::Hidden;
+        }
+        if scene == "potion_catalyst" {
+            use crate::potion_2048::{Potion2048, PotionDifficulty};
+            let game = &mut self.state.potion_2048;
+            *game = Potion2048::new_with_difficulty(0xB071_2050, PotionDifficulty::Expert);
+            game.cells = vec![0; 36];
+            for (index, value) in [
+                (5, 2),
+                (10, 4),
+                (11, 8),
+                (14, 1),
+                (16, 16),
+                (17, 32),
+                (20, 64),
+                (21, 128),
+                (26, 256),
+                (32, 512),
+            ] {
+                game.cells[index] = value;
+            }
+            game.score = 1_840;
+            game.best = 2_460;
+            game.combo = 4;
+            game.best_combo = 6;
+            game.catalysts_brewed = 2;
+            game.last_merges = 2;
         }
         if scene == "solitaire_peek" {
             self.capture_solitaire_peek = true;

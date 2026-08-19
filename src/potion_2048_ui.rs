@@ -20,7 +20,7 @@ struct Layout {
 fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
-            board: Rect::new(270., 60., 300., 300.),
+            board: Rect::new(300., 65., 280., 280.),
             arrows: [
                 Rect::new(610., 70., 52., 44.),
                 Rect::new(610., 120., 52., 44.),
@@ -31,14 +31,14 @@ fn layout() -> Layout {
             undo: Rect::new(680., 155., 105., 44.),
             new_game: Rect::new(680., 210., 130., 44.),
             difficulty: [
-                Rect::new(610., 60., 68., 38.),
-                Rect::new(682., 60., 68., 38.),
-                Rect::new(754., 60., 76., 38.),
+                Rect::new(80., 55., 65., 44.),
+                Rect::new(150., 55., 65., 44.),
+                Rect::new(220., 55., 75., 44.),
             ],
         }
     } else if crate::ui::is_portrait() {
         Layout {
-            board: Rect::new(20., 135., 320., 320.),
+            board: Rect::new(50., 150., 300., 300.),
             arrows: [
                 Rect::new(20., 480., 74., 44.),
                 Rect::new(102., 480., 74., 44.),
@@ -49,9 +49,9 @@ fn layout() -> Layout {
             undo: Rect::new(20., 555., 145., 44.),
             new_game: Rect::new(185., 555., 155., 44.),
             difficulty: [
-                Rect::new(20., 680., 90., 38.),
-                Rect::new(120., 680., 90., 38.),
-                Rect::new(220., 680., 100., 38.),
+                Rect::new(20., 100., 100., 44.),
+                Rect::new(130., 100., 100., 44.),
+                Rect::new(240., 100., 100., 44.),
             ],
         }
     } else {
@@ -67,9 +67,9 @@ fn layout() -> Layout {
             undo: Rect::new(840., 250., 120., 44.),
             new_game: Rect::new(980., 250., 150., 44.),
             difficulty: [
-                Rect::new(840., 115., 85., 38.),
-                Rect::new(930., 115., 85., 38.),
-                Rect::new(1020., 115., 95., 38.),
+                Rect::new(840., 95., 85., 44.),
+                Rect::new(930., 95., 85., 44.),
+                Rect::new(1020., 95., 95., 44.),
             ],
         }
     }
@@ -140,17 +140,44 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
-    text(
-        &format!(
-            "Score {}  •  Best {}  •  Goal {}  •  {}  •  {}",
+    let brew_status = if let Some(hint) = state.card_hint.as_deref() {
+        hint.to_string()
+    } else if compact {
+        format!(
+            "S{}  •  G{}  •  Chain {}/{}  •  C{}",
+            game.score,
+            game.target(),
+            game.combo,
+            game.difficulty.catalyst_chain(),
+            game.catalysts_brewed
+        )
+    } else if portrait {
+        format!(
+            "S{}  •  B{}  •  G{}  •  {}  •  Chain {}/{}  •  C{}",
             game.score,
             game.best,
             game.target(),
             game.difficulty.label(),
-            state.card_hint.as_deref().unwrap_or("Reach 4096")
-        ),
-        if compact { 430. } else { x },
-        if compact { 30. } else { y + 25. },
+            game.combo,
+            game.difficulty.catalyst_chain(),
+            game.catalysts_brewed
+        )
+    } else {
+        format!(
+            "Score {}  •  Best {}  •  Goal {}  •  {}  •  Chain {}/{}  •  Catalysts {}",
+            game.score,
+            game.best,
+            game.target(),
+            game.difficulty.label(),
+            game.combo,
+            game.difficulty.catalyst_chain(),
+            game.catalysts_brewed
+        )
+    };
+    text(
+        &brew_status,
+        if compact { 80. } else { x },
+        if compact { 120. } else { y + 25. },
         accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
@@ -173,7 +200,30 @@ pub fn draw(state: &AppState) {
             2.,
             accessibility::grid_line(state.high_contrast),
         );
-        if value > 0 {
+        if value == 1 {
+            let center = vec2(rect.x + rect.w * 0.5, rect.y + rect.h * 0.5);
+            let radius = rect.w.min(rect.h) * 0.28;
+            draw_triangle(
+                vec2(center.x, center.y - radius),
+                vec2(center.x + radius, center.y),
+                vec2(center.x, center.y + radius),
+                accent(),
+            );
+            draw_triangle(
+                vec2(center.x, center.y - radius),
+                vec2(center.x - radius, center.y),
+                vec2(center.x, center.y + radius),
+                accent(),
+            );
+            let size = accessibility::text_size(12., state.large_text);
+            text(
+                "C",
+                center.x - crate::ui::measure_text("C", None, size as u16, 1.).width * 0.5,
+                center.y + size * 0.35,
+                size,
+                crate::theme::INK,
+            );
+        } else if value > 0 {
             let label = value.to_string();
             let size =
                 accessibility::text_size(if value < 100 { 29. } else { 21. }, state.large_text);
@@ -210,6 +260,7 @@ fn tile_color(value: u16, high_contrast: bool) -> Color {
     if high_contrast {
         return match value {
             0 => accessibility::board_fill(true),
+            1 => Color::new(1., 0.72, 0.08, 1.),
             2 => Color::new(0.05, 0.42, 0.80, 1.),
             4 => Color::new(0.05, 0.75, 0.65, 1.),
             8 => Color::new(0.10, 0.85, 0.25, 1.),
@@ -220,6 +271,7 @@ fn tile_color(value: u16, high_contrast: bool) -> Color {
     }
     match value {
         0 => Color::new(0.10, 0.07, 0.16, 1.),
+        1 => Color::new(0.22, 0.16, 0.30, 1.),
         2 => Color::new(0.22, 0.30, 0.35, 1.),
         4 => Color::new(0.25, 0.40, 0.38, 1.),
         8 => Color::new(0.34, 0.45, 0.25, 1.),

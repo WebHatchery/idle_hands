@@ -127,7 +127,20 @@ pub fn potion_2048(state: &AppState) -> String {
                 game.target()
             )
         },
-        |direction| format!("Best move: {}.", potion_direction_label(direction)),
+        |direction| {
+            let catalyst = if game.cells.contains(&1) {
+                " CATALYST C reacts with any potion."
+            } else {
+                ""
+            };
+            format!(
+                "Best move: {}. Chain {}/{} toward the next CATALYST.{}",
+                potion_direction_label(direction),
+                game.combo,
+                game.difficulty.catalyst_chain(),
+                catalyst
+            )
+        },
     )
 }
 
