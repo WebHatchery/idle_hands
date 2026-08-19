@@ -36,7 +36,7 @@ use crate::reversi::Reversi;
 use crate::sliding_puzzle::SlidingPuzzle;
 use crate::snake::Snake;
 use crate::sokoban::Sokoban;
-use crate::solitaire::Solitaire;
+use crate::solitaire::{CardSource, Solitaire};
 use crate::spider::Spider;
 use crate::spider_solitaire::SpiderSolitaire;
 use crate::sudoku::Sudoku;
@@ -330,6 +330,7 @@ pub struct AppState {
     pub nonogram_zoomed: bool,
     pub nonogram_focus: (usize, usize),
     pub solitaire: Solitaire,
+    pub solitaire_peek: Option<CardSource>,
     pub freecell: FreeCell,
     pub fivefold: Fivefold,
     pub reversi: Reversi,
@@ -692,6 +693,7 @@ impl Default for AppState {
             nonogram_zoomed: false,
             nonogram_focus: (0, 0),
             solitaire: Solitaire::default(),
+            solitaire_peek: None,
             freecell: FreeCell::default(),
             fivefold: Fivefold::default(),
             reversi: Reversi::default(),

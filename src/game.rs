@@ -39,6 +39,8 @@ pub struct Game {
     assets: AssetManager,
     notifications: NotificationManager,
     pointer: PointerTracker,
+    pub(super) touch_was_active: bool,
+    pub(super) capture_solitaire_peek: bool,
     sounds: SoundBank,
     transition: f32,
     confirmation_bypass: bool,
@@ -56,6 +58,8 @@ impl Game {
             assets,
             notifications: NotificationManager::new(),
             pointer: PointerTracker::default(),
+            touch_was_active: false,
+            capture_solitaire_peek: false,
             sounds: SoundBank::load().await,
             transition: 0.,
             confirmation_bypass: false,
@@ -68,6 +72,7 @@ impl Game {
     pub fn update(&mut self, dt: f32) {
         self.notifications.update(dt);
         self.pointer.tick(dt);
+        self.update_solitaire_peek();
         if self.state.reduced_motion {
             self.transition = 0.;
         } else {
@@ -190,6 +195,7 @@ impl Game {
         let _ = dt;
     }
     fn apply(&mut self, action: ui::UiAction) {
+        self.state.solitaire_peek = None;
         let previous_screen = self.state.screen;
         if !self.confirmation_bypass
             && game_restart::requires_new_confirmation(action)

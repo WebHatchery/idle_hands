@@ -11,7 +11,7 @@ use macroquad::prelude::*;
 const TOP_ROW_Y: f32 = 150.;
 const TABLEAU_LABEL_Y: f32 = 305.;
 const TABLEAU_TOP: f32 = 315.;
-const TABLEAU_BOTTOM: f32 = 606.;
+const TABLEAU_BOTTOM: f32 = 614.;
 const MAX_TABLEAU_GAP: f32 = 30.;
 const MIN_TABLEAU_GAP: f32 = 12.;
 
@@ -36,6 +36,33 @@ fn tableau_gap(game: &Solitaire) -> f32 {
         return MAX_TABLEAU_GAP;
     }
     ((TABLEAU_BOTTOM - TABLEAU_TOP - 116.) / deepest as f32).clamp(MIN_TABLEAU_GAP, MAX_TABLEAU_GAP)
+}
+
+fn tableau_depth_at(game: &Solitaire, column: usize, y: f32, gap: f32) -> usize {
+    if game.tableau[column].is_empty() || y < TABLEAU_TOP {
+        return 0;
+    }
+    (((y - TABLEAU_TOP) / gap).floor() as usize).min(game.tableau[column].len() - 1)
+}
+
+pub(crate) fn tableau_card_at(game: &Solitaire, p: Vec2) -> Option<(usize, usize)> {
+    if !(TABLEAU_TOP..=TABLEAU_BOTTOM).contains(&p.y) {
+        return None;
+    }
+    let column = (0..7).find(|column| {
+        let x = 35. + *column as f32 * 120.;
+        p.x >= x && p.x <= x + 92.
+    })?;
+    if game.tableau[column].is_empty() {
+        return None;
+    }
+    let gap = tableau_gap(game);
+    let last_depth = game.tableau[column].len() - 1;
+    let last_bottom = TABLEAU_TOP + last_depth as f32 * gap + 116.;
+    if p.y > last_bottom {
+        return None;
+    }
+    Some((column, tableau_depth_at(game, column, p.y, gap)))
 }
 
 pub fn draw_solitaire(state: &AppState) {
@@ -127,6 +154,13 @@ pub fn draw_solitaire(state: &AppState) {
             panel(card_rect(x, TABLEAU_TOP), crate::theme::GAME_PANEL);
         }
     }
+    if let Some(crate::solitaire::CardSource::Tableau(column, depth)) = state.solitaire_peek {
+        if let Some(card) = game.tableau[column].get(depth) {
+            let x = 35. + column as f32 * 120.;
+            let rect = card_rect(x, TABLEAU_TOP + depth as f32 * tableau_gap);
+            draw_card(rect, *card, true, state.card_back, state.reduced_motion);
+        }
+    }
     text(
         &format!("Moves: {}", game.moves),
         45.,
@@ -146,6 +180,13 @@ pub fn draw_solitaire(state: &AppState) {
         850.,
         545.,
         16.,
+        Color::new(0.63, 0.58, 0.72, 1.),
+    );
+    text(
+        "Hover or press a stack to inspect a card.",
+        850.,
+        567.,
+        14.,
         Color::new(0.63, 0.58, 0.72, 1.),
     );
     if let Some(hint) = state.card_hint.as_deref() {
@@ -194,16 +235,12 @@ pub fn solitaire_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     for column in 0..7 {
         let x = 35. + column as f32 * 120.;
         if p.x >= x && p.x <= x + 92. && p.y >= TABLEAU_LABEL_Y {
-            let depth = if state.solitaire.tableau[column].is_empty() {
-                0
-            } else if p.y < TABLEAU_TOP {
-                0
-            } else {
-                (((p.y - TABLEAU_TOP) / tableau_gap).floor() as usize)
-                    .min(state.solitaire.tableau[column].len() - 1)
-            };
+            let depth = tableau_depth_at(&state.solitaire, column, p.y, tableau_gap);
             return vec![UiAction::SolitaireTableau(column, depth)];
         }
     }
     vec![]
 }
+
+#[cfg(test)]
+mod tests;

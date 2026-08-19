@@ -8,6 +8,7 @@ use macroquad_toolkit::notifications::NotificationManager;
 impl Game {
     pub fn begin_capture_scene(&mut self, scene: &str) {
         self.state = crate::state::AppState::new(&self.data);
+        self.capture_solitaire_peek = false;
         self.notifications = NotificationManager::new();
         let scene = scene
             .strip_prefix("portrait_")
@@ -32,7 +33,7 @@ impl Game {
             | "nonogram_accessible"
             | "nonogram_hint"
             | "nonogram_hint_accessible" => Screen::Game(GameId::Nonogram),
-            "solitaire" | "solitaire_hint" | "solitaire_selected" => {
+            "solitaire" | "solitaire_hint" | "solitaire_selected" | "solitaire_peek" => {
                 Screen::Game(GameId::Solitaire)
             }
             "freecell" | "freecell_hint" | "freecell_selected" => Screen::Game(GameId::FreeCell),
@@ -222,6 +223,17 @@ impl Game {
         }
         if scene == "solitaire_selected" {
             self.state.solitaire.select_tableau(0, 0);
+        }
+        if scene == "solitaire_peek" {
+            self.capture_solitaire_peek = true;
+            self.state.solitaire.tableau[0] = (1..=13)
+                .map(|rank| crate::cards::Card {
+                    rank,
+                    suit: 3,
+                    face_up: true,
+                })
+                .collect();
+            self.state.solitaire_peek = Some(crate::solitaire::CardSource::Tableau(0, 6));
         }
         if scene == "cabinet_favorites" {
             for index in [0, GameId::Spider.index(), GameId::Nim.index()] {
