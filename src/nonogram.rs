@@ -112,7 +112,7 @@ impl Nonogram {
                         let center = size / 2;
                         x.abs_diff(center) + y.abs_diff(center) <= center
                     }
-                    _ => (x + y) % 2 == 0 || x == size / 2 || y == size / 2,
+                    _ => (x + y).is_multiple_of(2) || x == size / 2 || y == size / 2,
                 }
             })
             .collect();

@@ -89,7 +89,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
 }
 pub fn draw(state: &AppState) {
     let l = layout();
-    let game = &state.dungeon_sweeper;
+    let game = &state.games.dungeon_sweeper;
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
     let x = if compact {

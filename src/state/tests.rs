@@ -1,6 +1,7 @@
 use super::*;
 use crate::cards::Card;
 use crate::data::GameData;
+use crate::domain::Direction;
 
 #[test]
 fn new_board_has_two_tiles_and_is_seeded() {
@@ -15,10 +16,10 @@ fn random_launch_state_changes_seeded_games() {
     let data = GameData::load().unwrap();
     let first = AppState::new_random(&data, 11);
     let second = AppState::new_random(&data, 12);
-    assert_ne!(first.game.cells, second.game.cells);
-    assert_ne!(first.solitaire.seed, second.solitaire.seed);
-    assert_ne!(first.color_sort.seed, second.color_sort.seed);
-    assert_ne!(first.maze_walk.seed, second.maze_walk.seed);
+    assert_ne!(first.games.game.cells, second.games.game.cells);
+    assert_ne!(first.games.solitaire.seed, second.games.solitaire.seed);
+    assert_ne!(first.games.color_sort.seed, second.games.color_sort.seed);
+    assert_ne!(first.games.maze_walk.seed, second.games.maze_walk.seed);
 }
 
 #[test]
@@ -44,61 +45,61 @@ fn collection_save_round_trips_game_and_profile_state() {
         profile_name: "Patient Player".into(),
         ..Default::default()
     };
-    state.game.score = 128;
+    state.games.game.score = 128;
     state.mine_records[0] = Some(42);
     state.records.best_2048 = 128;
     state.records.fivefold_best_total = 275;
-    state.lights_out.moves = 4;
+    state.games.lights_out.moves = 4;
     state.records.lights_out_best_moves = Some(4);
-    state.tic_tac_toe.moves = 3;
+    state.games.tic_tac_toe.moves = 3;
     state.records.tic_tac_toe_best_moves = Some(3);
-    state.memory_pairs.moves = 5;
+    state.games.memory_pairs.moves = 5;
     state.records.memory_pairs_best_moves = Some(5);
-    state.sliding_puzzle.moves = 7;
+    state.games.sliding_puzzle.moves = 7;
     state.records.sliding_puzzle_best_moves = Some(7);
-    state.mastermind.row = 2;
+    state.games.mastermind.row = 2;
     state.records.mastermind_best_rows = Some(2);
-    state.spider.moves = 9;
+    state.games.spider.moves = 9;
     state.records.spider_best_moves = Some(9);
-    state.word_search.moves = 4;
+    state.games.word_search.moves = 4;
     state.records.word_search_best_moves = Some(4);
-    state.hangman.moves = 6;
+    state.games.hangman.moves = 6;
     state.records.hangman_best_moves = Some(6);
-    state.connect_four.moves = 8;
+    state.games.connect_four.moves = 8;
     state.records.connect_four_best_moves = Some(8);
-    state.checkers.moves = 10;
+    state.games.checkers.moves = 10;
     state.records.checkers_best_moves = Some(10);
-    state.peg_solitaire.moves = 11;
+    state.games.peg_solitaire.moves = 11;
     state.records.peg_solitaire_best_moves = Some(11);
-    state.mahjong_solitaire.moves = 12;
+    state.games.mahjong_solitaire.moves = 12;
     state.records.mahjong_solitaire_best_moves = Some(12);
-    state.snake.moves = 13;
+    state.games.snake.moves = 13;
     state.records.snake_best_score = Some(4);
-    state.breakout.moves = 14;
+    state.games.breakout.moves = 14;
     state.records.breakout_best_score = Some(5);
-    state.higher_lower.moves = 15;
+    state.games.higher_lower.moves = 15;
     state.records.higher_lower_best_score = Some(6);
-    state.klondike_golf.moves = 16;
+    state.games.klondike_golf.moves = 16;
     state.records.klondike_golf_best_moves = Some(16);
-    state.blackjack.player.push(Card {
+    state.games.blackjack.player.push(Card {
         rank: 10,
         suit: 0,
         face_up: true,
     });
     state.records.blackjack_best_wins = Some(2);
-    state.spider_solitaire.moves = 17;
+    state.games.spider_solitaire.moves = 17;
     state.records.spider_solitaire_best_moves = Some(17);
-    state.dungeon_sweeper.moves = 18;
+    state.games.dungeon_sweeper.moves = 18;
     state.records.dungeon_sweeper_best_moves = Some(18);
-    state.potion_2048.score = 19;
+    state.games.potion_2048.score = 19;
     state.records.potion_2048_best_score = Some(19);
-    state.tiny_tower_defence.wave = 4;
+    state.games.tiny_tower_defence.wave = 4;
     state.records.tiny_tower_defence_best_wave = Some(4);
-    state.one_room_roguelike.score = 23;
+    state.games.one_room_roguelike.score = 23;
     state.records.one_room_roguelike_best_score = Some(23);
-    state.daily_dungeon.score = 31;
+    state.games.daily_dungeon.score = 31;
     state.records.daily_dungeon_best_score = Some(31);
-    state.nim.moves = 6;
+    state.games.nim.moves = 6;
     state.records.nim_best_moves = Some(6);
     state.achievements[0] = true;
     state.stamps = 3;
@@ -113,57 +114,57 @@ fn collection_save_round_trips_game_and_profile_state() {
     let mut restored = AppState::default();
     save.apply_to(&mut restored);
     assert_eq!(restored.profile_name, "Patient Player");
-    assert_eq!(restored.game.score, 128);
+    assert_eq!(restored.games.game.score, 128);
     assert_eq!(restored.mine_records[0], Some(42));
     assert_eq!(restored.records.best_2048, 128);
     assert_eq!(restored.records.fivefold_best_total, 275);
-    assert_eq!(restored.lights_out.moves, 4);
+    assert_eq!(restored.games.lights_out.moves, 4);
     assert_eq!(restored.records.lights_out_best_moves, Some(4));
-    assert_eq!(restored.tic_tac_toe.moves, 3);
+    assert_eq!(restored.games.tic_tac_toe.moves, 3);
     assert_eq!(restored.records.tic_tac_toe_best_moves, Some(3));
-    assert_eq!(restored.memory_pairs.moves, 5);
+    assert_eq!(restored.games.memory_pairs.moves, 5);
     assert_eq!(restored.records.memory_pairs_best_moves, Some(5));
-    assert_eq!(restored.sliding_puzzle.moves, 7);
+    assert_eq!(restored.games.sliding_puzzle.moves, 7);
     assert_eq!(restored.records.sliding_puzzle_best_moves, Some(7));
-    assert_eq!(restored.mastermind.row, 2);
+    assert_eq!(restored.games.mastermind.row, 2);
     assert_eq!(restored.records.mastermind_best_rows, Some(2));
-    assert_eq!(restored.spider.moves, 9);
+    assert_eq!(restored.games.spider.moves, 9);
     assert_eq!(restored.records.spider_best_moves, Some(9));
-    assert_eq!(restored.word_search.moves, 4);
+    assert_eq!(restored.games.word_search.moves, 4);
     assert_eq!(restored.records.word_search_best_moves, Some(4));
-    assert_eq!(restored.hangman.moves, 6);
+    assert_eq!(restored.games.hangman.moves, 6);
     assert_eq!(restored.records.hangman_best_moves, Some(6));
-    assert_eq!(restored.connect_four.moves, 8);
+    assert_eq!(restored.games.connect_four.moves, 8);
     assert_eq!(restored.records.connect_four_best_moves, Some(8));
-    assert_eq!(restored.checkers.moves, 10);
+    assert_eq!(restored.games.checkers.moves, 10);
     assert_eq!(restored.records.checkers_best_moves, Some(10));
-    assert_eq!(restored.peg_solitaire.moves, 11);
+    assert_eq!(restored.games.peg_solitaire.moves, 11);
     assert_eq!(restored.records.peg_solitaire_best_moves, Some(11));
-    assert_eq!(restored.mahjong_solitaire.moves, 12);
+    assert_eq!(restored.games.mahjong_solitaire.moves, 12);
     assert_eq!(restored.records.mahjong_solitaire_best_moves, Some(12));
-    assert_eq!(restored.snake.moves, 13);
+    assert_eq!(restored.games.snake.moves, 13);
     assert_eq!(restored.records.snake_best_score, Some(4));
-    assert_eq!(restored.breakout.moves, 14);
+    assert_eq!(restored.games.breakout.moves, 14);
     assert_eq!(restored.records.breakout_best_score, Some(5));
-    assert_eq!(restored.higher_lower.moves, 15);
+    assert_eq!(restored.games.higher_lower.moves, 15);
     assert_eq!(restored.records.higher_lower_best_score, Some(6));
-    assert_eq!(restored.klondike_golf.moves, 16);
+    assert_eq!(restored.games.klondike_golf.moves, 16);
     assert_eq!(restored.records.klondike_golf_best_moves, Some(16));
-    assert_eq!(restored.blackjack.player.len(), 3);
+    assert_eq!(restored.games.blackjack.player.len(), 3);
     assert_eq!(restored.records.blackjack_best_wins, Some(2));
-    assert_eq!(restored.spider_solitaire.moves, 17);
+    assert_eq!(restored.games.spider_solitaire.moves, 17);
     assert_eq!(restored.records.spider_solitaire_best_moves, Some(17));
-    assert_eq!(restored.dungeon_sweeper.moves, 18);
+    assert_eq!(restored.games.dungeon_sweeper.moves, 18);
     assert_eq!(restored.records.dungeon_sweeper_best_moves, Some(18));
-    assert_eq!(restored.potion_2048.score, 19);
+    assert_eq!(restored.games.potion_2048.score, 19);
     assert_eq!(restored.records.potion_2048_best_score, Some(19));
-    assert_eq!(restored.tiny_tower_defence.wave, 4);
+    assert_eq!(restored.games.tiny_tower_defence.wave, 4);
     assert_eq!(restored.records.tiny_tower_defence_best_wave, Some(4));
-    assert_eq!(restored.one_room_roguelike.score, 23);
+    assert_eq!(restored.games.one_room_roguelike.score, 23);
     assert_eq!(restored.records.one_room_roguelike_best_score, Some(23));
-    assert_eq!(restored.daily_dungeon.score, 31);
+    assert_eq!(restored.games.daily_dungeon.score, 31);
     assert_eq!(restored.records.daily_dungeon_best_score, Some(31));
-    assert_eq!(restored.nim.moves, 6);
+    assert_eq!(restored.games.nim.moves, 6);
     assert_eq!(restored.records.nim_best_moves, Some(6));
     assert!(restored.achievements[0]);
     assert_eq!(restored.stamps, 3);
@@ -182,7 +183,7 @@ fn profile_and_game_snapshots_round_trip_independently() {
         profile_name: "Separate Slots".into(),
         ..Default::default()
     };
-    state.game.score = 77;
+    state.games.game.score = 77;
     state.records.best_2048 = 77;
     let profile = ProfileSave::from_state(&state, "1.0.0");
     let snapshot = GameSnapshot::from_state(&state, GameId::Game2048);
@@ -190,49 +191,49 @@ fn profile_and_game_snapshots_round_trip_independently() {
     profile.apply_to(&mut restored);
     snapshot.apply_to(&mut restored);
     assert_eq!(restored.profile_name, "Separate Slots");
-    assert_eq!(restored.game.score, 77);
+    assert_eq!(restored.games.game.score, 77);
     assert_eq!(GameId::Yahtzee.save_key(), "fivefold");
 }
 
 #[test]
 fn every_game_snapshot_round_trips_its_own_state() {
     let mut source = AppState::default();
-    source.game.score = 77;
-    source.minesweeper.seed = 91;
-    source.sudoku.selected = Some(4);
-    source.nonogram.moves = 12;
-    source.solitaire.moves = 8;
-    source.freecell.moves = 9;
-    source.fivefold.roll_number = 2;
-    source.reversi.turn = 2;
-    source.lights_out.moves = 17;
-    source.tic_tac_toe.moves = 19;
-    source.memory_pairs.moves = 21;
-    source.sliding_puzzle.moves = 23;
-    source.mastermind.row = 3;
-    source.spider.moves = 25;
-    source.word_search.moves = 26;
-    source.hangman.moves = 27;
-    source.connect_four.moves = 28;
-    source.checkers.moves = 29;
-    source.peg_solitaire.moves = 30;
-    source.mahjong_solitaire.moves = 31;
-    source.snake.moves = 32;
-    source.breakout.moves = 33;
-    source.higher_lower.moves = 34;
-    source.klondike_golf.moves = 35;
-    source.blackjack.player.push(Card {
+    source.games.game.score = 77;
+    source.games.minesweeper.seed = 91;
+    source.games.sudoku.selected = Some(4);
+    source.games.nonogram.moves = 12;
+    source.games.solitaire.moves = 8;
+    source.games.freecell.moves = 9;
+    source.games.fivefold.roll_number = 2;
+    source.games.reversi.turn = 2;
+    source.games.lights_out.moves = 17;
+    source.games.tic_tac_toe.moves = 19;
+    source.games.memory_pairs.moves = 21;
+    source.games.sliding_puzzle.moves = 23;
+    source.games.mastermind.row = 3;
+    source.games.spider.moves = 25;
+    source.games.word_search.moves = 26;
+    source.games.hangman.moves = 27;
+    source.games.connect_four.moves = 28;
+    source.games.checkers.moves = 29;
+    source.games.peg_solitaire.moves = 30;
+    source.games.mahjong_solitaire.moves = 31;
+    source.games.snake.moves = 32;
+    source.games.breakout.moves = 33;
+    source.games.higher_lower.moves = 34;
+    source.games.klondike_golf.moves = 35;
+    source.games.blackjack.player.push(Card {
         rank: 9,
         suit: 1,
         face_up: true,
     });
-    source.spider_solitaire.moves = 36;
-    source.dungeon_sweeper.moves = 38;
-    source.potion_2048.score = 40;
-    source.tiny_tower_defence.wave = 4;
-    source.one_room_roguelike.score = 40;
-    source.daily_dungeon.score = 42;
-    source.nim.moves = 43;
+    source.games.spider_solitaire.moves = 36;
+    source.games.dungeon_sweeper.moves = 38;
+    source.games.potion_2048.score = 40;
+    source.games.tiny_tower_defence.wave = 4;
+    source.games.one_room_roguelike.score = 40;
+    source.games.daily_dungeon.score = 42;
+    source.games.nim.moves = 43;
 
     for game in GameId::ALL {
         let snapshot = GameSnapshot::from_state(&source, game);
@@ -247,42 +248,42 @@ fn every_game_snapshot_round_trips_its_own_state() {
 #[test]
 fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
     let mut source = AppState::default();
-    source.game.score = 11;
-    source.minesweeper.seed = 22;
-    source.sudoku.moves = 33;
-    source.nonogram.moves = 44;
-    source.solitaire.moves = 55;
-    source.freecell.moves = 66;
-    source.fivefold.roll_number = 2;
-    source.reversi.turn = 2;
-    source.lights_out.moves = 17;
-    source.tic_tac_toe.moves = 19;
-    source.memory_pairs.moves = 21;
-    source.sliding_puzzle.moves = 23;
-    source.mastermind.row = 3;
-    source.spider.moves = 25;
-    source.word_search.moves = 26;
-    source.hangman.moves = 27;
-    source.connect_four.moves = 28;
-    source.checkers.moves = 29;
-    source.peg_solitaire.moves = 30;
-    source.mahjong_solitaire.moves = 31;
-    source.snake.moves = 32;
-    source.breakout.moves = 33;
-    source.higher_lower.moves = 34;
-    source.klondike_golf.moves = 35;
-    source.blackjack.player.push(Card {
+    source.games.game.score = 11;
+    source.games.minesweeper.seed = 22;
+    source.games.sudoku.moves = 33;
+    source.games.nonogram.moves = 44;
+    source.games.solitaire.moves = 55;
+    source.games.freecell.moves = 66;
+    source.games.fivefold.roll_number = 2;
+    source.games.reversi.turn = 2;
+    source.games.lights_out.moves = 17;
+    source.games.tic_tac_toe.moves = 19;
+    source.games.memory_pairs.moves = 21;
+    source.games.sliding_puzzle.moves = 23;
+    source.games.mastermind.row = 3;
+    source.games.spider.moves = 25;
+    source.games.word_search.moves = 26;
+    source.games.hangman.moves = 27;
+    source.games.connect_four.moves = 28;
+    source.games.checkers.moves = 29;
+    source.games.peg_solitaire.moves = 30;
+    source.games.mahjong_solitaire.moves = 31;
+    source.games.snake.moves = 32;
+    source.games.breakout.moves = 33;
+    source.games.higher_lower.moves = 34;
+    source.games.klondike_golf.moves = 35;
+    source.games.blackjack.player.push(Card {
         rank: 8,
         suit: 2,
         face_up: true,
     });
-    source.spider_solitaire.moves = 37;
-    source.dungeon_sweeper.moves = 39;
-    source.potion_2048.score = 41;
-    source.tiny_tower_defence.wave = 5;
-    source.one_room_roguelike.score = 41;
-    source.daily_dungeon.score = 43;
-    source.nim.moves = 44;
+    source.games.spider_solitaire.moves = 37;
+    source.games.dungeon_sweeper.moves = 39;
+    source.games.potion_2048.score = 41;
+    source.games.tiny_tower_defence.wave = 5;
+    source.games.one_room_roguelike.score = 41;
+    source.games.daily_dungeon.score = 43;
+    source.games.nim.moves = 44;
 
     let snapshots = GameId::ALL
         .iter()
@@ -293,38 +294,38 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
         snapshot.apply_to(&mut restored);
     }
 
-    assert_eq!(restored.game.score, 11);
-    assert_eq!(restored.minesweeper.seed, 22);
-    assert_eq!(restored.sudoku.moves, 33);
-    assert_eq!(restored.nonogram.moves, 44);
-    assert_eq!(restored.solitaire.moves, 55);
-    assert_eq!(restored.freecell.moves, 66);
-    assert_eq!(restored.fivefold.roll_number, 2);
-    assert_eq!(restored.reversi.turn, 2);
-    assert_eq!(restored.lights_out.moves, 17);
-    assert_eq!(restored.tic_tac_toe.moves, 19);
-    assert_eq!(restored.memory_pairs.moves, 21);
-    assert_eq!(restored.sliding_puzzle.moves, 23);
-    assert_eq!(restored.mastermind.row, 3);
-    assert_eq!(restored.spider.moves, 25);
-    assert_eq!(restored.word_search.moves, 26);
-    assert_eq!(restored.hangman.moves, 27);
-    assert_eq!(restored.connect_four.moves, 28);
-    assert_eq!(restored.checkers.moves, 29);
-    assert_eq!(restored.peg_solitaire.moves, 30);
-    assert_eq!(restored.mahjong_solitaire.moves, 31);
-    assert_eq!(restored.snake.moves, 32);
-    assert_eq!(restored.breakout.moves, 33);
-    assert_eq!(restored.higher_lower.moves, 34);
-    assert_eq!(restored.klondike_golf.moves, 35);
-    assert_eq!(restored.blackjack.player.len(), 3);
-    assert_eq!(restored.spider_solitaire.moves, 37);
-    assert_eq!(restored.dungeon_sweeper.moves, 39);
-    assert_eq!(restored.potion_2048.score, 41);
-    assert_eq!(restored.tiny_tower_defence.wave, 5);
-    assert_eq!(restored.one_room_roguelike.score, 41);
-    assert_eq!(restored.daily_dungeon.score, 43);
-    assert_eq!(restored.nim.moves, 44);
+    assert_eq!(restored.games.game.score, 11);
+    assert_eq!(restored.games.minesweeper.seed, 22);
+    assert_eq!(restored.games.sudoku.moves, 33);
+    assert_eq!(restored.games.nonogram.moves, 44);
+    assert_eq!(restored.games.solitaire.moves, 55);
+    assert_eq!(restored.games.freecell.moves, 66);
+    assert_eq!(restored.games.fivefold.roll_number, 2);
+    assert_eq!(restored.games.reversi.turn, 2);
+    assert_eq!(restored.games.lights_out.moves, 17);
+    assert_eq!(restored.games.tic_tac_toe.moves, 19);
+    assert_eq!(restored.games.memory_pairs.moves, 21);
+    assert_eq!(restored.games.sliding_puzzle.moves, 23);
+    assert_eq!(restored.games.mastermind.row, 3);
+    assert_eq!(restored.games.spider.moves, 25);
+    assert_eq!(restored.games.word_search.moves, 26);
+    assert_eq!(restored.games.hangman.moves, 27);
+    assert_eq!(restored.games.connect_four.moves, 28);
+    assert_eq!(restored.games.checkers.moves, 29);
+    assert_eq!(restored.games.peg_solitaire.moves, 30);
+    assert_eq!(restored.games.mahjong_solitaire.moves, 31);
+    assert_eq!(restored.games.snake.moves, 32);
+    assert_eq!(restored.games.breakout.moves, 33);
+    assert_eq!(restored.games.higher_lower.moves, 34);
+    assert_eq!(restored.games.klondike_golf.moves, 35);
+    assert_eq!(restored.games.blackjack.player.len(), 3);
+    assert_eq!(restored.games.spider_solitaire.moves, 37);
+    assert_eq!(restored.games.dungeon_sweeper.moves, 39);
+    assert_eq!(restored.games.potion_2048.score, 41);
+    assert_eq!(restored.games.tiny_tower_defence.wave, 5);
+    assert_eq!(restored.games.one_room_roguelike.score, 41);
+    assert_eq!(restored.games.daily_dungeon.score, 43);
+    assert_eq!(restored.games.nim.moves, 44);
 }
 
 #[test]

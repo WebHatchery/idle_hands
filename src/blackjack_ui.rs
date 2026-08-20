@@ -64,7 +64,7 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
 }
 
 pub fn draw(state: &AppState) {
-    let game = &state.blackjack;
+    let game = &state.games.blackjack;
     let l = layout();
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();

@@ -25,7 +25,7 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 }
 
 pub fn draw(state: &AppState) {
-    let game = &state.minesweeper;
+    let game = &state.games.minesweeper;
     text("‹ CABINET", 40., 55., 20., crate::theme::BRASS);
     text("MINESWEEPER", 40., 105., 42., crate::theme::BRASS);
     text("Read the field", 44., 132., 18., crate::theme::SECONDARY);
@@ -187,15 +187,15 @@ pub fn clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     let board = Rect::new(350., 155., 450., 450.);
     let grid = GridLayout::new(
         Rect::new(board.x + 12., board.y + 12., board.w - 24., board.h - 24.),
-        state.minesweeper.width,
-        state.minesweeper.height,
+        state.games.minesweeper.width,
+        state.games.minesweeper.height,
     );
     let Some(index) = grid.index_at(p) else {
         return vec![];
     };
     if state.mine_flag_mode {
         vec![UiAction::MineFlag(index)]
-    } else if matches!(state.minesweeper.cells[index], Cell::Revealed(_)) {
+    } else if matches!(state.games.minesweeper.cells[index], Cell::Revealed(_)) {
         vec![UiAction::MineChord(index)]
     } else {
         vec![UiAction::MineReveal(index)]
@@ -206,8 +206,8 @@ pub fn long_press(state: &AppState, p: Vec2) -> Vec<UiAction> {
     let board = Rect::new(350., 155., 450., 450.);
     let grid = GridLayout::new(
         Rect::new(board.x + 12., board.y + 12., board.w - 24., board.h - 24.),
-        state.minesweeper.width,
-        state.minesweeper.height,
+        state.games.minesweeper.width,
+        state.games.minesweeper.height,
     );
     grid.index_at(p)
         .map_or_else(Vec::new, |index| vec![UiAction::MineFlag(index)])

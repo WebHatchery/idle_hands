@@ -1,9 +1,10 @@
 //! Responsive touch presentation for Maze Walk.
 
+use crate::domain::Direction;
 use crate::{
     accessibility,
     maze_walk::{MazeMode, MazePhase, MazeWalk, SIDE},
-    state::{AppState, Direction},
+    state::AppState,
     ui::UiAction,
 };
 use macroquad::prelude::*;
@@ -91,7 +92,7 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
         return vec![UiAction::MazeNew];
     }
     if crate::ui::hit(l.mode, point) {
-        return vec![UiAction::MazeMode(match _state.maze_walk.mode {
+        return vec![UiAction::MazeMode(match _state.games.maze_walk.mode {
             MazeMode::Explorer => MazeMode::Fog,
             MazeMode::Fog => MazeMode::Explorer,
         })];
@@ -101,7 +102,7 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
 
 pub fn draw(state: &AppState) {
     let l = layout();
-    let game = &state.maze_walk;
+    let game = &state.games.maze_walk;
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
     let title_x = if compact {

@@ -90,7 +90,7 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
         return vec![UiAction::WordGridNew];
     }
     if crate::ui::hit(l.mode, point) {
-        return vec![UiAction::WordGridMode(match _state.word_grid.mode {
+        return vec![UiAction::WordGridMode(match _state.games.word_grid.mode {
             WordGridMode::Classic => WordGridMode::Hard,
             WordGridMode::Hard => WordGridMode::Classic,
         })];
@@ -108,7 +108,7 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
 
 pub fn draw(state: &AppState) {
     let l = layout();
-    let game = &state.word_grid;
+    let game = &state.games.word_grid;
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
     let title_x = if compact {

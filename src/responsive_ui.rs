@@ -1,12 +1,7 @@
 //! Compact portrait cabinet and 2048 layouts.
 
-use crate::{
-    cosmetics,
-    game_2048::Game2048Size,
-    palette_ui,
-    state::{AppState, Direction},
-    ui::UiAction,
-};
+use crate::domain::Direction;
+use crate::{cosmetics, game_2048::Game2048Size, palette_ui, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
 pub const WIDTH: f32 = 360.;
@@ -27,7 +22,7 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 }
 
 pub fn draw_2048(state: &AppState) {
-    let game = &state.game;
+    let game = &state.games.game;
     panel(Rect::new(0., 0., 120., 48.), crate::theme::SURFACE_DARK);
     text("‹ CABINET", 16., 35., 15., crate::theme::BRASS);
     text("2048", 16., 82., 38., crate::theme::BRASS);
@@ -161,7 +156,7 @@ pub fn game2048_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         }
         return vec![];
     }
-    if crate::ui::hit(Rect::new(20., 545., 150., 46.), p) && state.game.can_undo() {
+    if crate::ui::hit(Rect::new(20., 545., 150., 46.), p) && state.games.game.can_undo() {
         return vec![UiAction::Undo];
     }
     if crate::ui::hit(Rect::new(190., 545., 150., 46.), p) {
@@ -172,7 +167,7 @@ pub fn game2048_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     for (index, board_size) in Game2048Size::ALL.iter().enumerate() {
         if crate::ui::hit(Rect::new(170. + index as f32 * 88., 88., 80., 36.), p)
-            && state.game.board_size != *board_size
+            && state.games.game.board_size != *board_size
         {
             return vec![UiAction::Game2048Size(*board_size)];
         }

@@ -16,3 +16,21 @@
 - [x] Re-run the full 47-scene capture harness after adding a game or
       difficulty, keeping `GameId::ALL`, snapshots, records, and achievements
       in lockstep.
+
+## Architecture audit follow-up — 2026-08-20
+
+- [x] Split shell state from the 47-game rule store.
+- [x] Separate collection index, profile, and active-game persistence, with
+      legacy migration retained only on the read path.
+- [x] Partition shell actions from game-action handling at the host boundary.
+- [x] Centralize cabinet metadata and save keys in `GameDescriptor::ALL`.
+- [x] Share game input/render routing through `ui_game_routes`.
+- [x] Coalesce dirty autosaves and keep explicit SAVE immediate.
+- [x] Move rule directions into the dependency-neutral domain module.
+- [x] Validate and quarantine corrupt persistence slots with user-visible
+      recovery notices.
+- [x] Remove template data and repair the CI file-presence assumption.
+- [x] Bound undo histories and derive capture fixture routing from descriptors.
+
+See [the architecture status note](docs/ARCHITECTURE_STATUS.md) for the
+implementation map and deliberate remaining enum-host decision.

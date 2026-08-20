@@ -86,10 +86,12 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
         return vec![UiAction::WordLadderNew];
     }
     if crate::ui::hit(l.mode, point) {
-        return vec![UiAction::WordLadderMode(match _state.word_ladder.mode {
-            LadderMode::Direct => LadderMode::Scenic,
-            LadderMode::Scenic => LadderMode::Direct,
-        })];
+        return vec![UiAction::WordLadderMode(
+            match _state.games.word_ladder.mode {
+                LadderMode::Direct => LadderMode::Scenic,
+                LadderMode::Scenic => LadderMode::Direct,
+            },
+        )];
     }
     if l.keyboard.contains(point) {
         let index = ((point.y - l.keyboard.y) / l.key_h) as usize * l.columns
@@ -103,7 +105,7 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
 
 pub fn draw(state: &AppState) {
     let l = layout();
-    let game = &state.word_ladder;
+    let game = &state.games.word_ladder;
     let portrait = crate::ui::is_portrait();
     let compact = crate::ui::is_compact_landscape();
     let title_x = if compact {

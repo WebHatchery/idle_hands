@@ -131,7 +131,7 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
         return vec![UiAction::TriPeaksBridge];
     }
     if crate::ui::hit(l.rule, point) {
-        return vec![UiAction::TriPeaksRule(match _state.tri_peaks.rule {
+        return vec![UiAction::TriPeaksRule(match _state.games.tri_peaks.rule {
             TriPeaksRule::Strict => TriPeaksRule::Wrap,
             TriPeaksRule::Wrap => TriPeaksRule::Strict,
         })];
@@ -146,7 +146,7 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
 
 pub fn draw(state: &AppState) {
     let l = layout();
-    let game = &state.tri_peaks;
+    let game = &state.games.tri_peaks;
     let portrait = crate::ui::is_portrait();
     let compact = crate::ui::is_compact_landscape();
     let title_x = if compact {

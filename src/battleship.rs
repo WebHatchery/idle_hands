@@ -1,4 +1,5 @@
 //! Deterministic touch-first Battleship hunt.
+use crate::undo::UndoStack;
 
 use serde::{Deserialize, Serialize};
 
@@ -58,7 +59,7 @@ pub struct Battleship {
     #[serde(default)]
     pub fleet: BattleshipFleet,
     #[serde(skip)]
-    history: Vec<Box<Self>>,
+    history: UndoStack<Self>,
 }
 
 impl Default for Battleship {
@@ -116,7 +117,7 @@ impl Battleship {
             scanned: vec![false; CELLS],
             phase: BattleshipPhase::Playing,
             fleet,
-            history: Vec::new(),
+            history: UndoStack::default(),
         }
     }
 
@@ -155,7 +156,7 @@ impl Battleship {
         {
             self.phase = BattleshipPhase::Won;
         }
-        self.history.push(Box::new(previous));
+        self.history.push(previous);
         true
     }
 
@@ -182,7 +183,7 @@ impl Battleship {
         }
         self.sonar_charges = self.sonar_charges.saturating_sub(1);
         self.sonar_armed = false;
-        self.history.push(Box::new(previous));
+        self.history.push(previous);
         true
     }
 
@@ -191,7 +192,7 @@ impl Battleship {
             return false;
         };
         let history = std::mem::take(&mut self.history);
-        *self = *previous;
+        *self = previous;
         self.history = history;
         true
     }

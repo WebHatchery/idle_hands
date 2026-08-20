@@ -1,7 +1,7 @@
 use crate::state::AppState;
 
 pub fn snake(state: &AppState) -> String {
-    let game = &state.snake;
+    let game = &state.games.snake;
     match game.status {
         crate::snake::SnakeStatus::Won => {
             return "The coil is complete — tap NEW BOARD to play again.".into()
@@ -28,7 +28,7 @@ pub fn snake(state: &AppState) -> String {
 }
 
 pub fn breakout(state: &AppState) -> String {
-    let game = &state.breakout;
+    let game = &state.games.breakout;
     match game.status {
         crate::breakout::BreakoutStatus::Won => {
             return "All three walls are clear — tap NEW BOARD to play again.".into()
@@ -53,7 +53,7 @@ pub fn breakout(state: &AppState) -> String {
 }
 
 pub fn higher_lower(state: &AppState) -> String {
-    let game = &state.higher_lower;
+    let game = &state.games.higher_lower;
     match game.status {
         crate::higher_lower::HigherLowerStatus::Won => {
             return "The run is yours — tap NEW ROUND to play again.".into()
@@ -81,7 +81,7 @@ pub fn higher_lower(state: &AppState) -> String {
 }
 
 pub fn blackjack(state: &AppState) -> String {
-    let game = &state.blackjack;
+    let game = &state.games.blackjack;
     match game.status {
         crate::blackjack::BlackjackStatus::Won => {
             return "You win — tap NEW ROUND to deal again.".into()
@@ -101,7 +101,7 @@ pub fn blackjack(state: &AppState) -> String {
 }
 
 pub fn dungeon_sweeper(state: &AppState) -> String {
-    let game = &state.dungeon_sweeper;
+    let game = &state.games.dungeon_sweeper;
     match game.status {
         crate::dungeon_sweeper::DungeonStatus::Won => {
             return "The exit is found — tap NEW DUNGEON to play again.".into()
@@ -127,7 +127,7 @@ pub fn dungeon_sweeper(state: &AppState) -> String {
 }
 
 pub fn potion_2048(state: &AppState) -> String {
-    let game = &state.potion_2048;
+    let game = &state.games.potion_2048;
     if game.won() {
         return "The master potion is brewed — tap NEW BREW to play again.".into();
     }
@@ -156,7 +156,7 @@ pub fn potion_2048(state: &AppState) -> String {
 }
 
 pub fn tiny_tower_defence(state: &AppState) -> String {
-    let game = &state.tiny_tower_defence;
+    let game = &state.games.tiny_tower_defence;
     match game.phase {
         crate::tiny_tower_defence::TowerPhase::Won => {
             return "The tower holds — tap NEW TOWER to play again.".into()
@@ -189,7 +189,7 @@ pub fn tiny_tower_defence(state: &AppState) -> String {
 }
 
 pub fn one_room_roguelike(state: &AppState) -> String {
-    let game = &state.one_room_roguelike;
+    let game = &state.games.one_room_roguelike;
     match game.phase {
         crate::one_room_roguelike::RoomPhase::Won => {
             return "All five rooms are clear — tap NEW RUN or choose a hero to play again.".into()
@@ -226,7 +226,7 @@ pub fn one_room_roguelike(state: &AppState) -> String {
 }
 
 pub fn daily_dungeon(state: &AppState) -> String {
-    let game = &state.daily_dungeon;
+    let game = &state.games.daily_dungeon;
     match game.phase {
         crate::daily_dungeon::DailyPhase::Won => {
             return "The daily route is clear — tap NEW DAY to play again.".into()
@@ -265,7 +265,7 @@ pub fn daily_dungeon(state: &AppState) -> String {
 }
 
 pub fn dots_boxes(state: &AppState) -> String {
-    let game = &state.dots_boxes;
+    let game = &state.games.dots_boxes;
     match game.phase {
         crate::dots_boxes::DotsPhase::Won => {
             return "The red boxes hold — tap NEW BOARD to play again.".into()
@@ -298,7 +298,7 @@ pub fn dots_boxes(state: &AppState) -> String {
 }
 
 pub fn sokoban(state: &AppState) -> String {
-    let game = &state.sokoban;
+    let game = &state.games.sokoban;
     if game.won() {
         return format!(
             "{} clear in {} moves — tap NEXT ROOM.",
@@ -321,7 +321,7 @@ pub fn sokoban(state: &AppState) -> String {
 }
 
 pub fn mancala(state: &AppState) -> String {
-    let game = &state.mancala;
+    let game = &state.games.mancala;
     match game.phase {
         crate::mancala::MancalaPhase::Won => {
             return "Your store leads — tap NEW BOARD to play again.".into()
@@ -347,7 +347,7 @@ pub fn mancala(state: &AppState) -> String {
 }
 
 pub fn hanoi(state: &AppState) -> String {
-    let game = &state.hanoi;
+    let game = &state.games.hanoi;
     if game.won() {
         return format!(
             "{} tower in {} moves — choose 3, 5, or 7 DISKS, or tap RESTART.",
@@ -368,7 +368,7 @@ pub fn hanoi(state: &AppState) -> String {
 }
 
 pub fn number_match(state: &AppState) -> String {
-    let game = &state.number_match;
+    let game = &state.games.number_match;
     match game.phase {
         crate::number_match::NumberMatchPhase::Won => {
             return "Every number has found its pair — tap NEW BOARD to play again.".into()
@@ -391,7 +391,7 @@ pub fn number_match(state: &AppState) -> String {
 }
 
 pub fn flood_it(state: &AppState) -> String {
-    let game = &state.flood_it;
+    let game = &state.games.flood_it;
     match game.phase {
         crate::flood_it::FloodPhase::Won => {
             return "The field is one color — tap NEW FIELD to play again.".into()
@@ -417,7 +417,7 @@ pub fn flood_it(state: &AppState) -> String {
 }
 
 pub fn color_sort(state: &AppState) -> String {
-    let game = &state.color_sort;
+    let game = &state.games.color_sort;
     if game.won() {
         return "The color tubes are complete — tap NEW BOARD to play again.".into();
     }
@@ -442,7 +442,7 @@ pub fn color_sort(state: &AppState) -> String {
 }
 
 pub fn battleship(state: &AppState) -> String {
-    let game = &state.battleship;
+    let game = &state.games.battleship;
     if game.won() {
         return "The fleet is found — tap NEW FLEET to play again.".into();
     }
@@ -470,7 +470,7 @@ pub fn battleship(state: &AppState) -> String {
 }
 
 pub fn word_grid(state: &AppState) -> String {
-    let game = &state.word_grid;
+    let game = &state.games.word_grid;
     match game.phase {
         crate::word_grid::WordGridPhase::Won => {
             return "The word is found — tap NEW WORD to play again.".into()
@@ -493,7 +493,7 @@ pub fn word_grid(state: &AppState) -> String {
 }
 
 pub fn pipe_loop(state: &AppState) -> String {
-    let game = &state.pipe_loop;
+    let game = &state.games.pipe_loop;
     if game.won() {
         return "The loop is joined — tap NEW LOOP to play again.".into();
     }
@@ -512,7 +512,7 @@ pub fn pipe_loop(state: &AppState) -> String {
 }
 
 pub fn maze_walk(state: &AppState) -> String {
-    let game = &state.maze_walk;
+    let game = &state.games.maze_walk;
     if game.won() {
         return "The exit is found — tap NEW MAZE to play again.".into();
     }
@@ -535,7 +535,7 @@ pub fn maze_walk(state: &AppState) -> String {
 }
 
 pub fn match_three(state: &AppState) -> String {
-    let game = &state.match_three;
+    let game = &state.games.match_three;
     if game.won() {
         return "The color field is clear — tap NEW BOARD to play again.".into();
     }
@@ -548,12 +548,12 @@ pub fn match_three(state: &AppState) -> String {
     )
 }
 
-fn direction_label(direction: crate::state::Direction) -> &'static str {
+fn direction_label(direction: crate::domain::Direction) -> &'static str {
     match direction {
-        crate::state::Direction::Up => "UP",
-        crate::state::Direction::Right => "RIGHT",
-        crate::state::Direction::Down => "DOWN",
-        crate::state::Direction::Left => "LEFT",
+        crate::domain::Direction::Up => "UP",
+        crate::domain::Direction::Right => "RIGHT",
+        crate::domain::Direction::Down => "DOWN",
+        crate::domain::Direction::Left => "LEFT",
     }
 }
 
@@ -579,20 +579,20 @@ fn cell_label(index: usize) -> String {
     )
 }
 
-fn daily_direction_label(direction: crate::state::Direction) -> &'static str {
+fn daily_direction_label(direction: crate::domain::Direction) -> &'static str {
     match direction {
-        crate::state::Direction::Up => "UP",
-        crate::state::Direction::Left => "LEFT",
-        crate::state::Direction::Down => "DOWN",
-        crate::state::Direction::Right => "RIGHT",
+        crate::domain::Direction::Up => "UP",
+        crate::domain::Direction::Left => "LEFT",
+        crate::domain::Direction::Down => "DOWN",
+        crate::domain::Direction::Right => "RIGHT",
     }
 }
 
-fn rogue_direction_label(direction: crate::state::Direction) -> &'static str {
+fn rogue_direction_label(direction: crate::domain::Direction) -> &'static str {
     daily_direction_label(direction)
 }
 
-fn potion_direction_label(direction: crate::state::Direction) -> &'static str {
+fn potion_direction_label(direction: crate::domain::Direction) -> &'static str {
     daily_direction_label(direction)
 }
 

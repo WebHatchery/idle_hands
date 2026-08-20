@@ -5,8 +5,10 @@ use crate::state::Screen;
 fn every_drawer_has_a_real_rotatable_rule_card() {
     let data = GameData::load().expect("embedded game data should load");
     for game in GameId::ALL {
-        let mut state = AppState::default();
-        state.screen = Screen::Game(game);
+        let mut state = AppState {
+            screen: Screen::Game(game),
+            ..Default::default()
+        };
         let before = label(&state, game);
         assert!(!before.is_empty(), "missing label for {game:?}");
         cycle(&mut state, &data, game);

@@ -1,80 +1,158 @@
-//! Collection, profile, and per-game autosave persistence.
+//! Collection index, profile, and per-game autosave persistence.
 
 use super::Game;
+use crate::persistence_models::CollectionIndex;
 use crate::state::{CollectionSave, GameId, GameSnapshot, ProfileSave, Screen};
 use macroquad_toolkit::persistence::{
-    load_from_slot_with_migration, save_to_slot_with_version, slot_exists,
+    load_from_slot_with_migration, quarantine_slot, save_to_slot_with_version, slot_exists,
 };
 use serde::de::DeserializeOwned;
 
+const AUTOSAVE_DELAY_SECONDS: f32 = 0.75;
+
 impl Game {
-    pub(super) fn save_autosave(&mut self) {
-        let save = CollectionSave::from_state(&self.state, &self.data.config.version);
-        if let Err(error) = save_to_slot_with_version(
-            &self.data.config.game_name,
-            &self.data.config.save_slot,
-            &save,
-            &self.data.config.version,
-        ) {
-            self.notifications
-                .warning(format!("Autosave failed: {}", error));
+    /// Mark the authoritative records dirty. The next few actions are written
+    /// together instead of rewriting every save slot after every tap.
+    pub(super) fn request_autosave(&mut self) {
+        self.save_dirty = true;
+        self.save_timer = AUTOSAVE_DELAY_SECONDS;
+    }
+
+    pub(super) fn tick_autosave(&mut self, dt: f32) {
+        if !self.save_dirty {
+            return;
         }
-        let profile_slot = format!("{}_profile", self.data.config.save_slot);
+        self.save_timer -= dt.max(0.0);
+        if self.save_timer <= 0.0 {
+            self.flush_autosave();
+        }
+    }
+
+    /// Flush the collection index, profile, and currently active game record.
+    /// Each record has one owner, so a failed game save cannot silently erase
+    /// an otherwise valid profile or collection index.
+    pub(super) fn flush_autosave(&mut self) {
+        let version = self.data.config.version.clone();
+        let game_name = self.data.config.game_name.clone();
+        let collection_slot = self.data.config.save_slot.clone();
+        let mut succeeded = true;
+
+        let index = CollectionIndex::from_state(&self.state, &version);
+        if let Err(error) =
+            save_to_slot_with_version(&game_name, &collection_slot, &index, &version)
+        {
+            succeeded = false;
+            self.notifications
+                .warning(format!("Collection index save failed: {}", error));
+        }
+
+        let profile_slot = format!("{}_profile", collection_slot);
         if let Err(error) = save_to_slot_with_version(
-            &self.data.config.game_name,
+            &game_name,
             &profile_slot,
-            &ProfileSave::from_state(&self.state, &self.data.config.version),
-            &self.data.config.version,
+            &ProfileSave::from_state(&self.state, &version),
+            &version,
         ) {
+            succeeded = false;
             self.notifications
                 .warning(format!("Profile save failed: {}", error));
         }
+
         if let Screen::Game(game) = self.state.screen {
-            let game_slot = format!("{}_{}", self.data.config.save_slot, game.save_key());
+            let game_slot = format!("{}_{}", collection_slot, game.save_key());
             if let Err(error) = save_to_slot_with_version(
-                &self.data.config.game_name,
+                &game_name,
                 &game_slot,
                 &GameSnapshot::from_state(&self.state, game),
-                &self.data.config.version,
+                &version,
             ) {
+                succeeded = false;
                 self.notifications
                     .warning(format!("{} save failed: {}", game.title(), error));
             }
         }
+
+        if succeeded {
+            self.save_dirty = false;
+            self.save_timer = 0.0;
+        } else {
+            self.save_dirty = true;
+            self.save_timer = AUTOSAVE_DELAY_SECONDS * 2.0;
+        }
     }
 
     pub(super) fn load_autosave(&mut self) {
+        self.save_dirty = false;
+        self.save_timer = 0.0;
         let mut restored = false;
         let collection_slot = self.data.config.save_slot.clone();
         if slot_exists(&self.data.config.game_name, &collection_slot) {
-            match self.load_slot::<CollectionSave>(&collection_slot) {
-                Ok(save) => {
-                    save.apply_to(&mut self.state);
-                    restored = true;
-                }
-                Err(error) => self
-                    .notifications
-                    .warning(format!("Autosave could not be loaded: {}", error)),
+            match self.load_slot::<CollectionIndex>(&collection_slot) {
+                Ok(index) => match index.validate() {
+                    Ok(()) => {
+                        index.apply_to(&mut self.state);
+                        restored = true;
+                    }
+                    Err(error) => self.handle_bad_slot("collection index", &collection_slot, error),
+                },
+                Err(index_error) => match self.load_slot::<CollectionSave>(&collection_slot) {
+                    Ok(legacy) => {
+                        legacy.apply_to(&mut self.state);
+                        restored = true;
+                        self.notifications.info(
+                            "Migrated the legacy collection save; future saves use separate records",
+                        );
+                    }
+                    Err(legacy_error) => self.handle_bad_slot(
+                        "collection index",
+                        &collection_slot,
+                        format!("{} (legacy save: {})", index_error, legacy_error),
+                    ),
+                },
             }
         }
+
         let profile_slot = format!("{}_profile", collection_slot);
         if slot_exists(&self.data.config.game_name, &profile_slot) {
-            if let Ok(profile) = self.load_slot::<ProfileSave>(&profile_slot) {
-                profile.apply_to(&mut self.state);
-                restored = true;
+            match self.load_slot::<ProfileSave>(&profile_slot) {
+                Ok(profile) => {
+                    profile.apply_to(&mut self.state);
+                    restored = true;
+                }
+                Err(error) => self.handle_bad_slot("profile", &profile_slot, error),
             }
         }
+
         for game in GameId::ALL {
             let game_slot = format!("{}_{}", collection_slot, game.save_key());
-            if slot_exists(&self.data.config.game_name, &game_slot) {
-                if let Ok(snapshot) = self.load_slot::<GameSnapshot>(&game_slot) {
+            if !slot_exists(&self.data.config.game_name, &game_slot) {
+                continue;
+            }
+            match self.load_slot::<GameSnapshot>(&game_slot) {
+                Ok(snapshot) => {
                     snapshot.apply_to(&mut self.state);
                     restored = true;
                 }
+                Err(error) => self.handle_bad_slot(game.title(), &game_slot, error),
             }
         }
         if restored {
             self.notifications.info("Restored the cabinet autosave");
+        }
+    }
+
+    fn handle_bad_slot(&mut self, label: &str, slot: &str, error: String) {
+        self.notifications
+            .warning(format!("{} save could not be loaded: {}", label, error));
+        match quarantine_slot(&self.data.config.game_name, slot) {
+            Ok(quarantine) => self.notifications.warning(format!(
+                "Preserved the damaged {} save as {}",
+                label, quarantine
+            )),
+            Err(quarantine_error) => self.notifications.warning(format!(
+                "Could not quarantine the damaged {} save: {}",
+                label, quarantine_error
+            )),
         }
     }
 

@@ -1,10 +1,11 @@
 //! Record, feedback, and movement helpers for the game host.
 
 use super::Game;
+use crate::domain::Direction;
 use crate::{
     progression,
     sound::SoundCue,
-    state::{Direction, GameId, Screen},
+    state::{GameId, Screen},
 };
 
 impl Game {
@@ -50,408 +51,413 @@ impl Game {
             }
         }
         let records = &mut self.state.records;
-        records.best_2048 = records.best_2048.max(self.state.game.best);
-        let sudoku_index = match self.state.sudoku.difficulty {
+        records.best_2048 = records.best_2048.max(self.state.games.game.best);
+        let sudoku_index = match self.state.games.sudoku.difficulty {
             crate::sudoku::SudokuDifficulty::Easy => 0,
             crate::sudoku::SudokuDifficulty::Medium => 1,
             crate::sudoku::SudokuDifficulty::Hard => 2,
         };
-        if self.state.sudoku.status == crate::sudoku::SudokuStatus::Won {
-            if let Some(moves) = self.state.sudoku.best_moves {
+        if self.state.games.sudoku.status == crate::sudoku::SudokuStatus::Won {
+            if let Some(moves) = self.state.games.sudoku.best_moves {
                 records.sudoku[sudoku_index] =
                     Some(records.sudoku[sudoku_index].map_or(moves, |best| best.min(moves)));
             }
         }
-        let nonogram_index = match self.state.nonogram.preset {
+        let nonogram_index = match self.state.games.nonogram.preset {
             crate::nonogram::NonogramPreset::Small => 0,
             crate::nonogram::NonogramPreset::Medium => 1,
             crate::nonogram::NonogramPreset::Large => 2,
         };
-        if self.state.nonogram.status == crate::nonogram::NonogramStatus::Won {
-            if let Some(moves) = self.state.nonogram.best_moves {
+        if self.state.games.nonogram.status == crate::nonogram::NonogramStatus::Won {
+            if let Some(moves) = self.state.games.nonogram.best_moves {
                 records.nonogram[nonogram_index] =
                     Some(records.nonogram[nonogram_index].map_or(moves, |best| best.min(moves)));
             }
         }
-        if self.state.solitaire.status == crate::solitaire::SolitaireStatus::Won {
+        if self.state.games.solitaire.status == crate::solitaire::SolitaireStatus::Won {
             records.solitaire_best_moves = Some(
                 records
                     .solitaire_best_moves
-                    .map_or(self.state.solitaire.moves, |best| {
-                        best.min(self.state.solitaire.moves)
+                    .map_or(self.state.games.solitaire.moves, |best| {
+                        best.min(self.state.games.solitaire.moves)
                     }),
             );
         }
-        if self.state.freecell.status == crate::freecell::FreeCellStatus::Won {
+        if self.state.games.freecell.status == crate::freecell::FreeCellStatus::Won {
             records.freecell_best_moves = Some(
                 records
                     .freecell_best_moves
-                    .map_or(self.state.freecell.moves, |best| {
-                        best.min(self.state.freecell.moves)
+                    .map_or(self.state.games.freecell.moves, |best| {
+                        best.min(self.state.games.freecell.moves)
                     }),
             );
         }
-        if self.state.fivefold.status == crate::fivefold::FivefoldStatus::Complete {
-            records.fivefold_best_total =
-                records.fivefold_best_total.max(self.state.fivefold.total());
+        if self.state.games.fivefold.status == crate::fivefold::FivefoldStatus::Complete {
+            records.fivefold_best_total = records
+                .fivefold_best_total
+                .max(self.state.games.fivefold.total());
         }
-        if self.state.reversi.status == crate::reversi::ReversiStatus::Won
-            && self.state.reversi.winner == Some(1)
+        if self.state.games.reversi.status == crate::reversi::ReversiStatus::Won
+            && self.state.games.reversi.winner == Some(1)
         {
             records.reversi_best_score = records
                 .reversi_best_score
-                .max(self.state.reversi.score(1) as u8);
+                .max(self.state.games.reversi.score(1) as u8);
         }
-        if self.state.lights_out.status == crate::lights_out::LightsOutStatus::Won {
+        if self.state.games.lights_out.status == crate::lights_out::LightsOutStatus::Won {
             records.lights_out_best_moves = Some(
                 records
                     .lights_out_best_moves
-                    .map_or(self.state.lights_out.moves, |best| {
-                        best.min(self.state.lights_out.moves)
+                    .map_or(self.state.games.lights_out.moves, |best| {
+                        best.min(self.state.games.lights_out.moves)
                     }),
             );
         }
-        if self.state.tic_tac_toe.status
+        if self.state.games.tic_tac_toe.status
             == crate::tic_tac_toe::TicTacToeStatus::Won(crate::tic_tac_toe::Mark::X)
         {
             records.tic_tac_toe_best_moves = Some(
                 records
                     .tic_tac_toe_best_moves
-                    .map_or(self.state.tic_tac_toe.moves, |best| {
-                        best.min(self.state.tic_tac_toe.moves)
+                    .map_or(self.state.games.tic_tac_toe.moves, |best| {
+                        best.min(self.state.games.tic_tac_toe.moves)
                     }),
             );
         }
-        if self.state.memory_pairs.status == crate::memory_pairs::MemoryStatus::Won {
+        if self.state.games.memory_pairs.status == crate::memory_pairs::MemoryStatus::Won {
             records.memory_pairs_best_moves = Some(
                 records
                     .memory_pairs_best_moves
-                    .map_or(self.state.memory_pairs.moves, |best| {
-                        best.min(self.state.memory_pairs.moves)
+                    .map_or(self.state.games.memory_pairs.moves, |best| {
+                        best.min(self.state.games.memory_pairs.moves)
                     }),
             );
         }
-        if self.state.sliding_puzzle.status == crate::sliding_puzzle::SlidingStatus::Won {
+        if self.state.games.sliding_puzzle.status == crate::sliding_puzzle::SlidingStatus::Won {
             records.sliding_puzzle_best_moves = Some(
                 records
                     .sliding_puzzle_best_moves
-                    .map_or(self.state.sliding_puzzle.moves, |best| {
-                        best.min(self.state.sliding_puzzle.moves)
+                    .map_or(self.state.games.sliding_puzzle.moves, |best| {
+                        best.min(self.state.games.sliding_puzzle.moves)
                     }),
             );
         }
-        if self.state.mastermind.status == crate::mastermind::MastermindStatus::Won {
+        if self.state.games.mastermind.status == crate::mastermind::MastermindStatus::Won {
             records.mastermind_best_rows = Some(
                 records
                     .mastermind_best_rows
-                    .map_or(self.state.mastermind.row, |best| {
-                        best.min(self.state.mastermind.row)
+                    .map_or(self.state.games.mastermind.row, |best| {
+                        best.min(self.state.games.mastermind.row)
                     }),
             );
         }
-        if self.state.spider.status == crate::spider::SpiderStatus::Won {
+        if self.state.games.spider.status == crate::spider::SpiderStatus::Won {
             records.spider_best_moves = Some(
                 records
                     .spider_best_moves
-                    .map_or(self.state.spider.moves, |best| {
-                        best.min(self.state.spider.moves)
+                    .map_or(self.state.games.spider.moves, |best| {
+                        best.min(self.state.games.spider.moves)
                     }),
             );
         }
-        if self.state.word_search.status == crate::word_search::WordSearchStatus::Won {
+        if self.state.games.word_search.status == crate::word_search::WordSearchStatus::Won {
             records.word_search_best_moves = Some(
                 records
                     .word_search_best_moves
-                    .map_or(self.state.word_search.moves, |best| {
-                        best.min(self.state.word_search.moves)
+                    .map_or(self.state.games.word_search.moves, |best| {
+                        best.min(self.state.games.word_search.moves)
                     }),
             );
         }
-        if self.state.hangman.status == crate::hangman::HangmanStatus::Won {
+        if self.state.games.hangman.status == crate::hangman::HangmanStatus::Won {
             records.hangman_best_moves = Some(
                 records
                     .hangman_best_moves
-                    .map_or(self.state.hangman.moves, |best| {
-                        best.min(self.state.hangman.moves)
+                    .map_or(self.state.games.hangman.moves, |best| {
+                        best.min(self.state.games.hangman.moves)
                     }),
             );
         }
-        if self.state.connect_four.status
+        if self.state.games.connect_four.status
             == crate::connect_four::ConnectFourStatus::Won(crate::connect_four::Disc::Red)
         {
             records.connect_four_best_moves = Some(
                 records
                     .connect_four_best_moves
-                    .map_or(self.state.connect_four.moves, |best| {
-                        best.min(self.state.connect_four.moves)
+                    .map_or(self.state.games.connect_four.moves, |best| {
+                        best.min(self.state.games.connect_four.moves)
                     }),
             );
         }
-        if self.state.checkers.status
+        if self.state.games.checkers.status
             == crate::checkers::CheckersStatus::Won(crate::checkers::Side::Red)
         {
             records.checkers_best_moves = Some(
                 records
                     .checkers_best_moves
-                    .map_or(self.state.checkers.moves, |best| {
-                        best.min(self.state.checkers.moves)
+                    .map_or(self.state.games.checkers.moves, |best| {
+                        best.min(self.state.games.checkers.moves)
                     }),
             );
         }
-        if self.state.peg_solitaire.status == crate::peg_solitaire::PegSolitaireStatus::Won {
+        if self.state.games.peg_solitaire.status == crate::peg_solitaire::PegSolitaireStatus::Won {
             records.peg_solitaire_best_moves = Some(
                 records
                     .peg_solitaire_best_moves
-                    .map_or(self.state.peg_solitaire.moves, |best| {
-                        best.min(self.state.peg_solitaire.moves)
+                    .map_or(self.state.games.peg_solitaire.moves, |best| {
+                        best.min(self.state.games.peg_solitaire.moves)
                     }),
             );
         }
-        if self.state.mahjong_solitaire.status == crate::mahjong_solitaire::MahjongStatus::Won {
+        if self.state.games.mahjong_solitaire.status == crate::mahjong_solitaire::MahjongStatus::Won
+        {
             records.mahjong_solitaire_best_moves = Some(
                 records
                     .mahjong_solitaire_best_moves
-                    .map_or(self.state.mahjong_solitaire.moves, |best| {
-                        best.min(self.state.mahjong_solitaire.moves)
+                    .map_or(self.state.games.mahjong_solitaire.moves, |best| {
+                        best.min(self.state.games.mahjong_solitaire.moves)
                     }),
             );
         }
-        if self.state.snake.status == crate::snake::SnakeStatus::Won {
+        if self.state.games.snake.status == crate::snake::SnakeStatus::Won {
             records.snake_best_score = Some(
                 records
                     .snake_best_score
-                    .map_or(self.state.snake.score, |best| {
-                        best.max(self.state.snake.score)
+                    .map_or(self.state.games.snake.score, |best| {
+                        best.max(self.state.games.snake.score)
                     }),
             );
         }
-        if self.state.breakout.status == crate::breakout::BreakoutStatus::Won {
+        if self.state.games.breakout.status == crate::breakout::BreakoutStatus::Won {
             records.breakout_best_score = Some(
                 records
                     .breakout_best_score
-                    .map_or(self.state.breakout.score, |best| {
-                        best.max(self.state.breakout.score)
+                    .map_or(self.state.games.breakout.score, |best| {
+                        best.max(self.state.games.breakout.score)
                     }),
             );
         }
-        if self.state.higher_lower.status == crate::higher_lower::HigherLowerStatus::Won {
+        if self.state.games.higher_lower.status == crate::higher_lower::HigherLowerStatus::Won {
             records.higher_lower_best_score = Some(
                 records
                     .higher_lower_best_score
-                    .map_or(self.state.higher_lower.score, |best| {
-                        best.max(self.state.higher_lower.score)
+                    .map_or(self.state.games.higher_lower.score, |best| {
+                        best.max(self.state.games.higher_lower.score)
                     }),
             );
         }
-        if self.state.klondike_golf.status == crate::klondike_golf::GolfStatus::Won {
+        if self.state.games.klondike_golf.status == crate::klondike_golf::GolfStatus::Won {
             records.klondike_golf_best_moves = Some(
                 records
                     .klondike_golf_best_moves
-                    .map_or(self.state.klondike_golf.moves, |best| {
-                        best.min(self.state.klondike_golf.moves)
+                    .map_or(self.state.games.klondike_golf.moves, |best| {
+                        best.min(self.state.games.klondike_golf.moves)
                     }),
             );
         }
-        if self.state.blackjack.status == crate::blackjack::BlackjackStatus::Won {
+        if self.state.games.blackjack.status == crate::blackjack::BlackjackStatus::Won {
             records.blackjack_best_wins = Some(
                 records
                     .blackjack_best_wins
-                    .map_or(self.state.blackjack.wins, |best| {
-                        best.max(self.state.blackjack.wins)
+                    .map_or(self.state.games.blackjack.wins, |best| {
+                        best.max(self.state.games.blackjack.wins)
                     }),
             );
         }
-        if self.state.spider_solitaire.status == crate::spider_solitaire::SpiderSolitaireStatus::Won
+        if self.state.games.spider_solitaire.status
+            == crate::spider_solitaire::SpiderSolitaireStatus::Won
         {
             records.spider_solitaire_best_moves = Some(
                 records
                     .spider_solitaire_best_moves
-                    .map_or(self.state.spider_solitaire.moves, |best| {
-                        best.min(self.state.spider_solitaire.moves)
+                    .map_or(self.state.games.spider_solitaire.moves, |best| {
+                        best.min(self.state.games.spider_solitaire.moves)
                     }),
             );
         }
-        if self.state.dungeon_sweeper.status == crate::dungeon_sweeper::DungeonStatus::Won {
+        if self.state.games.dungeon_sweeper.status == crate::dungeon_sweeper::DungeonStatus::Won {
             records.dungeon_sweeper_best_moves = Some(
                 records
                     .dungeon_sweeper_best_moves
-                    .map_or(self.state.dungeon_sweeper.moves, |best| {
-                        best.min(self.state.dungeon_sweeper.moves)
+                    .map_or(self.state.games.dungeon_sweeper.moves, |best| {
+                        best.min(self.state.games.dungeon_sweeper.moves)
                     }),
             );
         }
-        if self.state.potion_2048.won() {
+        if self.state.games.potion_2048.won() {
             records.potion_2048_best_score = Some(
                 records
                     .potion_2048_best_score
-                    .map_or(self.state.potion_2048.best, |best| {
-                        best.max(self.state.potion_2048.best)
+                    .map_or(self.state.games.potion_2048.best, |best| {
+                        best.max(self.state.games.potion_2048.best)
                     }),
             );
         }
-        if self.state.tiny_tower_defence.won() {
+        if self.state.games.tiny_tower_defence.won() {
             records.tiny_tower_defence_best_wave = Some(
                 records
                     .tiny_tower_defence_best_wave
-                    .map_or(self.state.tiny_tower_defence.wave, |best| {
-                        best.max(self.state.tiny_tower_defence.wave)
+                    .map_or(self.state.games.tiny_tower_defence.wave, |best| {
+                        best.max(self.state.games.tiny_tower_defence.wave)
                     }),
             );
         }
-        if self.state.one_room_roguelike.won() {
+        if self.state.games.one_room_roguelike.won() {
             records.one_room_roguelike_best_score = Some(
                 records
                     .one_room_roguelike_best_score
-                    .map_or(self.state.one_room_roguelike.score, |best| {
-                        best.max(self.state.one_room_roguelike.score)
+                    .map_or(self.state.games.one_room_roguelike.score, |best| {
+                        best.max(self.state.games.one_room_roguelike.score)
                     }),
             );
         }
-        if self.state.daily_dungeon.won() {
+        if self.state.games.daily_dungeon.won() {
             records.daily_dungeon_best_score = Some(
                 records
                     .daily_dungeon_best_score
-                    .map_or(self.state.daily_dungeon.score, |best| {
-                        best.max(self.state.daily_dungeon.score)
+                    .map_or(self.state.games.daily_dungeon.score, |best| {
+                        best.max(self.state.games.daily_dungeon.score)
                     }),
             );
         }
-        if self.state.dots_boxes.won() {
+        if self.state.games.dots_boxes.won() {
             records.dots_boxes_best_score = Some(
                 records
                     .dots_boxes_best_score
-                    .map_or(self.state.dots_boxes.scores[0], |best| {
-                        best.max(self.state.dots_boxes.scores[0])
+                    .map_or(self.state.games.dots_boxes.scores[0], |best| {
+                        best.max(self.state.games.dots_boxes.scores[0])
                     }),
             );
         }
-        if self.state.sokoban.won() {
+        if self.state.games.sokoban.won() {
             records.sokoban_best_moves = Some(
                 records
                     .sokoban_best_moves
-                    .map_or(self.state.sokoban.moves, |best| {
-                        best.min(self.state.sokoban.moves)
+                    .map_or(self.state.games.sokoban.moves, |best| {
+                        best.min(self.state.games.sokoban.moves)
                     }),
             );
         }
-        if self.state.mancala.won() {
+        if self.state.games.mancala.won() {
             records.mancala_best_score = Some(
                 records
                     .mancala_best_score
-                    .map_or(self.state.mancala.pits[6], |best| {
-                        best.max(self.state.mancala.pits[6])
+                    .map_or(self.state.games.mancala.pits[6], |best| {
+                        best.max(self.state.games.mancala.pits[6])
                     }),
             );
         }
-        if self.state.hanoi.won() {
+        if self.state.games.hanoi.won() {
             records.hanoi_best_moves = Some(
                 records
                     .hanoi_best_moves
-                    .map_or(self.state.hanoi.moves, |best| {
-                        best.min(self.state.hanoi.moves)
+                    .map_or(self.state.games.hanoi.moves, |best| {
+                        best.min(self.state.games.hanoi.moves)
                     }),
             );
         }
-        if self.state.number_match.won() {
+        if self.state.games.number_match.won() {
             records.number_match_best_moves = Some(
                 records
                     .number_match_best_moves
-                    .map_or(self.state.number_match.moves, |best| {
-                        best.min(self.state.number_match.moves)
+                    .map_or(self.state.games.number_match.moves, |best| {
+                        best.min(self.state.games.number_match.moves)
                     }),
             );
         }
-        if self.state.flood_it.won() {
+        if self.state.games.flood_it.won() {
             records.flood_it_best_moves = Some(
                 records
                     .flood_it_best_moves
-                    .map_or(self.state.flood_it.moves, |best| {
-                        best.min(self.state.flood_it.moves)
+                    .map_or(self.state.games.flood_it.moves, |best| {
+                        best.min(self.state.games.flood_it.moves)
                     }),
             );
         }
-        if self.state.color_sort.won() {
+        if self.state.games.color_sort.won() {
             records.color_sort_best_moves = Some(
                 records
                     .color_sort_best_moves
-                    .map_or(self.state.color_sort.moves, |best| {
-                        best.min(self.state.color_sort.moves)
+                    .map_or(self.state.games.color_sort.moves, |best| {
+                        best.min(self.state.games.color_sort.moves)
                     }),
             );
         }
-        if self.state.battleship.won() {
+        if self.state.games.battleship.won() {
             records.battleship_best_moves = Some(
                 records
                     .battleship_best_moves
-                    .map_or(self.state.battleship.moves, |best| {
-                        best.min(self.state.battleship.moves)
+                    .map_or(self.state.games.battleship.moves, |best| {
+                        best.min(self.state.games.battleship.moves)
                     }),
             );
         }
-        if self.state.word_grid.won() {
+        if self.state.games.word_grid.won() {
             records.word_grid_best_moves = Some(records.word_grid_best_moves.map_or(
-                self.state.word_grid.moves.min(u8::MAX as u16) as u8,
-                |best| best.min(self.state.word_grid.moves.min(u8::MAX as u16) as u8),
+                self.state.games.word_grid.moves.min(u8::MAX as u16) as u8,
+                |best| best.min(self.state.games.word_grid.moves.min(u8::MAX as u16) as u8),
             ));
         }
-        if self.state.pipe_loop.won() {
+        if self.state.games.pipe_loop.won() {
             records.pipe_loop_best_moves = Some(
                 records
                     .pipe_loop_best_moves
-                    .map_or(self.state.pipe_loop.moves, |best| {
-                        best.min(self.state.pipe_loop.moves)
+                    .map_or(self.state.games.pipe_loop.moves, |best| {
+                        best.min(self.state.games.pipe_loop.moves)
                     }),
             );
         }
-        if self.state.maze_walk.won() {
+        if self.state.games.maze_walk.won() {
             records.maze_walk_best_moves = Some(
                 records
                     .maze_walk_best_moves
-                    .map_or(self.state.maze_walk.moves, |best| {
-                        best.min(self.state.maze_walk.moves)
+                    .map_or(self.state.games.maze_walk.moves, |best| {
+                        best.min(self.state.games.maze_walk.moves)
                     }),
             );
         }
-        if self.state.match_three.won() {
+        if self.state.games.match_three.won() {
             records.match_three_best_score = Some(
                 records
                     .match_three_best_score
-                    .map_or(self.state.match_three.score, |best| {
-                        best.max(self.state.match_three.score)
+                    .map_or(self.state.games.match_three.score, |best| {
+                        best.max(self.state.games.match_three.score)
                     }),
             );
         }
-        if self.state.pyramid.status == crate::pyramid::PyramidStatus::Won {
+        if self.state.games.pyramid.status == crate::pyramid::PyramidStatus::Won {
             records.pyramid_best_moves = Some(
                 records
                     .pyramid_best_moves
-                    .map_or(self.state.pyramid.moves, |best| {
-                        best.min(self.state.pyramid.moves)
+                    .map_or(self.state.games.pyramid.moves, |best| {
+                        best.min(self.state.games.pyramid.moves)
                     }),
             );
         }
-        if self.state.tri_peaks.status == crate::tri_peaks::TriPeaksStatus::Won {
+        if self.state.games.tri_peaks.status == crate::tri_peaks::TriPeaksStatus::Won {
             records.tri_peaks_best_moves = Some(
                 records
                     .tri_peaks_best_moves
-                    .map_or(self.state.tri_peaks.moves, |best| {
-                        best.min(self.state.tri_peaks.moves)
+                    .map_or(self.state.games.tri_peaks.moves, |best| {
+                        best.min(self.state.games.tri_peaks.moves)
                     }),
             );
         }
-        if self.state.nim.won() {
+        if self.state.games.nim.won() {
             records.nim_best_moves = Some(
                 records
                     .nim_best_moves
-                    .map_or(self.state.nim.moves, |best| best.min(self.state.nim.moves)),
+                    .map_or(self.state.games.nim.moves, |best| {
+                        best.min(self.state.games.nim.moves)
+                    }),
             );
         }
-        if self.state.word_ladder.phase == crate::word_ladder::WordLadderPhase::Won {
+        if self.state.games.word_ladder.phase == crate::word_ladder::WordLadderPhase::Won {
             records.word_ladder_best_moves = Some(
                 records
                     .word_ladder_best_moves
-                    .map_or(self.state.word_ladder.moves, |best| {
-                        best.min(self.state.word_ladder.moves)
+                    .map_or(self.state.games.word_ladder.moves, |best| {
+                        best.min(self.state.games.word_ladder.moves)
                     }),
             );
         }
@@ -473,12 +479,12 @@ impl Game {
     }
 
     pub(super) fn try_move(&mut self, direction: Direction) {
-        if self.state.game.move_in(direction) && self.state.game.won() {
+        if self.state.games.game.move_in(direction) && self.state.games.game.won() {
             self.notifications
                 .success("2048 reached — keep playing or start a fresh board");
         }
         self.update_records();
-        self.save_autosave();
+        self.request_autosave();
     }
 }
 
@@ -491,71 +497,86 @@ pub(super) fn is_timed_game(game: GameId) -> bool {
 
 fn round_is_complete(state: &crate::state::AppState, game: GameId) -> bool {
     match game {
-        GameId::Game2048 => state.game.won(),
-        GameId::Minesweeper => state.minesweeper.status == crate::minesweeper::MineStatus::Won,
-        GameId::Sudoku => state.sudoku.status == crate::sudoku::SudokuStatus::Won,
-        GameId::Nonogram => state.nonogram.status == crate::nonogram::NonogramStatus::Won,
-        GameId::Solitaire => state.solitaire.status == crate::solitaire::SolitaireStatus::Won,
-        GameId::FreeCell => state.freecell.status == crate::freecell::FreeCellStatus::Won,
-        GameId::Yahtzee => state.fivefold.status == crate::fivefold::FivefoldStatus::Complete,
-        GameId::Reversi => state.reversi.status == crate::reversi::ReversiStatus::Won,
-        GameId::LightsOut => state.lights_out.status == crate::lights_out::LightsOutStatus::Won,
+        GameId::Game2048 => state.games.game.won(),
+        GameId::Minesweeper => {
+            state.games.minesweeper.status == crate::minesweeper::MineStatus::Won
+        }
+        GameId::Sudoku => state.games.sudoku.status == crate::sudoku::SudokuStatus::Won,
+        GameId::Nonogram => state.games.nonogram.status == crate::nonogram::NonogramStatus::Won,
+        GameId::Solitaire => state.games.solitaire.status == crate::solitaire::SolitaireStatus::Won,
+        GameId::FreeCell => state.games.freecell.status == crate::freecell::FreeCellStatus::Won,
+        GameId::Yahtzee => state.games.fivefold.status == crate::fivefold::FivefoldStatus::Complete,
+        GameId::Reversi => state.games.reversi.status == crate::reversi::ReversiStatus::Won,
+        GameId::LightsOut => {
+            state.games.lights_out.status == crate::lights_out::LightsOutStatus::Won
+        }
         GameId::TicTacToe => {
-            state.tic_tac_toe.status
+            state.games.tic_tac_toe.status
                 == crate::tic_tac_toe::TicTacToeStatus::Won(crate::tic_tac_toe::Mark::X)
         }
-        GameId::MemoryPairs => state.memory_pairs.status == crate::memory_pairs::MemoryStatus::Won,
-        GameId::SlidingPuzzle => {
-            state.sliding_puzzle.status == crate::sliding_puzzle::SlidingStatus::Won
+        GameId::MemoryPairs => {
+            state.games.memory_pairs.status == crate::memory_pairs::MemoryStatus::Won
         }
-        GameId::Mastermind => state.mastermind.status == crate::mastermind::MastermindStatus::Won,
-        GameId::Spider => state.spider.status == crate::spider::SpiderStatus::Won,
-        GameId::WordSearch => state.word_search.status == crate::word_search::WordSearchStatus::Won,
-        GameId::Hangman => state.hangman.status == crate::hangman::HangmanStatus::Won,
+        GameId::SlidingPuzzle => {
+            state.games.sliding_puzzle.status == crate::sliding_puzzle::SlidingStatus::Won
+        }
+        GameId::Mastermind => {
+            state.games.mastermind.status == crate::mastermind::MastermindStatus::Won
+        }
+        GameId::Spider => state.games.spider.status == crate::spider::SpiderStatus::Won,
+        GameId::WordSearch => {
+            state.games.word_search.status == crate::word_search::WordSearchStatus::Won
+        }
+        GameId::Hangman => state.games.hangman.status == crate::hangman::HangmanStatus::Won,
         GameId::ConnectFour => {
-            state.connect_four.status
+            state.games.connect_four.status
                 == crate::connect_four::ConnectFourStatus::Won(crate::connect_four::Disc::Red)
         }
         GameId::Checkers => {
-            state.checkers.status
+            state.games.checkers.status
                 == crate::checkers::CheckersStatus::Won(crate::checkers::Side::Red)
         }
         GameId::PegSolitaire => {
-            state.peg_solitaire.status == crate::peg_solitaire::PegSolitaireStatus::Won
+            state.games.peg_solitaire.status == crate::peg_solitaire::PegSolitaireStatus::Won
         }
         GameId::MahjongSolitaire => {
-            state.mahjong_solitaire.status == crate::mahjong_solitaire::MahjongStatus::Won
+            state.games.mahjong_solitaire.status == crate::mahjong_solitaire::MahjongStatus::Won
         }
         GameId::HigherLower => {
-            state.higher_lower.status == crate::higher_lower::HigherLowerStatus::Won
+            state.games.higher_lower.status == crate::higher_lower::HigherLowerStatus::Won
         }
-        GameId::KlondikeGolf => state.klondike_golf.status == crate::klondike_golf::GolfStatus::Won,
-        GameId::Blackjack => state.blackjack.status == crate::blackjack::BlackjackStatus::Won,
+        GameId::KlondikeGolf => {
+            state.games.klondike_golf.status == crate::klondike_golf::GolfStatus::Won
+        }
+        GameId::Blackjack => state.games.blackjack.status == crate::blackjack::BlackjackStatus::Won,
         GameId::SpiderSolitaire => {
-            state.spider_solitaire.status == crate::spider_solitaire::SpiderSolitaireStatus::Won
+            state.games.spider_solitaire.status
+                == crate::spider_solitaire::SpiderSolitaireStatus::Won
         }
         GameId::DungeonSweeper => {
-            state.dungeon_sweeper.status == crate::dungeon_sweeper::DungeonStatus::Won
+            state.games.dungeon_sweeper.status == crate::dungeon_sweeper::DungeonStatus::Won
         }
-        GameId::Potion2048 => state.potion_2048.won(),
-        GameId::OneRoomRoguelike => state.one_room_roguelike.won(),
-        GameId::DailyDungeon => state.daily_dungeon.won(),
-        GameId::DotsBoxes => state.dots_boxes.won(),
-        GameId::Sokoban => state.sokoban.won(),
-        GameId::Mancala => state.mancala.won(),
-        GameId::Hanoi => state.hanoi.won(),
-        GameId::NumberMatch => state.number_match.won(),
-        GameId::FloodIt => state.flood_it.won(),
-        GameId::ColorSort => state.color_sort.won(),
-        GameId::Battleship => state.battleship.won(),
-        GameId::WordGrid => state.word_grid.won(),
-        GameId::PipeLoop => state.pipe_loop.won(),
-        GameId::MazeWalk => state.maze_walk.won(),
-        GameId::MatchThree => state.match_three.won(),
-        GameId::Pyramid => state.pyramid.status == crate::pyramid::PyramidStatus::Won,
-        GameId::TriPeaks => state.tri_peaks.status == crate::tri_peaks::TriPeaksStatus::Won,
-        GameId::Nim => state.nim.won(),
-        GameId::WordLadder => state.word_ladder.phase == crate::word_ladder::WordLadderPhase::Won,
+        GameId::Potion2048 => state.games.potion_2048.won(),
+        GameId::OneRoomRoguelike => state.games.one_room_roguelike.won(),
+        GameId::DailyDungeon => state.games.daily_dungeon.won(),
+        GameId::DotsBoxes => state.games.dots_boxes.won(),
+        GameId::Sokoban => state.games.sokoban.won(),
+        GameId::Mancala => state.games.mancala.won(),
+        GameId::Hanoi => state.games.hanoi.won(),
+        GameId::NumberMatch => state.games.number_match.won(),
+        GameId::FloodIt => state.games.flood_it.won(),
+        GameId::ColorSort => state.games.color_sort.won(),
+        GameId::Battleship => state.games.battleship.won(),
+        GameId::WordGrid => state.games.word_grid.won(),
+        GameId::PipeLoop => state.games.pipe_loop.won(),
+        GameId::MazeWalk => state.games.maze_walk.won(),
+        GameId::MatchThree => state.games.match_three.won(),
+        GameId::Pyramid => state.games.pyramid.status == crate::pyramid::PyramidStatus::Won,
+        GameId::TriPeaks => state.games.tri_peaks.status == crate::tri_peaks::TriPeaksStatus::Won,
+        GameId::Nim => state.games.nim.won(),
+        GameId::WordLadder => {
+            state.games.word_ladder.phase == crate::word_ladder::WordLadderPhase::Won
+        }
         GameId::Snake | GameId::Breakout | GameId::TinyTowerDefence => false,
     }
 }

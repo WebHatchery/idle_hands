@@ -16,7 +16,7 @@ fn color_name(color: u8) -> &'static str {
 }
 
 pub fn solitaire(state: &AppState) -> String {
-    let game = &state.solitaire;
+    let game = &state.games.solitaire;
     if game.status == crate::solitaire::SolitaireStatus::Won {
         return "The table is already cleared.".into();
     }
@@ -71,7 +71,7 @@ pub fn solitaire(state: &AppState) -> String {
 }
 
 pub fn freecell(state: &AppState) -> String {
-    let game = &state.freecell;
+    let game = &state.games.freecell;
     if game.status == crate::freecell::FreeCellStatus::Won {
         return "Every foundation is complete.".into();
     }
@@ -111,7 +111,7 @@ pub fn freecell(state: &AppState) -> String {
 }
 
 pub fn fivefold(state: &AppState) -> String {
-    let game = &state.fivefold;
+    let game = &state.games.fivefold;
     if game.status == crate::fivefold::FivefoldStatus::Complete {
         return "The scorecard is complete — tap NEW SCORECARD to play again.".into();
     }
@@ -131,7 +131,7 @@ pub fn fivefold(state: &AppState) -> String {
 }
 
 pub fn spider(state: &AppState) -> String {
-    let game = &state.spider;
+    let game = &state.games.spider;
     if game.status == crate::spider::SpiderStatus::Won {
         return "All eight spider runs are clear — tap NEW DEAL to play again.".into();
     }
@@ -151,7 +151,7 @@ pub fn spider(state: &AppState) -> String {
 }
 
 pub fn pyramid(state: &AppState) -> String {
-    let game = &state.pyramid;
+    let game = &state.games.pyramid;
     if game.status == crate::pyramid::PyramidStatus::Won {
         return "The pyramid is already clear.".into();
     }
@@ -190,7 +190,7 @@ pub fn pyramid(state: &AppState) -> String {
 }
 
 pub fn tri_peaks(state: &AppState) -> String {
-    let game = &state.tri_peaks;
+    let game = &state.games.tri_peaks;
     if game.status == crate::tri_peaks::TriPeaksStatus::Won {
         return "The three peaks are already clear.".into();
     }
@@ -213,7 +213,7 @@ pub fn tri_peaks(state: &AppState) -> String {
 }
 
 pub fn klondike_golf(state: &AppState) -> String {
-    let game = &state.klondike_golf;
+    let game = &state.games.klondike_golf;
     if game.status == crate::klondike_golf::GolfStatus::Won {
         return "The golf columns are already clear.".into();
     }
@@ -236,7 +236,7 @@ pub fn klondike_golf(state: &AppState) -> String {
 }
 
 pub fn spider_solitaire(state: &AppState) -> String {
-    let game = &state.spider_solitaire;
+    let game = &state.games.spider_solitaire;
     if game.status == crate::spider_solitaire::SpiderSolitaireStatus::Won {
         return "All eight spider runs are already clear.".into();
     }
@@ -276,7 +276,7 @@ pub fn spider_solitaire(state: &AppState) -> String {
 }
 
 pub fn nim(state: &AppState) -> String {
-    let game = &state.nim;
+    let game = &state.games.nim;
     match game.status {
         crate::nim::NimStatus::Won => return "The final stone is already yours.".into(),
         crate::nim::NimStatus::Lost => return "Tap NEW BOARD to begin another heap set.".into(),
@@ -296,26 +296,26 @@ pub fn nim(state: &AppState) -> String {
 }
 
 pub fn game_2048(state: &AppState) -> String {
-    if state.game.won() {
+    if state.games.game.won() {
         return "2048 is already on the board — keep exploring or start over.".into();
     }
-    state.game.hint_direction().map_or_else(
+    state.games.game.hint_direction().map_or_else(
         || "No legal slide remains — tap NEW GAME to begin again.".into(),
         |direction| format!("Try the {} arrow.", direction_name(direction)),
     )
 }
 
-fn direction_name(direction: crate::state::Direction) -> &'static str {
+fn direction_name(direction: crate::domain::Direction) -> &'static str {
     match direction {
-        crate::state::Direction::Up => "UP",
-        crate::state::Direction::Right => "RIGHT",
-        crate::state::Direction::Down => "DOWN",
-        crate::state::Direction::Left => "LEFT",
+        crate::domain::Direction::Up => "UP",
+        crate::domain::Direction::Right => "RIGHT",
+        crate::domain::Direction::Down => "DOWN",
+        crate::domain::Direction::Left => "LEFT",
     }
 }
 
 pub fn tic_tac_toe(state: &AppState) -> String {
-    let game = &state.tic_tac_toe;
+    let game = &state.games.tic_tac_toe;
     if game.status != crate::tic_tac_toe::TicTacToeStatus::Playing {
         return "The board is settled — tap NEW BOARD for another round.".into();
     }
@@ -326,7 +326,7 @@ pub fn tic_tac_toe(state: &AppState) -> String {
 }
 
 pub fn lights_out(state: &AppState) -> String {
-    let game = &state.lights_out;
+    let game = &state.games.lights_out;
     if game.status == crate::lights_out::LightsOutStatus::Won {
         return "Every light is already settled — tap NEW BOARD to play again.".into();
     }
@@ -344,7 +344,7 @@ pub fn lights_out(state: &AppState) -> String {
 }
 
 pub fn memory_pairs(state: &AppState) -> String {
-    let game = &state.memory_pairs;
+    let game = &state.games.memory_pairs;
     if game.status == crate::memory_pairs::MemoryStatus::Won {
         return "Every pair is already resting — tap NEW BOARD to play again.".into();
     }
@@ -362,7 +362,7 @@ pub fn memory_pairs(state: &AppState) -> String {
 }
 
 pub fn sliding_puzzle(state: &AppState) -> String {
-    let game = &state.sliding_puzzle;
+    let game = &state.games.sliding_puzzle;
     if game.status == crate::sliding_puzzle::SlidingStatus::Won {
         return "The tiles are already in order — tap NEW BOARD to play again.".into();
     }
@@ -373,7 +373,7 @@ pub fn sliding_puzzle(state: &AppState) -> String {
 }
 
 pub fn mastermind(state: &AppState) -> String {
-    let game = &state.mastermind;
+    let game = &state.games.mastermind;
     match game.status {
         crate::mastermind::MastermindStatus::Won => {
             return "The code is already open — tap NEW BOARD to play again.".into();
@@ -390,7 +390,7 @@ pub fn mastermind(state: &AppState) -> String {
 }
 
 pub fn sudoku(state: &AppState) -> String {
-    let game = &state.sudoku;
+    let game = &state.games.sudoku;
     if game.status == crate::sudoku::SudokuStatus::Won {
         return "The grid is already complete — choose a difficulty to play again.".into();
     }
@@ -408,7 +408,7 @@ pub fn sudoku(state: &AppState) -> String {
 }
 
 pub fn minesweeper(state: &AppState) -> String {
-    let game = &state.minesweeper;
+    let game = &state.games.minesweeper;
     match game.status {
         crate::minesweeper::MineStatus::Won => {
             return "The field is already clear — tap RESTART to play again.".into();
@@ -433,7 +433,7 @@ pub fn minesweeper(state: &AppState) -> String {
 }
 
 pub fn nonogram(state: &AppState) -> String {
-    let game = &state.nonogram;
+    let game = &state.games.nonogram;
     if game.status == crate::nonogram::NonogramStatus::Won {
         return "The hidden picture is complete — choose a size to play again.".into();
     }
@@ -451,7 +451,7 @@ pub fn nonogram(state: &AppState) -> String {
 }
 
 pub fn word_search(state: &AppState) -> String {
-    let game = &state.word_search;
+    let game = &state.games.word_search;
     if game.status == crate::word_search::WordSearchStatus::Won {
         return "Every hidden word is found — tap NEW BOARD to search again.".into();
     }
@@ -471,7 +471,7 @@ pub fn word_search(state: &AppState) -> String {
 }
 
 pub fn hangman(state: &AppState) -> String {
-    let game = &state.hangman;
+    let game = &state.games.hangman;
     match game.status {
         crate::hangman::HangmanStatus::Won => {
             return "The word is already yours — tap NEW WORD to play again.".into();
@@ -496,7 +496,7 @@ pub fn hangman(state: &AppState) -> String {
 }
 
 pub fn connect_four(state: &AppState) -> String {
-    let game = &state.connect_four;
+    let game = &state.games.connect_four;
     match game.status {
         crate::connect_four::ConnectFourStatus::Won(_) => {
             return "The row is already settled — tap NEW BOARD to play again.".into();
@@ -513,7 +513,7 @@ pub fn connect_four(state: &AppState) -> String {
 }
 
 pub fn checkers(state: &AppState) -> String {
-    let game = &state.checkers;
+    let game = &state.games.checkers;
     match game.status {
         crate::checkers::CheckersStatus::Won(_) => {
             return "The board is already settled — tap NEW BOARD to play again.".into();
@@ -533,7 +533,7 @@ pub fn checkers(state: &AppState) -> String {
 }
 
 pub fn reversi(state: &AppState) -> String {
-    let game = &state.reversi;
+    let game = &state.games.reversi;
     if game.status == crate::reversi::ReversiStatus::Won {
         return "The board is already settled — choose NEW BOARD to play again.".into();
     }
@@ -547,7 +547,7 @@ pub fn reversi(state: &AppState) -> String {
 }
 
 pub fn peg_solitaire(state: &AppState) -> String {
-    let game = &state.peg_solitaire;
+    let game = &state.games.peg_solitaire;
     match game.status {
         crate::peg_solitaire::PegSolitaireStatus::Won => {
             return "One peg remains — tap NEW BOARD to play again.".into();
@@ -564,7 +564,7 @@ pub fn peg_solitaire(state: &AppState) -> String {
 }
 
 pub fn mahjong_solitaire(state: &AppState) -> String {
-    let game = &state.mahjong_solitaire;
+    let game = &state.games.mahjong_solitaire;
     match game.status {
         crate::mahjong_solitaire::MahjongStatus::Won => {
             return "Every tile is clear — tap NEW BOARD to play again.".into();
@@ -634,7 +634,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
 }
 
 pub fn word_ladder(state: &AppState) -> String {
-    let game = &state.word_ladder;
+    let game = &state.games.word_ladder;
     if game.phase == crate::word_ladder::WordLadderPhase::Won {
         return "The ladder is complete — tap NEW LADDER to climb again.".into();
     }

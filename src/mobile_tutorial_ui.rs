@@ -75,7 +75,7 @@ fn draw_portrait(game: GameId) {
                 "   ".to_owned()
             };
             crate::ui::draw_text(
-                &format!("{}{}", prefix, line),
+                format!("{}{}", prefix, line),
                 35.,
                 y,
                 14.,
@@ -101,7 +101,7 @@ fn draw_landscape(game: GameId) {
                 "   ".to_owned()
             };
             crate::ui::draw_text(
-                &format!("{}{}", prefix, line),
+                format!("{}{}", prefix, line),
                 122.,
                 y,
                 13.,

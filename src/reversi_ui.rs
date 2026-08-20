@@ -37,7 +37,7 @@ fn button(rect: Rect, label: &str, large_text: bool) {
 }
 
 pub fn draw_reversi(state: &AppState) {
-    let game = &state.reversi;
+    let game = &state.games.reversi;
     crate::ui::draw_text(
         "‹ CABINET",
         40.,

@@ -1,9 +1,10 @@
 //! Shared drag routing for the two classic card tables.
 
 use super::Game;
+use crate::domain::Direction;
 use crate::{
     freecell_ui, responsive_cards, responsive_landscape_cards, solitaire_ui,
-    state::{AppState, Direction, GameId, Screen},
+    state::{AppState, GameId, Screen},
     ui,
 };
 use macroquad::prelude::{touches, Vec2};
@@ -15,13 +16,13 @@ impl Game {
         }
         let touch_active = !touches().is_empty();
         if self.state.screen != Screen::Game(GameId::Solitaire) {
-            self.state.solitaire_peek = None;
+            self.state.games.solitaire_peek = None;
         } else if touch_active || !self.touch_was_active {
-            self.state.solitaire_peek =
-                solitaire_ui::tableau_card_at(&self.state.solitaire, crate::ui::mouse())
+            self.state.games.solitaire_peek =
+                solitaire_ui::tableau_card_at(&self.state.games.solitaire, crate::ui::mouse())
                     .map(|(column, depth)| crate::solitaire::CardSource::Tableau(column, depth));
         } else {
-            self.state.solitaire_peek = None;
+            self.state.games.solitaire_peek = None;
         }
         self.touch_was_active = touch_active;
     }

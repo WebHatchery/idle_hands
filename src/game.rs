@@ -2,12 +2,13 @@
 
 use crate::card_hints;
 use crate::cosmetics;
+use crate::domain::Direction;
 use crate::game_input::{card_drag_actions, swipe_direction};
 use crate::input::{Gesture, PointerTracker};
 use crate::sound::SoundBank;
 use crate::{
     data::GameData,
-    state::{AppState, Direction, GameId, Screen},
+    state::{AppState, GameId, Screen},
 };
 use crate::{minesweeper_ui, nonogram_ui, responsive_landscape_games, responsive_puzzles, ui};
 use macroquad::prelude::*;
@@ -44,6 +45,8 @@ pub struct Game {
     sounds: SoundBank,
     transition: f32,
     confirmation_bypass: bool,
+    pub(super) save_dirty: bool,
+    pub(super) save_timer: f32,
 }
 impl Game {
     pub async fn new() -> Self {
@@ -64,6 +67,8 @@ impl Game {
             sounds: SoundBank::load().await,
             transition: 0.,
             confirmation_bypass: false,
+            save_dirty: false,
+            save_timer: 0.,
         };
         game.initialize_launch_state();
         game.load_autosave();
@@ -79,16 +84,17 @@ impl Game {
         } else {
             self.transition = (self.transition - dt * 3.5).max(0.);
         }
-        self.state.minesweeper.tick(dt);
-        if self.state.minesweeper.status == crate::minesweeper::MineStatus::Won {
-            let slot = self.state.minesweeper.preset.index();
-            let time = self.state.minesweeper.elapsed_whole_seconds();
+        self.state.games.minesweeper.tick(dt);
+        if self.state.games.minesweeper.status == crate::minesweeper::MineStatus::Won {
+            let slot = self.state.games.minesweeper.preset.index();
+            let time = self.state.games.minesweeper.elapsed_whole_seconds();
             self.state.mine_records[slot] =
                 Some(self.state.mine_records[slot].map_or(time, |best| best.min(time)));
             self.state.records.minesweeper[slot] = self.state.mine_records[slot];
         }
         self.tick_realtime(dt);
         self.tick_elapsed(dt);
+        self.tick_autosave(dt);
         if is_mouse_button_pressed(MouseButton::Left) {
             let viewport = ui::viewport();
             self.pointer
@@ -181,7 +187,7 @@ impl Game {
                 self.transition = 1.;
             }
         }
-        if self.state.screen == Screen::Game(GameId::Game2048) {
+        if self.state.screen.game() == Some(GameId::Game2048) {
             for (key, direction) in [
                 (KeyCode::Up, Direction::Up),
                 (KeyCode::Right, Direction::Right),
@@ -197,7 +203,7 @@ impl Game {
         let _ = dt;
     }
     fn apply(&mut self, action: ui::UiAction) {
-        self.state.solitaire_peek = None;
+        self.state.games.solitaire_peek = None;
         let previous_screen = self.state.screen;
         if !self.confirmation_bypass
             && game_restart::requires_new_confirmation(action)
@@ -210,7 +216,7 @@ impl Game {
         if !card_hints::is_hint(action) {
             self.state.card_hint = None;
         }
-        if self.apply_board_action(&action) {
+        if !crate::game_actions::is_shell(action) && self.apply_game_action(&action) {
             self.finish_action(previous_screen, action);
             return;
         }
@@ -322,23 +328,23 @@ impl Game {
                     self.state.tutorial = Some(game);
                 }
             }
-            ui::UiAction::Save => self.save_autosave(),
+            ui::UiAction::Save => self.flush_autosave(),
             ui::UiAction::Load => self.load_autosave(),
             ui::UiAction::Game2048Hint => {
                 self.state.card_hint = Some(card_hints::game_2048(&self.state));
             }
             ui::UiAction::Game2048Size(board_size) => {
-                self.state.game = crate::state::Game2048::new_with_size(
-                    self.state.game.seed.wrapping_add(1),
+                self.state.games.game = crate::state::Game2048::new_with_size(
+                    self.state.games.game.seed.wrapping_add(1),
                     board_size,
                 );
             }
             ui::UiAction::Move(direction) => self.try_move(direction),
             ui::UiAction::MineReveal(index) => {
-                self.state.minesweeper.reveal(index);
+                self.state.games.minesweeper.reveal(index);
             }
             ui::UiAction::MineFlag(index) => {
-                self.state.minesweeper.toggle_flag(index);
+                self.state.games.minesweeper.toggle_flag(index);
             }
             ui::UiAction::MineFlagMode => {
                 self.state.mine_flag_mode = !self.state.mine_flag_mode;
@@ -347,8 +353,8 @@ impl Game {
                 self.state.card_hint = Some(card_hints::minesweeper(&self.state));
             }
             ui::UiAction::MinePreset(preset) => {
-                let seed = self.state.minesweeper.seed.wrapping_add(1);
-                self.state.minesweeper = if preset == crate::minesweeper::MinePreset::Custom {
+                let seed = self.state.games.minesweeper.seed.wrapping_add(1);
+                self.state.games.minesweeper = if preset == crate::minesweeper::MinePreset::Custom {
                     crate::minesweeper::Minesweeper::custom(12, 12, 20, seed)
                 } else {
                     crate::minesweeper::Minesweeper::new(preset, seed)
@@ -356,150 +362,152 @@ impl Game {
                 self.state.mine_flag_mode = false;
             }
             ui::UiAction::SudokuCell(index) => {
-                self.state.sudoku.select(index);
+                self.state.games.sudoku.select(index);
             }
             ui::UiAction::SudokuNumber(value) => {
-                if let Some(index) = self.state.sudoku.selected {
+                if let Some(index) = self.state.games.sudoku.selected {
                     if self.state.sudoku_note_mode {
-                        self.state.sudoku.toggle_note(index, value);
+                        self.state.games.sudoku.toggle_note(index, value);
                     } else {
-                        self.state.sudoku.place(index, value);
+                        self.state.games.sudoku.place(index, value);
                     }
                 }
             }
             ui::UiAction::SudokuErase => {
-                if let Some(index) = self.state.sudoku.selected {
-                    self.state.sudoku.erase(index);
+                if let Some(index) = self.state.games.sudoku.selected {
+                    self.state.games.sudoku.erase(index);
                 }
             }
             ui::UiAction::SudokuNoteMode => {
                 self.state.sudoku_note_mode = !self.state.sudoku_note_mode;
             }
             ui::UiAction::SudokuDifficulty(difficulty) => {
-                self.state.sudoku = crate::sudoku::Sudoku::with_difficulty(difficulty);
+                self.state.games.sudoku = crate::sudoku::Sudoku::with_difficulty(difficulty);
                 self.state.sudoku_note_mode = false;
             }
             ui::UiAction::SudokuUndo => {
-                self.state.sudoku.undo();
+                self.state.games.sudoku.undo();
             }
             ui::UiAction::SudokuHint => {
                 self.state.card_hint = Some(card_hints::sudoku(&self.state));
             }
             ui::UiAction::NonogramCell(index) => {
-                self.state.nonogram.select(index);
-                self.state.nonogram.toggle(index);
+                self.state.games.nonogram.select(index);
+                self.state.games.nonogram.toggle(index);
             }
             ui::UiAction::NonogramMode => {
-                self.state.nonogram.toggle_mode();
+                self.state.games.nonogram.toggle_mode();
             }
             ui::UiAction::NonogramHint => {
                 self.state.card_hint = Some(card_hints::nonogram(&self.state));
             }
             ui::UiAction::NonogramUndo => {
-                self.state.nonogram.undo();
+                self.state.games.nonogram.undo();
             }
             ui::UiAction::NonogramPreset(preset) => {
-                let variant = self.state.nonogram.variant.wrapping_add(1);
-                self.state.nonogram = crate::nonogram::Nonogram::new_with_variant(preset, variant);
-                self.state.nonogram_zoomed = false;
-                self.state.nonogram_focus = (0, 0);
+                let variant = self.state.games.nonogram.variant.wrapping_add(1);
+                self.state.games.nonogram =
+                    crate::nonogram::Nonogram::new_with_variant(preset, variant);
+                self.state.games.nonogram_zoomed = false;
+                self.state.games.nonogram_focus = (0, 0);
             }
             ui::UiAction::NonogramZoom => {
-                self.state.nonogram_zoomed = !self.state.nonogram_zoomed;
-                self.state.nonogram_focus = crate::nonogram::focus_origin(
-                    self.state.nonogram.size,
-                    self.state.nonogram_zoomed,
-                    self.state.nonogram_focus,
+                self.state.games.nonogram_zoomed = !self.state.games.nonogram_zoomed;
+                self.state.games.nonogram_focus = crate::nonogram::focus_origin(
+                    self.state.games.nonogram.size,
+                    self.state.games.nonogram_zoomed,
+                    self.state.games.nonogram_focus,
                 );
             }
             ui::UiAction::NonogramPan(dx, dy) => {
-                let (x, y) = self.state.nonogram_focus;
+                let (x, y) = self.state.games.nonogram_focus;
                 let next = (
                     x.saturating_add_signed(dx as isize),
                     y.saturating_add_signed(dy as isize),
                 );
-                self.state.nonogram_focus = crate::nonogram::focus_origin(
-                    self.state.nonogram.size,
-                    self.state.nonogram_zoomed,
+                self.state.games.nonogram_focus = crate::nonogram::focus_origin(
+                    self.state.games.nonogram.size,
+                    self.state.games.nonogram_zoomed,
                     next,
                 );
             }
             ui::UiAction::SolitaireStock => {
-                self.state.solitaire.draw_stock();
+                self.state.games.solitaire.draw_stock();
             }
             ui::UiAction::SolitaireTableau(column, depth) => {
-                if self.state.solitaire.selected.is_some() {
-                    if !self.state.solitaire.move_to_tableau(column) {
+                if self.state.games.solitaire.selected.is_some() {
+                    if !self.state.games.solitaire.move_to_tableau(column) {
                         self.notifications
                             .warning("That tableau does not accept this card");
                     }
                 } else {
-                    self.state.solitaire.select_tableau(column, depth);
+                    self.state.games.solitaire.select_tableau(column, depth);
                 }
             }
             ui::UiAction::SolitaireWaste => {
-                self.state.solitaire.select_waste();
+                self.state.games.solitaire.select_waste();
             }
             ui::UiAction::SolitaireFoundation(suit) => {
-                if !self.state.solitaire.move_to_foundation(suit) {
+                if !self.state.games.solitaire.move_to_foundation(suit) {
                     self.notifications
                         .warning("That card cannot go to this foundation yet");
                 }
             }
             ui::UiAction::SolitaireUndo => {
-                self.state.solitaire.undo();
+                self.state.games.solitaire.undo();
             }
             ui::UiAction::SolitaireHint => {
                 self.state.card_hint = Some(card_hints::solitaire(&self.state));
             }
             ui::UiAction::SolitaireNew => {
-                self.state.solitaire =
-                    crate::solitaire::Solitaire::new(self.state.solitaire.seed.wrapping_add(1));
+                self.state.games.solitaire = crate::solitaire::Solitaire::new(
+                    self.state.games.solitaire.seed.wrapping_add(1),
+                );
             }
             ui::UiAction::FreeCellCell(cell) => {
-                if self.state.freecell.selected.is_some() {
-                    if !self.state.freecell.move_selected_to_cascade(cell) {
+                if self.state.games.freecell.selected.is_some() {
+                    if !self.state.games.freecell.move_selected_to_cascade(cell) {
                         self.notifications
                             .warning("That stack cannot move to this cascade");
                     }
                 } else {
-                    self.state.freecell.select_cell(cell);
+                    self.state.games.freecell.select_cell(cell);
                 }
             }
             ui::UiAction::FreeCellCascade(cascade, depth) => {
-                if self.state.freecell.selected.is_some() {
-                    if !self.state.freecell.move_selected_to_cascade(cascade) {
+                if self.state.games.freecell.selected.is_some() {
+                    if !self.state.games.freecell.move_selected_to_cascade(cascade) {
                         self.notifications
                             .warning("That stack cannot move to this cascade");
                     }
                 } else {
-                    self.state.freecell.select_cascade(cascade, depth);
+                    self.state.games.freecell.select_cascade(cascade, depth);
                 }
             }
             ui::UiAction::FreeCellFoundation(suit) => {
-                if !self.state.freecell.move_selected_to_foundation(suit) {
+                if !self.state.games.freecell.move_selected_to_foundation(suit) {
                     self.notifications
                         .warning("That card cannot go to this foundation yet");
                 }
             }
             ui::UiAction::FreeCellUndo => {
-                self.state.freecell.undo();
+                self.state.games.freecell.undo();
             }
             ui::UiAction::FreeCellHint => {
                 self.state.card_hint = Some(card_hints::freecell(&self.state));
             }
             ui::UiAction::FreeCellNew => {
-                self.state.freecell =
-                    crate::freecell::FreeCell::new(self.state.freecell.seed.wrapping_add(1));
+                self.state.games.freecell =
+                    crate::freecell::FreeCell::new(self.state.games.freecell.seed.wrapping_add(1));
             }
             ui::UiAction::FivefoldRoll => {
-                self.state.fivefold.roll();
+                self.state.games.fivefold.roll();
             }
             ui::UiAction::FivefoldHold(index) => {
-                self.state.fivefold.toggle_hold(index);
+                self.state.games.fivefold.toggle_hold(index);
             }
             ui::UiAction::FivefoldCategory(category) => {
-                self.state.fivefold.choose_category(category);
+                self.state.games.fivefold.choose_category(category);
             }
             ui::UiAction::FivefoldScorePage(delta) => {
                 self.state.fivefold_score_page = self
@@ -512,152 +520,152 @@ impl Game {
                 self.state.card_hint = Some(card_hints::fivefold(&self.state));
             }
             ui::UiAction::FivefoldNew => {
-                self.state.fivefold =
-                    crate::fivefold::Fivefold::new(self.state.fivefold.seed.wrapping_add(1));
+                self.state.games.fivefold =
+                    crate::fivefold::Fivefold::new(self.state.games.fivefold.seed.wrapping_add(1));
                 self.state.fivefold_score_page = 0;
             }
             ui::UiAction::ReversiPlace(index) => {
-                if self.state.reversi.ai_level == crate::reversi::AiLevel::TwoPlayer {
-                    self.state.reversi.place_current(index);
-                } else if self.state.reversi.place(index) {
-                    self.state.reversi.ai_move();
+                if self.state.games.reversi.ai_level == crate::reversi::AiLevel::TwoPlayer {
+                    self.state.games.reversi.place_current(index);
+                } else if self.state.games.reversi.place(index) {
+                    self.state.games.reversi.ai_move();
                 }
             }
             ui::UiAction::ReversiPass => {
-                if self.state.reversi.pass()
-                    && self.state.reversi.ai_level != crate::reversi::AiLevel::TwoPlayer
+                if self.state.games.reversi.pass()
+                    && self.state.games.reversi.ai_level != crate::reversi::AiLevel::TwoPlayer
                 {
-                    self.state.reversi.ai_move();
+                    self.state.games.reversi.ai_move();
                 }
             }
             ui::UiAction::ReversiHint => {
                 self.state.card_hint = Some(card_hints::reversi(&self.state));
             }
             ui::UiAction::ReversiNew => {
-                self.state.reversi = crate::reversi::Reversi::new(
-                    self.state.reversi.seed.wrapping_add(1),
-                    self.state.reversi.ai_level,
+                self.state.games.reversi = crate::reversi::Reversi::new(
+                    self.state.games.reversi.seed.wrapping_add(1),
+                    self.state.games.reversi.ai_level,
                 );
             }
             ui::UiAction::ReversiLevel(level) => {
-                self.state.reversi.ai_level = level;
+                self.state.games.reversi.ai_level = level;
             }
             ui::UiAction::LightsOutPress(index) => {
-                self.state.lights_out.press(index);
+                self.state.games.lights_out.press(index);
             }
             ui::UiAction::LightsOutHint => {
                 self.state.card_hint = Some(card_hints::lights_out(&self.state));
             }
             ui::UiAction::LightsOutUndo => {
-                self.state.lights_out.undo();
+                self.state.games.lights_out.undo();
             }
             ui::UiAction::LightsOutNew => {
-                let seed = self.state.lights_out.seed.wrapping_add(1);
-                self.state.lights_out.reset(seed);
+                let seed = self.state.games.lights_out.seed.wrapping_add(1);
+                self.state.games.lights_out.reset(seed);
             }
             ui::UiAction::TicTacToePress(index) => {
-                self.state.tic_tac_toe.place(index);
+                self.state.games.tic_tac_toe.place(index);
             }
             ui::UiAction::TicTacToeHint => {
                 self.state.card_hint = Some(card_hints::tic_tac_toe(&self.state));
             }
             ui::UiAction::TicTacToeUndo => {
-                self.state.tic_tac_toe.undo();
+                self.state.games.tic_tac_toe.undo();
             }
             ui::UiAction::TicTacToeNew => {
-                let seed = self.state.tic_tac_toe.seed.wrapping_add(1);
-                self.state.tic_tac_toe.reset(seed);
+                let seed = self.state.games.tic_tac_toe.seed.wrapping_add(1);
+                self.state.games.tic_tac_toe.reset(seed);
             }
             ui::UiAction::TicTacToeLevel(level) => {
-                self.state.tic_tac_toe.set_ai_level(level);
+                self.state.games.tic_tac_toe.set_ai_level(level);
             }
             ui::UiAction::MemoryPairsSelect(index) => {
-                self.state.memory_pairs.select(index);
+                self.state.games.memory_pairs.select(index);
             }
             ui::UiAction::MemoryPairsHint => {
                 self.state.card_hint = Some(card_hints::memory_pairs(&self.state));
             }
             ui::UiAction::MemoryPairsUndo => {
-                self.state.memory_pairs.undo();
+                self.state.games.memory_pairs.undo();
             }
             ui::UiAction::MemoryPairsNew => {
-                let seed = self.state.memory_pairs.seed.wrapping_add(1);
-                self.state.memory_pairs.reset(seed);
+                let seed = self.state.games.memory_pairs.seed.wrapping_add(1);
+                self.state.games.memory_pairs.reset(seed);
             }
             ui::UiAction::SlidingPuzzleMove(index) => {
-                self.state.sliding_puzzle.move_tile(index);
+                self.state.games.sliding_puzzle.move_tile(index);
             }
             ui::UiAction::SlidingPuzzleHint => {
                 self.state.card_hint = Some(card_hints::sliding_puzzle(&self.state));
             }
             ui::UiAction::SlidingPuzzleUndo => {
-                self.state.sliding_puzzle.undo();
+                self.state.games.sliding_puzzle.undo();
             }
             ui::UiAction::SlidingPuzzleNew => {
-                let seed = self.state.sliding_puzzle.seed.wrapping_add(1);
-                self.state.sliding_puzzle.reset(seed);
+                let seed = self.state.games.sliding_puzzle.seed.wrapping_add(1);
+                self.state.games.sliding_puzzle.reset(seed);
             }
             ui::UiAction::MastermindPick(color) => {
-                self.state.mastermind.pick(color);
+                self.state.games.mastermind.pick(color);
             }
             ui::UiAction::MastermindHint => {
                 self.state.card_hint = Some(card_hints::mastermind(&self.state));
             }
             ui::UiAction::MastermindSubmit => {
-                self.state.mastermind.submit();
+                self.state.games.mastermind.submit();
             }
             ui::UiAction::MastermindClear => {
-                self.state.mastermind.clear();
+                self.state.games.mastermind.clear();
             }
             ui::UiAction::MastermindUndo => {
-                self.state.mastermind.undo();
+                self.state.games.mastermind.undo();
             }
             ui::UiAction::MastermindNew => {
-                let seed = self.state.mastermind.seed.wrapping_add(1);
-                self.state.mastermind.reset(seed);
+                let seed = self.state.games.mastermind.seed.wrapping_add(1);
+                self.state.games.mastermind.reset(seed);
             }
             ui::UiAction::SpiderSelect(column, depth) => {
-                self.state.spider.select_column(column, depth);
+                self.state.games.spider.select_column(column, depth);
             }
             ui::UiAction::SpiderMove(column) => {
-                self.state.spider.move_selected(column);
+                self.state.games.spider.move_selected(column);
             }
             ui::UiAction::SpiderDeal => {
-                self.state.spider.deal_stock();
+                self.state.games.spider.deal_stock();
             }
             ui::UiAction::SpiderHint => {
                 self.state.card_hint = Some(card_hints::spider(&self.state));
             }
             ui::UiAction::SpiderUndo => {
-                self.state.spider.undo();
+                self.state.games.spider.undo();
             }
             ui::UiAction::SpiderNew => {
-                let seed = self.state.spider.seed.wrapping_add(1);
-                self.state.spider.reset(seed);
+                let seed = self.state.games.spider.seed.wrapping_add(1);
+                self.state.games.spider.reset(seed);
             }
             ui::UiAction::WordSearchCell(index) => {
-                self.state.word_search.select(index);
+                self.state.games.word_search.select(index);
             }
             ui::UiAction::WordSearchClear => {
-                self.state.word_search.clear();
+                self.state.games.word_search.clear();
             }
             ui::UiAction::WordSearchHint => {
                 self.state.card_hint = Some(card_hints::word_search(&self.state));
             }
             ui::UiAction::WordSearchNew => {
-                let seed = self.state.word_search.seed.wrapping_add(1);
-                self.state.word_search.reset(seed);
+                let seed = self.state.games.word_search.seed.wrapping_add(1);
+                self.state.games.word_search.reset(seed);
             }
             ui::UiAction::MineChord(index) => {
-                self.state.minesweeper.chord(index);
+                self.state.games.minesweeper.chord(index);
             }
             ui::UiAction::MineRestart => {
-                self.state.minesweeper = crate::minesweeper::Minesweeper::beginner(
-                    self.state.minesweeper.seed.wrapping_add(1),
+                self.state.games.minesweeper = crate::minesweeper::Minesweeper::beginner(
+                    self.state.games.minesweeper.seed.wrapping_add(1),
                 );
             }
             ui::UiAction::Undo => {
-                if self.state.game.undo() {
+                if self.state.games.game.undo() {
                     self.notifications.info("One move undone");
                 }
             }
@@ -670,7 +678,8 @@ impl Game {
                     self.confirmation_bypass = false;
                     return;
                 }
-                self.state.game = crate::state::Game2048::new(self.state.game.seed.wrapping_add(1));
+                self.state.games.game =
+                    crate::state::Game2048::new(self.state.games.game.seed.wrapping_add(1));
                 self.state.confirm_restart = false;
             }
             ui::UiAction::Cancel => {

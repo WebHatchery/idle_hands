@@ -79,7 +79,7 @@ fn color_rects(x: f32, y: f32, width: f32, height: f32, count: usize, columns: u
 }
 
 pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
-    let l = layout(_state.flood_it.color_count());
+    let l = layout(_state.games.flood_it.color_count());
     if crate::ui::hit(Rect::new(0., 0., 110., 42.), point) {
         return vec![UiAction::Cabinet];
     }
@@ -109,8 +109,8 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
 }
 
 pub fn draw(state: &AppState) {
-    let l = layout(state.flood_it.color_count());
-    let game = &state.flood_it;
+    let l = layout(state.games.flood_it.color_count());
+    let game = &state.games.flood_it;
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
     let title_x = if compact {
@@ -221,7 +221,7 @@ fn draw_board(board: Rect, game: &FloodIt, high_contrast: bool) {
     let side = game.side();
     let cell = board.w / side as f32;
     let region = game.region_mask();
-    for index in 0..side * side {
+    for (index, &in_region) in region.iter().enumerate().take(side * side) {
         let rect = Rect::new(
             board.x + (index % side) as f32 * cell,
             board.y + (index / side) as f32 * cell,
@@ -240,8 +240,8 @@ fn draw_board(board: Rect, game: &FloodIt, high_contrast: bool) {
             rect.y,
             rect.w,
             rect.h,
-            if region[index] { 2. } else { 1. },
-            if region[index] {
+            if in_region { 2. } else { 1. },
+            if in_region {
                 WHITE
             } else {
                 accessibility::grid_line(high_contrast)

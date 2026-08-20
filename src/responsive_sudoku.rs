@@ -19,7 +19,7 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 }
 
 pub fn draw(state: &AppState) {
-    let game = &state.sudoku;
+    let game = &state.games.sudoku;
     panel(Rect::new(0., 0., 110., 44.), crate::theme::SURFACE_DARK);
     text("‹ CABINET", 10., 29., 14., crate::theme::BRASS);
     text("SUDOKU", 12., 78., 34., crate::theme::BRASS);

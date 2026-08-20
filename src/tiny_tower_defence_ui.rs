@@ -97,7 +97,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
 
 pub fn draw(state: &AppState) {
     let l = layout();
-    let game = &state.tiny_tower_defence;
+    let game = &state.games.tiny_tower_defence;
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
     let title_x = if compact {

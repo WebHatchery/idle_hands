@@ -89,7 +89,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if layout.drops.contains(point) || layout.board.contains(point) {
         let column = ((point.x - layout.board.x) / layout.cell).clamp(0., 6.99) as usize;
-        if column < 7 && state.connect_four.status == ConnectFourStatus::Playing {
+        if column < 7 && state.games.connect_four.status == ConnectFourStatus::Playing {
             return vec![UiAction::ConnectFourDrop(column)];
         }
     }
@@ -98,7 +98,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
 
 pub fn draw(state: &AppState) {
     let layout = layout();
-    let game = &state.connect_four;
+    let game = &state.games.connect_four;
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
     let header_x = if compact {

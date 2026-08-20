@@ -1,6 +1,6 @@
 //! Seeded 2048 rules with selectable board sizes and single-step undo state.
 
-use crate::state::Direction;
+use crate::domain::Direction;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]

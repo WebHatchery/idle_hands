@@ -66,7 +66,7 @@ pub(crate) fn tableau_card_at(game: &Solitaire, p: Vec2) -> Option<(usize, usize
 }
 
 pub fn draw_solitaire(state: &AppState) {
-    let game = &state.solitaire;
+    let game = &state.games.solitaire;
     let tableau_gap = tableau_gap(game);
     text("‹ CABINET", 40., 43., 20., crate::theme::BRASS);
     text("SOLITAIRE", 40., 93., 44., crate::theme::BRASS);
@@ -154,7 +154,7 @@ pub fn draw_solitaire(state: &AppState) {
             panel(card_rect(x, TABLEAU_TOP), crate::theme::GAME_PANEL);
         }
     }
-    if let Some(crate::solitaire::CardSource::Tableau(column, depth)) = state.solitaire_peek {
+    if let Some(crate::solitaire::CardSource::Tableau(column, depth)) = state.games.solitaire_peek {
         if let Some(card) = game.tableau[column].get(depth) {
             let x = 35. + column as f32 * 120.;
             let rect = card_rect(x, TABLEAU_TOP + depth as f32 * tableau_gap);
@@ -208,7 +208,7 @@ fn panel(rect: Rect, fill: Color) {
 }
 
 pub fn solitaire_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
-    let tableau_gap = tableau_gap(&state.solitaire);
+    let tableau_gap = tableau_gap(&state.games.solitaire);
     if Rect::new(20., 20., 180., 50.).contains(p) {
         return vec![UiAction::Cabinet];
     }
@@ -235,7 +235,7 @@ pub fn solitaire_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     for column in 0..7 {
         let x = 35. + column as f32 * 120.;
         if p.x >= x && p.x <= x + 92. && p.y >= TABLEAU_LABEL_Y {
-            let depth = tableau_depth_at(&state.solitaire, column, p.y, tableau_gap);
+            let depth = tableau_depth_at(&state.games.solitaire, column, p.y, tableau_gap);
             return vec![UiAction::SolitaireTableau(column, depth)];
         }
     }

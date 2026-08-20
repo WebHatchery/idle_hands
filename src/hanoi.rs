@@ -1,4 +1,5 @@
 //! Deterministic touch-first Towers of Hanoi.
+use crate::undo::UndoStack;
 
 use serde::{Deserialize, Serialize};
 use std::collections::VecDeque;
@@ -22,7 +23,7 @@ pub struct Hanoi {
     pub disks: u8,
     pub phase: HanoiPhase,
     #[serde(skip)]
-    history: Vec<Box<Self>>,
+    history: UndoStack<Self>,
 }
 
 impl Default for Hanoi {
@@ -51,7 +52,7 @@ impl Hanoi {
             seed,
             disks,
             phase: HanoiPhase::Playing,
-            history: Vec::new(),
+            history: UndoStack::default(),
         }
     }
 
@@ -87,7 +88,7 @@ impl Hanoi {
         if self.stacks[2].len() == self.disks as usize {
             self.phase = HanoiPhase::Won;
         }
-        self.history.push(Box::new(previous));
+        self.history.push(previous);
         true
     }
 
@@ -96,7 +97,7 @@ impl Hanoi {
             return false;
         };
         let history = std::mem::take(&mut self.history);
-        *self = *previous;
+        *self = previous;
         self.history = history;
         true
     }

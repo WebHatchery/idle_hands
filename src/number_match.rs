@@ -1,4 +1,5 @@
 //! Deterministic adjacent-pair Number Match rules.
+use crate::undo::UndoStack;
 
 use serde::{Deserialize, Serialize};
 
@@ -46,7 +47,7 @@ pub struct NumberMatch {
     pub seed: u64,
     pub phase: NumberMatchPhase,
     #[serde(skip)]
-    history: Vec<Box<Self>>,
+    history: UndoStack<Self>,
 }
 
 impl Default for NumberMatch {
@@ -93,7 +94,7 @@ impl NumberMatch {
             remixes_left: 2,
             seed,
             phase: NumberMatchPhase::Playing,
-            history: Vec::new(),
+            history: UndoStack::default(),
         }
     }
 
@@ -131,7 +132,7 @@ impl NumberMatch {
         } else if self.hint_pair().is_none() {
             self.phase = NumberMatchPhase::Stuck;
         }
-        self.history.push(Box::new(snapshot));
+        self.history.push(snapshot);
         true
     }
 
@@ -140,7 +141,7 @@ impl NumberMatch {
             return false;
         };
         let history = std::mem::take(&mut self.history);
-        *self = *previous;
+        *self = previous;
         self.history = history;
         true
     }
@@ -176,7 +177,7 @@ impl NumberMatch {
         self.combo = 0;
         self.remixes_left -= 1;
         self.phase = NumberMatchPhase::Playing;
-        self.history.push(Box::new(snapshot));
+        self.history.push(snapshot);
         true
     }
 

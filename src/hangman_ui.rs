@@ -92,10 +92,12 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
         return vec![UiAction::HangmanUndo];
     }
     if crate::ui::hit(layout.category, point) {
-        return vec![UiAction::HangmanCategory(state.hangman.category.next())];
+        return vec![UiAction::HangmanCategory(
+            state.games.hangman.category.next(),
+        )];
     }
     if crate::ui::hit(layout.rule, point) {
-        return vec![UiAction::HangmanRule(match state.hangman.rule {
+        return vec![UiAction::HangmanRule(match state.games.hangman.rule {
             HangmanRule::Classic => HangmanRule::Rapid,
             HangmanRule::Rapid => HangmanRule::Classic,
         })];
@@ -114,7 +116,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
 
 pub fn draw(state: &AppState) {
     let layout = layout();
-    let game = &state.hangman;
+    let game = &state.games.hangman;
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
     let header_x = if compact {

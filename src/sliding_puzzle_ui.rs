@@ -54,7 +54,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(layout.hint, point) {
         return vec![UiAction::SlidingPuzzleHint];
     }
-    if layout.board.contains(point) && state.sliding_puzzle.status != SlidingStatus::Won {
+    if layout.board.contains(point) && state.games.sliding_puzzle.status != SlidingStatus::Won {
         let column = ((point.x - layout.board.x) / layout.cell) as usize;
         let row = ((point.y - layout.board.y) / layout.cell) as usize;
         if row < 4 && column < 4 {
@@ -66,7 +66,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
 
 pub fn draw(state: &AppState) {
     let layout = layout();
-    let game = &state.sliding_puzzle;
+    let game = &state.games.sliding_puzzle;
     let header_y = if crate::ui::is_compact_landscape() {
         35.
     } else if crate::ui::is_portrait() {

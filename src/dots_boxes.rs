@@ -4,17 +4,12 @@ use serde::{Deserialize, Serialize};
 
 use crate::data::DotsBoxesConfig;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
 pub enum DotsDifficulty {
+    #[default]
     Standard,
     Hard,
     Expert,
-}
-
-impl Default for DotsDifficulty {
-    fn default() -> Self {
-        Self::Standard
-    }
 }
 
 impl DotsDifficulty {

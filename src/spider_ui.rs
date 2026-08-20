@@ -92,13 +92,13 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
         if point.x < x || point.x > x + layout.card_w || point.y < layout.top {
             continue;
         }
-        let stack_len = state.spider.tableau[column].len();
+        let stack_len = state.games.spider.tableau[column].len();
         let depth = if stack_len == 0 {
             0
         } else {
             (((point.y - layout.top) / layout.overlap).floor().max(0.) as usize).min(stack_len - 1)
         };
-        return if state.spider.selected.is_some() {
+        return if state.games.spider.selected.is_some() {
             vec![UiAction::SpiderMove(column)]
         } else {
             vec![UiAction::SpiderSelect(column, depth)]
@@ -109,7 +109,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
 
 pub fn draw(state: &AppState) {
     let layout = layout();
-    let game = &state.spider;
+    let game = &state.games.spider;
     let (header_x, header_y) = if crate::ui::is_compact_landscape() {
         (112., 27.)
     } else if crate::ui::is_portrait() {

@@ -67,7 +67,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(layout.peek, point) {
         return vec![UiAction::MemoryPairsPeek];
     }
-    if layout.board.contains(point) && state.memory_pairs.status != MemoryStatus::Won {
+    if layout.board.contains(point) && state.games.memory_pairs.status != MemoryStatus::Won {
         let column = ((point.x - layout.board.x) / layout.cell) as usize;
         let row = ((point.y - layout.board.y) / layout.cell) as usize;
         if row < 4 && column < 4 {
@@ -79,7 +79,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
 
 pub fn draw(state: &AppState) {
     let layout = layout();
-    let game = &state.memory_pairs;
+    let game = &state.games.memory_pairs;
     let header_y = if crate::ui::is_compact_landscape() {
         35.
     } else if crate::ui::is_portrait() {

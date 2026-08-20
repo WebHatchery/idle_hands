@@ -1,20 +1,16 @@
 //! Solvable touch-first Color Sort tube puzzle.
+use crate::undo::UndoStack;
 
 use serde::{Deserialize, Serialize};
 
 use crate::data::ColorSortConfig;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
 pub enum ColorSortDifficulty {
+    #[default]
     Standard,
     Hard,
     Expert,
-}
-
-impl Default for ColorSortDifficulty {
-    fn default() -> Self {
-        Self::Standard
-    }
 }
 
 impl ColorSortDifficulty {
@@ -76,7 +72,7 @@ pub struct ColorSort {
     pub points: u32,
     pub phase: ColorSortPhase,
     #[serde(skip)]
-    history: Vec<Box<Self>>,
+    history: UndoStack<Self>,
 }
 
 impl Default for ColorSort {
@@ -162,7 +158,7 @@ impl ColorSort {
             best_combo: 0,
             points: 0,
             phase: ColorSortPhase::Playing,
-            history: Vec::new(),
+            history: UndoStack::default(),
         }
     }
 
@@ -206,7 +202,7 @@ impl ColorSort {
         if self.is_solved() {
             self.phase = ColorSortPhase::Won;
         }
-        self.history.push(Box::new(previous));
+        self.history.push(previous);
         true
     }
 
@@ -215,7 +211,7 @@ impl ColorSort {
             return false;
         };
         let history = std::mem::take(&mut self.history);
-        *self = *previous;
+        *self = previous;
         self.history = history;
         true
     }
@@ -347,14 +343,14 @@ fn reverse_moves(tubes: &[Vec<u8>], capacity: usize) -> Vec<(usize, usize, usize
             .rev()
             .take_while(|&&value| value == color)
             .count();
-        for destination in 0..tubes.len() {
+        for (destination, tube) in tubes.iter().enumerate() {
             if source == destination
-                || tubes[destination].len() == capacity
-                || tubes[destination].last().is_some_and(|&top| top == color)
+                || tube.len() == capacity
+                || tube.last().is_some_and(|&top| top == color)
             {
                 continue;
             }
-            let room = capacity - tubes[destination].len();
+            let room = capacity - tube.len();
             for count in 1..=run.min(room) {
                 moves.push((source, destination, count));
             }

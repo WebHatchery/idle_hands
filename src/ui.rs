@@ -1,80 +1,30 @@
 //! Touch-first cabinet and 2048 presentation.
 
 use crate::achievements_ui;
-use crate::battleship_ui;
-use crate::blackjack_ui;
-use crate::breakout_ui;
 use crate::cabinet_ui;
-use crate::checkers_ui;
-use crate::color_sort_ui;
-use crate::connect_four_ui;
-use crate::daily_dungeon_ui;
-use crate::dots_boxes_ui;
-use crate::dungeon_sweeper_ui;
+use crate::domain::Direction;
 use crate::favorites_ui;
-use crate::fivefold_ui;
-use crate::flood_it_ui;
-use crate::freecell_ui;
 use crate::game_2048::Game2048Size;
 use crate::game_variant_ui;
-use crate::hangman_ui;
-use crate::hanoi_ui;
-use crate::higher_lower_ui;
-use crate::klondike_golf_ui;
 use crate::library_ui;
-use crate::lights_out_ui;
-use crate::mahjong_solitaire_ui;
-use crate::mancala_ui;
-use crate::mastermind_ui;
-use crate::match_three_ui;
-use crate::maze_walk_ui;
-use crate::memory_pairs_ui;
-use crate::minesweeper_ui;
 use crate::mobile_tutorial_ui;
-use crate::nim_ui;
-use crate::nonogram_ui;
-use crate::number_match_ui;
-use crate::one_room_roguelike_ui;
 use crate::palette_ui;
-use crate::peg_solitaire_ui;
-use crate::pipe_loop_ui;
-use crate::potion_2048_ui;
-use crate::pyramid_ui;
 use crate::records_ui;
 use crate::responsive_cabinet;
-use crate::responsive_cards;
-use crate::responsive_fivefold;
 use crate::responsive_landscape;
 use crate::responsive_landscape_cabinet;
-use crate::responsive_landscape_cards;
-use crate::responsive_landscape_games;
 use crate::responsive_landscape_library;
 use crate::responsive_library;
-use crate::responsive_puzzles;
-use crate::responsive_sudoku;
 use crate::responsive_ui;
-use crate::reversi_ui;
 use crate::settings_ui;
-use crate::sliding_puzzle_ui;
-use crate::snake_ui;
-use crate::sokoban_ui;
-use crate::solitaire_ui;
-use crate::spider_solitaire_ui;
-use crate::spider_ui;
-use crate::sudoku_ui;
-use crate::tic_tac_toe_ui;
-use crate::tiny_tower_defence_ui;
-use crate::tri_peaks_ui;
 use crate::tutorial_ui;
 pub use crate::ui_action::UiAction;
-use crate::word_grid_ui;
-use crate::word_ladder_ui;
-use crate::word_search_ui;
+use crate::ui_game_routes;
 #[path = "restart_modal.rs"]
 mod restart_modal;
 use crate::{
     data::GameData,
-    state::{AppState, Direction, GameId, Screen},
+    state::{AppState, Screen},
 };
 use macroquad::prelude::*;
 use macroquad_toolkit::ui::{
@@ -212,7 +162,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         }
         return tutorial_ui::clicks(p);
     }
-    if matches!(state.screen, Screen::Game(_))
+    if state.screen.is_game()
         && ((is_compact_landscape() && mobile_tutorial_ui::replay_clicks(p, true))
             || (is_portrait() && mobile_tutorial_ui::replay_clicks(p, false))
             || (!is_portrait() && hit(tutorial_ui::REPLAY_RECT, p)))
@@ -229,97 +179,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Cabinet if is_compact_landscape() => responsive_landscape_cabinet::clicks(state, p),
         Screen::Cabinet if is_portrait() => responsive_cabinet::clicks(state, p),
         Screen::Cabinet => cabinet_ui::clicks(state, p),
-        Screen::Game(GameId::Game2048) if is_compact_landscape() => {
-            responsive_landscape::game2048_clicks(state, p)
-        }
-        Screen::Game(GameId::Game2048) if is_portrait() => responsive_ui::game2048_clicks(state, p),
-        Screen::Game(GameId::Game2048) => game_clicks(state, p),
-        Screen::Game(GameId::Minesweeper) if is_compact_landscape() => {
-            responsive_landscape_games::minesweeper_clicks(state, p)
-        }
-        Screen::Game(GameId::Minesweeper) if is_portrait() => {
-            responsive_puzzles::minesweeper_clicks(state, p)
-        }
-        Screen::Game(GameId::Minesweeper) => minesweeper_ui::clicks(state, p),
-        Screen::Game(GameId::Sudoku) if is_compact_landscape() => {
-            responsive_landscape_games::sudoku_clicks(state, p)
-        }
-        Screen::Game(GameId::Sudoku) if is_portrait() => responsive_sudoku::clicks(state, p),
-        Screen::Game(GameId::Sudoku) => sudoku_ui::sudoku_clicks(state, p),
-        Screen::Game(GameId::Nonogram) if is_compact_landscape() => {
-            responsive_landscape_games::nonogram_clicks(state, p)
-        }
-        Screen::Game(GameId::Nonogram) if is_portrait() => {
-            responsive_puzzles::nonogram_clicks(state, p)
-        }
-        Screen::Game(GameId::Nonogram) => nonogram_ui::nonogram_clicks(state, p),
-        Screen::Game(GameId::Solitaire) if is_compact_landscape() => {
-            responsive_landscape_cards::solitaire_clicks(state, p)
-        }
-        Screen::Game(GameId::Solitaire) if is_portrait() => {
-            responsive_cards::solitaire_clicks(state, p)
-        }
-        Screen::Game(GameId::Solitaire) => solitaire_ui::solitaire_clicks(state, p),
-        Screen::Game(GameId::FreeCell) if is_compact_landscape() => {
-            responsive_landscape_cards::freecell_clicks(state, p)
-        }
-        Screen::Game(GameId::FreeCell) if is_portrait() => {
-            responsive_cards::freecell_clicks(state, p)
-        }
-        Screen::Game(GameId::FreeCell) => freecell_ui::freecell_clicks(state, p),
-        Screen::Game(GameId::Yahtzee) if is_compact_landscape() => {
-            responsive_landscape_cards::fivefold_clicks(state, p)
-        }
-        Screen::Game(GameId::Yahtzee) if is_portrait() => {
-            responsive_fivefold::fivefold_clicks(state, p)
-        }
-        Screen::Game(GameId::Yahtzee) => fivefold_ui::fivefold_clicks(state, p),
-        Screen::Game(GameId::Reversi) if is_compact_landscape() => {
-            responsive_landscape_games::reversi_clicks(state, p)
-        }
-        Screen::Game(GameId::Reversi) if is_portrait() => {
-            responsive_cards::reversi_clicks(state, p)
-        }
-        Screen::Game(GameId::Reversi) => reversi_ui::reversi_clicks(state, p),
-        Screen::Game(GameId::LightsOut) => lights_out_ui::clicks(state, p),
-        Screen::Game(GameId::TicTacToe) => tic_tac_toe_ui::clicks(state, p),
-        Screen::Game(GameId::MemoryPairs) => memory_pairs_ui::clicks(state, p),
-        Screen::Game(GameId::SlidingPuzzle) => sliding_puzzle_ui::clicks(state, p),
-        Screen::Game(GameId::Spider) => spider_ui::clicks(state, p),
-        Screen::Game(GameId::WordSearch) => word_search_ui::clicks(state, p),
-        Screen::Game(GameId::Hangman) => hangman_ui::clicks(state, p),
-        Screen::Game(GameId::ConnectFour) => connect_four_ui::clicks(state, p),
-        Screen::Game(GameId::Checkers) => checkers_ui::clicks(state, p),
-        Screen::Game(GameId::PegSolitaire) => peg_solitaire_ui::clicks(state, p),
-        Screen::Game(GameId::MahjongSolitaire) => mahjong_solitaire_ui::clicks(state, p),
-        Screen::Game(GameId::Snake) => snake_ui::clicks(state, p),
-        Screen::Game(GameId::Breakout) => breakout_ui::clicks(state, p),
-        Screen::Game(GameId::HigherLower) => higher_lower_ui::clicks(state, p),
-        Screen::Game(GameId::KlondikeGolf) => klondike_golf_ui::clicks(state, p),
-        Screen::Game(GameId::Blackjack) => blackjack_ui::clicks(state, p),
-        Screen::Game(GameId::SpiderSolitaire) => spider_solitaire_ui::clicks(state, p),
-        Screen::Game(GameId::Pyramid) => pyramid_ui::clicks(state, p),
-        Screen::Game(GameId::TriPeaks) => tri_peaks_ui::clicks(state, p),
-        Screen::Game(GameId::Nim) => nim_ui::clicks(state, p),
-        Screen::Game(GameId::DungeonSweeper) => dungeon_sweeper_ui::clicks(state, p),
-        Screen::Game(GameId::Potion2048) => potion_2048_ui::clicks(state, p),
-        Screen::Game(GameId::TinyTowerDefence) => tiny_tower_defence_ui::clicks(state, p),
-        Screen::Game(GameId::OneRoomRoguelike) => one_room_roguelike_ui::clicks(state, p),
-        Screen::Game(GameId::DailyDungeon) => daily_dungeon_ui::clicks(state, p),
-        Screen::Game(GameId::DotsBoxes) => dots_boxes_ui::clicks(state, p),
-        Screen::Game(GameId::Sokoban) => sokoban_ui::clicks(state, p),
-        Screen::Game(GameId::Mancala) => mancala_ui::clicks(state, p),
-        Screen::Game(GameId::Hanoi) => hanoi_ui::clicks(state, p),
-        Screen::Game(GameId::NumberMatch) => number_match_ui::clicks(state, p),
-        Screen::Game(GameId::FloodIt) => flood_it_ui::clicks(state, p),
-        Screen::Game(GameId::ColorSort) => color_sort_ui::clicks(state, p),
-        Screen::Game(GameId::Battleship) => battleship_ui::clicks(state, p),
-        Screen::Game(GameId::WordGrid) => word_grid_ui::clicks(state, p),
-        Screen::Game(GameId::WordLadder) => word_ladder_ui::clicks(state, p),
-        Screen::Game(GameId::PipeLoop) => pipe_loop_ui::clicks(state, p),
-        Screen::Game(GameId::MazeWalk) => maze_walk_ui::clicks(state, p),
-        Screen::Game(GameId::MatchThree) => match_three_ui::clicks(state, p),
-        Screen::Game(GameId::Mastermind) => mastermind_ui::clicks(state, p),
+        Screen::Game(_) => ui_game_routes::clicks(state, p),
         Screen::Help => {
             if is_compact_landscape() {
                 responsive_landscape_library::help_clicks(p)
@@ -374,87 +234,7 @@ pub fn draw(
             responsive_cabinet::draw(state, data, loaded_assets, cabinet_texture)
         }
         Screen::Cabinet => cabinet_ui::draw(state, data, loaded_assets, cabinet_texture),
-        Screen::Game(GameId::Game2048) if is_compact_landscape() => {
-            responsive_landscape::draw_2048(state)
-        }
-        Screen::Game(GameId::Game2048) if is_portrait() => responsive_ui::draw_2048(state),
-        Screen::Game(GameId::Game2048) => draw_2048(state),
-        Screen::Game(GameId::Minesweeper) if is_compact_landscape() => {
-            responsive_landscape_games::draw_minesweeper(state)
-        }
-        Screen::Game(GameId::Minesweeper) if is_portrait() => {
-            responsive_puzzles::draw_minesweeper(state)
-        }
-        Screen::Game(GameId::Minesweeper) => minesweeper_ui::draw(state),
-        Screen::Game(GameId::Sudoku) if is_compact_landscape() => {
-            responsive_landscape_games::draw_sudoku(state)
-        }
-        Screen::Game(GameId::Sudoku) if is_portrait() => responsive_sudoku::draw(state),
-        Screen::Game(GameId::Sudoku) => sudoku_ui::draw_sudoku(state),
-        Screen::Game(GameId::Nonogram) if is_compact_landscape() => {
-            responsive_landscape_games::draw_nonogram(state)
-        }
-        Screen::Game(GameId::Nonogram) if is_portrait() => responsive_puzzles::draw_nonogram(state),
-        Screen::Game(GameId::Nonogram) => nonogram_ui::draw_nonogram(state),
-        Screen::Game(GameId::Solitaire) if is_compact_landscape() => {
-            responsive_landscape_cards::draw_solitaire(state)
-        }
-        Screen::Game(GameId::Solitaire) if is_portrait() => responsive_cards::draw_solitaire(state),
-        Screen::Game(GameId::Solitaire) => solitaire_ui::draw_solitaire(state),
-        Screen::Game(GameId::FreeCell) if is_compact_landscape() => {
-            responsive_landscape_cards::draw_freecell(state)
-        }
-        Screen::Game(GameId::FreeCell) if is_portrait() => responsive_cards::draw_freecell(state),
-        Screen::Game(GameId::FreeCell) => freecell_ui::draw_freecell(state),
-        Screen::Game(GameId::Yahtzee) if is_compact_landscape() => {
-            responsive_landscape_cards::draw_fivefold(state)
-        }
-        Screen::Game(GameId::Yahtzee) if is_portrait() => responsive_fivefold::draw_fivefold(state),
-        Screen::Game(GameId::Yahtzee) => fivefold_ui::draw_fivefold(state),
-        Screen::Game(GameId::Reversi) if is_compact_landscape() => {
-            responsive_landscape_games::draw_reversi(state)
-        }
-        Screen::Game(GameId::Reversi) if is_portrait() => responsive_cards::draw_reversi(state),
-        Screen::Game(GameId::Reversi) => reversi_ui::draw_reversi(state),
-        Screen::Game(GameId::LightsOut) => lights_out_ui::draw(state),
-        Screen::Game(GameId::TicTacToe) => tic_tac_toe_ui::draw(state),
-        Screen::Game(GameId::MemoryPairs) => memory_pairs_ui::draw(state),
-        Screen::Game(GameId::SlidingPuzzle) => sliding_puzzle_ui::draw(state),
-        Screen::Game(GameId::Spider) => spider_ui::draw(state),
-        Screen::Game(GameId::WordSearch) => word_search_ui::draw(state),
-        Screen::Game(GameId::Hangman) => hangman_ui::draw(state),
-        Screen::Game(GameId::ConnectFour) => connect_four_ui::draw(state),
-        Screen::Game(GameId::Checkers) => checkers_ui::draw(state),
-        Screen::Game(GameId::PegSolitaire) => peg_solitaire_ui::draw(state),
-        Screen::Game(GameId::MahjongSolitaire) => mahjong_solitaire_ui::draw(state),
-        Screen::Game(GameId::Snake) => snake_ui::draw(state),
-        Screen::Game(GameId::Breakout) => breakout_ui::draw(state),
-        Screen::Game(GameId::HigherLower) => higher_lower_ui::draw(state),
-        Screen::Game(GameId::KlondikeGolf) => klondike_golf_ui::draw(state),
-        Screen::Game(GameId::Blackjack) => blackjack_ui::draw(state),
-        Screen::Game(GameId::SpiderSolitaire) => spider_solitaire_ui::draw(state),
-        Screen::Game(GameId::Pyramid) => pyramid_ui::draw(state),
-        Screen::Game(GameId::TriPeaks) => tri_peaks_ui::draw(state),
-        Screen::Game(GameId::Nim) => nim_ui::draw(state),
-        Screen::Game(GameId::DungeonSweeper) => dungeon_sweeper_ui::draw(state),
-        Screen::Game(GameId::Potion2048) => potion_2048_ui::draw(state),
-        Screen::Game(GameId::TinyTowerDefence) => tiny_tower_defence_ui::draw(state),
-        Screen::Game(GameId::OneRoomRoguelike) => one_room_roguelike_ui::draw(state),
-        Screen::Game(GameId::DailyDungeon) => daily_dungeon_ui::draw(state),
-        Screen::Game(GameId::DotsBoxes) => dots_boxes_ui::draw(state),
-        Screen::Game(GameId::Sokoban) => sokoban_ui::draw(state),
-        Screen::Game(GameId::Mancala) => mancala_ui::draw(state),
-        Screen::Game(GameId::Hanoi) => hanoi_ui::draw(state),
-        Screen::Game(GameId::NumberMatch) => number_match_ui::draw(state),
-        Screen::Game(GameId::FloodIt) => flood_it_ui::draw(state),
-        Screen::Game(GameId::ColorSort) => color_sort_ui::draw(state),
-        Screen::Game(GameId::Battleship) => battleship_ui::draw(state),
-        Screen::Game(GameId::WordGrid) => word_grid_ui::draw(state),
-        Screen::Game(GameId::WordLadder) => word_ladder_ui::draw(state),
-        Screen::Game(GameId::PipeLoop) => pipe_loop_ui::draw(state),
-        Screen::Game(GameId::MazeWalk) => maze_walk_ui::draw(state),
-        Screen::Game(GameId::MatchThree) => match_three_ui::draw(state),
-        Screen::Game(GameId::Mastermind) => mastermind_ui::draw(state),
+        Screen::Game(_) => ui_game_routes::draw(state),
         Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(),
         Screen::Help if is_portrait() => responsive_library::draw_help(),
         Screen::Help => draw_help(),
@@ -485,7 +265,7 @@ pub fn draw(
         } else {
             tutorial_ui::draw_overlay(game);
         }
-    } else if matches!(state.screen, Screen::Game(_)) {
+    } else if state.screen.is_game() {
         if is_compact_landscape() {
             mobile_tutorial_ui::draw_replay_button(true);
         } else if is_portrait() {
@@ -510,8 +290,8 @@ fn panel(r: Rect, fill: Color) {
     draw_rectangle(r.x, r.y, r.w, r.h, crate::theme::drawer_surface(fill));
     draw_rectangle_lines(r.x, r.y, r.w, r.h, 2., crate::theme::BORDER)
 }
-fn draw_2048(state: &AppState) {
-    let g = &state.game;
+pub(crate) fn draw_2048(state: &AppState) {
+    let g = &state.games.game;
     text("‹ CABINET", 40., 55., 20., Color::new(0.78, 0.70, 0.92, 1.));
     text("2048", 40., 105., 52., crate::theme::BRASS);
     text(
@@ -662,12 +442,12 @@ fn score_box(r: Rect, label: &str, value: u32) {
     );
     text(&value.to_string(), r.x + 14., r.y + 51., 24., WHITE)
 }
-fn game_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
+pub(crate) fn game_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     let mut out = vec![];
     if hit(Rect::new(20., 20., 180., 50.), p) {
         out.push(UiAction::Cabinet)
     }
-    if hit(Rect::new(400., 390., 140., 48.), p) && state.game.can_undo() {
+    if hit(Rect::new(400., 390., 140., 48.), p) && state.games.game.can_undo() {
         out.push(UiAction::Undo)
     }
     if hit(Rect::new(560., 390., 140., 48.), p) {
@@ -678,7 +458,7 @@ fn game_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     for (index, board_size) in Game2048Size::ALL.iter().enumerate() {
         if hit(Rect::new(400. + index as f32 * 155., 150., 145., 34.), p)
-            && state.game.board_size != *board_size
+            && state.games.game.board_size != *board_size
         {
             out.push(UiAction::Game2048Size(*board_size));
         }

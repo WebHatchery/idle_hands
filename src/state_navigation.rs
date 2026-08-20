@@ -13,10 +13,15 @@ pub enum Screen {
     Settings,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Direction {
-    Up,
-    Right,
-    Down,
-    Left,
+impl Screen {
+    pub const fn game(self) -> Option<GameId> {
+        match self {
+            Self::Game(game) => Some(game),
+            _ => None,
+        }
+    }
+
+    pub const fn is_game(self) -> bool {
+        matches!(self, Self::Game(_))
+    }
 }

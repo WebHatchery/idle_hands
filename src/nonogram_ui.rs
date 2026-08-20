@@ -35,7 +35,7 @@ fn panel(rect: Rect, fill: Color) {
 }
 
 pub fn draw_nonogram(state: &AppState) {
-    let game = &state.nonogram;
+    let game = &state.games.nonogram;
     text("‹ CABINET", 40., 55., 20., crate::theme::BRASS);
     text("NONOGRAM", 40., 105., 44., crate::theme::BRASS);
     text(
@@ -203,19 +203,19 @@ pub fn nonogram_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if Rect::new(850., 335., 320., 28.).contains(p) {
         return vec![UiAction::NonogramHint];
     }
-    let grid = desktop_grid(state.nonogram.size);
+    let grid = desktop_grid(state.games.nonogram.size);
     grid.index_at(p)
         .map_or_else(Vec::new, |index| vec![UiAction::NonogramCell(index)])
 }
 
 pub fn drag_actions(state: &AppState, start: Vec2, end: Vec2) -> Vec<UiAction> {
-    let grid = desktop_grid(state.nonogram.size);
+    let grid = desktop_grid(state.games.nonogram.size);
     let to_cell = |point: Vec2| -> Option<(usize, usize)> { grid.coordinate_at(point) };
     let (start, end) = match (to_cell(start), to_cell(end)) {
         (Some(start), Some(end)) => (start, end),
         _ => return Vec::new(),
     };
-    crate::nonogram::stroke_indices(state.nonogram.size, start, end)
+    crate::nonogram::stroke_indices(state.games.nonogram.size, start, end)
         .into_iter()
         .map(UiAction::NonogramCell)
         .collect()

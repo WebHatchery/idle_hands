@@ -113,10 +113,12 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
         return vec![UiAction::PyramidNew];
     }
     if crate::ui::hit(l.draw_rule, point) {
-        return vec![UiAction::PyramidDrawRule(match _state.pyramid.draw_rule {
-            PyramidDraw::One => PyramidDraw::Three,
-            PyramidDraw::Three => PyramidDraw::One,
-        })];
+        return vec![UiAction::PyramidDrawRule(
+            match _state.games.pyramid.draw_rule {
+                PyramidDraw::One => PyramidDraw::Three,
+                PyramidDraw::Three => PyramidDraw::One,
+            },
+        )];
     }
     for index in (0..28).rev() {
         if l.card_rect(index).contains(point) {
@@ -128,7 +130,7 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
 
 pub fn draw(state: &AppState) {
     let l = layout();
-    let game = &state.pyramid;
+    let game = &state.games.pyramid;
     let portrait = crate::ui::is_portrait();
     let compact = crate::ui::is_compact_landscape();
     let title_x = if compact {
@@ -323,7 +325,7 @@ fn draw_slot(rect: Rect, card: Option<crate::cards::Card>, back: bool, state: &A
         crate::card_render::draw_card_accessible(
             rect,
             card,
-            state.pyramid.selected == Some(crate::pyramid::WASTE_INDEX) && back,
+            state.games.pyramid.selected == Some(crate::pyramid::WASTE_INDEX) && back,
             state.card_back,
             state.reduced_motion,
             state.high_contrast,

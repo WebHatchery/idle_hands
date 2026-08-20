@@ -1,9 +1,10 @@
 //! Responsive touch presentation for Sokoban.
 
+use crate::domain::Direction;
 use crate::{
     accessibility,
     sokoban::{Sokoban, SokobanPhase, HEIGHT, WIDTH},
-    state::{AppState, Direction},
+    state::AppState,
     ui::UiAction,
 };
 use macroquad::prelude::*;
@@ -112,7 +113,7 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
 
 pub fn draw(state: &AppState) {
     let l = layout();
-    let game = &state.sokoban;
+    let game = &state.games.sokoban;
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
     let title_x = if compact {

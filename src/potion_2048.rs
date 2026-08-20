@@ -1,19 +1,14 @@
 //! Deterministic potion-themed 2048 rules.
 
-use crate::state::Direction;
+use crate::domain::Direction;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
 pub enum PotionDifficulty {
+    #[default]
     Standard,
     Hard,
     Expert,
-}
-
-impl Default for PotionDifficulty {
-    fn default() -> Self {
-        Self::Standard
-    }
 }
 
 impl PotionDifficulty {

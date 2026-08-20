@@ -24,18 +24,18 @@ fn default_pyramid_has_a_deterministic_hint() {
 #[test]
 fn pyramid_hint_finds_an_exposed_pair() {
     let mut state = AppState::default();
-    state.pyramid.pyramid = vec![None; 28];
-    state.pyramid.pyramid[26] = Some(crate::cards::Card {
+    state.games.pyramid.pyramid = vec![None; 28];
+    state.games.pyramid.pyramid[26] = Some(crate::cards::Card {
         rank: 5,
         suit: 0,
         face_up: true,
     });
-    state.pyramid.pyramid[27] = Some(crate::cards::Card {
+    state.games.pyramid.pyramid[27] = Some(crate::cards::Card {
         rank: 8,
         suit: 1,
         face_up: true,
     });
-    state.pyramid.stock.clear();
+    state.games.pyramid.stock.clear();
     assert_eq!(pyramid(&state), "Pair exposed cards 27 and 28.");
 }
 

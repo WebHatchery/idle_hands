@@ -50,13 +50,7 @@ pub fn draw(state: &AppState) {
         &label,
         rect.x + 9.,
         rect.y + if portrait { 32. } else { 27. },
-        if portrait {
-            8.
-        } else if compact {
-            8.
-        } else {
-            9.
-        },
+        if portrait || compact { 8. } else { 9. },
         crate::theme::CREAM,
     );
     draw_icon(game, rect);

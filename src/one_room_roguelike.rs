@@ -1,6 +1,6 @@
 //! Deterministic room-to-room exploration with short, turn-based combat.
 
-use crate::state::Direction;
+use crate::domain::Direction;
 use serde::{Deserialize, Serialize};
 
 const SIZE: usize = 7;
@@ -376,7 +376,9 @@ impl OneRoomRoguelike {
     fn enemy_kind(&self, index: usize) -> EnemyKind {
         if self.room == START_ROOM {
             EnemyKind::Guard
-        } else if self.room == TARGET_ROOM && index == 0 || self.room >= 3 && index % 4 == 0 {
+        } else if self.room == TARGET_ROOM && index == 0
+            || self.room >= 3 && index.is_multiple_of(4)
+        {
             EnemyKind::Brute
         } else if self.room >= 2 && index % 3 == 1 {
             EnemyKind::Stalker
@@ -448,7 +450,7 @@ impl OneRoomRoguelike {
             } else {
                 None
             };
-            let candidates = if (index + self.room as usize) % 2 == 0 {
+            let candidates = if (index + self.room as usize).is_multiple_of(2) {
                 [horizontal, vertical]
             } else {
                 [vertical, horizontal]

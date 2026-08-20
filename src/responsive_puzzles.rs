@@ -31,29 +31,31 @@ const BOARD: Rect = Rect {
 };
 
 fn grid(state: &AppState) -> GridLayout {
-    let visible = crate::nonogram::visible_size(state.nonogram.size, state.nonogram_zoomed);
+    let visible =
+        crate::nonogram::visible_size(state.games.nonogram.size, state.games.nonogram_zoomed);
     GridLayout::new(Rect::new(45., 185., 300., 300.), visible, visible)
 }
 
 fn origin(state: &AppState) -> (usize, usize) {
     crate::nonogram::focus_origin(
-        state.nonogram.size,
-        state.nonogram_zoomed,
-        state.nonogram_focus,
+        state.games.nonogram.size,
+        state.games.nonogram_zoomed,
+        state.games.nonogram_focus,
     )
 }
 
 fn global_index(state: &AppState, local: usize) -> usize {
-    let visible = crate::nonogram::visible_size(state.nonogram.size, state.nonogram_zoomed);
+    let visible =
+        crate::nonogram::visible_size(state.games.nonogram.size, state.games.nonogram_zoomed);
     let (origin_x, origin_y) = origin(state);
-    origin_y * state.nonogram.size
+    origin_y * state.games.nonogram.size
         + origin_x
-        + (local / visible) * state.nonogram.size
+        + (local / visible) * state.games.nonogram.size
         + local % visible
 }
 
 pub fn draw_nonogram(state: &AppState) {
-    let game = &state.nonogram;
+    let game = &state.games.nonogram;
     panel(Rect::new(0., 0., 110., 44.), crate::theme::SURFACE_DARK);
     text("‹ CABINET", 10., 29., 14., crate::theme::BRASS);
     text("NONOGRAM", 12., 78., 32., crate::theme::BRASS);
@@ -71,7 +73,7 @@ pub fn draw_nonogram(state: &AppState) {
     }
     panel(BOARD, accessibility::board_fill(state.high_contrast));
     let layout = grid(state);
-    let visible = crate::nonogram::visible_size(game.size, state.nonogram_zoomed);
+    let visible = crate::nonogram::visible_size(game.size, state.games.nonogram_zoomed);
     for local in 0..visible * visible {
         let index = global_index(state, local);
         let cell = layout.cell_rect(local).unwrap();
@@ -155,7 +157,7 @@ pub fn draw_nonogram(state: &AppState) {
     text(
         if game.status == NonogramStatus::Won {
             "Picture complete"
-        } else if state.nonogram_zoomed && game.size > visible {
+        } else if state.games.nonogram_zoomed && game.size > visible {
             "Zoomed 9 × 9 focus"
         } else {
             "Tap or drag a row / column"
@@ -191,7 +193,7 @@ pub fn draw_nonogram(state: &AppState) {
     text("UNDO", 247., 573., 13., WHITE);
     panel(Rect::new(12., 595., 104., 44.), crate::theme::SURFACE);
     text(
-        if state.nonogram_zoomed && game.size > visible {
+        if state.games.nonogram_zoomed && game.size > visible {
             "FULL BOARD"
         } else {
             "ZOOM 9 × 9"
@@ -266,7 +268,7 @@ pub fn nonogram_drag_actions(state: &AppState, start: Vec2, end: Vec2) -> Vec<Ui
     };
     let (origin_x, origin_y) = origin(state);
     crate::nonogram::stroke_indices(
-        state.nonogram.size,
+        state.games.nonogram.size,
         (start.0 + origin_x, start.1 + origin_y),
         (end.0 + origin_x, end.1 + origin_y),
     )
@@ -285,13 +287,13 @@ const MINE_BOARD: Rect = Rect {
 fn mine_grid(state: &AppState) -> GridLayout {
     GridLayout::new(
         Rect::new(MINE_BOARD.x + 5., MINE_BOARD.y + 5., 340., 340.),
-        state.minesweeper.width,
-        state.minesweeper.height,
+        state.games.minesweeper.width,
+        state.games.minesweeper.height,
     )
 }
 
 pub fn draw_minesweeper(state: &AppState) {
-    let game = &state.minesweeper;
+    let game = &state.games.minesweeper;
     panel(Rect::new(0., 0., 110., 44.), crate::theme::SURFACE_DARK);
     text("‹ CABINET", 10., 29., 14., crate::theme::BRASS);
     text("MINESWEEPER", 12., 72., 29., crate::theme::BRASS);
@@ -444,7 +446,7 @@ pub fn minesweeper_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if state.mine_flag_mode {
         vec![UiAction::MineFlag(index)]
     } else if matches!(
-        state.minesweeper.cells[index],
+        state.games.minesweeper.cells[index],
         crate::minesweeper::Cell::Revealed(_)
     ) {
         vec![UiAction::MineChord(index)]

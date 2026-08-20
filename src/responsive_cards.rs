@@ -48,7 +48,7 @@ fn back() {
 }
 
 pub fn draw_solitaire(state: &AppState) {
-    let game = &state.solitaire;
+    let game = &state.games.solitaire;
     back();
     text("SOLITAIRE", 10., 72., 29., crate::theme::BRASS);
     text(
@@ -191,11 +191,11 @@ pub fn solitaire_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     for column in 0..7 {
         let x = card_x(column);
         if p.x >= x && p.x <= x + CARD_W && p.y >= 195. {
-            let depth = if state.solitaire.tableau[column].is_empty() {
+            let depth = if state.games.solitaire.tableau[column].is_empty() {
                 0
             } else {
                 (((p.y - 205.) / 19.).floor().max(0.) as usize)
-                    .min(state.solitaire.tableau[column].len() - 1)
+                    .min(state.games.solitaire.tableau[column].len() - 1)
             };
             return vec![UiAction::SolitaireTableau(column, depth)];
         }
@@ -212,7 +212,7 @@ fn free_card_x(slot: usize) -> f32 {
 }
 
 pub fn draw_freecell(state: &AppState) {
-    let game = &state.freecell;
+    let game = &state.games.freecell;
     back();
     text("FREECELL", 10., 72., 29., crate::theme::BRASS);
     text(
@@ -343,7 +343,7 @@ pub fn freecell_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         return vec![UiAction::FreeCellNew];
     }
     for cell in 0..4 {
-        if cell < state.freecell.variant.free_cell_limit()
+        if cell < state.games.freecell.variant.free_cell_limit()
             && free_card_rect(free_card_x(cell), 112.).contains(p)
         {
             return vec![UiAction::FreeCellCell(cell)];
@@ -357,11 +357,11 @@ pub fn freecell_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     for cascade in 0..8 {
         let x = free_card_x(cascade);
         if p.x >= x && p.x <= x + 40. && p.y >= 195. {
-            let depth = if state.freecell.cascades[cascade].is_empty() {
+            let depth = if state.games.freecell.cascades[cascade].is_empty() {
                 0
             } else {
                 (((p.y - 205.) / 17.).floor().max(0.) as usize)
-                    .min(state.freecell.cascades[cascade].len() - 1)
+                    .min(state.games.freecell.cascades[cascade].len() - 1)
             };
             return vec![UiAction::FreeCellCascade(cascade, depth)];
         }
@@ -380,7 +380,7 @@ const REVERSI_BOARD: Rect = Rect {
 };
 
 pub fn draw_reversi(state: &AppState) {
-    let game = &state.reversi;
+    let game = &state.games.reversi;
     back();
     text(
         "CABINET",

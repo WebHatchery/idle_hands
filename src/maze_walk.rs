@@ -1,9 +1,10 @@
 //! Deterministic touch-first Maze Walk navigation puzzle.
+use crate::undo::UndoStack;
 
 use serde::{Deserialize, Serialize};
 use std::collections::VecDeque;
 
-use crate::state::Direction;
+use crate::domain::Direction;
 
 pub const SIDE: usize = 7;
 const CELLS: usize = SIDE * SIDE;
@@ -53,7 +54,7 @@ pub struct MazeWalk {
     pub par: u16,
     pub phase: MazePhase,
     #[serde(skip)]
-    history: Vec<Box<Self>>,
+    history: UndoStack<Self>,
 }
 
 impl Default for MazeWalk {
@@ -129,7 +130,7 @@ impl MazeWalk {
             mode,
             par,
             phase: MazePhase::Playing,
-            history: Vec::new(),
+            history: UndoStack::default(),
         }
     }
 
@@ -153,7 +154,7 @@ impl MazeWalk {
         if self.player == self.goal && self.collected.len() == self.beacons.len() {
             self.phase = MazePhase::Won;
         }
-        self.history.push(Box::new(previous));
+        self.history.push(previous);
         true
     }
 
@@ -162,7 +163,7 @@ impl MazeWalk {
             return false;
         };
         let history = std::mem::take(&mut self.history);
-        *self = *previous;
+        *self = previous;
         self.history = history;
         true
     }

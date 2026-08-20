@@ -18,7 +18,7 @@ fn panel(rect: Rect, fill: Color) {
 }
 
 pub fn draw_sudoku(state: &AppState) {
-    let game = &state.sudoku;
+    let game = &state.games.sudoku;
     text("‹ CABINET", 40., 55., 20., crate::theme::BRASS);
     text("SUDOKU", 40., 105., 48., crate::theme::BRASS);
     text(

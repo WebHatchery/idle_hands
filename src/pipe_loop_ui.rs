@@ -68,17 +68,19 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
         return vec![UiAction::PipeNew];
     }
     if crate::ui::hit(l.pattern, point) {
-        return vec![UiAction::PipePattern(match _state.pipe_loop.pattern {
-            PipePattern::Serpent => PipePattern::Trunk,
-            PipePattern::Trunk => PipePattern::Serpent,
-        })];
+        return vec![UiAction::PipePattern(
+            match _state.games.pipe_loop.pattern {
+                PipePattern::Serpent => PipePattern::Trunk,
+                PipePattern::Trunk => PipePattern::Serpent,
+            },
+        )];
     }
     Vec::new()
 }
 
 pub fn draw(state: &AppState) {
     let l = layout();
-    let game = &state.pipe_loop;
+    let game = &state.games.pipe_loop;
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
     let title_x = if compact {
@@ -164,7 +166,7 @@ pub fn draw(state: &AppState) {
 fn draw_board(board: Rect, game: &PipeLoop, high_contrast: bool) {
     let cell = board.w / SIDE as f32;
     let powered = game.powered_mask();
-    for index in 0..SIDE * SIDE {
+    for (index, &is_powered) in powered.iter().enumerate().take(SIDE * SIDE) {
         let rect = Rect::new(
             board.x + (index % SIDE) as f32 * cell,
             board.y + (index / SIDE) as f32 * cell,
@@ -191,7 +193,7 @@ fn draw_board(board: Rect, game: &PipeLoop, high_contrast: bool) {
             center.x,
             center.y,
             cell * 0.10,
-            if powered[index] { accent() } else { muted() },
+            if is_powered { accent() } else { muted() },
         );
         let mask = game.pipes[index];
         let endpoints = [

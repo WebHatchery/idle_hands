@@ -39,13 +39,13 @@ const MINE_BOARD: Rect = Rect {
 fn mine_grid(state: &AppState) -> GridLayout {
     GridLayout::new(
         Rect::new(15., 33., 340., 340.),
-        state.minesweeper.width,
-        state.minesweeper.height,
+        state.games.minesweeper.width,
+        state.games.minesweeper.height,
     )
 }
 
 pub fn draw_minesweeper(state: &AppState) {
-    let game = &state.minesweeper;
+    let game = &state.games.minesweeper;
     back();
     text("MINESWEEPER", 100., 20., 19., crate::theme::BRASS);
     panel(MINE_BOARD, accessibility::board_fill(state.high_contrast));
@@ -180,7 +180,7 @@ pub fn minesweeper_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if let Some(index) = mine_grid(state).index_at(p) {
         if state.mine_flag_mode {
             vec![UiAction::MineFlag(index)]
-        } else if matches!(state.minesweeper.cells[index], Cell::Revealed(_)) {
+        } else if matches!(state.games.minesweeper.cells[index], Cell::Revealed(_)) {
             vec![UiAction::MineChord(index)]
         } else {
             vec![UiAction::MineReveal(index)]
@@ -197,7 +197,7 @@ const SUDOKU_BOARD: Rect = Rect {
     h: 360.,
 };
 pub fn draw_sudoku(state: &AppState) {
-    let game = &state.sudoku;
+    let game = &state.games.sudoku;
     back();
     text("SUDOKU", 100., 20., 19., crate::theme::BRASS);
     panel(SUDOKU_BOARD, accessibility::board_fill(state.high_contrast));
@@ -368,12 +368,12 @@ const NONO_BOARD: Rect = Rect {
     h: 360.,
 };
 pub fn draw_nonogram(state: &AppState) {
-    let game = &state.nonogram;
+    let game = &state.games.nonogram;
     back();
     text("NONOGRAM", 100., 20., 19., crate::theme::BRASS);
     panel(NONO_BOARD, accessibility::board_fill(state.high_contrast));
     let layout = nonogram_grid(state);
-    let visible = crate::nonogram::visible_size(game.size, state.nonogram_zoomed);
+    let visible = crate::nonogram::visible_size(game.size, state.games.nonogram_zoomed);
     let (origin_x, origin_y) = nonogram_origin(state);
     for local in 0..visible * visible {
         let index = nonogram_global_index(state, local);
@@ -447,7 +447,7 @@ pub fn draw_nonogram(state: &AppState) {
     text(
         if game.status == NonogramStatus::Won {
             "Picture complete"
-        } else if state.nonogram_zoomed && game.size > visible {
+        } else if state.games.nonogram_zoomed && game.size > visible {
             "Zoomed 9 × 9 focus"
         } else {
             "Fill or cross from the clues"
@@ -495,7 +495,7 @@ pub fn draw_nonogram(state: &AppState) {
     text("UNDO", 650., 163., 12., WHITE);
     panel(Rect::new(400., 190., 160., 44.), crate::theme::SURFACE);
     text(
-        if state.nonogram_zoomed && game.size > visible {
+        if state.games.nonogram_zoomed && game.size > visible {
             "FULL BOARD"
         } else {
             "ZOOM 9 × 9"
@@ -524,24 +524,26 @@ pub fn draw_nonogram(state: &AppState) {
 }
 
 fn nonogram_grid(state: &AppState) -> GridLayout {
-    let visible = crate::nonogram::visible_size(state.nonogram.size, state.nonogram_zoomed);
+    let visible =
+        crate::nonogram::visible_size(state.games.nonogram.size, state.games.nonogram_zoomed);
     GridLayout::new(Rect::new(70., 88., 280., 280.), visible, visible)
 }
 
 fn nonogram_origin(state: &AppState) -> (usize, usize) {
     crate::nonogram::focus_origin(
-        state.nonogram.size,
-        state.nonogram_zoomed,
-        state.nonogram_focus,
+        state.games.nonogram.size,
+        state.games.nonogram_zoomed,
+        state.games.nonogram_focus,
     )
 }
 
 fn nonogram_global_index(state: &AppState, local: usize) -> usize {
-    let visible = crate::nonogram::visible_size(state.nonogram.size, state.nonogram_zoomed);
+    let visible =
+        crate::nonogram::visible_size(state.games.nonogram.size, state.games.nonogram_zoomed);
     let (origin_x, origin_y) = nonogram_origin(state);
-    origin_y * state.nonogram.size
+    origin_y * state.games.nonogram.size
         + origin_x
-        + (local / visible) * state.nonogram.size
+        + (local / visible) * state.games.nonogram.size
         + local % visible
 }
 
@@ -586,7 +588,7 @@ pub fn nonogram_drag_actions(state: &AppState, start: Vec2, end: Vec2) -> Vec<Ui
     };
     let (origin_x, origin_y) = nonogram_origin(state);
     crate::nonogram::stroke_indices(
-        state.nonogram.size,
+        state.games.nonogram.size,
         (start.0 + origin_x, start.1 + origin_y),
         (end.0 + origin_x, end.1 + origin_y),
     )
@@ -608,7 +610,7 @@ const REV_BOARD: Rect = Rect {
     h: 350.,
 };
 pub fn draw_reversi(state: &AppState) {
-    let game = &state.reversi;
+    let game = &state.games.reversi;
     back();
     text(
         "REVERSI",

@@ -82,7 +82,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
 
 pub fn draw(state: &AppState) {
     let layout = layout();
-    let game = &state.mastermind;
+    let game = &state.games.mastermind;
     let header_y = if crate::ui::is_compact_landscape() {
         32.
     } else if crate::ui::is_portrait() {

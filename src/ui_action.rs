@@ -1,6 +1,6 @@
 //! Shared touch actions emitted by every cabinet screen.
 
-use crate::state::Direction;
+use crate::domain::Direction;
 
 #[derive(Debug, Clone, Copy)]
 pub enum UiAction {
@@ -292,7 +292,7 @@ pub enum UiAction {
     PipeUndo,
     PipeNew,
     PipePattern(crate::pipe_loop::PipePattern),
-    MazeStep(crate::state::Direction),
+    MazeStep(crate::domain::Direction),
     MazeHint,
     MazeUndo,
     MazeNew,

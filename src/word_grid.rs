@@ -1,4 +1,5 @@
 //! Deterministic touch-first five-letter Word Grid.
+use crate::undo::UndoStack;
 
 use serde::{Deserialize, Serialize};
 
@@ -56,7 +57,7 @@ pub struct WordGrid {
     pub notice: String,
     pub phase: WordGridPhase,
     #[serde(skip)]
-    history: Vec<Box<Self>>,
+    history: UndoStack<Self>,
 }
 
 impl Default for WordGrid {
@@ -83,7 +84,7 @@ impl WordGrid {
             mode,
             notice: String::new(),
             phase: WordGridPhase::Playing,
-            history: Vec::new(),
+            history: UndoStack::default(),
         }
     }
 
@@ -132,7 +133,7 @@ impl WordGrid {
         } else if self.guesses.len() >= MAX_GUESSES {
             self.phase = WordGridPhase::Lost;
         }
-        self.history.push(Box::new(previous));
+        self.history.push(previous);
         true
     }
 
@@ -141,7 +142,7 @@ impl WordGrid {
             return false;
         };
         let history = std::mem::take(&mut self.history);
-        *self = *previous;
+        *self = previous;
         self.history = history;
         true
     }

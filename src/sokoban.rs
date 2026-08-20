@@ -1,6 +1,7 @@
 //! Deterministic compact Sokoban rules.
+use crate::undo::UndoStack;
 
-use crate::state::Direction;
+use crate::domain::Direction;
 use serde::{Deserialize, Serialize};
 use std::collections::VecDeque;
 
@@ -57,7 +58,7 @@ pub struct Sokoban {
     pub level: u8,
     pub phase: SokobanPhase,
     #[serde(skip)]
-    history: Vec<Box<Self>>,
+    history: UndoStack<Self>,
 }
 
 impl Default for Sokoban {
@@ -108,7 +109,7 @@ impl Sokoban {
             seed,
             level,
             phase: SokobanPhase::Playing,
-            history: Vec::new(),
+            history: UndoStack::default(),
         }
     }
 
@@ -170,7 +171,7 @@ impl Sokoban {
                 self.phase = SokobanPhase::Stuck;
             }
         }
-        self.history.push(Box::new(previous));
+        self.history.push(previous);
         true
     }
 
@@ -179,7 +180,7 @@ impl Sokoban {
             return false;
         };
         let history = std::mem::take(&mut self.history);
-        *self = *previous;
+        *self = previous;
         self.history = history;
         true
     }
@@ -254,13 +255,13 @@ impl Sokoban {
             .into_iter()
             .any(|direction| {
                 self.neighbor(index, direction)
-                    .map_or(true, |cell| self.tiles[cell] == 0)
+                    .is_none_or(|cell| self.tiles[cell] == 0)
             });
         let horizontal_wall = [Direction::Left, Direction::Right]
             .into_iter()
             .any(|direction| {
                 self.neighbor(index, direction)
-                    .map_or(true, |cell| self.tiles[cell] == 0)
+                    .is_none_or(|cell| self.tiles[cell] == 0)
             });
         vertical_wall && horizontal_wall
     }

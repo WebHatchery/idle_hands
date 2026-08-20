@@ -30,7 +30,7 @@ pub(super) fn apply(state: &mut AppState, scene: &str) {
 
 fn potion_catalyst(state: &mut AppState) {
     use crate::potion_2048::{Potion2048, PotionDifficulty};
-    let game = &mut state.potion_2048;
+    let game = &mut state.games.potion_2048;
     *game = Potion2048::new_with_difficulty(0xB071_2050, PotionDifficulty::Expert);
     game.cells = vec![0; 36];
     for (index, value) in [
@@ -57,7 +57,7 @@ fn potion_catalyst(state: &mut AppState) {
 
 fn dots_tactics(state: &mut AppState) {
     use crate::dots_boxes::{DotsBoxes, DotsDifficulty};
-    let game = &mut state.dots_boxes;
+    let game = &mut state.games.dots_boxes;
     *game = DotsBoxes::new_with_difficulty(0x00D0_7B12, DotsDifficulty::Hard);
     game.scores = [1, 1];
     game.moves = 18;
@@ -75,7 +75,7 @@ fn dots_tactics(state: &mut AppState) {
 
 fn sokoban_deadlock(state: &mut AppState) {
     use crate::sokoban::{Sokoban, SokobanPhase, HEIGHT, WIDTH};
-    let game = &mut state.sokoban;
+    let game = &mut state.games.sokoban;
     *game = Sokoban::new_with_level(0x50C0_BA0B, 4);
     game.tiles = vec![1; WIDTH * HEIGHT];
     for row in 0..HEIGHT {
@@ -98,7 +98,7 @@ fn sokoban_deadlock(state: &mut AppState) {
 
 fn mancala_tactics(state: &mut AppState) {
     use crate::mancala::{AiLevel, Mancala, MancalaVariant};
-    let game = &mut state.mancala;
+    let game = &mut state.games.mancala;
     *game = Mancala::new_with_variant(0x4D41_4E43_4100, MancalaVariant::Grand);
     game.ai_level = AiLevel::Expert;
     game.pits = vec![0; 14];
@@ -127,7 +127,7 @@ fn mancala_tactics(state: &mut AppState) {
 
 fn hanoi_master(state: &mut AppState) {
     use crate::hanoi::Hanoi;
-    let game = &mut state.hanoi;
+    let game = &mut state.games.hanoi;
     *game = Hanoi::new_with_disks(0x0048_414E_4F49, 7);
     game.stacks = [vec![7, 6, 5], vec![4, 3], vec![2, 1]];
     game.selected = Some(2);
@@ -136,7 +136,7 @@ fn hanoi_master(state: &mut AppState) {
 
 fn number_match_links(state: &mut AppState) {
     use crate::number_match::{LinkRule, NumberMatch};
-    let game = &mut state.number_match;
+    let game = &mut state.games.number_match;
     *game = NumberMatch::new_with_rule(0x4E55_4D42_4552, LinkRule::Lines);
     game.cells = vec![0; 36];
     for (index, value) in [
@@ -164,7 +164,7 @@ fn number_match_links(state: &mut AppState) {
 
 fn flood_surges(state: &mut AppState) {
     use crate::flood_it::{FloodDifficulty, FloodIt};
-    let game = &mut state.flood_it;
+    let game = &mut state.games.flood_it;
     *game = FloodIt::new_with_difficulty(0x0046_4C4F_4F44_4954, FloodDifficulty::Expert);
     let side = game.side();
     for row in 0..side {
@@ -184,7 +184,7 @@ fn flood_surges(state: &mut AppState) {
 
 fn color_sort_runs(state: &mut AppState) {
     use crate::color_sort::{ColorSort, ColorSortDifficulty};
-    let game = &mut state.color_sort;
+    let game = &mut state.games.color_sort;
     *game = ColorSort::new_with_difficulty(0x0043_4F4C_4F52, ColorSortDifficulty::Expert);
     game.tubes = vec![
         vec![0, 1, 1],
@@ -206,7 +206,7 @@ fn color_sort_runs(state: &mut AppState) {
 
 fn battleship_sonar(state: &mut AppState) {
     use crate::battleship::{Battleship, Shot};
-    let game = &mut state.battleship;
+    let game = &mut state.games.battleship;
     *game = Battleship::new(0xBA77_1E50);
     game.shots[1] = Shot::Hit;
     game.shots[2] = Shot::Hit;
@@ -227,7 +227,7 @@ fn battleship_sonar(state: &mut AppState) {
 
 fn word_grid_deduction(state: &mut AppState) {
     use crate::word_grid::{WordGrid, WordGridMode};
-    let game = &mut state.word_grid;
+    let game = &mut state.games.word_grid;
     *game = WordGrid::new_with_mode(0, WordGridMode::Hard);
     for word in ["SHELF", "SMALL"] {
         for letter in word.bytes() {
@@ -242,7 +242,7 @@ fn word_grid_deduction(state: &mut AppState) {
 
 fn pipe_network(state: &mut AppState) {
     use crate::pipe_loop::{PipeLoop, PipePattern, PipePhase};
-    let game = &mut state.pipe_loop;
+    let game = &mut state.games.pipe_loop;
     *game = PipeLoop::new_with_pattern(0x715E, PipePattern::Trunk);
     game.pipes = game.solution.clone();
     game.phase = PipePhase::Playing;
@@ -254,7 +254,7 @@ fn pipe_network(state: &mut AppState) {
 
 fn maze_beacons(state: &mut AppState) {
     use crate::maze_walk::{MazeMode, MazeWalk};
-    let game = &mut state.maze_walk;
+    let game = &mut state.games.maze_walk;
     *game = MazeWalk::new_with_mode(0, MazeMode::Fog);
     for _ in 0..7 {
         let Some(direction) = game.hint_direction() else {
@@ -267,7 +267,7 @@ fn maze_beacons(state: &mut AppState) {
 
 fn nim_tactics(state: &mut AppState) {
     use crate::nim::{Nim, NimRule};
-    let game = &mut state.nim;
+    let game = &mut state.games.nim;
     *game = Nim::new(0x4E1D);
     game.rule = NimRule::Misere;
     for heaps in [[5, 5, 5], [5, 4, 3], [4, 4, 3], [4, 3, 2], [0, 1, 2]] {
@@ -287,7 +287,7 @@ fn nim_tactics(state: &mut AppState) {
 
 fn word_ladder_routes(state: &mut AppState) {
     use crate::word_ladder::{LadderMode, WordLadder};
-    let game = &mut state.word_ladder;
+    let game = &mut state.games.word_ladder;
     *game = WordLadder::new_with_mode(2, LadderMode::Scenic);
     for word in ["MIGHT", "RIGHT"] {
         for letter in word.bytes() {
@@ -302,7 +302,7 @@ fn word_ladder_routes(state: &mut AppState) {
 
 fn pyramid_chains(state: &mut AppState) {
     use crate::pyramid::{Pyramid, PyramidDraw};
-    let game = &mut state.pyramid;
+    let game = &mut state.games.pyramid;
     *game = Pyramid::new(0x51A0_2200);
     game.draw_rule = PyramidDraw::Three;
     if let Some(card) = game.pyramid[21].as_mut() {
@@ -323,7 +323,7 @@ fn tri_peaks_runs(state: &mut AppState) {
         cards::Card,
         tri_peaks::{TriPeaks, TriPeaksRule},
     };
-    let game = &mut state.tri_peaks;
+    let game = &mut state.games.tri_peaks;
     *game = TriPeaks::new(0x7A1F_2200);
     game.rule = TriPeaksRule::Wrap;
     game.points = 180;
@@ -350,7 +350,7 @@ fn tri_peaks_runs(state: &mut AppState) {
 
 fn hangman_depth(state: &mut AppState) {
     use crate::hangman::{Hangman, HangmanCategory, HangmanRule};
-    let game = &mut state.hangman;
+    let game = &mut state.games.hangman;
     *game = Hangman::new_with_options(4, HangmanCategory::Nature, HangmanRule::Rapid);
     for letter in [b'O', b'R', b'C', b'B', b'H', b'A'] {
         game.guess(letter - b'A');
@@ -359,7 +359,7 @@ fn hangman_depth(state: &mut AppState) {
 
 fn higher_lower_stakes(state: &mut AppState) {
     use crate::higher_lower::{HigherLower, HigherLowerRule};
-    let game = &mut state.higher_lower;
+    let game = &mut state.games.higher_lower;
     *game = HigherLower::new(0xC4AD_2500);
     game.rule = HigherLowerRule::House;
     game.current = 5;
@@ -370,7 +370,7 @@ fn higher_lower_stakes(state: &mut AppState) {
 
 fn lights_out_solver(state: &mut AppState) {
     use crate::lights_out::{LightsDifficulty, LightsOut};
-    let game = &mut state.lights_out;
+    let game = &mut state.games.lights_out;
     *game = LightsOut::new_with_difficulty(0x11A7_2500, LightsDifficulty::Dense);
     let opening: Vec<usize> = game.minimum_solution().into_iter().take(2).collect();
     for index in opening {
@@ -381,7 +381,7 @@ fn lights_out_solver(state: &mut AppState) {
 
 fn memory_pairs_memory(state: &mut AppState) {
     use crate::memory_pairs::MemoryPairs;
-    let game = &mut state.memory_pairs;
+    let game = &mut state.games.memory_pairs;
     *game = MemoryPairs::new(0x4D45_4D25);
     for (index, card) in game.cards.iter_mut().enumerate() {
         if card.pair < 2 {

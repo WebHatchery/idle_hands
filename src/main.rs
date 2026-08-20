@@ -1,4 +1,4 @@
-//! Idle Hands collection runtime, currently using the Phase 0 template harness.
+//! Idle Hands collection runtime.
 
 use macroquad::prelude::*;
 use macroquad_toolkit::capture;
@@ -13,6 +13,7 @@ mod breakout;
 mod breakout_ui;
 mod cabinet_status;
 mod cabinet_ui;
+mod capture_registry;
 mod card_hints;
 mod card_render;
 mod cards;
@@ -26,6 +27,7 @@ mod cosmetics;
 mod daily_dungeon;
 mod daily_dungeon_ui;
 mod data;
+mod domain;
 mod dots_boxes;
 mod dots_boxes_ui;
 mod dungeon_sweeper;
@@ -39,7 +41,10 @@ mod freecell;
 mod freecell_ui;
 mod game;
 mod game_2048;
+mod game_actions;
+mod game_descriptor;
 mod game_input;
+mod game_store;
 mod game_variant_ui;
 mod game_variants;
 mod grid;
@@ -81,6 +86,7 @@ mod one_room_roguelike_ui;
 mod palette_ui;
 mod peg_solitaire;
 mod peg_solitaire_ui;
+mod persistence_models;
 mod pipe_loop;
 mod pipe_loop_ui;
 mod potion_2048;
@@ -135,6 +141,8 @@ mod tri_peaks_ui;
 mod tutorial_ui;
 mod ui;
 mod ui_action;
+mod ui_game_routes;
+mod undo;
 mod word_grid;
 mod word_grid_ui;
 mod word_ladder;
@@ -162,9 +170,7 @@ async fn main() {
     .expect("bundled UI font should load");
 
     // Screenshot harness: when IDLE_HANDS_CAPTURE_PATH is set, render
-    // deterministic frames, write a PNG, and exit. This Phase 0 harness has a
-    // single boot state, so the capture just photographs
-    // whatever the boot flow lands on.
+    // deterministic frames, write a PNG, and exit.
     if let Some(configs) = capture::CaptureConfig::all_from_env("IDLE_HANDS") {
         for config in configs {
             game.begin_capture_scene(&config.scene);

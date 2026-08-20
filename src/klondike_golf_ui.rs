@@ -74,7 +74,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
 }
 pub fn draw(state: &AppState) {
     let l = layout();
-    let game = &state.klondike_golf;
+    let game = &state.games.klondike_golf;
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
     let hx = if compact {

@@ -1,5 +1,6 @@
 //! Cabinet completion and progress labels shared by each responsive shelf.
 
+use crate::game_descriptor::descriptor;
 use crate::minesweeper::MineStatus;
 use crate::state::{AppState, GameId};
 use macroquad::prelude::Color;
@@ -75,65 +76,14 @@ pub fn matches_filter(state: &AppState, game: GameId, filter: u8) -> bool {
 pub const CATEGORY_FILTERS: [u8; 6] = [3, 4, 5, 6, 7, 8];
 
 pub fn category_filter(game: GameId) -> u8 {
-    match game {
-        GameId::Solitaire
-        | GameId::FreeCell
-        | GameId::Spider
-        | GameId::HigherLower
-        | GameId::KlondikeGolf
-        | GameId::Blackjack
-        | GameId::SpiderSolitaire
-        | GameId::Pyramid
-        | GameId::TriPeaks
-        | GameId::MahjongSolitaire
-        | GameId::Yahtzee
-        | GameId::MemoryPairs => 3,
-        GameId::Sudoku
-        | GameId::Minesweeper
-        | GameId::DungeonSweeper
-        | GameId::Nonogram
-        | GameId::LightsOut
-        | GameId::PegSolitaire
-        | GameId::SlidingPuzzle
-        | GameId::Sokoban
-        | GameId::PipeLoop
-        | GameId::Game2048 => 4,
-        GameId::Reversi
-        | GameId::TicTacToe
-        | GameId::ConnectFour
-        | GameId::Checkers
-        | GameId::Mancala
-        | GameId::Hanoi
-        | GameId::Nim
-        | GameId::DailyDungeon
-        | GameId::Battleship => 5,
-        GameId::WordSearch
-        | GameId::Hangman
-        | GameId::WordGrid
-        | GameId::WordLadder
-        | GameId::NumberMatch
-        | GameId::Mastermind
-        | GameId::MazeWalk => 6,
-        GameId::Snake | GameId::Breakout | GameId::TinyTowerDefence => 7,
-        GameId::DotsBoxes
-        | GameId::ColorSort
-        | GameId::Potion2048
-        | GameId::MatchThree
-        | GameId::FloodIt
-        | GameId::OneRoomRoguelike => 8,
-    }
+    descriptor(game).category.filter()
 }
 
 pub fn category_name(filter: u8) -> &'static str {
-    match filter {
-        3 => "Cards",
-        4 => "Logic",
-        5 => "Board",
-        6 => "Word",
-        7 => "Arcade",
-        8 => "Misc",
-        _ => "All Games",
-    }
+    crate::game_descriptor::ALL
+        .iter()
+        .find(|game| game.category.filter() == filter)
+        .map_or("All Games", |game| game.category.label())
 }
 
 pub fn filter_count(state: &AppState, filter: u8) -> usize {
@@ -145,60 +95,62 @@ pub fn filter_count(state: &AppState, filter: u8) -> usize {
 
 fn has_progress(state: &AppState, game: GameId) -> bool {
     match game {
-        GameId::Game2048 => state.game.score > 0 || state.game.best > 0,
-        GameId::Minesweeper => state.minesweeper.status != MineStatus::Ready,
-        GameId::Sudoku => state.sudoku.moves > 0,
-        GameId::Nonogram => state.nonogram.moves > 0,
-        GameId::Solitaire => state.solitaire.moves > 0,
-        GameId::FreeCell => state.freecell.moves > 0,
-        GameId::Yahtzee => state.fivefold.roll_number > 0,
-        GameId::Reversi => state.reversi.moves > 0,
-        GameId::LightsOut => state.lights_out.moves > 0,
-        GameId::TicTacToe => state.tic_tac_toe.moves > 0,
-        GameId::MemoryPairs => state.memory_pairs.moves > 0,
-        GameId::SlidingPuzzle => state.sliding_puzzle.moves > 0,
-        GameId::Mastermind => state.mastermind.row > 0,
-        GameId::Spider => state.spider.moves > 0,
-        GameId::WordSearch => state.word_search.moves > 0,
-        GameId::Hangman => state.hangman.moves > 0,
-        GameId::ConnectFour => state.connect_four.moves > 0,
-        GameId::Checkers => state.checkers.moves > 0,
-        GameId::PegSolitaire => state.peg_solitaire.moves > 0,
-        GameId::MahjongSolitaire => state.mahjong_solitaire.moves > 0,
-        GameId::Snake => state.snake.moves > 0,
-        GameId::Breakout => state.breakout.moves > 0,
-        GameId::HigherLower => state.higher_lower.moves > 0,
-        GameId::KlondikeGolf => state.klondike_golf.moves > 0,
+        GameId::Game2048 => state.games.game.score > 0 || state.games.game.best > 0,
+        GameId::Minesweeper => state.games.minesweeper.status != MineStatus::Ready,
+        GameId::Sudoku => state.games.sudoku.moves > 0,
+        GameId::Nonogram => state.games.nonogram.moves > 0,
+        GameId::Solitaire => state.games.solitaire.moves > 0,
+        GameId::FreeCell => state.games.freecell.moves > 0,
+        GameId::Yahtzee => state.games.fivefold.roll_number > 0,
+        GameId::Reversi => state.games.reversi.moves > 0,
+        GameId::LightsOut => state.games.lights_out.moves > 0,
+        GameId::TicTacToe => state.games.tic_tac_toe.moves > 0,
+        GameId::MemoryPairs => state.games.memory_pairs.moves > 0,
+        GameId::SlidingPuzzle => state.games.sliding_puzzle.moves > 0,
+        GameId::Mastermind => state.games.mastermind.row > 0,
+        GameId::Spider => state.games.spider.moves > 0,
+        GameId::WordSearch => state.games.word_search.moves > 0,
+        GameId::Hangman => state.games.hangman.moves > 0,
+        GameId::ConnectFour => state.games.connect_four.moves > 0,
+        GameId::Checkers => state.games.checkers.moves > 0,
+        GameId::PegSolitaire => state.games.peg_solitaire.moves > 0,
+        GameId::MahjongSolitaire => state.games.mahjong_solitaire.moves > 0,
+        GameId::Snake => state.games.snake.moves > 0,
+        GameId::Breakout => state.games.breakout.moves > 0,
+        GameId::HigherLower => state.games.higher_lower.moves > 0,
+        GameId::KlondikeGolf => state.games.klondike_golf.moves > 0,
         GameId::Blackjack => {
-            state.blackjack.player.len() > 2
-                || state.blackjack.status != crate::blackjack::BlackjackStatus::Playing
+            state.games.blackjack.player.len() > 2
+                || state.games.blackjack.status != crate::blackjack::BlackjackStatus::Playing
         }
-        GameId::SpiderSolitaire => state.spider_solitaire.moves > 0,
-        GameId::DungeonSweeper => state.dungeon_sweeper.moves > 0,
-        GameId::Potion2048 => state.potion_2048.score > 0 || state.potion_2048.best > 0,
+        GameId::SpiderSolitaire => state.games.spider_solitaire.moves > 0,
+        GameId::DungeonSweeper => state.games.dungeon_sweeper.moves > 0,
+        GameId::Potion2048 => state.games.potion_2048.score > 0 || state.games.potion_2048.best > 0,
         GameId::TinyTowerDefence => {
-            state.tiny_tower_defence.score > 0 || state.tiny_tower_defence.wave > 1
+            state.games.tiny_tower_defence.score > 0 || state.games.tiny_tower_defence.wave > 1
         }
         GameId::OneRoomRoguelike => {
-            state.one_room_roguelike.score > 0 || state.one_room_roguelike.turns > 0
+            state.games.one_room_roguelike.score > 0 || state.games.one_room_roguelike.turns > 0
         }
-        GameId::DailyDungeon => state.daily_dungeon.score > 0 || state.daily_dungeon.moves > 0,
-        GameId::DotsBoxes => state.dots_boxes.moves > 0,
-        GameId::Sokoban => state.sokoban.moves > 0,
-        GameId::Mancala => state.mancala.moves > 0,
-        GameId::Hanoi => state.hanoi.moves > 0,
-        GameId::NumberMatch => state.number_match.moves > 0,
-        GameId::FloodIt => state.flood_it.moves > 0,
-        GameId::ColorSort => state.color_sort.moves > 0,
-        GameId::Battleship => state.battleship.moves > 0,
-        GameId::WordGrid => state.word_grid.moves > 0,
-        GameId::PipeLoop => state.pipe_loop.moves > 0,
-        GameId::MazeWalk => state.maze_walk.moves > 0,
-        GameId::MatchThree => state.match_three.moves > 0,
-        GameId::Pyramid => state.pyramid.moves > 0,
-        GameId::TriPeaks => state.tri_peaks.moves > 0,
-        GameId::Nim => state.nim.moves > 0,
-        GameId::WordLadder => state.word_ladder.moves > 0,
+        GameId::DailyDungeon => {
+            state.games.daily_dungeon.score > 0 || state.games.daily_dungeon.moves > 0
+        }
+        GameId::DotsBoxes => state.games.dots_boxes.moves > 0,
+        GameId::Sokoban => state.games.sokoban.moves > 0,
+        GameId::Mancala => state.games.mancala.moves > 0,
+        GameId::Hanoi => state.games.hanoi.moves > 0,
+        GameId::NumberMatch => state.games.number_match.moves > 0,
+        GameId::FloodIt => state.games.flood_it.moves > 0,
+        GameId::ColorSort => state.games.color_sort.moves > 0,
+        GameId::Battleship => state.games.battleship.moves > 0,
+        GameId::WordGrid => state.games.word_grid.moves > 0,
+        GameId::PipeLoop => state.games.pipe_loop.moves > 0,
+        GameId::MazeWalk => state.games.maze_walk.moves > 0,
+        GameId::MatchThree => state.games.match_three.moves > 0,
+        GameId::Pyramid => state.games.pyramid.moves > 0,
+        GameId::TriPeaks => state.games.tri_peaks.moves > 0,
+        GameId::Nim => state.games.nim.moves > 0,
+        GameId::WordLadder => state.games.word_ladder.moves > 0,
     }
 }
 
@@ -210,56 +162,7 @@ pub fn color(status: &str) -> Color {
 }
 
 pub fn is_active(game: GameId) -> bool {
-    matches!(
-        game,
-        GameId::Game2048
-            | GameId::Minesweeper
-            | GameId::Sudoku
-            | GameId::Nonogram
-            | GameId::Solitaire
-            | GameId::FreeCell
-            | GameId::Yahtzee
-            | GameId::Reversi
-            | GameId::LightsOut
-            | GameId::TicTacToe
-            | GameId::MemoryPairs
-            | GameId::SlidingPuzzle
-            | GameId::Mastermind
-            | GameId::Spider
-            | GameId::WordSearch
-            | GameId::Hangman
-            | GameId::ConnectFour
-            | GameId::Checkers
-            | GameId::PegSolitaire
-            | GameId::MahjongSolitaire
-            | GameId::Snake
-            | GameId::Breakout
-            | GameId::HigherLower
-            | GameId::KlondikeGolf
-            | GameId::Blackjack
-            | GameId::SpiderSolitaire
-            | GameId::DungeonSweeper
-            | GameId::Potion2048
-            | GameId::TinyTowerDefence
-            | GameId::OneRoomRoguelike
-            | GameId::DailyDungeon
-            | GameId::DotsBoxes
-            | GameId::Sokoban
-            | GameId::Mancala
-            | GameId::Hanoi
-            | GameId::NumberMatch
-            | GameId::FloodIt
-            | GameId::ColorSort
-            | GameId::Battleship
-            | GameId::WordGrid
-            | GameId::PipeLoop
-            | GameId::MazeWalk
-            | GameId::MatchThree
-            | GameId::Pyramid
-            | GameId::TriPeaks
-            | GameId::Nim
-            | GameId::WordLadder
-    )
+    descriptor(game).active
 }
 
 #[cfg(test)]

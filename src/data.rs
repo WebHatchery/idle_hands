@@ -1,14 +1,11 @@
 //! Embedded game data and asset manifests.
 
 use macroquad_toolkit::assets::TextureConfig;
-use macroquad_toolkit::data_loader::{
-    load_embedded_json, load_embedded_json_labeled, DataRegistry,
-};
+use macroquad_toolkit::data_loader::{load_embedded_json, load_embedded_json_labeled};
 use serde::{Deserialize, Serialize};
 
 const GAME_CONFIG_JSON: &str =
     macroquad_toolkit::include_json_str!("../assets/data/game_config.json");
-const ACTIONS_JSON: &str = macroquad_toolkit::include_json_str!("../assets/data/actions.json");
 const PUZZLE_CONFIG_JSON: &str =
     macroquad_toolkit::include_json_str!("../assets/data/puzzle_config.json");
 const TEXTURE_MANIFEST_JSON: &str =
@@ -20,21 +17,6 @@ pub struct GameConfig {
     pub display_name: String,
     pub save_slot: String,
     pub version: String,
-    pub starting_points: i64,
-    pub starting_energy: f32,
-    pub max_energy: f32,
-    pub energy_per_second: f32,
-    pub world_width: usize,
-    pub world_height: usize,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ActionDef {
-    pub id: String,
-    pub name: String,
-    pub description: String,
-    pub energy_cost: f32,
-    pub points_reward: i64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -255,8 +237,6 @@ fn validate_difficulties<T>(
 #[derive(Debug, Clone)]
 pub struct GameData {
     pub config: GameConfig,
-    #[allow(dead_code)]
-    pub actions: DataRegistry<ActionDef>,
     pub puzzles: PuzzleConfig,
     pub texture_manifest: Vec<TextureConfig>,
 }
@@ -264,7 +244,6 @@ pub struct GameData {
 impl GameData {
     pub fn load() -> Result<Self, String> {
         let config = load_embedded_json_labeled("game_config", GAME_CONFIG_JSON)?;
-        let actions = DataRegistry::from_embedded_json(ACTIONS_JSON, "id")?;
         let puzzles: PuzzleConfig =
             load_embedded_json_labeled("puzzle_config", PUZZLE_CONFIG_JSON)?;
         puzzles.validate()?;
@@ -272,7 +251,6 @@ impl GameData {
 
         Ok(Self {
             config,
-            actions,
             puzzles,
             texture_manifest,
         })

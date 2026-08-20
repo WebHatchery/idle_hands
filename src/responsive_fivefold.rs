@@ -12,7 +12,7 @@ fn dice_rect(index: usize) -> Rect {
 }
 
 pub fn draw_fivefold(state: &AppState) {
-    let game = &state.fivefold;
+    let game = &state.games.fivefold;
     back();
     text("FIVEFOLD", 10., 72., 29., crate::theme::BRASS);
     text(
@@ -202,9 +202,9 @@ pub fn fivefold_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         .take(7)
         .enumerate()
     {
-        if index < state.fivefold.variant.category_limit()
+        if index < state.games.fivefold.variant.category_limit()
             && crate::ui::hit(Rect::new(15., 299. + slot as f32 * 42., 330., 38.), p)
-            && state.fivefold.scores[index].is_none()
+            && state.games.fivefold.scores[index].is_none()
         {
             return vec![UiAction::FivefoldCategory(*category)];
         }

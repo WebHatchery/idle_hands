@@ -76,13 +76,13 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(l.new_game, point) {
         return vec![UiAction::DotsNew];
     }
-    edge_at(l.board, point, _state.dots_boxes.side())
+    edge_at(l.board, point, _state.games.dots_boxes.side())
         .map_or_else(Vec::new, |edge| vec![UiAction::DotsEdge(edge)])
 }
 
 pub fn draw(state: &AppState) {
     let l = layout();
-    let game = &state.dots_boxes;
+    let game = &state.games.dots_boxes;
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
     let title_x = if compact {

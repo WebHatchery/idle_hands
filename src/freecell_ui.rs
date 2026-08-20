@@ -21,7 +21,7 @@ fn draw_card(rect: Rect, card: Card, selected: bool, reduced_motion: bool) {
 }
 
 pub fn draw_freecell(state: &AppState) {
-    let game = &state.freecell;
+    let game = &state.games.freecell;
     crate::ui::draw_text("‹ CABINET", 40., 55., 20., crate::theme::BRASS);
     crate::ui::draw_text("FREECELL", 40., 105., 44., crate::theme::BRASS);
     crate::ui::draw_text(
@@ -155,7 +155,7 @@ pub fn freecell_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         return vec![UiAction::FreeCellNew];
     }
     for cell in 0..4 {
-        if cell < state.freecell.variant.free_cell_limit()
+        if cell < state.games.freecell.variant.free_cell_limit()
             && card_rect(45. + cell as f32 * 105., 165.).contains(p)
         {
             return vec![UiAction::FreeCellCell(cell)];
@@ -169,11 +169,11 @@ pub fn freecell_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     for cascade in 0..8 {
         let x = 28. + cascade as f32 * 122.;
         if p.x >= x && p.x <= x + 92. && p.y >= 330. {
-            let depth = if state.freecell.cascades[cascade].is_empty() {
+            let depth = if state.games.freecell.cascades[cascade].is_empty() {
                 0
             } else {
                 (((p.y - 350.) / 28.).floor().max(0.) as usize)
-                    .min(state.freecell.cascades[cascade].len() - 1)
+                    .min(state.games.freecell.cascades[cascade].len() - 1)
             };
             return vec![UiAction::FreeCellCascade(cascade, depth)];
         }

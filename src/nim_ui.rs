@@ -108,7 +108,7 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
         return vec![UiAction::NimNew];
     }
     if rule.contains(point) {
-        return vec![UiAction::NimRule(match _state.nim.rule {
+        return vec![UiAction::NimRule(match _state.games.nim.rule {
             NimRule::Normal => NimRule::Misere,
             NimRule::Misere => NimRule::Normal,
         })];
@@ -117,7 +117,7 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
 }
 
 pub fn draw(state: &AppState) {
-    let game = &state.nim;
+    let game = &state.games.nim;
     let (title_x, title_y) = if portrait() {
         (10., 72.)
     } else if compact() {

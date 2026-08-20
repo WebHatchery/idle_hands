@@ -37,7 +37,7 @@ fn button(rect: Rect, label: &str, active: bool) {
 }
 
 pub fn draw_fivefold(state: &AppState) {
-    let game = &state.fivefold;
+    let game = &state.games.fivefold;
     crate::ui::draw_text("‹ CABINET", 40., 55., 20., crate::theme::BRASS);
     crate::ui::draw_text("FIVEFOLD", 40., 105., 44., crate::theme::BRASS);
     crate::ui::draw_text(
@@ -216,9 +216,9 @@ pub fn fivefold_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         }
     }
     for (index, category) in Category::ALL.iter().enumerate() {
-        if index < state.fivefold.variant.category_limit()
+        if index < state.games.fivefold.variant.category_limit()
             && Rect::new(815., 121. + index as f32 * 34., 380., 30.).contains(p)
-            && state.fivefold.scores[index].is_none()
+            && state.games.fivefold.scores[index].is_none()
         {
             return vec![UiAction::FivefoldCategory(*category)];
         }

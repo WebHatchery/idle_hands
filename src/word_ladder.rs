@@ -1,4 +1,5 @@
 //! Deterministic five-letter word ladders.
+use crate::undo::UndoStack;
 
 use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, VecDeque};
@@ -56,7 +57,7 @@ pub struct WordLadder {
     pub phase: WordLadderPhase,
     pub message: String,
     #[serde(skip)]
-    history: Vec<Box<Self>>,
+    history: UndoStack<Self>,
 }
 
 impl Default for WordLadder {
@@ -91,7 +92,7 @@ impl WordLadder {
             seed,
             phase: WordLadderPhase::Playing,
             message: "Change one letter at a time".into(),
-            history: Vec::new(),
+            history: UndoStack::default(),
         }
     }
     pub fn tap_letter(&mut self, letter: u8) -> bool {
@@ -144,7 +145,7 @@ impl WordLadder {
                 "Good step — keep climbing".into()
             };
         }
-        self.history.push(Box::new(previous));
+        self.history.push(previous);
         true
     }
     pub fn undo(&mut self) -> bool {
@@ -152,7 +153,7 @@ impl WordLadder {
             return false;
         };
         let history = std::mem::take(&mut self.history);
-        *self = *previous;
+        *self = previous;
         self.history = history;
         true
     }

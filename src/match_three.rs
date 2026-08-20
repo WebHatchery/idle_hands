@@ -6,17 +6,12 @@ use crate::data::MatchThreeConfig;
 
 const EMPTY: u8 = u8::MAX;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
 pub enum MatchThreeDifficulty {
+    #[default]
     Standard,
     Hard,
     Expert,
-}
-
-impl Default for MatchThreeDifficulty {
-    fn default() -> Self {
-        Self::Standard
-    }
 }
 
 impl MatchThreeDifficulty {

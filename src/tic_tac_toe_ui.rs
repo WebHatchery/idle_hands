@@ -83,7 +83,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
             return vec![UiAction::TicTacToeLevel(level)];
         }
     }
-    if layout.board.contains(point) && state.tic_tac_toe.status == TicTacToeStatus::Playing {
+    if layout.board.contains(point) && state.games.tic_tac_toe.status == TicTacToeStatus::Playing {
         let column = ((point.x - layout.board.x) / layout.cell) as usize;
         let row = ((point.y - layout.board.y) / layout.cell) as usize;
         if row < 3 && column < 3 {
@@ -95,7 +95,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
 
 pub fn draw(state: &AppState) {
     let layout = layout();
-    let game = &state.tic_tac_toe;
+    let game = &state.games.tic_tac_toe;
     let header_y = if crate::ui::is_compact_landscape() {
         35.
     } else if crate::ui::is_portrait() {

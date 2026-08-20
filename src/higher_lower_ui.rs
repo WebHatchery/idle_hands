@@ -75,16 +75,18 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
         return vec![UiAction::HigherLowerCashOut];
     }
     if crate::ui::hit(l.rule, point) {
-        return vec![UiAction::HigherLowerRule(match state.higher_lower.rule {
-            HigherLowerRule::Friendly => HigherLowerRule::House,
-            HigherLowerRule::House => HigherLowerRule::Friendly,
-        })];
+        return vec![UiAction::HigherLowerRule(
+            match state.games.higher_lower.rule {
+                HigherLowerRule::Friendly => HigherLowerRule::House,
+                HigherLowerRule::House => HigherLowerRule::Friendly,
+            },
+        )];
     }
     vec![]
 }
 pub fn draw(state: &AppState) {
     let l = layout();
-    let game = &state.higher_lower;
+    let game = &state.games.higher_lower;
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
     let hx = if compact {

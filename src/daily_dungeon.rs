@@ -1,6 +1,6 @@
 //! A deterministic daily route through a hidden six-by-six dungeon floor.
 
-use crate::state::Direction;
+use crate::domain::Direction;
 use serde::{Deserialize, Serialize};
 
 const SIZE: usize = 6;

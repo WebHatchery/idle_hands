@@ -78,7 +78,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if crate::ui::hit(layout.difficulty, point) {
         return vec![UiAction::LightsOutDifficulty(
-            match state.lights_out.difficulty {
+            match state.games.lights_out.difficulty {
                 LightsDifficulty::Classic => LightsDifficulty::Dense,
                 LightsDifficulty::Dense => LightsDifficulty::Classic,
             },
@@ -89,7 +89,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
         let row = ((point.y - layout.board.y) / layout.cell) as usize;
         if row < crate::lights_out::SIZE && column < crate::lights_out::SIZE {
             let index = row * crate::lights_out::SIZE + column;
-            if state.lights_out.status != LightsOutStatus::Won {
+            if state.games.lights_out.status != LightsOutStatus::Won {
                 return vec![UiAction::LightsOutPress(index)];
             }
         }
@@ -99,7 +99,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
 
 pub fn draw(state: &AppState) {
     let layout = layout();
-    let game = &state.lights_out;
+    let game = &state.games.lights_out;
     let header_y = header_y();
     let header_x = header_x(layout);
     let body_x = if crate::ui::is_compact_landscape() {

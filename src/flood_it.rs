@@ -1,4 +1,5 @@
 //! Deterministic Flood It rules with a bounded move target.
+use crate::undo::UndoStack;
 
 use std::collections::VecDeque;
 
@@ -6,17 +7,12 @@ use serde::{Deserialize, Serialize};
 
 use crate::data::FloodItConfig;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
 pub enum FloodDifficulty {
+    #[default]
     Standard,
     Hard,
     Expert,
-}
-
-impl Default for FloodDifficulty {
-    fn default() -> Self {
-        Self::Standard
-    }
 }
 
 impl FloodDifficulty {
@@ -74,7 +70,7 @@ pub struct FloodIt {
     pub surges: u8,
     pub phase: FloodPhase,
     #[serde(skip)]
-    history: Vec<Box<Self>>,
+    history: UndoStack<Self>,
 }
 
 impl Default for FloodIt {
@@ -136,7 +132,7 @@ impl FloodIt {
             momentum: 0,
             surges: 0,
             phase: FloodPhase::Playing,
-            history: Vec::new(),
+            history: UndoStack::default(),
         }
     }
 
@@ -154,7 +150,7 @@ impl FloodIt {
         self.record_growth(gain, true);
         self.moves = self.moves.saturating_add(1);
         self.finish_after_move();
-        self.history.push(Box::new(previous));
+        self.history.push(previous);
         true
     }
 
@@ -174,7 +170,7 @@ impl FloodIt {
         if self.cells.iter().all(|&cell| cell == color) {
             self.phase = FloodPhase::Won;
         }
-        self.history.push(Box::new(previous));
+        self.history.push(previous);
         true
     }
 
@@ -235,7 +231,7 @@ impl FloodIt {
             return false;
         };
         let history = std::mem::take(&mut self.history);
-        *self = *previous;
+        *self = previous;
         self.history = history;
         true
     }

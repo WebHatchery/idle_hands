@@ -72,7 +72,7 @@ fn tube_rects(board: Rect, tube_count: usize) -> Vec<Rect> {
 }
 
 pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
-    let l = layout(_state.color_sort.tubes.len());
+    let l = layout(_state.games.color_sort.tubes.len());
     if crate::ui::hit(Rect::new(0., 0., 110., 42.), point) {
         return vec![UiAction::Cabinet];
     }
@@ -101,8 +101,8 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
 }
 
 pub fn draw(state: &AppState) {
-    let l = layout(state.color_sort.tubes.len());
-    let game = &state.color_sort;
+    let l = layout(state.games.color_sort.tubes.len());
+    let game = &state.games.color_sort;
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
     let title_x = if compact {

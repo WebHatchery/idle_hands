@@ -1,11 +1,7 @@
 //! Responsive presentation and touch routing for Potion 2048.
 
-use crate::{
-    accessibility,
-    potion_2048::PotionDifficulty,
-    state::{AppState, Direction},
-    ui::UiAction,
-};
+use crate::domain::Direction;
+use crate::{accessibility, potion_2048::PotionDifficulty, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
 #[derive(Clone, Copy)]
@@ -109,7 +105,7 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
 }
 pub fn draw(state: &AppState) {
     let l = layout();
-    let game = &state.potion_2048;
+    let game = &state.games.potion_2048;
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
     let x = if compact {

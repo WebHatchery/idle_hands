@@ -10,34 +10,34 @@ impl Game {
         }
         match self.state.screen {
             Screen::Game(GameId::Snake) => {
-                let previous = self.state.snake.status;
-                self.state.snake.tick(dt);
-                if self.state.snake.status != previous {
+                let previous = self.state.games.snake.status;
+                self.state.games.snake.tick(dt);
+                if self.state.games.snake.status != previous {
                     self.finish_realtime_round();
                 }
             }
             Screen::Game(GameId::Breakout) => {
                 let previous = (
-                    self.state.breakout.status,
-                    self.state.breakout.level,
-                    self.state.breakout.lives,
-                    self.state.breakout.serve_ready,
+                    self.state.games.breakout.status,
+                    self.state.games.breakout.level,
+                    self.state.games.breakout.lives,
+                    self.state.games.breakout.serve_ready,
                 );
-                self.state.breakout.tick(dt);
+                self.state.games.breakout.tick(dt);
                 let current = (
-                    self.state.breakout.status,
-                    self.state.breakout.level,
-                    self.state.breakout.lives,
-                    self.state.breakout.serve_ready,
+                    self.state.games.breakout.status,
+                    self.state.games.breakout.level,
+                    self.state.games.breakout.lives,
+                    self.state.games.breakout.serve_ready,
                 );
                 if current != previous {
                     self.finish_realtime_round();
                 }
             }
             Screen::Game(GameId::TinyTowerDefence) => {
-                let previous = self.state.tiny_tower_defence.phase;
-                self.state.tiny_tower_defence.tick(dt);
-                if self.state.tiny_tower_defence.phase != previous {
+                let previous = self.state.games.tiny_tower_defence.phase;
+                self.state.games.tiny_tower_defence.tick(dt);
+                if self.state.games.tiny_tower_defence.phase != previous {
                     self.finish_realtime_round();
                 }
             }
@@ -47,6 +47,6 @@ impl Game {
 
     fn finish_realtime_round(&mut self) {
         self.update_records();
-        self.save_autosave();
+        self.request_autosave();
     }
 }

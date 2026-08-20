@@ -1,4 +1,5 @@
 //! Deterministic touch-first Pipe Loop rotation puzzle.
+use crate::undo::UndoStack;
 
 use serde::{Deserialize, Serialize};
 
@@ -39,7 +40,7 @@ pub struct PipeLoop {
     pub par: u16,
     pub phase: PipePhase,
     #[serde(skip)]
-    history: Vec<Box<Self>>,
+    history: UndoStack<Self>,
 }
 
 impl Default for PipeLoop {
@@ -79,7 +80,7 @@ impl PipeLoop {
             pattern,
             par,
             phase: PipePhase::Playing,
-            history: Vec::new(),
+            history: UndoStack::default(),
         }
     }
 
@@ -96,7 +97,7 @@ impl PipeLoop {
         if self.is_complete_network() {
             self.phase = PipePhase::Won;
         }
-        self.history.push(Box::new(previous));
+        self.history.push(previous);
         true
     }
 
@@ -105,7 +106,7 @@ impl PipeLoop {
             return false;
         };
         let history = std::mem::take(&mut self.history);
-        *self = *previous;
+        *self = previous;
         self.history = history;
         true
     }

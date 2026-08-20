@@ -63,7 +63,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(layout.hint, point) {
         return vec![UiAction::MahjongSolitaireHint];
     }
-    for (index, tile) in state.mahjong_solitaire.tiles.iter().enumerate().rev() {
+    for (index, tile) in state.games.mahjong_solitaire.tiles.iter().enumerate().rev() {
         if tile.removed {
             continue;
         }
@@ -77,7 +77,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
 
 pub fn draw(state: &AppState) {
     let layout = layout();
-    let game = &state.mahjong_solitaire;
+    let game = &state.games.mahjong_solitaire;
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
     let header_x = if compact {

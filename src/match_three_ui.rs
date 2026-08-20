@@ -70,7 +70,7 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
         }
     }
     if l.board.contains(point) {
-        let side = _state.match_three.side();
+        let side = _state.games.match_three.side();
         let cell = l.board.w / side as f32;
         let col = ((point.x - l.board.x) / cell) as usize;
         let row = ((point.y - l.board.y) / cell) as usize;
@@ -92,7 +92,7 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
 
 pub fn draw(state: &AppState) {
     let l = layout();
-    let game = &state.match_three;
+    let game = &state.games.match_three;
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
     let title_x = if compact {
