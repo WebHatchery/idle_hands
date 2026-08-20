@@ -22,6 +22,40 @@ pub enum MastermindStatus {
     Lost,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
+pub enum MastermindVariant {
+    #[default]
+    Classic,
+    Gentle,
+    Hard,
+}
+
+impl MastermindVariant {
+    pub const ALL: [Self; 3] = [Self::Classic, Self::Gentle, Self::Hard];
+
+    pub const fn label(self) -> &'static str {
+        match self {
+            Self::Classic => "CLASSIC · 6 COLORS / 10 GUESSES",
+            Self::Gentle => "GENTLE · 4 COLORS / 10 GUESSES",
+            Self::Hard => "HARD · 6 COLORS / 8 GUESSES",
+        }
+    }
+
+    pub const fn color_count(self) -> u8 {
+        match self {
+            Self::Gentle => 4,
+            Self::Classic | Self::Hard => 6,
+        }
+    }
+
+    pub const fn row_limit(self) -> usize {
+        match self {
+            Self::Hard => 8,
+            Self::Classic | Self::Gentle => ROWS,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Mastermind {
     pub secret: [u8; PEGS],
@@ -32,6 +66,8 @@ pub struct Mastermind {
     pub row: u8,
     pub seed: u64,
     pub status: MastermindStatus,
+    #[serde(default)]
+    pub variant: MastermindVariant,
     #[serde(skip)]
     undo: Option<MastermindSnapshot>,
 }
@@ -44,11 +80,15 @@ impl Default for Mastermind {
 
 impl Mastermind {
     pub fn new(seed: u64) -> Self {
+        Self::new_with_variant(seed, MastermindVariant::default())
+    }
+
+    pub fn new_with_variant(seed: u64, variant: MastermindVariant) -> Self {
         let mut source = seed;
         let mut secret = [0; PEGS];
         for peg in &mut secret {
             source = next_seed(source);
-            *peg = (source % 6) as u8;
+            *peg = (source % u64::from(variant.color_count())) as u8;
         }
         Self {
             secret,
@@ -59,12 +99,13 @@ impl Mastermind {
             row: 0,
             seed,
             status: MastermindStatus::Playing,
+            variant,
             undo: None,
         }
     }
 
     pub fn pick(&mut self, color: u8) -> bool {
-        if color >= 6 || self.status != MastermindStatus::Playing {
+        if color >= self.variant.color_count() || self.status != MastermindStatus::Playing {
             return false;
         }
         if let Some(slot) = self.current.iter().position(|peg| *peg == EMPTY) {
@@ -99,7 +140,7 @@ impl Mastermind {
         self.current = [EMPTY; PEGS];
         if exact == PEGS as u8 {
             self.status = MastermindStatus::Won;
-        } else if self.row as usize == ROWS {
+        } else if self.row as usize == self.variant.row_limit() {
             self.status = MastermindStatus::Lost;
         }
         true
@@ -128,10 +169,11 @@ impl Mastermind {
             .position(|peg| *peg == EMPTY)
             .unwrap_or(0);
         let mut frequency = [0usize; 6];
-        for first in 0..6 {
-            for second in 0..6 {
-                for third in 0..6 {
-                    for fourth in 0..6 {
+        let colors = self.variant.color_count();
+        for first in 0..colors {
+            for second in 0..colors {
+                for third in 0..colors {
+                    for fourth in 0..colors {
                         let candidate = [first, second, third, fourth];
                         if (0..self.row as usize).all(|row| {
                             score_guess(&candidate, &self.guesses[row])
@@ -145,6 +187,7 @@ impl Mastermind {
         }
         frequency
             .iter()
+            .take(colors as usize)
             .enumerate()
             .max_by_key(|(color, count)| (**count, std::cmp::Reverse(*color)))
             .map(|(color, _)| (slot, color as u8))

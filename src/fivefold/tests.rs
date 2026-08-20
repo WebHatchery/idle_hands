@@ -91,3 +91,17 @@ fn hint_ignores_categories_that_are_already_scored() {
 
     assert_eq!(game.hint_category(), Some(Category::ThreeKind));
 }
+
+#[test]
+fn quick_variant_completes_after_nine_calls_and_wild_fivefold_scores_more() {
+    let mut quick = Fivefold::new_with_variant(12, FivefoldVariant::Quick);
+    for category in Category::ALL.into_iter().take(9) {
+        assert!(quick.roll());
+        assert!(quick.choose_category(category));
+    }
+    assert_eq!(quick.status, FivefoldStatus::Complete);
+
+    let mut wild = Fivefold::new_with_variant(13, FivefoldVariant::Wild);
+    wild.dice = [5, 5, 5, 5, 5];
+    assert_eq!(wild.score_for(Category::FiveOfKind), 75);
+}

@@ -20,6 +20,24 @@ pub enum MahjongStatus {
     Stuck,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
+pub enum MahjongLayout {
+    #[default]
+    Classic,
+    Temple,
+}
+
+impl MahjongLayout {
+    pub const ALL: [Self; 2] = [Self::Classic, Self::Temple];
+
+    pub const fn label(self) -> &'static str {
+        match self {
+            Self::Classic => "CLASSIC · BRIDGE",
+            Self::Temple => "TEMPLE · OFFSET BRIDGE",
+        }
+    }
+}
+
 type Snapshot = (Vec<Tile>, MahjongStatus, u16);
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -29,6 +47,8 @@ pub struct MahjongSolitaire {
     pub moves: u16,
     pub seed: u64,
     pub selected: Option<usize>,
+    #[serde(default)]
+    pub layout: MahjongLayout,
     #[serde(skip)]
     undo: Option<Snapshot>,
 }
@@ -41,19 +61,11 @@ impl Default for MahjongSolitaire {
 
 impl MahjongSolitaire {
     pub fn new(seed: u64) -> Self {
-        let mut positions = Vec::new();
-        for y in 0..4 {
-            for x in 0..8 {
-                if (y == 0 || y == 3) && (1..7).contains(&x) || (1..3).contains(&y) {
-                    positions.push((x, y, 0));
-                }
-            }
-        }
-        for x in 1..7 {
-            positions.push((x, 1, 1));
-        }
-        positions.push((3, 1, 2));
-        positions.push((4, 1, 2));
+        Self::new_with_layout(seed, MahjongLayout::default())
+    }
+
+    pub fn new_with_layout(seed: u64, layout: MahjongLayout) -> Self {
+        let positions = layout_positions(layout);
         let mut tiles = Vec::with_capacity(TILE_COUNT);
         for (index, (x, y, layer)) in positions.into_iter().enumerate() {
             tiles.push(Tile {
@@ -70,6 +82,7 @@ impl MahjongSolitaire {
             moves: 0,
             seed,
             selected: None,
+            layout,
             undo: None,
         }
     }
@@ -171,6 +184,34 @@ impl MahjongSolitaire {
                 })
         })
     }
+}
+
+fn layout_positions(layout: MahjongLayout) -> Vec<(u8, u8, u8)> {
+    let mut positions = Vec::with_capacity(TILE_COUNT);
+    for y in 0..4u8 {
+        for x in 0..8u8 {
+            let base = if matches!(layout, MahjongLayout::Classic) {
+                (y == 0 || y == 3) && (1..7).contains(&x) || (1..3).contains(&y)
+            } else {
+                true
+            };
+            if base {
+                positions.push((x, y, 0));
+            }
+        }
+    }
+    if matches!(layout, MahjongLayout::Classic) {
+        for x in 1..7u8 {
+            positions.push((x, 1, 1));
+        }
+        positions.push((3, 1, 2));
+        positions.push((4, 1, 2));
+    } else {
+        for x in 2..6u8 {
+            positions.push((x, 1, 1));
+        }
+    }
+    positions
 }
 
 fn overlaps(left: &Tile, right: &Tile) -> bool {

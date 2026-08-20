@@ -1,10 +1,6 @@
 //! Responsive presentation and touch routing for Word Search.
 
-use crate::{
-    state::AppState,
-    ui::UiAction,
-    word_search::{WordSearchStatus, WORDS},
-};
+use crate::{state::AppState, ui::UiAction, word_search::WordSearchStatus};
 use macroquad::prelude::*;
 
 #[derive(Clone, Copy)]
@@ -143,7 +139,7 @@ pub fn draw(state: &AppState) {
         &format!(
             "Found {} / {}  •  Moves {}",
             game.found.iter().filter(|found| **found).count(),
-            WORDS.len(),
+            game.words().len(),
             game.moves
         ),
         if compact {
@@ -169,9 +165,10 @@ pub fn draw(state: &AppState) {
 }
 
 fn draw_word_list(game: &crate::word_search::WordSearch, _layout: Layout) {
+    let words = game.words();
     if crate::ui::is_portrait() {
         text("FIND THESE", 20., 548., 13., accent());
-        for (index, word) in WORDS.iter().enumerate() {
+        for (index, word) in words.iter().enumerate() {
             let x = 20. + (index / 3) as f32 * 180.;
             let y = 575. + (index % 3) as f32 * 22.;
             text(
@@ -194,7 +191,7 @@ fn draw_word_list(game: &crate::word_search::WordSearch, _layout: Layout) {
         (950., 155., 18.)
     };
     text("FIND THESE", x, y, size, accent());
-    for (index, word) in WORDS.iter().enumerate() {
+    for (index, word) in words.iter().enumerate() {
         text(
             &format!("{} {}", if game.found[index] { "✓" } else { "·" }, word),
             x,

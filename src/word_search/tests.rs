@@ -51,3 +51,14 @@ fn hint_word_identifies_the_first_unfound_endpoints_without_mutating() {
     assert_eq!((start, end), (0, 4));
     assert_eq!(game.selected_start, before);
 }
+
+#[test]
+fn alternate_word_rooms_keep_the_grid_contract_but_change_the_catalog() {
+    let nature = WordSearch::new_with_theme(52, WordSearchTheme::Nature);
+    let workshop = WordSearch::new_with_theme(52, WordSearchTheme::Workshop);
+    assert_ne!(nature.words(), workshop.words());
+    assert_eq!(nature.cells.len(), workshop.cells.len());
+    let (_, start, end) = nature.hint_word().unwrap();
+    assert!(nature.cells[start] <= 25);
+    assert!(end < nature.cells.len());
+}

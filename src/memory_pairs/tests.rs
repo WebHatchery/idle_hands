@@ -149,3 +149,18 @@ fn legacy_saves_receive_depth_defaults() {
     );
     assert_eq!(restored.peeks, 1);
 }
+
+#[test]
+fn focus_variant_removes_the_peek_charge_and_rush_doubles_mismatch_cost() {
+    let focus = MemoryPairs::new_with_variant(48, MemoryVariant::Focus);
+    assert_eq!(focus.peeks, 0);
+
+    let mut rush = MemoryPairs::new_with_variant(49, MemoryVariant::Rush);
+    let first = rush.cards[0].pair;
+    let mismatch = (1..CELLS)
+        .find(|&index| rush.cards[index].pair != first)
+        .unwrap();
+    rush.select(0);
+    rush.select(mismatch);
+    assert_eq!(rush.score, 0);
+}

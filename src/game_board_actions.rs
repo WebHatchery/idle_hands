@@ -11,6 +11,11 @@ fn fresh_seed(previous: u64) -> u64 {
 impl Game {
     pub(super) fn apply_board_action(&mut self, action: &UiAction) -> bool {
         match action {
+            UiAction::CycleGameVariant => {
+                if let crate::state::Screen::Game(game) = self.state.screen {
+                    crate::game_variants::cycle(&mut self.state, &self.data, game);
+                }
+            }
             UiAction::HangmanGuess(letter) => {
                 self.state.hangman.guess(*letter);
             }

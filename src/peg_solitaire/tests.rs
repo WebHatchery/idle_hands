@@ -46,3 +46,13 @@ fn hint_move_finds_the_first_legal_jump_without_mutating() {
     assert_eq!((from, to), (10, 24));
     assert_eq!(game.cells, before);
 }
+
+#[test]
+fn corner_variant_requires_the_offset_finishing_hole() {
+    let mut game = PegSolitaire::new_with_variant(53, PegVariant::Corner);
+    game.cells = vec![Hole::Empty; CELLS];
+    game.cells[2 * SIZE + 2] = Hole::Peg;
+    game.resolve();
+    assert_eq!(game.status, PegSolitaireStatus::Won);
+    assert_ne!(game.variant.winning_hole(), CENTER);
+}

@@ -40,6 +40,8 @@ mod freecell_ui;
 mod game;
 mod game_2048;
 mod game_input;
+mod game_variant_ui;
+mod game_variants;
 mod grid;
 mod hangman;
 mod hangman_ui;

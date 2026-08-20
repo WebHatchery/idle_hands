@@ -16,6 +16,7 @@ use crate::fivefold_ui;
 use crate::flood_it_ui;
 use crate::freecell_ui;
 use crate::game_2048::Game2048Size;
+use crate::game_variant_ui;
 use crate::hangman_ui;
 use crate::hanoi_ui;
 use crate::higher_lower_ui;
@@ -220,6 +221,9 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     if state.confirm_restart && state.pending_restart.is_some() {
         return restart_modal::clicks(p);
+    }
+    if game_variant_ui::clicks(state, p) {
+        return vec![UiAction::CycleGameVariant];
     }
     match state.screen {
         Screen::Cabinet if is_compact_landscape() => responsive_landscape_cabinet::clicks(state, p),

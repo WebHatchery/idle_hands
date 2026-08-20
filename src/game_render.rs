@@ -17,6 +17,7 @@ impl Game {
             self.assets.len(),
             self.assets.get_texture("cabinet_texture"),
         );
+        crate::game_variant_ui::draw(&self.state);
         self.draw_time_badge();
         if self.transition > 0. {
             draw_rectangle(

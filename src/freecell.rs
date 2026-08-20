@@ -9,6 +9,31 @@ pub enum FreeCellStatus {
     Won,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
+pub enum FreeCellVariant {
+    #[default]
+    Classic,
+    Tight,
+}
+
+impl FreeCellVariant {
+    pub const ALL: [Self; 2] = [Self::Classic, Self::Tight];
+
+    pub const fn label(self) -> &'static str {
+        match self {
+            Self::Classic => "CLASSIC · 4 FREE CELLS",
+            Self::Tight => "TIGHT · 2 FREE CELLS",
+        }
+    }
+
+    pub const fn free_cell_limit(self) -> usize {
+        match self {
+            Self::Classic => 4,
+            Self::Tight => 2,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum FreeSource {
     Cascade(usize, usize),
@@ -26,6 +51,8 @@ pub struct FreeCell {
     pub moves: u32,
     pub status: FreeCellStatus,
     pub seed: u64,
+    #[serde(default)]
+    pub variant: FreeCellVariant,
     #[serde(skip)]
     history: Vec<FreeCellSnapshot>,
 }
@@ -38,6 +65,10 @@ impl Default for FreeCell {
 
 impl FreeCell {
     pub fn new(seed: u64) -> Self {
+        Self::new_with_variant(seed, FreeCellVariant::default())
+    }
+
+    pub fn new_with_variant(seed: u64, variant: FreeCellVariant) -> Self {
         let (deck, rng) = shuffled_deck(seed, true);
         let mut cascades = vec![Vec::new(); 8];
         for (index, card) in deck.into_iter().enumerate() {
@@ -51,6 +82,7 @@ impl FreeCell {
             moves: 0,
             status: FreeCellStatus::Playing,
             seed: rng,
+            variant,
             history: Vec::new(),
         }
     }
@@ -69,7 +101,9 @@ impl FreeCell {
         }
     }
     pub fn select_cell(&mut self, cell: usize) -> bool {
-        if self.cells.get(cell).is_some_and(Option::is_some) {
+        if cell < self.variant.free_cell_limit()
+            && self.cells.get(cell).is_some_and(Option::is_some)
+        {
             self.selected = Some(FreeSource::Cell(cell));
             true
         } else {
@@ -183,7 +217,10 @@ impl FreeCell {
         if !matches!(source, FreeSource::Cascade(_, _)) {
             return true;
         }
-        let empty_cells = self.cells.iter().filter(|cell| cell.is_none()).count();
+        let empty_cells = self.cells[..self.variant.free_cell_limit()]
+            .iter()
+            .filter(|cell| cell.is_none())
+            .count();
         let empty_cascades = self
             .cascades
             .iter()

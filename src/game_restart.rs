@@ -4,6 +4,7 @@ pub(super) fn requires_new_confirmation(action: UiAction) -> bool {
     matches!(
         action,
         UiAction::Game2048Size(_)
+            | UiAction::CycleGameVariant
             | UiAction::SolitaireNew
             | UiAction::MineRestart
             | UiAction::MinePreset(_)

@@ -190,3 +190,15 @@ fn invalid_foundation_suit_is_rejected_without_losing_selection() {
     assert!(!game.move_selected_to_foundation(4));
     assert_eq!(game.selected, Some(FreeSource::Cell(0)));
 }
+
+#[test]
+fn tight_variant_seals_the_last_two_free_cells() {
+    let mut game = FreeCell::new_with_variant(14, FreeCellVariant::Tight);
+    game.cells[2] = Some(Card {
+        rank: 1,
+        suit: 0,
+        face_up: true,
+    });
+    assert!(!game.select_cell(2));
+    assert_eq!(game.variant.free_cell_limit(), 2);
+}

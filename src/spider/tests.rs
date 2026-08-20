@@ -106,3 +106,17 @@ fn won_spider_has_no_hint_move() {
     game.status = SpiderStatus::Won;
     assert_eq!(game.hint_move(), None);
 }
+
+#[test]
+fn two_suit_mode_separates_runs_while_preserving_the_eight_run_goal() {
+    let game = Spider::new_with_mode(58, SpiderMode::TwoSuit);
+    let suits = game
+        .tableau
+        .iter()
+        .flatten()
+        .chain(game.stock.iter())
+        .map(|card| card.suit)
+        .collect::<std::collections::BTreeSet<_>>();
+    assert_eq!(suits, [0, 1].into_iter().collect());
+    assert_eq!(game.completed, 0);
+}

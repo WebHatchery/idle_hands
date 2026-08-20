@@ -95,3 +95,22 @@ fn hint_is_empty_after_blackjack_ends() {
 
     assert_eq!(game.hint_action(), None);
 }
+
+#[test]
+fn house_rule_identifies_a_soft_seventeen() {
+    let mut game = Blackjack::new_with_rule(56, BlackjackRule::HitSoft17);
+    game.dealer = vec![
+        Card {
+            rank: 1,
+            suit: 0,
+            face_up: true,
+        },
+        Card {
+            rank: 6,
+            suit: 0,
+            face_up: true,
+        },
+    ];
+    assert!(game.is_soft(&game.dealer));
+    assert_eq!(game.dealer_total(), 17);
+}

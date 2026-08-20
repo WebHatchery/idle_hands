@@ -54,3 +54,25 @@ fn hint_pair_finds_free_matching_tiles_without_mutating() {
     assert_eq!(game.tiles[first].kind, game.tiles[second].kind);
     assert_eq!(game.tiles, before);
 }
+
+#[test]
+fn temple_layout_is_deterministic_and_keeps_thirty_six_tiles() {
+    let temple = MahjongSolitaire::new_with_layout(54, MahjongLayout::Temple);
+    assert_eq!(temple.tiles.len(), TILE_COUNT);
+    assert_eq!(
+        temple.tiles,
+        MahjongSolitaire::new_with_layout(54, MahjongLayout::Temple).tiles
+    );
+    assert_ne!(
+        temple
+            .tiles
+            .iter()
+            .map(|tile| (tile.x, tile.y, tile.layer))
+            .collect::<Vec<_>>(),
+        MahjongSolitaire::new(54)
+            .tiles
+            .iter()
+            .map(|tile| (tile.x, tile.y, tile.layer))
+            .collect::<Vec<_>>()
+    );
+}

@@ -11,6 +11,24 @@ pub enum BlackjackStatus {
     Push,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
+pub enum BlackjackRule {
+    #[default]
+    StandSoft17,
+    HitSoft17,
+}
+
+impl BlackjackRule {
+    pub const ALL: [Self; 2] = [Self::StandSoft17, Self::HitSoft17];
+
+    pub const fn label(self) -> &'static str {
+        match self {
+            Self::StandSoft17 => "CLASSIC · DEALER STANDS SOFT 17",
+            Self::HitSoft17 => "HOUSE · DEALER HITS SOFT 17",
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum BlackjackHint {
     Hit,
@@ -36,6 +54,8 @@ pub struct Blackjack {
     pub wins: u16,
     pub status: BlackjackStatus,
     pub seed: u64,
+    #[serde(default)]
+    pub rule: BlackjackRule,
     #[serde(skip)]
     undo: Option<Snapshot>,
 }
@@ -48,6 +68,10 @@ impl Default for Blackjack {
 
 impl Blackjack {
     pub fn new(seed: u64) -> Self {
+        Self::new_with_rule(seed, BlackjackRule::default())
+    }
+
+    pub fn new_with_rule(seed: u64, rule: BlackjackRule) -> Self {
         let mut game = Self {
             player: Vec::new(),
             dealer: Vec::new(),
@@ -56,6 +80,7 @@ impl Blackjack {
             wins: 0,
             status: BlackjackStatus::Playing,
             seed,
+            rule,
             undo: None,
         };
         game.start_round(seed);
@@ -80,7 +105,12 @@ impl Blackjack {
             return false;
         }
         self.snapshot();
-        while self.total(&self.dealer) < 17 && !self.deck.is_empty() {
+        while (self.total(&self.dealer) < 17
+            || (self.total(&self.dealer) == 17
+                && self.rule == BlackjackRule::HitSoft17
+                && self.is_soft(&self.dealer)))
+            && !self.deck.is_empty()
+        {
             self.dealer
                 .push(self.deck.pop().expect("deck checked above"));
         }
@@ -197,6 +227,13 @@ impl Blackjack {
             aces -= 1;
         }
         total
+    }
+
+    fn is_soft(&self, hand: &[Card]) -> bool {
+        let hard_total = hand
+            .iter()
+            .fold(0u8, |total, card| total.saturating_add(card.rank.min(10)));
+        hand.iter().any(|card| card.rank == 1) && hard_total.saturating_add(10) <= 21
     }
 }
 

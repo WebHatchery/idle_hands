@@ -38,7 +38,15 @@ pub fn draw_freecell(state: &AppState) {
     for cell in 0..4 {
         let rect = card_rect(45. + cell as f32 * 105., 165.);
         panel(rect, Color::new(0.12, 0.09, 0.20, 1.));
-        if let Some(card) = game.cells[cell] {
+        if cell >= game.variant.free_cell_limit() {
+            crate::ui::draw_text(
+                "SEALED",
+                rect.x + 15.,
+                rect.y + 58.,
+                11.,
+                crate::theme::SECONDARY,
+            );
+        } else if let Some(card) = game.cells[cell] {
             draw_card(
                 rect,
                 card,
@@ -147,7 +155,9 @@ pub fn freecell_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         return vec![UiAction::FreeCellNew];
     }
     for cell in 0..4 {
-        if card_rect(45. + cell as f32 * 105., 165.).contains(p) {
+        if cell < state.freecell.variant.free_cell_limit()
+            && card_rect(45. + cell as f32 * 105., 165.).contains(p)
+        {
             return vec![UiAction::FreeCellCell(cell)];
         }
     }

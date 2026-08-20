@@ -18,6 +18,24 @@ pub enum BattleshipPhase {
     Won,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
+pub enum BattleshipFleet {
+    #[default]
+    Patrol,
+    Armada,
+}
+
+impl BattleshipFleet {
+    pub const ALL: [Self; 2] = [Self::Patrol, Self::Armada];
+
+    pub const fn label(self) -> &'static str {
+        match self {
+            Self::Patrol => "PATROL · 3 SHIPS",
+            Self::Armada => "ARMADA · 4 SHIPS",
+        }
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Battleship {
     pub ships: Vec<u8>,
@@ -37,6 +55,8 @@ pub struct Battleship {
     #[serde(default)]
     pub scanned: Vec<bool>,
     pub phase: BattleshipPhase,
+    #[serde(default)]
+    pub fleet: BattleshipFleet,
     #[serde(skip)]
     history: Vec<Box<Self>>,
 }
@@ -49,6 +69,10 @@ impl Default for Battleship {
 
 impl Battleship {
     pub fn new(seed: u64) -> Self {
+        Self::new_with_fleet(seed, BattleshipFleet::default())
+    }
+
+    pub fn new_with_fleet(seed: u64, fleet: BattleshipFleet) -> Self {
         let mut ships = vec![0; CELLS];
         let layouts = [
             ([1, 2, 3], [14, 20], [28, 29]),
@@ -66,6 +90,19 @@ impl Battleship {
         for cell in cutter_ship {
             ships[cell] = 3;
         }
+        if fleet == BattleshipFleet::Armada {
+            let escort = match (seed as usize) % layouts.len() {
+                0 => [35, 36],
+                1 => [32, 33],
+                2 => [34, 35],
+                _ => [26, 27],
+            };
+            for cell in escort {
+                if ships[cell] == 0 {
+                    ships[cell] = 4;
+                }
+            }
+        }
         Self {
             ships,
             shots: vec![Shot::Unknown; CELLS],
@@ -78,6 +115,7 @@ impl Battleship {
             sonar_armed: false,
             scanned: vec![false; CELLS],
             phase: BattleshipPhase::Playing,
+            fleet,
             history: Vec::new(),
         }
     }

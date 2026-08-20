@@ -89,3 +89,16 @@ fn stock_deal_and_completed_run_are_tracked() {
     assert_eq!(game.completed, 1);
     assert!(game.tableau[1].is_empty());
 }
+
+#[test]
+fn lighter_suit_rules_keep_the_same_deck_size_but_reduce_suit_switches() {
+    let game = SpiderSolitaire::new_with_rule(57, SpiderRule::TwoSuit);
+    let suits = game
+        .tableau
+        .iter()
+        .flatten()
+        .chain(game.stock.iter())
+        .map(|card| card.suit)
+        .collect::<std::collections::BTreeSet<_>>();
+    assert_eq!(suits, [0, 1].into_iter().collect());
+}

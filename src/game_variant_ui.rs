@@ -1,0 +1,128 @@
+//! Shared rule-card control drawn above every game drawer.
+
+use crate::{
+    game_variants,
+    state::{AppState, Screen},
+};
+use macroquad::prelude::*;
+
+pub fn button_rect() -> Rect {
+    let (width, _) = crate::ui::layout_size();
+    if crate::ui::is_portrait() {
+        Rect::new(width - 170., 48., 162., 42.)
+    } else if crate::ui::is_compact_landscape() {
+        Rect::new(width - 350., 5., 166., 34.)
+    } else {
+        Rect::new(width - 370., 16., 176., 38.)
+    }
+}
+
+pub fn clicks(state: &AppState, point: Vec2) -> bool {
+    matches!(state.screen, Screen::Game(_)) && crate::ui::hit(button_rect(), point)
+}
+
+pub fn draw(state: &AppState) {
+    let Screen::Game(game) = state.screen else {
+        return;
+    };
+    let rect = button_rect();
+    let compact = crate::ui::is_compact_landscape();
+    let portrait = crate::ui::is_portrait();
+    crate::ui::draw_rounded_panel(
+        rect,
+        7.,
+        crate::theme::GAME_PANEL,
+        if state.high_contrast {
+            WHITE
+        } else {
+            crate::theme::BRASS
+        },
+    );
+    let label = game_variants::label(state, game);
+    crate::ui::draw_text(
+        "RULE CARD  ›",
+        rect.x + 9.,
+        rect.y + if portrait { 15. } else { 14. },
+        if portrait { 8. } else { 9. },
+        crate::theme::BRASS,
+    );
+    crate::ui::draw_text(
+        &label,
+        rect.x + 9.,
+        rect.y + if portrait { 32. } else { 27. },
+        if portrait {
+            8.
+        } else if compact {
+            8.
+        } else {
+            9.
+        },
+        crate::theme::CREAM,
+    );
+    draw_icon(game, rect);
+}
+
+fn draw_icon(game: crate::state::GameId, rect: Rect) {
+    let center = vec2(rect.right() - 17., rect.y + rect.h * 0.52);
+    let ink = crate::theme::BRASS;
+    match game {
+        crate::state::GameId::Solitaire
+        | crate::state::GameId::FreeCell
+        | crate::state::GameId::Yahtzee
+        | crate::state::GameId::KlondikeGolf
+        | crate::state::GameId::Blackjack
+        | crate::state::GameId::SpiderSolitaire
+        | crate::state::GameId::Pyramid
+        | crate::state::GameId::TriPeaks => {
+            draw_rectangle_lines(center.x - 9., center.y - 11., 18., 22., 1.5, ink);
+            draw_line(
+                center.x - 5.,
+                center.y - 4.,
+                center.x + 5.,
+                center.y - 4.,
+                1.5,
+                ink,
+            );
+            draw_circle(center.x, center.y + 5., 2.5, ink);
+        }
+        crate::state::GameId::Hangman
+        | crate::state::GameId::WordSearch
+        | crate::state::GameId::WordGrid
+        | crate::state::GameId::WordLadder
+        | crate::state::GameId::Nonogram
+        | crate::state::GameId::Mastermind => {
+            for row in 0..3 {
+                draw_line(
+                    center.x - 9.,
+                    center.y - 7. + row as f32 * 7.,
+                    center.x + 9.,
+                    center.y - 7. + row as f32 * 7.,
+                    1.5,
+                    ink,
+                );
+            }
+            draw_circle(center.x - 5., center.y - 7., 1.5, ink);
+            draw_circle(center.x - 5., center.y, 1.5, ink);
+            draw_circle(center.x - 5., center.y + 7., 1.5, ink);
+        }
+        crate::state::GameId::Breakout
+        | crate::state::GameId::Snake
+        | crate::state::GameId::TinyTowerDefence => {
+            draw_rectangle(center.x - 9., center.y - 8., 18., 3., ink);
+            draw_circle(center.x, center.y + 2., 3., ink);
+            draw_line(
+                center.x - 9.,
+                center.y + 9.,
+                center.x + 9.,
+                center.y + 9.,
+                2.,
+                ink,
+            );
+        }
+        _ => {
+            draw_rectangle_lines(center.x - 9., center.y - 9., 18., 18., 1.5, ink);
+            draw_line(center.x - 8., center.y, center.x + 8., center.y, 1.5, ink);
+            draw_line(center.x, center.y - 8., center.x, center.y + 8., 1.5, ink);
+        }
+    }
+}

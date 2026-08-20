@@ -44,3 +44,14 @@ fn hint_move_is_legal_and_does_not_mutate_the_board() {
     assert!(neighbors(game.blank()).contains(&hint));
     assert_eq!(game.cells, before);
 }
+
+#[test]
+fn marathon_variant_is_a_deeper_but_repeatable_scramble() {
+    let wanderer = SlidingPuzzle::new_with_variant(60, SlidingVariant::Wanderer);
+    let marathon = SlidingPuzzle::new_with_variant(60, SlidingVariant::Marathon);
+    assert_eq!(
+        marathon.cells,
+        SlidingPuzzle::new_with_variant(60, SlidingVariant::Marathon).cells
+    );
+    assert_ne!(wanderer.cells, marathon.cells);
+}

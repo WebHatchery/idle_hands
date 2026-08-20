@@ -19,6 +19,38 @@ pub enum PegSolitaireStatus {
     Stuck,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
+pub enum PegVariant {
+    #[default]
+    Classic,
+    Corner,
+}
+
+impl PegVariant {
+    pub const ALL: [Self; 2] = [Self::Classic, Self::Corner];
+
+    pub const fn label(self) -> &'static str {
+        match self {
+            Self::Classic => "CLASSIC · CENTER FINISH",
+            Self::Corner => "CORNER · OFFSET FINISH",
+        }
+    }
+
+    const fn starting_empty(self) -> usize {
+        match self {
+            Self::Classic => CENTER,
+            Self::Corner => CENTER,
+        }
+    }
+
+    const fn winning_hole(self) -> usize {
+        match self {
+            Self::Classic => CENTER,
+            Self::Corner => 2 * SIZE + 2,
+        }
+    }
+}
+
 type Snapshot = (Vec<Hole>, PegSolitaireStatus, u16);
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -28,6 +60,8 @@ pub struct PegSolitaire {
     pub moves: u16,
     pub seed: u64,
     pub selected: Option<usize>,
+    #[serde(default)]
+    pub variant: PegVariant,
     #[serde(skip)]
     undo: Option<Snapshot>,
 }
@@ -40,19 +74,24 @@ impl Default for PegSolitaire {
 
 impl PegSolitaire {
     pub fn new(seed: u64) -> Self {
+        Self::new_with_variant(seed, PegVariant::default())
+    }
+
+    pub fn new_with_variant(seed: u64, variant: PegVariant) -> Self {
         let mut cells = vec![Hole::Empty; CELLS];
         for (index, cell) in cells.iter_mut().enumerate() {
             if valid_hole(index) {
                 *cell = Hole::Peg;
             }
         }
-        cells[CENTER] = Hole::Empty;
+        cells[variant.starting_empty()] = Hole::Empty;
         Self {
             cells,
             status: PegSolitaireStatus::Playing,
             moves: 0,
             seed,
             selected: None,
+            variant,
             undo: None,
         }
     }
@@ -149,7 +188,7 @@ impl PegSolitaire {
 
     fn resolve(&mut self) {
         let pegs = self.cells.iter().filter(|hole| **hole == Hole::Peg).count();
-        if pegs == 1 && self.cells[CENTER] == Hole::Peg {
+        if pegs == 1 && self.cells[self.variant.winning_hole()] == Hole::Peg {
             self.status = PegSolitaireStatus::Won;
         } else if !(0..CELLS).any(|from| !self.targets(from).is_empty()) {
             self.status = PegSolitaireStatus::Stuck;

@@ -28,3 +28,11 @@ fn stock_draw_changes_the_waste() {
     assert!(game.draw_stock());
     assert_ne!(game.waste.last().unwrap().rank, before);
 }
+
+#[test]
+fn relaxed_rule_allows_a_matching_rank() {
+    let mut game = KlondikeGolf::new_with_rule(55, GolfRule::Relaxed);
+    let waste = game.waste.last().unwrap().rank;
+    game.tableau[0].last_mut().unwrap().rank = waste;
+    assert!(game.tap_column(0));
+}

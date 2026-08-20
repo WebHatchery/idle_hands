@@ -595,6 +595,29 @@ progress, moves, and seen-card count. Full multi-step undo restores cards,
 learned positions, mismatch and peek displays, score, chain, mistakes, and the
 peek charge. Older saves begin with no learned positions or score and one peek.
 
+### 11.28 Cabinet rule cards
+
+Every drawer now carries a compact RULE CARD in the same touch-safe header
+region. The card names the active board, room, deck, AI, timing, or scoring
+variant in plain language and includes a small game-family glyph so the
+control reads as a physical cabinet label rather than an unexplained button.
+Tapping it opens the same confirmed fresh-round path as a restart and rotates
+to the next deterministic rule set. The selected ruleset is serialized with
+the game, so saved sessions reopen with the exact rule that created them.
+
+Variants change the decision space rather than only the decoration: FreeCell
+TIGHT seals two reserve cells, Fivefold QUICK shortens the scorecard while
+WILD makes a five-of-a-kind more valuable, Memory Pairs FOCUS removes the
+peek charge, Sliding Puzzle MARATHON deepens the scramble, Mastermind GENTLE
+and HARD change color and guess pressure, Word Search swaps the word room,
+Peg Solitaire changes the finishing hole, Mahjong adds a temple layout,
+Klondike Golf and Blackjack alter rank/dealer rules, Spider changes suit
+pressure, Battleship adds an escort ship, and the authored rooms, daily
+dungeon, tower roles, and Breakout/Sokoban routes can all be rotated without
+leaving the drawer. Constrained controls are dimmed and labeled LOCKED or
+SEALED in responsive layouts, while alternate boards retain seeded generation
+and their own undo, hint, and completion feedback.
+
 ## 12. Historical Phase 0 Decisions
 
 The original eight-game launch scope established the current product principles:

@@ -41,3 +41,20 @@ fn hint_pick_suggests_a_valid_color_without_mutating_the_game() {
     assert!(color < 6);
     assert_eq!(game.current, before);
 }
+
+#[test]
+fn gentle_and_hard_variants_change_the_available_guess_space() {
+    let mut gentle = Mastermind::new_with_variant(50, MastermindVariant::Gentle);
+    assert!(!gentle.pick(4));
+    assert_eq!(gentle.variant.color_count(), 4);
+
+    let mut hard = Mastermind::new_with_variant(51, MastermindVariant::Hard);
+    hard.secret = [0; PEGS];
+    for _ in 0..8 {
+        for _ in 0..PEGS {
+            hard.pick(1);
+        }
+        assert!(hard.submit());
+    }
+    assert_eq!(hard.status, MastermindStatus::Lost);
+}

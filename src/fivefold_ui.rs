@@ -126,6 +126,7 @@ pub fn draw_fivefold(state: &AppState) {
     );
     crate::ui::draw_text("SCORECARD", 830., 120., 28., crate::theme::BRASS);
     for (index, category) in Category::ALL.iter().enumerate() {
+        let available = index < game.variant.category_limit();
         let y = 145. + index as f32 * 34.;
         let rect = Rect::new(815., y - 24., 380., 30.);
         let score = game.scores[index].map_or_else(
@@ -139,7 +140,7 @@ pub fn draw_fivefold(state: &AppState) {
             |value| value.to_string(),
         );
         let selected = game.selected_category == Some(*category);
-        if game.scores[index].is_none() && game.roll_number > 0 {
+        if available && game.scores[index].is_none() && game.roll_number > 0 {
             panel(
                 rect,
                 if selected {
@@ -154,13 +155,25 @@ pub fn draw_fivefold(state: &AppState) {
             rect.x + 12.,
             y,
             15.,
-            if game.scores[index].is_some() {
+            if !available {
+                crate::theme::SECONDARY
+            } else if game.scores[index].is_some() {
                 Color::new(0.52, 0.48, 0.60, 1.)
             } else {
                 WHITE
             },
         );
-        crate::ui::draw_text(&score, rect.right() - 48., y, 16., crate::theme::BRASS);
+        crate::ui::draw_text(
+            if available { score.as_str() } else { "LOCKED" },
+            rect.right() - 58.,
+            y,
+            16.,
+            if available {
+                crate::theme::BRASS
+            } else {
+                crate::theme::SECONDARY
+            },
+        );
     }
     crate::ui::draw_text(
         state.card_hint.as_deref().unwrap_or(match game.status {
@@ -203,7 +216,8 @@ pub fn fivefold_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         }
     }
     for (index, category) in Category::ALL.iter().enumerate() {
-        if Rect::new(815., 121. + index as f32 * 34., 380., 30.).contains(p)
+        if index < state.fivefold.variant.category_limit()
+            && Rect::new(815., 121. + index as f32 * 34., 380., 30.).contains(p)
             && state.fivefold.scores[index].is_none()
         {
             return vec![UiAction::FivefoldCategory(*category)];

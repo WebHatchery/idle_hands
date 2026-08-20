@@ -26,6 +26,8 @@ pub enum DailyRule {
 }
 
 impl DailyRule {
+    pub const ALL: [Self; 3] = [Self::Wayfinder, Self::Forager, Self::Daredevil];
+
     pub const fn label(self) -> &'static str {
         match self {
             Self::Wayfinder => "WAYFINDER",
@@ -124,6 +126,10 @@ impl DailyDungeon {
             1 => DailyRule::Forager,
             _ => DailyRule::Daredevil,
         };
+        Self::new_with_rule(seed, rule)
+    }
+
+    pub fn new_with_rule(seed: u64, rule: DailyRule) -> Self {
         let mut dungeon = Self {
             challenge: seed as u32 % 10_000,
             player: 0,

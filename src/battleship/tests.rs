@@ -148,3 +148,10 @@ fn hint_falls_back_to_a_checkerboard_cell_and_ends_cleanly() {
     finished.phase = BattleshipPhase::Won;
     assert_eq!(finished.hint_cell(), None);
 }
+
+#[test]
+fn armada_adds_a_fourth_ship_to_the_existing_fleet() {
+    let game = Battleship::new_with_fleet(59, BattleshipFleet::Armada);
+    assert_eq!(game.ship_count(), 4);
+    assert!(game.ships.iter().any(|ship| *ship == 4));
+}

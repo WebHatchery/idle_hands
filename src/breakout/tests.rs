@@ -130,6 +130,14 @@ fn later_seeded_walls_add_gaps_and_armored_bricks() {
 }
 
 #[test]
+fn alternate_wall_launches_at_the_requested_level() {
+    let game = Breakout::new_with_level(42, 3);
+    assert_eq!(game.level, 3);
+    assert!(game.remaining_bricks() > 0);
+    assert!(game.brick_health.iter().any(|health| *health > 1));
+}
+
+#[test]
 fn armored_bricks_score_each_hit_and_survive_until_health_is_spent() {
     let mut game = Breakout::new(18);
     game.level = 2;

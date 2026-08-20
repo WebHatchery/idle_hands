@@ -11,12 +11,42 @@ pub enum SlidingStatus {
     Won,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
+pub enum SlidingVariant {
+    #[default]
+    Classic,
+    Wanderer,
+    Marathon,
+}
+
+impl SlidingVariant {
+    pub const ALL: [Self; 3] = [Self::Classic, Self::Wanderer, Self::Marathon];
+
+    pub const fn label(self) -> &'static str {
+        match self {
+            Self::Classic => "CLASSIC · 80 SHUFFLES",
+            Self::Wanderer => "WANDERER · 40 SHUFFLES",
+            Self::Marathon => "MARATHON · 140 SHUFFLES",
+        }
+    }
+
+    const fn scramble_steps(self) -> usize {
+        match self {
+            Self::Classic => 80,
+            Self::Wanderer => 40,
+            Self::Marathon => 140,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SlidingPuzzle {
     pub cells: [u8; CELLS],
     pub moves: u16,
     pub seed: u64,
     pub status: SlidingStatus,
+    #[serde(default)]
+    pub variant: SlidingVariant,
     #[serde(skip)]
     undo: Option<([u8; CELLS], u16, SlidingStatus)>,
 }
@@ -29,16 +59,21 @@ impl Default for SlidingPuzzle {
 
 impl SlidingPuzzle {
     pub fn new(seed: u64) -> Self {
+        Self::new_with_variant(seed, SlidingVariant::default())
+    }
+
+    pub fn new_with_variant(seed: u64, variant: SlidingVariant) -> Self {
         let mut game = Self {
             cells: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0],
             moves: 0,
             seed,
             status: SlidingStatus::Playing,
+            variant,
             undo: None,
         };
         let mut source = seed;
         let mut previous = CELLS - 1;
-        for _ in 0..80 {
+        for _ in 0..variant.scramble_steps() {
             source = next_seed(source);
             let blank = game.blank();
             let neighbors = neighbors(blank);

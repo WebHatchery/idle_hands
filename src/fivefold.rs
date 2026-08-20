@@ -67,6 +67,33 @@ pub enum FivefoldStatus {
     Complete,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
+pub enum FivefoldVariant {
+    #[default]
+    Classic,
+    Quick,
+    Wild,
+}
+
+impl FivefoldVariant {
+    pub const ALL: [Self; 3] = [Self::Classic, Self::Quick, Self::Wild];
+
+    pub const fn label(self) -> &'static str {
+        match self {
+            Self::Classic => "CLASSIC · 13 CALLS",
+            Self::Quick => "QUICK · 9 CALLS",
+            Self::Wild => "WILD · 5-FOLD 75",
+        }
+    }
+
+    pub const fn category_limit(self) -> usize {
+        match self {
+            Self::Classic | Self::Wild => Category::ALL.len(),
+            Self::Quick => 9,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Fivefold {
     pub dice: [u8; 5],
@@ -75,6 +102,8 @@ pub struct Fivefold {
     pub scores: [Option<u16>; 13],
     pub status: FivefoldStatus,
     pub seed: u64,
+    #[serde(default)]
+    pub variant: FivefoldVariant,
     #[serde(skip)]
     pub selected_category: Option<Category>,
 }
@@ -87,6 +116,10 @@ impl Default for Fivefold {
 
 impl Fivefold {
     pub fn new(seed: u64) -> Self {
+        Self::new_with_variant(seed, FivefoldVariant::default())
+    }
+
+    pub fn new_with_variant(seed: u64, variant: FivefoldVariant) -> Self {
         Self {
             dice: [0; 5],
             held: [false; 5],
@@ -94,6 +127,7 @@ impl Fivefold {
             scores: [None; 13],
             status: FivefoldStatus::Ready,
             seed,
+            variant,
             selected_category: None,
         }
     }
@@ -122,7 +156,10 @@ impl Fivefold {
         true
     }
     pub fn choose_category(&mut self, category: Category) -> bool {
-        if self.roll_number == 0 || self.scores[category.index()].is_some() {
+        if self.roll_number == 0
+            || category.index() >= self.variant.category_limit()
+            || self.scores[category.index()].is_some()
+        {
             return false;
         }
         self.scores[category.index()] = Some(self.score_for(category));
@@ -130,7 +167,10 @@ impl Fivefold {
         self.held = [false; 5];
         self.roll_number = 0;
         self.selected_category = None;
-        self.status = if self.scores.iter().all(Option::is_some) {
+        self.status = if self.scores[..self.variant.category_limit()]
+            .iter()
+            .all(Option::is_some)
+        {
             FivefoldStatus::Complete
         } else {
             FivefoldStatus::Ready
@@ -191,7 +231,11 @@ impl Fivefold {
             }
             Category::FiveOfKind => {
                 if counts.contains(&5) {
-                    50
+                    if self.variant == FivefoldVariant::Wild {
+                        75
+                    } else {
+                        50
+                    }
                 } else {
                     0
                 }
@@ -203,8 +247,17 @@ impl Fivefold {
         self.scores[..6].iter().flatten().sum()
     }
     pub fn bonus(&self) -> u16 {
-        if self.upper_total() >= 63 {
-            35
+        let target = if self.variant == FivefoldVariant::Quick {
+            45
+        } else {
+            63
+        };
+        if self.upper_total() >= target {
+            if self.variant == FivefoldVariant::Quick {
+                25
+            } else {
+                35
+            }
         } else {
             0
         }
@@ -220,7 +273,9 @@ impl Fivefold {
         let mut best = None;
         let mut best_score = 0;
         for category in Category::ALL {
-            if self.scores[category.index()].is_some() {
+            if category.index() >= self.variant.category_limit()
+                || self.scores[category.index()].is_some()
+            {
                 continue;
             }
             let score = self.score_for(category);

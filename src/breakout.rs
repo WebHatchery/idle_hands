@@ -93,6 +93,10 @@ impl Default for Breakout {
 
 impl Breakout {
     pub fn new(seed: u64) -> Self {
+        Self::new_with_level(seed, 1)
+    }
+
+    pub fn new_with_level(seed: u64, level: u8) -> Self {
         let mut game = Self {
             bricks: vec![false; BRICK_COUNT],
             brick_health: vec![0; BRICK_COUNT],
@@ -104,7 +108,7 @@ impl Breakout {
             score: 0,
             moves: 0,
             lives: STARTING_LIVES,
-            level: 1,
+            level: level.clamp(1, TARGET_LEVEL),
             status: BreakoutStatus::Playing,
             seed,
             control: PaddleMove::Stay,

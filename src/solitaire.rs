@@ -15,6 +15,8 @@ pub enum SolitaireRuleset {
     DrawThreeUnlimited,
 }
 impl SolitaireRuleset {
+    pub const ALL: [Self; 2] = [Self::DrawOneUnlimited, Self::DrawThreeUnlimited];
+
     pub fn draw_count(self) -> usize {
         match self {
             Self::DrawOneUnlimited => 1,

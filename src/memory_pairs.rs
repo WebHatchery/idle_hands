@@ -36,6 +36,40 @@ pub enum MemoryStatus {
     Won,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
+pub enum MemoryVariant {
+    #[default]
+    Classic,
+    Focus,
+    Rush,
+}
+
+impl MemoryVariant {
+    pub const ALL: [Self; 3] = [Self::Classic, Self::Focus, Self::Rush];
+
+    pub const fn label(self) -> &'static str {
+        match self {
+            Self::Classic => "CLASSIC · 1 PEEK",
+            Self::Focus => "FOCUS · NO PEEK",
+            Self::Rush => "RUSH · DOUBLE PENALTY",
+        }
+    }
+
+    const fn peeks(self) -> u8 {
+        match self {
+            Self::Classic | Self::Rush => 1,
+            Self::Focus => 0,
+        }
+    }
+
+    const fn mismatch_penalty(self) -> u32 {
+        match self {
+            Self::Rush => 10,
+            Self::Classic | Self::Focus => 5,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MemoryPairs {
     pub cards: [MemoryCard; CELLS],
@@ -45,6 +79,8 @@ pub struct MemoryPairs {
     pub moves: u16,
     pub seed: u64,
     pub status: MemoryStatus,
+    #[serde(default)]
+    pub variant: MemoryVariant,
     #[serde(default)]
     pub seen: [bool; CELLS],
     #[serde(default)]
@@ -73,6 +109,10 @@ impl Default for MemoryPairs {
 
 impl MemoryPairs {
     pub fn new(seed: u64) -> Self {
+        Self::new_with_variant(seed, MemoryVariant::default())
+    }
+
+    pub fn new_with_variant(seed: u64, variant: MemoryVariant) -> Self {
         let mut pairs = [0u8; CELLS];
         for (index, pair) in pairs.iter_mut().enumerate() {
             *pair = (index / 2) as u8;
@@ -95,12 +135,13 @@ impl MemoryPairs {
             moves: 0,
             seed,
             status: MemoryStatus::Playing,
+            variant,
             seen: [false; CELLS],
             score: 0,
             combo: 0,
             best_combo: 0,
             mistakes: 0,
-            peeks: default_peeks(),
+            peeks: variant.peeks(),
             peeked: [None, None],
             peek_waiting: false,
             history: Vec::new(),
@@ -151,7 +192,7 @@ impl MemoryPairs {
                 self.mismatch_waiting = true;
                 self.combo = 0;
                 self.mistakes = self.mistakes.saturating_add(1);
-                self.score = self.score.saturating_sub(5);
+                self.score = self.score.saturating_sub(self.variant.mismatch_penalty());
             }
         } else {
             self.selected[0] = Some(index);

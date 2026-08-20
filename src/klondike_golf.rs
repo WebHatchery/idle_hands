@@ -10,6 +10,26 @@ pub enum GolfStatus {
     Stuck,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
+pub enum GolfRule {
+    #[default]
+    Classic,
+    Wrap,
+    Relaxed,
+}
+
+impl GolfRule {
+    pub const ALL: [Self; 3] = [Self::Classic, Self::Wrap, Self::Relaxed];
+
+    pub const fn label(self) -> &'static str {
+        match self {
+            Self::Classic => "CLASSIC · ADJACENT RANKS",
+            Self::Wrap => "WRAP · ACE TOUCHES KING",
+            Self::Relaxed => "RELAXED · MATCHING RANKS TOO",
+        }
+    }
+}
+
 type Snapshot = (Vec<Vec<Card>>, Vec<Card>, Vec<Card>, u16, GolfStatus);
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -20,6 +40,8 @@ pub struct KlondikeGolf {
     pub moves: u16,
     pub status: GolfStatus,
     pub seed: u64,
+    #[serde(default)]
+    pub rule: GolfRule,
     #[serde(skip)]
     history: Vec<Snapshot>,
 }
@@ -32,6 +54,10 @@ impl Default for KlondikeGolf {
 
 impl KlondikeGolf {
     pub fn new(seed: u64) -> Self {
+        Self::new_with_rule(seed, GolfRule::default())
+    }
+
+    pub fn new_with_rule(seed: u64, rule: GolfRule) -> Self {
         let (deck, rng) = shuffled_deck(seed, false);
         let mut tableau = vec![Vec::new(); 7];
         let mut cursor = 0;
@@ -53,6 +79,7 @@ impl KlondikeGolf {
             moves: 0,
             status: GolfStatus::Playing,
             seed: rng,
+            rule,
             history: Vec::new(),
         }
     }
@@ -72,7 +99,7 @@ impl KlondikeGolf {
         let Some(waste) = self.waste.last().copied() else {
             return false;
         };
-        if card.rank.abs_diff(waste.rank) != 1 {
+        if !self.rank_is_playable(card.rank, waste.rank) {
             return false;
         }
         self.snapshot();
@@ -132,7 +159,19 @@ impl KlondikeGolf {
         };
         self.waste
             .last()
-            .is_some_and(|waste| card.rank.abs_diff(waste.rank) == 1)
+            .is_some_and(|waste| self.rank_is_playable(card.rank, waste.rank))
+    }
+
+    fn rank_is_playable(&self, card: u8, waste: u8) -> bool {
+        match self.rule {
+            GolfRule::Classic => card.abs_diff(waste) == 1,
+            GolfRule::Wrap => {
+                card.abs_diff(waste) == 1
+                    || (card == 1 && waste == 13)
+                    || (card == 13 && waste == 1)
+            }
+            GolfRule::Relaxed => card.abs_diff(waste) <= 1,
+        }
     }
 
     fn snapshot(&mut self) {

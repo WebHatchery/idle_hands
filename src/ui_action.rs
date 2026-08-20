@@ -32,6 +32,7 @@ pub enum UiAction {
     Game2048Size(crate::game_2048::Game2048Size),
     Undo,
     Restart,
+    CycleGameVariant,
     ConfirmRestart,
     Cancel,
     ToggleSound,
@@ -310,6 +311,7 @@ impl UiAction {
             Self::Open(_)
                 | Self::ContinueGame
                 | Self::Restart
+                | Self::CycleGameVariant
                 | Self::ConfirmRestart
                 | Self::Game2048Size(_)
                 | Self::MineRestart

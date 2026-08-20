@@ -65,6 +65,9 @@ Board, and One Room Roguelike with Misc; Higher or Lower remains a Cards game.
   easy to scan.
 - **Clear classic rules.** Familiar games remain recognisable. Any themed
   presentation is cosmetic and never hides state needed to play.
+- **Visible rule cards.** Every drawer names its active variant in a compact
+  touch control; tapping the card starts the next deterministic ruleset with
+  the same confirmation and save behavior as a fresh round.
 - **Real-time means real-time.** Arcade rounds advance from the frame clock,
   include visible pause controls, and remain fully playable with touch alone.
 - **Deterministic where useful.** Seeded deals and puzzles can be replayed and

@@ -13,6 +13,34 @@ pub enum SpiderSolitaireStatus {
     Won,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
+pub enum SpiderRule {
+    #[default]
+    FourSuit,
+    TwoSuit,
+    OneSuit,
+}
+
+impl SpiderRule {
+    pub const ALL: [Self; 3] = [Self::FourSuit, Self::TwoSuit, Self::OneSuit];
+
+    pub const fn label(self) -> &'static str {
+        match self {
+            Self::FourSuit => "4 SUIT · EXPERT",
+            Self::TwoSuit => "2 SUIT · TACTICAL",
+            Self::OneSuit => "1 SUIT · STUDY",
+        }
+    }
+
+    const fn suit_count(self) -> u8 {
+        match self {
+            Self::FourSuit => 4,
+            Self::TwoSuit => 2,
+            Self::OneSuit => 1,
+        }
+    }
+}
+
 type Snapshot = (Vec<Vec<Card>>, Vec<Card>, u8, u32, SpiderSolitaireStatus);
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -24,6 +52,8 @@ pub struct SpiderSolitaire {
     pub moves: u32,
     pub status: SpiderSolitaireStatus,
     pub seed: u64,
+    #[serde(default)]
+    pub rule: SpiderRule,
     #[serde(skip)]
     history: Vec<Snapshot>,
 }
@@ -36,11 +66,16 @@ impl Default for SpiderSolitaire {
 
 impl SpiderSolitaire {
     pub fn new(seed: u64) -> Self {
+        Self::new_with_rule(seed, SpiderRule::default())
+    }
+
+    pub fn new_with_rule(seed: u64, rule: SpiderRule) -> Self {
         let (mut deck, first_seed) = shuffled_deck(seed, false);
         let (second_deck, shuffled_seed) = shuffled_deck(first_seed, false);
         deck.extend(second_deck);
-        for card in &mut deck {
+        for (index, card) in deck.iter_mut().enumerate() {
             card.face_up = false;
+            card.suit = (index as u8) % rule.suit_count();
         }
         let mut tableau = vec![Vec::new(); COLUMNS];
         let mut cursor = 0;
@@ -63,6 +98,7 @@ impl SpiderSolitaire {
             moves: 0,
             status: SpiderSolitaireStatus::Playing,
             seed: shuffled_seed,
+            rule,
             history: Vec::new(),
         }
     }

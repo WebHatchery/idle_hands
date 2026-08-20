@@ -13,6 +13,31 @@ pub enum SpiderStatus {
     Won,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
+pub enum SpiderMode {
+    #[default]
+    OneSuit,
+    TwoSuit,
+}
+
+impl SpiderMode {
+    pub const ALL: [Self; 2] = [Self::OneSuit, Self::TwoSuit];
+
+    pub const fn label(self) -> &'static str {
+        match self {
+            Self::OneSuit => "ONE SUIT · STUDY",
+            Self::TwoSuit => "TWO SUIT · TACTICAL",
+        }
+    }
+
+    const fn suit_count(self) -> u8 {
+        match self {
+            Self::OneSuit => 1,
+            Self::TwoSuit => 2,
+        }
+    }
+}
+
 type SpiderSnapshot = (Vec<Vec<Card>>, Vec<Card>, u8, u32, SpiderStatus);
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -24,6 +49,8 @@ pub struct Spider {
     pub moves: u32,
     pub status: SpiderStatus,
     pub seed: u64,
+    #[serde(default)]
+    pub mode: SpiderMode,
     #[serde(skip)]
     history: Vec<SpiderSnapshot>,
 }
@@ -36,12 +63,16 @@ impl Default for Spider {
 
 impl Spider {
     pub fn new(seed: u64) -> Self {
+        Self::new_with_mode(seed, SpiderMode::default())
+    }
+
+    pub fn new_with_mode(seed: u64, mode: SpiderMode) -> Self {
         let mut deck = Vec::with_capacity(SUITS * RUN);
-        for _ in 0..SUITS {
+        for copy in 0..SUITS {
             for rank in 1..=RUN as u8 {
                 deck.push(Card {
                     rank,
-                    suit: 0,
+                    suit: (copy as u8) % mode.suit_count(),
                     face_up: false,
                 });
             }
@@ -72,6 +103,7 @@ impl Spider {
             moves: 0,
             status: SpiderStatus::Playing,
             seed: rng,
+            mode,
             history: Vec::new(),
         }
     }
@@ -175,7 +207,12 @@ impl Spider {
             return;
         }
         let start = stack.len() - RUN;
-        if is_complete_run(&stack[start..]) {
+        let complete = if self.mode == SpiderMode::OneSuit {
+            is_complete_run(&stack[start..])
+        } else {
+            is_complete_run_for_mode(&stack[start..], self.mode)
+        };
+        if complete {
             stack.truncate(start);
             self.completed += 1;
             if self.completed == SUITS as u8 {
@@ -206,8 +243,13 @@ pub fn is_run(cards: &[Card]) -> bool {
 }
 
 pub fn is_complete_run(cards: &[Card]) -> bool {
+    is_complete_run_for_mode(cards, SpiderMode::OneSuit)
+}
+
+fn is_complete_run_for_mode(cards: &[Card], _mode: SpiderMode) -> bool {
     cards.len() == RUN
-        && cards.iter().all(|card| card.face_up && card.suit == 0)
+        && cards.iter().all(|card| card.face_up)
+        && cards.windows(2).all(|pair| pair[0].suit == pair[1].suit)
         && cards
             .windows(2)
             .all(|pair| pair[0].rank == pair[1].rank + 1)

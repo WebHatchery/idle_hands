@@ -198,7 +198,15 @@ pub fn draw_freecell(state: &AppState) {
     for cell in 0..4 {
         let rect = card_rect(8. + cell as f32 * 84., 30., 72., 75.);
         panel(rect, Color::new(0.12, 0.09, 0.20, 1.));
-        if let Some(card) = game.cells[cell] {
+        if cell >= game.variant.free_cell_limit() {
+            text(
+                "SEALED",
+                rect.x + 17.,
+                rect.y + 42.,
+                9.,
+                crate::theme::SECONDARY,
+            );
+        } else if let Some(card) = game.cells[cell] {
             draw_card(
                 rect,
                 card,
@@ -291,7 +299,9 @@ pub fn freecell_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         return vec![UiAction::FreeCellNew];
     }
     for cell in 0..4 {
-        if card_rect(8. + cell as f32 * 84., 30., 72., 75.).contains(p) {
+        if cell < state.freecell.variant.free_cell_limit()
+            && card_rect(8. + cell as f32 * 84., 30., 72., 75.).contains(p)
+        {
             return vec![UiAction::FreeCellCell(cell)];
         }
     }
@@ -393,6 +403,7 @@ pub fn draw_fivefold(state: &AppState) {
         .enumerate()
     {
         let y = 97. + slot as f32 * 44.;
+        let available = index < game.variant.category_limit();
         let score = game.scores[index].map_or_else(
             || {
                 if game.roll_number > 0 {
@@ -403,14 +414,34 @@ pub fn draw_fivefold(state: &AppState) {
             },
             |value| value.to_string(),
         );
-        if game.scores[index].is_none() && game.roll_number > 0 {
+        if available && game.scores[index].is_none() && game.roll_number > 0 {
             panel(
                 Rect::new(515., y - 31., 300., 40.),
                 Color::new(0.14, 0.10, 0.22, 1.),
             );
         }
-        text(category.label(), 525., y, 11., WHITE);
-        text(&score, 790., y, 10., crate::theme::BRASS);
+        text(
+            category.label(),
+            525.,
+            y,
+            11.,
+            if available {
+                WHITE
+            } else {
+                crate::theme::SECONDARY
+            },
+        );
+        text(
+            if available { score.as_str() } else { "LOCKED" },
+            780.,
+            y,
+            10.,
+            if available {
+                crate::theme::BRASS
+            } else {
+                crate::theme::SECONDARY
+            },
+        );
     }
     page_button(Rect::new(515., 306., 92., 44.), "PREV");
     page_button(Rect::new(617., 306., 92., 44.), "NEXT");
@@ -459,7 +490,8 @@ pub fn fivefold_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         .take(5)
         .enumerate()
     {
-        if crate::ui::hit(Rect::new(515., 66. + slot as f32 * 44., 300., 40.), p)
+        if index < state.fivefold.variant.category_limit()
+            && crate::ui::hit(Rect::new(515., 66. + slot as f32 * 44., 300., 40.), p)
             && state.fivefold.scores[index].is_none()
         {
             return vec![UiAction::FivefoldCategory(*category)];
