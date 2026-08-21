@@ -130,8 +130,9 @@ pub fn draw(state: &AppState) {
     let game = &state.games.one_room_roguelike;
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
+    let (compact_title_x, compact_status_x) = compact_header_positions();
     let title_x = if compact {
-        70.
+        compact_title_x
     } else if portrait {
         10.
     } else {
@@ -152,7 +153,7 @@ pub fn draw(state: &AppState) {
         muted(),
     );
     text(
-        if compact {
+        if compact || portrait {
             "ROOM ROGUE"
         } else {
             "ONE ROOM ROGUELIKE"
@@ -172,6 +173,14 @@ pub fn draw(state: &AppState) {
             game.potions,
             game.score
         )
+    } else if portrait {
+        format!(
+            "{}  •  HP {}/{}  •  P {}",
+            game.hero_class.label(),
+            game.health,
+            game.max_health(),
+            game.potions
+        )
     } else {
         format!(
             "{}  •  Room {} / {}  •  Health {} / {}  •  Potions {}  •  Score {}",
@@ -186,7 +195,7 @@ pub fn draw(state: &AppState) {
     };
     text(
         &run_status,
-        if compact { 430. } else { title_x },
+        if compact { compact_status_x } else { title_x },
         if compact { 28. } else { title_y + 24. },
         accessibility::text_size(body_size(), state.large_text),
         muted(),
@@ -417,13 +426,15 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 }
 
 fn title_size() -> f32 {
-    if crate::ui::is_compact_landscape() {
+    if crate::ui::is_compact_landscape() || crate::ui::is_portrait() {
         20.
-    } else if crate::ui::is_portrait() {
-        22.
     } else {
         28.
     }
+}
+
+fn compact_header_positions() -> (f32, f32) {
+    (82., 280.)
 }
 
 fn body_size() -> f32 {
@@ -461,3 +472,6 @@ fn muted() -> Color {
 fn line_color(high_contrast: bool) -> Color {
     accessibility::grid_line(high_contrast)
 }
+
+#[cfg(test)]
+mod tests;

@@ -139,7 +139,9 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
-    let scoreline = if compact || screen_width() < 360. {
+    let scoreline = if portrait {
+        format!("{}/6 • {} left", game.moves, game.remaining_words().len())
+    } else if compact || screen_width() < 360. {
         format!(
             "{}/6 • {} left • {}",
             game.moves,
@@ -156,7 +158,11 @@ pub fn draw(state: &AppState) {
     };
     crate::ui::draw_text(
         scoreline,
-        if compact { 430. } else { title_x },
+        if compact {
+            compact_scoreline_position().0
+        } else {
+            title_x
+        },
         if compact { 28. } else { title_y + 24. },
         accessibility::text_size(body_size(), state.large_text),
         muted(),
@@ -170,7 +176,7 @@ pub fn draw(state: &AppState) {
     button(l.new_game, "NEW WORD", state.large_text);
     mode_button(l.mode, game.mode.label(), state.large_text);
     let (status_x, status_y) = if portrait {
-        (title_x, 497.)
+        portrait_scoreline_position()
     } else if compact {
         (300., 220.)
     } else {
@@ -387,3 +393,14 @@ fn muted() -> Color {
 fn line_color(high_contrast: bool) -> Color {
     accessibility::grid_line(high_contrast)
 }
+
+fn portrait_scoreline_position() -> (f32, f32) {
+    (12., 100.)
+}
+
+fn compact_scoreline_position() -> (f32, f32) {
+    (280., 28.)
+}
+
+#[cfg(test)]
+mod tests;
