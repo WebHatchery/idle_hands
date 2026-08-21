@@ -166,7 +166,7 @@ pub fn draw(state: &AppState) {
             state.card_hint.as_deref().unwrap_or("Next card hidden")
         ),
         origin.x,
-        if portrait { 475. } else { 350. },
+        round_summary_y(compact, portrait),
         accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
@@ -258,6 +258,29 @@ fn compact_status_text(status: BlackjackStatus, player: u8) -> String {
         BlackjackStatus::Push => format!("Push • {}", player),
     }
 }
+
+fn round_summary_y(compact: bool, portrait: bool) -> f32 {
+    if portrait {
+        475.
+    } else if compact {
+        350.
+    } else {
+        370.
+    }
+}
+
+#[cfg(test)]
+fn player_hand_bottom(compact: bool, portrait: bool) -> f32 {
+    let origin_y = if compact {
+        66.
+    } else if portrait {
+        112.
+    } else {
+        88.
+    };
+    origin_y + if portrait { 202. } else { 170. } + 88.
+}
+
 fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());

@@ -14,3 +14,10 @@ fn portrait_blackjack_status_uses_compact_copy() {
     );
     assert!(status_line_text(BlackjackStatus::Playing, 13, 17, false, false).contains("dealer"));
 }
+
+#[test]
+fn round_summary_stays_below_the_player_hand() {
+    for (compact, portrait) in [(true, false), (false, true), (false, false)] {
+        assert!(round_summary_y(compact, portrait) >= player_hand_bottom(compact, portrait) + 12.);
+    }
+}
