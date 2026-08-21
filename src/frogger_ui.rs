@@ -24,17 +24,7 @@ struct Layout {
 
 fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
-        Layout {
-            board: Rect::new(12., 42., 288., 288.),
-            cell: 24.,
-            up: Rect::new(320., 74., 70., 42.),
-            left: Rect::new(320., 122., 70., 42.),
-            down: Rect::new(320., 170., 70., 42.),
-            right: Rect::new(320., 218., 70., 42.),
-            pause: Rect::new(400., 122., 82., 42.),
-            undo: Rect::new(400., 170., 82., 42.),
-            new_game: Rect::new(400., 218., 82., 42.),
-        }
+        compact_layout()
     } else if crate::ui::is_portrait() {
         Layout {
             board: Rect::new(10., 102., 330., 330.),
@@ -60,6 +50,24 @@ fn layout() -> Layout {
             new_game: Rect::new(950., 294., 100., 42.),
         }
     }
+}
+
+fn compact_layout() -> Layout {
+    Layout {
+        board: Rect::new(12., 56., 288., 288.),
+        cell: 24.,
+        up: Rect::new(320., 74., 70., 42.),
+        left: Rect::new(320., 122., 70., 42.),
+        down: Rect::new(320., 170., 70., 42.),
+        right: Rect::new(320., 218., 70., 42.),
+        pause: Rect::new(400., 122., 82., 42.),
+        undo: Rect::new(400., 170., 82., 42.),
+        new_game: Rect::new(400., 218., 82., 42.),
+    }
+}
+
+fn compact_header() -> (f32, f32, f32, f32) {
+    (120., 30., 120., 46.)
 }
 
 pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
@@ -95,19 +103,13 @@ pub fn draw(state: &AppState) {
     let game = &state.games.frogger;
     let portrait = crate::ui::is_portrait();
     let compact = crate::ui::is_compact_landscape();
-    let title_x = if compact {
-        12.
+    let (title_x, title_y, status_x, header_status_y) = if compact {
+        let (title_x, title_y, status_x, status_y) = compact_header();
+        (title_x, title_y, status_x, status_y)
     } else if portrait {
-        10.
+        (10., 68., 10., 93.)
     } else {
-        350.
-    };
-    let title_y = if compact {
-        26.
-    } else if portrait {
-        68.
-    } else {
-        60.
+        (350., 60., 350., 85.)
     };
     text("‹ CABINET", 8., 30., 13., muted());
     text("FROGGER", title_x, title_y, title_size(), accent());
@@ -119,8 +121,12 @@ pub fn draw(state: &AppState) {
             game.score,
             game.lives
         ),
-        if compact { 12. } else { title_x },
-        if compact { 26. } else { title_y + 25. },
+        status_x,
+        if compact {
+            header_status_y
+        } else {
+            title_y + 25.
+        },
         body_size(),
         muted(),
     );
@@ -173,7 +179,7 @@ pub fn draw(state: &AppState) {
         if portrait {
             442.
         } else if compact {
-            344.
+            356.
         } else {
             560.
         },
@@ -271,3 +277,6 @@ fn muted() -> Color {
 fn back_rect() -> Rect {
     Rect::new(0., 0., 110., 42.)
 }
+
+#[cfg(test)]
+mod tests;

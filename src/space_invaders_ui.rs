@@ -22,16 +22,7 @@ struct Layout {
 
 fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
-        Layout {
-            board: Rect::new(12., 48., 440., 264.),
-            cell: 22.,
-            left: Rect::new(465., 80., 82., 44.),
-            right: Rect::new(465., 132., 82., 44.),
-            fire: Rect::new(465., 184., 82., 44.),
-            pause: Rect::new(465., 236., 82., 36.),
-            undo: Rect::new(465., 278., 82., 36.),
-            new_game: Rect::new(465., 318., 82., 36.),
-        }
+        compact_layout()
     } else if crate::ui::is_portrait() {
         Layout {
             board: Rect::new(10., 104., 340., 204.),
@@ -55,6 +46,23 @@ fn layout() -> Layout {
             new_game: Rect::new(1080., 324., 172., 42.),
         }
     }
+}
+
+fn compact_layout() -> Layout {
+    Layout {
+        board: Rect::new(12., 54., 440., 264.),
+        cell: 22.,
+        left: Rect::new(465., 80., 82., 44.),
+        right: Rect::new(465., 132., 82., 44.),
+        fire: Rect::new(465., 184., 82., 44.),
+        pause: Rect::new(465., 236., 82., 36.),
+        undo: Rect::new(465., 278., 82., 36.),
+        new_game: Rect::new(465., 318., 82., 36.),
+    }
+}
+
+fn compact_header() -> (f32, f32, f32, f32) {
+    (120., 30., 120., 45.)
 }
 
 pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
@@ -90,7 +98,8 @@ pub fn draw(state: &AppState) {
     let l = layout();
     let game = &state.games.space_invaders;
     let (title_x, title_y) = if crate::ui::is_compact_landscape() {
-        (18., 30.)
+        let (title_x, title_y, _, _) = compact_header();
+        (title_x, title_y)
     } else if crate::ui::is_portrait() {
         (10., 68.)
     } else {
@@ -107,12 +116,12 @@ pub fn draw(state: &AppState) {
             game.lives
         ),
         if crate::ui::is_compact_landscape() {
-            18.
+            compact_header().2
         } else {
             title_x
         },
         if crate::ui::is_compact_landscape() {
-            43.
+            compact_header().3
         } else {
             title_y + 25.
         },
@@ -314,3 +323,6 @@ fn muted() -> Color {
 fn back_rect() -> Rect {
     Rect::new(0., 0., 115., 42.)
 }
+
+#[cfg(test)]
+mod tests;
