@@ -50,7 +50,7 @@ fn layout() -> Layout {
             hint: Rect::new(235., 420., 100., 44.),
             undo: Rect::new(15., 700., 100., 44.),
             new_game: Rect::new(125., 700., 150., 44.),
-            mode: Rect::new(285., 700., 90., 44.),
+            mode: Rect::new(285., 700., 75., 44.),
         }
     } else {
         Layout {

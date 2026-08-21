@@ -283,7 +283,9 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
 fn title_size() -> f32 {
-    if crate::ui::is_portrait() || crate::ui::is_compact_landscape() {
+    if crate::ui::is_portrait() {
+        20.
+    } else if crate::ui::is_compact_landscape() {
         22.
     } else {
         24.

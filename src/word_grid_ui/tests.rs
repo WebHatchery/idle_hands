@@ -19,3 +19,12 @@ fn compact_scoreline_stays_before_the_rule_card() {
     assert_eq!(scoreline_y, 28.);
     assert!(scoreline_x + 190. < rule_card_x);
 }
+
+#[test]
+fn portrait_mode_button_stays_inside_the_logical_viewport() {
+    crate::ui::with_portrait_layout(|| {
+        let mode = layout().mode;
+        assert!(mode.x >= 0.);
+        assert!(mode.right() <= crate::responsive_ui::WIDTH);
+    });
+}
