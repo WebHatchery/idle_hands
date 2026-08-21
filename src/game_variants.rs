@@ -99,6 +99,34 @@ pub fn label(state: &AppState, game: GameId) -> String {
         GameId::Pyramid => state.games.pyramid.draw_rule.label().to_owned(),
         GameId::TriPeaks => format!("TRIPEAKS · {:?}", state.games.tri_peaks.rule).to_uppercase(),
         GameId::Nim => format!("NIM · {:?}", state.games.nim.rule).to_uppercase(),
+        GameId::SpaceInvaders => format!("INVADERS · {}", state.games.space_invaders.mode_label()),
+        GameId::Asteroids => format!("ASTEROIDS · {}", state.games.asteroids.mode_label()),
+        GameId::Frogger => format!("FROGGER · {}", state.games.frogger.mode_label()),
+        GameId::MunchMaze => format!("MUNCH MAZE · {}", state.games.munch_maze.mode_label()),
+        GameId::BlockStack => format!("BLOCK STACK · {}", state.games.block_stack.mode_label()),
+        GameId::TerrainCannon => format!(
+            "TERRAIN CANNON · {}",
+            state.games.terrain_cannon.mode_label()
+        ),
+        GameId::FlingFury => format!("FLING FURY · {}", state.games.fling_fury.mode_label()),
+        GameId::PaddleDuel => format!("PADDLE DUEL · {}", state.games.paddle_duel.mode_label()),
+        GameId::RiddleRoom => format!(
+            "RIDDLE ROOM · {}",
+            misc_variant(state.games.riddle_room.seed)
+        ),
+        GameId::PatternVault => format!(
+            "PATTERN VAULT · {}",
+            misc_variant(state.games.pattern_vault.seed)
+        ),
+        GameId::SumCircuit => format!(
+            "SUM CIRCUIT · {}",
+            misc_variant(state.games.sum_circuit.seed)
+        ),
+        GameId::OrbitOrder => format!(
+            "ORBIT ORDER · {}",
+            misc_variant(state.games.orbit_order.seed)
+        ),
+        GameId::WordForge => format!("WORD FORGE · {}", misc_variant(state.games.word_forge.seed)),
     }
 }
 
@@ -561,6 +589,42 @@ pub fn cycle(state: &mut AppState, data: &GameData, game: GameId) {
                 .nim
                 .set_rule(next(&all, state.games.nim.rule), seed(state.games.nim.seed));
         }
+        GameId::SpaceInvaders => state.games.space_invaders.cycle_mode(),
+        GameId::Asteroids => state.games.asteroids.cycle_mode(),
+        GameId::Frogger => state.games.frogger.cycle_mode(),
+        GameId::MunchMaze => state.games.munch_maze.cycle_mode(),
+        GameId::BlockStack => state.games.block_stack.cycle_mode(),
+        GameId::TerrainCannon => state.games.terrain_cannon.cycle_mode(),
+        GameId::FlingFury => state.games.fling_fury.cycle_mode(),
+        GameId::PaddleDuel => state.games.paddle_duel.cycle_mode(),
+        GameId::RiddleRoom => {
+            let seed = state.games.riddle_room.seed;
+            state.games.riddle_room.reset(seed.wrapping_add(1));
+        }
+        GameId::PatternVault => {
+            let seed = state.games.pattern_vault.seed;
+            state.games.pattern_vault.reset(seed.wrapping_add(1));
+        }
+        GameId::SumCircuit => {
+            let seed = state.games.sum_circuit.seed;
+            state.games.sum_circuit.reset(seed.wrapping_add(1));
+        }
+        GameId::OrbitOrder => {
+            let seed = state.games.orbit_order.seed;
+            state.games.orbit_order.reset(seed.wrapping_add(1));
+        }
+        GameId::WordForge => {
+            let seed = state.games.word_forge.seed;
+            state.games.word_forge.reset(seed.wrapping_add(1));
+        }
+    }
+}
+
+fn misc_variant(seed: u64) -> &'static str {
+    if seed.is_multiple_of(2) {
+        "TWIST"
+    } else {
+        "CLASSIC"
     }
 }
 

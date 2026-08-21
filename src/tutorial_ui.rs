@@ -333,6 +333,71 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
             "Change exactly one letter; the outlined tile shows which letter changed.",
             "Climb DIRECT or visit the SCENIC waypoint; use HINT, multi-step UNDO, or NEW LADDER.",
         ],
+        GameId::SpaceInvaders => [
+            "Tap LEFT or RIGHT to line up your ship with the descending fleet.",
+            "Tap FIRE to launch a shot; PAUSE stops the moving formation.",
+            "Clear three waves, or use UNDO and NEW WAVE with the visible controls.",
+        ],
+        GameId::Asteroids => [
+            "Tap LEFT or RIGHT to steer around the drifting rocks.",
+            "Tap FIRE to split an asteroid before it reaches your ship.",
+            "Reach the score target; PAUSE, UNDO, and NEW FIELD stay visible.",
+        ],
+        GameId::Frogger => [
+            "Tap the visible arrow controls to move the frog through traffic.",
+            "Cars keep moving while you plan each crossing.",
+            "Reach the far bank three times; PAUSE, UNDO, and NEW CROSSING stay visible.",
+        ],
+        GameId::MunchMaze => [
+            "Tap UP, DOWN, LEFT, or RIGHT to guide the runner through the maze.",
+            "Collect every glowing pellet while the patrols move in real time.",
+            "Use PAUSE, UNDO, or NEW MAZE with the visible controls.",
+        ],
+        GameId::BlockStack => [
+            "Tap LEFT or RIGHT to position the falling block.",
+            "Tap ROTATE or DROP; clear twenty lines to finish the stack.",
+            "PAUSE, UNDO, and NEW STACK stay visible below the board.",
+        ],
+        GameId::TerrainCannon => [
+            "Tap ANGLE − / + and POWER − / + to set the launch.",
+            "Tap FIRE; every impact removes a chunk from the terrain.",
+            "Use PAUSE, UNDO, or NEW HILLS with the visible controls.",
+        ],
+        GameId::FlingFury => [
+            "Tap ANGLE − / + and POWER − / + to aim the sling.",
+            "Tap FLING to send a physics shot through blocks and targets.",
+            "Use PAUSE, UNDO, or NEW FORT with the visible controls.",
+        ],
+        GameId::PaddleDuel => [
+            "Tap UP or DOWN to move your paddle.",
+            "Return the ball and score seven points before the cabinet does.",
+            "Use PAUSE, UNDO, or NEW MATCH with the visible controls.",
+        ],
+        GameId::RiddleRoom => [
+            "Read the clue and tap one of the four visible answers.",
+            "A correct answer opens the next cabinet riddle; HINT names the answer.",
+            "Solve five clues. Use UNDO or NEW ROUND whenever you need a fresh start.",
+        ],
+        GameId::PatternVault => [
+            "Read the visible number sequence and tap its next value.",
+            "The clue line explains the pattern family; HINT reveals the next value.",
+            "Solve five sequences. Use UNDO or NEW ROUND whenever you need recovery.",
+        ],
+        GameId::SumCircuit => [
+            "Tap three tiles whose values add up to the visible target.",
+            "The selected total is shown below the puzzle; tap CLEAR to change it.",
+            "Complete four targets. Use HINT, UNDO, or NEW ROUND with visible controls.",
+        ],
+        GameId::OrbitOrder => [
+            "Tap two numbered planets to swap their positions.",
+            "Restore positions one through five from left to right.",
+            "Use HINT, UNDO, or NEW ROUND when a swap needs correcting.",
+        ],
+        GameId::WordForge => [
+            "Tap the scrambled letters in the order that forms a word.",
+            "Your current word appears above the letters; tap CLEAR to start it again.",
+            "Forge five words. Use HINT, UNDO, or NEW ROUND with visible controls.",
+        ],
     }
 }
 

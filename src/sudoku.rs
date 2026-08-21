@@ -68,7 +68,10 @@ impl Sudoku {
         Self::with_difficulty(SudokuDifficulty::Medium)
     }
     pub fn with_difficulty(difficulty: SudokuDifficulty) -> Self {
-        let mut rng = SeededRng::new(random_u64());
+        Self::with_difficulty_and_seed(difficulty, random_u64())
+    }
+    pub fn with_difficulty_and_seed(difficulty: SudokuDifficulty, seed: u64) -> Self {
+        let mut rng = SeededRng::new(seed);
         let puzzle = randomized_puzzle(difficulty.source(), &mut rng);
         assert_eq!(
             count_solutions(&puzzle, 2),

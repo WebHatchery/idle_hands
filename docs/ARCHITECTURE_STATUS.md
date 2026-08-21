@@ -1,7 +1,7 @@
 # Architecture audit status
 
 The ten items from the 2026-08-20 senior architecture audit are complete for
-the current closed 47-game collection. The project remains an enum-owned host,
+the current closed 60-game collection. The project remains an enum-owned host,
 but its boundaries are now explicit and tested.
 
 1. `AppState` owns shell/profile state; `GameStore` owns all game rules and

@@ -75,6 +75,14 @@ pub fn clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Game(GameId::MahjongSolitaire) => crate::mahjong_solitaire_ui::clicks(state, p),
         Screen::Game(GameId::Snake) => crate::snake_ui::clicks(state, p),
         Screen::Game(GameId::Breakout) => crate::breakout_ui::clicks(state, p),
+        Screen::Game(GameId::SpaceInvaders) => crate::space_invaders_ui::clicks(state, p),
+        Screen::Game(GameId::Asteroids) => crate::asteroids_ui::clicks(state, p),
+        Screen::Game(GameId::Frogger) => crate::frogger_ui::clicks(state, p),
+        Screen::Game(GameId::MunchMaze) => crate::munch_maze_ui::clicks(state, p),
+        Screen::Game(GameId::BlockStack) => crate::block_stack_ui::clicks(state, p),
+        Screen::Game(GameId::TerrainCannon) => crate::terrain_cannon_ui::clicks(state, p),
+        Screen::Game(GameId::FlingFury) => crate::fling_fury_ui::clicks(state, p),
+        Screen::Game(GameId::PaddleDuel) => crate::paddle_duel_ui::clicks(state, p),
         Screen::Game(GameId::HigherLower) => crate::higher_lower_ui::clicks(state, p),
         Screen::Game(GameId::KlondikeGolf) => crate::klondike_golf_ui::clicks(state, p),
         Screen::Game(GameId::Blackjack) => crate::blackjack_ui::clicks(state, p),
@@ -101,6 +109,11 @@ pub fn clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Game(GameId::MazeWalk) => crate::maze_walk_ui::clicks(state, p),
         Screen::Game(GameId::MatchThree) => crate::match_three_ui::clicks(state, p),
         Screen::Game(GameId::Mastermind) => crate::mastermind_ui::clicks(state, p),
+        Screen::Game(GameId::RiddleRoom)
+        | Screen::Game(GameId::PatternVault)
+        | Screen::Game(GameId::SumCircuit)
+        | Screen::Game(GameId::OrbitOrder)
+        | Screen::Game(GameId::WordForge) => crate::misc_ui::clicks(state, p),
         _ => Vec::new(),
     }
 }
@@ -176,6 +189,14 @@ pub fn draw(state: &AppState) {
         Screen::Game(GameId::MahjongSolitaire) => crate::mahjong_solitaire_ui::draw(state),
         Screen::Game(GameId::Snake) => crate::snake_ui::draw(state),
         Screen::Game(GameId::Breakout) => crate::breakout_ui::draw(state),
+        Screen::Game(GameId::SpaceInvaders) => crate::space_invaders_ui::draw(state),
+        Screen::Game(GameId::Asteroids) => crate::asteroids_ui::draw(state),
+        Screen::Game(GameId::Frogger) => crate::frogger_ui::draw(state),
+        Screen::Game(GameId::MunchMaze) => crate::munch_maze_ui::draw(state),
+        Screen::Game(GameId::BlockStack) => crate::block_stack_ui::draw(state),
+        Screen::Game(GameId::TerrainCannon) => crate::terrain_cannon_ui::draw(state),
+        Screen::Game(GameId::FlingFury) => crate::fling_fury_ui::draw(state),
+        Screen::Game(GameId::PaddleDuel) => crate::paddle_duel_ui::draw(state),
         Screen::Game(GameId::HigherLower) => crate::higher_lower_ui::draw(state),
         Screen::Game(GameId::KlondikeGolf) => crate::klondike_golf_ui::draw(state),
         Screen::Game(GameId::Blackjack) => crate::blackjack_ui::draw(state),
@@ -202,6 +223,11 @@ pub fn draw(state: &AppState) {
         Screen::Game(GameId::MazeWalk) => crate::maze_walk_ui::draw(state),
         Screen::Game(GameId::MatchThree) => crate::match_three_ui::draw(state),
         Screen::Game(GameId::Mastermind) => crate::mastermind_ui::draw(state),
+        Screen::Game(GameId::RiddleRoom)
+        | Screen::Game(GameId::PatternVault)
+        | Screen::Game(GameId::SumCircuit)
+        | Screen::Game(GameId::OrbitOrder)
+        | Screen::Game(GameId::WordForge) => crate::misc_ui::draw(state),
         _ => {}
     }
 }

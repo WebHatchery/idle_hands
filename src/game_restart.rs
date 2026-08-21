@@ -30,6 +30,14 @@ pub(super) fn requires_new_confirmation(action: UiAction) -> bool {
             | UiAction::MahjongSolitaireNew
             | UiAction::SnakeNew
             | UiAction::SnakeMode(_)
+            | UiAction::SpaceInvadersNew
+            | UiAction::AsteroidsNew
+            | UiAction::FroggerNew
+            | UiAction::MunchNew
+            | UiAction::BlockNew
+            | UiAction::CannonNew
+            | UiAction::FlingNew
+            | UiAction::PaddleNew
             | UiAction::BreakoutNew
             | UiAction::HigherLowerNew
             | UiAction::HigherLowerRule(_)
@@ -75,5 +83,6 @@ pub(super) fn requires_new_confirmation(action: UiAction) -> bool {
             | UiAction::MatchThreeDifficulty(_)
             | UiAction::WordLadderNew
             | UiAction::WordLadderMode(_)
+            | UiAction::MiscNew
     )
 }

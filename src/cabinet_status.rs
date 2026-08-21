@@ -54,6 +54,19 @@ pub fn status(state: &AppState, game: GameId) -> &'static str {
         GameId::TriPeaks => state.records.tri_peaks_best_moves.is_some(),
         GameId::Nim => state.records.nim_best_moves.is_some(),
         GameId::WordLadder => state.records.word_ladder_best_moves.is_some(),
+        GameId::SpaceInvaders => state.records.space_invaders_best_score.is_some(),
+        GameId::Asteroids => state.records.asteroids_best_score.is_some(),
+        GameId::Frogger => state.records.frogger_best_score.is_some(),
+        GameId::MunchMaze => state.records.munch_maze_best_score.is_some(),
+        GameId::BlockStack => state.records.block_stack_best_score.is_some(),
+        GameId::TerrainCannon => state.records.terrain_cannon_best_score.is_some(),
+        GameId::FlingFury => state.records.fling_fury_best_score.is_some(),
+        GameId::PaddleDuel => state.records.paddle_duel_best_score.is_some(),
+        GameId::RiddleRoom => state.records.misc_best_moves[0].is_some(),
+        GameId::PatternVault => state.records.misc_best_moves[1].is_some(),
+        GameId::SumCircuit => state.records.misc_best_moves[2].is_some(),
+        GameId::OrbitOrder => state.records.misc_best_moves[3].is_some(),
+        GameId::WordForge => state.records.misc_best_moves[4].is_some(),
     };
     if complete {
         "COMPLETE"
@@ -151,6 +164,19 @@ fn has_progress(state: &AppState, game: GameId) -> bool {
         GameId::TriPeaks => state.games.tri_peaks.moves > 0,
         GameId::Nim => state.games.nim.moves > 0,
         GameId::WordLadder => state.games.word_ladder.moves > 0,
+        GameId::SpaceInvaders => state.games.space_invaders.moves > 0,
+        GameId::Asteroids => state.games.asteroids.moves > 0,
+        GameId::Frogger => state.games.frogger.moves > 0,
+        GameId::MunchMaze => state.games.munch_maze.moves > 0,
+        GameId::BlockStack => state.games.block_stack.moves > 0,
+        GameId::TerrainCannon => state.games.terrain_cannon.moves > 0,
+        GameId::FlingFury => state.games.fling_fury.moves > 0,
+        GameId::PaddleDuel => state.games.paddle_duel.moves > 0,
+        GameId::RiddleRoom => state.games.riddle_room.moves > 0,
+        GameId::PatternVault => state.games.pattern_vault.moves > 0,
+        GameId::SumCircuit => state.games.sum_circuit.moves > 0,
+        GameId::OrbitOrder => state.games.orbit_order.moves > 0,
+        GameId::WordForge => state.games.word_forge.moves > 0,
     }
 }
 

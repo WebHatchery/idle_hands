@@ -461,6 +461,109 @@ impl Game {
                     }),
             );
         }
+        if self.state.games.space_invaders.status == crate::space_invaders::SpaceInvadersStatus::Won
+        {
+            records.space_invaders_best_score = Some(
+                records
+                    .space_invaders_best_score
+                    .map_or(self.state.games.space_invaders.score, |best| {
+                        best.max(self.state.games.space_invaders.score)
+                    }),
+            );
+        }
+        if self.state.games.asteroids.status == crate::asteroids::AsteroidsStatus::Won {
+            records.asteroids_best_score = Some(
+                records
+                    .asteroids_best_score
+                    .map_or(self.state.games.asteroids.score, |best| {
+                        best.max(self.state.games.asteroids.score)
+                    }),
+            );
+        }
+        if self.state.games.frogger.status == crate::frogger::FroggerStatus::Won {
+            records.frogger_best_score = Some(
+                records
+                    .frogger_best_score
+                    .map_or(self.state.games.frogger.score, |best| {
+                        best.max(self.state.games.frogger.score)
+                    }),
+            );
+        }
+        if self.state.games.munch_maze.status == crate::munch_maze::MunchStatus::Won {
+            records.munch_maze_best_score = Some(
+                records
+                    .munch_maze_best_score
+                    .map_or(u32::from(self.state.games.munch_maze.score), |best| {
+                        best.max(u32::from(self.state.games.munch_maze.score))
+                    }),
+            );
+        }
+        if self.state.games.block_stack.status == crate::block_stack::BlockStatus::Won {
+            records.block_stack_best_score = Some(
+                records
+                    .block_stack_best_score
+                    .map_or(self.state.games.block_stack.score, |best| {
+                        best.max(self.state.games.block_stack.score)
+                    }),
+            );
+        }
+        if self.state.games.terrain_cannon.status == crate::terrain_cannon::CannonStatus::Won {
+            records.terrain_cannon_best_score = Some(
+                records
+                    .terrain_cannon_best_score
+                    .map_or(u32::from(self.state.games.terrain_cannon.score), |best| {
+                        best.max(u32::from(self.state.games.terrain_cannon.score))
+                    }),
+            );
+        }
+        if self.state.games.fling_fury.status == crate::fling_fury::FlingStatus::Won {
+            records.fling_fury_best_score = Some(
+                records
+                    .fling_fury_best_score
+                    .map_or(u32::from(self.state.games.fling_fury.score), |best| {
+                        best.max(u32::from(self.state.games.fling_fury.score))
+                    }),
+            );
+        }
+        if self.state.games.paddle_duel.status == crate::paddle_duel::PaddleStatus::Won {
+            records.paddle_duel_best_score = Some(records.paddle_duel_best_score.map_or(
+                u32::from(self.state.games.paddle_duel.player_score),
+                |best| best.max(u32::from(self.state.games.paddle_duel.player_score)),
+            ));
+        }
+        for (index, complete) in [
+            self.state.games.riddle_room.won(),
+            self.state.games.pattern_vault.won(),
+            self.state.games.sum_circuit.won(),
+            self.state.games.orbit_order.won(),
+            self.state.games.word_forge.won(),
+        ]
+        .into_iter()
+        .enumerate()
+        {
+            if complete {
+                records.misc_best_moves[index] = Some(records.misc_best_moves[index].map_or(
+                    [
+                        self.state.games.riddle_room.moves,
+                        self.state.games.pattern_vault.moves,
+                        self.state.games.sum_circuit.moves,
+                        self.state.games.orbit_order.moves,
+                        self.state.games.word_forge.moves,
+                    ][index],
+                    |best| {
+                        best.min(
+                            [
+                                self.state.games.riddle_room.moves,
+                                self.state.games.pattern_vault.moves,
+                                self.state.games.sum_circuit.moves,
+                                self.state.games.orbit_order.moves,
+                                self.state.games.word_forge.moves,
+                            ][index],
+                        )
+                    },
+                ));
+            }
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,
@@ -491,7 +594,17 @@ impl Game {
 pub(super) fn is_timed_game(game: GameId) -> bool {
     !matches!(
         game,
-        GameId::Snake | GameId::Breakout | GameId::TinyTowerDefence
+        GameId::Snake
+            | GameId::Breakout
+            | GameId::TinyTowerDefence
+            | GameId::SpaceInvaders
+            | GameId::Asteroids
+            | GameId::Frogger
+            | GameId::MunchMaze
+            | GameId::BlockStack
+            | GameId::TerrainCannon
+            | GameId::FlingFury
+            | GameId::PaddleDuel
     )
 }
 
@@ -577,6 +690,21 @@ fn round_is_complete(state: &crate::state::AppState, game: GameId) -> bool {
         GameId::WordLadder => {
             state.games.word_ladder.phase == crate::word_ladder::WordLadderPhase::Won
         }
-        GameId::Snake | GameId::Breakout | GameId::TinyTowerDefence => false,
+        GameId::RiddleRoom => state.games.riddle_room.won(),
+        GameId::PatternVault => state.games.pattern_vault.won(),
+        GameId::SumCircuit => state.games.sum_circuit.won(),
+        GameId::OrbitOrder => state.games.orbit_order.won(),
+        GameId::WordForge => state.games.word_forge.won(),
+        GameId::Snake
+        | GameId::Breakout
+        | GameId::TinyTowerDefence
+        | GameId::SpaceInvaders
+        | GameId::Asteroids
+        | GameId::Frogger => false,
+        GameId::MunchMaze
+        | GameId::BlockStack
+        | GameId::TerrainCannon
+        | GameId::FlingFury
+        | GameId::PaddleDuel => false,
     }
 }

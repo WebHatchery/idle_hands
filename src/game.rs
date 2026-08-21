@@ -15,6 +15,8 @@ use macroquad::prelude::*;
 use macroquad_toolkit::assets::AssetManager;
 use macroquad_toolkit::notifications::NotificationManager;
 
+#[path = "game_arcade_actions.rs"]
+mod game_arcade_actions;
 #[path = "game_board_actions.rs"]
 mod game_board_actions;
 #[path = "game_capture.rs"]

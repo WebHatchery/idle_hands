@@ -10,6 +10,9 @@ fn fresh_seed(previous: u64) -> u64 {
 
 impl Game {
     pub(super) fn apply_game_action(&mut self, action: &UiAction) -> bool {
+        if super::game_arcade_actions::apply(self, action) {
+            return true;
+        }
         match action {
             UiAction::CycleGameVariant => {
                 if let crate::state::Screen::Game(game) = self.state.screen {
@@ -96,44 +99,6 @@ impl Game {
             UiAction::MahjongSolitaireNew => {
                 let seed = self.state.games.mahjong_solitaire.seed.wrapping_add(1);
                 self.state.games.mahjong_solitaire.reset(seed);
-            }
-            UiAction::SnakeStep(direction) => {
-                self.state.games.snake.set_direction(*direction);
-            }
-            UiAction::SnakeMode(mode) => {
-                let seed = self.state.games.snake.seed.wrapping_add(1);
-                self.state.games.snake = crate::snake::Snake::new_with_mode(seed, *mode);
-            }
-            UiAction::SnakePause => {
-                self.state.games.snake.toggle_pause();
-            }
-            UiAction::SnakeHint => {
-                self.state.card_hint = Some(crate::card_hints::snake(&self.state));
-                return true;
-            }
-            UiAction::SnakeUndo => {
-                self.state.games.snake.undo();
-            }
-            UiAction::SnakeNew => {
-                let seed = self.state.games.snake.seed.wrapping_add(1);
-                self.state.games.snake.reset(seed);
-            }
-            UiAction::BreakoutStep(movement) => {
-                self.state.games.breakout.set_control(*movement);
-            }
-            UiAction::BreakoutPause => {
-                self.state.games.breakout.toggle_pause();
-            }
-            UiAction::BreakoutHint => {
-                self.state.card_hint = Some(crate::card_hints::breakout(&self.state));
-                return true;
-            }
-            UiAction::BreakoutUndo => {
-                self.state.games.breakout.undo();
-            }
-            UiAction::BreakoutNew => {
-                let seed = self.state.games.breakout.seed.wrapping_add(1);
-                self.state.games.breakout.reset(seed);
             }
             UiAction::HigherLowerGuess(guess) => {
                 self.state.games.higher_lower.guess(*guess);
@@ -649,9 +614,62 @@ impl Game {
                     &self.data.puzzles.match_three,
                 );
             }
+            UiAction::MiscTap(index) => {
+                if let Some(game) = self.active_misc_game_mut() {
+                    game.tap(*index);
+                }
+            }
+            UiAction::MiscSubmit => {
+                if let Some(game) = self.active_misc_game_mut() {
+                    game.submit();
+                }
+            }
+            UiAction::MiscClear => {
+                if let Some(game) = self.active_misc_game_mut() {
+                    game.clear_selection();
+                }
+            }
+            UiAction::MiscHint => {
+                if let Some(game) = self.active_misc_game_mut() {
+                    self.state.card_hint = Some(game.hint());
+                }
+                return true;
+            }
+            UiAction::MiscUndo => {
+                if let Some(game) = self.active_misc_game_mut() {
+                    game.undo();
+                }
+            }
+            UiAction::MiscNew => {
+                if let Some(game) = self.active_misc_game_mut() {
+                    let seed = game.seed.wrapping_add(1);
+                    game.reset(seed);
+                }
+            }
             _ => return false,
         }
         true
+    }
+
+    fn active_misc_game_mut(&mut self) -> Option<&mut crate::misc_games::MiscGame> {
+        match self.state.screen {
+            crate::state::Screen::Game(crate::state::GameId::RiddleRoom) => {
+                Some(&mut self.state.games.riddle_room)
+            }
+            crate::state::Screen::Game(crate::state::GameId::PatternVault) => {
+                Some(&mut self.state.games.pattern_vault)
+            }
+            crate::state::Screen::Game(crate::state::GameId::SumCircuit) => {
+                Some(&mut self.state.games.sum_circuit)
+            }
+            crate::state::Screen::Game(crate::state::GameId::OrbitOrder) => {
+                Some(&mut self.state.games.orbit_order)
+            }
+            crate::state::Screen::Game(crate::state::GameId::WordForge) => {
+                Some(&mut self.state.games.word_forge)
+            }
+            _ => None,
+        }
     }
 
     pub(super) fn finish_action(

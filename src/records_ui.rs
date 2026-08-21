@@ -241,6 +241,38 @@ pub fn draw_records(state: &AppState) {
             "Word Ladder best",
             value(state.records.word_ladder_best_moves.map(u32::from)),
         ),
+        (
+            "Space Invaders best",
+            value(state.records.space_invaders_best_score.map(u32::from)),
+        ),
+        (
+            "Asteroids best",
+            value(state.records.asteroids_best_score.map(u32::from)),
+        ),
+        (
+            "Frogger best",
+            value(state.records.frogger_best_score.map(u32::from)),
+        ),
+        (
+            "Munch Maze best",
+            value(state.records.munch_maze_best_score),
+        ),
+        (
+            "Block Stack best",
+            value(state.records.block_stack_best_score),
+        ),
+        (
+            "Terrain Cannon best",
+            value(state.records.terrain_cannon_best_score),
+        ),
+        (
+            "Fling Fury best",
+            value(state.records.fling_fury_best_score),
+        ),
+        (
+            "Paddle Duel best",
+            value(state.records.paddle_duel_best_score),
+        ),
     ];
     let mut rows = Vec::new();
     rows.extend(left);

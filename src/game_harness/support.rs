@@ -1,0 +1,53 @@
+use crate::data::GameData;
+use crate::game_descriptor;
+use crate::game_variants;
+use crate::state::{AppState, GameId, Screen};
+use crate::state_snapshots::GameSnapshot;
+
+const HARNESS_SEED: u64 = 0x1D1E_5EED_6000_0001;
+
+pub fn assert_game_contract(game: GameId) {
+    let data = GameData::load().expect("embedded game data should load");
+    let descriptor = game_descriptor::descriptor(game);
+    assert_eq!(descriptor.id, game);
+    assert_eq!(descriptor.index, game.index());
+    assert!(descriptor.active);
+    assert!(descriptor.has_variants);
+    assert!(!descriptor.title.is_empty());
+    assert!(!descriptor.subtitle.is_empty());
+
+    let mut first = AppState::new_random(&data, HARNESS_SEED);
+    let second = AppState::new_random(&data, HARNESS_SEED);
+    first.screen = Screen::Game(game);
+    first.selected = game.index();
+
+    let first_snapshot = GameSnapshot::from_state(&first, game);
+    let second_snapshot = GameSnapshot::from_state(&second, game);
+    assert_eq!(
+        serde_json::to_value(&first_snapshot).unwrap(),
+        serde_json::to_value(&second_snapshot).unwrap(),
+        "{} should start deterministically",
+        game.title()
+    );
+
+    let before_cycle = serde_json::to_value(&first_snapshot).unwrap();
+    game_variants::cycle(&mut first, &data, game);
+    assert_eq!(first.screen, Screen::Game(game));
+    assert_eq!(first.selected, game.index());
+    let after_cycle = serde_json::to_value(GameSnapshot::from_state(&first, game)).unwrap();
+    assert_ne!(
+        before_cycle,
+        after_cycle,
+        "{} variant did not change",
+        game.title()
+    );
+
+    let mut restored = AppState::new(&data);
+    GameSnapshot::from_state(&first, game).apply_to(&mut restored);
+    assert_eq!(
+        after_cycle,
+        serde_json::to_value(GameSnapshot::from_state(&restored, game)).unwrap(),
+        "{} snapshot did not round-trip",
+        game.title()
+    );
+}

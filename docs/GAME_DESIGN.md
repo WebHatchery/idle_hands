@@ -15,7 +15,7 @@ The primary devices are iPhone and iPad in a browser. Desktop browsers and the
 Windows build retain pointer and optional keyboard support, but the complete
 experience is designed around taps, holds, and swipes.
 
-The shipped cabinet currently contains 47 playable games. The eight titles in
+The shipped cabinet currently contains 60 playable games. The eight titles in
 Section 4 are the launch foundation; the post-launch additions are listed in
 Section 11 and share the same persistence, tutorial, records, and responsive
 touch contracts.
@@ -32,9 +32,11 @@ touch contracts.
    puzzles, and cosmetic stamps add continuity without obligation.
 5. **Rules before decoration.** Art and animation reinforce state; they never
    obscure legal moves, marks, values, or scoring.
-6. **Arcade rounds are live.** Snake, Breakout, and Tiny Tower Defence advance
-   from elapsed time, expose visible pause/resume controls, and never require a
-   keyboard or repeated taps to keep the simulation moving.
+6. **Arcade rounds are live.** Snake, Breakout, Tiny Tower Defence, Space
+   Invaders, Asteroids, Frogger, Munch Maze, Block Stack, Terrain Cannon, Fling
+   Fury, and Paddle Duel advance from elapsed time, expose visible
+   pause/resume controls, and never require a keyboard or repeated taps to keep
+   the simulation moving.
 
 ## 3. Collection Loop
 
@@ -46,7 +48,7 @@ touch contracts.
 6. Optionally inspect records, rules, or cosmetic stamps.
 
 The Records screen keeps the collection view legible with a compact summary of
-stamps, achievements, and completed drawers out of the full 47-game cabinet.
+stamps, achievements, and completed drawers out of the full 60-game cabinet.
 Every drawer has its own completion achievement, in addition to first-finish
 and full-cabinet collection awards. The Records screen opens a responsive
 ACHIEVEMENTS shelf so earned and locked awards remain inspectable without
@@ -210,16 +212,99 @@ Checkers, Peg Solitaire, Mahjong Solitaire, Snake, Breakout, Higher or Lower,
 Klondike Golf, Blackjack, Spider Solitaire, Dungeon Sweeper, Potion 2048, Tiny
 Tower Defence, One Room Roguelike, Daily Dungeon, Dots & Boxes, Sokoban,
 Mancala, Hanoi, Number Match, Flood It, Color Sort, Battleship, Word Grid,
-Pipe Loop, Maze Walk, Match Three, Pyramid, TriPeaks, Nim, and Word Ladder.
+Pipe Loop, Maze Walk, Match Three, Pyramid, TriPeaks, Nim, Word Ladder, Space
+Invaders, Asteroids, Frogger, Munch Maze, Block Stack, Terrain Cannon, Fling
+Fury, and Paddle Duel.
+
+Five original puzzle drawers round out Misc: Riddle Room, Pattern Vault, Sum
+Circuit, Orbit Order, and Word Forge.
 
 The former candidate list is now represented in the shipped cabinet. Ongoing
 post-launch work focuses on polish, accessibility, balance, and additional
 cabinet ideas only when they improve the quiet, touch-first collection.
 
-The cabinet's Arcade shelf is intentionally narrow: Snake, Breakout, and Tiny
-Tower Defence are the continuously moving games. Dungeon Sweeper is grouped
-with Logic, Battleship with Board, and One Room Roguelike with Misc. Higher or
-Lower remains grouped with Cards.
+The cabinet's Arcade shelf now includes eleven continuously moving games: Snake,
+Breakout, Tiny Tower Defence, Space Invaders, Asteroids, Frogger, Munch Maze,
+Block Stack, Terrain Cannon, Fling Fury, and Paddle Duel. Dungeon Sweeper is
+grouped with Logic, Battleship with Board, and One Room Roguelike with Misc.
+Higher or Lower remains grouped with Cards.
+
+### 11.29 Misc puzzle rooms
+
+Riddle Room presents five short cabinet riddles with four visible answers. A
+correct answer advances the room; HINT names the answer and UNDO restores the
+previous choice. Pattern Vault presents five seeded arithmetic, multiplication,
+or growing-gap sequences and asks the player to tap the next value.
+
+Sum Circuit asks the player to select three visible number tiles whose total
+matches the target, with the live selected total and CLEAR control making the
+recovery path explicit. Orbit Order is a five-card swap puzzle: tap two
+planets to exchange them until positions one through five are restored. Word
+Forge presents five deterministic anagrams; tap each letter once and SUBMIT
+the resulting word. Every room has HINT, UNDO, CLEAR, SUBMIT, and NEW ROUND
+targets where relevant, so touch play never depends on a keyboard.
+
+### 11.5 Space Invaders
+
+Space Invaders is a three-wave formation run. The ship slides across the bottom
+lane with visible LEFT and RIGHT controls while FIRE launches one readable shot
+at a time. The formation changes direction at the field edge, descends when it
+turns, and periodically returns fire. CADET and ACE rule cards change the
+formation density while the player carries three lives through the run.
+
+### 11.6 Asteroids
+
+Asteroids is a compact score chase with a fixed touch-safe ship lane. LEFT and
+RIGHT wrap the ship around the field; FIRE sends a shot upward to split large
+rocks into smaller targets. DRIFT and DENSE rule cards change the opening field
+pressure. The round advances from the frame clock, pauses visibly, and ends at
+the score target or after three collisions.
+
+### 11.7 Frogger
+
+Frogger turns the cabinet into a moving-lane crossing. UP, DOWN, LEFT, and RIGHT
+are visible arrow targets, cars continue moving between taps, and each safe
+arrival at the far bank resets the frog for another crossing. CLASSIC and RUSH
+rule cards change car width. Three successful crossings win; three collisions
+lose the run.
+
+### 11.8 Munch Maze
+
+Munch Maze is a compact pellet chase with a fixed maze, four patrols, and three
+lives. UP, DOWN, LEFT, and RIGHT are visible controls; patrols continue moving
+from the frame clock between taps. Clearing every glowing pellet wins the run,
+while a patrol collision costs a life. PATROL and PURSUIT rule cards change the
+pressure without changing the touch contract.
+
+### 11.9 Block Stack
+
+Block Stack is a touch-first falling-block puzzle. LEFT, RIGHT, ROTATE, and DROP
+remain visible beside the board, and gravity continues from elapsed time. Filled
+rows clear for points, the level rises every five cleared rows, and twenty lines
+finish the run. CLASSIC and RUSH cards change the fall pressure.
+
+### 11.10 Terrain Cannon
+
+Terrain Cannon is a solo artillery puzzle. The player adjusts ANGLE and POWER,
+then fires across a seeded hillside. A projectile follows a readable arc and
+each terrain impact raises a five-column crater, so later shots visibly reshape
+the route. Three direct target hits win the run; PAUSE, UNDO, and NEW HILLS stay
+visible throughout.
+
+### 11.11 Fling Fury
+
+Fling Fury is a sling-shot physics puzzle with five visible shots, breakable
+blocks, and green targets. ANGLE, POWER, and FLING are explicit controls. Shots
+bounce, damage blocks, and remove targets through deterministic frame-driven
+physics; clearing the fort wins, while running out of shots loses. WOODPILE and
+IRON FORT variants add a second structure.
+
+### 11.12 Paddle Duel
+
+Paddle Duel is a touch-first cabinet rally against a deterministic opponent. UP
+and DOWN move the player's paddle while the ball rebounds from both paddles and
+the top and bottom rails. The first side to seven points ends the match. CASUAL
+and RALLY cards change ball speed, with PAUSE, UNDO, and NEW MATCH always visible.
 
 ### 11.1 Match Three depth pass
 
@@ -629,4 +714,4 @@ The original eight-game launch scope established the current product principles:
 - Rules, rendering, input, and shared profile state remain separate.
 
 The eight-game scope is retained here as historical context; the current
-playable scope is the 47-game cabinet listed in Sections 1 and 11.
+playable scope is the 60-game cabinet listed in Sections 1 and 11.

@@ -75,6 +75,15 @@ fn full_cabinet_counts_every_playable_game() {
     records.tri_peaks_best_moves = Some(28);
     records.nim_best_moves = Some(10);
     records.word_ladder_best_moves = Some(5);
+    records.space_invaders_best_score = Some(120);
+    records.asteroids_best_score = Some(120);
+    records.frogger_best_score = Some(75);
+    records.munch_maze_best_score = Some(100);
+    records.block_stack_best_score = Some(1000);
+    records.terrain_cannon_best_score = Some(300);
+    records.fling_fury_best_score = Some(200);
+    records.paddle_duel_best_score = Some(7);
+    records.misc_best_moves = [Some(5), Some(5), Some(4), Some(8), Some(5)];
 
     assert_eq!(completed_games(&records), GameId::ALL.len());
     assert!(earned(&records, AchievementId::FullCabinet));

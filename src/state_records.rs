@@ -98,6 +98,24 @@ pub struct CollectionRecords {
     pub nim_best_moves: Option<u16>,
     #[serde(default)]
     pub word_ladder_best_moves: Option<u16>,
+    #[serde(default)]
+    pub space_invaders_best_score: Option<u16>,
+    #[serde(default)]
+    pub asteroids_best_score: Option<u16>,
+    #[serde(default)]
+    pub frogger_best_score: Option<u16>,
+    #[serde(default)]
+    pub munch_maze_best_score: Option<u32>,
+    #[serde(default)]
+    pub block_stack_best_score: Option<u32>,
+    #[serde(default)]
+    pub terrain_cannon_best_score: Option<u32>,
+    #[serde(default)]
+    pub fling_fury_best_score: Option<u32>,
+    #[serde(default)]
+    pub paddle_duel_best_score: Option<u32>,
+    #[serde(default)]
+    pub misc_best_moves: [Option<u16>; 5],
 }
 
 impl CollectionRecords {

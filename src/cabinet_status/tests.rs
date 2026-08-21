@@ -43,6 +43,6 @@ fn category_filters_partition_the_whole_collection() {
     assert_eq!(filter_count(&state, 4), 10);
     assert_eq!(filter_count(&state, 5), 9);
     assert_eq!(filter_count(&state, 6), 7);
-    assert_eq!(filter_count(&state, 7), 3);
-    assert_eq!(filter_count(&state, 8), 6);
+    assert_eq!(filter_count(&state, 7), 11);
+    assert_eq!(filter_count(&state, 8), 11);
 }

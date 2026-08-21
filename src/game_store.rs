@@ -4,8 +4,10 @@
 //! compatibility bridge for the existing game UI and reducers; new code should
 //! use `state.games` when it needs to make ownership explicit.
 
+use crate::asteroids::Asteroids;
 use crate::battleship::Battleship;
 use crate::blackjack::Blackjack;
+use crate::block_stack::BlockStack;
 use crate::breakout::Breakout;
 use crate::checkers::Checkers;
 use crate::color_sort::ColorSort;
@@ -14,8 +16,10 @@ use crate::daily_dungeon::DailyDungeon;
 use crate::dots_boxes::DotsBoxes;
 use crate::dungeon_sweeper::DungeonSweeper;
 use crate::fivefold::Fivefold;
+use crate::fling_fury::FlingFury;
 use crate::flood_it::FloodIt;
 use crate::freecell::FreeCell;
+use crate::frogger::Frogger;
 use crate::game_2048::Game2048;
 use crate::hangman::Hangman;
 use crate::hanoi::Hanoi;
@@ -29,10 +33,13 @@ use crate::match_three::MatchThree;
 use crate::maze_walk::MazeWalk;
 use crate::memory_pairs::MemoryPairs;
 use crate::minesweeper::Minesweeper;
+use crate::misc_games::{MiscGame, MiscKind};
+use crate::munch_maze::MunchMaze;
 use crate::nim::Nim;
 use crate::nonogram::Nonogram;
 use crate::number_match::NumberMatch;
 use crate::one_room_roguelike::OneRoomRoguelike;
+use crate::paddle_duel::PaddleDuel;
 use crate::peg_solitaire::PegSolitaire;
 use crate::pipe_loop::PipeLoop;
 use crate::potion_2048::Potion2048;
@@ -42,9 +49,11 @@ use crate::sliding_puzzle::SlidingPuzzle;
 use crate::snake::Snake;
 use crate::sokoban::Sokoban;
 use crate::solitaire::{CardSource, Solitaire};
+use crate::space_invaders::SpaceInvaders;
 use crate::spider::Spider;
 use crate::spider_solitaire::SpiderSolitaire;
 use crate::sudoku::Sudoku;
+use crate::terrain_cannon::TerrainCannon;
 use crate::tic_tac_toe::TicTacToe;
 use crate::tiny_tower_defence::TinyTowerDefence;
 use crate::tri_peaks::TriPeaks;
@@ -104,6 +113,19 @@ pub struct GameStore {
     pub tri_peaks: TriPeaks,
     pub nim: Nim,
     pub word_ladder: WordLadder,
+    pub space_invaders: SpaceInvaders,
+    pub asteroids: Asteroids,
+    pub frogger: Frogger,
+    pub munch_maze: MunchMaze,
+    pub block_stack: BlockStack,
+    pub terrain_cannon: TerrainCannon,
+    pub fling_fury: FlingFury,
+    pub paddle_duel: PaddleDuel,
+    pub riddle_room: MiscGame,
+    pub pattern_vault: MiscGame,
+    pub sum_circuit: MiscGame,
+    pub orbit_order: MiscGame,
+    pub word_forge: MiscGame,
 }
 
 impl Default for GameStore {
@@ -159,6 +181,19 @@ impl Default for GameStore {
             tri_peaks: TriPeaks::default(),
             nim: Nim::default(),
             word_ladder: WordLadder::default(),
+            space_invaders: SpaceInvaders::default(),
+            asteroids: Asteroids::default(),
+            frogger: Frogger::default(),
+            munch_maze: MunchMaze::default(),
+            block_stack: BlockStack::default(),
+            terrain_cannon: TerrainCannon::default(),
+            fling_fury: FlingFury::default(),
+            paddle_duel: PaddleDuel::default(),
+            riddle_room: MiscGame::new(0x4D49_5343_0001, MiscKind::RiddleRoom),
+            pattern_vault: MiscGame::new(0x4D49_5343_0002, MiscKind::PatternVault),
+            sum_circuit: MiscGame::new(0x4D49_5343_0003, MiscKind::SumCircuit),
+            orbit_order: MiscGame::new(0x4D49_5343_0004, MiscKind::OrbitOrder),
+            word_forge: MiscGame::new(0x4D49_5343_0005, MiscKind::WordForge),
         }
     }
 }

@@ -5,7 +5,7 @@ iPad, desktop browsers, and Windows. Its home screen is a warmly illustrated
 drawer cabinet: each physical object opens a different game, from a deck of
 cards to a dice cup or a little wooden minefield.
 
-The current build is a playable 47-game cabinet with persistent sessions,
+The current build is a playable 60-game cabinet with persistent sessions,
 records, tutorials, responsive touch layouts, and post-launch refinements.
 TODO.md records the completed launch foundation and ongoing collection work.
 
@@ -30,12 +30,19 @@ Mahjong Solitaire, Snake, Breakout, Higher or Lower, Klondike Golf, Blackjack,
 Spider Solitaire, Dungeon Sweeper, Potion 2048, Tiny Tower Defence, One Room
 Roguelike, Daily Dungeon, Dots & Boxes, Sokoban, Mancala, Hanoi, Number Match,
 Flood It, Color Sort, Battleship, Word Grid, Pipe Loop, Maze Walk, Match Three,
-Pyramid, TriPeaks, Nim, and Word Ladder.
+Pyramid, TriPeaks, Nim, Word Ladder, Space Invaders, Asteroids, Frogger, Munch
+Maze, Block Stack, Terrain Cannon, Fling Fury, Paddle Duel, Riddle Room,
+Pattern Vault, Sum Circuit, Orbit Order, and Word Forge.
 
 The cabinet groups the collection into Cards, Logic, Board, Word, Arcade, and
 Misc. Arcade is reserved for the continuously moving games: Snake, Breakout,
-and Tiny Tower Defence. Dungeon Sweeper belongs with Logic, Battleship with
-Board, and One Room Roguelike with Misc; Higher or Lower remains a Cards game.
+Tiny Tower Defence, Space Invaders, Asteroids, Frogger, Munch Maze, Block Stack,
+Terrain Cannon, Fling Fury, and Paddle Duel. Dungeon Sweeper belongs with
+Logic, Battleship with Board, and One Room Roguelike with Misc; Higher or Lower remains a
+Cards game.
+
+Misc also includes five original puzzle drawers: Riddle Room, Pattern Vault,
+Sum Circuit, Orbit Order, and Word Forge.
 
 ## Product Principles
 
@@ -97,7 +104,7 @@ Board, and One Room Roguelike with Misc; Higher or Lower remains a Cards game.
 Project code keeps game rules independent of rendering and input so seeded
 sessions can be tested without opening a window. Shared collection code owns the
 cabinet, navigation, settings, profile, persistence envelope, and common UI;
-each of the 47 games owns its rules, state, commands, and board rendering.
+each of the 60 games owns its rules, state, commands, and board rendering.
 
 ## Validation
 
@@ -112,7 +119,13 @@ During implementation, focused checks may also use:
 ```powershell
 cargo test -p idle_hands
 cargo clippy -p idle_hands --all-targets --all-features -- -D warnings
+.\scripts\test_game_suites.ps1
 ```
+
+`test_game_suites.ps1` runs one independently filterable host-contract suite
+for each of the 60 catalog games, checks the suite registry against `GameId`,
+and then runs the complete Rust test set. Pass `-TargetDir target-codex` when a
+separate local Cargo target directory is needed.
 
 The publisher builds and validates the native and WebGL targets. Verification
 screenshots belong directly in `docs/verification/` and should be replaced when

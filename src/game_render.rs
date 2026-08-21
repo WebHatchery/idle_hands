@@ -45,6 +45,14 @@ impl Game {
             crate::state::GameId::Snake
                 | crate::state::GameId::Breakout
                 | crate::state::GameId::TinyTowerDefence
+                | crate::state::GameId::SpaceInvaders
+                | crate::state::GameId::Asteroids
+                | crate::state::GameId::Frogger
+                | crate::state::GameId::MunchMaze
+                | crate::state::GameId::BlockStack
+                | crate::state::GameId::TerrainCannon
+                | crate::state::GameId::FlingFury
+                | crate::state::GameId::PaddleDuel
         ) {
             return;
         }

@@ -11,7 +11,7 @@ pub enum AchievementId {
 }
 
 impl AchievementId {
-    pub const ALL: [Self; 49] = [
+    pub const ALL: [Self; 62] = [
         Self::FirstFinish,
         Self::Game(GameId::Solitaire),
         Self::Game(GameId::FreeCell),
@@ -60,6 +60,19 @@ impl AchievementId {
         Self::Game(GameId::TriPeaks),
         Self::Game(GameId::Nim),
         Self::Game(GameId::WordLadder),
+        Self::Game(GameId::SpaceInvaders),
+        Self::Game(GameId::Asteroids),
+        Self::Game(GameId::Frogger),
+        Self::Game(GameId::MunchMaze),
+        Self::Game(GameId::BlockStack),
+        Self::Game(GameId::TerrainCannon),
+        Self::Game(GameId::FlingFury),
+        Self::Game(GameId::PaddleDuel),
+        Self::Game(GameId::RiddleRoom),
+        Self::Game(GameId::PatternVault),
+        Self::Game(GameId::SumCircuit),
+        Self::Game(GameId::OrbitOrder),
+        Self::Game(GameId::WordForge),
         Self::FullCabinet,
     ];
 
@@ -114,6 +127,19 @@ impl AchievementId {
                 GameId::TriPeaks => "Peak keeper",
                 GameId::Nim => "Stone keeper",
                 GameId::WordLadder => "Ladder keeper",
+                GameId::SpaceInvaders => "Sky keeper",
+                GameId::Asteroids => "Orbit keeper",
+                GameId::Frogger => "Crossing keeper",
+                GameId::MunchMaze => "Maze keeper",
+                GameId::BlockStack => "Stack keeper",
+                GameId::TerrainCannon => "Terrain keeper",
+                GameId::FlingFury => "Fort keeper",
+                GameId::PaddleDuel => "Rally keeper",
+                GameId::RiddleRoom => "Riddle keeper",
+                GameId::PatternVault => "Pattern keeper",
+                GameId::SumCircuit => "Circuit keeper",
+                GameId::OrbitOrder => "Orbit keeper",
+                GameId::WordForge => "Forge keeper",
             },
             Self::FullCabinet => "Full cabinet",
         }
@@ -190,6 +216,19 @@ fn game_complete(records: &CollectionRecords, game: GameId) -> bool {
         GameId::TriPeaks => records.tri_peaks_best_moves.is_some(),
         GameId::Nim => records.nim_best_moves.is_some(),
         GameId::WordLadder => records.word_ladder_best_moves.is_some(),
+        GameId::SpaceInvaders => records.space_invaders_best_score.is_some(),
+        GameId::Asteroids => records.asteroids_best_score.is_some(),
+        GameId::Frogger => records.frogger_best_score.is_some(),
+        GameId::MunchMaze => records.munch_maze_best_score.is_some(),
+        GameId::BlockStack => records.block_stack_best_score.is_some(),
+        GameId::TerrainCannon => records.terrain_cannon_best_score.is_some(),
+        GameId::FlingFury => records.fling_fury_best_score.is_some(),
+        GameId::PaddleDuel => records.paddle_duel_best_score.is_some(),
+        GameId::RiddleRoom => records.misc_best_moves[0].is_some(),
+        GameId::PatternVault => records.misc_best_moves[1].is_some(),
+        GameId::SumCircuit => records.misc_best_moves[2].is_some(),
+        GameId::OrbitOrder => records.misc_best_moves[3].is_some(),
+        GameId::WordForge => records.misc_best_moves[4].is_some(),
     }
 }
 

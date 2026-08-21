@@ -629,6 +629,7 @@ pub fn is_hint(action: crate::ui::UiAction) -> bool {
             | crate::ui::UiAction::PipeHint
             | crate::ui::UiAction::MazeHint
             | crate::ui::UiAction::MatchThreeHint
+            | crate::ui::UiAction::MiscHint
             | crate::ui::UiAction::WordLadderHint
     )
 }

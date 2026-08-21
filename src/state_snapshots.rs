@@ -1,23 +1,31 @@
 //! Independent active-game snapshot storage.
 
+use crate::asteroids::Asteroids;
 use crate::battleship::Battleship;
+use crate::block_stack::BlockStack;
 use crate::color_sort::ColorSort;
 use crate::daily_dungeon::DailyDungeon;
 use crate::dots_boxes::DotsBoxes;
 use crate::dungeon_sweeper::DungeonSweeper;
+use crate::fling_fury::FlingFury;
 use crate::flood_it::FloodIt;
+use crate::frogger::Frogger;
 use crate::hanoi::Hanoi;
 use crate::mancala::Mancala;
 use crate::match_three::MatchThree;
 use crate::maze_walk::MazeWalk;
+use crate::misc_games::{MiscGame, MiscKind};
+use crate::munch_maze::MunchMaze;
 use crate::nim::Nim;
 use crate::number_match::NumberMatch;
 use crate::one_room_roguelike::OneRoomRoguelike;
+use crate::paddle_duel::PaddleDuel;
 use crate::pipe_loop::PipeLoop;
 use crate::potion_2048::Potion2048;
 use crate::pyramid::Pyramid;
 use crate::state::Game2048;
 use crate::state::{AppState, GameId};
+use crate::terrain_cannon::TerrainCannon;
 use crate::tiny_tower_defence::TinyTowerDefence;
 use crate::tri_peaks::TriPeaks;
 use crate::word_ladder::WordLadder;
@@ -28,8 +36,8 @@ use crate::{
     mastermind::Mastermind, memory_pairs::MemoryPairs, minesweeper::Minesweeper,
     nonogram::Nonogram, peg_solitaire::PegSolitaire, reversi::Reversi,
     sliding_puzzle::SlidingPuzzle, snake::Snake, sokoban::Sokoban, solitaire::Solitaire,
-    spider::Spider, spider_solitaire::SpiderSolitaire, sudoku::Sudoku, tic_tac_toe::TicTacToe,
-    word_grid::WordGrid, word_search::WordSearch,
+    space_invaders::SpaceInvaders, spider::Spider, spider_solitaire::SpiderSolitaire,
+    sudoku::Sudoku, tic_tac_toe::TicTacToe, word_grid::WordGrid, word_search::WordSearch,
 };
 use serde::{Deserialize, Serialize};
 
@@ -82,6 +90,15 @@ pub enum GameSnapshot {
     TriPeaks(TriPeaks),
     Nim(Nim),
     WordLadder(WordLadder),
+    SpaceInvaders(SpaceInvaders),
+    Asteroids(Asteroids),
+    Frogger(Frogger),
+    MunchMaze(MunchMaze),
+    BlockStack(BlockStack),
+    TerrainCannon(TerrainCannon),
+    FlingFury(FlingFury),
+    PaddleDuel(PaddleDuel),
+    MiscGame(MiscGame),
 }
 
 impl GameSnapshot {
@@ -140,6 +157,19 @@ impl GameSnapshot {
             GameId::TriPeaks => Self::TriPeaks(state.games.tri_peaks.clone()),
             GameId::Nim => Self::Nim(state.games.nim.clone()),
             GameId::WordLadder => Self::WordLadder(state.games.word_ladder.clone()),
+            GameId::SpaceInvaders => Self::SpaceInvaders(state.games.space_invaders.clone()),
+            GameId::Asteroids => Self::Asteroids(state.games.asteroids.clone()),
+            GameId::Frogger => Self::Frogger(state.games.frogger.clone()),
+            GameId::MunchMaze => Self::MunchMaze(state.games.munch_maze.clone()),
+            GameId::BlockStack => Self::BlockStack(state.games.block_stack.clone()),
+            GameId::TerrainCannon => Self::TerrainCannon(state.games.terrain_cannon.clone()),
+            GameId::FlingFury => Self::FlingFury(state.games.fling_fury.clone()),
+            GameId::PaddleDuel => Self::PaddleDuel(state.games.paddle_duel.clone()),
+            GameId::RiddleRoom => Self::MiscGame(state.games.riddle_room.clone()),
+            GameId::PatternVault => Self::MiscGame(state.games.pattern_vault.clone()),
+            GameId::SumCircuit => Self::MiscGame(state.games.sum_circuit.clone()),
+            GameId::OrbitOrder => Self::MiscGame(state.games.orbit_order.clone()),
+            GameId::WordForge => Self::MiscGame(state.games.word_forge.clone()),
         }
     }
 
@@ -192,6 +222,21 @@ impl GameSnapshot {
             Self::TriPeaks(game) => state.games.tri_peaks = game,
             Self::Nim(game) => state.games.nim = game,
             Self::WordLadder(game) => state.games.word_ladder = game,
+            Self::SpaceInvaders(game) => state.games.space_invaders = game,
+            Self::Asteroids(game) => state.games.asteroids = game,
+            Self::Frogger(game) => state.games.frogger = game,
+            Self::MunchMaze(game) => state.games.munch_maze = game,
+            Self::BlockStack(game) => state.games.block_stack = game,
+            Self::TerrainCannon(game) => state.games.terrain_cannon = game,
+            Self::FlingFury(game) => state.games.fling_fury = game,
+            Self::PaddleDuel(game) => state.games.paddle_duel = game,
+            Self::MiscGame(game) => match game.kind {
+                MiscKind::RiddleRoom => state.games.riddle_room = game,
+                MiscKind::PatternVault => state.games.pattern_vault = game,
+                MiscKind::SumCircuit => state.games.sum_circuit = game,
+                MiscKind::OrbitOrder => state.games.orbit_order = game,
+                MiscKind::WordForge => state.games.word_forge = game,
+            },
         }
     }
 }

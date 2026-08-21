@@ -41,6 +41,62 @@ impl Game {
                     self.finish_realtime_round();
                 }
             }
+            Screen::Game(GameId::SpaceInvaders) => {
+                let previous = self.state.games.space_invaders.status;
+                self.state.games.space_invaders.tick(dt);
+                if self.state.games.space_invaders.status != previous {
+                    self.finish_realtime_round();
+                }
+            }
+            Screen::Game(GameId::Asteroids) => {
+                let previous = self.state.games.asteroids.status;
+                self.state.games.asteroids.tick(dt);
+                if self.state.games.asteroids.status != previous {
+                    self.finish_realtime_round();
+                }
+            }
+            Screen::Game(GameId::Frogger) => {
+                let previous = self.state.games.frogger.status;
+                self.state.games.frogger.tick(dt);
+                if self.state.games.frogger.status != previous {
+                    self.finish_realtime_round();
+                }
+            }
+            Screen::Game(GameId::MunchMaze) => {
+                let previous = self.state.games.munch_maze.status;
+                self.state.games.munch_maze.tick(dt);
+                if self.state.games.munch_maze.status != previous {
+                    self.finish_realtime_round();
+                }
+            }
+            Screen::Game(GameId::BlockStack) => {
+                let previous = self.state.games.block_stack.status;
+                self.state.games.block_stack.tick(dt);
+                if self.state.games.block_stack.status != previous {
+                    self.finish_realtime_round();
+                }
+            }
+            Screen::Game(GameId::TerrainCannon) => {
+                let previous = self.state.games.terrain_cannon.status;
+                self.state.games.terrain_cannon.tick(dt);
+                if self.state.games.terrain_cannon.status != previous {
+                    self.finish_realtime_round();
+                }
+            }
+            Screen::Game(GameId::FlingFury) => {
+                let previous = self.state.games.fling_fury.status;
+                self.state.games.fling_fury.tick(dt);
+                if self.state.games.fling_fury.status != previous {
+                    self.finish_realtime_round();
+                }
+            }
+            Screen::Game(GameId::PaddleDuel) => {
+                let previous = self.state.games.paddle_duel.status;
+                self.state.games.paddle_duel.tick(dt);
+                if self.state.games.paddle_duel.status != previous {
+                    self.finish_realtime_round();
+                }
+            }
             _ => {}
         }
     }

@@ -16,7 +16,7 @@ fn every_catalog_game_has_a_compact_landscape_contract() {
 
 #[test]
 fn catalog_and_contracts_stay_in_lockstep() {
-    assert_eq!(GameId::ALL.len(), 47);
+    assert_eq!(GameId::ALL.len(), 60);
     for game in GameId::ALL {
         assert!(game.title().chars().count() > 1);
     }

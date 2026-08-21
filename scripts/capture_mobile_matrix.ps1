@@ -41,7 +41,9 @@ if ($AllGames) {
         "potion_2048", "tiny_tower_defence", "one_room_roguelike", "daily_dungeon",
         "dots_boxes", "sokoban", "mancala", "hanoi", "number_match", "flood_it",
         "color_sort", "battleship", "word_grid", "word_ladder", "pipe_loop",
-        "maze_walk", "match_three"
+        "maze_walk", "match_three", "space_invaders", "asteroids", "frogger",
+        "munch_maze", "block_stack", "terrain_cannon", "fling_fury", "paddle_duel",
+        "riddle_room", "pattern_vault", "sum_circuit", "orbit_order", "word_forge"
     )
 }
 

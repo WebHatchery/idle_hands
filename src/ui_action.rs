@@ -155,6 +155,44 @@ pub enum UiAction {
     SnakeHint,
     SnakeUndo,
     SnakeNew,
+    SpaceInvadersStep(crate::space_invaders::ShipDirection),
+    SpaceInvadersFire,
+    SpaceInvadersPause,
+    SpaceInvadersUndo,
+    SpaceInvadersNew,
+    AsteroidsStep(crate::asteroids::ShipDirection),
+    AsteroidsFire,
+    AsteroidsPause,
+    AsteroidsUndo,
+    AsteroidsNew,
+    FroggerMove(crate::domain::Direction),
+    FroggerPause,
+    FroggerUndo,
+    FroggerNew,
+    MunchMove(crate::domain::Direction),
+    MunchPause,
+    MunchUndo,
+    MunchNew,
+    BlockMove(crate::block_stack::BlockMove),
+    BlockPause,
+    BlockUndo,
+    BlockNew,
+    CannonAngle(i16),
+    CannonPower(i16),
+    CannonFire,
+    CannonPause,
+    CannonUndo,
+    CannonNew,
+    FlingAngle(i16),
+    FlingPower(i16),
+    FlingFire,
+    FlingPause,
+    FlingUndo,
+    FlingNew,
+    PaddleMove(crate::paddle_duel::PaddleMove),
+    PaddlePause,
+    PaddleUndo,
+    PaddleNew,
     BreakoutStep(crate::breakout::PaddleMove),
     BreakoutPause,
     BreakoutHint,
@@ -302,6 +340,12 @@ pub enum UiAction {
     MatchThreeUndo,
     MatchThreeNew,
     MatchThreeDifficulty(crate::match_three::MatchThreeDifficulty),
+    MiscTap(usize),
+    MiscSubmit,
+    MiscClear,
+    MiscHint,
+    MiscUndo,
+    MiscNew,
 }
 
 impl UiAction {
@@ -339,6 +383,14 @@ impl UiAction {
                 | Self::MahjongSolitaireNew
                 | Self::SnakeNew
                 | Self::SnakeMode(_)
+                | Self::SpaceInvadersNew
+                | Self::AsteroidsNew
+                | Self::FroggerNew
+                | Self::MunchNew
+                | Self::BlockNew
+                | Self::CannonNew
+                | Self::FlingNew
+                | Self::PaddleNew
                 | Self::BreakoutNew
                 | Self::HigherLowerNew
                 | Self::HigherLowerRule(_)
@@ -384,6 +436,7 @@ impl UiAction {
                 | Self::MazeMode(_)
                 | Self::MatchThreeNew
                 | Self::MatchThreeDifficulty(_)
+                | Self::MiscNew
         )
     }
 }

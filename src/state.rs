@@ -1,7 +1,9 @@
 //! Application state and the deterministic 2048 rules engine.
 
+use crate::asteroids::Asteroids;
 use crate::battleship::Battleship;
 use crate::blackjack::Blackjack;
+use crate::block_stack::BlockStack;
 use crate::breakout::Breakout;
 use crate::checkers::Checkers;
 use crate::color_sort::ColorSort;
@@ -10,8 +12,10 @@ use crate::daily_dungeon::DailyDungeon;
 use crate::dots_boxes::DotsBoxes;
 use crate::dungeon_sweeper::DungeonSweeper;
 use crate::fivefold::Fivefold;
+use crate::fling_fury::FlingFury;
 use crate::flood_it::FloodIt;
 use crate::freecell::FreeCell;
+use crate::frogger::Frogger;
 use crate::game_store::GameStore;
 use crate::hangman::Hangman;
 use crate::hanoi::Hanoi;
@@ -25,10 +29,13 @@ use crate::match_three::MatchThree;
 use crate::maze_walk::MazeWalk;
 use crate::memory_pairs::MemoryPairs;
 use crate::minesweeper::Minesweeper;
+use crate::misc_games::{MiscGame, MiscKind};
+use crate::munch_maze::MunchMaze;
 use crate::nim::Nim;
 use crate::nonogram::Nonogram;
 use crate::number_match::NumberMatch;
 use crate::one_room_roguelike::OneRoomRoguelike;
+use crate::paddle_duel::PaddleDuel;
 use crate::peg_solitaire::PegSolitaire;
 use crate::pipe_loop::PipeLoop;
 use crate::potion_2048::Potion2048;
@@ -38,9 +45,11 @@ use crate::sliding_puzzle::SlidingPuzzle;
 use crate::snake::Snake;
 use crate::sokoban::Sokoban;
 use crate::solitaire::Solitaire;
+use crate::space_invaders::SpaceInvaders;
 use crate::spider::Spider;
 use crate::spider_solitaire::SpiderSolitaire;
 use crate::sudoku::Sudoku;
+use crate::terrain_cannon::TerrainCannon;
 use crate::tic_tac_toe::TicTacToe;
 use crate::tiny_tower_defence::TinyTowerDefence;
 use crate::tri_peaks::TriPeaks;
@@ -111,9 +120,22 @@ pub enum GameId {
     TriPeaks,
     Nim,
     WordLadder,
+    SpaceInvaders,
+    Asteroids,
+    Frogger,
+    MunchMaze,
+    BlockStack,
+    TerrainCannon,
+    FlingFury,
+    PaddleDuel,
+    RiddleRoom,
+    PatternVault,
+    SumCircuit,
+    OrbitOrder,
+    WordForge,
 }
 impl GameId {
-    pub const ALL: [Self; 47] = [
+    pub const ALL: [Self; 60] = [
         Self::Solitaire,
         Self::FreeCell,
         Self::Sudoku,
@@ -161,6 +183,19 @@ impl GameId {
         Self::TriPeaks,
         Self::Nim,
         Self::WordLadder,
+        Self::SpaceInvaders,
+        Self::Asteroids,
+        Self::Frogger,
+        Self::MunchMaze,
+        Self::BlockStack,
+        Self::TerrainCannon,
+        Self::FlingFury,
+        Self::PaddleDuel,
+        Self::RiddleRoom,
+        Self::PatternVault,
+        Self::SumCircuit,
+        Self::OrbitOrder,
+        Self::WordForge,
     ];
     pub fn descriptor(self) -> &'static crate::game_descriptor::GameDescriptor {
         crate::game_descriptor::descriptor(self)
@@ -314,6 +349,32 @@ pub struct CollectionSave {
     pub nim: Nim,
     #[serde(default)]
     pub word_ladder: WordLadder,
+    #[serde(default)]
+    pub space_invaders: SpaceInvaders,
+    #[serde(default)]
+    pub asteroids: Asteroids,
+    #[serde(default)]
+    pub frogger: Frogger,
+    #[serde(default)]
+    pub munch_maze: MunchMaze,
+    #[serde(default)]
+    pub block_stack: BlockStack,
+    #[serde(default)]
+    pub terrain_cannon: TerrainCannon,
+    #[serde(default)]
+    pub fling_fury: FlingFury,
+    #[serde(default)]
+    pub paddle_duel: PaddleDuel,
+    #[serde(default = "default_riddle_room")]
+    pub riddle_room: MiscGame,
+    #[serde(default = "default_pattern_vault")]
+    pub pattern_vault: MiscGame,
+    #[serde(default = "default_sum_circuit")]
+    pub sum_circuit: MiscGame,
+    #[serde(default = "default_orbit_order")]
+    pub orbit_order: MiscGame,
+    #[serde(default = "default_word_forge")]
+    pub word_forge: MiscGame,
     pub profile_name: String,
     pub sound: bool,
     pub reduced_motion: bool,
@@ -349,6 +410,26 @@ pub struct CollectionSave {
 
 fn default_selected() -> usize {
     4
+}
+
+fn default_riddle_room() -> MiscGame {
+    MiscGame::new(0x4D49_5343_0001, MiscKind::RiddleRoom)
+}
+
+fn default_pattern_vault() -> MiscGame {
+    MiscGame::new(0x4D49_5343_0002, MiscKind::PatternVault)
+}
+
+fn default_sum_circuit() -> MiscGame {
+    MiscGame::new(0x4D49_5343_0003, MiscKind::SumCircuit)
+}
+
+fn default_orbit_order() -> MiscGame {
+    MiscGame::new(0x4D49_5343_0004, MiscKind::OrbitOrder)
+}
+
+fn default_word_forge() -> MiscGame {
+    MiscGame::new(0x4D49_5343_0005, MiscKind::WordForge)
 }
 
 impl CollectionSave {
@@ -404,6 +485,19 @@ impl CollectionSave {
             tri_peaks: state.games.tri_peaks.clone(),
             nim: state.games.nim.clone(),
             word_ladder: state.games.word_ladder.clone(),
+            space_invaders: state.games.space_invaders.clone(),
+            asteroids: state.games.asteroids.clone(),
+            frogger: state.games.frogger.clone(),
+            munch_maze: state.games.munch_maze.clone(),
+            block_stack: state.games.block_stack.clone(),
+            terrain_cannon: state.games.terrain_cannon.clone(),
+            fling_fury: state.games.fling_fury.clone(),
+            paddle_duel: state.games.paddle_duel.clone(),
+            riddle_room: state.games.riddle_room.clone(),
+            pattern_vault: state.games.pattern_vault.clone(),
+            sum_circuit: state.games.sum_circuit.clone(),
+            orbit_order: state.games.orbit_order.clone(),
+            word_forge: state.games.word_forge.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
             reduced_motion: state.reduced_motion,
@@ -473,6 +567,19 @@ impl CollectionSave {
         state.games.tri_peaks = self.tri_peaks;
         state.games.nim = self.nim;
         state.games.word_ladder = self.word_ladder;
+        state.games.space_invaders = self.space_invaders;
+        state.games.asteroids = self.asteroids;
+        state.games.frogger = self.frogger;
+        state.games.munch_maze = self.munch_maze;
+        state.games.block_stack = self.block_stack;
+        state.games.terrain_cannon = self.terrain_cannon;
+        state.games.fling_fury = self.fling_fury;
+        state.games.paddle_duel = self.paddle_duel;
+        state.games.riddle_room = self.riddle_room;
+        state.games.pattern_vault = self.pattern_vault;
+        state.games.sum_circuit = self.sum_circuit;
+        state.games.orbit_order = self.orbit_order;
+        state.games.word_forge = self.word_forge;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
         state.reduced_motion = self.reduced_motion;

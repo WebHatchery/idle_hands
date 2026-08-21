@@ -131,6 +131,18 @@ pub fn draw_records(state: &AppState) {
             value(state.records.breakout_best_score.map(u32::from)),
         ),
         (
+            "Space Invaders best",
+            value(state.records.space_invaders_best_score.map(u32::from)),
+        ),
+        (
+            "Asteroids best",
+            value(state.records.asteroids_best_score.map(u32::from)),
+        ),
+        (
+            "Frogger best",
+            value(state.records.frogger_best_score.map(u32::from)),
+        ),
+        (
             "Higher or Lower best",
             value(state.records.higher_lower_best_score.map(u32::from)),
         ),
@@ -229,6 +241,26 @@ pub fn draw_records(state: &AppState) {
         (
             "Word Ladder best",
             value(state.records.word_ladder_best_moves.map(u32::from)),
+        ),
+        (
+            "Riddle Room best",
+            value(state.records.misc_best_moves[0].map(u32::from)),
+        ),
+        (
+            "Pattern Vault best",
+            value(state.records.misc_best_moves[1].map(u32::from)),
+        ),
+        (
+            "Sum Circuit best",
+            value(state.records.misc_best_moves[2].map(u32::from)),
+        ),
+        (
+            "Orbit Order best",
+            value(state.records.misc_best_moves[3].map(u32::from)),
+        ),
+        (
+            "Word Forge best",
+            value(state.records.misc_best_moves[4].map(u32::from)),
         ),
     ];
     let start = state
