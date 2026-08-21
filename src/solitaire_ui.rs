@@ -46,7 +46,7 @@ fn tableau_depth_at(game: &Solitaire, column: usize, y: f32, gap: f32) -> usize 
 }
 
 pub(crate) fn tableau_card_at(game: &Solitaire, p: Vec2) -> Option<(usize, usize)> {
-    if !(TABLEAU_TOP..=TABLEAU_BOTTOM).contains(&p.y) {
+    if p.y < TABLEAU_TOP || p.y > crate::ui::LOGICAL_HEIGHT {
         return None;
     }
     let column = (0..7).find(|column| {

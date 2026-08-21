@@ -35,6 +35,13 @@ try {
         if ($LASTEXITCODE -ne 0) {
             throw "Game suite failed: $suite"
         }
+
+        $longFilter = "game_harness::{0}::desktop_long_game_is_stable" -f $suite
+        Write-Host "Running desktop long session $suite"
+        & cargo test --all-targets $longFilter -- --exact
+        if ($LASTEXITCODE -ne 0) {
+            throw "Desktop long session failed: $suite"
+        }
     }
 
     Write-Host "Checking the suite registry"
