@@ -8,6 +8,11 @@ use crate::{
 };
 use macroquad::prelude::*;
 
+const COMPACT_METRICS_X: f32 = 310.;
+
+#[cfg(test)]
+mod tests;
+
 #[derive(Clone, Copy)]
 struct Layout {
     panel: Rect,
@@ -154,24 +159,12 @@ pub fn draw(state: &AppState) {
         crate::theme::SECONDARY,
         state.large_text,
     );
-    let metrics = format!(
-        "ROUND {}/5  •  SCORE {}  •  MOVES {}",
-        game.round.min(5),
-        game.score,
-        game.moves
-    );
+    let compact = crate::ui::is_compact_landscape();
+    let metrics = metrics_text(game, compact);
     text(
         &metrics,
-        if crate::ui::is_compact_landscape() {
-            430.
-        } else {
-            title_x
-        },
-        if crate::ui::is_compact_landscape() {
-            28.
-        } else {
-            title_y + 45.
-        },
+        if compact { COMPACT_METRICS_X } else { title_x },
+        if compact { 28. } else { title_y + 45. },
         11.,
         crate::theme::CREAM,
         state.large_text,
@@ -206,6 +199,19 @@ pub fn draw(state: &AppState) {
     button(l.clear, "CLEAR", state.large_text);
     button(l.submit, "SUBMIT", state.large_text);
     button(l.new_game, "NEW ROUND", state.large_text);
+}
+
+fn metrics_text(game: &MiscGame, compact: bool) -> String {
+    if compact {
+        format!("R{} • S{} • M{}", game.round.min(5), game.score, game.moves)
+    } else {
+        format!(
+            "ROUND {}/5  •  SCORE {}  •  MOVES {}",
+            game.round.min(5),
+            game.score,
+            game.moves
+        )
+    }
 }
 
 fn draw_panel(rect: Rect, game: &MiscGame, state: &AppState) {
