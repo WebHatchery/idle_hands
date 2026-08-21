@@ -47,7 +47,7 @@ fn layout() -> Layout {
             hint: Rect::new(215., 425., 95., 42.),
             undo: Rect::new(15., 710., 95., 42.),
             new_game: Rect::new(115., 710., 145., 42.),
-            mode: Rect::new(270., 710., 105., 42.),
+            mode: Rect::new(265., 710., 95., 42.),
             columns: 7,
             key_w: 48.,
             key_h: 44.,
