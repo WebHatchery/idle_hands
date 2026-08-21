@@ -190,13 +190,15 @@ pub fn draw(state: &AppState) {
             WHITE,
         );
     }
-    text(
-        "DROP A DISC",
-        layout.drops.x,
-        layout.drops.y - 8.,
-        accessibility::text_size(10., state.large_text),
-        muted(),
-    );
+    if show_drop_prompt(portrait) {
+        text(
+            "DROP A DISC",
+            layout.drops.x,
+            layout.drops.y - 8.,
+            accessibility::text_size(10., state.large_text),
+            muted(),
+        );
+    }
     text(
         &format!("Moves {}  •  Red is you  •  Yellow answers", game.moves),
         if compact {
@@ -311,6 +313,13 @@ fn accent() -> Color {
 fn muted() -> Color {
     crate::theme::SECONDARY
 }
+
+fn show_drop_prompt(portrait: bool) -> bool {
+    !portrait
+}
+
+#[cfg(test)]
+mod tests;
 fn back_rect() -> Rect {
     Rect::new(0., 0., 110., 42.)
 }

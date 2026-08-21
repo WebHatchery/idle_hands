@@ -24,7 +24,7 @@ pub fn draw(state: &AppState) {
     text("‹ CABINET", 10., 29., 14., crate::theme::BRASS);
     text("SUDOKU", 12., 78., 34., crate::theme::BRASS);
     for (index, difficulty) in crate::sudoku::SudokuDifficulty::ALL.iter().enumerate() {
-        let rect = Rect::new(148. + index as f32 * 68., 48., 62., 44.);
+        let rect = portrait_difficulty_rect(index);
         panel(
             rect,
             if *difficulty == game.difficulty {
@@ -35,9 +35,9 @@ pub fn draw(state: &AppState) {
         );
         text(difficulty.label(), rect.x + 8., rect.y + 28., 10., WHITE);
     }
-    let board = Rect::new(10., 100., 340., 340.);
+    let board = portrait_board();
     panel(board, crate::accessibility::board_fill(state.high_contrast));
-    let cell = 36.8;
+    let cell = portrait_cell();
     for index in 0..81 {
         let row = index / 9;
         let col = index % 9;
@@ -153,16 +153,17 @@ pub fn clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(Rect::new(0., 0., 110., 44.), p) {
         return vec![UiAction::Cabinet];
     }
-    let board = Rect::new(10., 100., 340., 340.);
+    let board = portrait_board();
     if board.contains(p) {
-        let col = ((p.x - board.x - 4.) / 36.8).floor() as usize;
-        let row = ((p.y - board.y - 4.) / 36.8).floor() as usize;
+        let cell = portrait_cell();
+        let col = ((p.x - board.x - 4.) / cell).floor() as usize;
+        let row = ((p.y - board.y - 4.) / cell).floor() as usize;
         if col < 9 && row < 9 {
             return vec![UiAction::SudokuCell(row * 9 + col)];
         }
     }
     for (index, difficulty) in crate::sudoku::SudokuDifficulty::ALL.iter().enumerate() {
-        if crate::ui::hit(Rect::new(148. + index as f32 * 68., 48., 62., 44.), p) {
+        if crate::ui::hit(portrait_difficulty_rect(index), p) {
             return vec![UiAction::SudokuDifficulty(*difficulty)];
         }
     }
@@ -188,3 +189,18 @@ pub fn clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     let _ = state;
     vec![]
 }
+
+fn portrait_difficulty_rect(index: usize) -> Rect {
+    Rect::new(12. + index as f32 * 68., 100., 62., 44.)
+}
+
+fn portrait_board() -> Rect {
+    Rect::new(45., 155., 300., 300.)
+}
+
+fn portrait_cell() -> f32 {
+    32.2
+}
+
+#[cfg(test)]
+mod tests;
