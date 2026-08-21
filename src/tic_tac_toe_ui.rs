@@ -16,11 +16,32 @@ struct Layout {
     undo: Rect,
     hint: Rect,
     levels: [Rect; 3],
+    header: Vec2,
+    status: Vec2,
+    hint_text: Vec2,
 }
 
 fn layout() -> Layout {
-    if crate::ui::is_compact_landscape() {
-        Layout {
+    let mode = if crate::ui::is_compact_landscape() {
+        LayoutMode::CompactLandscape
+    } else if crate::ui::is_portrait() {
+        LayoutMode::Portrait
+    } else {
+        LayoutMode::Desktop
+    };
+    layout_for(mode)
+}
+
+#[derive(Clone, Copy)]
+enum LayoutMode {
+    Desktop,
+    CompactLandscape,
+    Portrait,
+}
+
+fn layout_for(mode: LayoutMode) -> Layout {
+    match mode {
+        LayoutMode::CompactLandscape => Layout {
             board: Rect::new(24., 48., 300., 300.),
             cell: 100.,
             new_board: Rect::new(370., 125., 150., 48.),
@@ -31,33 +52,40 @@ fn layout() -> Layout {
                 Rect::new(480., 65., 100., 42.),
                 Rect::new(590., 65., 100., 42.),
             ],
-        }
-    } else if crate::ui::is_portrait() {
-        Layout {
+            header: vec2(132., 35.),
+            status: vec2(370., 52.),
+            hint_text: vec2(530., 250.),
+        },
+        LayoutMode::Portrait => Layout {
             board: Rect::new(20., 145., 320., 320.),
             cell: 106.6667,
-            new_board: Rect::new(20., 510., 155., 48.),
-            undo: Rect::new(185., 510., 155., 48.),
-            hint: Rect::new(20., 570., 155., 48.),
+            new_board: Rect::new(20., 550., 155., 48.),
+            undo: Rect::new(185., 550., 155., 48.),
+            hint: Rect::new(20., 610., 155., 48.),
             levels: [
-                Rect::new(20., 470., 100., 42.),
-                Rect::new(130., 470., 100., 42.),
-                Rect::new(240., 470., 100., 42.),
+                Rect::new(20., 500., 100., 42.),
+                Rect::new(130., 500., 100., 42.),
+                Rect::new(240., 500., 100., 42.),
             ],
-        }
-    } else {
-        Layout {
-            board: Rect::new(390., 130., 500., 500.),
-            cell: 166.6667,
-            new_board: Rect::new(440., 650., 180., 48.),
-            undo: Rect::new(650., 650., 180., 48.),
-            hint: Rect::new(860., 650., 180., 48.),
+            header: vec2(20., 105.),
+            status: vec2(20., 133.),
+            hint_text: vec2(20., 680.),
+        },
+        LayoutMode::Desktop => Layout {
+            board: Rect::new(390., 168., 460., 460.),
+            cell: 153.3333,
+            new_board: Rect::new(440., 664., 180., 48.),
+            undo: Rect::new(650., 664., 180., 48.),
+            hint: Rect::new(860., 664., 180., 48.),
             levels: [
-                Rect::new(440., 72., 180., 42.),
-                Rect::new(650., 72., 180., 42.),
-                Rect::new(860., 72., 180., 42.),
+                Rect::new(440., 112., 180., 42.),
+                Rect::new(650., 112., 180., 42.),
+                Rect::new(860., 112., 180., 42.),
             ],
-        }
+            header: vec2(390., 72.),
+            status: vec2(390., 101.),
+            hint_text: vec2(40., 625.),
+        },
     }
 }
 
@@ -96,28 +124,6 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
 pub fn draw(state: &AppState) {
     let layout = layout();
     let game = &state.games.tic_tac_toe;
-    let header_y = if crate::ui::is_compact_landscape() {
-        35.
-    } else if crate::ui::is_portrait() {
-        105.
-    } else {
-        72.
-    };
-    let header_x = if crate::ui::is_compact_landscape() {
-        132.
-    } else {
-        layout.board.x
-    };
-    let body_x = if crate::ui::is_compact_landscape() {
-        layout.new_board.x
-    } else {
-        header_x
-    };
-    let body_y = if crate::ui::is_compact_landscape() {
-        layout.new_board.y - 34.
-    } else {
-        header_y + 28.
-    };
     text(
         "‹ CABINET",
         back_rect().x,
@@ -127,15 +133,15 @@ pub fn draw(state: &AppState) {
     );
     text(
         "TIC-TAC-TOE",
-        header_x,
-        header_y,
+        layout.header.x,
+        layout.header.y,
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
     text(
         status_text(game.status),
-        body_x,
-        body_y,
+        layout.status.x,
+        layout.status.y,
         accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
@@ -197,17 +203,10 @@ pub fn draw(state: &AppState) {
         button_selected(*rect, label, game.ai_level == level, state.large_text);
     }
     if let Some(hint) = state.card_hint.as_deref() {
-        let (x, y) = if crate::ui::is_compact_landscape() {
-            (530., 250.)
-        } else if crate::ui::is_portrait() {
-            (20., 640.)
-        } else {
-            (40., 625.)
-        };
         text(
             hint,
-            x,
-            y,
+            layout.hint_text.x,
+            layout.hint_text.y,
             accessibility::text_size(12., state.large_text),
             accent(),
         );
@@ -322,3 +321,6 @@ fn body_size() -> f32 {
         15.
     }
 }
+
+#[cfg(test)]
+mod tests;
