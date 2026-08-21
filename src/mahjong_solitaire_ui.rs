@@ -102,7 +102,7 @@ pub fn draw(state: &AppState) {
         muted(),
     );
     text(
-        "MAHJONG SOLITAIRE",
+        title_text(),
         header_x,
         header_y,
         accessibility::text_size(title_size(), state.large_text),
@@ -250,6 +250,13 @@ fn title_size() -> f32 {
         17.
     } else {
         29.
+    }
+}
+fn title_text() -> &'static str {
+    if crate::ui::is_portrait() {
+        "MAHJONG"
+    } else {
+        "MAHJONG SOLITAIRE"
     }
 }
 fn body_size() -> f32 {

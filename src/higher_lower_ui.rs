@@ -114,7 +114,7 @@ pub fn draw(state: &AppState) {
         muted(),
     );
     text(
-        "HIGHER OR LOWER",
+        title_text(),
         hx,
         hy,
         accessibility::text_size(title_size(), state.large_text),
@@ -279,6 +279,13 @@ fn title_size() -> f32 {
         20.
     } else {
         29.
+    }
+}
+fn title_text() -> &'static str {
+    if crate::ui::is_portrait() {
+        "HIGHER / LOWER"
+    } else {
+        "HIGHER OR LOWER"
     }
 }
 fn body_size() -> f32 {

@@ -3,6 +3,9 @@
 use crate::{accessibility, klondike_golf::GolfStatus, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
+#[cfg(test)]
+mod tests;
+
 #[derive(Clone, Copy)]
 struct Layout {
     board: Rect,
@@ -99,7 +102,7 @@ pub fn draw(state: &AppState) {
         muted(),
     );
     text(
-        "KLONDIKE GOLF",
+        title_text(),
         hx,
         hy,
         accessibility::text_size(title_size(), state.large_text),
@@ -264,10 +267,13 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 }
 fn title_size() -> f32 {
     if crate::ui::is_portrait() {
-        25.
+        20.
     } else {
         30.
     }
+}
+fn title_text() -> &'static str {
+    "KLONDIKE GOLF"
 }
 fn body_size() -> f32 {
     if crate::ui::is_portrait() {

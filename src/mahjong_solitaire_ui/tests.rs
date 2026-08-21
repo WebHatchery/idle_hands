@@ -20,5 +20,8 @@ fn portrait_title_budget_stays_left_of_the_rule_card() {
 
 #[test]
 fn portrait_mahjong_title_uses_a_narrow_readable_size() {
-    crate::ui::with_portrait_layout(|| assert_eq!(title_size(), 17.));
+    crate::ui::with_portrait_layout(|| {
+        assert_eq!(title_size(), 17.);
+        assert_eq!(title_text(), "MAHJONG");
+    });
 }
