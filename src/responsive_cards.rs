@@ -387,13 +387,6 @@ pub fn draw_reversi(state: &AppState) {
     let game = &state.games.reversi;
     back();
     text(
-        "CABINET",
-        8.,
-        29.,
-        accessibility::text_size(13., state.large_text),
-        Color::new(0.78, 0.70, 0.92, 1.),
-    );
-    text(
         "REVERSI",
         10.,
         72.,
