@@ -3,6 +3,9 @@
 use crate::{accessibility, sliding_puzzle::SlidingStatus, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
+#[cfg(test)]
+mod tests;
+
 #[derive(Clone, Copy)]
 struct Layout {
     board: Rect,
@@ -232,7 +235,7 @@ fn muted() -> Color {
 }
 fn title_size() -> f32 {
     if crate::ui::is_portrait() {
-        24.
+        20.
     } else {
         30.
     }
