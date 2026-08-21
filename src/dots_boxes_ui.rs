@@ -8,6 +8,9 @@ use crate::{
 };
 use macroquad::prelude::*;
 
+#[cfg(test)]
+mod tests;
+
 #[derive(Clone, Copy)]
 struct Layout {
     board: Rect,
@@ -124,6 +127,12 @@ pub fn draw(state: &AppState) {
             game.scores[1],
             game.moves,
             game.difficulty.label()
+        )
+    } else if portrait {
+        portrait_score_status(
+            game.scores[0] as usize,
+            game.scores[1] as usize,
+            game.moves as usize,
         )
     } else {
         format!(
@@ -358,6 +367,10 @@ fn status_text(phase: DotsPhase) -> &'static str {
         DotsPhase::Won => "The red boxes hold the board",
         DotsPhase::Lost => "The blue boxes hold the board",
     }
+}
+
+fn portrait_score_status(red: usize, blue: usize, moves: usize) -> String {
+    format!("Red {}  •  Blue {}  •  {} moves", red, blue, moves)
 }
 
 fn button(rect: Rect, label: &str, large_text: bool) {

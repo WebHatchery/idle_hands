@@ -214,6 +214,10 @@ fn free_card_x(slot: usize) -> f32 {
     4. + slot as f32 * 45.
 }
 
+fn free_foundation_x(suit: usize) -> f32 {
+    185. + suit as f32 * 45.
+}
+
 pub fn draw_freecell(state: &AppState) {
     let game = &state.games.freecell;
     back();
@@ -251,7 +255,7 @@ pub fn draw_freecell(state: &AppState) {
         }
     }
     for suit in 0..4 {
-        let rect = free_card_rect(190. + suit as f32 * 45., 112.);
+        let rect = free_card_rect(free_foundation_x(suit), 112.);
         panel(rect, Color::new(0.12, 0.09, 0.20, 1.));
         if game.foundations[suit] > 0 {
             draw_card(
@@ -277,7 +281,7 @@ pub fn draw_freecell(state: &AppState) {
     text("CELLS", 5., 181., 9., Color::new(0.63, 0.58, 0.72, 1.));
     text(
         "FOUNDATIONS",
-        190.,
+        185.,
         181.,
         9.,
         Color::new(0.63, 0.58, 0.72, 1.),
@@ -353,7 +357,7 @@ pub fn freecell_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         }
     }
     for suit in 0..4 {
-        if free_card_rect(190. + suit as f32 * 45., 112.).contains(p) {
+        if free_card_rect(free_foundation_x(suit), 112.).contains(p) {
             return vec![UiAction::FreeCellFoundation(suit)];
         }
     }

@@ -63,6 +63,14 @@ fn portrait_freecell_routes_every_primary_tap_target() {
 }
 
 #[test]
+fn portrait_freecell_foundations_stay_inside_the_logical_width() {
+    crate::ui::with_portrait_layout(|| {
+        let last = free_card_rect(free_foundation_x(3), 112.);
+        assert!(last.right() <= crate::responsive_ui::WIDTH);
+    });
+}
+
+#[test]
 fn reversi_portrait_subtitle_is_short_enough_for_the_header_lane() {
     crate::ui::with_portrait_layout(|| {
         assert_eq!(reversi_subtitle(), "Tap a glowing square");

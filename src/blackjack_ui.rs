@@ -111,11 +111,13 @@ pub fn draw(state: &AppState) {
         78.
     };
     text(
-        &if compact {
-            compact_status_text(game.status, game.player_total())
-        } else {
-            status_text(game.status, game.player_total(), game.dealer_total())
-        },
+        &status_line_text(
+            game.status,
+            game.player_total(),
+            game.dealer_total(),
+            compact,
+            portrait,
+        ),
         status_x,
         status_y,
         accessibility::text_size(body_size(), state.large_text),
@@ -231,6 +233,20 @@ fn status_text(status: BlackjackStatus, player: u8, dealer: u8) -> String {
         BlackjackStatus::Won => format!("You win — {} to {}", player, dealer),
         BlackjackStatus::Lost => format!("Dealer wins — {} to {}", dealer, player),
         BlackjackStatus::Push => format!("Push — both hold at {}", player),
+    }
+}
+
+fn status_line_text(
+    status: BlackjackStatus,
+    player: u8,
+    dealer: u8,
+    compact: bool,
+    portrait: bool,
+) -> String {
+    if compact || portrait {
+        compact_status_text(status, player)
+    } else {
+        status_text(status, player, dealer)
     }
 }
 
