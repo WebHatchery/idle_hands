@@ -255,6 +255,9 @@ fn draw_car(
     index: usize,
 ) {
     if let Some(texture) = texture {
+        if !car_fits_board(car) {
+            return;
+        }
         let phase = animation_time * 7. + index as f32 * 0.9;
         let bob = phase.sin() * layout.cell * 0.025;
         let width = layout.cell * f32::from(car.length);
@@ -263,12 +266,16 @@ fn draw_car(
         let y =
             layout.board.y + f32::from(car.row) * layout.cell + (layout.cell - height) * 0.5 + bob;
         let tint = 0.94 + phase.sin().abs() * 0.06;
-        draw_wrapped_texture(
+        draw_texture_ex(
             texture,
-            Rect::new(x, y, width, height),
-            layout.board,
-            car.direction < 0,
+            x,
+            y,
             Color::new(tint, tint, tint, 1.),
+            DrawTextureParams {
+                dest_size: Some(vec2(width, height)),
+                flip_x: car.direction < 0,
+                ..Default::default()
+            },
         );
         return;
     }
@@ -297,67 +304,10 @@ fn draw_car(
     }
 }
 
-fn draw_wrapped_texture(
-    texture: &Texture2D,
-    destination: Rect,
-    board: Rect,
-    flip_x: bool,
-    color: Color,
-) {
-    let visible_width = (board.right() - destination.x).clamp(0., destination.w);
-    if visible_width >= destination.w {
-        draw_texture_part(texture, destination, None, flip_x, color);
-        return;
-    }
-    if visible_width > 0. {
-        draw_texture_part(
-            texture,
-            Rect::new(destination.x, destination.y, visible_width, destination.h),
-            Some(Rect::new(
-                0.,
-                0.,
-                texture.width() * visible_width / destination.w,
-                texture.height(),
-            )),
-            flip_x,
-            color,
-        );
-    }
-    let wrapped_width = destination.w - visible_width;
-    draw_texture_part(
-        texture,
-        Rect::new(board.x, destination.y, wrapped_width, destination.h),
-        Some(Rect::new(
-            texture.width() * visible_width / destination.w,
-            0.,
-            texture.width() * wrapped_width / destination.w,
-            texture.height(),
-        )),
-        flip_x,
-        color,
-    );
+fn car_fits_board(car: &Car) -> bool {
+    usize::from(car.x) + usize::from(car.length) <= usize::from(WIDTH)
 }
 
-fn draw_texture_part(
-    texture: &Texture2D,
-    destination: Rect,
-    source: Option<Rect>,
-    flip_x: bool,
-    color: Color,
-) {
-    draw_texture_ex(
-        texture,
-        destination.x,
-        destination.y,
-        color,
-        DrawTextureParams {
-            dest_size: Some(destination.size()),
-            source,
-            flip_x,
-            ..Default::default()
-        },
-    );
-}
 fn cell_rect(layout: Layout, row: u8, column: u8) -> Rect {
     Rect::new(
         layout.board.x + f32::from(column) * layout.cell,
