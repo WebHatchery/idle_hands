@@ -189,6 +189,7 @@ pub enum UiAction {
     FlingPause,
     FlingUndo,
     FlingNew,
+    FlingNext,
     PaddleMove(crate::paddle_duel::PaddleMove),
     PaddlePause,
     PaddleUndo,

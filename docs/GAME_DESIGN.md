@@ -294,10 +294,11 @@ visible throughout.
 ### 11.11 Fling Fury
 
 Fling Fury is a sling-shot physics puzzle with five visible shots, breakable
-blocks, and green targets. ANGLE, POWER, and FLING are explicit controls. Shots
-bounce, damage blocks, and remove targets through deterministic frame-driven
-physics; clearing the fort wins, while running out of shots loses. WOODPILE and
-IRON FORT variants add a second structure.
+blocks, and marked targets. ANGLE, POWER, and FLING are explicit controls. Shots
+bounce, damage blocks, topple neighboring pieces, and send targets falling
+through deterministic frame-driven physics. Three authored forts escalate from
+the Copper Yard to Tower Rush; clearing a fort opens the next level, while
+running out of shots loses.
 
 ### 11.12 Paddle Duel
 

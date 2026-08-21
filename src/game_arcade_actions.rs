@@ -148,6 +148,9 @@ pub(super) fn apply(game: &mut Game, action: &UiAction) -> bool {
             let seed = game.state.games.fling_fury.seed.wrapping_add(1);
             game.state.games.fling_fury.reset(seed);
         }
+        UiAction::FlingNext => {
+            game.state.games.fling_fury.next_level();
+        }
         UiAction::PaddleMove(movement) => {
             game.state.games.paddle_duel.set_control(*movement);
         }
