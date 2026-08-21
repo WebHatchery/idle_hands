@@ -7,6 +7,7 @@
 use crate::state::{AppState, GameId, Screen};
 use crate::ui::{self, UiAction};
 use macroquad::prelude::vec2;
+use std::{collections::HashSet, mem::discriminant};
 
 const COMPACT_WIDTH: i32 = 844;
 const COMPACT_HEIGHT: i32 = 390;
@@ -22,17 +23,34 @@ fn assert_game_exposes_target(game: GameId, width: i32, height: i32, layout: &st
         ..AppState::default()
     };
 
-    let has_target = (0..height as usize).step_by(SAMPLE_STEP).any(|y| {
-        (0..width as usize).step_by(SAMPLE_STEP).any(|x| {
-            ui::actions_at(&state, vec2(x as f32 + 5., y as f32 + 5.))
-                .iter()
-                .any(|action| !matches!(action, UiAction::Cabinet))
-        })
-    });
+    let mut action_kinds = HashSet::new();
+    let mut has_recovery_action = false;
+    for y in (0..height as usize).step_by(SAMPLE_STEP) {
+        for x in (0..width as usize).step_by(SAMPLE_STEP) {
+            for action in ui::actions_at(&state, vec2(x as f32 + 5., y as f32 + 5.)) {
+                if !matches!(action, UiAction::Cabinet) {
+                    action_kinds.insert(discriminant(&action));
+                    has_recovery_action |= super::support::is_recovery_action(&action);
+                }
+            }
+        }
+    }
 
     assert!(
-        has_target,
+        !action_kinds.is_empty(),
         "{} responsive {} surface did not expose a tap target",
+        game.title(),
+        layout
+    );
+    assert!(
+        action_kinds.len() >= 2,
+        "{} responsive {} surface exposed fewer than two distinct game actions",
+        game.title(),
+        layout
+    );
+    assert!(
+        has_recovery_action,
+        "{} responsive {} surface did not expose a visible recovery action",
         game.title(),
         layout
     );

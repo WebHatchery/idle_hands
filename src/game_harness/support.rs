@@ -6,6 +6,18 @@ use crate::state_snapshots::GameSnapshot;
 
 const HARNESS_SEED: u64 = 0x1D1E_5EED_6000_0001;
 
+pub fn is_recovery_action(action: &crate::ui::UiAction) -> bool {
+    let label = format!("{action:?}");
+    matches!(
+        label.as_str(),
+        "Undo" | "Restart" | "Cancel" | "ConfirmRestart" | "New" | "Hint"
+    ) || label.ends_with("Undo")
+        || label.ends_with("New")
+        || label.ends_with("Hint")
+        || label.ends_with("Restart")
+        || label.ends_with("Pause")
+}
+
 pub fn assert_game_contract(game: GameId) {
     let data = GameData::load().expect("embedded game data should load");
     let descriptor = game_descriptor::descriptor(game);
