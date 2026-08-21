@@ -8,6 +8,9 @@ use crate::{
 };
 use macroquad::prelude::*;
 
+#[cfg(test)]
+mod tests;
+
 #[derive(Clone, Copy)]
 struct Layout {
     board: Rect,
@@ -119,6 +122,12 @@ pub fn draw(state: &AppState) {
     );
     let summary = if compact {
         format!("P{} • M{}", game.score, game.moves_left())
+    } else if portrait {
+        portrait_summary(
+            game.score as u32,
+            game.moves_left() as u32,
+            game.target_score() as u32,
+        )
     } else {
         format!(
             "{} points  •  {} moves  •  {}  •  {}  •  target {}",
@@ -225,6 +234,10 @@ fn status(phase: MatchThreePhase) -> &'static str {
         MatchThreePhase::Won => "FIELD CLEARED",
         MatchThreePhase::Lost => "OUT OF MOVES",
     }
+}
+
+fn portrait_summary(score: u32, moves_left: u32, target: u32) -> String {
+    format!("{} pts  •  {} moves  •  T{}", score, moves_left, target)
 }
 fn draw_special(rect: Rect, special: MatchThreeSpecial, high_contrast: bool) {
     let ink = if high_contrast {

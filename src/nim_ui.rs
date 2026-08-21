@@ -8,6 +8,13 @@ use crate::{
 };
 use macroquad::prelude::*;
 
+#[cfg(test)]
+mod tests;
+
+const PORTRAIT_HEAP_X: f32 = 10.;
+const PORTRAIT_HEAP_GAP: f32 = 116.;
+const PORTRAIT_HEAP_WIDTH: f32 = 108.;
+
 fn portrait() -> bool {
     crate::ui::is_portrait()
 }
@@ -18,7 +25,12 @@ fn compact() -> bool {
 
 fn heap_rect(index: usize) -> Rect {
     if portrait() {
-        Rect::new(12. + index as f32 * 122., 180., 108., 188.)
+        Rect::new(
+            PORTRAIT_HEAP_X + index as f32 * PORTRAIT_HEAP_GAP,
+            180.,
+            PORTRAIT_HEAP_WIDTH,
+            188.,
+        )
     } else if compact() {
         Rect::new(15. + index as f32 * 102., 108., 92., 170.)
     } else {
@@ -42,14 +54,14 @@ fn take_rect(amount: usize) -> Rect {
         150.
     };
     let gap = if portrait() {
-        122.
+        PORTRAIT_HEAP_GAP
     } else if compact() {
         102.
     } else {
         170.
     };
     let x = if portrait() {
-        12. + amount as f32 * gap
+        PORTRAIT_HEAP_X + amount as f32 * gap
     } else if compact() {
         15. + amount as f32 * gap
     } else {
@@ -64,7 +76,7 @@ fn bottom_rects() -> (Rect, Rect, Rect, Rect) {
             Rect::new(5., 650., 70., 42.),
             Rect::new(82., 650., 78., 42.),
             Rect::new(167., 650., 105., 42.),
-            Rect::new(279., 650., 96., 42.),
+            Rect::new(279., 650., 76., 42.),
         )
     } else if compact() {
         (

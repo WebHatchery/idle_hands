@@ -9,6 +9,9 @@ use crate::{
 };
 use macroquad::prelude::*;
 
+#[cfg(test)]
+mod tests;
+
 #[derive(Clone, Copy)]
 struct Layout {
     board: Rect,
@@ -127,7 +130,7 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
-    let scoreline = if compact || crate::ui::display_width() < 360. {
+    let scoreline = if use_compact_scoreline(compact, portrait, crate::ui::display_width()) {
         format!(
             "B{}/{} • M{}",
             game.collected.len(),
@@ -339,6 +342,10 @@ fn status(game: &MazeWalk) -> &'static str {
         MazePhase::Playing => "Both beacons held — follow visible controls to the E exit",
         MazePhase::Won => "Route complete — tap NEW MAZE",
     }
+}
+
+fn use_compact_scoreline(compact: bool, portrait: bool, width: f32) -> bool {
+    compact || portrait || width < 360.
 }
 fn direction_button(rect: Rect, label: &str, open: bool, large_text: bool) {
     draw_rectangle(
