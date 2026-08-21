@@ -161,7 +161,9 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(if portrait { 25. } else { 30. }, state.large_text),
         accent(),
     );
-    let scoreline = if compact || portrait {
+    let scoreline = if compact {
+        format!("P{} • C{}", game.points, game.combo)
+    } else if portrait {
         format!(
             "{} pairs • P{} • C{} • R{}",
             game.available_pair_count(),
@@ -181,7 +183,7 @@ pub fn draw(state: &AppState) {
     };
     text(
         &scoreline,
-        if compact { 450. } else { title_x },
+        if compact { 280. } else { title_x },
         if compact { 30. } else { title_y + 25. },
         accessibility::text_size(12., state.large_text),
         muted(),

@@ -10,6 +10,8 @@ use crate::{
 };
 use macroquad::prelude::*;
 
+const COMPACT_CARD_INSTRUCTION_X: f32 = 250.;
+
 fn panel(rect: Rect, fill: Color) {
     draw_rectangle(
         rect.x,
@@ -45,9 +47,9 @@ pub fn draw_solitaire(state: &AppState) {
         if game.status == SolitaireStatus::Won {
             "Table cleared"
         } else {
-            "Tap a card, then its destination"
+            "Tap card, then destination"
         },
-        260.,
+        COMPACT_CARD_INSTRUCTION_X,
         18.,
         12.,
         crate::theme::SECONDARY,
@@ -189,8 +191,8 @@ pub fn draw_freecell(state: &AppState) {
     back();
     text("FREECELL", 105., 20., 19., crate::theme::BRASS);
     text(
-        "Tap a card, then a cascade or foundation",
-        250.,
+        "Tap card, then pile",
+        COMPACT_CARD_INSTRUCTION_X,
         18.,
         12.,
         crate::theme::SECONDARY,
@@ -285,6 +287,9 @@ pub fn draw_freecell(state: &AppState) {
     panel(Rect::new(310., 330., 110., 44.), crate::theme::SURFACE);
     text("HINT", 346., 359., 12., WHITE);
 }
+
+#[cfg(test)]
+mod tests;
 pub fn freecell_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(Rect::new(0., 0., 110., 44.), p) {
         return vec![UiAction::Cabinet];

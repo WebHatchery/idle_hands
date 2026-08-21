@@ -86,13 +86,22 @@ pub fn draw(state: &AppState) {
     };
     text("‹ CABINET", 8., 30., 13., muted());
     text("WORD SEARCH", header_x, header_y, title_size(), accent());
-    let instruction = state.card_hint.as_deref().unwrap_or(match game.status {
-        WordSearchStatus::Playing => "Tap two endpoints to find a word",
-        WordSearchStatus::Won => "The list is complete",
-    });
+    let instruction = if let Some(hint) = state.card_hint.as_deref() {
+        hint
+    } else if compact {
+        match game.status {
+            WordSearchStatus::Playing => "Tap endpoints",
+            WordSearchStatus::Won => "List complete",
+        }
+    } else {
+        match game.status {
+            WordSearchStatus::Playing => "Tap two endpoints to find a word",
+            WordSearchStatus::Won => "The list is complete",
+        }
+    };
     text(
         instruction,
-        if compact { 350. } else { header_x },
+        if compact { 250. } else { header_x },
         if compact { 30. } else { header_y + 25. },
         body_size(),
         muted(),
@@ -163,6 +172,9 @@ pub fn draw(state: &AppState) {
     button(layout.new_game, "NEW BOARD");
     button(layout.hint, "HINT");
 }
+
+#[cfg(test)]
+mod tests;
 
 fn draw_word_list(game: &crate::word_search::WordSearch, _layout: Layout) {
     let words = game.words();

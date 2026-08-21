@@ -129,13 +129,17 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
-    let instruction = state
-        .card_hint
-        .as_deref()
-        .unwrap_or(status_text(game.status));
+    let instruction = if compact {
+        "Tap a column"
+    } else {
+        state
+            .card_hint
+            .as_deref()
+            .unwrap_or(status_text(game.status))
+    };
     text(
         instruction,
-        if compact { 430. } else { header_x },
+        if compact { 250. } else { header_x },
         if compact { 30. } else { header_y + 25. },
         accessibility::text_size(body_size(), state.large_text),
         muted(),
@@ -190,7 +194,7 @@ pub fn draw(state: &AppState) {
             WHITE,
         );
     }
-    if show_drop_prompt(portrait) {
+    if show_drop_prompt(portrait, compact) {
         text(
             "DROP A DISC",
             layout.drops.x,
@@ -314,8 +318,8 @@ fn muted() -> Color {
     crate::theme::SECONDARY
 }
 
-fn show_drop_prompt(portrait: bool) -> bool {
-    !portrait
+fn show_drop_prompt(portrait: bool, compact: bool) -> bool {
+    !portrait && !compact
 }
 
 #[cfg(test)]

@@ -112,7 +112,7 @@ pub fn draw(state: &AppState) {
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
     let title_x = if compact {
-        70.
+        crate::ui::COMPACT_HEADER_TITLE_X
     } else if portrait {
         25.
     } else {

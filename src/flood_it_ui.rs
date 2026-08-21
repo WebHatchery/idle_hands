@@ -114,7 +114,7 @@ pub fn draw(state: &AppState) {
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
     let title_x = if compact {
-        70.
+        crate::ui::COMPACT_HEADER_TITLE_X
     } else if portrait {
         25.
     } else {
@@ -144,12 +144,11 @@ pub fn draw(state: &AppState) {
     let flooded = game.region_size() * 100 / game.cells.len();
     let scoreline = if compact {
         format!(
-            "{}% • M{}/{} • C{} • S{}",
+            "{}% • M{}/{} • C{}",
             flooded,
             game.moves,
             game.move_limit(),
-            game.combo,
-            game.surges
+            game.combo
         )
     } else if portrait {
         format!(
@@ -174,7 +173,11 @@ pub fn draw(state: &AppState) {
     };
     crate::ui::draw_text(
         scoreline,
-        if compact { 430. } else { title_x },
+        if compact {
+            crate::ui::COMPACT_HEADER_STATUS_X
+        } else {
+            title_x
+        },
         if compact { 28. } else { title_y + 24. },
         accessibility::text_size(body_size(), state.large_text),
         muted(),

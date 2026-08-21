@@ -5,6 +5,8 @@ use crate::{
 };
 use macroquad::prelude::*;
 
+const COMPACT_SUBTITLE_X: f32 = 250.;
+
 #[derive(Clone, Copy)]
 struct Layout {
     top: f32,
@@ -131,14 +133,18 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
-    let subtitle = if game.status == SpiderSolitaireStatus::Won {
+    let subtitle = if compact && game.status == SpiderSolitaireStatus::Won {
+        "Webs cleared"
+    } else if compact {
+        "Build one-suit runs"
+    } else if game.status == SpiderSolitaireStatus::Won {
         "Eight suited webs cleared"
     } else {
         "Build descending runs in one suit"
     };
     text(
         subtitle,
-        if compact { 390. } else { hx },
+        if compact { COMPACT_SUBTITLE_X } else { hx },
         if compact { 52. } else { hy + 24. },
         accessibility::text_size(body_size(), state.large_text),
         muted(),
@@ -246,6 +252,7 @@ pub fn draw(state: &AppState) {
     }
     button(l.hint, "HINT", state.large_text);
 }
+
 fn draw_card_slot(rect: Rect, card: Option<crate::cards::Card>, state: &AppState) {
     if let Some(card) = card {
         crate::card_render::draw_card_accessible(

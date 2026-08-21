@@ -103,7 +103,7 @@ pub fn draw(state: &AppState) {
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
     let title_x = if compact {
-        70.
+        crate::ui::COMPACT_HEADER_TITLE_X
     } else if portrait {
         10.
     } else {
@@ -136,13 +136,11 @@ pub fn draw(state: &AppState) {
     );
     let run_status = if compact {
         format!(
-            "{}  •  D{:04}  •  H{}  •  R{}/{}  •  S{}",
-            dungeon.rule.label(),
+            "D{:04}  •  H{}  •  R{}/{}",
             dungeon.challenge,
             dungeon.hearts,
             dungeon.runes_found,
-            DailyDungeon::rune_total(),
-            dungeon.scouts
+            DailyDungeon::rune_total()
         )
     } else {
         format!(
@@ -157,7 +155,7 @@ pub fn draw(state: &AppState) {
     };
     text(
         &run_status,
-        if compact { 430. } else { title_x },
+        if compact { 280. } else { title_x },
         if compact { 28. } else { title_y + 24. },
         accessibility::text_size(body_size(), state.large_text),
         muted(),

@@ -117,7 +117,7 @@ pub fn draw(state: &AppState) {
     let l = layout();
     let game = game(state);
     let title_x = if crate::ui::is_compact_landscape() {
-        70.
+        crate::ui::COMPACT_HEADER_TITLE_X
     } else if crate::ui::is_portrait() {
         25.
     } else {

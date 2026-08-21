@@ -103,7 +103,7 @@ pub fn draw(state: &AppState) {
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
     let title_x = if compact {
-        70.
+        crate::ui::COMPACT_HEADER_TITLE_X
     } else if portrait {
         25.
     } else {
@@ -131,13 +131,7 @@ pub fn draw(state: &AppState) {
         accent(),
     );
     let scoreline = if compact {
-        format!(
-            "P{} • Pts{} • C{} • {}",
-            game.score,
-            game.points,
-            game.combo,
-            rule_label(game.rule)
-        )
+        format!("P{} • C{}", game.score, game.combo)
     } else {
         format!(
             "Pairs {}  •  Points {}  •  Chain {}  •  {}",
@@ -155,7 +149,11 @@ pub fn draw(state: &AppState) {
     };
     text(
         &scoreline,
-        if compact { 430. } else { title_x },
+        if compact {
+            crate::ui::COMPACT_HEADER_STATUS_X
+        } else {
+            title_x
+        },
         if compact { 28. } else { title_y + 24. },
         accessibility::text_size(body_size(), state.large_text),
         muted(),
@@ -262,14 +260,6 @@ fn status_text(game: &NumberMatch) -> &'static str {
         },
         NumberMatchPhase::Won => "Every number has found its pair",
         NumberMatchPhase::Stuck => "No links remain • Tap UNDO or REMIX",
-    }
-}
-
-fn rule_label(rule: LinkRule) -> &'static str {
-    match rule {
-        LinkRule::Neighbors => "NEAR",
-        LinkRule::Lines => "LINES",
-        LinkRule::Diagonals => "DIAGONAL",
     }
 }
 

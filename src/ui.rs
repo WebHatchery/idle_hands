@@ -76,9 +76,14 @@ pub fn draw_rounded_panel(rect: Rect, radius: f32, fill: Color, border: Color) {
 use std::cell::Cell;
 pub const LOGICAL_WIDTH: f32 = 1280.0;
 pub const LOGICAL_HEIGHT: f32 = 720.0;
+pub const COMPACT_HEADER_TITLE_X: f32 = 90.0;
+pub const COMPACT_HEADER_STATUS_X: f32 = 280.0;
 thread_local! {
     static TOUCH_SCALE: Cell<f32> = const { Cell::new(1.0) };
 }
+
+#[cfg(test)]
+mod tests;
 #[cfg(test)]
 thread_local! {
     static FORCE_DESKTOP_LAYOUT: Cell<bool> = const { Cell::new(false) };

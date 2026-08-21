@@ -53,7 +53,7 @@ fn layout_for(mode: LayoutMode) -> Layout {
                 Rect::new(590., 65., 100., 42.),
             ],
             header: vec2(132., 35.),
-            status: vec2(370., 52.),
+            status: vec2(250., 52.),
             hint_text: vec2(530., 250.),
         },
         LayoutMode::Portrait => Layout {
@@ -124,6 +124,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
 pub fn draw(state: &AppState) {
     let layout = layout();
     let game = &state.games.tic_tac_toe;
+    let compact = crate::ui::is_compact_landscape();
     text(
         "‹ CABINET",
         back_rect().x,
@@ -139,7 +140,11 @@ pub fn draw(state: &AppState) {
         accent(),
     );
     text(
-        status_text(game.status),
+        if compact {
+            compact_status_text(game.status)
+        } else {
+            status_text(game.status)
+        },
         layout.status.x,
         layout.status.y,
         accessibility::text_size(body_size(), state.large_text),
@@ -245,6 +250,16 @@ fn status_text(status: TicTacToeStatus) -> &'static str {
         TicTacToeStatus::Won(Mark::O) => "The cabinet made three in a row.",
         TicTacToeStatus::Won(Mark::Empty) => "The board is complete.",
         TicTacToeStatus::Draw => "A draw. Start another board to play again.",
+    }
+}
+
+fn compact_status_text(status: TicTacToeStatus) -> &'static str {
+    match status {
+        TicTacToeStatus::Playing => "Your turn • make a move",
+        TicTacToeStatus::Won(Mark::X) => "You made three in a row.",
+        TicTacToeStatus::Won(Mark::O) => "Cabinet made three in a row.",
+        TicTacToeStatus::Won(Mark::Empty) => "Board complete.",
+        TicTacToeStatus::Draw => "Draw • start another board",
     }
 }
 

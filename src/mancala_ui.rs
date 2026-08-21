@@ -120,7 +120,7 @@ pub fn draw(state: &AppState) {
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
     let title_x = if compact {
-        70.
+        crate::ui::COMPACT_HEADER_TITLE_X
     } else if portrait {
         25.
     } else {
@@ -135,7 +135,9 @@ pub fn draw(state: &AppState) {
     };
     text("‹ CABINET", 8., 30., 13., muted());
     text("MANCALA", title_x, title_y, title_size(), accent());
-    let scoreline = if portrait {
+    let scoreline = if compact {
+        format!("Y{} • C{} • M{}", game.pits[6], game.pits[13], game.moves)
+    } else if portrait {
         format!(
             "Y{} • C{} • M{} • Cap{} • E{}",
             game.pits[6], game.pits[13], game.moves, game.captured_stones, game.extra_turns
@@ -148,7 +150,11 @@ pub fn draw(state: &AppState) {
     };
     text(
         &scoreline,
-        if compact { 430. } else { title_x },
+        if compact {
+            crate::ui::COMPACT_HEADER_STATUS_X
+        } else {
+            title_x
+        },
         if compact { 28. } else { title_y + 24. },
         body_size(),
         muted(),

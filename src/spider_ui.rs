@@ -119,18 +119,15 @@ pub fn draw(state: &AppState) {
     };
     text("‹ CABINET", 8., 30., 13., muted());
     text("SPIDER", header_x, header_y, title_size(), accent());
-    let subtitle_x = if crate::ui::is_compact_landscape() {
-        350.
-    } else {
-        header_x
-    };
-    let subtitle_y = if crate::ui::is_compact_landscape() {
-        28.
-    } else {
-        header_y + 24.
-    };
+    let compact = crate::ui::is_compact_landscape();
+    let subtitle_x = if compact { 250. } else { header_x };
+    let subtitle_y = if compact { 28. } else { header_y + 24. };
     text(
-        if game.status == SpiderStatus::Won {
+        if compact && game.status == SpiderStatus::Won {
+            "Webs cleared"
+        } else if compact {
+            "Build runs"
+        } else if game.status == SpiderStatus::Won {
             "Eight webs cleared"
         } else {
             "Build descending runs in one suit"
@@ -227,6 +224,9 @@ pub fn draw(state: &AppState) {
         muted(),
     );
 }
+
+#[cfg(test)]
+mod tests;
 
 fn draw_card_slot(rect: Rect, card: Option<crate::cards::Card>, state: &AppState) {
     if let Some(card) = card {

@@ -172,8 +172,12 @@ pub fn draw(state: &AppState) {
         accent(),
     );
     text(
-        status_text(game.status),
-        if compact { 450. } else { title_x },
+        if compact {
+            compact_status_text(game.status)
+        } else {
+            status_text(game.status)
+        },
+        if compact { 280. } else { title_x },
         if compact { 30. } else { title_y + 24. },
         scaled(12., state),
         muted(),
@@ -347,6 +351,14 @@ fn status_text(status: TriPeaksStatus) -> &'static str {
     }
 }
 
+fn compact_status_text(status: TriPeaksStatus) -> &'static str {
+    match status {
+        TriPeaksStatus::Playing => "Clear peaks",
+        TriPeaksStatus::Won => "Peaks clear",
+        TriPeaksStatus::Stuck => "No move",
+    }
+}
+
 fn scaled(size: f32, state: &AppState) -> f32 {
     accessibility::text_size(size, state.large_text)
 }
@@ -358,6 +370,9 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 fn accent() -> Color {
     crate::theme::BRASS
 }
+
+#[cfg(test)]
+mod tests;
 
 fn muted() -> Color {
     crate::theme::SECONDARY

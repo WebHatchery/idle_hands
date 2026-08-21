@@ -84,7 +84,7 @@ pub fn draw(state: &AppState) {
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
     let title_x = if compact {
-        70.
+        crate::ui::COMPACT_HEADER_TITLE_X
     } else if portrait {
         25.
     } else {
@@ -113,11 +113,10 @@ pub fn draw(state: &AppState) {
     );
     let scoreline = if compact || screen_width() < 360. {
         format!(
-            "{}/25 live • {} leaks • {}/{} turns",
+            "P{} • L{} • M{}",
             game.connected_count(),
             game.leak_count(),
-            game.moves,
-            game.par
+            game.moves
         )
     } else {
         format!(
@@ -131,7 +130,11 @@ pub fn draw(state: &AppState) {
     };
     crate::ui::draw_text(
         scoreline,
-        if compact { 430. } else { title_x },
+        if compact {
+            crate::ui::COMPACT_HEADER_STATUS_X
+        } else {
+            title_x
+        },
         if compact { 28. } else { title_y + 24. },
         accessibility::text_size(body_size(), state.large_text),
         muted(),

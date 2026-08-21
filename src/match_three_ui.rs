@@ -96,7 +96,7 @@ pub fn draw(state: &AppState) {
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
     let title_x = if compact {
-        70.
+        crate::ui::COMPACT_HEADER_TITLE_X
     } else if portrait {
         25.
     } else {
@@ -118,12 +118,7 @@ pub fn draw(state: &AppState) {
         accent(),
     );
     let summary = if compact {
-        format!(
-            "{} pts  •  {} moves  •  target {}",
-            game.score,
-            game.moves_left(),
-            game.target_score()
-        )
+        format!("P{} • M{}", game.score, game.moves_left())
     } else {
         format!(
             "{} points  •  {} moves  •  {}  •  {}  •  target {}",
@@ -136,7 +131,11 @@ pub fn draw(state: &AppState) {
     };
     crate::ui::draw_text(
         summary,
-        if compact { 430. } else { title_x },
+        if compact {
+            crate::ui::COMPACT_HEADER_STATUS_X
+        } else {
+            title_x
+        },
         if compact { 28. } else { title_y + 24. },
         accessibility::text_size(body_size(), state.large_text),
         muted(),

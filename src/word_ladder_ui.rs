@@ -109,7 +109,7 @@ pub fn draw(state: &AppState) {
     let portrait = crate::ui::is_portrait();
     let compact = crate::ui::is_compact_landscape();
     let title_x = if compact {
-        70.
+        crate::ui::COMPACT_HEADER_TITLE_X
     } else if portrait {
         25.
     } else {
@@ -137,7 +137,14 @@ pub fn draw(state: &AppState) {
         accent(),
     );
     crate::ui::draw_text(
-        if compact || portrait || screen_width() < 360. {
+        if compact {
+            format!(
+                "M{} • L{} • P{}",
+                game.moves,
+                game.remaining_steps(),
+                game.legal_step_count()
+            )
+        } else if portrait || screen_width() < 360. {
             format!(
                 "{}/{} moves • {} left • {} paths • Δ{}",
                 game.moves,
@@ -159,7 +166,11 @@ pub fn draw(state: &AppState) {
                 game.mode.label()
             )
         },
-        if compact { 300. } else { title_x },
+        if compact {
+            crate::ui::COMPACT_HEADER_STATUS_X
+        } else {
+            title_x
+        },
         if compact { 28. } else { title_y + 24. },
         accessibility::text_size(14., state.large_text),
         muted(),

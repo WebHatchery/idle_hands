@@ -18,6 +18,13 @@ fn compact_landscape_layout_separates_header_status_variants_board_and_controls(
 }
 
 #[test]
+fn compact_status_stays_before_the_rule_card() {
+    let layout = layout_for(LayoutMode::CompactLandscape);
+    assert!(layout.status.x + 220. < 494.);
+    assert!(compact_status_text(TicTacToeStatus::Playing).len() < 30);
+}
+
+#[test]
 fn portrait_layout_separates_header_status_variants_board_and_controls() {
     assert_layout_is_separated(layout_for(LayoutMode::Portrait));
 }

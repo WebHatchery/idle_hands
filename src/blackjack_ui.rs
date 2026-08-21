@@ -97,7 +97,7 @@ pub fn draw(state: &AppState) {
         accent(),
     );
     let status_x = if compact {
-        430.
+        280.
     } else if portrait {
         10.
     } else {
@@ -111,7 +111,11 @@ pub fn draw(state: &AppState) {
         78.
     };
     text(
-        &status_text(game.status, game.player_total(), game.dealer_total()),
+        &if compact {
+            compact_status_text(game.status, game.player_total())
+        } else {
+            status_text(game.status, game.player_total(), game.dealer_total())
+        },
         status_x,
         status_y,
         accessibility::text_size(body_size(), state.large_text),
@@ -229,6 +233,15 @@ fn status_text(status: BlackjackStatus, player: u8, dealer: u8) -> String {
         BlackjackStatus::Push => format!("Push — both hold at {}", player),
     }
 }
+
+fn compact_status_text(status: BlackjackStatus, player: u8) -> String {
+    match status {
+        BlackjackStatus::Playing => format!("Total {}", player),
+        BlackjackStatus::Won => format!("You win • {}", player),
+        BlackjackStatus::Lost => format!("Dealer wins • {}", player),
+        BlackjackStatus::Push => format!("Push • {}", player),
+    }
+}
 fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
@@ -266,3 +279,6 @@ fn muted() -> Color {
 fn back_rect() -> Rect {
     Rect::new(0., 0., 110., 42.)
 }
+
+#[cfg(test)]
+mod tests;
