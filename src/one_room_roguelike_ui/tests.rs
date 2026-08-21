@@ -10,6 +10,16 @@ fn portrait_long_title_budget_stays_left_of_the_rule_card() {
 }
 
 #[test]
+fn portrait_hero_classes_fit_the_logical_width() {
+    crate::ui::with_portrait_layout(|| {
+        assert!(layout()
+            .classes
+            .iter()
+            .all(|rect| { rect.x >= 0. && rect.right() <= crate::responsive_ui::WIDTH }));
+    });
+}
+
+#[test]
 fn compact_header_lanes_clear_the_breadcrumb_and_rule_card() {
     let (title_x, status_x) = compact_header_positions();
     let rule_card_x = 494.;

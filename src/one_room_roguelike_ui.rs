@@ -57,9 +57,9 @@ fn layout() -> Layout {
             undo: Rect::new(40., 575., 145., 44.),
             new_game: Rect::new(195., 575., 165., 44.),
             classes: [
-                Rect::new(20., 96., 112., 44.),
-                Rect::new(144., 96., 112., 44.),
-                Rect::new(268., 96., 112., 44.),
+                Rect::new(20., 96., 110., 44.),
+                Rect::new(135., 96., 110., 44.),
+                Rect::new(250., 96., 110., 44.),
             ],
         }
     } else {

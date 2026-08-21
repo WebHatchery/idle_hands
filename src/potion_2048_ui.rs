@@ -4,6 +4,9 @@ use crate::domain::Direction;
 use crate::{accessibility, potion_2048::PotionDifficulty, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
+#[cfg(test)]
+mod tests;
+
 #[derive(Clone, Copy)]
 struct Layout {
     board: Rect,
@@ -148,15 +151,11 @@ pub fn draw(state: &AppState) {
             game.catalysts_brewed
         )
     } else if portrait {
-        format!(
-            "S{}  •  B{}  •  G{}  •  {}  •  Chain {}/{}  •  C{}",
+        portrait_brew_status(
             game.score,
             game.best,
-            game.target(),
-            game.difficulty.label(),
-            game.combo,
-            game.difficulty.catalyst_chain(),
-            game.catalysts_brewed
+            game.target() as u32,
+            game.catalysts_brewed as u32,
         )
     } else {
         format!(
@@ -251,6 +250,13 @@ pub fn draw(state: &AppState) {
             state.large_text,
         );
     }
+}
+
+fn portrait_brew_status(score: u32, best: u32, target: u32, catalysts: u32) -> String {
+    format!(
+        "S{}  •  B{}  •  G{}  •  C{}",
+        score, best, target, catalysts
+    )
 }
 fn tile_color(value: u16, high_contrast: bool) -> Color {
     if high_contrast {
