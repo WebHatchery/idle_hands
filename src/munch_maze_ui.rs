@@ -62,13 +62,13 @@ fn layout() -> Layout {
                 f32::from(HEIGHT) * cell,
             ),
             cell,
-            up: Rect::new(950., 125., 82., 42.),
-            left: Rect::new(860., 172., 82., 42.),
-            down: Rect::new(950., 172., 82., 42.),
-            right: Rect::new(1040., 172., 82., 42.),
-            pause: Rect::new(860., 230., 122., 42.),
-            undo: Rect::new(990., 230., 122., 42.),
-            new_game: Rect::new(860., 285., 252., 42.),
+            up: Rect::new(970., 125., 82., 42.),
+            left: Rect::new(880., 172., 82., 42.),
+            down: Rect::new(970., 172., 82., 42.),
+            right: Rect::new(1060., 172., 82., 42.),
+            pause: Rect::new(880., 230., 122., 42.),
+            undo: Rect::new(1010., 230., 122., 42.),
+            new_game: Rect::new(880., 285., 252., 42.),
         }
     }
 }
