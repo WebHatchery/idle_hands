@@ -42,6 +42,13 @@ try {
         if ($LASTEXITCODE -ne 0) {
             throw "Desktop long session failed: $suite"
         }
+
+        $uiFilter = "game_harness::{0}::desktop_ui_exposes_a_tap_target" -f $suite
+        Write-Host "Running desktop UI route $suite"
+        & cargo test --all-targets $uiFilter -- --exact
+        if ($LASTEXITCODE -ne 0) {
+            throw "Desktop UI route failed: $suite"
+        }
     }
 
     Write-Host "Checking the suite registry"

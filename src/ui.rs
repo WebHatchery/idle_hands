@@ -79,6 +79,10 @@ pub const LOGICAL_HEIGHT: f32 = 720.0;
 thread_local! {
     static TOUCH_SCALE: Cell<f32> = const { Cell::new(1.0) };
 }
+#[cfg(test)]
+thread_local! {
+    static FORCE_DESKTOP_LAYOUT: Cell<bool> = const { Cell::new(false) };
+}
 pub fn viewport() -> VirtualUi {
     let (width, height) = layout_size();
     VirtualUi::new(width, height)
@@ -93,10 +97,28 @@ pub fn layout_size() -> (f32, f32) {
     }
 }
 pub fn is_portrait() -> bool {
+    #[cfg(test)]
+    if FORCE_DESKTOP_LAYOUT.with(Cell::get) {
+        return false;
+    }
     screen_height() > screen_width() * 1.15
 }
 pub fn is_compact_landscape() -> bool {
+    #[cfg(test)]
+    if FORCE_DESKTOP_LAYOUT.with(Cell::get) {
+        return false;
+    }
     screen_width() <= 900. && screen_width() > screen_height() * 1.15
+}
+
+#[cfg(test)]
+pub(crate) fn with_desktop_layout<T>(run: impl FnOnce() -> T) -> T {
+    FORCE_DESKTOP_LAYOUT.with(|forced| {
+        let was_forced = forced.replace(true);
+        let result = run();
+        forced.set(was_forced);
+        result
+    })
 }
 pub fn mouse() -> Vec2 {
     viewport()

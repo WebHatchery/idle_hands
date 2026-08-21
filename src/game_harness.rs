@@ -67,6 +67,8 @@ mod word_ladder;
 mod word_search;
 
 mod desktop_long_game;
+#[cfg(test)]
+mod desktop_ui;
 mod support;
 
 use crate::state::GameId;
