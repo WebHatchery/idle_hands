@@ -267,7 +267,7 @@ fn muted() -> Color {
 }
 fn title_size() -> f32 {
     if crate::ui::is_portrait() {
-        23.
+        20.
     } else {
         32.
     }
