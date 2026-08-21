@@ -431,7 +431,7 @@ fn title_size() -> f32 {
     if crate::ui::is_compact_landscape() {
         20.
     } else if crate::ui::is_portrait() {
-        23.
+        18.
     } else {
         29.
     }
