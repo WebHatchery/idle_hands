@@ -42,24 +42,45 @@ pub fn assert_game_contract(game: GameId) {
         game.title()
     );
 
-    let before_cycle = serde_json::to_value(&first_snapshot).unwrap();
-    game_variants::cycle(&mut first, &data, game);
-    assert_eq!(first.screen, Screen::Game(game));
-    assert_eq!(first.selected, game.index());
-    let after_cycle = serde_json::to_value(GameSnapshot::from_state(&first, game)).unwrap();
-    assert_ne!(
-        before_cycle,
-        after_cycle,
-        "{} variant did not change",
-        game.title()
-    );
-
-    let mut restored = AppState::new(&data);
-    GameSnapshot::from_state(&first, game).apply_to(&mut restored);
-    assert_eq!(
-        after_cycle,
-        serde_json::to_value(GameSnapshot::from_state(&restored, game)).unwrap(),
-        "{} snapshot did not round-trip",
+    let initial_label = game_variants::label(&first, game);
+    let mut labels = vec![initial_label.clone()];
+    let mut cycle_count = 0;
+    loop {
+        game_variants::cycle(&mut first, &data, game);
+        assert_eq!(first.screen, Screen::Game(game));
+        assert_eq!(first.selected, game.index());
+        let label = game_variants::label(&first, game);
+        let snapshot = serde_json::to_value(GameSnapshot::from_state(&first, game)).unwrap();
+        let mut restored = AppState::new(&data);
+        GameSnapshot::from_state(&first, game).apply_to(&mut restored);
+        assert_eq!(
+            snapshot,
+            serde_json::to_value(GameSnapshot::from_state(&restored, game)).unwrap(),
+            "{} snapshot did not round-trip for variant {}",
+            game.title(),
+            label
+        );
+        cycle_count += 1;
+        if label == initial_label {
+            break;
+        }
+        assert!(
+            !labels.iter().any(|seen| seen == &label),
+            "{} variant label repeated before the cycle returned: {}",
+            game.title(),
+            label
+        );
+        labels.push(label);
+        assert!(
+            cycle_count < 32,
+            "{} variant cycle did not return after {} steps",
+            game.title(),
+            cycle_count
+        );
+    }
+    assert!(
+        cycle_count >= 2,
+        "{} variant cycle exposed fewer than two variants",
         game.title()
     );
 }
