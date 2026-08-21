@@ -3,6 +3,9 @@
 use crate::{accessibility, mastermind::MastermindStatus, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
+#[cfg(test)]
+mod tests;
+
 #[derive(Clone, Copy)]
 struct Layout {
     board: Rect,
@@ -264,7 +267,7 @@ fn muted() -> Color {
 }
 fn title_size() -> f32 {
     if crate::ui::is_portrait() {
-        27.
+        23.
     } else {
         32.
     }

@@ -61,3 +61,16 @@ fn portrait_freecell_routes_every_primary_tap_target() {
         [UiAction::FreeCellCascade(0, 0)]
     ));
 }
+
+#[test]
+fn reversi_portrait_subtitle_is_short_enough_for_the_header_lane() {
+    crate::ui::with_portrait_layout(|| {
+        assert_eq!(reversi_subtitle(), "Tap a glowing square");
+    });
+    crate::ui::with_desktop_layout(|| {
+        assert_eq!(
+            reversi_subtitle(),
+            "Turn the board, one careful move at a time"
+        );
+    });
+}

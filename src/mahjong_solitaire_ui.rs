@@ -247,7 +247,7 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 }
 fn title_size() -> f32 {
     if crate::ui::is_portrait() {
-        19.
+        17.
     } else {
         29.
     }

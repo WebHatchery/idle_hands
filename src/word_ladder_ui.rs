@@ -8,6 +8,9 @@ use crate::{
 };
 use macroquad::prelude::*;
 
+#[cfg(test)]
+mod tests;
+
 #[derive(Clone, Copy)]
 struct Layout {
     keyboard: Rect,
@@ -133,7 +136,7 @@ pub fn draw(state: &AppState) {
         "WORD LADDER",
         title_x,
         title_y,
-        accessibility::text_size(if compact { 22. } else { 28. }, state.large_text),
+        accessibility::text_size(title_size(compact, portrait), state.large_text),
         accent(),
     );
     crate::ui::draw_text(
@@ -229,6 +232,16 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(15., state.large_text),
         muted(),
     );
+}
+
+fn title_size(compact: bool, portrait: bool) -> f32 {
+    if compact {
+        22.
+    } else if portrait {
+        20.
+    } else {
+        28.
+    }
 }
 
 fn draw_words(game: &WordLadder, x: f32, y: f32, width: f32) {

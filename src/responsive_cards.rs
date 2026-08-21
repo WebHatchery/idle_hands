@@ -11,6 +11,9 @@ use crate::{
 };
 use macroquad::prelude::*;
 
+#[cfg(test)]
+mod tests;
+
 const CARD_W: f32 = 43.;
 const CARD_H: f32 = 58.;
 const COL_GAP: f32 = 7.;
@@ -369,9 +372,6 @@ pub fn freecell_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     vec![]
 }
 
-#[cfg(test)]
-mod tests;
-
 const REVERSI_BOARD: Rect = Rect {
     x: 20.,
     y: 118.,
@@ -397,7 +397,7 @@ pub fn draw_reversi(state: &AppState) {
         crate::theme::BRASS,
     );
     text(
-        "Turn the board, one careful move at a time",
+        reversi_subtitle(),
         accessibility::text_size(12., state.large_text),
         94.,
         accessibility::text_size(12., state.large_text),
@@ -567,6 +567,14 @@ pub fn draw_reversi(state: &AppState) {
         accessibility::text_size(11., state.large_text),
         Color::new(0.63, 0.58, 0.72, 1.),
     );
+}
+
+fn reversi_subtitle() -> &'static str {
+    if crate::ui::is_portrait() {
+        "Tap a glowing square"
+    } else {
+        "Turn the board, one careful move at a time"
+    }
 }
 
 pub fn reversi_clicks(_state: &AppState, p: Vec2) -> Vec<UiAction> {

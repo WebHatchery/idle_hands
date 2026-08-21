@@ -1,3 +1,5 @@
+use super::*;
+
 #[test]
 fn compact_title_and_instruction_use_separate_rows() {
     let title_y = 30.;
@@ -14,4 +16,9 @@ fn portrait_title_budget_stays_left_of_the_rule_card() {
     let rule_card_x = 220.;
 
     assert!(title_x + title_width_budget < rule_card_x);
+}
+
+#[test]
+fn portrait_mahjong_title_uses_a_narrow_readable_size() {
+    crate::ui::with_portrait_layout(|| assert_eq!(title_size(), 17.));
 }
