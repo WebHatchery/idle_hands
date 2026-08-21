@@ -114,7 +114,7 @@ pub fn draw(state: &AppState) {
             game.hits(),
             game.ship_cells()
         )
-    } else if screen_width() < 360. {
+    } else if crate::ui::display_width() < 360. {
         format!(
             "{}/{} sunk • P{} • C{}",
             game.sunk_ships(),

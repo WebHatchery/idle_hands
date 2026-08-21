@@ -24,8 +24,8 @@ fn layout() -> Layout {
             peek: Rect::new(515., 245., 155., 48.),
         }
     } else if crate::ui::is_portrait() {
-        let width = screen_width().min(370.);
-        let height = screen_height();
+        let width = crate::ui::display_width().min(370.);
+        let height = crate::ui::display_height();
         let side = (width - 20.).min(if height < 650. { 200. } else { 340. });
         let top = if height < 650. { 100. } else { 130. };
         let controls_y = top + side + 42.;
@@ -83,7 +83,7 @@ pub fn draw(state: &AppState) {
     let header_y = if crate::ui::is_compact_landscape() {
         35.
     } else if crate::ui::is_portrait() {
-        if screen_height() < 650. {
+        if crate::ui::display_height() < 650. {
             55.
         } else {
             87.

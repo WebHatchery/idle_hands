@@ -111,7 +111,7 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
-    let scoreline = if compact || screen_width() < 360. {
+    let scoreline = if compact || crate::ui::display_width() < 360. {
         format!(
             "P{} • L{} • M{}",
             game.connected_count(),
@@ -153,7 +153,7 @@ pub fn draw(state: &AppState) {
     };
     crate::ui::draw_text(
         state.card_hint.as_deref().unwrap_or(
-            if screen_width() < 360. && game.phase == PipePhase::Playing {
+            if crate::ui::display_width() < 360. && game.phase == PipePhase::Playing {
                 "Close red leaks to power all 25"
             } else {
                 status(game.phase)

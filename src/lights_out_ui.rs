@@ -31,8 +31,8 @@ fn layout() -> Layout {
             difficulty: Rect::new(370., 245., 310., 48.),
         }
     } else if crate::ui::is_portrait() {
-        let width = screen_width().min(370.);
-        let height = screen_height();
+        let width = crate::ui::display_width().min(370.);
+        let height = crate::ui::display_height();
         let side = (width - 20.).min(if height < 650. { 200. } else { 320. });
         let top = if height < 650. { 100. } else { 145. };
         let controls_y = top + side + 42.;
@@ -213,7 +213,7 @@ fn header_y() -> f32 {
     if crate::ui::is_compact_landscape() {
         35.
     } else if crate::ui::is_portrait() {
-        if screen_height() < 650. {
+        if crate::ui::display_height() < 650. {
             55.
         } else {
             105.

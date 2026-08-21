@@ -127,7 +127,7 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
-    let scoreline = if compact || screen_width() < 360. {
+    let scoreline = if compact || crate::ui::display_width() < 360. {
         format!(
             "B{}/{} • M{}",
             game.collected.len(),
@@ -184,7 +184,7 @@ pub fn draw(state: &AppState) {
     };
     crate::ui::draw_text(
         state.card_hint.as_deref().unwrap_or(
-            if screen_width() < 360. && game.phase == MazePhase::Playing {
+            if crate::ui::display_width() < 360. && game.phase == MazePhase::Playing {
                 "Collect both B beacons, then reach E"
             } else {
                 status(game)

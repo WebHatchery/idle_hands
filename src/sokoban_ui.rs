@@ -34,7 +34,7 @@ fn layout() -> Layout {
             restart: Rect::new(610., 275., 145., 44.),
             new_game: Rect::new(610., 165., 145., 44.),
         }
-    } else if crate::ui::is_portrait() && screen_height() < 700. {
+    } else if crate::ui::is_portrait() && crate::ui::display_height() < 700. {
         Layout {
             board: Rect::new(32., 96., 256., 256.),
             directions: [
@@ -186,7 +186,7 @@ pub fn draw(state: &AppState) {
             .unwrap_or(status_text(game.phase)),
         if compact { 270. } else { title_x },
         if portrait {
-            if screen_height() < 700. {
+            if crate::ui::display_height() < 700. {
                 535.
             } else {
                 480.

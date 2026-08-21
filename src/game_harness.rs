@@ -69,6 +69,8 @@ mod word_search;
 mod desktop_long_game;
 #[cfg(test)]
 mod desktop_ui;
+#[cfg(test)]
+mod mobile_ui;
 mod support;
 
 use crate::state::GameId;

@@ -141,7 +141,7 @@ pub fn draw(state: &AppState) {
     );
     let scoreline = if portrait {
         format!("{}/6 • {} left", game.moves, game.remaining_words().len())
-    } else if compact || screen_width() < 360. {
+    } else if compact || crate::ui::display_width() < 360. {
         format!(
             "{}/6 • {} left • {}",
             game.moves,

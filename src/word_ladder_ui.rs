@@ -144,7 +144,7 @@ pub fn draw(state: &AppState) {
                 game.remaining_steps(),
                 game.legal_step_count()
             )
-        } else if portrait || screen_width() < 360. {
+        } else if portrait || crate::ui::display_width() < 360. {
             format!(
                 "{}/{} moves • {} left • {} paths • Δ{}",
                 game.moves,

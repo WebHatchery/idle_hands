@@ -133,7 +133,7 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
-    let scoreline = if compact || portrait || screen_width() < 360. {
+    let scoreline = if compact || portrait || crate::ui::display_width() < 360. {
         format!(
             "M{} • S{}/{} • P{}",
             game.moves,

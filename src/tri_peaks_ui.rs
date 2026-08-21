@@ -70,8 +70,8 @@ fn layout() -> Layout {
             rule: Rect::new(720., 140., 116., 40.),
         }
     } else if crate::ui::is_portrait() {
-        let width = screen_width();
-        let bottom = screen_height() - 54.;
+        let width = crate::ui::display_width();
+        let bottom = crate::ui::display_height() - 54.;
         let bottom_button_w = (width - 32.) * 0.5;
         Layout {
             base_x: if width < 350. { 9. } else { 20. },

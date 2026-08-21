@@ -36,8 +36,8 @@ fn layout() -> Layout {
             new_game: Rect::new(726., 330., 100., 42.),
         }
     } else if crate::ui::is_portrait() {
-        let width = screen_width().min(370.);
-        let height = screen_height();
+        let width = crate::ui::display_width().min(370.);
+        let height = crate::ui::display_height();
         let control_bottom = height.min(760.);
         let key_h = if height < 650. { 36. } else { 46. };
         let control_w = (width - 32.) / 3.;

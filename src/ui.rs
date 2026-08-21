@@ -85,8 +85,16 @@ thread_local! {
 #[cfg(test)]
 mod tests;
 #[cfg(test)]
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum ForcedLayout {
+    None,
+    Desktop,
+    CompactLandscape,
+    Portrait,
+}
+#[cfg(test)]
 thread_local! {
-    static FORCE_DESKTOP_LAYOUT: Cell<bool> = const { Cell::new(false) };
+    static FORCED_LAYOUT: Cell<ForcedLayout> = const { Cell::new(ForcedLayout::None) };
 }
 pub fn viewport() -> VirtualUi {
     let (width, height) = layout_size();
@@ -103,23 +111,64 @@ pub fn layout_size() -> (f32, f32) {
 }
 pub fn is_portrait() -> bool {
     #[cfg(test)]
-    if FORCE_DESKTOP_LAYOUT.with(Cell::get) {
-        return false;
+    match FORCED_LAYOUT.with(Cell::get) {
+        ForcedLayout::Desktop | ForcedLayout::CompactLandscape => return false,
+        ForcedLayout::Portrait => return true,
+        ForcedLayout::None => {}
     }
-    screen_height() > screen_width() * 1.15
+    display_height() > display_width() * 1.15
 }
 pub fn is_compact_landscape() -> bool {
     #[cfg(test)]
-    if FORCE_DESKTOP_LAYOUT.with(Cell::get) {
-        return false;
+    match FORCED_LAYOUT.with(Cell::get) {
+        ForcedLayout::Desktop | ForcedLayout::Portrait => return false,
+        ForcedLayout::CompactLandscape => return true,
+        ForcedLayout::None => {}
     }
-    screen_width() <= 900. && screen_width() > screen_height() * 1.15
+    display_width() <= 900. && display_width() > display_height() * 1.15
+}
+
+pub fn display_width() -> f32 {
+    #[cfg(test)]
+    match FORCED_LAYOUT.with(Cell::get) {
+        ForcedLayout::Desktop => return LOGICAL_WIDTH,
+        ForcedLayout::CompactLandscape => return crate::responsive_landscape::WIDTH,
+        ForcedLayout::Portrait => return crate::responsive_ui::WIDTH,
+        ForcedLayout::None => {}
+    }
+    macroquad::prelude::screen_width()
+}
+
+pub fn display_height() -> f32 {
+    #[cfg(test)]
+    match FORCED_LAYOUT.with(Cell::get) {
+        ForcedLayout::Desktop => return LOGICAL_HEIGHT,
+        ForcedLayout::CompactLandscape => return crate::responsive_landscape::HEIGHT,
+        ForcedLayout::Portrait => return crate::responsive_ui::HEIGHT,
+        ForcedLayout::None => {}
+    }
+    macroquad::prelude::screen_height()
 }
 
 #[cfg(test)]
 pub(crate) fn with_desktop_layout<T>(run: impl FnOnce() -> T) -> T {
-    FORCE_DESKTOP_LAYOUT.with(|forced| {
-        let was_forced = forced.replace(true);
+    with_forced_layout(ForcedLayout::Desktop, run)
+}
+
+#[cfg(test)]
+pub(crate) fn with_compact_landscape_layout<T>(run: impl FnOnce() -> T) -> T {
+    with_forced_layout(ForcedLayout::CompactLandscape, run)
+}
+
+#[cfg(test)]
+pub(crate) fn with_portrait_layout<T>(run: impl FnOnce() -> T) -> T {
+    with_forced_layout(ForcedLayout::Portrait, run)
+}
+
+#[cfg(test)]
+fn with_forced_layout<T>(layout: ForcedLayout, run: impl FnOnce() -> T) -> T {
+    FORCED_LAYOUT.with(|forced| {
+        let was_forced = forced.replace(layout);
         let result = run();
         forced.set(was_forced);
         result
