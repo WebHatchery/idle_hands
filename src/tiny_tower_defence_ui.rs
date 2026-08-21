@@ -132,7 +132,7 @@ pub fn draw(state: &AppState) {
             game.wave,
             TinyTowerDefence::target_wave()
         ),
-        if compact { 430. } else { title_x },
+        if compact { compact_status_x() } else { title_x },
         if compact { 30. } else { title_y + 25. },
         body_size(),
         muted(),
@@ -343,6 +343,10 @@ fn title_size() -> f32 {
     } else {
         27.
     }
+}
+
+fn compact_status_x() -> f32 {
+    280.
 }
 
 fn body_size() -> f32 {
