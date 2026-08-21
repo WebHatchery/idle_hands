@@ -25,3 +25,13 @@ fn compact_header_instruction_stays_outside_the_title_lane() {
 fn portrait_connect_four_title_uses_a_narrow_readable_size() {
     crate::ui::with_portrait_layout(|| assert_eq!(title_size(), 22.));
 }
+
+#[test]
+fn moves_summary_clears_the_drop_row() {
+    crate::ui::with_desktop_layout(|| {
+        assert!(moves_summary_y(false, false) >= layout().drops.bottom() + 18.);
+    });
+    crate::ui::with_portrait_layout(|| {
+        assert!(moves_summary_y(false, true) >= layout().drops.bottom() + 18.);
+    });
+}

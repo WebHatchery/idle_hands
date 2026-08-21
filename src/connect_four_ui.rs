@@ -217,13 +217,7 @@ pub fn draw(state: &AppState) {
         } else {
             350.
         },
-        if compact {
-            150.
-        } else if portrait {
-            485.
-        } else {
-            650.
-        },
+        moves_summary_y(compact, portrait),
         accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
@@ -329,6 +323,16 @@ fn show_drop_prompt(portrait: bool, compact: bool) -> bool {
 
 fn compact_instruction_position() -> Vec2 {
     vec2(430., 45.)
+}
+
+fn moves_summary_y(compact: bool, portrait: bool) -> f32 {
+    if compact {
+        150.
+    } else if portrait {
+        485.
+    } else {
+        665.
+    }
 }
 
 #[cfg(test)]
