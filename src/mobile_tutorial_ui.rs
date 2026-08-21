@@ -14,7 +14,7 @@ fn continue_rect(compact_landscape: bool) -> Rect {
     }
 }
 
-fn replay_rect(compact_landscape: bool) -> Rect {
+pub(crate) fn replay_rect(compact_landscape: bool) -> Rect {
     if compact_landscape {
         Rect::new(700., 2., 130., 44.)
     } else {

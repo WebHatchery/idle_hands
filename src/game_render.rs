@@ -5,6 +5,10 @@ use crate::{cosmetics, ui};
 use macroquad::prelude::*;
 use macroquad_toolkit::notifications::{NotificationAnchor, NotificationRenderConfig};
 
+#[cfg(test)]
+#[path = "game_render/tests.rs"]
+mod tests;
+
 impl Game {
     pub fn draw(&mut self) {
         clear_background(cosmetics::background(self.state.board_theme));
@@ -56,14 +60,10 @@ impl Game {
         ) {
             return;
         }
-        let (width, _) = ui::layout_size();
-        let rect = if ui::is_portrait() {
-            Rect::new(width - 158., 8., 150., 34.)
-        } else if ui::is_compact_landscape() {
-            Rect::new(width - 172., 5., 164., 34.)
-        } else {
-            Rect::new(width - 190., 16., 178., 38.)
-        };
+        if !time_badge_is_visible() {
+            return;
+        }
+        let rect = time_badge_rect();
         draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE_DARK);
         draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., crate::theme::BRASS);
         let current = self.state.records.current_time(game.index());
@@ -80,6 +80,18 @@ impl Game {
             if ui::is_portrait() { 9. } else { 11. },
             crate::theme::CREAM,
         );
+    }
+}
+
+fn time_badge_is_visible() -> bool {
+    !ui::is_compact_landscape()
+}
+
+fn time_badge_rect() -> Rect {
+    if ui::is_portrait() {
+        Rect::new(95., 8., 140., 34.)
+    } else {
+        Rect::new(700., 16., 178., 38.)
     }
 }
 
