@@ -47,3 +47,13 @@ fn winning_a_level_opens_the_next_authored_fort() {
     assert_eq!(game.targets.len(), 4);
     assert_eq!(game.shots_remaining, 5);
 }
+
+#[test]
+fn won_rounds_report_a_clear_star_rating_for_the_resume_screen() {
+    let mut game = FlingFury::new(11);
+    game.status = FlingStatus::Won;
+    game.moves = 3;
+    assert_eq!(game.stars(), 2);
+    game.moves = 2;
+    assert_eq!(game.stars(), 3);
+}

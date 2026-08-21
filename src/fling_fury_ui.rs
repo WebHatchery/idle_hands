@@ -23,6 +23,7 @@ struct Layout {
     pause: Rect,
     undo: Rect,
     new_game: Rect,
+    restart: Rect,
 }
 
 fn layout() -> Layout {
@@ -39,6 +40,7 @@ fn layout() -> Layout {
             pause: Rect::new(465., 190., 101., 36.),
             undo: Rect::new(465., 234., 48., 36.),
             new_game: Rect::new(518., 234., 48., 36.),
+            restart: Rect::new(465., 278., 101., 36.),
         }
     } else if crate::ui::is_portrait() {
         let cell = 9.;
@@ -53,6 +55,7 @@ fn layout() -> Layout {
             pause: Rect::new(185., 350., 145., 42.),
             undo: Rect::new(20., 405., 145., 42.),
             new_game: Rect::new(185., 405., 145., 42.),
+            restart: Rect::new(20., 460., 310., 42.),
         }
     } else {
         let cell = 24.;
@@ -72,6 +75,7 @@ fn layout() -> Layout {
             pause: Rect::new(970., 290., 86., 42.),
             undo: Rect::new(1062., 290., 86., 42.),
             new_game: Rect::new(970., 345., 178., 42.),
+            restart: Rect::new(970., 395., 178., 42.),
         }
     }
 }
@@ -106,6 +110,9 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
         } else {
             vec![UiAction::FlingNew]
         };
+    }
+    if state.games.fling_fury.status == FlingStatus::Won && crate::ui::hit(l.restart, point) {
+        return vec![UiAction::FlingRestart];
     }
     vec![]
 }
@@ -149,6 +156,9 @@ pub fn draw(state: &AppState) {
     };
     label(&heading, title_x, score_y, body_size(), muted());
     draw_board(l, game);
+    if game.status == FlingStatus::Won {
+        draw_win_modal(l, game);
+    }
     if !compact {
         label(
             &format!(
@@ -221,6 +231,135 @@ pub fn draw(state: &AppState) {
         },
         state.large_text,
     );
+    if game.status == FlingStatus::Won {
+        button(
+            l.restart,
+            if compact { "RESTART" } else { "RESTART LEVEL" },
+            state.large_text,
+        );
+    }
+}
+
+fn draw_win_modal(l: Layout, game: &FlingFury) {
+    let board = l.board;
+    draw_rectangle(
+        board.x,
+        board.y,
+        board.w,
+        board.h,
+        Color::new(0.03, 0.05, 0.08, 0.72),
+    );
+    let portrait = crate::ui::is_portrait();
+    let compact = crate::ui::is_compact_landscape();
+    let panel_width = if portrait {
+        board.w - 18.
+    } else if compact {
+        board.w - 24.
+    } else {
+        380.
+    };
+    let panel_height = if portrait {
+        board.h - 18.
+    } else if compact {
+        190.
+    } else {
+        230.
+    };
+    let panel = Rect::new(
+        board.x + (board.w - panel_width) * 0.5,
+        board.y + (board.h - panel_height) * 0.5,
+        panel_width,
+        panel_height,
+    );
+    draw_rectangle(
+        panel.x,
+        panel.y,
+        panel.w,
+        panel.h,
+        Color::new(0.12, 0.15, 0.19, 0.96),
+    );
+    draw_rectangle_lines(panel.x, panel.y, panel.w, panel.h, 3., crate::theme::BRASS);
+    let title_size = if portrait { 22. } else { 31. };
+    centered_label(
+        "YOU WON!",
+        panel.x + panel.w * 0.5,
+        panel.y + if portrait { 31. } else { 48. },
+        title_size,
+        crate::theme::BRASS,
+    );
+    centered_label(
+        &format!("LEVEL {} CLEARED", game.level_number()),
+        panel.x + panel.w * 0.5,
+        panel.y + if portrait { 52. } else { 75. },
+        if portrait { 10. } else { 13. },
+        crate::theme::CREAM,
+    );
+    let star_y = panel.y + if portrait { 84. } else { 112. };
+    let star_spacing = if portrait { 33. } else { 47. };
+    let first_star = panel.x + panel.w * 0.5 - star_spacing;
+    for index in 0..3 {
+        let color = if index < usize::from(game.stars()) {
+            Color::new(1., 0.76, 0.24, 1.)
+        } else {
+            Color::new(0.28, 0.33, 0.37, 1.)
+        };
+        draw_star(
+            vec2(first_star + index as f32 * star_spacing, star_y),
+            if portrait { 12. } else { 17. },
+            color,
+        );
+    }
+    centered_label(
+        &format!("{} STARS", game.stars()),
+        panel.x + panel.w * 0.5,
+        panel.y + if portrait { 112. } else { 146. },
+        if portrait { 10. } else { 13. },
+        Color::new(1., 0.84, 0.42, 1.),
+    );
+    centered_label(
+        if portrait {
+            "Choose NEXT LEVEL or RESTART"
+        } else {
+            "Your fort is safe — choose NEXT LEVEL or RESTART LEVEL"
+        },
+        panel.x + panel.w * 0.5,
+        panel.y + panel.h - if portrait { 14. } else { 20. },
+        if portrait { 8. } else { 11. },
+        crate::theme::SECONDARY,
+    );
+}
+
+fn draw_star(center: Vec2, radius: f32, color: Color) {
+    let mut points = [Vec2::ZERO; 10];
+    for (index, point) in points.iter_mut().enumerate() {
+        let angle = -std::f32::consts::FRAC_PI_2 + index as f32 * std::f32::consts::PI / 5.;
+        let length = if index % 2 == 0 {
+            radius
+        } else {
+            radius * 0.45
+        };
+        *point = center + vec2(angle.cos(), angle.sin()) * length;
+    }
+    for index in 0..10 {
+        draw_triangle(center, points[index], points[(index + 1) % 10], color);
+    }
+    for index in 0..10 {
+        let next = (index + 1) % 10;
+        draw_line(
+            points[index].x,
+            points[index].y,
+            points[next].x,
+            points[next].y,
+            1.,
+            crate::theme::CREAM,
+        );
+    }
+}
+
+fn centered_label(value: &str, center_x: f32, y: f32, size: f32, color: Color) {
+    let readable = crate::ui::readable_text_size(size);
+    let width = crate::ui::measure_text(value, None, readable as u16, 1.).width;
+    label(value, center_x - width * 0.5, y, size, color);
 }
 
 fn draw_board(l: Layout, game: &FlingFury) {

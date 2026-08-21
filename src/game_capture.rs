@@ -421,6 +421,16 @@ impl Game {
             game.cells[35] = DungeonCell::FlaggedTrap;
             game.cells[45] = DungeonCell::Hidden;
         }
+        if scene == "fling_fury_won" {
+            let game = &mut self.state.games.fling_fury;
+            game.status = crate::fling_fury::FlingStatus::Won;
+            game.moves = 3;
+            game.shot = None;
+            for target in &mut game.targets {
+                target.alive = false;
+                target.falling = false;
+            }
+        }
         super::game_capture_depth::apply(&mut self.state, scene);
         if scene == "solitaire_peek" {
             self.capture_solitaire_peek = true;

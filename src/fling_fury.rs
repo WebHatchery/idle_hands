@@ -249,6 +249,17 @@ impl FlingFury {
         LEVEL_NAMES[self.mode as usize]
     }
 
+    pub fn stars(&self) -> u8 {
+        if self.status != FlingStatus::Won {
+            return 0;
+        }
+        match self.moves {
+            0..=2 => 3,
+            3..=4 => 2,
+            _ => 1,
+        }
+    }
+
     fn advance_one(&mut self, dt: f32) {
         if let Some(mut shot) = self.shot {
             shot.x += shot.vx * dt;

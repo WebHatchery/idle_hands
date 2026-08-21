@@ -26,6 +26,7 @@ fn assert_layout_is_clear(width: f32, height: f32) {
         layout.pause,
         layout.undo,
         layout.new_game,
+        layout.restart,
     ];
     assert!(controls
         .iter()
