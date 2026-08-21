@@ -334,18 +334,8 @@ fn draw_board(l: Layout, game: &FlingFury) {
         crate::theme::LEATHER,
     );
     if let Some(shot) = game.shot {
-        draw_circle(
-            board.x + shot.x * l.cell,
-            board.y + shot.y * l.cell,
-            l.cell * 0.43,
-            Color::new(0.95, 0.34, 0.18, 1.),
-        );
-        draw_circle(
-            board.x + shot.x * l.cell,
-            board.y + shot.y * l.cell,
-            l.cell * 0.19,
-            Color::new(1., 0.82, 0.36, 1.),
-        );
+        let center = vec2(board.x + shot.x * l.cell, board.y + shot.y * l.cell);
+        draw_charge(center, l.cell, false);
         for trail in 1..=3 {
             let distance = trail as f32 * 0.55;
             draw_circle(
@@ -365,20 +355,58 @@ fn draw_board(l: Layout, game: &FlingFury) {
             2.,
             Color::new(1., 0.84, 0.34, 0.65),
         );
-        draw_circle(
-            sling_x,
-            sling_y,
-            l.cell * 0.43,
-            Color::new(0.95, 0.34, 0.18, 1.),
-        );
-        draw_circle(
-            sling_x,
-            sling_y,
-            l.cell * 0.18,
+        draw_charge(vec2(sling_x, sling_y), l.cell, true);
+    }
+    draw_rectangle_lines(board.x, board.y, board.w, board.h, 2., crate::theme::BRASS);
+}
+
+fn draw_charge(center: Vec2, cell: f32, ready: bool) {
+    let radius = cell * 0.56;
+    draw_circle(
+        center.x,
+        center.y,
+        radius * 1.75,
+        Color::new(1., 0.40, 0.16, if ready { 0.22 } else { 0.30 }),
+    );
+    draw_circle_lines(
+        center.x,
+        center.y,
+        radius * 1.35,
+        2.5,
+        Color::new(1., 0.80, 0.30, 0.95),
+    );
+    draw_circle(center.x, center.y, radius, Color::new(0.94, 0.26, 0.12, 1.));
+    draw_circle(
+        center.x,
+        center.y,
+        radius * 0.42,
+        Color::new(1., 0.87, 0.42, 1.),
+    );
+    draw_line(
+        center.x - radius * 0.7,
+        center.y,
+        center.x + radius * 0.7,
+        center.y,
+        1.5,
+        Color::new(1., 0.96, 0.72, 0.9),
+    );
+    draw_line(
+        center.x,
+        center.y - radius * 0.7,
+        center.x,
+        center.y + radius * 0.7,
+        1.5,
+        Color::new(1., 0.96, 0.72, 0.9),
+    );
+    if ready {
+        label(
+            "SHOT",
+            center.x - cell * 0.58,
+            center.y + cell * 1.35,
+            cell * 0.42,
             Color::new(1., 0.82, 0.36, 1.),
         );
     }
-    draw_rectangle_lines(board.x, board.y, board.w, board.h, 2., crate::theme::BRASS);
 }
 
 fn draw_block(board: Rect, cell: f32, block: &FlingBlock) {
@@ -433,13 +461,24 @@ fn draw_block(board: Rect, cell: f32, block: &FlingBlock) {
 
 fn draw_target(board: Rect, cell: f32, target: &FlingTarget) {
     let center = vec2(board.x + target.x * cell, board.y + target.y * cell);
-    let radius = cell * 0.58;
+    let radius = cell * 0.64;
     let glow = if target.falling {
         Color::new(1., 0.54, 0.23, 0.45)
     } else {
         Color::new(0.31, 0.86, 0.84, 0.32)
     };
     draw_circle(center.x, center.y, radius * 1.35, glow);
+    draw_circle_lines(
+        center.x,
+        center.y,
+        radius * 1.42,
+        2.5,
+        if target.falling {
+            Color::new(1., 0.77, 0.30, 1.)
+        } else {
+            Color::new(0.48, 1., 0.96, 1.)
+        },
+    );
     draw_circle(
         center.x,
         center.y,
@@ -468,6 +507,17 @@ fn draw_target(board: Rect, cell: f32, target: &FlingTarget) {
         2.,
         Color::new(1., 0.82, 0.36, 1.),
     );
+    label(
+        "TARGET",
+        center.x - cell * 1.15,
+        center.y - radius * 1.6,
+        cell * 0.38,
+        if target.falling {
+            Color::new(1., 0.77, 0.30, 1.)
+        } else {
+            Color::new(0.58, 1., 0.92, 1.)
+        },
+    );
 }
 
 fn draw_cloud(x: f32, y: f32, size: f32, alpha: f32) {
@@ -495,7 +545,9 @@ fn rotate_offset(x: f32, y: f32, center: Vec2, cos: f32, sin: f32) -> Vec2 {
 
 fn status_text(game: &FlingFury) -> String {
     match game.status {
-        FlingStatus::Playing => "Tune ANGLE and POWER, then tap FLING at the marked targets".into(),
+        FlingStatus::Playing => {
+            "Orange SHOT is ready — aim at the CYAN TARGETS, then tap FLING".into()
+        }
         FlingStatus::Won => "Every target fell — tap NEXT LEVEL to open the next fort".into(),
         FlingStatus::Lost => "Shots spent — tap RESET RUN and try a different weak point".into(),
     }
