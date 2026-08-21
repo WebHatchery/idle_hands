@@ -145,22 +145,35 @@ pub fn draw(state: &AppState) {
         accent(),
     );
     text(
-        &format!(
-            "Room {}/{}  •  Moves {}/{}  •  Pushes {}  •  {}",
-            game.level + 1,
-            crate::sokoban::LEVEL_COUNT,
-            game.moves,
-            game.par_moves(),
-            game.pushes,
-            if game.won() {
-                game.clear_rank()
-            } else if game.phase == SokobanPhase::Stuck {
-                "CORNERED"
-            } else {
-                "PUSH TO MARKS"
-            }
-        ),
-        if compact { 420. } else { title_x },
+        &if compact || portrait {
+            format!(
+                "R{}/{} • M{}",
+                game.level + 1,
+                crate::sokoban::LEVEL_COUNT,
+                game.moves
+            )
+        } else {
+            format!(
+                "Room {}/{}  •  Moves {}/{}  •  Pushes {}  •  {}",
+                game.level + 1,
+                crate::sokoban::LEVEL_COUNT,
+                game.moves,
+                game.par_moves(),
+                game.pushes,
+                if game.won() {
+                    game.clear_rank()
+                } else if game.phase == SokobanPhase::Stuck {
+                    "CORNERED"
+                } else {
+                    "PUSH TO MARKS"
+                }
+            )
+        },
+        if compact {
+            crate::ui::COMPACT_HEADER_STATUS_X
+        } else {
+            title_x
+        },
         if compact { 28. } else { title_y + 24. },
         accessibility::text_size(body_size(), state.large_text),
         muted(),

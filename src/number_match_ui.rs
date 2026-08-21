@@ -130,7 +130,7 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
-    let scoreline = if compact {
+    let scoreline = if compact || portrait {
         format!("P{} • C{}", game.score, game.combo)
     } else {
         format!(

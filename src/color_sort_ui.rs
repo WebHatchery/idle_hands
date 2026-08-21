@@ -133,14 +133,13 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
-    let scoreline = if compact || screen_width() < 360. {
+    let scoreline = if compact || portrait || screen_width() < 360. {
         format!(
-            "M{} • {}/{} sealed • P{} • C{}",
+            "M{} • S{}/{} • P{}",
             game.moves,
             game.completed_tubes(),
             game.tubes.len().saturating_sub(2),
-            game.points,
-            game.combo
+            game.points
         )
     } else {
         format!(
@@ -155,7 +154,11 @@ pub fn draw(state: &AppState) {
     };
     crate::ui::draw_text(
         scoreline,
-        if compact { 430. } else { title_x },
+        if compact {
+            crate::ui::COMPACT_HEADER_STATUS_X
+        } else {
+            title_x
+        },
         if compact { 28. } else { title_y + 24. },
         accessibility::text_size(body_size(), state.large_text),
         muted(),

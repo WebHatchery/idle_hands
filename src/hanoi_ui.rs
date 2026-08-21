@@ -112,7 +112,7 @@ pub fn draw(state: &AppState) {
     text("‹ CABINET", 8., 30., 13., muted());
     text("HANOI", title_x, title_y, title_size(), accent());
     text(
-        &if compact {
+        &if compact || portrait {
             format!(
                 "{} disks • M{}/{}",
                 game.disks,

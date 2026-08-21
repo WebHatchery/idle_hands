@@ -137,7 +137,7 @@ pub fn draw(state: &AppState) {
         accent(),
     );
     crate::ui::draw_text(
-        if compact {
+        if compact || portrait {
             format!(
                 "M{} • L{} • P{}",
                 game.moves,
@@ -179,7 +179,7 @@ pub fn draw(state: &AppState) {
         let best_x = if compact {
             400.
         } else if portrait {
-            210.
+            10.
         } else {
             title_x
         };
@@ -189,7 +189,7 @@ pub fn draw(state: &AppState) {
             if compact {
                 47.
             } else if portrait {
-                88.
+                108.
             } else {
                 title_y + 45.
             },

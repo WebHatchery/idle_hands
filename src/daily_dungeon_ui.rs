@@ -134,7 +134,7 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(title_size(), state.large_text),
         accent(),
     );
-    let run_status = if compact {
+    let run_status = if compact || portrait {
         format!(
             "D{:04}  •  H{}  •  R{}/{}",
             dungeon.challenge,
@@ -155,7 +155,11 @@ pub fn draw(state: &AppState) {
     };
     text(
         &run_status,
-        if compact { 280. } else { title_x },
+        if compact {
+            crate::ui::COMPACT_HEADER_STATUS_X
+        } else {
+            title_x
+        },
         if compact { 28. } else { title_y + 24. },
         accessibility::text_size(body_size(), state.large_text),
         muted(),

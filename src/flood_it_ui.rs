@@ -142,7 +142,7 @@ pub fn draw(state: &AppState) {
         accent(),
     );
     let flooded = game.region_size() * 100 / game.cells.len();
-    let scoreline = if compact {
+    let scoreline = if compact || portrait {
         format!(
             "{}% • M{}/{} • C{}",
             flooded,
