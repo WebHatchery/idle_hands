@@ -99,10 +99,15 @@ pub fn draw(state: &AppState) {
             WordSearchStatus::Won => "The list is complete",
         }
     };
+    let instruction_position = if compact {
+        compact_instruction_position()
+    } else {
+        vec2(header_x, header_y + 25.)
+    };
     text(
         instruction,
-        if compact { 250. } else { header_x },
-        if compact { 30. } else { header_y + 25. },
+        instruction_position.x,
+        instruction_position.y,
         body_size(),
         muted(),
     );
@@ -216,6 +221,10 @@ fn draw_word_list(game: &crate::word_search::WordSearch, _layout: Layout) {
             },
         );
     }
+}
+
+fn compact_instruction_position() -> Vec2 {
+    vec2(370., 30.)
 }
 
 fn button(rect: Rect, label: &str) {
