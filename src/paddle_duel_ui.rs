@@ -8,6 +8,9 @@ use crate::{
 };
 use macroquad::prelude::*;
 
+#[cfg(test)]
+mod tests;
+
 #[derive(Clone, Copy)]
 struct Layout {
     board: Rect,
