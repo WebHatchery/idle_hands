@@ -137,10 +137,15 @@ pub fn draw(state: &AppState) {
             .as_deref()
             .unwrap_or(status_text(game.status))
     };
+    let instruction_position = if compact {
+        compact_instruction_position()
+    } else {
+        vec2(header_x, header_y + 25.)
+    };
     text(
         instruction,
-        if compact { 250. } else { header_x },
-        if compact { 30. } else { header_y + 25. },
+        instruction_position.x,
+        instruction_position.y,
         accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
@@ -320,6 +325,10 @@ fn muted() -> Color {
 
 fn show_drop_prompt(portrait: bool, compact: bool) -> bool {
     !portrait && !compact
+}
+
+fn compact_instruction_position() -> Vec2 {
+    vec2(430., 45.)
 }
 
 #[cfg(test)]
