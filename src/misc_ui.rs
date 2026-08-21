@@ -147,7 +147,7 @@ pub fn draw(state: &AppState) {
         game.title(),
         title_x,
         title_y,
-        27.,
+        title_size(),
         crate::theme::BRASS,
         state.large_text,
     );
@@ -160,11 +160,18 @@ pub fn draw(state: &AppState) {
         state.large_text,
     );
     let compact = crate::ui::is_compact_landscape();
-    let metrics = metrics_text(game, compact);
+    let portrait = crate::ui::is_portrait();
+    let metrics = metrics_text(game, compact || portrait);
     text(
         &metrics,
         if compact { COMPACT_METRICS_X } else { title_x },
-        if compact { 28. } else { title_y + 45. },
+        if compact {
+            28.
+        } else if portrait {
+            99.
+        } else {
+            title_y + 45.
+        },
         11.,
         crate::theme::CREAM,
         state.large_text,
@@ -211,6 +218,14 @@ fn metrics_text(game: &MiscGame, compact: bool) -> String {
             game.score,
             game.moves
         )
+    }
+}
+
+fn title_size() -> f32 {
+    if crate::ui::is_portrait() {
+        21.
+    } else {
+        27.
     }
 }
 

@@ -15,7 +15,7 @@ fn portrait_hero_classes_fit_the_logical_width() {
         assert!(layout()
             .classes
             .iter()
-            .all(|rect| { rect.x >= 0. && rect.right() <= crate::responsive_ui::WIDTH }));
+            .all(|rect| { rect.x >= 0. && rect.right() <= crate::responsive_ui::WIDTH - 4. }));
     });
 }
 
