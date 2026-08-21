@@ -9,6 +9,9 @@ use crate::{
 };
 use macroquad::prelude::*;
 
+#[cfg(test)]
+mod tests;
+
 #[derive(Clone, Copy)]
 struct Layout {
     board: Rect,
@@ -28,13 +31,13 @@ fn layout() -> Layout {
         Layout {
             board: Rect::new(10., 42., f32::from(WIDTH) * cell, f32::from(HEIGHT) * cell),
             cell,
-            up: Rect::new(335., 52., 58., 38.),
-            left: Rect::new(270., 96., 58., 38.),
-            down: Rect::new(335., 96., 58., 38.),
-            right: Rect::new(400., 96., 58., 38.),
-            pause: Rect::new(270., 146., 92., 36.),
-            undo: Rect::new(366., 146., 92., 36.),
-            new_game: Rect::new(270., 190., 188., 36.),
+            up: Rect::new(385., 52., 58., 38.),
+            left: Rect::new(320., 96., 58., 38.),
+            down: Rect::new(385., 96., 58., 38.),
+            right: Rect::new(450., 96., 58., 38.),
+            pause: Rect::new(320., 146., 92., 36.),
+            undo: Rect::new(416., 146., 92., 36.),
+            new_game: Rect::new(320., 190., 188., 36.),
         }
     } else if crate::ui::is_portrait() {
         let cell = 15.;
