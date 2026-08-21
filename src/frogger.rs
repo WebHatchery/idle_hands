@@ -120,7 +120,8 @@ impl Frogger {
             self.snapshot();
             self.moves = self.moves.saturating_add(1);
             for car in &mut self.cars {
-                car.x = car.x.wrapping_add_signed(car.direction).rem_euclid(WIDTH);
+                car.x = (i16::from(car.x) + i16::from(car.direction)).rem_euclid(i16::from(WIDTH))
+                    as u8;
             }
             self.resolve_position();
             advanced = true;
@@ -214,6 +215,7 @@ impl Frogger {
     }
 
     fn build_lanes(&mut self) {
+        self.cars.clear();
         for (lane, row) in [2, 4, 6, 8, 10].into_iter().enumerate() {
             let direction = if lane.is_multiple_of(2) { 1 } else { -1 };
             let first_x = self.next_random() % WIDTH;
