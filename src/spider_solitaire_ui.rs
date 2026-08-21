@@ -111,7 +111,7 @@ pub fn draw(state: &AppState) {
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
     let (hx, hy) = if compact {
-        (390., 27.)
+        (120., 28.)
     } else if portrait {
         (10., 72.)
     } else {
@@ -144,13 +144,15 @@ pub fn draw(state: &AppState) {
         muted(),
     );
     draw_card_slot(l.stock, game.stock.last().copied(), state);
-    text(
-        "STOCK",
-        l.stock.x,
-        l.stock.bottom() + 15.,
-        accessibility::text_size(10., state.large_text),
-        muted(),
-    );
+    if !compact {
+        text(
+            "STOCK",
+            l.stock.x,
+            l.stock.bottom() + 15.,
+            accessibility::text_size(10., state.large_text),
+            muted(),
+        );
+    }
     for complete in 0..8 {
         let x = if portrait {
             52. + complete as f32 * 34.
@@ -221,7 +223,7 @@ pub fn draw(state: &AppState) {
     let instruction_y = if portrait {
         645.
     } else if compact {
-        72.
+        280.
     } else {
         615.
     };
@@ -293,3 +295,6 @@ fn accent() -> Color {
 fn muted() -> Color {
     crate::theme::SECONDARY
 }
+
+#[cfg(test)]
+mod tests;

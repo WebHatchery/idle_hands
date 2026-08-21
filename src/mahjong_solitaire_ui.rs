@@ -115,7 +115,7 @@ pub fn draw(state: &AppState) {
     text(
         instruction,
         if compact { 350. } else { header_x },
-        if compact { 30. } else { header_y + 25. },
+        if compact { 52. } else { header_y + 25. },
         accessibility::text_size(body_size(), state.large_text),
         muted(),
     );
@@ -268,3 +268,6 @@ fn muted() -> Color {
 fn back_rect() -> Rect {
     Rect::new(0., 0., 110., 42.)
 }
+
+#[cfg(test)]
+mod tests;

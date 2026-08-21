@@ -93,7 +93,7 @@ pub fn draw(state: &AppState) {
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
     let x = if compact {
-        430.
+        150.
     } else if portrait {
         16.
     } else {
@@ -135,7 +135,7 @@ pub fn draw(state: &AppState) {
     };
     text(
         &run_status,
-        if compact { 430. } else { x },
+        if compact { 150. } else { x },
         if compact { 52. } else { y + 25. },
         accessibility::text_size(body_size(), state.large_text),
         muted(),
@@ -372,3 +372,6 @@ fn accent() -> Color {
 fn muted() -> Color {
     crate::theme::SECONDARY
 }
+
+#[cfg(test)]
+mod tests;
