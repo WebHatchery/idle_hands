@@ -7,6 +7,9 @@ use crate::{
 };
 use macroquad::prelude::*;
 
+#[cfg(test)]
+mod tests;
+
 #[derive(Clone, Copy)]
 struct Layout {
     board: Rect,
@@ -336,7 +339,7 @@ fn title_size() -> f32 {
     if crate::ui::is_compact_landscape() {
         19.
     } else if crate::ui::is_portrait() {
-        20.
+        18.
     } else {
         27.
     }
