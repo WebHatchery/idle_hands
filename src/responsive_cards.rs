@@ -211,11 +211,11 @@ fn free_card_rect(x: f32, y: f32) -> Rect {
 }
 
 fn free_card_x(slot: usize) -> f32 {
-    4. + slot as f32 * 45.
+    3. + slot as f32 * 45.
 }
 
 fn free_foundation_x(suit: usize) -> f32 {
-    185. + suit as f32 * 45.
+    182. + suit as f32 * 45.
 }
 
 pub fn draw_freecell(state: &AppState) {

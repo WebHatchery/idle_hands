@@ -66,7 +66,9 @@ fn portrait_freecell_routes_every_primary_tap_target() {
 fn portrait_freecell_foundations_stay_inside_the_logical_width() {
     crate::ui::with_portrait_layout(|| {
         let last = free_card_rect(free_foundation_x(3), 112.);
-        assert!(last.right() <= crate::responsive_ui::WIDTH);
+        assert!(last.right() <= crate::responsive_ui::WIDTH - 2.);
+        let last_cascade = free_card_rect(free_card_x(7), 205.);
+        assert!(last_cascade.right() <= crate::responsive_ui::WIDTH - 2.);
     });
 }
 
