@@ -3,5 +3,15 @@
     "key": "cabinet_texture",
     "path": "assets/art/cabinet_texture.png",
     "filter": "linear"
+  },
+  {
+    "key": "frogger_frog",
+    "path": "assets/art/frogger_frog.png",
+    "filter": "linear"
+  },
+  {
+    "key": "frogger_car",
+    "path": "assets/art/frogger_car.png",
+    "filter": "linear"
   }
 ]

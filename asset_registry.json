@@ -1,6 +1,8 @@
 {
   "version": 1,
   "assets": [
-    "assets/art/cabinet_texture.png"
+    "assets/art/cabinet_texture.png",
+    "assets/art/frogger_car.png",
+    "assets/art/frogger_frog.png"
   ]
 }

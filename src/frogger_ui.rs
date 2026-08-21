@@ -98,7 +98,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     vec![]
 }
 
-pub fn draw(state: &AppState) {
+pub fn draw(state: &AppState, frog_texture: Option<&Texture2D>, car_texture: Option<&Texture2D>) {
     let l = layout();
     let game = &state.games.frogger;
     let portrait = crate::ui::is_portrait();
@@ -160,18 +160,16 @@ pub fn draw(state: &AppState) {
             );
         }
     }
-    for car in &game.cars {
-        draw_car(l, car);
+    let animation_time = if state.reduced_motion {
+        0.
+    } else {
+        get_time() as f32
+    };
+    for (index, car) in game.cars.iter().enumerate() {
+        draw_car(l, car, car_texture, animation_time, index);
     }
     let player = cell_rect(l, game.player_row, game.player_column);
-    draw_poly(
-        player.x + player.w * 0.5,
-        player.y + player.h * 0.52,
-        4,
-        player.w * 0.34,
-        45.,
-        Color::new(0.48, 1., 0.48, 1.),
-    );
+    draw_frog(l, player, frog_texture, animation_time, game.moves);
     let status = status_text(game);
     text(
         state.card_hint.as_deref().unwrap_or(&status),
@@ -199,7 +197,81 @@ pub fn draw(state: &AppState) {
     button(l.new_game, "NEW CROSSING", state.large_text);
 }
 
-fn draw_car(layout: Layout, car: &Car) {
+fn draw_frog(
+    layout: Layout,
+    cell: Rect,
+    texture: Option<&Texture2D>,
+    animation_time: f32,
+    moves: u16,
+) {
+    if let Some(texture) = texture {
+        let phase = animation_time * 5.2 + f32::from(moves) * 0.45;
+        let hop = phase.sin().abs() * cell.h * 0.08;
+        let rotation = phase.sin() * 0.035;
+        let size = cell.w * 1.28;
+        let destination = Rect::new(
+            cell.x + (cell.w - size) * 0.5,
+            cell.y + (cell.h - size) * 0.5 - hop,
+            size,
+            size,
+        );
+        draw_ellipse(
+            cell.x + cell.w * 0.5,
+            cell.bottom() - cell.h * 0.12,
+            cell.w * 0.28,
+            cell.h * 0.07,
+            0.,
+            Color::new(0.02, 0.04, 0.05, 0.36),
+        );
+        draw_texture_ex(
+            texture,
+            destination.x,
+            destination.y,
+            WHITE,
+            DrawTextureParams {
+                dest_size: Some(destination.size()),
+                rotation,
+                ..Default::default()
+            },
+        );
+    } else {
+        draw_poly(
+            cell.x + cell.w * 0.5,
+            cell.y + cell.h * 0.52,
+            4,
+            cell.w * 0.34,
+            45.,
+            Color::new(0.48, 1., 0.48, 1.),
+        );
+    }
+    let _ = layout;
+}
+
+fn draw_car(
+    layout: Layout,
+    car: &Car,
+    texture: Option<&Texture2D>,
+    animation_time: f32,
+    index: usize,
+) {
+    if let Some(texture) = texture {
+        let phase = animation_time * 7. + index as f32 * 0.9;
+        let bob = phase.sin() * layout.cell * 0.025;
+        let width = layout.cell * f32::from(car.length);
+        let height = width / 1.5;
+        let x = layout.board.x + f32::from(car.x) * layout.cell;
+        let y =
+            layout.board.y + f32::from(car.row) * layout.cell + (layout.cell - height) * 0.5 + bob;
+        let tint = 0.94 + phase.sin().abs() * 0.06;
+        draw_wrapped_texture(
+            texture,
+            Rect::new(x, y, width, height),
+            layout.board,
+            car.direction < 0,
+            Color::new(tint, tint, tint, 1.),
+        );
+        return;
+    }
     for offset in 0..car.length {
         let column = (car.x + offset) % WIDTH;
         let rect = cell_rect(layout, car.row, column);
@@ -223,6 +295,68 @@ fn draw_car(layout: Layout, car: &Car) {
             crate::theme::SURFACE_DARK,
         );
     }
+}
+
+fn draw_wrapped_texture(
+    texture: &Texture2D,
+    destination: Rect,
+    board: Rect,
+    flip_x: bool,
+    color: Color,
+) {
+    let visible_width = (board.right() - destination.x).clamp(0., destination.w);
+    if visible_width >= destination.w {
+        draw_texture_part(texture, destination, None, flip_x, color);
+        return;
+    }
+    if visible_width > 0. {
+        draw_texture_part(
+            texture,
+            Rect::new(destination.x, destination.y, visible_width, destination.h),
+            Some(Rect::new(
+                0.,
+                0.,
+                texture.width() * visible_width / destination.w,
+                texture.height(),
+            )),
+            flip_x,
+            color,
+        );
+    }
+    let wrapped_width = destination.w - visible_width;
+    draw_texture_part(
+        texture,
+        Rect::new(board.x, destination.y, wrapped_width, destination.h),
+        Some(Rect::new(
+            texture.width() * visible_width / destination.w,
+            0.,
+            texture.width() * wrapped_width / destination.w,
+            texture.height(),
+        )),
+        flip_x,
+        color,
+    );
+}
+
+fn draw_texture_part(
+    texture: &Texture2D,
+    destination: Rect,
+    source: Option<Rect>,
+    flip_x: bool,
+    color: Color,
+) {
+    draw_texture_ex(
+        texture,
+        destination.x,
+        destination.y,
+        color,
+        DrawTextureParams {
+            dest_size: Some(destination.size()),
+            source,
+            flip_x,
+            ..Default::default()
+        },
+    );
 }
 fn cell_rect(layout: Layout, row: u8, column: u8) -> Rect {
     Rect::new(

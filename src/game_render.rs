@@ -20,6 +20,8 @@ impl Game {
             &self.data,
             self.assets.len(),
             self.assets.get_texture("cabinet_texture"),
+            self.assets.get_texture("frogger_frog"),
+            self.assets.get_texture("frogger_car"),
         );
         crate::game_variant_ui::draw(&self.state);
         self.draw_time_badge();

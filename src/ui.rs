@@ -300,6 +300,8 @@ pub fn draw(
     data: &GameData,
     loaded_assets: usize,
     cabinet_texture: Option<&Texture2D>,
+    frogger_frog: Option<&Texture2D>,
+    frogger_car: Option<&Texture2D>,
 ) {
     TOUCH_SCALE.with(|scale| scale.set(viewport().scale));
     match state.screen {
@@ -310,7 +312,7 @@ pub fn draw(
             responsive_cabinet::draw(state, data, loaded_assets, cabinet_texture)
         }
         Screen::Cabinet => cabinet_ui::draw(state, data, loaded_assets, cabinet_texture),
-        Screen::Game(_) => ui_game_routes::draw(state),
+        Screen::Game(_) => ui_game_routes::draw(state, frogger_frog, frogger_car),
         Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(),
         Screen::Help if is_portrait() => responsive_library::draw_help(),
         Screen::Help => draw_help(),

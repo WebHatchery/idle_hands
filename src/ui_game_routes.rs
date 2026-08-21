@@ -2,7 +2,7 @@
 
 use crate::state::{AppState, GameId, Screen};
 use crate::ui::UiAction;
-use macroquad::prelude::Vec2;
+use macroquad::prelude::{Texture2D, Vec2};
 
 pub fn clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     match state.screen {
@@ -118,7 +118,7 @@ pub fn clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
 }
 
-pub fn draw(state: &AppState) {
+pub fn draw(state: &AppState, frogger_frog: Option<&Texture2D>, frogger_car: Option<&Texture2D>) {
     match state.screen {
         Screen::Game(GameId::Game2048) if crate::ui::is_compact_landscape() => {
             crate::responsive_landscape::draw_2048(state)
@@ -191,7 +191,7 @@ pub fn draw(state: &AppState) {
         Screen::Game(GameId::Breakout) => crate::breakout_ui::draw(state),
         Screen::Game(GameId::SpaceInvaders) => crate::space_invaders_ui::draw(state),
         Screen::Game(GameId::Asteroids) => crate::asteroids_ui::draw(state),
-        Screen::Game(GameId::Frogger) => crate::frogger_ui::draw(state),
+        Screen::Game(GameId::Frogger) => crate::frogger_ui::draw(state, frogger_frog, frogger_car),
         Screen::Game(GameId::MunchMaze) => crate::munch_maze_ui::draw(state),
         Screen::Game(GameId::BlockStack) => crate::block_stack_ui::draw(state),
         Screen::Game(GameId::TerrainCannon) => crate::terrain_cannon_ui::draw(state),
