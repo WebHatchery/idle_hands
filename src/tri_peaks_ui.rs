@@ -85,8 +85,8 @@ fn layout() -> Layout {
             hint: Rect::new(112., 78., 60., 64.),
             undo: Rect::new(10., bottom, bottom_button_w, 42.),
             new_game: Rect::new(22. + bottom_button_w, bottom, bottom_button_w, 42.),
-            bridge: Rect::new(178., 78., 64., 64.),
-            rule: Rect::new(248., 78., if width < 350. { 64. } else { 76. }, 64.),
+            bridge: Rect::new(178., 100., 64., 50.),
+            rule: Rect::new(248., 100., if width < 350. { 64. } else { 76. }, 50.),
         }
     } else {
         Layout {

@@ -75,7 +75,7 @@ fn layout() -> Layout {
             hint: Rect::new(154., 90., 100., 64.),
             undo: Rect::new(20., 650., 145., 42.),
             new_game: Rect::new(185., 650., 145., 42.),
-            draw_rule: Rect::new(258., 90., 97., 64.),
+            draw_rule: Rect::new(258., 100., 97., 64.),
         }
     } else {
         Layout {
