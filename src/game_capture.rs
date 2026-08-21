@@ -431,6 +431,17 @@ impl Game {
                 target.falling = false;
             }
         }
+        if scene == "fling_fury_lost" {
+            let game = &mut self.state.games.fling_fury;
+            game.status = crate::fling_fury::FlingStatus::Lost;
+            game.moves = 5;
+            game.shots_remaining = 0;
+            game.shot = None;
+            for target in &mut game.targets {
+                target.alive = true;
+                target.falling = false;
+            }
+        }
         super::game_capture_depth::apply(&mut self.state, scene);
         if scene == "solitaire_peek" {
             self.capture_solitaire_peek = true;

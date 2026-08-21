@@ -57,3 +57,13 @@ fn won_rounds_report_a_clear_star_rating_for_the_resume_screen() {
     game.moves = 2;
     assert_eq!(game.stars(), 3);
 }
+
+#[test]
+fn spending_the_last_shot_enters_a_loss_state_when_targets_remain() {
+    let mut game = FlingFury::new(12);
+    game.shots_remaining = 0;
+    game.shot = None;
+    game.advance_one(0.016);
+    assert_eq!(game.status, FlingStatus::Lost);
+    assert_eq!(game.stars(), 0);
+}
