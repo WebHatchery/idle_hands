@@ -11,3 +11,8 @@ fn compact_header_keeps_breadcrumb_title_status_and_board_separate() {
     assert!(layout.board.y > status_y + 8.);
     assert!(layout.board.y + layout.board.h < 330.);
 }
+
+#[test]
+fn portrait_title_leaves_room_before_the_rule_card() {
+    crate::ui::with_portrait_layout(|| assert_eq!(title_size(), 22.));
+}
