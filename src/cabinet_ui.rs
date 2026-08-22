@@ -341,6 +341,7 @@ fn category_card(state: &AppState, rect: Rect, filter: u8) {
         11.,
         crate::theme::BRASS,
     );
+    crate::mascots::draw_for_filter(filter, vec2(rect.right() - 43., rect.y + 66.), 0.95);
 }
 
 fn stat_card(rect: Rect, label: &str, count: usize, unit: &str) {

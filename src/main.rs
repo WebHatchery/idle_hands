@@ -75,6 +75,7 @@ mod mahjong_solitaire;
 mod mahjong_solitaire_ui;
 mod mancala;
 mod mancala_ui;
+mod mascots;
 mod mastermind;
 mod mastermind_ui;
 mod match_three;

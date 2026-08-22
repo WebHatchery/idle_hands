@@ -263,6 +263,7 @@ fn category_row(state: &AppState, rect: Rect, filter: u8) {
         10.,
         crate::theme::SECONDARY,
     );
+    crate::mascots::draw_for_filter(filter, vec2(rect.x + 31., rect.y + 31.), 0.62);
     text(
         ">",
         rect.right() - 24.,

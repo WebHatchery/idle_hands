@@ -212,6 +212,7 @@ fn category(state: &AppState, rect: Rect, filter: u8) {
         9.,
         crate::theme::SECONDARY,
     );
+    crate::mascots::draw_for_filter(filter, vec2(rect.right() - 29., rect.y + 41.), 0.68);
 }
 
 fn home_clicks(p: Vec2) -> Vec<UiAction> {
