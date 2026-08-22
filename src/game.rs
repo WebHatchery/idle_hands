@@ -80,7 +80,7 @@ impl Game {
     pub fn update(&mut self, dt: f32) {
         self.notifications.update(dt);
         self.pointer.tick(dt);
-        self.update_solitaire_peek();
+        self.update_card_peek();
         if self.state.reduced_motion {
             self.transition = 0.;
         } else {
@@ -206,6 +206,7 @@ impl Game {
     }
     fn apply(&mut self, action: ui::UiAction) {
         self.state.games.solitaire_peek = None;
+        self.state.games.spider_solitaire_peek = None;
         let previous_screen = self.state.screen;
         if !self.confirmation_bypass
             && game_restart::requires_new_confirmation(action)

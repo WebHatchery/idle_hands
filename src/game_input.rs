@@ -3,18 +3,19 @@
 use super::Game;
 use crate::domain::Direction;
 use crate::{
-    freecell_ui, responsive_cards, responsive_landscape_cards, solitaire_ui,
+    freecell_ui, responsive_cards, responsive_landscape_cards, solitaire_ui, spider_solitaire_ui,
     state::{AppState, GameId, Screen},
     ui,
 };
-use macroquad::prelude::{touches, Vec2};
+use macroquad::prelude::{is_mouse_button_down, touches, MouseButton, Vec2};
 
 impl Game {
-    pub(super) fn update_solitaire_peek(&mut self) {
+    pub(super) fn update_card_peek(&mut self) {
         if self.capture_solitaire_peek {
             return;
         }
         let touch_active = !touches().is_empty();
+        let pointer_active = touch_active || is_mouse_button_down(MouseButton::Left);
         if self.state.screen != Screen::Game(GameId::Solitaire) {
             self.state.games.solitaire_peek = None;
         } else if touch_active || !self.touch_was_active {
@@ -23,6 +24,14 @@ impl Game {
                     .map(|(column, depth)| crate::solitaire::CardSource::Tableau(column, depth));
         } else {
             self.state.games.solitaire_peek = None;
+        }
+        if self.state.screen == Screen::Game(GameId::SpiderSolitaire) && pointer_active {
+            self.state.games.spider_solitaire_peek = spider_solitaire_ui::tableau_card_at(
+                &self.state.games.spider_solitaire,
+                crate::ui::mouse(),
+            );
+        } else {
+            self.state.games.spider_solitaire_peek = None;
         }
         self.touch_was_active = touch_active;
     }

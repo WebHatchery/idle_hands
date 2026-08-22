@@ -1,7 +1,10 @@
 //! Responsive touch presentation for standard Spider Solitaire.
 
 use crate::{
-    accessibility, spider_solitaire::SpiderSolitaireStatus, state::AppState, ui::UiAction,
+    accessibility,
+    spider_solitaire::{SpiderSolitaire, SpiderSolitaireStatus},
+    state::AppState,
+    ui::UiAction,
 };
 use macroquad::prelude::*;
 
@@ -88,11 +91,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(l.new_game, point) {
         return vec![UiAction::SpiderSolitaireNew];
     }
-    for column in 0..10 {
-        let x = l.column_x(column);
-        if point.x < x || point.x > x + l.card_w || point.y < l.top {
-            continue;
-        }
+    if let Some(column) = column_at(l, point) {
         let len = state.games.spider_solitaire.tableau[column].len();
         let depth = if len == 0 {
             0
@@ -103,6 +102,26 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     vec![]
 }
+
+pub(crate) fn tableau_card_at(game: &SpiderSolitaire, point: Vec2) -> Option<(usize, usize)> {
+    let layout = layout();
+    let column = column_at(layout, point)?;
+    let stack = game.tableau.get(column)?;
+    let last_depth = stack.len().checked_sub(1)?;
+    if point.y > layout.card_rect(column, last_depth).bottom() {
+        return None;
+    }
+    let depth = ((point.y - layout.top) / layout.overlap).floor().max(0.) as usize;
+    Some((column, depth.min(last_depth)))
+}
+
+fn column_at(layout: Layout, point: Vec2) -> Option<usize> {
+    (0..10).find(|&column| {
+        let x = layout.column_x(column);
+        point.x >= x && point.x <= x + layout.card_w && point.y >= layout.top
+    })
+}
+
 pub fn draw(state: &AppState) {
     let l = layout();
     let game = &state.games.spider_solitaire;
@@ -198,6 +217,21 @@ pub fn draw(state: &AppState) {
                 l.card_rect(column, depth),
                 *card,
                 game.selected == Some((column, depth)),
+                state.card_back,
+                state.reduced_motion,
+                state.high_contrast,
+                state.large_text,
+            );
+        }
+    }
+    if let Some((column, depth)) = state.games.spider_solitaire_peek {
+        if let Some(card) = game.tableau[column].get(depth) {
+            let mut preview = *card;
+            preview.face_up = true;
+            crate::card_render::draw_card_accessible(
+                l.card_rect(column, depth),
+                preview,
+                true,
                 state.card_back,
                 state.reduced_motion,
                 state.high_contrast,

@@ -10,3 +10,29 @@ fn compact_spider_solitaire_subtitle_stays_before_the_rule_card() {
 fn portrait_title_uses_the_header_lane_before_the_rule_card() {
     crate::ui::with_portrait_layout(|| assert_eq!(title_size(), 20.));
 }
+
+#[test]
+fn held_pointer_can_peek_at_a_hidden_tableau_card() {
+    crate::ui::with_desktop_layout(|| {
+        let game = SpiderSolitaire::new(42);
+        let layout = layout();
+        let hidden_depth = 0;
+        let card = layout.card_rect(0, hidden_depth);
+        let point = vec2(card.center().x, card.y + 5.);
+        assert_eq!(tableau_card_at(&game, point), Some((0, hidden_depth)));
+    });
+}
+
+#[test]
+fn peek_ignores_space_below_the_tableau_stack() {
+    crate::ui::with_desktop_layout(|| {
+        let game = SpiderSolitaire::new(42);
+        let layout = layout();
+        let last = game.tableau[0].len() - 1;
+        let point = vec2(
+            layout.card_rect(0, last).center().x,
+            layout.card_rect(0, last).bottom() + 1.,
+        );
+        assert_eq!(tableau_card_at(&game, point), None);
+    });
+}
