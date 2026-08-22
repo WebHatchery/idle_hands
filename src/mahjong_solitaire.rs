@@ -3,6 +3,10 @@
 use serde::{Deserialize, Serialize};
 
 const TILE_COUNT: usize = 36;
+const PAIR_COUNT: usize = TILE_COUNT / 2;
+
+type Position = (u8, u8, u8);
+type PairPositions = (Position, Position);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Tile {
@@ -66,17 +70,27 @@ impl MahjongSolitaire {
 
     pub fn new_with_layout(seed: u64, layout: MahjongLayout) -> Self {
         let positions = layout_positions(layout);
-        let mut tiles = Vec::with_capacity(TILE_COUNT);
-        for (index, (x, y, layer)) in positions.into_iter().enumerate() {
-            tiles.push(Tile {
-                kind: ((index / 2 + seed as usize) % 18) as u8,
-                x,
-                y,
-                layer,
-                removed: false,
-            });
-        }
-        Self {
+        let solution_pairs = solution_pairs(layout);
+        let pair_kinds = shuffled_pair_kinds(seed);
+        debug_assert_eq!(positions.len(), TILE_COUNT);
+        debug_assert_eq!(solution_pairs.len(), PAIR_COUNT);
+        let tiles = positions
+            .into_iter()
+            .map(|position| {
+                let pair_index = solution_pairs
+                    .iter()
+                    .position(|(left, right)| *left == position || *right == position)
+                    .expect("every Mahjong tile belongs to one solution pair");
+                Tile {
+                    kind: pair_kinds[pair_index],
+                    x: position.0,
+                    y: position.1,
+                    layer: position.2,
+                    removed: false,
+                }
+            })
+            .collect();
+        let mut game = Self {
             tiles,
             status: MahjongStatus::Playing,
             moves: 0,
@@ -84,7 +98,9 @@ impl MahjongSolitaire {
             selected: None,
             layout,
             undo: None,
-        }
+        };
+        game.resolve();
+        game
     }
 
     pub fn tap(&mut self, index: usize) -> bool {
@@ -129,7 +145,7 @@ impl MahjongSolitaire {
     }
 
     pub fn reset(&mut self, seed: u64) {
-        *self = Self::new(seed);
+        *self = Self::new_with_layout(seed, self.layout);
     }
 
     pub fn hint_pair(&self) -> Option<(usize, usize)> {
@@ -214,9 +230,56 @@ fn layout_positions(layout: MahjongLayout) -> Vec<(u8, u8, u8)> {
     positions
 }
 
+fn solution_pairs(layout: MahjongLayout) -> Vec<PairPositions> {
+    let mut pairs = Vec::with_capacity(PAIR_COUNT);
+    match layout {
+        MahjongLayout::Classic => {
+            pairs.push(((3, 1, 2), (4, 1, 2)));
+            append_row_pairs(&mut pairs, 1, 1, 6, 1);
+            append_base_row_pairs(&mut pairs, &[(0, 1, 6), (1, 0, 7), (2, 0, 7), (3, 1, 6)]);
+        }
+        MahjongLayout::Temple => {
+            append_row_pairs(&mut pairs, 1, 2, 5, 1);
+            append_base_row_pairs(&mut pairs, &[(0, 0, 7), (1, 0, 7), (2, 0, 7), (3, 0, 7)]);
+        }
+    }
+    pairs
+}
+
+fn append_base_row_pairs(pairs: &mut Vec<PairPositions>, rows: &[(u8, u8, u8)]) {
+    for &(y, first_x, last_x) in rows {
+        append_row_pairs(pairs, y, first_x, last_x, 0);
+    }
+}
+
+fn append_row_pairs(pairs: &mut Vec<PairPositions>, y: u8, first_x: u8, last_x: u8, layer: u8) {
+    let mut left = first_x;
+    let mut right = last_x;
+    while left < right {
+        pairs.push(((left, y, layer), (right, y, layer)));
+        left += 1;
+        right -= 1;
+    }
+}
+
+fn shuffled_pair_kinds(seed: u64) -> [u8; PAIR_COUNT] {
+    let mut kinds = [0; PAIR_COUNT];
+    for (index, kind) in kinds.iter_mut().enumerate() {
+        *kind = index as u8;
+    }
+    let mut state = seed ^ 0x9E37_79B9_7F4A_7C15;
+    for index in (1..PAIR_COUNT).rev() {
+        state = state
+            .wrapping_mul(6_364_136_223_846_793_005)
+            .wrapping_add(1_442_695_040_888_963_407);
+        let swap = (state % (index as u64 + 1)) as usize;
+        kinds.swap(index, swap);
+    }
+    kinds
+}
+
 fn overlaps(left: &Tile, right: &Tile) -> bool {
-    i16::from(left.x).abs_diff(i16::from(right.x)) <= 1
-        && i16::from(left.y).abs_diff(i16::from(right.y)) <= 1
+    left.x == right.x && left.y == right.y
 }
 
 #[cfg(test)]

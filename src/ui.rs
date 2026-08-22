@@ -223,9 +223,15 @@ pub fn hit(rect: Rect, point: Vec2) -> bool {
     note_neighbour(rect);
     area.contains(point)
 }
-pub fn clicks(state: &AppState) -> Vec<UiAction> {
+/// Resolve a tap at the logical point captured by the pointer tracker.
+///
+/// Keeping the point supplied by the release event matters when the window is
+/// letterboxed or the pointer moves out of the rendered viewport as the mouse
+/// button is released. Re-reading the live mouse position can turn an otherwise
+/// valid tap into the off-screen sentinel used by `mouse`.
+pub fn clicks_at(state: &AppState, point: Vec2) -> Vec<UiAction> {
     TOUCH_SCALE.with(|scale| scale.set(viewport().scale));
-    actions_at(state, mouse())
+    actions_at(state, point)
 }
 
 pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {

@@ -148,8 +148,8 @@ impl Game {
                             self.apply(action);
                         }
                     }
-                    Gesture::Tap(_) => {
-                        for action in ui::clicks(&self.state) {
+                    Gesture::Tap(position) => {
+                        for action in ui::clicks_at(&self.state, position) {
                             self.apply(action);
                         }
                     }
