@@ -183,7 +183,7 @@ pub fn draw_solitaire(state: &AppState) {
         Color::new(0.63, 0.58, 0.72, 1.),
     );
     text(
-        "Hover or press a stack to inspect a card.",
+        "Tap selected card again to release.",
         850.,
         567.,
         14.,

@@ -47,7 +47,7 @@ pub fn draw_solitaire(state: &AppState) {
         if game.status == SolitaireStatus::Won {
             "Table cleared"
         } else {
-            "Tap card, then destination"
+            "Tap card > target; tap again"
         },
         COMPACT_CARD_INSTRUCTION_X,
         18.,

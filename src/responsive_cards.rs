@@ -159,7 +159,7 @@ pub fn draw_solitaire(state: &AppState) {
         state
             .card_hint
             .as_deref()
-            .unwrap_or("Tap a card, then tap its destination."),
+            .unwrap_or("Tap card, then destination; tap again to release."),
         10.,
         620.,
         11.,

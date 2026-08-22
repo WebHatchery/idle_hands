@@ -437,17 +437,14 @@ impl Game {
                 self.state.games.solitaire.draw_stock();
             }
             ui::UiAction::SolitaireTableau(column, depth) => {
-                if self.state.games.solitaire.selected.is_some() {
-                    if !self.state.games.solitaire.move_to_tableau(column) {
-                        self.notifications
-                            .warning("That tableau does not accept this card");
-                    }
-                } else {
-                    self.state.games.solitaire.select_tableau(column, depth);
+                let had_selection = self.state.games.solitaire.selected.is_some();
+                if !self.state.games.solitaire.tap_tableau(column, depth) && had_selection {
+                    self.notifications
+                        .warning("That tableau does not accept this card");
                 }
             }
             ui::UiAction::SolitaireWaste => {
-                self.state.games.solitaire.select_waste();
+                self.state.games.solitaire.tap_waste();
             }
             ui::UiAction::SolitaireFoundation(suit) => {
                 if !self.state.games.solitaire.move_to_foundation(suit) {

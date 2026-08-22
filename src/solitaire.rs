@@ -91,6 +91,7 @@ impl Solitaire {
         }
     }
     pub fn draw_stock(&mut self) {
+        self.selected = None;
         self.snapshot();
         if !self.stock.is_empty() {
             for _ in 0..self.ruleset.draw_count() {
@@ -126,6 +127,28 @@ impl Solitaire {
             false
         }
     }
+    pub fn tap_waste(&mut self) -> bool {
+        if self.waste.last().is_some() {
+            if self.selected == Some(CardSource::Waste) {
+                self.selected = None;
+            } else {
+                self.select_waste();
+            }
+            true
+        } else {
+            false
+        }
+    }
+    pub fn tap_tableau(&mut self, column: usize, depth: usize) -> bool {
+        if self.selected == Some(CardSource::Tableau(column, depth)) {
+            self.selected = None;
+            return true;
+        }
+        if self.selected.is_some() && self.move_to_tableau(column) {
+            return true;
+        }
+        self.select_tableau(column, depth)
+    }
     pub fn move_to_tableau(&mut self, destination: usize) -> bool {
         let Some(source) = self.selected.take() else {
             return false;
@@ -138,7 +161,10 @@ impl Solitaire {
                 .and_then(|cards| cards.get(depth))
                 .copied(),
         };
-        let Some(card) = card else { return false };
+        let Some(card) = card else {
+            self.selected = Some(source);
+            return false;
+        };
         if !self.can_place(destination, card) {
             self.selected = Some(source);
             return false;
@@ -168,7 +194,10 @@ impl Solitaire {
             }
             _ => None,
         };
-        let Some(card) = card else { return false };
+        let Some(card) = card else {
+            self.selected = Some(source);
+            return false;
+        };
         if card.suit as usize != suit || card.rank != self.foundations[suit] + 1 {
             self.selected = Some(source);
             return false;
@@ -198,6 +227,7 @@ impl Solitaire {
             self.foundations = foundations;
             self.moves = moves;
             self.status = SolitaireStatus::Playing;
+            self.selected = None;
             true
         } else {
             false

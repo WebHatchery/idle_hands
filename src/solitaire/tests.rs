@@ -24,6 +24,59 @@ fn stock_draw_and_undo_restore_the_deal() {
 }
 
 #[test]
+fn selecting_the_same_card_again_releases_it() {
+    let mut game = Solitaire::default();
+    game.waste.push(Card {
+        rank: 1,
+        suit: 0,
+        face_up: true,
+    });
+    assert!(game.select_waste());
+    assert!(game.tap_waste());
+    assert_eq!(game.selected, None);
+
+    game.tableau[0] = vec![Card {
+        rank: 13,
+        suit: 0,
+        face_up: true,
+    }];
+    assert!(game.select_tableau(0, 0));
+    assert!(game.tap_tableau(0, 0));
+    assert_eq!(game.selected, None);
+}
+
+#[test]
+fn drawing_from_stock_clears_a_waste_selection() {
+    let mut game = Solitaire::default();
+    game.waste.push(Card {
+        rank: 1,
+        suit: 0,
+        face_up: true,
+    });
+    assert!(game.select_waste());
+    game.draw_stock();
+    assert_eq!(game.selected, None);
+}
+
+#[test]
+fn tapping_another_face_up_tableau_card_replaces_an_invalid_selection() {
+    let mut game = Solitaire::default();
+    game.tableau[0] = vec![Card {
+        rank: 5,
+        suit: 0,
+        face_up: true,
+    }];
+    game.tableau[1] = vec![Card {
+        rank: 9,
+        suit: 2,
+        face_up: true,
+    }];
+    assert!(game.select_tableau(0, 0));
+    assert!(game.tap_tableau(1, 0));
+    assert_eq!(game.selected, Some(CardSource::Tableau(1, 0)));
+}
+
+#[test]
 fn launch_ruleset_is_draw_one_with_unlimited_redeals() {
     let game = Solitaire::default();
     assert_eq!(game.ruleset, SolitaireRuleset::DrawOneUnlimited);
