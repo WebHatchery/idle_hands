@@ -160,7 +160,7 @@ pub const ALL: [GameDescriptor; 60] = [
         "Fivefold",
         "Five dice, thirteen calls",
         "fivefold",
-        GameCategory::Cards,
+        GameCategory::Misc,
         true,
     ),
     entry(
