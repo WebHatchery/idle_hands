@@ -5,6 +5,9 @@ use crate::ui::UiAction;
 use macroquad::prelude::{Texture2D, Vec2};
 
 pub fn clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
+    if let Some(actions) = crate::game_result_ui::clicks(state, p) {
+        return actions;
+    }
     match state.screen {
         Screen::Game(GameId::Game2048) if crate::ui::is_compact_landscape() => {
             crate::responsive_landscape::game2048_clicks(state, p)
@@ -230,4 +233,5 @@ pub fn draw(state: &AppState, frogger_frog: Option<&Texture2D>, frogger_car: Opt
         | Screen::Game(GameId::WordForge) => crate::misc_ui::draw(state),
         _ => {}
     }
+    crate::game_result_ui::draw(state);
 }

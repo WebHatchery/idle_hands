@@ -499,6 +499,26 @@ impl Game {
             game.last_cascade = 3;
             game.best_cascade = 3;
         }
+        if scene == "match_three_result_won" {
+            let game = &mut self.state.games.match_three;
+            game.phase = crate::match_three::MatchThreePhase::Won;
+            game.score = game.target_score();
+            game.moves = 11;
+            game.last_cascade = 4;
+            game.best_cascade = 5;
+        }
+        if scene == "match_three_result_lost" {
+            let game = &mut self.state.games.match_three;
+            game.phase = crate::match_three::MatchThreePhase::Lost;
+            game.score = game.target_score().saturating_sub(18);
+            game.moves = game.move_limit();
+            game.last_cascade = 1;
+            game.best_cascade = 3;
+        }
+        if scene == "match_three_result_won" || scene == "match_three_result_lost" {
+            self.state.tutorial = None;
+            self.state.tutorial_seen[GameId::MatchThree.index()] = true;
+        }
         if scene == "minesweeper_confirm" {
             self.state.confirm_restart = true;
             self.state.pending_restart = Some(crate::ui::UiAction::MineRestart);

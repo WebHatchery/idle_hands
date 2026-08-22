@@ -54,6 +54,7 @@ mod game_descriptor;
 #[cfg(test)]
 mod game_harness;
 mod game_input;
+mod game_result_ui;
 mod game_store;
 mod game_variant_ui;
 mod game_variants;
