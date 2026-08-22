@@ -99,11 +99,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
         } else {
             (((point.y - l.top) / l.overlap).floor().max(0.) as usize).min(len - 1)
         };
-        return if state.games.spider_solitaire.selected.is_some() {
-            vec![UiAction::SpiderSolitaireMove(column)]
-        } else {
-            vec![UiAction::SpiderSolitaireSelect(column, depth)]
-        };
+        return vec![UiAction::SpiderSolitaireSelect(column, depth)];
     }
     vec![]
 }
@@ -224,7 +220,7 @@ pub fn draw(state: &AppState) {
     );
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW DEAL", state.large_text);
-    let instruction = "Tap a suited run, then tap its destination.";
+    let instruction = "Tap a suited run, then its destination; tap again to release.";
     let instruction_x = if portrait || compact { 10. } else { hx };
     let instruction_y = if portrait {
         645.

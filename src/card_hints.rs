@@ -104,6 +104,27 @@ pub fn freecell(state: &AppState) -> String {
             }
         };
     }
+    if let Some((source, destination)) = game.hint_cascade_move() {
+        return match source {
+            FreeSource::Cell(cell) => {
+                format!("Try CELL {} on cascade {}.", cell + 1, destination + 1)
+            }
+            FreeSource::Cascade(cascade, depth) if depth + 1 == game.cascades[cascade].len() => {
+                format!(
+                    "Try the top card in cascade {} on cascade {}.",
+                    cascade + 1,
+                    destination + 1
+                )
+            }
+            FreeSource::Cascade(cascade, _) => {
+                format!(
+                    "Try the visible stack in cascade {} on cascade {}.",
+                    cascade + 1,
+                    destination + 1
+                )
+            }
+        };
+    }
     if game.cascades.iter().any(Vec::is_empty) {
         return "Try moving a visible card into an empty cascade.".into();
     }

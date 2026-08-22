@@ -16,6 +16,34 @@ fn panel(rect: Rect, fill: Color) {
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
+
+fn wrapped_text(
+    value: &str,
+    x: f32,
+    y: f32,
+    max_chars: usize,
+    line_height: f32,
+    size: f32,
+    color: Color,
+) {
+    let mut line = String::new();
+    let mut line_y = y;
+    for word in value.split_whitespace() {
+        if !line.is_empty() && line.len() + word.len() + 1 > max_chars {
+            crate::ui::draw_text(&line, x, line_y, size, color);
+            line.clear();
+            line_y += line_height;
+        }
+        if !line.is_empty() {
+            line.push(' ');
+        }
+        line.push_str(word);
+    }
+    if !line.is_empty() {
+        crate::ui::draw_text(&line, x, line_y, size, color);
+    }
+}
+
 fn draw_card(rect: Rect, card: Card, selected: bool, reduced_motion: bool) {
     crate::card_render::draw_card(rect, card, selected, 0, reduced_motion);
 }
@@ -127,15 +155,31 @@ pub fn draw_freecell(state: &AppState) {
     crate::ui::draw_text("UNDO", 894., 648., 16., WHITE);
     panel(Rect::new(1010., 620., 160., 44.), crate::theme::SURFACE);
     crate::ui::draw_text("NEW DEAL", 1042., 648., 16., WHITE);
-    crate::ui::draw_text(
-        "Tap a card, then tap a cascade or foundation.",
-        850.,
-        545.,
-        16.,
+    panel(
+        Rect::new(1000., 330., 180., 260.),
+        Color::new(0.12, 0.09, 0.20, 1.),
+    );
+    crate::ui::draw_text("HOW TO PLAY", 1010., 358., 12., crate::theme::BRASS);
+    wrapped_text(
+        "Tap a card, then tap a cascade or foundation. Tap the selected card again to release it.",
+        1010.,
+        384.,
+        20,
+        18.,
+        13.,
         Color::new(0.63, 0.58, 0.72, 1.),
     );
     if let Some(hint) = state.card_hint.as_deref() {
-        crate::ui::draw_text(hint, 690., 590., 14., Color::new(0.63, 0.95, 0.72, 1.));
+        crate::ui::draw_text("HINT", 1010., 500., 12., crate::theme::BRASS);
+        wrapped_text(
+            hint,
+            1010.,
+            526.,
+            20,
+            18.,
+            13.,
+            Color::new(0.63, 0.95, 0.72, 1.),
+        );
     }
     panel(Rect::new(690., 620., 140., 44.), crate::theme::SURFACE);
     crate::ui::draw_text("HINT", 737., 648., 16., WHITE);

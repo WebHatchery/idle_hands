@@ -326,7 +326,7 @@ pub fn draw_freecell(state: &AppState) {
         state
             .card_hint
             .as_deref()
-            .unwrap_or("Tap a card, then tap a cascade or foundation."),
+            .unwrap_or("Tap a card, then a pile; tap again to release."),
         10.,
         620.,
         11.,

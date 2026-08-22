@@ -38,15 +38,19 @@ fn layout() -> Layout {
             new_game: Rect::new(245., 425., 105., 46.),
         }
     } else {
-        Layout {
-            board: Rect::new(350., 90., 560., 310.),
-            col_w: 78.,
-            card_h: 38.,
-            stock: Rect::new(950., 120., 100., 58.),
-            hint: Rect::new(830., 220., 105., 44.),
-            undo: Rect::new(950., 220., 100., 44.),
-            new_game: Rect::new(1070., 220., 140., 44.),
-        }
+        desktop_layout()
+    }
+}
+
+fn desktop_layout() -> Layout {
+    Layout {
+        board: Rect::new(350., 90., 560., 310.),
+        col_w: 78.,
+        card_h: 38.,
+        stock: Rect::new(950., 120., 100., 58.),
+        hint: Rect::new(950., 220., 100., 44.),
+        undo: Rect::new(1060., 220., 100., 44.),
+        new_game: Rect::new(950., 280., 210., 44.),
     }
 }
 pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {

@@ -110,6 +110,61 @@ impl FreeCell {
             false
         }
     }
+    pub fn tap_cell(&mut self, cell: usize) -> bool {
+        if self.selected == Some(FreeSource::Cell(cell)) {
+            self.selected = None;
+            return true;
+        }
+        self.select_cell(cell)
+    }
+    pub fn tap_cascade(&mut self, cascade: usize, depth: usize) -> bool {
+        if self.selected == Some(FreeSource::Cascade(cascade, depth)) {
+            self.selected = None;
+            return true;
+        }
+        if self.selected.is_some() && self.move_selected_to_cascade(cascade) {
+            return true;
+        }
+        self.select_cascade(cascade, depth)
+    }
+
+    pub fn hint_cascade_move(&self) -> Option<(FreeSource, usize)> {
+        if self.status == FreeCellStatus::Won {
+            return None;
+        }
+        let sources = self
+            .cells
+            .iter()
+            .enumerate()
+            .filter_map(|(cell, card)| card.map(|_| FreeSource::Cell(cell)))
+            .chain(
+                self.cascades
+                    .iter()
+                    .enumerate()
+                    .flat_map(|(cascade, cards)| {
+                        (0..cards.len()).map(move |depth| FreeSource::Cascade(cascade, depth))
+                    }),
+            );
+        for source in sources {
+            let Some(card) = self.source_card(source) else {
+                continue;
+            };
+            if !self.valid_moving_stack(source) {
+                continue;
+            }
+            for destination in 0..self.cascades.len() {
+                if matches!(source, FreeSource::Cascade(cascade, _) if cascade == destination)
+                    || !self.can_place(destination, card)
+                    || !self.capacity_allows(source, destination)
+                {
+                    continue;
+                }
+                return Some((source, destination));
+            }
+        }
+        None
+    }
+
     pub fn move_selected_to_cascade(&mut self, destination: usize) -> bool {
         let Some(source) = self.selected.take() else {
             return false;

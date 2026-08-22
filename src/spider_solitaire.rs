@@ -115,6 +115,17 @@ impl SpiderSolitaire {
         true
     }
 
+    pub fn tap_column(&mut self, column: usize, depth: usize) -> bool {
+        if self.selected == Some((column, depth)) {
+            self.selected = None;
+            return true;
+        }
+        if self.selected.is_some() && self.move_selected(column) {
+            return true;
+        }
+        self.select_column(column, depth)
+    }
+
     pub fn move_selected(&mut self, destination: usize) -> bool {
         let Some((source, depth)) = self.selected.take() else {
             return false;
@@ -139,6 +150,7 @@ impl SpiderSolitaire {
         {
             return false;
         }
+        self.selected = None;
         self.snapshot();
         for stack in &mut self.tableau {
             let Some(mut card) = self.stock.pop() else {

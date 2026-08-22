@@ -98,11 +98,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
         } else {
             (((point.y - layout.top) / layout.overlap).floor().max(0.) as usize).min(stack_len - 1)
         };
-        return if state.games.spider.selected.is_some() {
-            vec![UiAction::SpiderMove(column)]
-        } else {
-            vec![UiAction::SpiderSelect(column, depth)]
-        };
+        return vec![UiAction::SpiderSelect(column, depth)];
     }
     vec![]
 }
@@ -205,7 +201,7 @@ pub fn draw(state: &AppState) {
         state
             .card_hint
             .as_deref()
-            .unwrap_or("Tap a run, then tap its destination."),
+            .unwrap_or("Tap a run, then its destination; tap again to release."),
         if crate::ui::is_portrait() {
             10.
         } else if crate::ui::is_compact_landscape() {

@@ -158,10 +158,7 @@ impl Game {
                 self.state
                     .games
                     .spider_solitaire
-                    .select_column(*column, *depth);
-            }
-            UiAction::SpiderSolitaireMove(column) => {
-                self.state.games.spider_solitaire.move_selected(*column);
+                    .tap_column(*column, *depth);
             }
             UiAction::SpiderSolitaireDeal => {
                 self.state.games.spider_solitaire.deal_stock();

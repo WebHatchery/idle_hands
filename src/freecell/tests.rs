@@ -179,6 +179,83 @@ fn rejected_cascade_destination_keeps_the_selected_source() {
 }
 
 #[test]
+fn tapping_a_selected_source_releases_it_or_replaces_it() {
+    let mut game = FreeCell::new(15);
+    game.cells[0] = Some(Card {
+        rank: 7,
+        suit: 0,
+        face_up: true,
+    });
+    game.cascades[0] = vec![Card {
+        rank: 3,
+        suit: 1,
+        face_up: true,
+    }];
+
+    assert!(game.select_cell(0));
+    assert!(game.tap_cell(0));
+    assert_eq!(game.selected, None);
+
+    assert!(game.select_cell(0));
+    assert!(game.tap_cascade(0, 0));
+    assert_eq!(game.selected, Some(FreeSource::Cascade(0, 0)));
+}
+
+#[test]
+fn hint_finds_a_legal_cascade_move() {
+    let mut game = FreeCell::new(16);
+    game.cells = [None; 4];
+    game.foundations = [0; 4];
+    game.cascades = vec![
+        vec![Card {
+            rank: 7,
+            suit: 0,
+            face_up: true,
+        }],
+        vec![Card {
+            rank: 8,
+            suit: 1,
+            face_up: true,
+        }],
+        vec![Card {
+            rank: 4,
+            suit: 0,
+            face_up: true,
+        }],
+        vec![Card {
+            rank: 5,
+            suit: 1,
+            face_up: true,
+        }],
+        vec![Card {
+            rank: 2,
+            suit: 0,
+            face_up: true,
+        }],
+        vec![Card {
+            rank: 3,
+            suit: 1,
+            face_up: true,
+        }],
+        vec![Card {
+            rank: 9,
+            suit: 0,
+            face_up: true,
+        }],
+        vec![Card {
+            rank: 10,
+            suit: 1,
+            face_up: true,
+        }],
+    ];
+
+    assert_eq!(
+        game.hint_cascade_move(),
+        Some((FreeSource::Cascade(0, 0), 1))
+    );
+}
+
+#[test]
 fn invalid_foundation_suit_is_rejected_without_losing_selection() {
     let mut game = FreeCell::new(14);
     game.cells[0] = Some(Card {

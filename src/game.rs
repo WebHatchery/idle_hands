@@ -464,23 +464,13 @@ impl Game {
                 );
             }
             ui::UiAction::FreeCellCell(cell) => {
-                if self.state.games.freecell.selected.is_some() {
-                    if !self.state.games.freecell.move_selected_to_cascade(cell) {
-                        self.notifications
-                            .warning("That stack cannot move to this cascade");
-                    }
-                } else {
-                    self.state.games.freecell.select_cell(cell);
-                }
+                self.state.games.freecell.tap_cell(cell);
             }
             ui::UiAction::FreeCellCascade(cascade, depth) => {
-                if self.state.games.freecell.selected.is_some() {
-                    if !self.state.games.freecell.move_selected_to_cascade(cascade) {
-                        self.notifications
-                            .warning("That stack cannot move to this cascade");
-                    }
-                } else {
-                    self.state.games.freecell.select_cascade(cascade, depth);
+                let had_selection = self.state.games.freecell.selected.is_some();
+                if !self.state.games.freecell.tap_cascade(cascade, depth) && had_selection {
+                    self.notifications
+                        .warning("That stack cannot move to this cascade");
                 }
             }
             ui::UiAction::FreeCellFoundation(suit) => {
@@ -624,10 +614,7 @@ impl Game {
                 self.state.games.mastermind.reset(seed);
             }
             ui::UiAction::SpiderSelect(column, depth) => {
-                self.state.games.spider.select_column(column, depth);
-            }
-            ui::UiAction::SpiderMove(column) => {
-                self.state.games.spider.move_selected(column);
+                self.state.games.spider.tap_column(column, depth);
             }
             ui::UiAction::SpiderDeal => {
                 self.state.games.spider.deal_stock();

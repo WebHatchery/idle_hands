@@ -45,6 +45,37 @@ fn same_suit_descending_run_moves_and_undoes() {
 }
 
 #[test]
+fn tapping_a_selected_run_releases_it_or_replaces_it() {
+    let mut game = SpiderSolitaire::new(45);
+    game.tableau[0] = vec![Card {
+        rank: 5,
+        suit: 0,
+        face_up: true,
+    }];
+    game.tableau[1] = vec![Card {
+        rank: 9,
+        suit: 0,
+        face_up: true,
+    }];
+
+    assert!(game.select_column(0, 0));
+    assert!(game.tap_column(0, 0));
+    assert_eq!(game.selected, None);
+
+    assert!(game.select_column(0, 0));
+    assert!(game.tap_column(1, 0));
+    assert_eq!(game.selected, Some((1, 0)));
+}
+
+#[test]
+fn dealing_stock_clears_the_selected_run() {
+    let mut game = SpiderSolitaire::new(46);
+    assert!(game.select_column(0, game.tableau[0].len() - 1));
+    assert!(game.deal_stock());
+    assert_eq!(game.selected, None);
+}
+
+#[test]
 fn different_suit_run_cannot_be_selected_or_completed() {
     let mut game = SpiderSolitaire::new(42);
     game.tableau[0] = vec![

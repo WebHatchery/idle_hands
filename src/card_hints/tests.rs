@@ -15,6 +15,36 @@ fn default_freecell_has_a_deterministic_hint() {
 }
 
 #[test]
+fn freecell_hint_finds_an_ordinary_cascade_move() {
+    let mut state = AppState::default();
+    state.games.freecell.cells = [None; 4];
+    state.games.freecell.foundations = [0; 4];
+    state.games.freecell.cascades = vec![
+        vec![crate::cards::Card {
+            rank: 7,
+            suit: 0,
+            face_up: true,
+        }],
+        vec![crate::cards::Card {
+            rank: 8,
+            suit: 1,
+            face_up: true,
+        }],
+        vec![],
+        vec![],
+        vec![],
+        vec![],
+        vec![],
+        vec![],
+    ];
+
+    assert_eq!(
+        freecell(&state),
+        "Try the top card in cascade 1 on cascade 2."
+    );
+}
+
+#[test]
 fn default_pyramid_has_a_deterministic_hint() {
     let state = AppState::default();
     assert!(!pyramid(&state).is_empty());
