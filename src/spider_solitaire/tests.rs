@@ -12,6 +12,21 @@ fn seeded_standard_deals_repeat_with_ten_columns() {
 }
 
 #[test]
+fn standard_deal_contains_two_copies_of_each_rank_and_suit() {
+    let game = SpiderSolitaire::new(42);
+    let mut counts = [[0_u8; 14]; 4];
+    for card in game.tableau.iter().flatten().chain(game.stock.iter()) {
+        counts[card.suit as usize][card.rank as usize] += 1;
+    }
+
+    for suit in 0..4 {
+        for rank in 1..=13 {
+            assert_eq!(counts[suit][rank], 2, "rank {rank}, suit {suit}");
+        }
+    }
+}
+
+#[test]
 fn same_suit_descending_run_moves_and_undoes() {
     let mut game = SpiderSolitaire::new(42);
     game.tableau[0] = vec![
@@ -132,4 +147,14 @@ fn lighter_suit_rules_keep_the_same_deck_size_but_reduce_suit_switches() {
         .map(|card| card.suit)
         .collect::<std::collections::BTreeSet<_>>();
     assert_eq!(suits, [0, 1].into_iter().collect());
+
+    let mut counts = [[0_u8; 14]; 2];
+    for card in game.tableau.iter().flatten().chain(game.stock.iter()) {
+        counts[card.suit as usize][card.rank as usize] += 1;
+    }
+    for suit in 0..2 {
+        for rank in 1..=13 {
+            assert_eq!(counts[suit][rank], 4, "rank {rank}, suit {suit}");
+        }
+    }
 }

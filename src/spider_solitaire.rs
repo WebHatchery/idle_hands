@@ -1,6 +1,6 @@
 //! Deterministic four-suit Spider Solitaire.
 
-use crate::cards::{shuffled_deck, Card};
+use crate::cards::{shuffle_cards, shuffled_deck, Card};
 use serde::{Deserialize, Serialize};
 
 const COLUMNS: usize = 10;
@@ -71,12 +71,14 @@ impl SpiderSolitaire {
     }
 
     pub fn new_with_rule(seed: u64, rule: SpiderRule) -> Self {
-        let (mut deck, first_seed) = shuffled_deck(seed, false);
-        let (second_deck, shuffled_seed) = shuffled_deck(first_seed, false);
+        let (first_deck, first_seed) = shuffled_deck(seed, false);
+        let (second_deck, second_seed) = shuffled_deck(first_seed, false);
+        let mut deck = first_deck;
         deck.extend(second_deck);
-        for (index, card) in deck.iter_mut().enumerate() {
+        let (mut deck, shuffled_seed) = shuffle_cards(deck, second_seed);
+        for card in &mut deck {
             card.face_up = false;
-            card.suit = (index as u8) % rule.suit_count();
+            card.suit %= rule.suit_count();
         }
         let mut tableau = vec![Vec::new(); COLUMNS];
         let mut cursor = 0;

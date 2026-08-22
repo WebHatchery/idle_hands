@@ -16,7 +16,7 @@ impl Card {
 }
 
 pub fn shuffled_deck(seed: u64, face_up: bool) -> (Vec<Card>, u64) {
-    let mut deck = (0..4)
+    let deck = (0..4)
         .flat_map(|suit| {
             (1..=13).map(move |rank| Card {
                 rank,
@@ -25,12 +25,16 @@ pub fn shuffled_deck(seed: u64, face_up: bool) -> (Vec<Card>, u64) {
             })
         })
         .collect::<Vec<_>>();
+    shuffle_cards(deck, seed)
+}
+
+pub fn shuffle_cards(mut cards: Vec<Card>, seed: u64) -> (Vec<Card>, u64) {
     let mut rng = seed;
-    for index in (1..deck.len()).rev() {
+    for index in (1..cards.len()).rev() {
         rng = next_seed(rng);
-        deck.swap(index, (rng as usize) % (index + 1));
+        cards.swap(index, (rng as usize) % (index + 1));
     }
-    (deck, rng)
+    (cards, rng)
 }
 
 fn next_seed(seed: u64) -> u64 {
