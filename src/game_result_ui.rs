@@ -33,6 +33,9 @@ pub fn info(state: &AppState) -> Option<ResultInfo> {
     entries::info(state)
 }
 
+// Terminal surfaces always need a result kind, two copy lines, and two
+// independently labelled actions. Keep that compact content contract flat.
+#[allow(clippy::too_many_arguments)]
 pub(super) fn make<T>(
     state: &AppState,
     _game: &T,

@@ -2,14 +2,11 @@
 
 ## Release blockers
 
-- [ ] Restore the required Clippy gate. `cargo clippy --all-targets
-  --all-features -- -D warnings` currently fails on two nine-argument result
-  helpers and five test-style warnings. Refactor the helper parameters and
-  update the affected tests; then require the command to pass locally and in
-  CI.
-- [ ] Replace `catalog_thumbnail.png` with a current cabinet title-screen
-  capture. The checked-in thumbnail still shows 47 games and no authored
-  textures, while the current cabinet shows 60 games and three textures.
+- [x] Restore the required Clippy gate. `cargo clippy --all-targets
+  --all-features -- -D warnings` passes after documenting the intentionally
+  flat terminal-result contract and updating the affected tests.
+- [x] Replace `catalog_thumbnail.png` with a current title image. The new
+  cover frames the cabinet mascots and a player's hand around the game title.
 
 ## Release candidate gates
 
@@ -42,6 +39,7 @@
 ## Verified baseline — 2026-08-23
 
 - `cargo fmt --manifest-path Cargo.toml -- --check` passes.
+- `cargo clippy --all-targets --all-features -- -D warnings` passes.
 - `cargo test --all-targets` passes: 891 tests.
 - The full 60-game capture set is present, and the mobile matrix contains 390
   captures across the six supported viewport sizes.

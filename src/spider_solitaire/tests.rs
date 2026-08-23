@@ -19,9 +19,9 @@ fn standard_deal_contains_two_copies_of_each_rank_and_suit() {
         counts[card.suit as usize][card.rank as usize] += 1;
     }
 
-    for suit in 0..4 {
-        for rank in 1..=13 {
-            assert_eq!(counts[suit][rank], 2, "rank {rank}, suit {suit}");
+    for (suit, ranks) in counts.iter().enumerate() {
+        for (rank, count) in ranks.iter().enumerate().skip(1) {
+            assert_eq!(*count, 2, "rank {rank}, suit {suit}");
         }
     }
 }
@@ -152,9 +152,9 @@ fn lighter_suit_rules_keep_the_same_deck_size_but_reduce_suit_switches() {
     for card in game.tableau.iter().flatten().chain(game.stock.iter()) {
         counts[card.suit as usize][card.rank as usize] += 1;
     }
-    for suit in 0..2 {
-        for rank in 1..=13 {
-            assert_eq!(counts[suit][rank], 4, "rank {rank}, suit {suit}");
+    for (suit, ranks) in counts.iter().enumerate() {
+        for (rank, count) in ranks.iter().enumerate().skip(1) {
+            assert_eq!(*count, 4, "rank {rank}, suit {suit}");
         }
     }
 }

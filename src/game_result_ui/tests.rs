@@ -2,9 +2,10 @@ use super::*;
 use crate::state::{AppState, GameId, GameSnapshot, Screen};
 
 fn game_state(game: GameId) -> AppState {
-    let mut state = AppState::default();
-    state.screen = Screen::Game(game);
-    state
+    AppState {
+        screen: Screen::Game(game),
+        ..AppState::default()
+    }
 }
 
 #[test]

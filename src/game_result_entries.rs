@@ -86,6 +86,10 @@ pub(super) fn info(state: &AppState) -> Option<ResultInfo> {
     }
 }
 
+// The content mapping deliberately keeps the two labelled recovery actions
+// adjacent to each result's copy; wrapping them here would make every entry
+// harder to scan without reducing any distinct player-facing data.
+#[allow(clippy::too_many_arguments)]
 fn result<T>(
     state: &AppState,
     game: &T,
