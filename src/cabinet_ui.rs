@@ -154,7 +154,7 @@ fn draw_home(state: &AppState, loaded: usize) {
             crate::theme::category_surface(game, true),
         );
         text(
-            game.title(),
+            &fit_recent_title(game.title(), rect.right() - (rect.x + 48.) - 9.),
             rect.x + 48.,
             rect.y + 24.,
             12.,
@@ -433,6 +433,24 @@ fn favorite_count(state: &AppState) -> usize {
 }
 fn recent_rect(index: usize) -> Rect {
     Rect::new(260. + index as f32 * 137., 576., 126., 58.)
+}
+fn fit_recent_title(title: &str, max_width: f32) -> String {
+    const SIZE: u16 = 12;
+    const ELLIPSIS: &str = "…";
+
+    if crate::ui::measure_text(title, None, SIZE, 1.).width <= max_width {
+        return title.to_owned();
+    }
+
+    let mut prefix = title.to_owned();
+    while !prefix.is_empty() {
+        prefix.pop();
+        let candidate = format!("{prefix}{ELLIPSIS}");
+        if crate::ui::measure_text(&candidate, None, SIZE, 1.).width <= max_width {
+            return candidate;
+        }
+    }
+    ELLIPSIS.to_owned()
 }
 fn library_rect(index: usize) -> Rect {
     Rect::new(
