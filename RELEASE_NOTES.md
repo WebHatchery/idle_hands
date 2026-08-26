@@ -11,6 +11,8 @@ games in one touch-first collection.
 - Per-game autosaves, collection records, achievements, favourites, and recent
   games stored locally on the player's device.
 - Procedural sound feedback with browser user-activation handling.
+- Project-specific procedural and AI-generated artwork with no third-party art
+  licence or attribution requirements.
 - Deterministic deals and puzzles where practical, plus visible undo, restart,
   hint, pause, or other recovery controls appropriate to each game.
 - WebGL and Windows packages built from the same Rust and macroquad codebase.

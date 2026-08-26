@@ -25,10 +25,9 @@
   approved channel(s).
 - [x] Record the available artwork provenance and ship it with the release.
   `assets/THIRD_PARTY_NOTICES.md` ties all three generated assets to their
-  introducing commits, and Credits now identifies the original generated art.
-- [ ] Obtain the owner's generation-service details and commercial-use terms
-  for the three art assets. Repository history does not contain enough evidence
-  to declare a standalone asset licence; do not claim this gate has passed.
+  introducing commits, records the owner's confirmation that all artwork is
+  procedural or AI-generated without third-party licensing requirements, and
+  Credits identifies the original generated art.
 - [ ] Complete physical iPhone/iPad Safari and Windows acceptance passes. The
   automated browser smoke and screenshot matrix cannot prove shipping behavior
   on those owner-controlled devices.

@@ -91,8 +91,8 @@ Sum Circuit, Orbit Order, and Word Forge.
 - [TODO](TODO.md) is the phased implementation checklist and source of truth
   for outstanding work.
 - [Release notes](RELEASE_NOTES.md) describe the `1.0.0` release candidate.
-- [Artwork provenance](assets/THIRD_PARTY_NOTICES.md) records the available
-  repository evidence and the licence details still awaiting owner confirmation.
+- [Artwork provenance](assets/THIRD_PARTY_NOTICES.md) records the owner's
+  confirmation and repository history for the procedural and AI-generated art.
 - `CODE_STANDARDS.md`, `GAME_DEVELOPMENT_GUIDE.md`, and
   `MACROQUAD_TOOLKIT.md` are shared WebHatchery references and remain generic.
 
