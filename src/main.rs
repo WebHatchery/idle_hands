@@ -176,10 +176,25 @@ mod word_search_ui;
 
 use game::Game;
 
-const UI_FONT_SIZES: &[u16] = &[
-    8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
-    32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 68, 84,
-];
+async fn prepare_webgl_font_atlas() {
+    const ATLAS_GROWTH_SIZES: &[u16] = &[16, 24, 32, 48, 64, 84];
+    let mut characters = Font::latin_character_list();
+    characters.extend(" -+/$|'?_<>;=~&…—–×‹·".chars());
+    characters.sort_unstable();
+    characters.dedup();
+    let sample: String = characters.into_iter().collect();
+
+    // Cache enough representative glyphs to grow the shared atlas before any
+    // real UI is batched. Growing it midway through a WebGL frame invalidates
+    // the texture referenced by draw calls already queued for that frame.
+    for size in ATLAS_GROWTH_SIZES {
+        macroquad_toolkit::ui::measure_ui_text(&sample, None, *size, 1.0);
+    }
+    for size in ATLAS_GROWTH_SIZES {
+        macroquad_toolkit::ui::draw_ui_text(&sample, -10_000.0, -10_000.0, f32::from(*size), WHITE);
+    }
+    next_frame().await;
+}
 
 fn window_conf() -> Conf {
     capture::capture_window_conf(
@@ -193,8 +208,8 @@ fn window_conf() -> Conf {
 #[macroquad::main(window_conf)]
 async fn main() {
     let mut game = Game::new().await;
-    macroquad_toolkit::ui::prewarm_default_ui_font(UI_FONT_SIZES)
-        .expect("bundled UI font should load");
+    macroquad_toolkit::ui::ensure_default_ui_font().expect("bundled UI font should load");
+    prepare_webgl_font_atlas().await;
 
     // Screenshot harness: when IDLE_HANDS_CAPTURE_PATH is set, render
     // deterministic frames, write a PNG, and exit.
