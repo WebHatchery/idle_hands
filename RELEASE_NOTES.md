@@ -1,8 +1,8 @@
 # Idle Hands 1.0.0
 
-Idle Hands 1.0.0 is the first release-candidate build of the complete cabinet.
-It contains 60 replayable card, logic, board, word, arcade, and miscellaneous
-games in one touch-first collection.
+Idle Hands 1.0.0 is the first published release of the complete cabinet. It
+contains 60 replayable card, logic, board, word, arcade, and miscellaneous games
+in one touch-first collection.
 
 ## Highlights
 
@@ -23,11 +23,10 @@ The Cargo package, runtime save envelope, and public release notes use version
 `1.0.0`. Existing `1.0.0` saves remain compatible because this release does not
 change the save schema version.
 
-## Remaining distribution approvals
+## Distribution
 
-The free browser demo and unrestricted Windows package are configured for
-`webhatchery/idle-hands`, authenticated, and Butler dry-run validated with
-analytics disabled. The first live upload and pay-what-you-want page settings
-still require owner authorization. Physical iPhone/iPad Safari and Windows
-acceptance passes also remain owner QA gates and are not represented as
-completed by automated testing.
+The release is published at `webhatchery/idle-hands` with analytics disabled.
+The itch.io page embeds a free 30-game browser demo and offers the unrestricted
+60-game Windows package as pay-what-you-want content. Physical iPhone/iPad
+Safari and Windows acceptance passes remain owner QA gates and are not
+represented as completed by automated testing.

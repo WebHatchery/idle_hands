@@ -5,10 +5,11 @@ iPad, desktop browsers, and Windows. Its home screen is a warmly illustrated
 drawer cabinet: each physical object opens a different game, from a deck of
 cards to a dice cup or a little wooden minefield.
 
-The current `1.0.0` release candidate is a playable 60-game cabinet with
-persistent sessions, records, tutorials, responsive touch layouts, and
-post-launch refinements. [TODO.md](TODO.md) records the remaining owner-only
-storefront, rights confirmation, and physical-device acceptance gates.
+The published `1.0.0` release is a playable 60-game cabinet with persistent
+sessions, records, tutorials, responsive touch layouts, and post-launch
+refinements. itch.io offers a free 30-game browser demo and the unrestricted
+60-game Windows edition. [TODO.md](TODO.md) records the remaining physical-device
+acceptance work.
 
 ## Current Collection
 
@@ -90,7 +91,9 @@ Sum Circuit, Orbit Order, and Word Forge.
   touch input, shared game contracts, data, persistence, and testing.
 - [TODO](TODO.md) is the phased implementation checklist and source of truth
   for outstanding work.
-- [Release notes](RELEASE_NOTES.md) describe the `1.0.0` release candidate.
+- [Release notes](RELEASE_NOTES.md) describe the published `1.0.0` release.
+- [itch.io publishing guide](docs/ITCH_PUBLISHING_GUIDE.md) records the exact
+  release workflow, storefront settings, verification, and first-release fixes.
 - [Artwork provenance](assets/THIRD_PARTY_NOTICES.md) records the owner's
   confirmation and repository history for the procedural and AI-generated art.
 - `CODE_STANDARDS.md`, `GAME_DEVELOPMENT_GUIDE.md`, and
