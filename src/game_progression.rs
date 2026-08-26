@@ -608,7 +608,7 @@ pub(super) fn is_timed_game(game: GameId) -> bool {
     )
 }
 
-fn round_is_complete(state: &crate::state::AppState, game: GameId) -> bool {
+pub(crate) fn round_is_complete(state: &crate::state::AppState, game: GameId) -> bool {
     match game {
         GameId::Game2048 => state.games.game.won(),
         GameId::Minesweeper => {

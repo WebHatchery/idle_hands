@@ -28,7 +28,7 @@ mod game_navigation;
 #[path = "game_persistence.rs"]
 mod game_persistence;
 #[path = "game_progression.rs"]
-mod game_progression;
+pub(crate) mod game_progression;
 #[path = "game_realtime.rs"]
 mod game_realtime;
 #[path = "game_render.rs"]
@@ -49,6 +49,7 @@ pub struct Game {
     confirmation_bypass: bool,
     pub(super) save_dirty: bool,
     pub(super) save_timer: f32,
+    analytics: crate::analytics::GameAnalytics,
 }
 impl Game {
     pub async fn new() -> Self {
@@ -58,8 +59,10 @@ impl Game {
         let placeholder = Image::gen_image_color(16, 16, crate::theme::SURFACE_DARK);
         assets.set_placeholder_texture_direct(Texture2D::from_image(&placeholder));
         assets.load_texture_configs(&data.texture_manifest).await;
+        let state = AppState::new(&data);
         let mut game = Self {
-            state: AppState::new(&data),
+            analytics: crate::analytics::GameAnalytics::disabled(&state),
+            state,
             data,
             assets,
             notifications: NotificationManager::new(),
@@ -74,10 +77,20 @@ impl Game {
         };
         game.initialize_launch_state();
         game.load_autosave();
+        game.analytics = crate::analytics::GameAnalytics::new(
+            &game.state,
+            !macroquad_toolkit::capture::capture_requested("IDLE_HANDS"),
+        );
         game
     }
 
     pub fn update(&mut self, dt: f32) {
+        if is_mouse_button_pressed(MouseButton::Left)
+            || is_mouse_button_released(MouseButton::Left)
+            || !get_keys_pressed().is_empty()
+        {
+            self.analytics.note_input();
+        }
         self.notifications.update(dt);
         self.pointer.tick(dt);
         self.update_card_peek();
@@ -202,7 +215,11 @@ impl Game {
             }
         }
         self.update_navigation_scroll();
-        let _ = dt;
+        self.analytics.update(dt, &self.state);
+    }
+
+    pub fn end_analytics_session(&mut self) {
+        self.analytics.end_session();
     }
     fn apply(&mut self, action: ui::UiAction) {
         self.state.games.solitaire_peek = None;
@@ -332,7 +349,10 @@ impl Game {
                 }
             }
             ui::UiAction::Save => self.flush_autosave(),
-            ui::UiAction::Load => self.load_autosave(),
+            ui::UiAction::Load => {
+                self.load_autosave();
+                self.analytics.sync_progress(&self.state);
+            }
             ui::UiAction::Game2048Hint => {
                 self.state.card_hint = Some(card_hints::game_2048(&self.state));
             }

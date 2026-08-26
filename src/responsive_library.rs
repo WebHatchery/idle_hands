@@ -434,6 +434,28 @@ pub fn draw_credits() {
         11.,
         crate::theme::SECONDARY,
     );
+    text("PRIVACY", 22., 475., 13., crate::theme::CREAM);
+    text(
+        "Anonymous playtime and progress",
+        22.,
+        500.,
+        11.,
+        crate::theme::CREAM,
+    );
+    text(
+        "help improve WebHatchery games.",
+        22.,
+        523.,
+        11.,
+        crate::theme::CREAM,
+    );
+    text(
+        "No ads; no name or email collected.",
+        22.,
+        555.,
+        11.,
+        crate::theme::CREAM,
+    );
     back_button(650.);
 }
 pub fn credits_clicks(p: Vec2) -> Vec<UiAction> {

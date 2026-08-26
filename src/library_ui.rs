@@ -84,9 +84,23 @@ pub fn draw_credits() {
         crate::theme::SECONDARY,
     );
     crate::ui::draw_text(
+        "PRIVACY: Anonymous playtime and progress help improve WebHatchery games.",
+        305.,
+        470.,
+        14.,
+        crate::theme::CREAM,
+    );
+    crate::ui::draw_text(
+        "No advertising use; gameplay analytics collect no name or email.",
+        305.,
+        495.,
+        14.,
+        crate::theme::CREAM,
+    );
+    crate::ui::draw_text(
         "Thank you for spending a minute at the cabinet.",
         305.,
-        450.,
+        540.,
         19.,
         crate::theme::BRASS,
     );

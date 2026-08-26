@@ -5,6 +5,7 @@ use macroquad_toolkit::capture;
 
 mod accessibility;
 mod achievements_ui;
+mod analytics;
 mod asteroids;
 mod asteroids_ui;
 mod battleship;
@@ -209,10 +210,15 @@ async fn main() {
         return;
     }
 
+    prevent_quit();
     loop {
         let dt = get_frame_time().min(0.1);
         game.update(dt);
         game.draw();
+        if is_quit_requested() {
+            game.end_analytics_session();
+            break;
+        }
         next_frame().await;
     }
 }

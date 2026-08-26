@@ -112,6 +112,18 @@ each of the 60 games owns its rules, state, commands, and board rendering.
 
 ## Validation
 
+### Preview analytics
+
+Preview builds report anonymous gameplay signals to the local Hatchery Signals
+endpoint configured in `.cargo/config.toml`. The matching preview backend intake
+map must contain the `idle_hands` key and the same `idle-hands-preview` value.
+Production and store builds must replace both build-time values for their target
+environment before release.
+
+Analytics records active playtime and sparse cabinet-progression milestones. It
+does not collect profile names, email addresses, authored text, or game-state
+snapshots, and a service outage never prevents play.
+
 ### Demo builds
 
 The `demo` Cargo feature produces the storefront edition. It keeps five games

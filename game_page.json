@@ -7,7 +7,8 @@
   "canvas_rendering": "auto",
   "about": [
     "Open a cabinet of 60 replayable classics and puzzles, from Solitaire and Sudoku to Riddle Room and Word Forge. Chase better scores across every drawer.",
-    "Every drawer includes visible touch controls, a replayable tutorial, autosave, and personal records."
+    "Every drawer includes visible touch controls, a replayable tutorial, autosave, and personal records.",
+    "WebHatchery collects anonymous gameplay statistics such as active playtime, game progress, demo completion, and full-game link clicks to help improve its games. We do not use this information for advertising or collect your name or email through gameplay analytics."
   ],
   "controls": [
     { "key": "Tap", "desc": "Choose cabinet objects, controls, cards, cells, dice, and discs" },

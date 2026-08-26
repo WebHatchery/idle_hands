@@ -167,7 +167,7 @@ pub fn completed_games(records: &CollectionRecords) -> usize {
         .count()
 }
 
-fn game_complete(records: &CollectionRecords, game: GameId) -> bool {
+pub(crate) fn game_complete(records: &CollectionRecords, game: GameId) -> bool {
     match game {
         GameId::Solitaire => records.solitaire_best_moves.is_some(),
         GameId::FreeCell => records.freecell_best_moves.is_some(),
