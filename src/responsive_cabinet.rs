@@ -70,6 +70,9 @@ pub fn clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
 
 fn draw_home(state: &AppState, loaded: usize) {
     text("IDLE HANDS", 77., 35., 23., crate::theme::CREAM);
+    if crate::game_descriptor::is_demo_build() {
+        text("DEMO · 30 GAMES", 236., 35., 8., crate::theme::BRASS);
+    }
     text(
         "quiet games for idle hands",
         96.,
@@ -123,6 +126,7 @@ fn draw_home(state: &AppState, loaded: usize) {
 }
 
 fn draw_library(state: &AppState) {
+    let (playable, full) = cabinet_status::availability_counts(state, state.cabinet_filter);
     text("<  HOME", 12., 31., 11., crate::theme::BRASS);
     text(
         cabinet_status::category_name(state.cabinet_filter),
@@ -132,7 +136,11 @@ fn draw_library(state: &AppState) {
         crate::theme::CREAM,
     );
     text(
-        &format!("{} quiet games", visible_games(state).len()),
+        &if crate::game_descriptor::is_demo_build() {
+            format!("{playable} playable · {full} full")
+        } else {
+            format!("{} quiet games", visible_games(state).len())
+        },
         14.,
         86.,
         10.,
@@ -155,11 +163,19 @@ fn draw_library(state: &AppState) {
             crate::theme::CREAM,
         );
         text(
-            game.subtitle(),
+            if cabinet_status::is_available(game) {
+                game.subtitle()
+            } else {
+                crate::storefront::COMPACT_LOCKED_LABEL
+            },
             rect.x + 9.,
             rect.y + 40.,
             8.,
-            crate::theme::SECONDARY,
+            if cabinet_status::is_available(game) {
+                crate::theme::SECONDARY
+            } else {
+                crate::theme::BRASS
+            },
         );
         text(
             "PLAY  >",
@@ -168,14 +184,16 @@ fn draw_library(state: &AppState) {
             9.,
             crate::theme::BRASS,
         );
-        let fav = state.favorites.get(game.index()).copied().unwrap_or(false);
-        text(
-            if fav { "*" } else { "+" },
-            rect.right() - 24.,
-            rect.y + 29.,
-            18.,
-            crate::theme::BRASS,
-        );
+        if cabinet_status::is_available(game) {
+            let fav = state.favorites.get(game.index()).copied().unwrap_or(false);
+            text(
+                if fav { "*" } else { "+" },
+                rect.right() - 24.,
+                rect.y + 29.,
+                18.,
+                crate::theme::BRASS,
+            );
+        }
     }
     let total = visible_games(state).len();
     let start = state.cabinet_scroll.min(total.saturating_sub(1));
@@ -301,7 +319,9 @@ fn library_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     for (index, game) in page_games(state).iter().copied().enumerate() {
         let rect = game_rect(index);
-        if crate::ui::hit(Rect::new(rect.right() - 44., rect.y, 44., rect.h), p) {
+        if cabinet_status::is_available(game)
+            && crate::ui::hit(Rect::new(rect.right() - 44., rect.y, 44., rect.h), p)
+        {
             return vec![UiAction::ToggleFavorite(game.index())];
         }
         if crate::ui::hit(rect, p) {

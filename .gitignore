@@ -3,6 +3,7 @@
 debug/
 target/
 target-codex/
+target-demo/
 
 # These are standard cargo-generated files
 **/*.rs.bk

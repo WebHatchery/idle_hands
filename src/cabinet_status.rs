@@ -79,8 +79,8 @@ pub fn status(state: &AppState, game: GameId) -> &'static str {
 
 pub fn matches_filter(state: &AppState, game: GameId, filter: u8) -> bool {
     match filter {
-        1 => status(state, game) != "COMPLETE",
-        2 => status(state, game) == "COMPLETE",
+        1 => is_available(game) && status(state, game) != "COMPLETE",
+        2 => is_available(game) && status(state, game) == "COMPLETE",
         3..=8 => category_filter(game) == filter,
         _ => true,
     }
@@ -104,6 +104,20 @@ pub fn filter_count(state: &AppState, filter: u8) -> usize {
         .iter()
         .filter(|game| matches_filter(state, **game, filter))
         .count()
+}
+
+pub fn availability_counts(state: &AppState, filter: u8) -> (usize, usize) {
+    GameId::ALL
+        .iter()
+        .copied()
+        .filter(|game| matches_filter(state, *game, filter))
+        .fold((0, 0), |(playable, full), game| {
+            if is_available(game) {
+                (playable + 1, full)
+            } else {
+                (playable, full + 1)
+            }
+        })
 }
 
 fn has_progress(state: &AppState, game: GameId) -> bool {
@@ -189,6 +203,18 @@ pub fn color(status: &str) -> Color {
 
 pub fn is_active(game: GameId) -> bool {
     descriptor(game).active
+}
+
+pub fn is_available(game: GameId) -> bool {
+    crate::game_descriptor::is_available(game)
+}
+
+pub fn availability_label(state: &AppState, game: GameId) -> &'static str {
+    if is_available(game) {
+        status(state, game)
+    } else {
+        "FULL VERSION"
+    }
 }
 
 #[cfg(test)]

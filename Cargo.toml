@@ -3,6 +3,10 @@ name = "idle_hands"
 version = "1.0.0"
 edition = "2021"
 
+[features]
+default = []
+demo = []
+
 [dependencies]
 macroquad = { version = "0.4", features = ["audio"] }
 macroquad-toolkit = { path = "../macroquad-toolkit" }

@@ -149,6 +149,7 @@ mod state;
 mod state_navigation;
 mod state_records;
 mod state_snapshots;
+mod storefront;
 mod sudoku;
 mod sudoku_ui;
 mod terrain_cannon;

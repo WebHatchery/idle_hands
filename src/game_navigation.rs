@@ -61,12 +61,15 @@ impl Game {
         self.state.recent_view = false;
         self.state.achievements_view = false;
         self.state.selected = index;
-        if crate::cabinet_status::is_active(id) {
+        if crate::cabinet_status::is_available(id) {
             self.state.recent_games.retain(|recent| *recent != id);
             self.state.recent_games.insert(0, id);
             self.state.recent_games.truncate(5);
             self.state.screen = Screen::Game(id);
             self.state.tutorial = (!self.state.tutorial_seen[id.index()]).then_some(id);
+        } else if crate::game_descriptor::is_demo_build() && crate::cabinet_status::is_active(id) {
+            self.notifications
+                .info(crate::storefront::purchase_message(id.title()));
         } else {
             self.notifications
                 .info(format!("{} is coming soon", id.title()));

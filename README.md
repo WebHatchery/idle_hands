@@ -112,6 +112,24 @@ each of the 60 games owns its rules, state, commands, and board rendering.
 
 ## Validation
 
+### Demo builds
+
+The `demo` Cargo feature produces the storefront edition. It keeps five games
+from each of the six cabinet categories playable (30 total), leaves the rest
+visible as full-version drawers, and shows an itch.io purchase message when a
+locked drawer is tapped. The normal build remains the unrestricted 60-game
+edition.
+
+```powershell
+cargo build --release --features demo --target-dir target-demo
+cargo build --release --features demo --target wasm32-unknown-unknown --target-dir target-demo
+```
+
+The resulting Windows executable is
+`target-demo/release/idle_hands.exe`; the WebGL module is
+`target-demo/wasm32-unknown-unknown/release/idle_hands.wasm`. Keeping the demo
+in its own target directory prevents it from being mistaken for a full build.
+
 From this directory, use the project publisher as the required validation path:
 
 ```powershell

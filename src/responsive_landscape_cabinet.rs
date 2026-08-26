@@ -69,6 +69,9 @@ pub fn clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
 
 fn draw_home(state: &AppState, loaded: usize) {
     text("Good evening", 170., 34., 21., crate::theme::INK);
+    if crate::game_descriptor::is_demo_build() {
+        text("DEMO · 30 GAMES", 700., 34., 9., crate::theme::BRASS);
+    }
     text(
         "Pick a game and unwind.",
         310.,
@@ -108,6 +111,7 @@ fn draw_home(state: &AppState, loaded: usize) {
 }
 
 fn draw_library(state: &AppState) {
+    let (playable, full) = cabinet_status::availability_counts(state, state.cabinet_filter);
     text("< HOME", 170., 28., 9., crate::theme::SURFACE);
     text(
         cabinet_status::category_name(state.cabinet_filter),
@@ -116,6 +120,15 @@ fn draw_library(state: &AppState) {
         21.,
         crate::theme::INK,
     );
+    if crate::game_descriptor::is_demo_build() {
+        text(
+            &format!("{playable} PLAYABLE · {full} FULL"),
+            600.,
+            54.,
+            8.,
+            crate::theme::BRASS,
+        );
+    }
     for (index, game) in page_games(state).iter().copied().enumerate() {
         let rect = game_rect(index);
         panel(rect, crate::theme::PAPER_LIGHT);
@@ -133,11 +146,19 @@ fn draw_library(state: &AppState) {
             crate::theme::INK,
         );
         text(
-            game.subtitle(),
+            if cabinet_status::is_available(game) {
+                game.subtitle()
+            } else {
+                crate::storefront::COMPACT_LOCKED_LABEL
+            },
             rect.x + 35.,
             rect.y + 31.,
             7.,
-            crate::theme::SURFACE,
+            if cabinet_status::is_available(game) {
+                crate::theme::SURFACE
+            } else {
+                crate::theme::BRASS
+            },
         );
         text(
             ">",

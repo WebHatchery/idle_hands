@@ -159,12 +159,13 @@ pub fn draw(state: &AppState) {
             crate::theme::BRASS,
         );
         if !crate::ui::is_portrait() {
+            let status = crate::cabinet_status::availability_label(state, game);
             crate::ui::draw_text(
-                crate::cabinet_status::status(state, game),
+                status,
                 rect.x + rect.w - 72.,
                 rect.y + rect.h * 0.62,
                 8.,
-                crate::cabinet_status::color(crate::cabinet_status::status(state, game)),
+                crate::cabinet_status::color(status),
             );
         }
     }

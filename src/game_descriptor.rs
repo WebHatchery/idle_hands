@@ -642,6 +642,25 @@ pub const ALL: [GameDescriptor; 60] = [
     ),
 ];
 
+pub const DEMO_GAMES_PER_CATEGORY: usize = 5;
+
+pub const fn is_demo_build() -> bool {
+    cfg!(feature = "demo")
+}
+
+/// The first five registered games in each category form the curated demo.
+pub fn is_demo_game(game: GameId) -> bool {
+    let category = descriptor(game).category;
+    ALL.iter()
+        .filter(|candidate| candidate.category == category)
+        .take(DEMO_GAMES_PER_CATEGORY)
+        .any(|candidate| candidate.id == game)
+}
+
+pub fn is_available(game: GameId) -> bool {
+    descriptor(game).active && (!is_demo_build() || is_demo_game(game))
+}
+
 pub fn descriptor(game: GameId) -> &'static GameDescriptor {
     let index = GameId::ALL
         .iter()
