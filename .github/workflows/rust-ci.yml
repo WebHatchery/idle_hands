@@ -18,7 +18,7 @@ env:
 
 jobs:
   checks-and-webgl:
-    name: Check, test, and build WebGL
+    name: Check, test, and smoke WebGL
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -35,6 +35,12 @@ jobs:
         with:
           repository: Kalaith/macroquad-toolkit
           path: macroquad-toolkit
+
+      - name: Checkout RustGames publisher
+        uses: actions/checkout@v4
+        with:
+          repository: Kalaith/rust_management
+          path: rust_management
 
       - name: Install Linux build dependencies
         run: |
@@ -98,6 +104,31 @@ jobs:
         run: |
           wasm_name="$(cargo metadata --manifest-path Cargo.toml --no-deps --format-version 1 | python3 -c 'import json, sys; from pathlib import Path; metadata = json.load(sys.stdin); manifest = Path("Cargo.toml").resolve(); package = next((package for package in metadata["packages"] if Path(package["manifest_path"]).resolve() == manifest), metadata["packages"][0]); bins = [target["name"] for target in package["targets"] if "bin" in target["kind"]]; name = bins[0] if bins else package["name"]; print(name.replace("-", "_") + ".wasm")')"
           test -s "target/wasm32-unknown-unknown/release/${wasm_name}"
+
+      - name: Package the shipping WebGL deployment
+        shell: pwsh
+        env:
+          PREVIEW_ROOT: ${{ runner.temp }}/idle-hands-preview
+        run: |
+          Copy-Item Cargo.lock ../Cargo.lock -Force
+          ../rust_management/publish.ps1 -RustGamePublish -ProjectDir $PWD -WebGLOnly -SkipBuild
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: game/package-lock.json
+
+      - name: Install browser smoke dependencies
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: Smoke test the packaged browser game
+        env:
+          IDLE_HANDS_WEB_ROOT: ${{ runner.temp }}/idle-hands-preview/games
+        run: npm run test:webgl
 
   windows-build:
     name: Build Windows release

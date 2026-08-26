@@ -13,3 +13,6 @@ dist/
 *.history
 .vscode
 .gemini
+node_modules/
+test-results/
+playwright-report/

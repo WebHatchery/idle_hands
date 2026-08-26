@@ -2,11 +2,11 @@
   "title": "Idle Hands",
   "wasm": "idle_hands",
   "roost_slug": "rust_idle_hands",
-  "status": { "text": "In Development", "class": "in-development" },
+  "status": { "text": "Playable", "class": "playable" },
   "controls_hint": "Tap a cabinet drawer to begin",
   "canvas_rendering": "auto",
   "about": [
-    "A touch-first cabinet of 60 replayable games for phone, tablet, and desktop, from Solitaire and Sudoku to Riddle Room, Pattern Vault, Sum Circuit, Orbit Order, and Word Forge.",
+    "Open a cabinet of 60 replayable classics and puzzles, from Solitaire and Sudoku to Riddle Room and Word Forge. Chase better scores across every drawer.",
     "Every drawer includes visible touch controls, a replayable tutorial, autosave, and personal records."
   ],
   "controls": [

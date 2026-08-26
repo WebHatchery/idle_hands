@@ -414,11 +414,25 @@ pub fn draw_credits() {
         crate::theme::SECONDARY,
     );
     text(
-        "Designed for touch and small pauses.",
+        "Original generated artwork",
         22.,
-        390.,
+        370.,
         13.,
         crate::theme::BRASS,
+    );
+    text(
+        "created for Idle Hands.",
+        22.,
+        395.,
+        13.,
+        crate::theme::BRASS,
+    );
+    text(
+        "Provenance ships with the game.",
+        22.,
+        430.,
+        11.,
+        crate::theme::SECONDARY,
     );
     back_button(650.);
 }

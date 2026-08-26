@@ -5,9 +5,10 @@ iPad, desktop browsers, and Windows. Its home screen is a warmly illustrated
 drawer cabinet: each physical object opens a different game, from a deck of
 cards to a dice cup or a little wooden minefield.
 
-The current build is a playable 60-game cabinet with persistent sessions,
-records, tutorials, responsive touch layouts, and post-launch refinements.
-TODO.md records the completed launch foundation and ongoing collection work.
+The current `1.0.0` release candidate is a playable 60-game cabinet with
+persistent sessions, records, tutorials, responsive touch layouts, and
+post-launch refinements. [TODO.md](TODO.md) records the remaining owner-only
+storefront, rights confirmation, and physical-device acceptance gates.
 
 ## Current Collection
 
@@ -89,6 +90,9 @@ Sum Circuit, Orbit Order, and Word Forge.
   touch input, shared game contracts, data, persistence, and testing.
 - [TODO](TODO.md) is the phased implementation checklist and source of truth
   for outstanding work.
+- [Release notes](RELEASE_NOTES.md) describe the `1.0.0` release candidate.
+- [Artwork provenance](assets/THIRD_PARTY_NOTICES.md) records the available
+  repository evidence and the licence details still awaiting owner confirmation.
 - `CODE_STANDARDS.md`, `GAME_DEVELOPMENT_GUIDE.md`, and
   `MACROQUAD_TOOLKIT.md` are shared WebHatchery references and remain generic.
 
@@ -120,6 +124,9 @@ During implementation, focused checks may also use:
 cargo test -p idle_hands
 cargo clippy -p idle_hands --all-targets --all-features -- -D warnings
 .\scripts\test_game_suites.ps1
+npm ci
+npx playwright install chromium
+npm run test:webgl
 ```
 
 `test_game_suites.ps1` runs one independently filterable host-contract suite
@@ -127,6 +134,14 @@ for each of the 60 catalog games, checks the suite registry against `GameId`,
 and then runs the complete Rust test set. Pass `-TargetDir target-codex` when a
 separate local Cargo target directory is needed.
 
-The publisher builds and validates the native and WebGL targets. Verification
-screenshots belong directly in `docs/verification/` and should be replaced when
-they show the same state as an earlier capture.
+The publisher builds and validates the native and WebGL targets. The browser
+smoke suite then serves the packaged preview deployment and checks loading,
+console/runtime errors, real touch input, audio activation, resize/fullscreen,
+local persistence across reload, and a visible recovery action. Set
+`IDLE_HANDS_WEB_ROOT` to the directory containing the deployed `idle_hands/`
+folder when it is not under `dist/browser-smoke/games`.
+
+Verification screenshots belong directly in `docs/verification/` and should be
+replaced when they show the same state as an earlier capture. Automated Chromium
+coverage complements, but does not replace, physical iPhone/iPad Safari and
+Windows acceptance testing.

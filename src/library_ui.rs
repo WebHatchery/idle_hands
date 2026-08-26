@@ -77,6 +77,13 @@ pub fn draw_credits() {
         crate::theme::SECONDARY,
     );
     crate::ui::draw_text(
+        "Original generated artwork created for Idle Hands; provenance ships with the game.",
+        305.,
+        415.,
+        16.,
+        crate::theme::SECONDARY,
+    );
+    crate::ui::draw_text(
         "Thank you for spending a minute at the cabinet.",
         305.,
         450.,

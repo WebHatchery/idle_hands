@@ -1,0 +1,10 @@
+{
+  "name": "idle-hands-webgl-smoke",
+  "private": true,
+  "scripts": {
+    "test:webgl": "playwright test tests/webgl-smoke.spec.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.62.1"
+  }
+}

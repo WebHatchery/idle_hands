@@ -3,6 +3,9 @@
 Date: 2026-08-15  
 Project path: `D:\WebHatchery\RustGames\idle_hands`
 
+> Historical review: this Phase 0 snapshot is superseded by the playable
+> 60-game `1.0.0` release candidate. Current release gates live in `TODO.md`.
+
 ## Scope
 
 Phase 0 establishes product and technical documentation and renames the copied
@@ -22,3 +25,11 @@ placeholder interaction and UI is explicitly Phase 1 work in `TODO.md`.
   It will be replaced by cabinet captures in Phase 1.
 - [Deferred] The required `catalog_thumbnail.png` must come from the real cabinet
   title screen and is therefore a Phase 1 deliverable.
+
+## Resolution recorded 2026-08-26
+
+The starter harness and template capture have been replaced by the complete
+cabinet and its verification matrix. The catalog thumbnail is current, strict
+Clippy is green, and CI now loads the packaged WebGL deployment in Chromium.
+Remaining gates require the owner's itch.io target/authorization, asset-licence
+confirmation, and physical iPhone/iPad Safari and Windows acceptance passes.

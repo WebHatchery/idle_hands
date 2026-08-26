@@ -174,6 +174,11 @@ mod word_search_ui;
 
 use game::Game;
 
+const UI_FONT_SIZES: &[u16] = &[
+    8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+    32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 68, 84,
+];
+
 fn window_conf() -> Conf {
     capture::capture_window_conf(
         "IDLE_HANDS",
@@ -186,10 +191,8 @@ fn window_conf() -> Conf {
 #[macroquad::main(window_conf)]
 async fn main() {
     let mut game = Game::new().await;
-    macroquad_toolkit::ui::prewarm_default_ui_font(&[
-        9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 22, 24, 28, 30, 32, 40, 48, 52, 68, 84,
-    ])
-    .expect("bundled UI font should load");
+    macroquad_toolkit::ui::prewarm_default_ui_font(UI_FONT_SIZES)
+        .expect("bundled UI font should load");
 
     // Screenshot harness: when IDLE_HANDS_CAPTURE_PATH is set, render
     // deterministic frames, write a PNG, and exit.

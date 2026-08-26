@@ -352,7 +352,7 @@ fn hangman_depth(state: &mut AppState) {
     use crate::hangman::{Hangman, HangmanCategory, HangmanRule};
     let game = &mut state.games.hangman;
     *game = Hangman::new_with_options(4, HangmanCategory::Nature, HangmanRule::Rapid);
-    for letter in [b'O', b'R', b'C', b'B', b'H', b'A'] {
+    for letter in b"ORCBHA" {
         game.guess(letter - b'A');
     }
 }

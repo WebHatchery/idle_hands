@@ -23,7 +23,7 @@ fn all_word_letters_win_the_round() {
 #[test]
 fn six_wrong_letters_lose_the_round() {
     let mut game = Hangman::new(0);
-    for letter in [b'B', b'C', b'F', b'G', b'H', b'J'] {
+    for letter in b"BCFGHJ" {
         assert!(game.guess(letter - b'A'));
     }
     assert_eq!(game.wrong_count, 6);
@@ -55,7 +55,7 @@ fn rapid_rule_shortens_the_clock_and_doubles_letter_points() {
     let mut game = Hangman::new_with_options(0, HangmanCategory::Cabinet, HangmanRule::Rapid);
     assert!(game.guess(b'S' - b'A'));
     assert_eq!((game.score, game.combo), (20, 1));
-    for letter in [b'B', b'C', b'F', b'G'] {
+    for letter in b"BCFG" {
         assert!(game.guess(letter - b'A'));
     }
     assert_eq!(game.status, HangmanStatus::Lost);

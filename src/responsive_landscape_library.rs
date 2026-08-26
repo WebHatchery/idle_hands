@@ -386,11 +386,18 @@ pub fn draw_credits() {
         crate::theme::SECONDARY,
     );
     text(
-        "Designed for touch and small pauses.",
+        "Original generated artwork created for Idle Hands.",
         205.,
-        260.,
+        250.,
         13.,
         crate::theme::BRASS,
+    );
+    text(
+        "Artwork provenance ships with the game.",
+        205.,
+        275.,
+        11.,
+        crate::theme::SECONDARY,
     );
     back(Rect::new(365., 315., 110., 44.));
 }
