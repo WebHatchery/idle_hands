@@ -1,0 +1,8 @@
+{
+  "target": "webhatchery/idle-hands",
+  "channels": {
+    "html5": "html5-demo",
+    "windows": "windows"
+  },
+  "user_version": "1.0.0"
+}

@@ -84,14 +84,14 @@ pub fn draw_credits() {
         crate::theme::SECONDARY,
     );
     crate::ui::draw_text(
-        "PRIVACY: Anonymous playtime and progress help improve WebHatchery games.",
+        "PRIVACY: Gameplay analytics are currently disabled.",
         305.,
         470.,
         14.,
         crate::theme::CREAM,
     );
     crate::ui::draw_text(
-        "No advertising use; gameplay analytics collect no name or email.",
+        "Your game progress stays in this browser or Windows profile.",
         305.,
         495.,
         14.,

@@ -25,7 +25,9 @@ change the save schema version.
 
 ## Remaining distribution approvals
 
-The build may be presented as playable, but publishing to itch.io still needs
-the owner-approved `owner/game` target and authenticated storefront access.
-Physical iPhone/iPad Safari and Windows acceptance passes also remain owner QA
-gates and are not represented as completed by automated testing.
+The free browser demo and unrestricted Windows package are configured for
+`webhatchery/idle-hands`, authenticated, and Butler dry-run validated with
+analytics disabled. The first live upload and pay-what-you-want page settings
+still require owner authorization. Physical iPhone/iPad Safari and Windows
+acceptance passes also remain owner QA gates and are not represented as
+completed by automated testing.

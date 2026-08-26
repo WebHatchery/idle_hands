@@ -32,7 +32,7 @@ pub struct GameAnalytics {
 impl GameAnalytics {
     pub fn new(state: &AppState, enabled: bool) -> Self {
         let mut analytics = Self::disabled(state);
-        if enabled {
+        if enabled && analytics_enabled() {
             analytics.client = Some(AnalyticsClient::new(analytics_config()));
         }
         analytics
@@ -116,6 +116,10 @@ impl GameAnalytics {
         self.demo_completed_count = current_demo_completed;
         signals
     }
+}
+
+fn analytics_enabled() -> bool {
+    option_env!("IDLE_HANDS_ANALYTICS_ENABLED") == Some("true")
 }
 
 fn analytics_config() -> AnalyticsConfig {

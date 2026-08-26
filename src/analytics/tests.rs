@@ -1,6 +1,11 @@
 use super::*;
 
 #[test]
+fn shipping_configuration_keeps_analytics_disabled() {
+    assert!(!analytics_enabled());
+}
+
+#[test]
 fn first_session_steps_emit_once_when_they_advance() {
     assert_eq!(
         progress_signals(false, true, 0, 1, 0, 1, 0, 1, false, false),
@@ -34,8 +39,10 @@ fn cabinet_depth_reports_crossed_thresholds() {
 
 #[test]
 fn active_play_requires_recent_input_and_no_overlay_or_pause() {
-    let mut state = AppState::default();
-    state.screen = Screen::Game(GameId::Snake);
+    let mut state = AppState {
+        screen: Screen::Game(GameId::Snake),
+        ..AppState::default()
+    };
     assert!(is_active_play(&state, 1.0));
     assert!(!is_active_play(&state, 0.0));
 

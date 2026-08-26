@@ -18,11 +18,11 @@
   envelope now agree, the catalog marks the build Playable, and
   `RELEASE_NOTES.md` records the release candidate. Create the release tag only
   after the owner-only distribution and physical-device gates below pass.
-- [ ] Finish the approved storefront package. The itch.io publisher is present
-  but cannot run because this project has no `itch.json`. Once the owner
-  supplies the storefront target and authorizes release, add the non-secret
-  configuration, validate both HTML5 and Windows packages, and publish the
-  approved channel(s).
+- [ ] Finish the approved storefront release. `itch.json` targets
+  `webhatchery/idle-hands`, and the Butler dry run validates the free HTML5
+  demo plus unrestricted Windows package with analytics disabled. The first
+  live upload, itch.io file flags, pay-what-you-want page setting, embed
+  options, and Public visibility still require owner authorization and QA.
 - [x] Record the available artwork provenance and ship it with the release.
   `assets/THIRD_PARTY_NOTICES.md` ties all three generated assets to their
   introducing commits, records the owner's confirmation that all artwork is
