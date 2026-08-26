@@ -146,8 +146,8 @@ test("the deployed WebGL game survives its shipping-browser contract", async ({ 
   const recovered = await canvasImage(page);
   expect(recovered.equals(board)).toBe(true);
 
-  // Resize to a phone-shaped viewport and exercise the same fullscreen/fallback
-  // controls that ship in the generated storefront page.
+  // Resize to a phone-shaped viewport. The WebHatchery storefront supplies its
+  // own fullscreen controls; the itch package intentionally ships only canvas.
   phase = "resize-and-fullscreen";
   await page.setViewportSize({ width: 430, height: 844 });
   await page.waitForTimeout(500);
@@ -160,17 +160,23 @@ test("the deployed WebGL game survives its shipping-browser contract", async ({ 
   expect(mobileBox.width).toBeLessThanOrEqual(430);
   expect(mobileBox.height).toBeGreaterThan(0);
 
-  await page.getByRole("button", { name: "Play full screen" }).tap();
-  await expect.poll(async () => page.evaluate(() =>
-    Boolean(document.fullscreenElement || document.webkitFullscreenElement
-      || document.body.classList.contains("game-playing")),
-  )).toBe(true);
-  await expect(page.getByRole("button", { name: "Leave full screen" })).toBeVisible();
-  await page.getByRole("button", { name: "Leave full screen" }).tap();
-  await expect.poll(async () => page.evaluate(() =>
-    Boolean(document.fullscreenElement || document.webkitFullscreenElement
-      || document.body.classList.contains("game-playing")),
-  )).toBe(false);
+  const fullscreenButton = page.getByRole("button", { name: "Play full screen" });
+  if (await fullscreenButton.count()) {
+    await fullscreenButton.tap();
+    await expect.poll(async () => page.evaluate(() =>
+      Boolean(document.fullscreenElement || document.webkitFullscreenElement
+        || document.body.classList.contains("game-playing")),
+    )).toBe(true);
+    await expect(page.getByRole("button", { name: "Leave full screen" })).toBeVisible();
+    await page.getByRole("button", { name: "Leave full screen" }).tap();
+    await expect.poll(async () => page.evaluate(() =>
+      Boolean(document.fullscreenElement || document.webkitFullscreenElement
+        || document.body.classList.contains("game-playing")),
+    )).toBe(false);
+  } else {
+    expect(mobileBox.width).toBe(430);
+    expect(mobileBox.height).toBe(844);
+  }
 
   await page.waitForTimeout(250);
   expect(failures).toEqual([]);
