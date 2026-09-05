@@ -39,15 +39,19 @@ fn pattern_vault_can_be_solved_from_its_published_answer() {
 }
 
 #[test]
-fn sum_circuit_requires_the_target_set() {
+fn sum_circuit_keeps_generating_solvable_rounds() {
     let mut game = MiscGame::new(7, MiscKind::SumCircuit);
-    for _ in 0..4 {
+    for round in 0..300 {
+        let previous = game.board.clone();
         for index in game.solution.clone() {
-            game.tap(index);
+            assert!(game.tap(index));
         }
         assert!(game.submit());
+        assert_eq!(game.round, round + 1);
+        assert!(!game.won());
+        assert_ne!(game.board, previous);
+        assert!(game.selected.is_empty());
     }
-    assert!(game.won());
 }
 
 #[test]
@@ -157,4 +161,60 @@ fn orbit_boards_are_varied_and_need_more_than_four_swaps() {
     }
     assert!(boards.len() > 90);
     assert!(lengths.len() > 1);
+}
+
+#[test]
+fn sum_circuit_accepts_every_combination_with_the_right_total() {
+    let mut alternatives = 0;
+    for seed in 0..20 {
+        let initial = MiscGame::new(seed, MiscKind::SumCircuit);
+        for mask in 1..(1 << initial.board.len()) {
+            let indices: Vec<usize> = (0..initial.board.len())
+                .filter(|i| mask & (1 << i) != 0)
+                .collect();
+            let sum: u16 = indices.iter().map(|i| u16::from(initial.board[*i])).sum();
+            if sum != initial.target {
+                continue;
+            }
+            let mut game = initial.clone();
+            for index in &indices {
+                assert!(game.tap(*index));
+            }
+            assert!(game.submit());
+            assert_eq!(game.round, 1);
+            assert_eq!(game.mistakes, 0);
+            assert_eq!(game.score, indices.len() as u16);
+            if indices != initial.solution {
+                alternatives += 1;
+            }
+        }
+    }
+    assert!(alternatives > 100);
+}
+
+#[test]
+fn sum_wrong_total_is_recoverable_and_round_advance_can_be_undone() {
+    let mut game = MiscGame::new(7, MiscKind::SumCircuit);
+    let original = game.board.clone();
+    let wrong = game
+        .board
+        .iter()
+        .position(|v| u16::from(*v) != game.target)
+        .unwrap();
+    game.tap(wrong);
+    game.submit();
+    assert_eq!(game.round, 0);
+    assert_eq!(game.mistakes, 1);
+    assert_eq!(game.board, original);
+    assert!(game.selected.is_empty());
+    for index in game.solution.clone() {
+        game.tap(index);
+    }
+    game.submit();
+    let advanced = serde_json::to_string(&game).unwrap();
+    assert!(game.undo());
+    assert_eq!(game.round, 0);
+    assert_eq!(game.board, original);
+    game.submit();
+    assert_eq!(serde_json::to_string(&game).unwrap(), advanced);
 }

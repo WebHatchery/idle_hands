@@ -241,22 +241,10 @@ impl MiscGame {
         }
         self.push_history();
         self.moves = self.moves.saturating_add(1);
-        let mut selected = self.selected.clone();
-        selected.sort_unstable();
-        let mut solution = self.solution.clone();
-        solution.sort_unstable();
-        if self.selected_sum() == self.target && selected == solution {
-            for index in &self.selected {
-                self.board[*index] = 0;
-            }
+        if self.selected_sum() == self.target {
             self.score = self.score.saturating_add(self.selected.len() as u16);
             self.round = self.round.saturating_add(1);
-            if self.round >= 4 {
-                self.phase = MiscPhase::Won;
-                self.selected.clear();
-            } else {
-                self.prepare();
-            }
+            self.prepare();
         } else {
             self.mistakes = self.mistakes.saturating_add(1);
             self.selected.clear();
@@ -388,14 +376,13 @@ impl MiscGame {
 
     fn prepare_sum(&mut self) {
         self.prompt = "CONNECT THE TARGET".into();
-        self.detail = "Select the three lit tiles that make the target".into();
-        if self.board.is_empty() {
-            self.board = (0..12)
-                .map(|index| 1 + (pseudo(self.seed, index) % 8) as u8)
-                .collect();
-        }
-        let start = self.round as usize * 3;
-        self.solution = vec![start, start + 1, start + 2];
+        self.detail = "Tap any tiles to total the target; tap SUBMIT".into();
+        let mut rng =
+            macroquad_toolkit::rng::SeededRng::new(pseudo(self.seed, self.round as usize));
+        self.board = (0..12).map(|_| 1 + rng.below(9) as u8).collect();
+        let mut indices: Vec<usize> = (0..self.board.len()).collect();
+        rng.shuffle(&mut indices);
+        self.solution = indices[..3].to_vec();
         self.target = self
             .solution
             .iter()

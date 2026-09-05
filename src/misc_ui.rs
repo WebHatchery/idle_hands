@@ -209,7 +209,7 @@ pub fn draw(state: &AppState) {
 }
 
 fn metrics_text(game: &MiscGame, compact: bool) -> String {
-    if game.kind == MiscKind::WordForge {
+    if matches!(game.kind, MiscKind::WordForge | MiscKind::SumCircuit) {
         return if compact {
             format!("R{} / S{}", game.round.saturating_add(1), game.score)
         } else {
