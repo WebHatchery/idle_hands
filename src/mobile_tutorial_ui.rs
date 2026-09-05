@@ -68,7 +68,14 @@ fn draw_portrait(game: GameId) {
     crate::ui::draw_text(game.title(), 35., 198., 20., WHITE);
     let mut y = 240.;
     for (index, instruction) in tutorial_ui::instructions(game).iter().enumerate() {
-        for (line_index, line) in wrap(instruction, 39).iter().enumerate() {
+        for (line_index, line) in macroquad_toolkit::ui::wrap_text(
+            instruction,
+            PORTRAIT_PANEL.right() - 35. - 44.,
+            crate::ui::readable_text_size(14.),
+        )
+        .iter()
+        .enumerate()
+        {
             let prefix = if line_index == 0 {
                 format!("{}. ", index + 1)
             } else {
@@ -81,7 +88,7 @@ fn draw_portrait(game: GameId) {
                 14.,
                 Color::new(0.82, 0.78, 0.89, 1.),
             );
-            y += 22.;
+            y += crate::ui::readable_text_size(14.) + 8.;
         }
         y += 9.;
     }
@@ -94,7 +101,14 @@ fn draw_landscape(game: GameId) {
     crate::ui::draw_text(game.title(), 122., 123., 19., WHITE);
     let mut y = 154.;
     for (index, instruction) in tutorial_ui::instructions(game).iter().enumerate() {
-        for (line_index, line) in wrap(instruction, 76).iter().enumerate() {
+        for (line_index, line) in macroquad_toolkit::ui::wrap_text(
+            instruction,
+            LANDSCAPE_PANEL.right() - 122. - 44.,
+            crate::ui::readable_text_size(13.),
+        )
+        .iter()
+        .enumerate()
+        {
             let prefix = if line_index == 0 {
                 format!("{}. ", index + 1)
             } else {
@@ -107,7 +121,7 @@ fn draw_landscape(game: GameId) {
                 13.,
                 Color::new(0.82, 0.78, 0.89, 1.),
             );
-            y += 19.;
+            y += crate::ui::readable_text_size(13.) + 6.;
         }
         y += 4.;
     }
@@ -118,25 +132,6 @@ fn draw_continue(compact_landscape: bool) {
     let rect = continue_rect(compact_landscape);
     panel(rect, crate::theme::MOSS_DARK);
     crate::ui::draw_text("CONTINUE", rect.x + 34., rect.y + rect.h * 0.64, 15., WHITE);
-}
-
-fn wrap(text: &str, max_chars: usize) -> Vec<String> {
-    let mut lines = Vec::new();
-    let mut current = String::new();
-    for word in text.split_whitespace() {
-        let needed = current.len() + usize::from(!current.is_empty()) + word.len();
-        if needed > max_chars && !current.is_empty() {
-            lines.push(std::mem::take(&mut current));
-        }
-        if !current.is_empty() {
-            current.push(' ');
-        }
-        current.push_str(word);
-    }
-    if !current.is_empty() {
-        lines.push(current);
-    }
-    lines
 }
 
 fn panel(rect: Rect, fill: Color) {

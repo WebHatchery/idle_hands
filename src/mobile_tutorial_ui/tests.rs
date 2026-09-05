@@ -24,15 +24,6 @@ fn every_game_has_three_touch_specific_instructions() {
 }
 
 #[test]
-fn portrait_wrapping_keeps_long_instructions_readable() {
-    for game in GameId::ALL {
-        for instruction in tutorial_ui::instructions(game) {
-            assert!(wrap(instruction, 39).iter().all(|line| line.len() <= 39));
-        }
-    }
-}
-
-#[test]
 fn responsive_continue_buttons_stay_inside_their_panels() {
     assert!(contains(PORTRAIT_PANEL, continue_rect(false)));
     assert!(contains(LANDSCAPE_PANEL, continue_rect(true)));

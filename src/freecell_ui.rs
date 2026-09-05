@@ -21,26 +21,23 @@ fn wrapped_text(
     value: &str,
     x: f32,
     y: f32,
-    max_chars: usize,
+    max_width: f32,
     line_height: f32,
     size: f32,
     color: Color,
 ) {
-    let mut line = String::new();
-    let mut line_y = y;
-    for word in value.split_whitespace() {
-        if !line.is_empty() && line.len() + word.len() + 1 > max_chars {
-            crate::ui::draw_text(&line, x, line_y, size, color);
-            line.clear();
-            line_y += line_height;
-        }
-        if !line.is_empty() {
-            line.push(' ');
-        }
-        line.push_str(word);
-    }
-    if !line.is_empty() {
-        crate::ui::draw_text(&line, x, line_y, size, color);
+    let readable = crate::ui::readable_text_size(size);
+    for (index, line) in macroquad_toolkit::ui::wrap_text(value, max_width, readable)
+        .iter()
+        .enumerate()
+    {
+        crate::ui::draw_text(
+            line,
+            x,
+            y + index as f32 * line_height.max(readable + 5.),
+            size,
+            color,
+        );
     }
 }
 
@@ -164,7 +161,7 @@ pub fn draw_freecell(state: &AppState) {
         "Tap a card, then tap a cascade or foundation. Tap the selected card again to release it.",
         1010.,
         384.,
-        20,
+        160.,
         18.,
         13.,
         Color::new(0.63, 0.58, 0.72, 1.),
@@ -175,7 +172,7 @@ pub fn draw_freecell(state: &AppState) {
             hint,
             1010.,
             526.,
-            20,
+            160.,
             18.,
             13.,
             Color::new(0.63, 0.95, 0.72, 1.),

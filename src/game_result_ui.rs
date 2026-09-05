@@ -258,28 +258,10 @@ fn centered(value: &str, panel: Rect, y: f32, size: f32, color: Color) {
 }
 
 fn centered_wrapped(value: &str, panel: Rect, y: f32, size: f32, color: Color, max_width: f32) {
-    let mut lines = Vec::new();
-    let mut current = String::new();
-    for word in value.split_whitespace() {
-        let candidate = if current.is_empty() {
-            word.to_owned()
-        } else {
-            format!("{} {}", current, word)
-        };
-        if !current.is_empty()
-            && crate::ui::measure_text(&candidate, None, size as u16, 1.).width > max_width
-        {
-            lines.push(current);
-            current = word.to_owned();
-        } else {
-            current = candidate;
-        }
-    }
-    if !current.is_empty() {
-        lines.push(current);
-    }
+    let readable = crate::ui::readable_text_size(size);
+    let lines = macroquad_toolkit::ui::wrap_text(value, max_width, readable);
     for (index, line) in lines.iter().take(2).enumerate() {
-        centered(line, panel, y + index as f32 * (size + 5.), size, color);
+        centered(line, panel, y + index as f32 * (readable + 5.), size, color);
     }
 }
 
