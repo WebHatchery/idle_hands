@@ -78,20 +78,32 @@ fn orbit_order_can_be_finished_with_swaps() {
 }
 
 #[test]
-fn word_forge_accepts_the_target_order() {
+fn word_forge_continues_with_random_words_and_repeated_letters() {
     let mut game = MiscGame::new(7, MiscKind::WordForge);
-    for _ in 0..5 {
-        for letter in game.target_word.clone().bytes() {
+    let mut words = std::collections::HashSet::new();
+    for round in 0..300 {
+        let previous = game.target_word.clone();
+        words.insert(previous.clone());
+        assert_ne!(game.board, previous.as_bytes());
+        assert!(game.board.len() <= 5);
+        for letter in previous.bytes() {
             let index = game
                 .board
                 .iter()
-                .position(|value| *value == letter)
+                .enumerate()
+                .position(|(i, value)| *value == letter && !game.selected.contains(&i))
                 .unwrap();
-            game.tap(index);
+            assert!(game.tap(index));
         }
         assert!(game.submit());
+        assert_eq!(game.round, round + 1);
+        assert!(!game.won());
+        assert_ne!(game.target_word, previous);
     }
-    assert!(game.won());
+    assert!(words.len() > 30);
+    let saved = serde_json::to_string(&game).unwrap();
+    let restored: MiscGame = serde_json::from_str(&saved).unwrap();
+    assert_eq!(restored.round, 300);
 }
 
 #[test]

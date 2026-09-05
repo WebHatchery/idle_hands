@@ -209,6 +209,18 @@ pub fn draw(state: &AppState) {
 }
 
 fn metrics_text(game: &MiscGame, compact: bool) -> String {
+    if game.kind == MiscKind::WordForge {
+        return if compact {
+            format!("R{} / S{}", game.round.saturating_add(1), game.score)
+        } else {
+            format!(
+                "ROUND {} / SCORE {} / MOVES {}",
+                game.round.saturating_add(1),
+                game.score,
+                game.moves
+            )
+        };
+    }
     if compact {
         format!("R{} • S{} • M{}", game.round.min(5), game.score, game.moves)
     } else {

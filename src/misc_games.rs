@@ -2,6 +2,8 @@
 
 use serde::{Deserialize, Serialize};
 
+mod words;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum MiscKind {
     RiddleRoom,
@@ -21,7 +23,7 @@ pub enum MiscPhase {
 pub struct MiscGame {
     pub kind: MiscKind,
     pub seed: u64,
-    pub round: u8,
+    pub round: u32,
     pub score: u16,
     pub moves: u16,
     pub mistakes: u8,
@@ -314,11 +316,7 @@ impl MiscGame {
         if guess == self.target_word {
             self.score = self.score.saturating_add(1);
             self.round = self.round.saturating_add(1);
-            if self.round >= 5 {
-                self.phase = MiscPhase::Won;
-            } else {
-                self.prepare();
-            }
+            self.prepare();
         } else {
             self.mistakes = self.mistakes.saturating_add(1);
             self.selected.clear();
@@ -355,7 +353,7 @@ impl MiscGame {
 
     fn prepare_pattern(&mut self) {
         use macroquad_toolkit::rng::SeededRng;
-        let mut rng = SeededRng::new(pseudo(self.seed, usize::from(self.round)));
+        let mut rng = SeededRng::new(pseudo(self.seed, self.round as usize));
         let start = 2 + rng.below(10) as i32;
         let gap = 2 + rng.below(5) as i32;
         let family = rng.below(6);
@@ -396,7 +394,7 @@ impl MiscGame {
                 .map(|index| 1 + (pseudo(self.seed, index) % 8) as u8)
                 .collect();
         }
-        let start = usize::from(self.round) * 3;
+        let start = self.round as usize * 3;
         self.solution = vec![start, start + 1, start + 2];
         self.target = self
             .solution
@@ -432,14 +430,20 @@ impl MiscGame {
     }
 
     fn prepare_word(&mut self) {
-        const WORDS: [&str; 5] = ["BRICK", "CABIN", "QUIET", "RUNE", "TAPES"];
-        self.target_word = WORDS[(self.seed as usize + self.round as usize) % WORDS.len()].into();
+        let mut rng =
+            macroquad_toolkit::rng::SeededRng::new(pseudo(self.seed, self.round as usize + 9));
+        let mut index = rng.below(words::WORDS.len());
+        if words::WORDS[index].0 == self.target_word {
+            index = (index + 1) % words::WORDS.len();
+        }
+        let (word, clue) = words::WORDS[index];
+        self.target_word = word.into();
         self.prompt = "FORGE THE WORD".into();
-        self.detail = "Tap each letter once, then submit".into();
+        self.detail = clue.into();
         self.board = self.target_word.bytes().collect();
-        let rotation =
-            (pseudo(self.seed, usize::from(self.round) + 9) % self.board.len() as u64) as usize;
-        self.board.rotate_left(rotation);
+        while self.board == self.target_word.as_bytes() {
+            rng.shuffle(&mut self.board);
+        }
     }
 
     fn push_history(&mut self) {
