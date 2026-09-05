@@ -99,7 +99,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
             }
         }
         MiscKind::OrbitOrder => {
-            let rects = orbit_rects(l.panel);
+            let rects = orbit_rects(l.panel, game.board.len());
             rects
                 .iter()
                 .enumerate()
@@ -339,19 +339,24 @@ fn draw_sum(rect: Rect, game: &MiscGame, state: &AppState) {
 
 fn draw_orbit(rect: Rect, game: &MiscGame, state: &AppState) {
     for (index, planet) in game.board.iter().enumerate() {
-        let card = orbit_rects(rect)[index];
-        draw_rectangle(
-            card.x,
-            card.y,
-            card.w,
-            card.h,
-            if game.selected.contains(&index) {
-                Color::new(0.38, 0.25, 0.46, 1.)
-            } else {
-                crate::theme::SURFACE
-            },
+        let card = orbit_rects(rect, game.board.len())[index];
+        let x = card.x + card.w * 0.5;
+        let y = card.y + 27.;
+        let radius = (card.w * 0.38).min(24.);
+        let colors = [GRAY, ORANGE, BLUE, RED, BROWN, GOLD, SKYBLUE, DARKBLUE];
+        draw_circle(x, y, radius, colors[usize::from(*planet - 1) % 8]);
+        draw_circle(
+            x - radius * 0.3,
+            y - radius * 0.25,
+            radius * 0.23,
+            Color::new(1., 1., 1., 0.25),
         );
-        draw_rectangle_lines(card.x, card.y, card.w, card.h, 2., crate::theme::BRASS);
+        if *planet == 6 {
+            draw_ellipse_lines(x, y, radius * 1.25, radius * 0.42, -20., 2., GOLD);
+        }
+        if game.selected.contains(&index) {
+            draw_circle_lines(x, y, radius + 4., 3., crate::theme::MOSS);
+        }
         center(
             &planet.to_string(),
             Rect::new(card.x, card.y + 4., card.w, 36.),
@@ -418,16 +423,18 @@ fn choice_rects(panel: Rect) -> [Rect; 4] {
     ]
 }
 
-fn orbit_rects(panel: Rect) -> [Rect; 5] {
-    let width = (panel.w - 48.) / 5.;
-    std::array::from_fn(|index| {
-        Rect::new(
-            panel.x + 16. + index as f32 * width,
-            panel.y + 135.,
-            width - 5.,
-            78.,
-        )
-    })
+fn orbit_rects(panel: Rect, count: usize) -> Vec<Rect> {
+    let width = (panel.w - 32.) / 4.;
+    (0..count)
+        .map(|index| {
+            Rect::new(
+                panel.x + 16. + (index % 4) as f32 * width,
+                panel.y + 105. + (index / 4) as f32 * 90.,
+                width - 5.,
+                78.,
+            )
+        })
+        .collect()
 }
 
 fn letter_rects(panel: Rect, count: usize) -> Vec<Rect> {

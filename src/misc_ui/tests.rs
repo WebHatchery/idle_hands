@@ -54,3 +54,20 @@ fn assert_layout_is_clear(width: f32, height: f32) {
         assert!(left.right() <= width && left.bottom() <= height);
     }
 }
+
+#[test]
+fn all_eight_planets_have_separate_touch_targets() {
+    for panel in [
+        Rect::new(15., 100., 300., 310.),
+        Rect::new(320., 105., 520., 310.),
+    ] {
+        let targets = orbit_rects(panel, 8);
+        assert_eq!(targets.len(), 8);
+        for (i, target) in targets.iter().enumerate() {
+            assert!(target.w >= 44. && target.h >= 44.);
+            assert!(panel.contains(vec2(target.x, target.y)));
+            assert!(panel.contains(vec2(target.right(), target.bottom())));
+            assert!(targets[i + 1..].iter().all(|other| !target.overlaps(other)));
+        }
+    }
+}

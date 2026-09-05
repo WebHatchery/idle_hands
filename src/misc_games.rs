@@ -408,16 +408,26 @@ impl MiscGame {
     fn prepare_orbit(&mut self) {
         self.prompt = "RESTORE THE ORBIT".into();
         self.detail = "Put the numbered planets in ascending order".into();
-        self.board = (1..=5).collect();
-        let rotation = (pseudo(self.seed, 2) % 4 + 1) as usize;
-        self.board.rotate_left(rotation);
-        if self
-            .board
-            .iter()
-            .enumerate()
-            .all(|(i, value)| *value == (i + 1) as u8)
-        {
-            self.board.swap(0, 1);
+        let mut rng = macroquad_toolkit::rng::SeededRng::new(self.seed);
+        self.board = (1..=8).collect();
+        loop {
+            rng.shuffle(&mut self.board);
+            // Count permutation cycles: n - cycles is the minimum swap count.
+            let mut visited = [false; 8];
+            let mut cycles = 0;
+            for start in 0..8 {
+                if !visited[start] {
+                    cycles += 1;
+                    let mut index = start;
+                    while !visited[index] {
+                        visited[index] = true;
+                        index = usize::from(self.board[index] - 1);
+                    }
+                }
+            }
+            if 8 - cycles >= 5 {
+                break;
+            }
         }
     }
 
