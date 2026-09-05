@@ -462,7 +462,11 @@ fn button(rect: Rect, label: &str, large_text: bool) {
 }
 
 fn center(label: &str, rect: Rect, size: f32, large_text: bool) {
-    let size = accessibility::text_size(size, large_text);
+    let mut size = accessibility::text_size(size, large_text);
+    let width = crate::ui::measure_text(label, None, size as u16, 1.).width;
+    if width > rect.w - 8. {
+        size *= (rect.w - 8.) / width;
+    }
     let measured = crate::ui::measure_text(label, None, size as u16, 1.);
     crate::ui::draw_text(
         label,

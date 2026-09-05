@@ -354,34 +354,38 @@ impl MiscGame {
     }
 
     fn prepare_pattern(&mut self) {
-        let family = ((self.seed as usize + self.round as usize) % 3) as u8;
-        let start = 2 + ((self.seed.wrapping_add(u64::from(self.round)) % 5) as u8);
-        let values: Vec<u8> = (0..4)
-            .map(|step| match family {
-                0 => start.saturating_add(step * 2),
-                1 => start.saturating_mul(1 + step),
-                _ => start.saturating_add(step * step),
-            })
-            .collect();
-        let missing = *values.last().unwrap_or(&start);
-        self.prompt = format!("{}  ·  {}  ·  {}  ·  ?", values[0], values[1], values[2]);
-        self.detail = match family {
-            0 => "The gap stays even".into(),
-            1 => "The steps multiply".into(),
-            _ => "The gaps grow by one".into(),
-        };
-        self.options = vec![
-            missing,
-            missing.saturating_add(1),
-            missing.saturating_sub(2),
-            missing.saturating_add(3),
-        ]
-        .into_iter()
-        .map(|value| value.to_string())
-        .collect();
-        let rotation = (pseudo(self.seed, usize::from(self.round)) % 4) as usize;
-        self.options.rotate_left(rotation);
-        self.answer = (4 - rotation) % 4;
+        use macroquad_toolkit::rng::SeededRng;
+        let mut rng = SeededRng::new(pseudo(self.seed, usize::from(self.round)));
+        let start = 2 + rng.below(10) as i32;
+        let gap = 2 + rng.below(5) as i32;
+        let family = rng.below(6);
+        let mut values = vec![start];
+        for step in 1..6 {
+            let previous = values[step - 1];
+            values.push(match family {
+                0 => previous + gap * step as i32,
+                1 => previous * 2 + gap,
+                2 => previous + if step % 2 == 1 { gap } else { gap * 3 },
+                3 if step > 1 => previous + values[step - 2],
+                3 => start + gap,
+                4 => start + gap * (step * step) as i32,
+                _ => previous + (step * step) as i32 + gap,
+            });
+        }
+        let missing = values[5];
+        self.prompt = format!(
+            "{} · ?",
+            values[..5]
+                .iter()
+                .map(i32::to_string)
+                .collect::<Vec<_>>()
+                .join(" · ")
+        );
+        self.detail = "Find the rule across all five values".into();
+        let mut options = vec![missing, missing + gap, missing - gap, missing + gap * 2];
+        rng.shuffle(&mut options);
+        self.answer = options.iter().position(|value| *value == missing).unwrap();
+        self.options = options.iter().map(i32::to_string).collect();
     }
 
     fn prepare_sum(&mut self) {

@@ -102,3 +102,21 @@ fn undo_restores_a_misc_move() {
     assert!(game.undo());
     assert_eq!(game.moves, before);
 }
+
+#[test]
+fn patterns_vary_and_offer_four_distinct_answers() {
+    let mut prompts = std::collections::HashSet::new();
+    for seed in 0..100 {
+        let game = MiscGame::new(seed, MiscKind::PatternVault);
+        prompts.insert(game.prompt.clone());
+        assert_eq!(
+            game.options
+                .iter()
+                .collect::<std::collections::HashSet<_>>()
+                .len(),
+            4
+        );
+        assert_eq!(game.prompt.split('·').count(), 6);
+    }
+    assert!(prompts.len() > 80);
+}
