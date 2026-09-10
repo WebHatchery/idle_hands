@@ -15,6 +15,7 @@ use crate::responsive_cabinet;
 use crate::responsive_landscape;
 use crate::responsive_landscape_cabinet;
 use crate::responsive_landscape_library;
+use crate::responsive_landscape_rules;
 use crate::responsive_library;
 use crate::responsive_ui;
 use crate::settings_ui;
@@ -288,9 +289,11 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         }
         Screen::Records if is_portrait() => responsive_library::records_clicks(state, p),
         Screen::Records => records_ui::records_clicks(state, p),
-        Screen::Rules if is_compact_landscape() => responsive_landscape_library::rules_clicks(p),
-        Screen::Rules if is_portrait() => responsive_library::rules_clicks(p),
-        Screen::Rules => library_ui::rules_clicks(p),
+        Screen::Rules if is_compact_landscape() => {
+            responsive_landscape_rules::rules_clicks(state, p)
+        }
+        Screen::Rules if is_portrait() => responsive_library::rules_clicks(state, p),
+        Screen::Rules => library_ui::rules_clicks(state, p),
         Screen::Credits if is_compact_landscape() => {
             responsive_landscape_library::credits_clicks(p)
         }
@@ -332,9 +335,9 @@ pub fn draw(
         }
         Screen::Records if is_portrait() => responsive_library::draw_records(state),
         Screen::Records => records_ui::draw_records(state),
-        Screen::Rules if is_compact_landscape() => responsive_landscape_library::draw_rules(state),
+        Screen::Rules if is_compact_landscape() => responsive_landscape_rules::draw_rules(state),
         Screen::Rules if is_portrait() => responsive_library::draw_rules(state),
-        Screen::Rules => library_ui::draw_rules(),
+        Screen::Rules => library_ui::draw_rules(state),
         Screen::Credits if is_compact_landscape() => responsive_landscape_library::draw_credits(),
         Screen::Credits if is_portrait() => responsive_library::draw_credits(),
         Screen::Credits => library_ui::draw_credits(),

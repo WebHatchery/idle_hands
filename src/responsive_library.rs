@@ -444,6 +444,21 @@ pub fn draw_rules(state: &AppState) {
         12.,
         crate::theme::SECONDARY,
     );
+    panel(Rect::new(190., 28., 155., 44.), crate::theme::SURFACE);
+    text(
+        &format!(
+            "SHELF {}",
+            crate::rules_data::filter_label(state.rules_filter)
+        ),
+        214.,
+        56.,
+        10.,
+        WHITE,
+    );
+    if state.rules_filter != 0 {
+        draw_filtered_rules(state);
+        return;
+    }
     let start = state
         .library_scroll
         .min(GameId::ALL.len().saturating_sub(RULES_VISIBLE_ROWS));
@@ -486,8 +501,53 @@ pub fn draw_rules(state: &AppState) {
     );
     back_button(714.);
 }
-pub fn rules_clicks(p: Vec2) -> Vec<UiAction> {
-    if crate::ui::hit(Rect::new(10., 602., 100., 44.), p) {
+
+fn draw_filtered_rules(state: &AppState) {
+    let rows = crate::rules_data::rows(state.rules_filter);
+    let start = state
+        .library_scroll
+        .min(rows.len().saturating_sub(RULES_VISIBLE_ROWS));
+    for (index, row) in rows.iter().skip(start).take(RULES_VISIBLE_ROWS).enumerate() {
+        let rect = Rect::new(18., 108. + index as f32 * 60., 324., 54.);
+        panel(rect, Color::new(0.13, 0.09, 0.20, 1.));
+        text(
+            row.title,
+            rect.x + 10.,
+            rect.y + 22.,
+            14.,
+            crate::theme::BRASS,
+        );
+        text(
+            row.subtitle,
+            rect.x + 10.,
+            rect.y + 43.,
+            11.,
+            crate::theme::CREAM,
+        );
+    }
+    scroll_button(Rect::new(10., 602., 100., 44.), "PREV");
+    scroll_button(Rect::new(250., 602., 100., 44.), "NEXT");
+    text(
+        &format!(
+            "{}-{} OF {}",
+            start + 1,
+            (start + RULES_VISIBLE_ROWS).min(rows.len()),
+            rows.len()
+        ),
+        128.,
+        630.,
+        11.,
+        crate::theme::CREAM,
+    );
+    back_button(714.);
+}
+
+pub fn rules_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
+    if crate::ui::hit(Rect::new(190., 28., 155., 44.), p) {
+        vec![UiAction::RulesFilter(crate::rules_data::next_filter(
+            state.rules_filter,
+        ))]
+    } else if crate::ui::hit(Rect::new(10., 602., 100., 44.), p) {
         vec![UiAction::LibraryScroll(-1)]
     } else if crate::ui::hit(Rect::new(250., 602., 100., 44.), p) {
         vec![UiAction::LibraryScroll(1)]

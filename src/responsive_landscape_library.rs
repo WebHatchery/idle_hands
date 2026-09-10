@@ -11,7 +11,7 @@ use macroquad::prelude::*;
 #[cfg(test)]
 mod tests;
 
-fn panel(rect: Rect, fill: Color) {
+pub(crate) fn panel(rect: Rect, fill: Color) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -21,18 +21,17 @@ fn panel(rect: Rect, fill: Color) {
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub(crate) fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
-fn back(rect: Rect) {
+pub(crate) fn back(rect: Rect) {
     panel(rect, crate::theme::MOSS_DARK);
     text("BACK", rect.x + 30., rect.y + 28., 12., WHITE);
 }
 
 const RECORDS_VISIBLE_ROWS: usize = 10;
-const RULES_VISIBLE_ROWS: usize = 8;
 
-fn scroll(rect: Rect, label: &str) {
+pub(crate) fn scroll(rect: Rect, label: &str) {
     panel(rect, crate::theme::SURFACE_DARK);
     text(label, rect.x + 16., rect.y + 28., 10., WHITE);
 }
@@ -404,59 +403,6 @@ pub fn records_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     } else if crate::ui::hit(Rect::new(650., 2., 150., 44.), p) {
         vec![UiAction::Achievements]
     } else if crate::ui::hit(Rect::new(430., 330., 100., 44.), p) {
-        vec![UiAction::LibraryScroll(-1)]
-    } else if crate::ui::hit(Rect::new(545., 330., 100., 44.), p) {
-        vec![UiAction::LibraryScroll(1)]
-    } else if crate::ui::hit(Rect::new(700., 330., 110., 44.), p) {
-        vec![UiAction::Cabinet]
-    } else {
-        vec![]
-    }
-}
-
-pub fn draw_rules(state: &AppState) {
-    panel(
-        Rect::new(20., 12., 804., 365.),
-        crate::theme::BACKGROUND_DEEP,
-    );
-    text("RULES", 40., 48., 25., crate::theme::BRASS);
-    let start = state
-        .library_scroll
-        .min(GameId::ALL.len().saturating_sub(RULES_VISIBLE_ROWS));
-    for (index, game) in GameId::ALL
-        .iter()
-        .skip(start)
-        .take(RULES_VISIBLE_ROWS)
-        .enumerate()
-    {
-        let rect = Rect::new(
-            30. + (index % 2) as f32 * 380.,
-            68. + (index / 2) as f32 * 62.,
-            360.,
-            56.,
-        );
-        panel(rect, Color::new(0.13, 0.09, 0.20, 1.));
-        text(
-            game.title(),
-            rect.x + 12.,
-            rect.y + 23.,
-            14.,
-            crate::theme::BRASS,
-        );
-        text(
-            game.subtitle(),
-            rect.x + 12.,
-            rect.y + 44.,
-            11.,
-            crate::theme::CREAM,
-        );
-    }
-    scroll(Rect::new(430., 330., 100., 44.), "PREV");
-    scroll(Rect::new(545., 330., 100., 44.), "NEXT");
-    back(Rect::new(700., 330., 110., 44.));
-}
-pub fn rules_clicks(p: Vec2) -> Vec<UiAction> {
-    if crate::ui::hit(Rect::new(430., 330., 100., 44.), p) {
         vec![UiAction::LibraryScroll(-1)]
     } else if crate::ui::hit(Rect::new(545., 330., 100., 44.), p) {
         vec![UiAction::LibraryScroll(1)]

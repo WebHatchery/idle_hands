@@ -308,6 +308,14 @@ impl Game {
                 };
                 self.state.library_scroll = 0;
             }
+            ui::UiAction::RulesFilter(filter) => {
+                self.state.rules_filter = if crate::rules_data::FILTERS.contains(&filter) {
+                    filter
+                } else {
+                    0
+                };
+                self.state.library_scroll = 0;
+            }
             ui::UiAction::Cabinet => {
                 self.state.screen = Screen::Cabinet;
                 self.state.favorites_view = false;
@@ -376,6 +384,7 @@ impl Game {
             ui::UiAction::Rules => {
                 self.state.screen = Screen::Rules;
                 self.state.library_scroll = 0;
+                self.state.rules_filter = 0;
                 self.state.favorites_view = false;
                 self.state.recent_view = false;
                 self.state.daily_archive_view = false;
