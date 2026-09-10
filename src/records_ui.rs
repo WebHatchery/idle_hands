@@ -34,6 +34,11 @@ pub fn draw_records(state: &AppState) {
     );
     let earned = state.achievements.iter().filter(|earned| **earned).count();
     let completed = completed_games(&state.records);
+    let time = state.records.time_summary();
+    let fastest = time.fastest_seconds.map_or_else(
+        || "—".into(),
+        |seconds| crate::state_records::format_duration(u64::from(seconds)),
+    );
     crate::ui::draw_text(
         format!(
             "STAMPS  {}   •   ACHIEVEMENTS  {}/{}   •   DRAWERS  {}/{}",
@@ -50,11 +55,14 @@ pub fn draw_records(state: &AppState) {
     );
     crate::ui::draw_text(
         format!(
-            "DAILY ROUTES  {} CLEARED   •   LOG {}/90   •   BEST SCORE  {}   •   NEXT  {}",
+            "DAILY ROUTES  {} CLEARED   •   LOG {}/90   •   BEST SCORE  {}   •   NEXT  {}   •   TIME {}   •   {} ACTIVE   •   FASTEST {}",
             state.records.daily_clear_count(),
             state.records.daily_results.len(),
             value(state.records.daily_best_score()),
-            next_achievement(&state.records)
+            next_achievement(&state.records),
+            crate::state_records::format_duration(time.total_seconds),
+            time.active_games,
+            fastest
         ),
         174.,
         210.,

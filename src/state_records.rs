@@ -11,6 +11,14 @@ pub struct DailyResult {
     pub won: bool,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct TimeSummary {
+    pub total_seconds: u64,
+    pub active_games: usize,
+    pub completed_games: usize,
+    pub fastest_seconds: Option<u32>,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct CollectionRecords {
     #[serde(default)]
@@ -158,6 +166,27 @@ impl CollectionRecords {
         self.best_time_seconds.get(game_index).copied().flatten()
     }
 
+    pub fn time_summary(&self) -> TimeSummary {
+        TimeSummary {
+            total_seconds: self
+                .elapsed_seconds
+                .iter()
+                .map(|&seconds| u64::from(seconds))
+                .sum(),
+            active_games: self
+                .elapsed_seconds
+                .iter()
+                .filter(|&&seconds| seconds > 0)
+                .count(),
+            completed_games: self
+                .best_time_seconds
+                .iter()
+                .filter(|best| best.is_some())
+                .count(),
+            fastest_seconds: self.best_time_seconds.iter().flatten().copied().min(),
+        }
+    }
+
     pub fn record_daily_result(&mut self, day: u64, score: u32, won: bool) {
         if day == 0 {
             return;
@@ -195,6 +224,17 @@ impl CollectionRecords {
 
     pub fn daily_best_score(&self) -> Option<u32> {
         self.daily_results.iter().map(|result| result.score).max()
+    }
+}
+
+pub fn format_duration(seconds: u64) -> String {
+    let hours = seconds / 3_600;
+    let minutes = seconds / 60 % 60;
+    let remainder = seconds % 60;
+    if hours > 0 {
+        format!("{hours}h {minutes:02}m")
+    } else {
+        format!("{minutes}m {remainder:02}s")
     }
 }
 
