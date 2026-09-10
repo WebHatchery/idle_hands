@@ -54,7 +54,8 @@ and full-cabinet collection awards. The Records screen opens a responsive
 ACHIEVEMENTS shelf so earned and locked awards remain inspectable without
 interrupting a game. Drawer awards use the drawer's own title so thematic
 achievement names never obscure what was completed. ALL, EARNED, and LOCKED
-filters let a player focus on the next collection goal.
+filters show their live counts and let a player focus on the next collection
+goal; each card also names its goal and current progress.
 
 Starting a new drawer session presents a clear CANCEL/START confirmation so an
 accidental tap cannot replace an unfinished session.
@@ -151,8 +152,11 @@ quick collection browsing; filtering never changes a drawer's state or place.
 The optional meta layer uses one plainly named collectible: stamps. Finishing
 games and selected achievements awards stamps once. Stamps unlock only cosmetic
 items such as card backs, board materials, sound sets, and small shelf
-decorations. Cosmetics never alter rules, puzzle information, odds, hints, or
-scores.
+decorations. The four cosmetic families contain twelve catalog items in total;
+settings show the equipped item, how many options are open, and the next stamp
+threshold. Cosmetics never alter rules, puzzle information, odds, hints, or
+scores, and a restored profile falls back to its free option if it cannot yet
+afford its saved selection.
 
 Daily seeded games are a post-launch extension. The Daily Dungeon now derives a
 stable challenge seed and rule from the UTC calendar day, labels the active day

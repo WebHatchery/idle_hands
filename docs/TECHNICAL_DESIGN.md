@@ -170,19 +170,26 @@ the main cabinet.
 The Records summary derives completed-drawer progress from `CollectionRecords`
 through the shared `progression::completed_games` function, keeping the count
 consistent with cabinet completion status without adding another save field.
-Achievement flags are stored as a normalized vector keyed by the 49-entry
+Achievement flags are stored as a normalized vector keyed by the 62-entry
 `AchievementId::ALL` list. Legacy ten-entry arrays deserialize as vectors and
 are padded with unearned late-game achievements.
 The runtime-only `achievements_view` flag routes Records to the responsive
 achievement shelf; its cards are read-only and BACK returns to Records.
-Drawer achievement cards render the associated `GameId` title rather than only
+Achievement cards render the associated `GameId` title rather than only
 thematic award text, and the shelf participates in the shared large-text
-capture path.
+capture path. Each card derives its goal description and progress label from
+the same completion predicates used by `progression::sync`; the Records shelf
+also exposes the next locked achievement in collection order.
 The runtime-only `achievement_filter` value selects ALL, EARNED, or LOCKED
 cards; it is reset when opening the shelf and is never persisted.
 Achievement filter controls use touch-complete responsive targets and a
-non-color active outline; card spacing is reflowed per orientation so the
-full 49-entry shelf remains inside its panel.
+non-color active outline; button counts and card spacing are reflowed per
+orientation so the full 62-entry shelf remains inside its panel.
+Cosmetics use typed catalog entries with stamp costs for card backs, board
+themes, sound sets, and cabinet decorations. Settings derive their equipped
+name, open count, and next cost from that catalog across all responsive layouts;
+profile and collection-save restore paths normalize locked indices back to the
+first affordable option.
 The runtime-only `cabinet_filter` value selects ALL, OPEN, or DONE drawers;
 it is never persisted and maps filtered slots back to canonical `GameId`
 indices before dispatching favorite or open actions.
