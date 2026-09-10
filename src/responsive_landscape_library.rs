@@ -58,11 +58,13 @@ pub fn draw_records(state: &AppState) {
     );
     text(
         &format!(
-            "DAILY {} CLEARS  -  LOG {}/90  -  BEST {}  -  NEXT {}",
+            "DAILY {} CLEARS  -  LOG {}/90  -  BEST {}  -  NEXT {}  -  TIME {}  -  {} ACTIVE",
             state.records.daily_clear_count(),
             state.records.daily_results.len(),
             value(state.records.daily_best_score()),
-            next_achievement(&state.records)
+            next_achievement(&state.records),
+            crate::state_records::format_duration(state.records.time_summary().total_seconds),
+            state.records.time_summary().active_games
         ),
         40.,
         62.,
