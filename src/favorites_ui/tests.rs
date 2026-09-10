@@ -7,13 +7,13 @@ fn favorite_shelf_uses_a_touch_safe_capacity_at_each_size() {
     state.favorites.fill(true);
 
     crate::ui::with_desktop_layout(|| {
-        assert_eq!(visible_games(&state).len(), DESKTOP_VISIBLE_GAMES);
+        assert_eq!(visible_rows(&state).len(), DESKTOP_VISIBLE_GAMES);
     });
     crate::ui::with_compact_landscape_layout(|| {
-        assert_eq!(visible_games(&state).len(), 10);
+        assert_eq!(visible_rows(&state).len(), 10);
     });
     crate::ui::with_portrait_layout(|| {
-        assert_eq!(visible_games(&state).len(), 8);
+        assert_eq!(visible_rows(&state).len(), 8);
     });
 }
 
@@ -63,24 +63,6 @@ fn favorite_card_remove_action_targets_the_starred_drawer() {
             [UiAction::ToggleFavorite(index)] if *index == GameId::Solitaire.index()
         ));
     });
-}
-
-#[test]
-fn browse_summary_separates_open_finished_and_locked_drawers() {
-    let mut state = AppState::default();
-    state.records.solitaire_best_moves = Some(42);
-    let games = vec![GameId::Solitaire, GameId::FreeCell];
-
-    let summary = browse_summary(&state, &games);
-    assert_eq!(
-        summary,
-        BrowseSummary {
-            total: 2,
-            open: 1,
-            done: 1,
-            locked: 0,
-        }
-    );
 }
 
 #[test]

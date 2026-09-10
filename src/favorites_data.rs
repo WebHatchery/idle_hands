@@ -1,0 +1,90 @@
+//! Canonical rows and summaries for the Favorites and Recent shelves.
+
+use crate::state::{AppState, GameId};
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum BrowseMode {
+    Favorites,
+    Recent,
+}
+
+impl BrowseMode {
+    pub fn from_state(state: &AppState) -> Self {
+        if state.recent_view {
+            Self::Recent
+        } else {
+            Self::Favorites
+        }
+    }
+
+    pub fn is_recent(self) -> bool {
+        matches!(self, Self::Recent)
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct BrowseRow {
+    pub game: GameId,
+    pub source_index: usize,
+}
+
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub struct BrowseSummary {
+    pub total: usize,
+    pub open: usize,
+    pub done: usize,
+    pub locked: usize,
+}
+
+pub fn games(state: &AppState, mode: BrowseMode) -> Vec<GameId> {
+    match mode {
+        BrowseMode::Recent => state.recent_games.clone(),
+        BrowseMode::Favorites => GameId::ALL
+            .iter()
+            .copied()
+            .filter(|game| state.favorites.get(game.index()).copied().unwrap_or(false))
+            .collect(),
+    }
+}
+
+pub fn page_rows(
+    state: &AppState,
+    mode: BrowseMode,
+    start: usize,
+    capacity: usize,
+) -> Vec<BrowseRow> {
+    let games = games(state, mode);
+    let start = page_start(games.len(), start, capacity);
+    games
+        .into_iter()
+        .enumerate()
+        .skip(start)
+        .take(capacity)
+        .map(|(source_index, game)| BrowseRow { game, source_index })
+        .collect()
+}
+
+pub fn page_start(total: usize, start: usize, capacity: usize) -> usize {
+    start.min(total.saturating_sub(capacity.max(1)))
+}
+
+pub fn summary(state: &AppState, mode: BrowseMode) -> BrowseSummary {
+    let games = games(state, mode);
+    let done = games
+        .iter()
+        .filter(|game| crate::cabinet_status::status(state, **game) == "COMPLETE")
+        .count();
+    let locked = games
+        .iter()
+        .filter(|game| !crate::cabinet_status::is_available(**game))
+        .count();
+    BrowseSummary {
+        total: games.len(),
+        open: games.len().saturating_sub(done + locked),
+        done,
+        locked,
+    }
+}
+
+#[cfg(test)]
+mod tests;

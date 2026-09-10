@@ -39,6 +39,7 @@ mod dots_boxes;
 mod dots_boxes_ui;
 mod dungeon_sweeper;
 mod dungeon_sweeper_ui;
+mod favorites_data;
 mod favorites_ui;
 mod fivefold;
 mod fivefold_ui;

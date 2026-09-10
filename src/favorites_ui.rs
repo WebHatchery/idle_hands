@@ -1,6 +1,7 @@
 //! Responsive quick-browse views for starred and recently opened drawers.
 
 use crate::{
+    favorites_data::{self, BrowseMode, BrowseRow},
     state::{AppState, GameId},
     ui::UiAction,
 };
@@ -10,14 +11,6 @@ const DESKTOP_VISIBLE_GAMES: usize = 40;
 
 #[cfg(test)]
 mod tests;
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-struct BrowseSummary {
-    total: usize,
-    open: usize,
-    done: usize,
-    locked: usize,
-}
 
 #[derive(Clone, Copy)]
 struct Layout {
@@ -70,6 +63,7 @@ fn layout() -> Layout {
 
 pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     let l = layout();
+    let mode = BrowseMode::from_state(state);
     if crate::ui::hit(l.back, point) {
         return vec![UiAction::Cabinet];
     }
@@ -80,7 +74,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(recent, point) {
         return vec![UiAction::Recent];
     }
-    if state.recent_view && crate::ui::hit(quick_action_rect(), point) {
+    if mode.is_recent() && crate::ui::hit(quick_action_rect(), point) {
         return vec![UiAction::ClearRecent];
     }
     if let Some((previous, next)) = scroll_rects() {
@@ -91,9 +85,10 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
             return vec![UiAction::LibraryScroll(1)];
         }
     }
-    for (slot, &game) in visible_games(state).iter().enumerate() {
+    for (slot, row) in visible_rows(state).iter().enumerate() {
+        let game = row.game;
         let rect = list_card_rect(l, slot);
-        if !state.recent_view && crate::ui::hit(favorite_remove_rect(rect), point) {
+        if !mode.is_recent() && crate::ui::hit(favorite_remove_rect(rect), point) {
             return vec![UiAction::ToggleFavorite(game.index())];
         }
         if rect.contains(point) {
@@ -107,7 +102,8 @@ pub fn draw(state: &AppState) {
     let l = layout();
     panel(l.panel, crate::theme::BACKGROUND_DEEP);
     let title_size = if crate::ui::is_portrait() { 29. } else { 38. };
-    let recent = state.recent_view;
+    let mode = BrowseMode::from_state(state);
+    let recent = mode.is_recent();
     let (favorites_tab, recent_tab) = browse_tab_rects();
     for (rect, label, active) in [
         (favorites_tab, "FAVORITES", !recent),
@@ -147,8 +143,7 @@ pub fn draw(state: &AppState) {
         title_size,
         crate::theme::BRASS,
     );
-    let games = browse_games(state);
-    let summary = browse_summary(state, &games);
+    let summary = favorites_data::summary(state, mode);
     let count = summary.total;
     let subtitle_y = if crate::ui::is_compact_landscape() {
         l.panel.y + 52.
@@ -198,7 +193,8 @@ pub fn draw(state: &AppState) {
             WHITE,
         );
     }
-    for (slot, &game) in visible_games(state).iter().enumerate() {
+    for (slot, row) in visible_rows(state).iter().enumerate() {
+        let game = row.game;
         let rect = list_card_rect(l, slot);
         panel(rect, Color::new(0.17, 0.12, 0.27, 1.));
         draw_circle(
@@ -267,20 +263,7 @@ pub fn draw(state: &AppState) {
     );
 }
 
-fn browse_games(state: &AppState) -> Vec<GameId> {
-    if state.recent_view {
-        state.recent_games.clone()
-    } else {
-        GameId::ALL
-            .iter()
-            .copied()
-            .filter(|game| state.favorites.get(game.index()).copied().unwrap_or(false))
-            .collect()
-    }
-}
-
-fn visible_games(state: &AppState) -> Vec<GameId> {
-    let games = browse_games(state);
+fn visible_rows(state: &AppState) -> Vec<BrowseRow> {
     let capacity = if crate::ui::is_portrait() {
         8
     } else if crate::ui::is_compact_landscape() {
@@ -288,10 +271,12 @@ fn visible_games(state: &AppState) -> Vec<GameId> {
     } else {
         DESKTOP_VISIBLE_GAMES
     };
-    let first = state
-        .library_scroll
-        .min(games.len().saturating_sub(capacity));
-    games.into_iter().skip(first).take(capacity).collect()
+    favorites_data::page_rows(
+        state,
+        BrowseMode::from_state(state),
+        state.library_scroll,
+        capacity,
+    )
 }
 
 fn scroll_rects() -> Option<(Rect, Rect)> {
@@ -310,23 +295,6 @@ fn scroll_rects() -> Option<(Rect, Rect)> {
             Rect::new(700., 590., 100., 44.),
             Rect::new(815., 590., 100., 44.),
         ))
-    }
-}
-
-fn browse_summary(state: &AppState, games: &[GameId]) -> BrowseSummary {
-    let done = games
-        .iter()
-        .filter(|game| crate::cabinet_status::status(state, **game) == "COMPLETE")
-        .count();
-    let locked = games
-        .iter()
-        .filter(|game| !crate::cabinet_status::is_available(**game))
-        .count();
-    BrowseSummary {
-        total: games.len(),
-        open: games.len().saturating_sub(done + locked),
-        done,
-        locked,
     }
 }
 
