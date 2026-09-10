@@ -23,3 +23,35 @@ fn best_time_keeps_the_fastest_completed_round() {
 
     assert_eq!(records.best_time(game_index), Some(18));
 }
+
+#[test]
+fn daily_results_merge_replays_without_creating_streak_pressure() {
+    let mut records = CollectionRecords::default();
+    records.record_daily_result(20_042, 70, false);
+    records.record_daily_result(20_042, 92, true);
+    records.record_daily_result(20_043, 55, false);
+    records.record_daily_result(0, 999, true);
+
+    assert_eq!(records.daily_results.len(), 2);
+    assert_eq!(records.daily_score(20_042), Some(92));
+    assert_eq!(records.daily_clear_count(), 1);
+    assert_eq!(records.daily_best_score(), Some(92));
+}
+
+#[test]
+fn daily_history_keeps_the_most_recent_ninety_days() {
+    let mut records = CollectionRecords::default();
+    for day in 1..=91 {
+        records.record_daily_result(day, day as u32, true);
+    }
+
+    assert_eq!(records.daily_results.len(), 90);
+    assert_eq!(
+        records.daily_results.first().map(|result| result.day),
+        Some(2)
+    );
+    assert_eq!(
+        records.daily_results.last().map(|result| result.day),
+        Some(91)
+    );
+}

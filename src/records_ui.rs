@@ -48,6 +48,17 @@ pub fn draw_records(state: &AppState) {
         18.,
         crate::theme::BRASS,
     );
+    crate::ui::draw_text(
+        format!(
+            "DAILY ROUTES  {} CLEARED   •   BEST SCORE  {}",
+            state.records.daily_clear_count(),
+            value(state.records.daily_best_score())
+        ),
+        174.,
+        210.,
+        13.,
+        crate::theme::SECONDARY,
+    );
     panel(Rect::new(900., 102., 210., 44.), crate::theme::SURFACE);
     draw_rectangle_lines(900., 102., 210., 44., 3., WHITE);
     crate::ui::draw_text("ACHIEVEMENTS", 925., 129., 14., WHITE);

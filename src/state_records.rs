@@ -4,6 +4,13 @@ use serde::{Deserialize, Serialize};
 
 use crate::state::GameId;
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct DailyResult {
+    pub day: u64,
+    pub score: u32,
+    pub won: bool,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct CollectionRecords {
     #[serde(default)]
@@ -12,6 +19,8 @@ pub struct CollectionRecords {
     pub best_time_seconds: Vec<Option<u32>>,
     #[serde(default)]
     pub elapsed_remainder: f32,
+    #[serde(default)]
+    pub daily_results: Vec<DailyResult>,
     pub best_2048: u32,
     pub minesweeper: [Option<u32>; 4],
     pub sudoku: [Option<u32>; 3],
@@ -147,6 +156,45 @@ impl CollectionRecords {
 
     pub fn best_time(&self, game_index: usize) -> Option<u32> {
         self.best_time_seconds.get(game_index).copied().flatten()
+    }
+
+    pub fn record_daily_result(&mut self, day: u64, score: u32, won: bool) {
+        if day == 0 {
+            return;
+        }
+        if let Some(result) = self
+            .daily_results
+            .iter_mut()
+            .find(|result| result.day == day)
+        {
+            result.score = result.score.max(score);
+            result.won |= won;
+            return;
+        }
+        self.daily_results.push(DailyResult { day, score, won });
+        const HISTORY_LIMIT: usize = 90;
+        if self.daily_results.len() > HISTORY_LIMIT {
+            let excess = self.daily_results.len() - HISTORY_LIMIT;
+            self.daily_results.drain(..excess);
+        }
+    }
+
+    pub fn daily_score(&self, day: u64) -> Option<u32> {
+        self.daily_results
+            .iter()
+            .find(|result| result.day == day)
+            .map(|result| result.score)
+    }
+
+    pub fn daily_clear_count(&self) -> usize {
+        self.daily_results
+            .iter()
+            .filter(|result| result.won)
+            .count()
+    }
+
+    pub fn daily_best_score(&self) -> Option<u32> {
+        self.daily_results.iter().map(|result| result.score).max()
     }
 }
 

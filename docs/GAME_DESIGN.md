@@ -160,6 +160,10 @@ in its board and result copy, and rolls forward automatically when the cabinet
 opens on a later day. Missing a day has no penalty and there is no escalating
 streak reward. The seed version is fixed so future rule changes do not alter
 old published days; replaying the current day restores the same route.
+The profile keeps a bounded 90-day result ledger with the best score and clear
+state for each day, surfaced in the daily drawer and Records screen. Replaying
+a day merges into that entry rather than creating duplicate attempts or a
+streak obligation.
 
 ## 7. Presentation and Audio
 

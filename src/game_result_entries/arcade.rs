@@ -169,8 +169,15 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                     "The dungeon took all your hearts before the exit."
                 },
                 format!(
-                    "RUNES {} / 3  ·  HEARTS {}  ·  SCORE {}",
-                    game.runes_found, game.hearts, game.score
+                    "{}  ·  RUNES {} / 3  ·  HEARTS {}  ·  SCORE {}  ·  BEST {}",
+                    crate::daily_challenge::label(game.day_key, game.challenge),
+                    game.runes_found,
+                    game.hearts,
+                    game.score,
+                    state
+                        .records
+                        .daily_score(game.day_key)
+                        .map_or_else(|| "—".to_owned(), |score| score.to_string())
                 ),
                 UiAction::DailyNew,
                 "NEW DAILY",

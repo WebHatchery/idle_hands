@@ -144,13 +144,17 @@ pub fn draw(state: &AppState) {
         )
     } else {
         format!(
-            "{}  •  {}  •  Hearts {}  •  Runes {} / {}  •  Scouts {}",
+            "{}  •  {}  •  Hearts {}  •  Runes {} / {}  •  Scouts {}  •  Best {}",
             dungeon.rule.label(),
             crate::daily_challenge::label(dungeon.day_key, dungeon.challenge),
             dungeon.hearts,
             dungeon.runes_found,
             DailyDungeon::rune_total(),
-            dungeon.scouts
+            dungeon.scouts,
+            state
+                .records
+                .daily_score(dungeon.day_key)
+                .map_or_else(|| "—".to_owned(), |score| score.to_string())
         )
     };
     text(
@@ -235,6 +239,7 @@ pub fn draw(state: &AppState) {
             dungeon.phase,
             dungeon.moves,
             dungeon.score,
+            state.records.daily_score(dungeon.day_key),
         )),
         if compact { 280. } else { title_x },
         if portrait {
@@ -289,17 +294,31 @@ fn grid_distance(first: usize, second: usize) -> usize {
     (first / size).abs_diff(second / size) + (first % size).abs_diff(second % size)
 }
 
-fn status_text(day: u64, challenge: u32, phase: DailyPhase, moves: u16, score: u32) -> String {
+fn status_text(
+    day: u64,
+    challenge: u32,
+    phase: DailyPhase,
+    moves: u16,
+    score: u32,
+    best_score: Option<u32>,
+) -> String {
     let identity = crate::daily_challenge::status_label(day, challenge, phase);
+    let best = best_score.map_or_else(|| "—".to_owned(), |value| value.to_string());
     match phase {
         DailyPhase::Exploring => {
             format!(
-                "{}  •  scout or risk hidden rooms  •  {} actions  •  {} score",
-                identity, moves, score
+                "{}  •  scout or risk hidden rooms  •  {} actions  •  {} score  •  best {}",
+                identity, moves, score, best
             )
         }
-        DailyPhase::Won => format!("{}  •  the route is clear  •  {} score", identity, score),
-        DailyPhase::Lost => format!("{}  •  the traps closed in  •  {} score", identity, score),
+        DailyPhase::Won => format!(
+            "{}  •  the route is clear  •  {} score  •  best {}",
+            identity, score, best
+        ),
+        DailyPhase::Lost => format!(
+            "{}  •  the traps closed in  •  {} score  •  best {}",
+            identity, score, best
+        ),
     }
 }
 

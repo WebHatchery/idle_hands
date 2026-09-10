@@ -564,6 +564,19 @@ impl Game {
                 ));
             }
         }
+        match self.state.games.daily_dungeon.phase {
+            crate::daily_dungeon::DailyPhase::Won => records.record_daily_result(
+                self.state.games.daily_dungeon.day_key,
+                self.state.games.daily_dungeon.score,
+                true,
+            ),
+            crate::daily_dungeon::DailyPhase::Lost => records.record_daily_result(
+                self.state.games.daily_dungeon.day_key,
+                self.state.games.daily_dungeon.score,
+                false,
+            ),
+            crate::daily_dungeon::DailyPhase::Exploring => {}
+        }
         let previous_stamps = self.state.stamps;
         let newly_earned = progression::sync(
             &mut self.state.achievements,
