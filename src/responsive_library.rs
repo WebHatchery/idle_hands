@@ -58,10 +58,12 @@ pub fn draw_records(state: &AppState) {
     let completed = completed_games(&state.records);
     text(
         &format!(
-            "STAMPS {}  -  ACHIEVEMENTS {}/{}",
+            "STAMPS {}  -  ACHIEVEMENTS {}/{}  -  TIME {}  -  {} ACTIVE",
             state.stamps,
             earned,
-            AchievementId::ALL.len()
+            AchievementId::ALL.len(),
+            crate::state_records::format_duration(state.records.time_summary().total_seconds),
+            state.records.time_summary().active_games
         ),
         20.,
         110.,
