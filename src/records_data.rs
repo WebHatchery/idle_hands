@@ -10,6 +10,13 @@ pub struct RecordRow {
     pub score: String,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct ShelfSummary {
+    pub games: usize,
+    pub rows: usize,
+    pub completed: usize,
+}
+
 pub const FILTERS: [u8; 7] = [0, 3, 4, 5, 6, 7, 8];
 
 pub fn filter_label(filter: u8) -> &'static str {
@@ -26,6 +33,28 @@ pub fn next_filter(filter: u8) -> u8 {
         .position(|candidate| *candidate == filter)
         .unwrap_or(0);
     FILTERS[(current + 1) % FILTERS.len()]
+}
+
+pub fn summary(state: &AppState, filter: u8) -> ShelfSummary {
+    let filter = if FILTERS.contains(&filter) { filter } else { 0 };
+    let progress = if filter == 0 {
+        crate::cabinet_status::collection_progress(state)
+    } else {
+        crate::cabinet_status::category_progress(state, filter)
+    };
+    ShelfSummary {
+        games: progress.total,
+        rows: rows(state, filter).len(),
+        completed: progress.completed,
+    }
+}
+
+pub fn summary_label(state: &AppState, filter: u8) -> String {
+    let summary = summary(state, filter);
+    format!(
+        "{}G / {}R  ·  {} DONE",
+        summary.games, summary.rows, summary.completed
+    )
 }
 
 pub fn rows(state: &AppState, filter: u8) -> Vec<RecordRow> {

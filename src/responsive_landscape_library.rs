@@ -88,6 +88,13 @@ pub fn draw_records(state: &AppState) {
         9.,
         WHITE,
     );
+    text(
+        &crate::records_data::summary_label(state, state.records_filter),
+        335.,
+        42.,
+        7.,
+        crate::theme::SECONDARY,
+    );
     if state.records_filter != 0 {
         draw_filtered_records(state);
         return;
@@ -307,7 +314,7 @@ pub fn draw_records(state: &AppState) {
     {
         let rect = Rect::new(
             30. + (index % 2) as f32 * 380.,
-            70. + (index / 2) as f32 * 50.,
+            85. + (index / 2) as f32 * 50.,
             360.,
             44.,
         );
@@ -341,7 +348,7 @@ fn draw_filtered_records(state: &AppState) {
     {
         let rect = Rect::new(
             30. + (index % 2) as f32 * 380.,
-            70. + (index / 2) as f32 * 50.,
+            85. + (index / 2) as f32 * 50.,
             360.,
             44.,
         );

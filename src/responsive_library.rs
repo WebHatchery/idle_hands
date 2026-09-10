@@ -78,7 +78,7 @@ pub fn draw_records(state: &AppState) {
             next_achievement(&state.records)
         ),
         20.,
-        128.,
+        148.,
         9.,
         crate::theme::SECONDARY,
     );
@@ -98,6 +98,13 @@ pub fn draw_records(state: &AppState) {
         152.,
         10.,
         WHITE,
+    );
+    text(
+        &crate::records_data::summary_label(state, state.records_filter),
+        211.,
+        164.,
+        7.,
+        crate::theme::SECONDARY,
     );
     draw_rectangle_lines(190., 124., 155., 44., 3., WHITE);
     if state.records_filter != 0 {

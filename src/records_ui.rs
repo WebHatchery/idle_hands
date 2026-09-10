@@ -85,6 +85,13 @@ pub fn draw_records(state: &AppState) {
         14.,
         WHITE,
     );
+    crate::ui::draw_text(
+        crate::records_data::summary_label(state, state.records_filter),
+        925.,
+        247.,
+        10.,
+        crate::theme::SECONDARY,
+    );
     if state.records_filter != 0 {
         draw_filtered_records(state);
         return;
@@ -341,7 +348,7 @@ pub fn draw_records(state: &AppState) {
         let column = index / 14;
         let row = index % 14;
         let x = 160. + column as f32 * 200.;
-        let y = 230. + row as f32 * 26.;
+        let y = 260. + row as f32 * 26.;
         crate::ui::draw_text(label, x, y, 10., crate::theme::CREAM);
         crate::ui::draw_text(score, x + 150., y, 11., crate::theme::BRASS);
     }
@@ -356,7 +363,7 @@ fn draw_filtered_records(state: &AppState) {
         let column = index / 14;
         let line = index % 14;
         let x = 160. + column as f32 * 200.;
-        let y = 230. + line as f32 * 26.;
+        let y = 260. + line as f32 * 26.;
         crate::ui::draw_text(row.label, x, y, 10., crate::theme::CREAM);
         crate::ui::draw_text(&row.score, x + 150., y, 11., crate::theme::BRASS);
     }
