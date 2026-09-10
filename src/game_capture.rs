@@ -223,6 +223,9 @@ impl Game {
                 | "records_accessible"
                 | "records_word_ladder"
                 | "records_progress"
+                | "daily_archive"
+                | "daily_archive_accessible"
+                | "daily_archive_scrolled"
                 | "achievements"
                 | "achievements_accessible"
                 | "achievements_earned"
@@ -244,6 +247,22 @@ impl Game {
         }
         if matches!(scene, "records_scrolled" | "rules_scrolled") {
             self.state.library_scroll = 12;
+        }
+        if matches!(
+            scene,
+            "daily_archive" | "daily_archive_accessible" | "daily_archive_scrolled"
+        ) {
+            for day in 1..=12 {
+                self.state.records.record_daily_result(
+                    day,
+                    40 + day as u32 * 5,
+                    day.is_multiple_of(3),
+                );
+            }
+            self.state.daily_archive_view = true;
+            if scene == "daily_archive_scrolled" {
+                self.state.daily_archive_scroll = 6;
+            }
         }
         if scene == "2048_confirm" {
             self.state.confirm_restart = true;
