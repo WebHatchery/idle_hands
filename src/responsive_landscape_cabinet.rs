@@ -120,7 +120,13 @@ fn draw_home(state: &AppState, loaded: usize) {
         category(state, CATEGORY_RECTS[index], filter);
     }
     text(
-        &format!("{} stamps · {} textures", state.stamps, loaded),
+        &format!(
+            "{} stamps · {}/{} achievements · {} textures",
+            state.stamps,
+            state.achievements.iter().filter(|earned| **earned).count(),
+            crate::progression::AchievementId::ALL.len(),
+            loaded
+        ),
         682.,
         374.,
         8.,

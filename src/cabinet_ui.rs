@@ -197,8 +197,10 @@ fn draw_home(state: &AppState, loaded: usize) {
     }
     text(
         &format!(
-            "{} stamps  ·  {} games  ·  {} textures",
+            "{} stamps  ·  {}/{} achievements  ·  {} games  ·  {} textures",
             state.stamps,
+            state.achievements.iter().filter(|earned| **earned).count(),
+            crate::progression::AchievementId::ALL.len(),
             GameId::ALL.len(),
             loaded
         ),
@@ -367,7 +369,12 @@ fn draw_sidebar(state: &AppState) {
     );
     text(&state.profile_name, 34., 636., 13., crate::theme::CREAM);
     text(
-        &format!("{} stamps · {} games", state.stamps, GameId::ALL.len()),
+        &format!(
+            "{} stamps · {}/{} goals",
+            state.stamps,
+            state.achievements.iter().filter(|earned| **earned).count(),
+            crate::progression::AchievementId::ALL.len()
+        ),
         34.,
         659.,
         10.,
