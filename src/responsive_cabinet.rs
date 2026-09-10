@@ -324,6 +324,29 @@ fn category_row(state: &AppState, rect: Rect, filter: u8) {
             crate::theme::BRASS
         },
     );
+    let ratio = if progress.total == 0 {
+        0.
+    } else {
+        progress.completed as f32 / progress.total as f32
+    };
+    draw_rectangle(
+        rect.x + 220.,
+        rect.y + 52.,
+        88.,
+        3.,
+        crate::theme::PAPER_LIGHT,
+    );
+    draw_rectangle(
+        rect.x + 220.,
+        rect.y + 52.,
+        88. * ratio,
+        3.,
+        if progress.is_complete() {
+            crate::theme::MOSS
+        } else {
+            crate::theme::BRASS
+        },
+    );
     crate::mascots::draw_for_filter(filter, vec2(rect.x + 31., rect.y + 31.), 0.62);
     text(
         ">",

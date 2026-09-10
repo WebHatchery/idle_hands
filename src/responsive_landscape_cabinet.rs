@@ -272,6 +272,30 @@ fn category(state: &AppState, rect: Rect, filter: u8) {
         9.,
         crate::theme::SECONDARY,
     );
+    let progress = cabinet_status::category_progress(state, filter);
+    let ratio = if progress.total == 0 {
+        0.
+    } else {
+        progress.completed as f32 / progress.total as f32
+    };
+    draw_rectangle(
+        rect.x + 49.,
+        rect.y + 66.,
+        112.,
+        3.,
+        crate::theme::PAPER_LIGHT,
+    );
+    draw_rectangle(
+        rect.x + 49.,
+        rect.y + 66.,
+        112. * ratio,
+        3.,
+        if progress.is_complete() {
+            crate::theme::MOSS
+        } else {
+            crate::theme::BRASS
+        },
+    );
     crate::mascots::draw_for_filter(filter, vec2(rect.right() - 29., rect.y + 41.), 0.68);
 }
 
