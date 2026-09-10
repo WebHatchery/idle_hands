@@ -120,3 +120,10 @@ fn browse_tabs_switch_between_favorites_and_recent_at_each_size() {
         ));
     });
 }
+
+#[test]
+fn portrait_status_copy_stays_short_and_meaningful() {
+    assert_eq!(short_status("COMPLETE"), "DONE");
+    assert_eq!(short_status("FULL VERSION"), "FULL");
+    assert_eq!(short_status("IN PROGRESS"), "OPEN");
+}

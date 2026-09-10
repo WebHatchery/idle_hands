@@ -229,6 +229,15 @@ pub fn draw(state: &AppState) {
                 8.,
                 crate::cabinet_status::color(status),
             );
+        } else {
+            let status = crate::cabinet_status::availability_label(state, game);
+            crate::ui::draw_text(
+                short_status(status),
+                rect.right() - if recent { 62. } else { 94. },
+                rect.y + 18.,
+                8.,
+                crate::cabinet_status::color(status),
+            );
         }
         if !recent {
             let remove = favorite_remove_rect(rect);
@@ -352,6 +361,14 @@ fn browse_tab_rects() -> (Rect, Rect) {
 
 fn favorite_remove_rect(card: Rect) -> Rect {
     Rect::new(card.right() - 44., card.y + 4., 38., card.h - 8.)
+}
+
+fn short_status(status: &str) -> &'static str {
+    match status {
+        "COMPLETE" => "DONE",
+        "FULL VERSION" => "FULL",
+        _ => "OPEN",
+    }
 }
 
 fn list_card_rect(layout: Layout, slot: usize) -> Rect {
