@@ -79,6 +79,7 @@ impl Game {
         let Some(id) = GameId::ALL.get(index).copied() else {
             return;
         };
+        let from_rules = matches!(self.state.screen, Screen::Rules);
         self.state.favorites_view = false;
         self.state.recent_view = false;
         self.state.daily_archive_view = false;
@@ -89,6 +90,9 @@ impl Game {
             self.state.recent_games.insert(0, id);
             self.state.recent_games.truncate(5);
             self.state.screen = Screen::Game(id);
+            if from_rules {
+                self.notifications.info(format!("Opening {}", id.title()));
+            }
             self.state.tutorial = (!self.state.tutorial_seen[id.index()]).then_some(id);
         } else if crate::game_descriptor::is_demo_build() && crate::cabinet_status::is_active(id) {
             self.notifications
