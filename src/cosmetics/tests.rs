@@ -13,3 +13,14 @@ fn every_cosmetic_category_has_a_free_default() {
     assert_eq!(next_sound_set(0, 0), 0);
     assert_eq!(next_cabinet_decoration(0, 0), 0);
 }
+
+#[test]
+fn cosmetic_catalogs_report_unlock_counts_and_next_costs() {
+    assert_eq!(CosmeticKind::ALL.len(), 4);
+    assert_eq!(CosmeticKind::CardBack.unlocked_count(0), 1);
+    assert_eq!(CosmeticKind::CardBack.unlocked_count(5), 3);
+    assert_eq!(CosmeticKind::BoardTheme.next_cost(0), Some(3));
+    assert_eq!(CosmeticKind::BoardTheme.next_cost(7), None);
+    assert_eq!(CosmeticKind::SoundSet.options()[1].name, "Rain on glass");
+    assert_eq!(CosmeticKind::SoundSet.options()[1].cost, 4);
+}

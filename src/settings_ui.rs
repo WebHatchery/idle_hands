@@ -33,40 +33,41 @@ pub fn draw_settings(state: &AppState) {
         22.,
         WHITE,
     );
-    text(
-        &format!("Card back: {}", cosmetics::card_back_name(state.card_back)),
-        230.,
-        245.,
-        20.,
-        WHITE,
-    );
-    text(
-        &format!(
-            "Board theme: {}",
-            cosmetics::board_theme_name(state.board_theme)
-        ),
-        230.,
-        295.,
-        20.,
-        WHITE,
-    );
-    text(
-        &format!("Sound set: {}", cosmetics::sound_set_name(state.sound_set)),
-        230.,
-        345.,
-        20.,
-        WHITE,
-    );
-    text(
-        &format!(
-            "Cabinet decoration: {}",
-            cosmetics::cabinet_decoration_name(state.cabinet_decoration)
-        ),
-        230.,
-        395.,
-        20.,
-        WHITE,
-    );
+    for (index, (kind, current)) in cosmetics::CosmeticKind::ALL
+        .into_iter()
+        .zip([
+            state.card_back,
+            state.board_theme,
+            state.sound_set,
+            state.cabinet_decoration,
+        ])
+        .enumerate()
+    {
+        let options = kind.options();
+        let option = &options[current as usize % options.len()];
+        text(
+            &format!("{}: {}", kind.label(), option.name),
+            230.,
+            245. + index as f32 * 50.,
+            20.,
+            WHITE,
+        );
+        let next = kind
+            .next_cost(state.stamps)
+            .map_or_else(|| "ALL OPEN".into(), |cost| format!("NEXT {cost} STAMPS"));
+        text(
+            &format!(
+                "{}/{} OPEN  ·  {}",
+                kind.unlocked_count(state.stamps),
+                options.len(),
+                next
+            ),
+            730.,
+            245. + index as f32 * 50.,
+            12.,
+            crate::theme::SECONDARY,
+        );
+    }
     text(
         &format!(
             "Sound: {}  •  Reduced motion: {}",

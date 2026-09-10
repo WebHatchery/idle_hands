@@ -2,10 +2,117 @@
 
 use macroquad::prelude::Color;
 
-pub const CARD_BACKS: [&str; 3] = ["Plum", "Moss", "Midnight"];
-pub const BOARD_THEMES: [&str; 3] = ["Walnut felt", "Moss felt", "Dawn paper"];
-pub const SOUND_SETS: [&str; 3] = ["Soft room", "Rain on glass", "Late library"];
-pub const CABINET_DECORATIONS: [&str; 3] = ["Brass key", "Pressed fern", "Moon card"];
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct CosmeticOption {
+    pub name: &'static str,
+    pub cost: u16,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum CosmeticKind {
+    CardBack,
+    BoardTheme,
+    SoundSet,
+    CabinetDecoration,
+}
+
+impl CosmeticKind {
+    pub const ALL: [Self; 4] = [
+        Self::CardBack,
+        Self::BoardTheme,
+        Self::SoundSet,
+        Self::CabinetDecoration,
+    ];
+
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::CardBack => "CARD BACK",
+            Self::BoardTheme => "BOARD THEME",
+            Self::SoundSet => "SOUND SET",
+            Self::CabinetDecoration => "CABINET DECOR",
+        }
+    }
+
+    pub fn options(self) -> &'static [CosmeticOption] {
+        match self {
+            Self::CardBack => &CARD_BACKS,
+            Self::BoardTheme => &BOARD_THEMES,
+            Self::SoundSet => &SOUND_SETS,
+            Self::CabinetDecoration => &CABINET_DECORATIONS,
+        }
+    }
+
+    pub fn unlocked_count(self, stamps: u16) -> usize {
+        self.options()
+            .iter()
+            .filter(|option| option.cost <= stamps)
+            .count()
+    }
+
+    pub fn next_cost(self, stamps: u16) -> Option<u16> {
+        self.options()
+            .iter()
+            .map(|option| option.cost)
+            .find(|&cost| cost > stamps)
+    }
+}
+
+pub const CARD_BACKS: [CosmeticOption; 3] = [
+    CosmeticOption {
+        name: "Plum",
+        cost: 0,
+    },
+    CosmeticOption {
+        name: "Moss",
+        cost: 2,
+    },
+    CosmeticOption {
+        name: "Midnight",
+        cost: 5,
+    },
+];
+pub const BOARD_THEMES: [CosmeticOption; 3] = [
+    CosmeticOption {
+        name: "Walnut felt",
+        cost: 0,
+    },
+    CosmeticOption {
+        name: "Moss felt",
+        cost: 3,
+    },
+    CosmeticOption {
+        name: "Dawn paper",
+        cost: 7,
+    },
+];
+pub const SOUND_SETS: [CosmeticOption; 3] = [
+    CosmeticOption {
+        name: "Soft room",
+        cost: 0,
+    },
+    CosmeticOption {
+        name: "Rain on glass",
+        cost: 4,
+    },
+    CosmeticOption {
+        name: "Late library",
+        cost: 8,
+    },
+];
+pub const CABINET_DECORATIONS: [CosmeticOption; 3] = [
+    CosmeticOption {
+        name: "Brass key",
+        cost: 0,
+    },
+    CosmeticOption {
+        name: "Pressed fern",
+        cost: 4,
+    },
+    CosmeticOption {
+        name: "Moon card",
+        cost: 8,
+    },
+];
 
 const CARD_BACK_COSTS: [u16; 3] = [0, 2, 5];
 const BOARD_THEME_COSTS: [u16; 3] = [0, 3, 7];
@@ -13,16 +120,16 @@ const SOUND_SET_COSTS: [u16; 3] = [0, 4, 8];
 const CABINET_DECORATION_COSTS: [u16; 3] = [0, 4, 8];
 
 pub fn card_back_name(index: u8) -> &'static str {
-    CARD_BACKS[index as usize % CARD_BACKS.len()]
+    CARD_BACKS[index as usize % CARD_BACKS.len()].name
 }
 pub fn board_theme_name(index: u8) -> &'static str {
-    BOARD_THEMES[index as usize % BOARD_THEMES.len()]
+    BOARD_THEMES[index as usize % BOARD_THEMES.len()].name
 }
 pub fn sound_set_name(index: u8) -> &'static str {
-    SOUND_SETS[index as usize % SOUND_SETS.len()]
+    SOUND_SETS[index as usize % SOUND_SETS.len()].name
 }
 pub fn cabinet_decoration_name(index: u8) -> &'static str {
-    CABINET_DECORATIONS[index as usize % CABINET_DECORATIONS.len()]
+    CABINET_DECORATIONS[index as usize % CABINET_DECORATIONS.len()].name
 }
 
 pub fn next_card_back(current: u8, stamps: u16) -> u8 {
