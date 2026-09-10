@@ -24,3 +24,10 @@ fn rule_summary_reports_the_active_drawer_count() {
     assert_eq!(summary_label(0), "60 DRAWERS");
     assert_eq!(summary_label(3), "11 DRAWERS");
 }
+
+#[test]
+fn rule_page_labels_clamp_empty_and_end_windows() {
+    assert_eq!(page_label(0, 0, 8), "PAGE 1 / 1");
+    assert_eq!(page_label(8, 15, 8), "PAGE 2 / 2");
+    assert_eq!(page_label(99, 15, 8), "PAGE 2 / 2");
+}

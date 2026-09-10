@@ -63,6 +63,13 @@ fn draw_filtered_rules(state: &AppState) {
     for (index, row) in rows.iter().skip(start).take(RULES_VISIBLE_ROWS).enumerate() {
         draw_rule_card(index, row.title, row.subtitle);
     }
+    text(
+        &crate::rules_data::page_label(start, rows.len(), RULES_VISIBLE_ROWS),
+        650.,
+        320.,
+        8.,
+        crate::theme::SECONDARY,
+    );
     draw_controls();
 }
 

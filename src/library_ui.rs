@@ -96,6 +96,13 @@ fn draw_filtered_rules(state: &AppState) {
         crate::ui::draw_text(row.title, x, y, 12., crate::theme::BRASS);
         crate::ui::draw_text(row.subtitle, x, y + 15., 9., crate::theme::CREAM);
     }
+    crate::ui::draw_text(
+        crate::rules_data::page_label(start, rows.len(), 44),
+        930.,
+        620.,
+        12.,
+        crate::theme::SECONDARY,
+    );
     back_button();
 }
 pub fn draw_credits() {

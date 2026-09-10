@@ -32,6 +32,13 @@ pub fn summary_label(filter: u8) -> String {
     format!("{} DRAWERS", rows(filter).len())
 }
 
+pub fn page_label(start: usize, total: usize, page_size: usize) -> String {
+    let page_size = page_size.max(1);
+    let pages = total.max(1).div_ceil(page_size);
+    let page = (start / page_size + 1).min(pages);
+    format!("PAGE {} / {}", page, pages)
+}
+
 pub fn rows(filter: u8) -> Vec<RuleRow> {
     let filter = if FILTERS.contains(&filter) { filter } else { 0 };
     GameId::ALL

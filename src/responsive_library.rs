@@ -536,7 +536,8 @@ fn draw_filtered_rules(state: &AppState) {
     scroll_button(Rect::new(250., 602., 100., 44.), "NEXT");
     text(
         &format!(
-            "{}-{} OF {}",
+            "{}  ·  {}-{} OF {}",
+            crate::rules_data::page_label(start, rows.len(), RULES_VISIBLE_ROWS),
             start + 1,
             (start + RULES_VISIBLE_ROWS).min(rows.len()),
             rows.len()
