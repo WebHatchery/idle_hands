@@ -40,6 +40,14 @@ pub fn summary_label(filter: u8) -> String {
     format!("{} DRAWERS", rows(filter).len())
 }
 
+pub fn action_label(game: GameId) -> &'static str {
+    if crate::cabinet_status::is_available(game) {
+        "OPEN"
+    } else {
+        "FULL"
+    }
+}
+
 pub fn page_label(start: usize, total: usize, page_size: usize) -> String {
     let page_size = page_size.max(1);
     let pages = total.max(1).div_ceil(page_size);

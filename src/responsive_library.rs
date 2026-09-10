@@ -492,7 +492,7 @@ pub fn draw_rules(state: &AppState) {
             crate::theme::CREAM,
         );
         text(
-            "OPEN",
+            crate::rules_data::action_label(*game),
             rect.right() - 48.,
             rect.y + 20.,
             9.,
@@ -539,7 +539,7 @@ fn draw_filtered_rules(state: &AppState) {
             crate::theme::CREAM,
         );
         text(
-            "OPEN",
+            crate::rules_data::action_label(row.game),
             rect.right() - 48.,
             rect.y + 20.,
             9.,

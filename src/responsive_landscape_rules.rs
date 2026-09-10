@@ -57,7 +57,7 @@ pub fn draw_rules(state: &AppState) {
         .take(RULES_VISIBLE_ROWS)
         .enumerate()
     {
-        draw_rule_card(index, game.title(), game.subtitle());
+        draw_rule_card(index, *game, game.title(), game.subtitle());
     }
     draw_controls();
 }
@@ -68,7 +68,7 @@ fn draw_filtered_rules(state: &AppState) {
         .library_scroll
         .min(rows.len().saturating_sub(RULES_VISIBLE_ROWS));
     for (index, row) in rows.iter().skip(start).take(RULES_VISIBLE_ROWS).enumerate() {
-        draw_rule_card(index, row.title, row.subtitle);
+        draw_rule_card(index, row.game, row.title, row.subtitle);
     }
     text(
         &crate::rules_data::page_label(start, rows.len(), RULES_VISIBLE_ROWS),
@@ -80,7 +80,7 @@ fn draw_filtered_rules(state: &AppState) {
     draw_controls();
 }
 
-fn draw_rule_card(index: usize, title: &str, subtitle: &str) {
+fn draw_rule_card(index: usize, game: GameId, title: &str, subtitle: &str) {
     let rect = Rect::new(
         30. + (index % 2) as f32 * 380.,
         68. + (index / 2) as f32 * 62.,
@@ -97,7 +97,7 @@ fn draw_rule_card(index: usize, title: &str, subtitle: &str) {
         crate::theme::CREAM,
     );
     text(
-        "OPEN",
+        crate::rules_data::action_label(game),
         rect.right() - 48.,
         rect.y + 20.,
         9.,

@@ -105,7 +105,13 @@ pub fn draw_rules(state: &AppState) {
         let y = 215. + row as f32 * 38.;
         crate::ui::draw_text(game.title(), x, y, 12., crate::theme::BRASS);
         crate::ui::draw_text(game.subtitle(), x, y + 15., 9., crate::theme::CREAM);
-        crate::ui::draw_text("OPEN", x + 195., y + 15., 8., crate::theme::SECONDARY);
+        crate::ui::draw_text(
+            crate::rules_data::action_label(*game),
+            x + 195.,
+            y + 15.,
+            8.,
+            crate::theme::SECONDARY,
+        );
     }
     back_button();
 }
@@ -120,7 +126,13 @@ fn draw_filtered_rules(state: &AppState) {
         let y = 215. + line as f32 * 38.;
         crate::ui::draw_text(row.title, x, y, 12., crate::theme::BRASS);
         crate::ui::draw_text(row.subtitle, x, y + 15., 9., crate::theme::CREAM);
-        crate::ui::draw_text("OPEN", x + 195., y + 15., 8., crate::theme::SECONDARY);
+        crate::ui::draw_text(
+            crate::rules_data::action_label(row.game),
+            x + 195.,
+            y + 15.,
+            8.,
+            crate::theme::SECONDARY,
+        );
     }
     crate::ui::draw_text(
         crate::rules_data::page_label(start, rows.len(), 44),
