@@ -180,7 +180,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                         .map_or_else(|| "—".to_owned(), |score| score.to_string())
                 ),
                 UiAction::DailyNew,
-                "NEW DAILY",
+                "REPLAY DAY",
                 UiAction::Cabinet,
                 "CABINET",
             )

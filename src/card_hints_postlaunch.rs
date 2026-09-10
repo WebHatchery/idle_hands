@@ -229,15 +229,15 @@ pub fn daily_dungeon(state: &AppState) -> String {
     let game = &state.games.daily_dungeon;
     match game.phase {
         crate::daily_dungeon::DailyPhase::Won => {
-            return "The daily route is clear — tap NEW DAY to play again.".into()
+            return "The daily route is clear — tap REPLAY DAY to play again.".into()
         }
         crate::daily_dungeon::DailyPhase::Lost => {
-            return "The traps closed in — tap NEW DAY to begin again.".into()
+            return "The traps closed in — tap REPLAY DAY to begin again.".into()
         }
         crate::daily_dungeon::DailyPhase::Exploring => {}
     }
     game.hint_action().map_or_else(
-        || "No route hint is available — tap NEW DAY to begin again.".into(),
+        || "No route hint is available — tap REPLAY DAY to begin again.".into(),
         |hint| match hint {
             crate::daily_dungeon::DailyHint::Scout => {
                 "Tap SCOUT to reveal the neighboring rooms without entering them.".into()

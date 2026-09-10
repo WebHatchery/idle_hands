@@ -251,7 +251,7 @@ pub(crate) fn instructions(game: GameId) -> [&'static str; 3] {
         GameId::DailyDungeon => [
             "Each day is WAYFINDER, FORAGER, or DAREDEVIL with a different trap and SCOUT supply.",
             "Tap SCOUT to reveal adjacent rooms; entering one unseen earns extra bravery score.",
-            "Find three runes, use + springs, and reach EXIT; HINT, UNDO, and NEW DAY stay visible.",
+            "Find three runes, use + springs, and reach EXIT; HINT, UNDO, and REPLAY DAY stay visible.",
         ],
         GameId::DotsBoxes => [
             "Tap a gap between two dots to draw one edge.",
