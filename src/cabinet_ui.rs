@@ -19,6 +19,11 @@ const CATEGORY_RECTS: [Rect; 6] = [
     Rect::new(570., 400., 292., 132.),
     Rect::new(880., 400., 292., 132.),
 ];
+const LIBRARY_PAGE_SIZE: usize = 44;
+const LIBRARY_PAGE_STEP: i8 = 11;
+
+#[cfg(test)]
+mod tests;
 
 pub fn draw(
     state: &AppState,
@@ -234,7 +239,15 @@ fn draw_library(state: &AppState) {
         panel(rect, fill, crate::theme::BORDER);
         text(label, rect.x + 22., rect.y + 26., 11., crate::theme::INK);
     }
-    for (index, game) in visible_games(state).iter().copied().enumerate() {
+    let games = visible_games(state);
+    let start = library_page_start(games.len(), state.cabinet_scroll);
+    for (index, game) in games
+        .iter()
+        .copied()
+        .skip(start)
+        .take(LIBRARY_PAGE_SIZE)
+        .enumerate()
+    {
         let rect = library_rect(index);
         panel(rect, crate::theme::PAPER_LIGHT, crate::theme::BORDER);
         draw_circle(
@@ -276,6 +289,29 @@ fn draw_library(state: &AppState) {
             );
         }
     }
+    let end = (start + LIBRARY_PAGE_SIZE).min(games.len());
+    small_button(
+        Rect::new(960., 650., 92., 40.),
+        "PREV",
+        crate::theme::SURFACE_DARK,
+    );
+    small_button(
+        Rect::new(1060., 650., 92., 40.),
+        "NEXT",
+        crate::theme::SURFACE_DARK,
+    );
+    text(
+        &format!(
+            "{}-{} OF {}",
+            start + usize::from(!games.is_empty()),
+            end,
+            games.len()
+        ),
+        260.,
+        681.,
+        10.,
+        crate::theme::SURFACE,
+    );
 }
 
 fn draw_sidebar(state: &AppState) {
@@ -440,7 +476,21 @@ fn library_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(Rect::new(250., 20., 190., 70.), p) {
         return vec![UiAction::CabinetFilter(0)];
     }
-    for (index, game) in visible_games(state).iter().copied().enumerate() {
+    if crate::ui::hit(Rect::new(960., 650., 92., 40.), p) {
+        return vec![UiAction::CabinetScroll(-LIBRARY_PAGE_STEP)];
+    }
+    if crate::ui::hit(Rect::new(1060., 650., 92., 40.), p) {
+        return vec![UiAction::CabinetScroll(LIBRARY_PAGE_STEP)];
+    }
+    let games = visible_games(state);
+    let start = library_page_start(games.len(), state.cabinet_scroll);
+    for (index, game) in games
+        .iter()
+        .copied()
+        .skip(start)
+        .take(LIBRARY_PAGE_SIZE)
+        .enumerate()
+    {
         let rect = library_rect(index);
         if cabinet_status::is_available(game)
             && crate::ui::hit(Rect::new(rect.right() - 48., rect.y, 48., rect.h), p)
@@ -460,6 +510,10 @@ fn visible_games(state: &AppState) -> Vec<GameId> {
         .copied()
         .filter(|game| cabinet_status::matches_filter(state, *game, state.cabinet_filter))
         .collect()
+}
+
+fn library_page_start(total: usize, scroll: usize) -> usize {
+    scroll.min(total.saturating_sub(LIBRARY_PAGE_SIZE))
 }
 fn recent_games(state: &AppState) -> Vec<GameId> {
     if state.recent_games.is_empty() {
