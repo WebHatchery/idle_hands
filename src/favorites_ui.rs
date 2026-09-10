@@ -223,7 +223,7 @@ pub fn draw(state: &AppState) {
         if !crate::ui::is_portrait() {
             let status = crate::cabinet_status::availability_label(state, game);
             crate::ui::draw_text(
-                status,
+                browse_status_label(state, game, status),
                 rect.x + rect.w - 72.,
                 rect.y + rect.h * 0.62,
                 8.,
@@ -369,6 +369,18 @@ fn short_status(status: &str) -> &'static str {
         "FULL VERSION" => "FULL",
         _ => "OPEN",
     }
+}
+
+fn browse_status_label(state: &AppState, game: GameId, status: &str) -> String {
+    if status == "COMPLETE" {
+        if let Some(seconds) = state.records.best_time(game.index()) {
+            return format!(
+                "DONE {}",
+                crate::state_records::format_duration(u64::from(seconds))
+            );
+        }
+    }
+    status.to_owned()
 }
 
 fn list_card_rect(layout: Layout, slot: usize) -> Rect {

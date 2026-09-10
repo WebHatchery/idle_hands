@@ -127,3 +127,20 @@ fn portrait_status_copy_stays_short_and_meaningful() {
     assert_eq!(short_status("FULL VERSION"), "FULL");
     assert_eq!(short_status("IN PROGRESS"), "OPEN");
 }
+
+#[test]
+fn completed_browse_cards_can_show_their_best_clear_time() {
+    let mut state = AppState::default();
+    state.records.ensure_time_slots();
+    state.records.elapsed_seconds[GameId::Solitaire.index()] = 42;
+    state.records.record_time(GameId::Solitaire.index());
+
+    assert_eq!(
+        browse_status_label(&state, GameId::Solitaire, "COMPLETE"),
+        "DONE 0m 42s"
+    );
+    assert_eq!(
+        browse_status_label(&state, GameId::FreeCell, "PLAY NOW"),
+        "PLAY NOW"
+    );
+}
