@@ -14,6 +14,18 @@ fn cabinet_filters_keep_new_drawers_open_and_completed_drawers_done() {
 }
 
 #[test]
+fn open_and_done_counts_move_when_a_drawer_is_finished() {
+    let mut state = AppState::default();
+    let open_before = filter_count(&state, 1);
+    let done_before = filter_count(&state, 2);
+
+    state.records.best_2048 = 2048;
+
+    assert_eq!(filter_count(&state, 1), open_before - 1);
+    assert_eq!(filter_count(&state, 2), done_before + 1);
+}
+
+#[test]
 fn cabinet_filter_unknown_values_show_all_games() {
     let state = AppState::default();
     assert!(matches_filter(&state, GameId::Solitaire, 99));

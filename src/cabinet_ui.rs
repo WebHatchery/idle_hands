@@ -250,6 +250,15 @@ fn draw_library(state: &AppState) {
         };
         panel(rect, fill, crate::theme::BORDER);
         text(label, rect.x + 22., rect.y + 26., 11., crate::theme::INK);
+        if filter != 9 {
+            text(
+                &cabinet_status::filter_count(state, filter).to_string(),
+                rect.right() - 25.,
+                rect.y + 26.,
+                11.,
+                crate::theme::INK,
+            );
+        }
     }
     let games = visible_games(state);
     let start = library_page_start(games.len(), state.cabinet_scroll);
