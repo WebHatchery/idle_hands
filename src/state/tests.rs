@@ -399,6 +399,18 @@ fn older_profile_saves_default_accessibility_fields() {
     assert!(!restored.high_contrast);
     assert!(!restored.large_text);
 
+    let mut old_daily =
+        serde_json::to_value(ProfileSave::from_state(&AppState::default(), "1.0.0")).unwrap();
+    old_daily
+        .get_mut("records")
+        .and_then(serde_json::Value::as_object_mut)
+        .expect("profile records object")
+        .remove("daily_results");
+    let migrated_daily: ProfileSave = serde_json::from_value(old_daily).unwrap();
+    let mut daily_state = AppState::default();
+    migrated_daily.apply_to(&mut daily_state);
+    assert!(daily_state.records.daily_results.is_empty());
+
     let mut legacy =
         serde_json::to_value(ProfileSave::from_state(&AppState::default(), "1.0.0")).unwrap();
     legacy["achievements"] =
