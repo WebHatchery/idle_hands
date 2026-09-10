@@ -119,19 +119,6 @@ const BOARD_THEME_COSTS: [u16; 3] = [0, 3, 7];
 const SOUND_SET_COSTS: [u16; 3] = [0, 4, 8];
 const CABINET_DECORATION_COSTS: [u16; 3] = [0, 4, 8];
 
-pub fn card_back_name(index: u8) -> &'static str {
-    CARD_BACKS[index as usize % CARD_BACKS.len()].name
-}
-pub fn board_theme_name(index: u8) -> &'static str {
-    BOARD_THEMES[index as usize % BOARD_THEMES.len()].name
-}
-pub fn sound_set_name(index: u8) -> &'static str {
-    SOUND_SETS[index as usize % SOUND_SETS.len()].name
-}
-pub fn cabinet_decoration_name(index: u8) -> &'static str {
-    CABINET_DECORATIONS[index as usize % CABINET_DECORATIONS.len()].name
-}
-
 pub fn next_card_back(current: u8, stamps: u16) -> u8 {
     next_unlocked(current, stamps, &CARD_BACK_COSTS)
 }
