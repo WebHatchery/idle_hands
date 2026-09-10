@@ -170,6 +170,10 @@ the main cabinet.
 The Records summary derives completed-drawer progress from `CollectionRecords`
 through the shared `progression::completed_games` function, keeping the count
 consistent with cabinet completion status without adding another save field.
+The same record envelope keeps normalized elapsed and fastest-completion time
+vectors keyed by `GameId::ALL`; `time_summary` derives total playtime, active
+drawers, timed completions, and the fastest clear without another persisted
+counter. Results and live timer badges use the shared duration formatter.
 Achievement flags are stored as a normalized vector keyed by the 62-entry
 `AchievementId::ALL` list. Legacy ten-entry arrays deserialize as vectors and
 are padded with unearned late-game achievements.

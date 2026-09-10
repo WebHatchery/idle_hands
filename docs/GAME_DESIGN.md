@@ -48,7 +48,9 @@ touch contracts.
 6. Optionally inspect records, rules, or cosmetic stamps.
 
 The Records screen keeps the collection view legible with a compact summary of
-stamps, achievements, and completed drawers out of the full 60-game cabinet.
+stamps, achievements, completed drawers, and time spent across the full
+60-game cabinet. Timed result cards show the current run and personal-best
+completion time when a drawer closes.
 Every drawer has its own completion achievement, in addition to first-finish
 and full-cabinet collection awards. The Records screen opens a responsive
 ACHIEVEMENTS shelf so earned and locked awards remain inspectable without
