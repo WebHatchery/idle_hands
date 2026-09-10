@@ -431,10 +431,17 @@ pub fn cycle(state: &mut AppState, data: &GameData, game: GameId) {
                 &crate::daily_dungeon::DailyRule::ALL,
                 state.games.daily_dungeon.rule,
             );
-            state.games.daily_dungeon = crate::daily_dungeon::DailyDungeon::new_with_rule(
-                seed(state.games.daily_dungeon.seed),
-                rule,
-            );
+            state.games.daily_dungeon = if state.games.daily_dungeon.day_key == 0 {
+                crate::daily_dungeon::DailyDungeon::new_with_rule(
+                    seed(state.games.daily_dungeon.seed),
+                    rule,
+                )
+            } else {
+                crate::daily_dungeon::DailyDungeon::new_for_day_with_rule(
+                    state.games.daily_dungeon.day_key,
+                    rule,
+                )
+            };
         }
         GameId::DotsBoxes => {
             let difficulty = next(

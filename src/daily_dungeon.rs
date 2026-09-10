@@ -95,6 +95,8 @@ type Snapshot = (
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DailyDungeon {
+    #[serde(default)]
+    pub day_key: u64,
     pub challenge: u32,
     pub player: usize,
     pub tiles: Vec<DailyTile>,
@@ -129,8 +131,25 @@ impl DailyDungeon {
         Self::new_with_rule(seed, rule)
     }
 
+    pub fn new_for_day(day: u64) -> Self {
+        let rule = match day % 3 {
+            0 => DailyRule::Wayfinder,
+            1 => DailyRule::Forager,
+            _ => DailyRule::Daredevil,
+        };
+        Self::new_for_day_with_rule(day, rule)
+    }
+
+    pub fn new_for_day_with_rule(day: u64, rule: DailyRule) -> Self {
+        let mut dungeon = Self::new_with_rule(crate::daily_challenge::seed_for_day(day), rule);
+        dungeon.day_key = day;
+        dungeon.challenge = crate::daily_challenge::challenge_for_day(day);
+        dungeon
+    }
+
     pub fn new_with_rule(seed: u64, rule: DailyRule) -> Self {
         let mut dungeon = Self {
+            day_key: 0,
             challenge: seed as u32 % 10_000,
             player: 0,
             tiles: vec![DailyTile::Floor; CELLS],
@@ -148,6 +167,10 @@ impl DailyDungeon {
         dungeon.place_tiles();
         dungeon.revealed[0] = true;
         dungeon
+    }
+
+    pub fn is_for_day(&self, day: u64) -> bool {
+        self.day_key == day
     }
 
     pub const fn size() -> usize {
@@ -306,7 +329,7 @@ impl DailyDungeon {
     }
 
     pub fn reset(&mut self, seed: u64) {
-        *self = Self::new(seed);
+        *self = Self::new_for_day(seed);
     }
 
     pub fn won(&self) -> bool {

@@ -10,6 +10,21 @@ fn seeded_challenges_repeat() {
 }
 
 #[test]
+fn calendar_challenges_keep_the_day_identity_and_rule() {
+    let first = DailyDungeon::new_for_day(20_042);
+    let second = DailyDungeon::new_for_day(20_042);
+    let next = DailyDungeon::new_for_day(20_043);
+
+    assert_eq!(first.day_key, 20_042);
+    assert_eq!(first.challenge, 42);
+    assert_eq!(first.rule, DailyRule::Daredevil);
+    assert_eq!(first.seed, second.seed);
+    assert_eq!(first.tiles, second.tiles);
+    assert_ne!(first.seed, next.seed);
+    assert_ne!(first.tiles, next.tiles);
+}
+
+#[test]
 fn runes_score_and_traps_are_single_use() {
     let mut dungeon = DailyDungeon::new(1);
     dungeon.tiles = vec![DailyTile::Floor; CELLS];

@@ -136,17 +136,17 @@ pub fn draw(state: &AppState) {
     );
     let run_status = if compact || portrait {
         format!(
-            "D{:04}  •  H{}  •  R{}/{}",
-            dungeon.challenge,
+            "{}  •  H{}  •  R{}/{}",
+            crate::daily_challenge::label(dungeon.day_key, dungeon.challenge),
             dungeon.hearts,
             dungeon.runes_found,
             DailyDungeon::rune_total()
         )
     } else {
         format!(
-            "{}  •  Day {:04}  •  Hearts {}  •  Runes {} / {}  •  Scouts {}",
+            "{}  •  {}  •  Hearts {}  •  Runes {} / {}  •  Scouts {}",
             dungeon.rule.label(),
-            dungeon.challenge,
+            crate::daily_challenge::label(dungeon.day_key, dungeon.challenge),
             dungeon.hearts,
             dungeon.runes_found,
             DailyDungeon::rune_total(),
@@ -230,6 +230,8 @@ pub fn draw(state: &AppState) {
     }
     text(
         state.card_hint.as_deref().unwrap_or(&status_text(
+            dungeon.day_key,
+            dungeon.challenge,
             dungeon.phase,
             dungeon.moves,
             dungeon.score,
@@ -255,7 +257,7 @@ pub fn draw(state: &AppState) {
         state.large_text,
     );
     button(l.undo, "UNDO", state.large_text);
-    button(l.new_game, "NEW DAY", state.large_text);
+    button(l.new_game, "REPLAY DAY", state.large_text);
 }
 
 fn cell_fill(index: usize, dungeon: &DailyDungeon, high_contrast: bool) -> Color {
@@ -287,16 +289,17 @@ fn grid_distance(first: usize, second: usize) -> usize {
     (first / size).abs_diff(second / size) + (first % size).abs_diff(second % size)
 }
 
-fn status_text(phase: DailyPhase, moves: u16, score: u32) -> String {
+fn status_text(day: u64, challenge: u32, phase: DailyPhase, moves: u16, score: u32) -> String {
+    let identity = crate::daily_challenge::status_label(day, challenge, phase);
     match phase {
         DailyPhase::Exploring => {
             format!(
-                "Scout or risk hidden rooms  •  {} actions  •  {} score",
-                moves, score
+                "{}  •  scout or risk hidden rooms  •  {} actions  •  {} score",
+                identity, moves, score
             )
         }
-        DailyPhase::Won => format!("The daily route is clear  •  {} score", score),
-        DailyPhase::Lost => format!("The traps closed in  •  {} score", score),
+        DailyPhase::Won => format!("{}  •  the route is clear  •  {} score", identity, score),
+        DailyPhase::Lost => format!("{}  •  the traps closed in  •  {} score", identity, score),
     }
 }
 

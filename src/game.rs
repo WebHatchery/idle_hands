@@ -77,6 +77,7 @@ impl Game {
         };
         game.initialize_launch_state();
         game.load_autosave();
+        game.refresh_daily_challenge();
         game.analytics = crate::analytics::GameAnalytics::new(
             &game.state,
             !macroquad_toolkit::capture::capture_requested("IDLE_HANDS"),

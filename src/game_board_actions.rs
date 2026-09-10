@@ -340,8 +340,8 @@ impl Game {
                 self.state.games.daily_dungeon.undo();
             }
             UiAction::DailyNew => {
-                let seed = self.state.games.daily_dungeon.seed.wrapping_add(1);
-                self.state.games.daily_dungeon.reset(seed);
+                let day = crate::daily_challenge::current_day();
+                self.state.games.daily_dungeon.reset(day);
             }
             UiAction::DotsEdge(edge) => {
                 self.state.games.dots_boxes.play(*edge);

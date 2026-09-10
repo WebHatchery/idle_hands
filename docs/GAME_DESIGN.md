@@ -154,9 +154,12 @@ items such as card backs, board materials, sound sets, and small shelf
 decorations. Cosmetics never alter rules, puzzle information, odds, hints, or
 scores.
 
-Daily seeded games are a post-launch extension. If added, missing a day has no
-penalty and there is no escalating streak reward. Public shared seeds require a
-stable seed/version scheme so future rule changes do not alter old puzzles.
+Daily seeded games are a post-launch extension. The Daily Dungeon now derives a
+stable challenge seed and rule from the UTC calendar day, labels the active day
+in its board and result copy, and rolls forward automatically when the cabinet
+opens on a later day. Missing a day has no penalty and there is no escalating
+streak reward. The seed version is fixed so future rule changes do not alter
+old published days; replaying the current day restores the same route.
 
 ## 7. Presentation and Audio
 
