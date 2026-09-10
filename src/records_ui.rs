@@ -5,6 +5,9 @@ use crate::state::{AppState, GameId};
 use crate::ui::UiAction;
 use macroquad::prelude::*;
 
+#[cfg(test)]
+mod tests;
+
 fn panel(rect: Rect, fill: Color) {
     draw_rectangle(
         rect.x,
