@@ -134,6 +134,7 @@ fn draw_home(state: &AppState, loaded: usize) {
 
 fn draw_library(state: &AppState) {
     let (playable, full) = cabinet_status::availability_counts(state, state.cabinet_filter);
+    let progress = cabinet_status::category_progress(state, state.cabinet_filter);
     text("< HOME", 170., 28., 9., crate::theme::SURFACE);
     text(
         cabinet_status::category_name(state.cabinet_filter),
@@ -151,6 +152,17 @@ fn draw_library(state: &AppState) {
             crate::theme::BRASS,
         );
     }
+    text(
+        &format!("DONE {}/{}", progress.completed, progress.total),
+        728.,
+        54.,
+        8.,
+        if progress.is_complete() {
+            crate::theme::MOSS
+        } else {
+            crate::theme::BRASS
+        },
+    );
     for (index, game) in page_games(state).iter().copied().enumerate() {
         let rect = game_rect(index);
         panel(rect, crate::theme::PAPER_LIGHT);
