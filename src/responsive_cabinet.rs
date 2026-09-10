@@ -19,6 +19,9 @@ const CATEGORY_RECTS: [Rect; 6] = [
 ];
 const PAGE_SIZE: usize = 12;
 
+#[cfg(test)]
+mod tests;
+
 pub fn draw(
     state: &AppState,
     _data: &GameData,
