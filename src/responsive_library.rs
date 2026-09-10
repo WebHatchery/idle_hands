@@ -491,6 +491,13 @@ pub fn draw_rules(state: &AppState) {
             11.,
             crate::theme::CREAM,
         );
+        text(
+            "OPEN",
+            rect.right() - 48.,
+            rect.y + 20.,
+            9.,
+            crate::theme::SECONDARY,
+        );
     }
     scroll_button(Rect::new(10., 602., 100., 44.), "PREV");
     scroll_button(Rect::new(250., 602., 100., 44.), "NEXT");
@@ -530,6 +537,13 @@ fn draw_filtered_rules(state: &AppState) {
             rect.y + 43.,
             11.,
             crate::theme::CREAM,
+        );
+        text(
+            "OPEN",
+            rect.right() - 48.,
+            rect.y + 20.,
+            9.,
+            crate::theme::SECONDARY,
         );
     }
     scroll_button(Rect::new(10., 602., 100., 44.), "PREV");

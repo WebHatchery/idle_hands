@@ -96,6 +96,13 @@ fn draw_rule_card(index: usize, title: &str, subtitle: &str) {
         11.,
         crate::theme::CREAM,
     );
+    text(
+        "OPEN",
+        rect.right() - 48.,
+        rect.y + 20.,
+        9.,
+        crate::theme::SECONDARY,
+    );
 }
 
 fn draw_controls() {
