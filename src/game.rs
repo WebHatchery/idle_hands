@@ -252,11 +252,7 @@ impl Game {
                 let index = self.state.selected;
                 self.open_game(index);
             }
-            ui::UiAction::ToggleFavorite(index) => {
-                if let Some(favorite) = self.state.favorites.get_mut(index) {
-                    *favorite = !*favorite;
-                }
-            }
+            ui::UiAction::ToggleFavorite(index) => self.toggle_favorite(index),
             ui::UiAction::ClearRecent => {
                 self.state.recent_games.clear();
                 self.state.library_scroll = 0;

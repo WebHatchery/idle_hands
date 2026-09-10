@@ -95,6 +95,22 @@ impl Game {
         GameId::ALL.len().saturating_sub(1)
     }
 
+    pub(super) fn toggle_favorite(&mut self, index: usize) {
+        let Some(game) = GameId::ALL.get(index).copied() else {
+            return;
+        };
+        let Some(favorite) = self.state.favorites.get_mut(index) else {
+            return;
+        };
+        *favorite = !*favorite;
+        let notice = if *favorite {
+            format!("{} added to favorites", game.title())
+        } else {
+            format!("{} removed from favorites", game.title())
+        };
+        self.notifications.info(notice);
+    }
+
     pub(super) fn open_game(&mut self, index: usize) {
         let Some(id) = GameId::ALL.get(index).copied() else {
             return;
