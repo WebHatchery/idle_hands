@@ -82,6 +82,14 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     if layout.next.contains(point) && start + page_size() < total {
         return vec![UiAction::DailyArchiveScroll(step)];
     }
+    for (slot, row) in crate::daily_archive_data::page_rows(state, start, page_size())
+        .into_iter()
+        .enumerate()
+    {
+        if archive_rect(layout, slot).contains(point) {
+            return vec![UiAction::DailyArchiveOpen(row.day)];
+        }
+    }
     Vec::new()
 }
 
@@ -172,6 +180,13 @@ pub fn draw(state: &AppState) {
             } else {
                 crate::theme::SECONDARY
             },
+        );
+        crate::ui::draw_text(
+            "REPLAY",
+            rect.right() - if portrait { 52. } else { 58. },
+            rect.y + rect.h - 7.,
+            crate::accessibility::text_size(if portrait { 9. } else { 8. }, state.large_text),
+            crate::theme::SECONDARY,
         );
         crate::ui::draw_text(
             format!("SCORE {}", result.score),

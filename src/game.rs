@@ -298,6 +298,7 @@ impl Game {
                             .saturating_sub(page_size),
                     );
             }
+            ui::UiAction::DailyArchiveOpen(day) => self.open_archived_daily_day(day),
             ui::UiAction::RecordsFilter(filter) => {
                 self.state.records_filter = if crate::records_data::FILTERS.contains(&filter) {
                     filter

@@ -31,3 +31,31 @@ fn archive_paging_buttons_stop_at_the_history_edges() {
         assert!(clicks(&state, layout.next.center()).is_empty());
     });
 }
+
+#[test]
+fn archive_rows_offer_their_exact_day_at_each_touch_layout() {
+    let mut state = AppState::default();
+    state.records.record_daily_result(42, 120, true);
+
+    crate::ui::with_desktop_layout(|| {
+        let layout = layout();
+        assert!(matches!(
+            clicks(&state, archive_rect(layout, 0).center()).as_slice(),
+            [UiAction::DailyArchiveOpen(42)]
+        ));
+    });
+    crate::ui::with_compact_landscape_layout(|| {
+        let layout = layout();
+        assert!(matches!(
+            clicks(&state, archive_rect(layout, 0).center()).as_slice(),
+            [UiAction::DailyArchiveOpen(42)]
+        ));
+    });
+    crate::ui::with_portrait_layout(|| {
+        let layout = layout();
+        assert!(matches!(
+            clicks(&state, archive_rect(layout, 0).center()).as_slice(),
+            [UiAction::DailyArchiveOpen(42)]
+        ));
+    });
+}

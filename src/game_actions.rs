@@ -18,6 +18,7 @@ pub fn is_shell(action: UiAction) -> bool {
             | UiAction::Recent
             | UiAction::DailyArchive
             | UiAction::DailyArchiveScroll(_)
+            | UiAction::DailyArchiveOpen(_)
             | UiAction::RecordsFilter(_)
             | UiAction::RulesFilter(_)
             | UiAction::CabinetFilter(_)

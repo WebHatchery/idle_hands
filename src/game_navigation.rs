@@ -138,4 +138,28 @@ impl Game {
                 .info(format!("{} is coming soon", id.title()));
         }
     }
+
+    pub(super) fn open_archived_daily_day(&mut self, day: u64) {
+        let id = GameId::DailyDungeon;
+        if !crate::cabinet_status::is_available(id) {
+            self.notifications
+                .info(crate::storefront::purchase_message(id.title()));
+            return;
+        }
+        self.state.games.daily_dungeon = crate::daily_dungeon::DailyDungeon::new_for_day(day);
+        self.state.favorites_view = false;
+        self.state.recent_view = false;
+        self.state.daily_archive_view = false;
+        self.state.achievements_view = false;
+        self.state.selected = id.index();
+        self.state.recent_games.retain(|recent| *recent != id);
+        self.state.recent_games.insert(0, id);
+        self.state.recent_games.truncate(5);
+        self.state.screen = Screen::Game(id);
+        self.state.tutorial = None;
+        self.notifications.info(format!(
+            "Opening {}",
+            crate::daily_challenge::label(day, crate::daily_challenge::challenge_for_day(day))
+        ));
+    }
 }
