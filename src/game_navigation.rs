@@ -116,12 +116,12 @@ impl Game {
             return;
         };
         let from_rules = matches!(self.state.screen, Screen::Rules);
-        self.state.favorites_view = false;
-        self.state.recent_view = false;
-        self.state.daily_archive_view = false;
-        self.state.achievements_view = false;
         self.state.selected = index;
         if crate::cabinet_status::is_available(id) {
+            self.state.favorites_view = false;
+            self.state.recent_view = false;
+            self.state.daily_archive_view = false;
+            self.state.achievements_view = false;
             self.state.recent_games.retain(|recent| *recent != id);
             self.state.recent_games.insert(0, id);
             self.state.recent_games.truncate(5);
