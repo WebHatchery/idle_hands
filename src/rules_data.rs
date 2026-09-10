@@ -12,6 +12,14 @@ pub struct RuleRow {
 
 pub const FILTERS: [u8; 7] = [0, 3, 4, 5, 6, 7, 8];
 
+pub fn normalize_filter(filter: u8) -> u8 {
+    if FILTERS.contains(&filter) {
+        filter
+    } else {
+        0
+    }
+}
+
 pub fn filter_label(filter: u8) -> &'static str {
     match filter {
         0 => "ALL",
@@ -40,7 +48,7 @@ pub fn page_label(start: usize, total: usize, page_size: usize) -> String {
 }
 
 pub fn rows(filter: u8) -> Vec<RuleRow> {
-    let filter = if FILTERS.contains(&filter) { filter } else { 0 };
+    let filter = normalize_filter(filter);
     GameId::ALL
         .into_iter()
         .map(|game| RuleRow {

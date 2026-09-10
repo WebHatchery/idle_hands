@@ -58,6 +58,7 @@ mod tests {
     fn shell_routing_is_explicit_at_the_boundary() {
         assert!(is_shell(UiAction::Cabinet));
         assert!(is_shell(UiAction::CabinetSort));
+        assert!(is_shell(UiAction::RulesFilter(4)));
         assert!(is_shell(UiAction::Save));
         assert!(!is_shell(UiAction::Game2048Hint));
         assert!(!is_shell(UiAction::Move(crate::domain::Direction::Left)));

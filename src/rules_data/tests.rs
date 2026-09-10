@@ -6,6 +6,7 @@ fn rule_filters_cycle_through_the_six_cabinet_categories() {
     assert_eq!(next_filter(0), 3);
     assert_eq!(next_filter(8), 0);
     assert_eq!(filter_label(6), "Word");
+    assert_eq!(normalize_filter(99), 0);
 }
 
 #[test]

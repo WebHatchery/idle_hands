@@ -311,11 +311,7 @@ impl Game {
                 self.state.library_scroll = 0;
             }
             ui::UiAction::RulesFilter(filter) => {
-                self.state.rules_filter = if crate::rules_data::FILTERS.contains(&filter) {
-                    filter
-                } else {
-                    0
-                };
+                self.state.rules_filter = crate::rules_data::normalize_filter(filter);
                 self.state.library_scroll = 0;
             }
             ui::UiAction::Cabinet => {
