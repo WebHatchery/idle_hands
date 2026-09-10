@@ -6,6 +6,9 @@ use crate::{
 };
 use macroquad::prelude::*;
 
+#[cfg(test)]
+mod tests;
+
 fn panel(rect: Rect) {
     draw_rectangle(
         rect.x,
