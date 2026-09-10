@@ -1,11 +1,14 @@
 use super::*;
-use crate::daily_dungeon::DailyPhase;
+use crate::daily_dungeon::{DailyPhase, DailyRule};
 
 #[test]
 fn day_seed_and_challenge_are_stable() {
     assert_eq!(seed_for_day(20_000), seed_for_day(20_000));
     assert_ne!(seed_for_day(20_000), seed_for_day(20_001));
     assert_eq!(challenge_for_day(20_123), 123);
+    assert_eq!(rule_for_day(20_040), DailyRule::Wayfinder);
+    assert_eq!(rule_for_day(20_041), DailyRule::Forager);
+    assert_eq!(rule_for_day(20_042), DailyRule::Daredevil);
 }
 
 #[test]

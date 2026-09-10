@@ -20,6 +20,14 @@ pub fn challenge_for_day(day: u64) -> u32 {
     (day % 10_000) as u32
 }
 
+pub fn rule_for_day(day: u64) -> crate::daily_dungeon::DailyRule {
+    match day % 3 {
+        0 => crate::daily_dungeon::DailyRule::Wayfinder,
+        1 => crate::daily_dungeon::DailyRule::Forager,
+        _ => crate::daily_dungeon::DailyRule::Daredevil,
+    }
+}
+
 pub fn label(day: u64, fallback_challenge: u32) -> String {
     if day == 0 {
         format!("DAY {fallback_challenge:04}")

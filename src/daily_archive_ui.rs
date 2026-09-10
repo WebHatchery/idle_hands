@@ -158,7 +158,11 @@ pub fn draw(state: &AppState) {
             },
             state.high_contrast,
         );
-        let label = crate::daily_challenge::label(result.day, result.challenge);
+        let label = format!(
+            "{} · {}",
+            crate::daily_challenge::label(result.day, result.challenge),
+            result.rule.label()
+        );
         crate::ui::draw_text(
             label,
             rect.x + 14.,

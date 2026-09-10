@@ -132,12 +132,7 @@ impl DailyDungeon {
     }
 
     pub fn new_for_day(day: u64) -> Self {
-        let rule = match day % 3 {
-            0 => DailyRule::Wayfinder,
-            1 => DailyRule::Forager,
-            _ => DailyRule::Daredevil,
-        };
-        Self::new_for_day_with_rule(day, rule)
+        Self::new_for_day_with_rule(day, crate::daily_challenge::rule_for_day(day))
     }
 
     pub fn new_for_day_with_rule(day: u64, rule: DailyRule) -> Self {

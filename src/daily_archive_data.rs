@@ -1,11 +1,12 @@
 //! Canonical rows and paging for the Daily Archive shelf.
 
-use crate::{state::AppState, state_records::DailyResult};
+use crate::{daily_dungeon::DailyRule, state::AppState, state_records::DailyResult};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct ArchiveRow {
     pub day: u64,
     pub challenge: u32,
+    pub rule: DailyRule,
     pub score: u32,
     pub won: bool,
 }
@@ -45,6 +46,7 @@ impl ArchiveRow {
         Self {
             day: result.day,
             challenge: crate::daily_challenge::challenge_for_day(result.day),
+            rule: crate::daily_challenge::rule_for_day(result.day),
             score: result.score,
             won: result.won,
         }

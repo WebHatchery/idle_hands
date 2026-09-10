@@ -1,4 +1,5 @@
 use super::*;
+use crate::daily_dungeon::DailyRule;
 
 #[test]
 fn archive_rows_are_newest_first_and_keep_challenge_identity() {
@@ -10,6 +11,7 @@ fn archive_rows_are_newest_first_and_keep_challenge_identity() {
 
     assert_eq!(rows[0].day, 42);
     assert_eq!(rows[0].challenge, 42);
+    assert_eq!(rows[0].rule, DailyRule::Wayfinder);
     assert_eq!(rows[0].score, 120);
     assert!(rows[0].won);
     assert_eq!(rows[1].day, 41);
