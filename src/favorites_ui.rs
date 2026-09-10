@@ -11,6 +11,14 @@ const DESKTOP_VISIBLE_GAMES: usize = 40;
 #[cfg(test)]
 mod tests;
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct BrowseSummary {
+    total: usize,
+    open: usize,
+    done: usize,
+    locked: usize,
+}
+
 #[derive(Clone, Copy)]
 struct Layout {
     panel: Rect,
@@ -112,7 +120,8 @@ pub fn draw(state: &AppState) {
         crate::theme::BRASS,
     );
     let games = browse_games(state);
-    let count = games.len();
+    let summary = browse_summary(state, &games);
+    let count = summary.total;
     let subtitle_y = if crate::ui::is_compact_landscape() {
         l.panel.y + 52.
     } else if crate::ui::is_portrait() {
@@ -123,11 +132,14 @@ pub fn draw(state: &AppState) {
     crate::ui::draw_text(
         if recent {
             format!(
-                "{} recently opened games  -  tap a drawer to open it",
-                count
+                "{} recently opened  ·  {} open  ·  {} done  ·  {} locked",
+                count, summary.open, summary.done, summary.locked
             )
         } else {
-            format!("{} starred games  -  tap a drawer to open it", count)
+            format!(
+                "{} starred  ·  {} open  ·  {} done  ·  {} locked",
+                count, summary.open, summary.done, summary.locked
+            )
         },
         l.panel.x + 52.,
         subtitle_y,
@@ -261,6 +273,23 @@ fn scroll_rects() -> Option<(Rect, Rect)> {
             Rect::new(700., 590., 100., 44.),
             Rect::new(815., 590., 100., 44.),
         ))
+    }
+}
+
+fn browse_summary(state: &AppState, games: &[GameId]) -> BrowseSummary {
+    let done = games
+        .iter()
+        .filter(|game| crate::cabinet_status::status(state, **game) == "COMPLETE")
+        .count();
+    let locked = games
+        .iter()
+        .filter(|game| !crate::cabinet_status::is_available(**game))
+        .count();
+    BrowseSummary {
+        total: games.len(),
+        open: games.len().saturating_sub(done + locked),
+        done,
+        locked,
     }
 }
 

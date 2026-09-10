@@ -64,3 +64,21 @@ fn favorite_card_remove_action_targets_the_starred_drawer() {
         ));
     });
 }
+
+#[test]
+fn browse_summary_separates_open_finished_and_locked_drawers() {
+    let mut state = AppState::default();
+    state.records.solitaire_best_moves = Some(42);
+    let games = vec![GameId::Solitaire, GameId::FreeCell];
+
+    let summary = browse_summary(&state, &games);
+    assert_eq!(
+        summary,
+        BrowseSummary {
+            total: 2,
+            open: 1,
+            done: 1,
+            locked: 0,
+        }
+    );
+}
