@@ -74,6 +74,9 @@ pub fn draw_records(state: &AppState) {
     panel(Rect::new(650., 2., 150., 44.), crate::theme::SURFACE);
     text("ACHIEVEMENTS", 663., 30., 9., WHITE);
     draw_rectangle_lines(650., 2., 150., 44., 3., WHITE);
+    panel(Rect::new(480., 2., 150., 44.), crate::theme::SURFACE);
+    text("DAILY LOG", 510., 30., 9., WHITE);
+    draw_rectangle_lines(480., 2., 150., 44., 3., WHITE);
     let rows = [
         ("2048 best", state.records.best_2048.to_string()),
         ("Mines beginner", value(state.records.minesweeper[0])),
@@ -320,7 +323,9 @@ fn value(value: Option<u32>) -> String {
     value.map_or_else(|| "-".into(), |number| number.to_string())
 }
 pub fn records_clicks(p: Vec2) -> Vec<UiAction> {
-    if crate::ui::hit(Rect::new(650., 2., 150., 44.), p) {
+    if crate::ui::hit(Rect::new(480., 2., 150., 44.), p) {
+        vec![UiAction::DailyArchive]
+    } else if crate::ui::hit(Rect::new(650., 2., 150., 44.), p) {
         vec![UiAction::Achievements]
     } else if crate::ui::hit(Rect::new(430., 330., 100., 44.), p) {
         vec![UiAction::LibraryScroll(-1)]
