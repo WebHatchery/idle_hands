@@ -50,7 +50,7 @@ fn layout() -> Layout {
             columns: 1,
             card_w: 324.,
             card_h: 54.,
-            origin: vec2(18., 125.),
+            origin: vec2(18., 155.),
             gap_x: 0.,
             gap_y: 60.,
         }
@@ -72,6 +72,13 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     let l = layout();
     if crate::ui::hit(l.back, point) {
         return vec![UiAction::Cabinet];
+    }
+    let (favorites, recent) = browse_tab_rects();
+    if crate::ui::hit(favorites, point) {
+        return vec![UiAction::Favorites];
+    }
+    if crate::ui::hit(recent, point) {
+        return vec![UiAction::Recent];
     }
     if state.recent_view && crate::ui::hit(quick_action_rect(), point) {
         return vec![UiAction::ClearRecent];
@@ -101,6 +108,27 @@ pub fn draw(state: &AppState) {
     panel(l.panel, crate::theme::BACKGROUND_DEEP);
     let title_size = if crate::ui::is_portrait() { 29. } else { 38. };
     let recent = state.recent_view;
+    let (favorites_tab, recent_tab) = browse_tab_rects();
+    for (rect, label, active) in [
+        (favorites_tab, "FAVORITES", !recent),
+        (recent_tab, "RECENT", recent),
+    ] {
+        panel(
+            rect,
+            if active {
+                crate::theme::MOSS_DARK
+            } else {
+                crate::theme::SURFACE_DARK
+            },
+        );
+        crate::ui::draw_text(
+            label,
+            rect.x + if crate::ui::is_portrait() { 12. } else { 18. },
+            rect.y + rect.h * 0.66,
+            if crate::ui::is_portrait() { 9. } else { 11. },
+            WHITE,
+        );
+    }
     crate::ui::draw_text(
         if recent {
             "RECENT DRAWERS"
@@ -125,7 +153,7 @@ pub fn draw(state: &AppState) {
     let subtitle_y = if crate::ui::is_compact_landscape() {
         l.panel.y + 52.
     } else if crate::ui::is_portrait() {
-        l.panel.y + 66.
+        l.panel.y + 96.
     } else {
         l.panel.y + 98.
     };
@@ -300,6 +328,25 @@ fn quick_action_rect() -> Rect {
         Rect::new(540., 20., 250., 36.)
     } else {
         Rect::new(700., 102., 180., 44.)
+    }
+}
+
+fn browse_tab_rects() -> (Rect, Rect) {
+    if crate::ui::is_portrait() {
+        (
+            Rect::new(10., 96., 82., 28.),
+            Rect::new(100., 96., 82., 28.),
+        )
+    } else if crate::ui::is_compact_landscape() {
+        (
+            Rect::new(300., 20., 105., 36.),
+            Rect::new(415., 20., 105., 36.),
+        )
+    } else {
+        (
+            Rect::new(880., 70., 100., 38.),
+            Rect::new(990., 70., 100., 38.),
+        )
     }
 }
 
