@@ -70,9 +70,8 @@ pub fn page_size() -> usize {
 pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     let layout = layout();
     let total = state.records.daily_results.len();
-    let start = state
-        .daily_archive_scroll
-        .min(total.saturating_sub(page_size()));
+    let start =
+        crate::daily_archive_data::page_start(total, state.daily_archive_scroll, page_size());
     if layout.back.contains(point) {
         return vec![UiAction::Records];
     }
@@ -137,13 +136,8 @@ pub fn draw(state: &AppState) {
     let start = state
         .daily_archive_scroll
         .min(total.saturating_sub(page_size()));
-    for (slot, result) in state
-        .records
-        .daily_results
-        .iter()
-        .rev()
-        .skip(start)
-        .take(page_size())
+    for (slot, result) in crate::daily_archive_data::page_rows(state, start, page_size())
+        .into_iter()
         .enumerate()
     {
         let rect = archive_rect(layout, slot);
@@ -156,10 +150,7 @@ pub fn draw(state: &AppState) {
             },
             state.high_contrast,
         );
-        let label = crate::daily_challenge::label(
-            result.day,
-            crate::daily_challenge::challenge_for_day(result.day),
-        );
+        let label = crate::daily_challenge::label(result.day, result.challenge);
         crate::ui::draw_text(
             label,
             rect.x + 14.,
@@ -199,8 +190,7 @@ pub fn draw(state: &AppState) {
             crate::theme::SECONDARY,
         );
     }
-    let shown_start = if total == 0 { 0 } else { start + 1 };
-    let shown_end = (start + page_size()).min(total);
+    let window = crate::daily_archive_data::window_label(start, total, page_size());
     archive_button(layout.previous, "PREV", start > 0, state.high_contrast);
     archive_button(
         layout.next,
@@ -209,7 +199,7 @@ pub fn draw(state: &AppState) {
         state.high_contrast,
     );
     crate::ui::draw_text(
-        format!("{}-{} OF {}", shown_start, shown_end, total),
+        window,
         layout.previous.right() + 14.,
         layout.previous.y + 29.,
         11.,
