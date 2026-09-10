@@ -58,10 +58,11 @@ pub fn draw_records(state: &AppState) {
     );
     text(
         &format!(
-            "DAILY {} CLEARS  -  LOG {}/90  -  BEST {}",
+            "DAILY {} CLEARS  -  LOG {}/90  -  BEST {}  -  NEXT {}",
             state.records.daily_clear_count(),
             state.records.daily_results.len(),
-            value(state.records.daily_best_score())
+            value(state.records.daily_best_score()),
+            next_achievement(&state.records)
         ),
         40.,
         62.,
@@ -306,6 +307,13 @@ pub fn draw_records(state: &AppState) {
     back(Rect::new(700., 330., 110., 44.));
     draw_rectangle_lines(700., 330., 110., 44., 3., WHITE);
 }
+
+fn next_achievement(records: &crate::state::CollectionRecords) -> &'static str {
+    AchievementId::next_locked(records)
+        .map(AchievementId::title)
+        .unwrap_or("ALL COMPLETE")
+}
+
 fn value(value: Option<u32>) -> String {
     value.map_or_else(|| "-".into(), |number| number.to_string())
 }

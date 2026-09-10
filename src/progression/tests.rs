@@ -139,3 +139,20 @@ fn achievement_progress_marks_finished_drawers_complete() {
         "0 / 1"
     );
 }
+
+#[test]
+fn next_locked_achievement_follows_the_collection_order() {
+    let empty = CollectionRecords::default();
+    assert_eq!(
+        AchievementId::next_locked(&empty),
+        Some(AchievementId::FirstFinish)
+    );
+    let records = CollectionRecords {
+        best_2048: 2048,
+        ..Default::default()
+    };
+    assert_eq!(
+        AchievementId::next_locked(&records),
+        Some(AchievementId::Game(GameId::Solitaire))
+    );
+}

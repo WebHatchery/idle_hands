@@ -68,6 +68,13 @@ pub fn draw_records(state: &AppState) {
         12.,
         crate::theme::BRASS,
     );
+    text(
+        &format!("NEXT GOAL: {}", next_achievement(&state.records)),
+        20.,
+        128.,
+        9.,
+        crate::theme::SECONDARY,
+    );
     panel(Rect::new(190., 28., 155., 44.), crate::theme::SURFACE);
     text("ACHIEVEMENTS", 202., 56., 10., WHITE);
     draw_rectangle_lines(190., 28., 155., 44., 3., WHITE);
@@ -292,7 +299,7 @@ pub fn draw_records(state: &AppState) {
         .take(RECORDS_VISIBLE_ROWS)
         .enumerate()
     {
-        let rect = Rect::new(18., 122. + index as f32 * 42., 324., 36.);
+        let rect = Rect::new(18., 142. + index as f32 * 42., 324., 36.);
         panel(rect, Color::new(0.13, 0.09, 0.20, 1.));
         text(label, rect.x + 10., rect.y + 24., 13., crate::theme::CREAM);
         let score_width = crate::ui::measure_text(score, None, 14, 1.).width;
@@ -320,6 +327,13 @@ pub fn draw_records(state: &AppState) {
     );
     back_button(714.);
 }
+
+fn next_achievement(records: &crate::state::CollectionRecords) -> &'static str {
+    AchievementId::next_locked(records)
+        .map(AchievementId::title)
+        .unwrap_or("ALL COMPLETE")
+}
+
 pub fn records_clicks(p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(Rect::new(190., 28., 155., 44.), p) {
         vec![UiAction::Achievements]

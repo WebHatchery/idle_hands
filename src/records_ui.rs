@@ -50,10 +50,11 @@ pub fn draw_records(state: &AppState) {
     );
     crate::ui::draw_text(
         format!(
-            "DAILY ROUTES  {} CLEARED   •   LOG {}/90   •   BEST SCORE  {}",
+            "DAILY ROUTES  {} CLEARED   •   LOG {}/90   •   BEST SCORE  {}   •   NEXT  {}",
             state.records.daily_clear_count(),
             state.records.daily_results.len(),
-            value(state.records.daily_best_score())
+            value(state.records.daily_best_score()),
+            next_achievement(&state.records)
         ),
         174.,
         210.,
@@ -322,6 +323,13 @@ pub fn draw_records(state: &AppState) {
     panel(Rect::new(930., 590., 180., 48.), crate::theme::MOSS_DARK);
     crate::ui::draw_text("BACK", 990., 621., 18., WHITE);
 }
+
+fn next_achievement(records: &crate::state::CollectionRecords) -> &'static str {
+    AchievementId::next_locked(records)
+        .map(AchievementId::title)
+        .unwrap_or("ALL COMPLETE")
+}
+
 pub fn records_clicks(p: Vec2) -> Vec<UiAction> {
     if Rect::new(900., 102., 210., 44.).contains(p) {
         vec![UiAction::Achievements]

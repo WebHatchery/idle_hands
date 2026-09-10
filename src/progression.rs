@@ -198,6 +198,12 @@ impl AchievementId {
         }
     }
 
+    pub fn next_locked(records: &CollectionRecords) -> Option<Self> {
+        Self::ALL
+            .into_iter()
+            .find(|achievement| !earned(records, *achievement))
+    }
+
     pub fn index(self) -> usize {
         Self::ALL
             .iter()
