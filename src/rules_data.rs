@@ -61,5 +61,11 @@ pub fn rows(filter: u8) -> Vec<RuleRow> {
         .collect()
 }
 
+pub fn page_rows(filter: u8, start: usize, capacity: usize) -> Vec<RuleRow> {
+    let rows = rows(filter);
+    let start = start.min(rows.len());
+    rows.into_iter().skip(start).take(capacity).collect()
+}
+
 #[cfg(test)]
 mod tests;

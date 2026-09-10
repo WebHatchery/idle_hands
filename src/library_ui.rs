@@ -30,9 +30,33 @@ pub fn rules_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         ))]
     } else if Rect::new(1030., 635., 180., 48.).contains(p) {
         vec![UiAction::Cabinet]
+    } else if let Some(action) = rule_action(state, p) {
+        vec![action]
     } else {
         vec![]
     }
+}
+
+fn rule_action(state: &AppState, point: Vec2) -> Option<UiAction> {
+    let rows = crate::rules_data::rows(state.rules_filter);
+    let visible = if state.rules_filter == 0 {
+        rows
+    } else {
+        let start = state.library_scroll.min(rows.len().saturating_sub(44));
+        crate::rules_data::page_rows(state.rules_filter, start, 44)
+    };
+    visible.into_iter().enumerate().find_map(|(index, row)| {
+        let column = index / 11;
+        let line = index % 11;
+        let rect = Rect::new(
+            152. + column as f32 * 245.,
+            193. + line as f32 * 38.,
+            230.,
+            32.,
+        );
+        rect.contains(point)
+            .then(|| UiAction::Open(row.game.index()))
+    })
 }
 pub fn credits_clicks(p: Vec2) -> Vec<UiAction> {
     if Rect::new(1030., 635., 180., 48.).contains(p) {
@@ -45,7 +69,7 @@ pub fn draw_rules(state: &AppState) {
     panel(Rect::new(120., 55., 1040., 610.));
     crate::ui::draw_text("RULES", 170., 125., 46., crate::theme::BRASS);
     crate::ui::draw_text(
-        "Every drawer keeps its controls visible and touch-complete.",
+        "Tap a drawer name to open its game.",
         174.,
         157.,
         19.,

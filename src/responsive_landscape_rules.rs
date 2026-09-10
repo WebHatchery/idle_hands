@@ -19,6 +19,13 @@ pub fn draw_rules(state: &AppState) {
         crate::theme::BACKGROUND_DEEP,
     );
     text("RULES", 40., 48., 25., crate::theme::BRASS);
+    text(
+        "Tap a drawer to open its game.",
+        40.,
+        62.,
+        9.,
+        crate::theme::SECONDARY,
+    );
     panel(Rect::new(650., 2., 150., 44.), crate::theme::SURFACE);
     text(
         &format!(
@@ -108,7 +115,27 @@ pub fn rules_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         vec![UiAction::LibraryScroll(1)]
     } else if crate::ui::hit(Rect::new(700., 330., 110., 44.), p) {
         vec![UiAction::Cabinet]
+    } else if let Some(action) = rule_action(state, p) {
+        vec![action]
     } else {
         vec![]
     }
+}
+
+fn rule_action(state: &AppState, point: Vec2) -> Option<UiAction> {
+    let rows = crate::rules_data::rows(state.rules_filter);
+    let start = state.library_scroll.min(rows.len().saturating_sub(8));
+    crate::rules_data::page_rows(state.rules_filter, start, 8)
+        .into_iter()
+        .enumerate()
+        .find_map(|(index, row)| {
+            let rect = Rect::new(
+                30. + (index % 2) as f32 * 380.,
+                68. + (index / 2) as f32 * 62.,
+                360.,
+                56.,
+            );
+            rect.contains(point)
+                .then(|| UiAction::Open(row.game.index()))
+        })
 }

@@ -18,3 +18,14 @@ fn portrait_rules_shelf_button_cycles_from_all_to_cards() {
 
     assert!(matches!(actions.as_slice(), [UiAction::RulesFilter(3)]));
 }
+
+#[test]
+fn portrait_filtered_rule_card_opens_its_canonical_game() {
+    let state = AppState {
+        rules_filter: 6,
+        ..AppState::default()
+    };
+    let actions = rules_clicks(&state, vec2(30., 120.));
+
+    assert!(matches!(actions.as_slice(), [UiAction::Open(12)]));
+}
