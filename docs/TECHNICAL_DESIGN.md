@@ -203,6 +203,11 @@ it is never persisted and maps filtered slots back to canonical `GameId`
 indices before dispatching favorite or open actions.
 Filtered cards also render their canonical one-based drawer number rather than
 the temporary slot number produced by the active filter.
+The persisted `cabinet_sort` preference cycles through A-Z, OPEN FIRST, and
+LAST PLAYED ordering; profile and legacy collection restores normalize unknown
+values back into that three-mode cycle. The `cabinet_sorted` capture scene
+seeds mixed completion records so the progress order has a deterministic visual
+fixture.
 
 Conceptual keys:
 

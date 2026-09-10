@@ -485,6 +485,13 @@ impl Game {
                 GameId::Minesweeper,
                 GameId::Solitaire,
             ];
+            self.state.cabinet_sort = crate::cabinet_status::CabinetSort::Recent.index();
+        }
+        if scene == "cabinet_sorted" {
+            self.state.records.best_2048 = 2048;
+            self.state.records.solitaire_best_moves = Some(42);
+            self.state.cabinet_filter = 9;
+            self.state.cabinet_sort = crate::cabinet_status::CabinetSort::Progress.index();
         }
         if matches!(scene, "cabinet_open" | "cabinet_done" | "cabinet_empty") {
             self.state.records.best_2048 = 2048;
