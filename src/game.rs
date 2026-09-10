@@ -194,6 +194,7 @@ impl Game {
             self.state.screen = Screen::Cabinet;
             self.state.favorites_view = false;
             self.state.recent_view = false;
+            self.state.daily_archive_view = false;
             self.state.achievements_view = false;
             self.state.confirm_restart = false;
             self.state.pending_restart = None;
@@ -270,10 +271,25 @@ impl Game {
                     .saturating_add_signed(delta as isize)
                     .min(GameId::ALL.len().saturating_sub(1));
             }
+            ui::UiAction::DailyArchiveScroll(delta) => {
+                let page_size = crate::daily_archive_ui::page_size();
+                self.state.daily_archive_scroll = self
+                    .state
+                    .daily_archive_scroll
+                    .saturating_add_signed(delta as isize)
+                    .min(
+                        self.state
+                            .records
+                            .daily_results
+                            .len()
+                            .saturating_sub(page_size),
+                    );
+            }
             ui::UiAction::Cabinet => {
                 self.state.screen = Screen::Cabinet;
                 self.state.favorites_view = false;
                 self.state.recent_view = false;
+                self.state.daily_archive_view = false;
                 self.state.achievements_view = false;
                 self.state.tutorial = None;
                 self.state.confirm_reset = false;
@@ -284,6 +300,7 @@ impl Game {
                 self.state.screen = Screen::Help;
                 self.state.favorites_view = false;
                 self.state.recent_view = false;
+                self.state.daily_archive_view = false;
                 self.state.achievements_view = false;
             }
             ui::UiAction::Records => {
@@ -291,6 +308,7 @@ impl Game {
                 self.state.library_scroll = 0;
                 self.state.favorites_view = false;
                 self.state.recent_view = false;
+                self.state.daily_archive_view = false;
                 self.state.achievements_view = false;
             }
             ui::UiAction::Favorites => {
@@ -298,6 +316,7 @@ impl Game {
                 self.state.library_scroll = 0;
                 self.state.favorites_view = true;
                 self.state.recent_view = false;
+                self.state.daily_archive_view = false;
                 self.state.achievements_view = false;
             }
             ui::UiAction::Recent => {
@@ -305,6 +324,16 @@ impl Game {
                 self.state.library_scroll = 0;
                 self.state.favorites_view = false;
                 self.state.recent_view = true;
+                self.state.daily_archive_view = false;
+                self.state.achievements_view = false;
+            }
+            ui::UiAction::DailyArchive => {
+                self.state.screen = Screen::Records;
+                self.state.library_scroll = 0;
+                self.state.daily_archive_scroll = 0;
+                self.state.favorites_view = false;
+                self.state.recent_view = false;
+                self.state.daily_archive_view = true;
                 self.state.achievements_view = false;
             }
             ui::UiAction::Achievements => {
@@ -312,6 +341,7 @@ impl Game {
                 self.state.library_scroll = 0;
                 self.state.favorites_view = false;
                 self.state.recent_view = false;
+                self.state.daily_archive_view = false;
                 self.state.achievements_view = true;
                 self.state.achievement_filter = 0;
             }
@@ -324,18 +354,21 @@ impl Game {
                 self.state.library_scroll = 0;
                 self.state.favorites_view = false;
                 self.state.recent_view = false;
+                self.state.daily_archive_view = false;
                 self.state.achievements_view = false;
             }
             ui::UiAction::Credits => {
                 self.state.screen = Screen::Credits;
                 self.state.favorites_view = false;
                 self.state.recent_view = false;
+                self.state.daily_archive_view = false;
                 self.state.achievements_view = false;
             }
             ui::UiAction::Settings => {
                 self.state.screen = Screen::Settings;
                 self.state.favorites_view = false;
                 self.state.recent_view = false;
+                self.state.daily_archive_view = false;
                 self.state.achievements_view = false;
             }
             ui::UiAction::TutorialContinue => {

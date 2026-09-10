@@ -15,6 +15,8 @@ pub fn is_shell(action: UiAction) -> bool {
             | UiAction::Records
             | UiAction::Favorites
             | UiAction::Recent
+            | UiAction::DailyArchive
+            | UiAction::DailyArchiveScroll(_)
             | UiAction::CabinetFilter(_)
             | UiAction::CabinetScroll(_)
             | UiAction::LibraryScroll(_)

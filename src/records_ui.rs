@@ -72,6 +72,8 @@ pub fn draw_records(state: &AppState) {
     panel(Rect::new(900., 102., 210., 44.), crate::theme::SURFACE);
     draw_rectangle_lines(900., 102., 210., 44., 3., WHITE);
     crate::ui::draw_text("ACHIEVEMENTS", 925., 129., 14., WHITE);
+    panel(Rect::new(900., 154., 210., 44.), crate::theme::SURFACE);
+    crate::ui::draw_text("DAILY ARCHIVE", 925., 181., 14., WHITE);
     let left = [
         ("2048 best score", state.records.best_2048.to_string()),
         ("Minesweeper beginner", value(state.records.minesweeper[0])),
@@ -341,6 +343,8 @@ fn next_achievement(records: &crate::state::CollectionRecords) -> &'static str {
 pub fn records_clicks(p: Vec2) -> Vec<UiAction> {
     if Rect::new(900., 102., 210., 44.).contains(p) {
         vec![UiAction::Achievements]
+    } else if Rect::new(900., 154., 210., 44.).contains(p) {
+        vec![UiAction::DailyArchive]
     } else if Rect::new(930., 590., 180., 48.).contains(p) {
         vec![UiAction::Cabinet]
     } else {

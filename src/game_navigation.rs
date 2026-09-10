@@ -44,6 +44,10 @@ impl Game {
         let delta = if end.y < start.y { 1 } else { -1 };
         if self.state.screen == Screen::Cabinet {
             self.apply(crate::ui::UiAction::CabinetScroll(delta));
+        } else if self.state.daily_archive_view {
+            self.apply(crate::ui::UiAction::DailyArchiveScroll(
+                delta * crate::daily_archive_ui::page_size() as i8,
+            ));
         } else if self.library_scroll_is_active() {
             self.apply(crate::ui::UiAction::LibraryScroll(delta));
         }
@@ -57,6 +61,10 @@ impl Game {
         let delta = if wheel_y < 0. { 1 } else { -1 };
         if self.state.screen == Screen::Cabinet {
             self.apply(crate::ui::UiAction::CabinetScroll(delta));
+        } else if self.state.daily_archive_view {
+            self.apply(crate::ui::UiAction::DailyArchiveScroll(
+                delta * crate::daily_archive_ui::page_size() as i8,
+            ));
         } else if self.library_scroll_is_active() {
             self.apply(crate::ui::UiAction::LibraryScroll(delta));
         }
@@ -64,6 +72,7 @@ impl Game {
 
     fn library_scroll_is_active(&self) -> bool {
         matches!(self.state.screen, Screen::Records | Screen::Rules)
+            && !self.state.daily_archive_view
     }
 
     pub(super) fn open_game(&mut self, index: usize) {
@@ -72,6 +81,7 @@ impl Game {
         };
         self.state.favorites_view = false;
         self.state.recent_view = false;
+        self.state.daily_archive_view = false;
         self.state.achievements_view = false;
         self.state.selected = index;
         if crate::cabinet_status::is_available(id) {

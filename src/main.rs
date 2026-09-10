@@ -29,6 +29,7 @@ mod color_sort_ui;
 mod connect_four;
 mod connect_four_ui;
 mod cosmetics;
+mod daily_archive_ui;
 mod daily_challenge;
 mod daily_dungeon;
 mod daily_dungeon_ui;

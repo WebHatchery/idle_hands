@@ -244,11 +244,13 @@ pub struct AppState {
     pub card_hint: Option<String>,
     pub favorites_view: bool,
     pub recent_view: bool,
+    pub daily_archive_view: bool,
     pub achievements_view: bool,
     pub achievement_filter: u8,
     pub cabinet_filter: u8,
     pub cabinet_scroll: usize,
     pub library_scroll: usize,
+    pub daily_archive_scroll: usize,
     pub fivefold_score_page: usize,
 }
 
@@ -635,11 +637,13 @@ impl Default for AppState {
             card_hint: None,
             favorites_view: false,
             recent_view: false,
+            daily_archive_view: false,
             achievements_view: false,
             achievement_filter: 0,
             cabinet_filter: 0,
             cabinet_scroll: 0,
             library_scroll: 0,
+            daily_archive_scroll: 0,
             fivefold_score_page: 0,
         }
     }
