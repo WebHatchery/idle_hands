@@ -55,6 +55,18 @@ impl CosmeticKind {
             .map(|option| option.cost)
             .find(|&cost| cost > stamps)
     }
+
+    pub fn normalize(self, current: u8, stamps: u16) -> u8 {
+        let options = self.options();
+        let index = current as usize % options.len();
+        if options[index].cost <= stamps {
+            return index as u8;
+        }
+        options
+            .iter()
+            .position(|option| option.cost <= stamps)
+            .unwrap_or(0) as u8
+    }
 }
 
 pub fn total_options() -> usize {

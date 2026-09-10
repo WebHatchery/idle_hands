@@ -21,6 +21,9 @@ fn cosmetic_catalogs_report_unlock_counts_and_next_costs() {
     assert_eq!(CosmeticKind::CardBack.unlocked_count(5), 3);
     assert_eq!(CosmeticKind::BoardTheme.next_cost(0), Some(3));
     assert_eq!(CosmeticKind::BoardTheme.next_cost(7), None);
+    assert_eq!(CosmeticKind::CardBack.normalize(2, 0), 0);
+    assert_eq!(CosmeticKind::CardBack.normalize(1, 2), 1);
+    assert_eq!(CosmeticKind::SoundSet.normalize(7, 0), 0);
     assert_eq!(CosmeticKind::SoundSet.options()[1].name, "Rain on glass");
     assert_eq!(CosmeticKind::SoundSet.options()[1].cost, 4);
     assert_eq!(total_options(), 12);

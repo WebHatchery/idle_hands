@@ -105,10 +105,14 @@ impl ProfileSave {
         state.records = self.records;
         state.achievements = normalize_achievements(self.achievements);
         state.stamps = self.stamps;
-        state.card_back = self.card_back;
-        state.board_theme = self.board_theme;
-        state.sound_set = self.sound_set;
-        state.cabinet_decoration = self.cabinet_decoration;
+        state.card_back =
+            crate::cosmetics::CosmeticKind::CardBack.normalize(self.card_back, state.stamps);
+        state.board_theme =
+            crate::cosmetics::CosmeticKind::BoardTheme.normalize(self.board_theme, state.stamps);
+        state.sound_set =
+            crate::cosmetics::CosmeticKind::SoundSet.normalize(self.sound_set, state.stamps);
+        state.cabinet_decoration = crate::cosmetics::CosmeticKind::CabinetDecoration
+            .normalize(self.cabinet_decoration, state.stamps);
         state.tutorial_seen = normalize_tutorial_seen(self.tutorial_seen);
         state.favorites = normalize_favorites(self.favorites);
         state.recent_games = normalize_recent_games(self.recent_games);

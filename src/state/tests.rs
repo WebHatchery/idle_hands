@@ -170,8 +170,8 @@ fn collection_save_round_trips_game_and_profile_state() {
     assert_eq!(restored.stamps, 3);
     assert_eq!(restored.card_back, 1);
     assert_eq!(restored.board_theme, 1);
-    assert_eq!(restored.sound_set, 1);
-    assert_eq!(restored.cabinet_decoration, 1);
+    assert_eq!(restored.sound_set, 0);
+    assert_eq!(restored.cabinet_decoration, 0);
     assert!(restored.high_contrast);
     assert!(restored.large_text);
     assert!(restored.tutorial_seen[6]);
