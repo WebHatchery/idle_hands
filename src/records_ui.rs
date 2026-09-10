@@ -50,8 +50,9 @@ pub fn draw_records(state: &AppState) {
     );
     crate::ui::draw_text(
         format!(
-            "DAILY ROUTES  {} CLEARED   •   BEST SCORE  {}",
+            "DAILY ROUTES  {} CLEARED   •   LOG {}/90   •   BEST SCORE  {}",
             state.records.daily_clear_count(),
+            state.records.daily_results.len(),
             value(state.records.daily_best_score())
         ),
         174.,
