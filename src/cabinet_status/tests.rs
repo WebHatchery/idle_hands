@@ -144,6 +144,9 @@ fn cabinet_sort_modes_cycle_and_keep_ordering_deterministic() {
     assert_eq!(CabinetSort::Progress.next(), CabinetSort::Recent);
     assert_eq!(CabinetSort::Recent.next(), CabinetSort::Title);
     assert_eq!(CabinetSort::from_index(8), CabinetSort::Recent);
+    assert_eq!(CabinetSort::Title.button_label(), "A-Z");
+    assert_eq!(CabinetSort::Progress.button_label(), "OPEN FIRST");
+    assert_eq!(CabinetSort::Recent.button_label(), "LAST PLAYED");
 
     let title_sorted = sorted_games(&state, 9, CabinetSort::Title);
     assert_eq!(title_sorted.first(), Some(&GameId::Game2048));

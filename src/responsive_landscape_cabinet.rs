@@ -167,7 +167,7 @@ fn draw_library(state: &AppState) {
     text(
         &format!(
             "SORT {}",
-            cabinet_status::CabinetSort::from_index(state.cabinet_sort).label()
+            cabinet_status::CabinetSort::from_index(state.cabinet_sort).button_label()
         ),
         705.,
         34.,

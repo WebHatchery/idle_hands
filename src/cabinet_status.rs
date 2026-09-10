@@ -39,6 +39,14 @@ impl CabinetSort {
         }
     }
 
+    pub const fn button_label(self) -> &'static str {
+        match self {
+            Self::Title => "A-Z",
+            Self::Progress => "OPEN FIRST",
+            Self::Recent => "LAST PLAYED",
+        }
+    }
+
     pub const fn next(self) -> Self {
         match self {
             Self::Title => Self::Progress,
