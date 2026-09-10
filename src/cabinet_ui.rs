@@ -454,8 +454,11 @@ fn category_card(state: &AppState, rect: Rect, filter: u8) {
             crate::theme::BRASS
         },
     );
+    let prompt = cabinet_status::next_unfinished_game(state, filter)
+        .map(|game| format!("NEXT: {}", game.title()))
+        .unwrap_or_else(|| "COMPLETE · EXPLORE  >".to_owned());
     text(
-        "EXPLORE  >",
+        &fit_recent_title(&prompt, rect.w - 96.),
         rect.x + 72.,
         rect.y + 105.,
         11.,

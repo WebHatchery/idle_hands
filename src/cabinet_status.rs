@@ -147,6 +147,12 @@ pub fn collection_progress(state: &AppState) -> CategoryProgress {
     }
 }
 
+pub fn next_unfinished_game(state: &AppState, filter: u8) -> Option<GameId> {
+    GameId::ALL.into_iter().find(|&game| {
+        category_filter(game) == filter && !crate::progression::game_complete(&state.records, game)
+    })
+}
+
 pub fn availability_counts(state: &AppState, filter: u8) -> (usize, usize) {
     GameId::ALL
         .iter()

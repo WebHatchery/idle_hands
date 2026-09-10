@@ -94,3 +94,32 @@ fn collection_progress_spans_every_drawer() {
         }
     );
 }
+
+#[test]
+fn next_unfinished_game_follows_category_order() {
+    let mut state = AppState::default();
+    assert_eq!(next_unfinished_game(&state, 3), Some(GameId::Solitaire));
+
+    state.records.solitaire_best_moves = Some(42);
+    assert_eq!(next_unfinished_game(&state, 3), Some(GameId::FreeCell));
+
+    for game in GameId::ALL {
+        if category_filter(game) == 3 {
+            match game {
+                GameId::Solitaire => state.records.solitaire_best_moves = Some(42),
+                GameId::FreeCell => state.records.freecell_best_moves = Some(31),
+                GameId::MemoryPairs => state.records.memory_pairs_best_moves = Some(1),
+                GameId::Spider => state.records.spider_best_moves = Some(1),
+                GameId::MahjongSolitaire => state.records.mahjong_solitaire_best_moves = Some(1),
+                GameId::HigherLower => state.records.higher_lower_best_score = Some(1),
+                GameId::KlondikeGolf => state.records.klondike_golf_best_moves = Some(1),
+                GameId::Blackjack => state.records.blackjack_best_wins = Some(1),
+                GameId::SpiderSolitaire => state.records.spider_solitaire_best_moves = Some(1),
+                GameId::Pyramid => state.records.pyramid_best_moves = Some(1),
+                GameId::TriPeaks => state.records.tri_peaks_best_moves = Some(1),
+                _ => {}
+            }
+        }
+    }
+    assert_eq!(next_unfinished_game(&state, 3), None);
+}
