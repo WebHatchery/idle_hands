@@ -46,6 +46,24 @@ fn recent_shelf_clear_action_is_touchable_at_each_size() {
 }
 
 #[test]
+fn empty_recent_shelf_has_no_clear_action_at_any_size() {
+    let state = AppState {
+        recent_view: true,
+        ..Default::default()
+    };
+
+    crate::ui::with_desktop_layout(|| {
+        assert!(clicks(&state, quick_action_rect().center()).is_empty());
+    });
+    crate::ui::with_compact_landscape_layout(|| {
+        assert!(clicks(&state, quick_action_rect().center()).is_empty());
+    });
+    crate::ui::with_portrait_layout(|| {
+        assert!(clicks(&state, quick_action_rect().center()).is_empty());
+    });
+}
+
+#[test]
 fn favorite_card_remove_action_targets_the_starred_drawer() {
     let state = AppState {
         favorites: {

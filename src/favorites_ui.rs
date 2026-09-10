@@ -74,7 +74,10 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(recent, point) {
         return vec![UiAction::Recent];
     }
-    if mode.is_recent() && crate::ui::hit(quick_action_rect(), point) {
+    if mode.is_recent()
+        && !state.recent_games.is_empty()
+        && crate::ui::hit(quick_action_rect(), point)
+    {
         return vec![UiAction::ClearRecent];
     }
     if let Some((previous, next)) = scroll_rects() {
@@ -169,7 +172,7 @@ pub fn draw(state: &AppState) {
         if crate::ui::is_portrait() { 11. } else { 16. },
         crate::theme::SECONDARY,
     );
-    if recent {
+    if recent && count > 0 {
         let action = quick_action_rect();
         panel(action, crate::theme::SURFACE_DARK);
         crate::ui::draw_text(
