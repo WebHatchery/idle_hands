@@ -586,8 +586,9 @@ impl Game {
         if self.state.stamps > previous_stamps {
             if let Some(achievement) = newly_earned.first() {
                 self.notifications.success(format!(
-                    "{} — {} stamps",
+                    "{} — {} — {} stamps",
                     achievement.title(),
+                    achievement.description(),
                     self.state.stamps
                 ));
             }
