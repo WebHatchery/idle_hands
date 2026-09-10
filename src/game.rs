@@ -258,11 +258,12 @@ impl Game {
                 self.state.cabinet_scroll = 0;
             }
             ui::UiAction::CabinetSort => {
-                self.state.cabinet_sort =
-                    crate::cabinet_status::CabinetSort::from_index(self.state.cabinet_sort)
-                        .next()
-                        .index();
+                let sort =
+                    crate::cabinet_status::CabinetSort::from_index(self.state.cabinet_sort).next();
+                self.state.cabinet_sort = sort.index();
                 self.state.cabinet_scroll = 0;
+                self.notifications
+                    .info(format!("Cabinet order: {}", sort.label()));
             }
             ui::UiAction::CabinetScroll(delta) => {
                 self.state.cabinet_scroll = self
