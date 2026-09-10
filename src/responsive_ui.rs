@@ -201,35 +201,45 @@ pub fn draw_settings(state: &AppState) {
         15.,
         WHITE,
     );
-    for (y, label) in [
-        (
-            165.,
-            format!("Card back: {}", cosmetics::card_back_name(state.card_back)),
-        ),
-        (
-            215.,
-            format!(
-                "Board theme: {}",
-                cosmetics::board_theme_name(state.board_theme)
-            ),
-        ),
-        (
-            265.,
-            format!("Sound set: {}", cosmetics::sound_set_name(state.sound_set)),
-        ),
-        (
-            315.,
-            format!(
-                "Decoration: {}",
-                cosmetics::cabinet_decoration_name(state.cabinet_decoration)
-            ),
-        ),
-    ] {
+    for (index, (kind, current)) in cosmetics::CosmeticKind::ALL
+        .into_iter()
+        .zip([
+            state.card_back,
+            state.board_theme,
+            state.sound_set,
+            state.cabinet_decoration,
+        ])
+        .enumerate()
+    {
+        let y = 165. + index as f32 * 50.;
+        let options = kind.options();
+        let option = &options[current as usize % options.len()];
         panel(
             Rect::new(22., y - 28., 316., 44.),
             Color::new(0.16, 0.11, 0.24, 1.),
         );
-        text(&label, 34., y, 14., WHITE);
+        text(
+            &format!("{}: {}", kind.label(), option.name),
+            34.,
+            y,
+            14.,
+            WHITE,
+        );
+        let next = kind
+            .next_cost(state.stamps)
+            .map_or_else(|| "ALL OPEN".into(), |cost| format!("NEXT {cost}"));
+        text(
+            &format!(
+                "{} / {} OPEN  ·  {}",
+                kind.unlocked_count(state.stamps),
+                options.len(),
+                next
+            ),
+            34.,
+            y + 15.,
+            9.,
+            crate::theme::SECONDARY,
+        );
     }
     panel(
         Rect::new(22., 360., 150., 44.),
