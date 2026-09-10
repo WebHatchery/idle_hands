@@ -163,6 +163,17 @@ fn draw_library(state: &AppState) {
             crate::theme::BRASS
         },
     );
+    panel(Rect::new(690., 4., 135., 58.), crate::theme::PAPER_LIGHT);
+    text(
+        &format!(
+            "SORT {}",
+            cabinet_status::CabinetSort::from_index(state.cabinet_sort).label()
+        ),
+        705.,
+        34.,
+        9.,
+        crate::theme::INK,
+    );
     for (index, game) in page_games(state).iter().copied().enumerate() {
         let rect = game_rect(index);
         panel(rect, crate::theme::PAPER_LIGHT);
@@ -324,6 +335,9 @@ fn library_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(Rect::new(160., 4., 110., 58.), p) {
         return vec![UiAction::CabinetFilter(0)];
     }
+    if crate::ui::hit(Rect::new(690., 4., 135., 58.), p) {
+        return vec![UiAction::CabinetSort];
+    }
     for (index, game) in page_games(state).iter().copied().enumerate() {
         if crate::ui::hit(game_rect(index), p) {
             return vec![UiAction::Open(game.index())];
@@ -339,11 +353,11 @@ fn library_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
 }
 
 fn visible_games(state: &AppState) -> Vec<GameId> {
-    GameId::ALL
-        .iter()
-        .copied()
-        .filter(|game| cabinet_status::matches_filter(state, *game, state.cabinet_filter))
-        .collect()
+    cabinet_status::sorted_games(
+        state,
+        state.cabinet_filter,
+        cabinet_status::CabinetSort::from_index(state.cabinet_sort),
+    )
 }
 fn page_games(state: &AppState) -> Vec<GameId> {
     let games = visible_games(state);

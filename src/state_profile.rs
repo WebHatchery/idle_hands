@@ -35,6 +35,8 @@ pub struct ProfileSave {
     pub favorites: Vec<bool>,
     #[serde(default)]
     pub recent_games: Vec<GameId>,
+    #[serde(default)]
+    pub cabinet_sort: u8,
 }
 
 pub(super) fn normalize_tutorial_seen(mut tutorial_seen: Vec<bool>) -> Vec<bool> {
@@ -90,6 +92,7 @@ impl ProfileSave {
             tutorial_seen: state.tutorial_seen.clone(),
             favorites: state.favorites.clone(),
             recent_games: state.recent_games.clone(),
+            cabinet_sort: state.cabinet_sort,
         }
     }
 
@@ -116,5 +119,7 @@ impl ProfileSave {
         state.tutorial_seen = normalize_tutorial_seen(self.tutorial_seen);
         state.favorites = normalize_favorites(self.favorites);
         state.recent_games = normalize_recent_games(self.recent_games);
+        state.cabinet_sort =
+            self.cabinet_sort % crate::cabinet_status::CabinetSort::ALL.len() as u8;
     }
 }

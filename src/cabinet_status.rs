@@ -6,6 +6,49 @@ use crate::state::{AppState, GameId};
 use macroquad::prelude::Color;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum CabinetSort {
+    Title,
+    Progress,
+    Recent,
+}
+
+impl CabinetSort {
+    pub const ALL: [Self; 3] = [Self::Title, Self::Progress, Self::Recent];
+
+    pub const fn from_index(index: u8) -> Self {
+        match index % Self::ALL.len() as u8 {
+            1 => Self::Progress,
+            2 => Self::Recent,
+            _ => Self::Title,
+        }
+    }
+
+    pub const fn index(self) -> u8 {
+        match self {
+            Self::Title => 0,
+            Self::Progress => 1,
+            Self::Recent => 2,
+        }
+    }
+
+    pub const fn label(self) -> &'static str {
+        match self {
+            Self::Title => "TITLE",
+            Self::Progress => "PROGRESS",
+            Self::Recent => "RECENT",
+        }
+    }
+
+    pub const fn next(self) -> Self {
+        match self {
+            Self::Title => Self::Progress,
+            Self::Progress => Self::Recent,
+            Self::Recent => Self::Title,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct CategoryProgress {
     pub completed: usize,
     pub total: usize,
@@ -151,6 +194,35 @@ pub fn next_unfinished_game(state: &AppState, filter: u8) -> Option<GameId> {
     GameId::ALL.into_iter().find(|&game| {
         category_filter(game) == filter && !crate::progression::game_complete(&state.records, game)
     })
+}
+
+pub fn sorted_games(state: &AppState, filter: u8, sort: CabinetSort) -> Vec<GameId> {
+    let mut games: Vec<GameId> = GameId::ALL
+        .into_iter()
+        .filter(|&game| matches_filter(state, game, filter))
+        .collect();
+    games.sort_by(|left, right| match sort {
+        CabinetSort::Title => left.title().cmp(right.title()),
+        CabinetSort::Progress => {
+            let left_done = crate::progression::game_complete(&state.records, *left);
+            let right_done = crate::progression::game_complete(&state.records, *right);
+            left_done
+                .cmp(&right_done)
+                .then_with(|| left.title().cmp(right.title()))
+        }
+        CabinetSort::Recent => recent_rank(state, *left)
+            .cmp(&recent_rank(state, *right))
+            .then_with(|| left.title().cmp(right.title())),
+    });
+    games
+}
+
+fn recent_rank(state: &AppState, game: GameId) -> usize {
+    state
+        .recent_games
+        .iter()
+        .position(|recent| *recent == game)
+        .unwrap_or(usize::MAX)
 }
 
 pub fn availability_counts(state: &AppState, filter: u8) -> (usize, usize) {

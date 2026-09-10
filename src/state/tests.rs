@@ -529,3 +529,22 @@ fn recent_games_round_trip_deduplicates_and_caps_history() {
     assert_eq!(migrated_state.recent_games[0], GameId::Spider);
     assert_eq!(migrated_state.recent_games[1], GameId::Nim);
 }
+
+#[test]
+fn cabinet_sort_preference_round_trips_and_old_profiles_default_to_title() {
+    let state = AppState {
+        cabinet_sort: crate::cabinet_status::CabinetSort::Recent.index(),
+        ..Default::default()
+    };
+    let profile = ProfileSave::from_state(&state, "1.0.0");
+    let mut restored = AppState::default();
+    profile.clone().apply_to(&mut restored);
+    assert_eq!(restored.cabinet_sort, 2);
+
+    let mut old = serde_json::to_value(&profile).unwrap();
+    old.as_object_mut().unwrap().remove("cabinet_sort");
+    let migrated: ProfileSave = serde_json::from_value(old).unwrap();
+    let mut migrated_state = AppState::default();
+    migrated.apply_to(&mut migrated_state);
+    assert_eq!(migrated_state.cabinet_sort, 0);
+}

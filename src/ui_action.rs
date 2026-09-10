@@ -15,6 +15,7 @@ pub enum UiAction {
     DailyArchive,
     DailyArchiveScroll(i8),
     CabinetFilter(u8),
+    CabinetSort,
     CabinetScroll(i8),
     LibraryScroll(i8),
     Achievements,

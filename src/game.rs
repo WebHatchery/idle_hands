@@ -257,6 +257,13 @@ impl Game {
                 self.state.cabinet_filter = filter.min(9);
                 self.state.cabinet_scroll = 0;
             }
+            ui::UiAction::CabinetSort => {
+                self.state.cabinet_sort =
+                    crate::cabinet_status::CabinetSort::from_index(self.state.cabinet_sort)
+                        .next()
+                        .index();
+                self.state.cabinet_scroll = 0;
+            }
             ui::UiAction::CabinetScroll(delta) => {
                 self.state.cabinet_scroll = self
                     .state

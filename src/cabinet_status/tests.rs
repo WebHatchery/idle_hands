@@ -135,3 +135,24 @@ fn next_unfinished_game_follows_category_order() {
     }
     assert_eq!(next_unfinished_game(&state, 3), None);
 }
+
+#[test]
+fn cabinet_sort_modes_cycle_and_keep_ordering_deterministic() {
+    let mut state = AppState::default();
+    assert_eq!(CabinetSort::from_index(0), CabinetSort::Title);
+    assert_eq!(CabinetSort::Title.next(), CabinetSort::Progress);
+    assert_eq!(CabinetSort::Progress.next(), CabinetSort::Recent);
+    assert_eq!(CabinetSort::Recent.next(), CabinetSort::Title);
+    assert_eq!(CabinetSort::from_index(8), CabinetSort::Recent);
+
+    let title_sorted = sorted_games(&state, 9, CabinetSort::Title);
+    assert_eq!(title_sorted.first(), Some(&GameId::Game2048));
+
+    state.records.best_2048 = 2048;
+    let progress_sorted = sorted_games(&state, 9, CabinetSort::Progress);
+    assert_eq!(progress_sorted.last(), Some(&GameId::Game2048));
+
+    state.recent_games = vec![GameId::Solitaire, GameId::Game2048];
+    let recent_sorted = sorted_games(&state, 9, CabinetSort::Recent);
+    assert_eq!(&recent_sorted[..2], &[GameId::Solitaire, GameId::Game2048]);
+}

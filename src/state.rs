@@ -248,6 +248,7 @@ pub struct AppState {
     pub achievements_view: bool,
     pub achievement_filter: u8,
     pub cabinet_filter: u8,
+    pub cabinet_sort: u8,
     pub cabinet_scroll: usize,
     pub library_scroll: usize,
     pub daily_archive_scroll: usize,
@@ -408,6 +409,8 @@ pub struct CollectionSave {
     pub favorites: Vec<bool>,
     #[serde(default)]
     pub recent_games: Vec<GameId>,
+    #[serde(default)]
+    pub cabinet_sort: u8,
 }
 
 fn default_selected() -> usize {
@@ -518,6 +521,7 @@ impl CollectionSave {
             tutorial_seen: state.tutorial_seen.clone(),
             favorites: state.favorites.clone(),
             recent_games: state.recent_games.clone(),
+            cabinet_sort: state.cabinet_sort,
         }
     }
     pub fn apply_to(self, state: &mut AppState) {
@@ -604,6 +608,8 @@ impl CollectionSave {
         state.tutorial_seen = state_profile::normalize_tutorial_seen(self.tutorial_seen);
         state.favorites = state_profile::normalize_favorites(self.favorites);
         state.recent_games = state_profile::normalize_recent_games(self.recent_games);
+        state.cabinet_sort =
+            self.cabinet_sort % crate::cabinet_status::CabinetSort::ALL.len() as u8;
     }
 }
 impl Default for AppState {
@@ -641,6 +647,7 @@ impl Default for AppState {
             achievements_view: false,
             achievement_filter: 0,
             cabinet_filter: 0,
+            cabinet_sort: 0,
             cabinet_scroll: 0,
             library_scroll: 0,
             daily_archive_scroll: 0,
