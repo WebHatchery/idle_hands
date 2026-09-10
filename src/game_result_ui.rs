@@ -59,12 +59,32 @@ pub(super) fn make<T>(
             crate::game_variants::label(state, game)
         ),
         explanation: explanation.into(),
-        stats,
+        stats: with_time_stats(state, stats),
         primary_label,
         primary_action,
         secondary_label,
         secondary_action,
     }
+}
+
+fn with_time_stats(state: &AppState, stats: String) -> String {
+    let game = state
+        .screen
+        .game()
+        .expect("result info is only for game screens");
+    let current = state.records.current_time(game.index());
+    let best = state.records.best_time(game.index());
+    if current == 0 && best.is_none() {
+        return stats;
+    }
+    let best_label = best.map_or_else(
+        || "—".into(),
+        |seconds| crate::state_records::format_duration(u64::from(seconds)),
+    );
+    format!(
+        "{stats}  ·  RUN {}  ·  BEST {best_label}",
+        crate::state_records::format_duration(u64::from(current))
+    )
 }
 
 pub fn clicks(state: &AppState, point: Vec2) -> Option<Vec<UiAction>> {

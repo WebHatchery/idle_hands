@@ -39,6 +39,18 @@ fn autosaved_terminal_status_survives_serialized_snapshot_restore() {
 }
 
 #[test]
+fn timed_result_cards_show_the_run_and_personal_best() {
+    let mut state = game_state(GameId::Minesweeper);
+    state.games.minesweeper.status = crate::minesweeper::MineStatus::Won;
+    state.records.ensure_time_slots();
+    state.records.elapsed_seconds[GameId::Minesweeper.index()] = 61;
+    state.records.best_time_seconds[GameId::Minesweeper.index()] = Some(54);
+    let stats = info(&state).unwrap().stats;
+    assert!(stats.contains("RUN 1m 01s"));
+    assert!(stats.contains("BEST 0m 54s"));
+}
+
+#[test]
 fn every_result_layout_keeps_two_touch_targets_inside_the_viewport() {
     let state = {
         let mut state = game_state(GameId::TicTacToe);
