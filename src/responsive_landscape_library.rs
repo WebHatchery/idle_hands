@@ -56,6 +56,18 @@ pub fn draw_records(state: &AppState) {
         12.,
         crate::theme::BRASS,
     );
+    text(
+        &format!(
+            "DAILY {} CLEARS  -  LOG {}/90  -  BEST {}",
+            state.records.daily_clear_count(),
+            state.records.daily_results.len(),
+            value(state.records.daily_best_score())
+        ),
+        40.,
+        62.,
+        10.,
+        crate::theme::SECONDARY,
+    );
     panel(Rect::new(650., 2., 150., 44.), crate::theme::SURFACE);
     text("ACHIEVEMENTS", 663., 30., 9., WHITE);
     draw_rectangle_lines(650., 2., 150., 44., 3., WHITE);

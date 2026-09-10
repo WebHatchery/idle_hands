@@ -42,7 +42,18 @@ pub fn draw_records(state: &AppState) {
         crate::theme::BACKGROUND_DEEP,
     );
     text("RECORDS", 20., 62., 29., crate::theme::BRASS);
-    text("Milestones", 22., 88., 13., crate::theme::SECONDARY);
+    text(
+        &format!(
+            "Milestones  ·  Daily {} clears  ·  log {}/90  ·  best {}",
+            state.records.daily_clear_count(),
+            state.records.daily_results.len(),
+            value(state.records.daily_best_score())
+        ),
+        22.,
+        88.,
+        10.,
+        crate::theme::SECONDARY,
+    );
     let earned = state.achievements.iter().filter(|earned| **earned).count();
     let completed = completed_games(&state.records);
     text(
