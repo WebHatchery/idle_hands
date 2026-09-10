@@ -41,5 +41,20 @@ pub fn status_label(
     format!("{} · {state}", label(day, fallback_challenge))
 }
 
+pub fn preview_action(phase: crate::daily_dungeon::DailyPhase, best_score: Option<u32>) -> String {
+    match phase {
+        crate::daily_dungeon::DailyPhase::Exploring => best_score.map_or_else(
+            || "dungeon awaits  >".to_owned(),
+            |score| format!("BEST {score}  ·  OPEN  >"),
+        ),
+        crate::daily_dungeon::DailyPhase::Won | crate::daily_dungeon::DailyPhase::Lost => {
+            best_score.map_or_else(
+                || "replay route  >".to_owned(),
+                |score| format!("BEST {score}  ·  REPLAY  >"),
+            )
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests;

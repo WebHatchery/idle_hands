@@ -106,11 +106,10 @@ fn draw_home(state: &AppState, loaded: usize) {
         crate::theme::SURFACE_DARK,
     );
     text(
-        if state.games.daily_dungeon.won() {
-            "REPLAY  >"
-        } else {
-            "CHALLENGE  >"
-        },
+        &crate::daily_challenge::preview_action(
+            state.games.daily_dungeon.phase,
+            state.records.daily_score(state.games.daily_dungeon.day_key),
+        ),
         694.,
         110.,
         10.,

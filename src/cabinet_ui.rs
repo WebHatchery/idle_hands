@@ -156,11 +156,10 @@ fn draw_home(state: &AppState, loaded: usize) {
         crate::theme::INK,
     );
     text(
-        if state.games.daily_dungeon.won() {
-            "replay route  >"
-        } else {
-            "dungeon awaits  >"
-        },
+        &crate::daily_challenge::preview_action(
+            state.games.daily_dungeon.phase,
+            state.records.daily_score(state.games.daily_dungeon.day_key),
+        ),
         982.,
         178.,
         14.,

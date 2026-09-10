@@ -25,3 +25,15 @@ fn status_label_explains_the_daily_state() {
         "DAY 20042 · CLEARED"
     );
 }
+
+#[test]
+fn preview_action_exposes_best_score_and_recovery() {
+    assert_eq!(
+        preview_action(DailyPhase::Exploring, Some(92)),
+        "BEST 92  ·  OPEN  >"
+    );
+    assert_eq!(
+        preview_action(DailyPhase::Won, Some(92)),
+        "BEST 92  ·  REPLAY  >"
+    );
+}
