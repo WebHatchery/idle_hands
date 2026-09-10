@@ -58,6 +58,22 @@ fn page_start_handles_empty_and_zero_capacity_safely() {
 }
 
 #[test]
+fn scroll_limit_matches_the_active_shelf_capacity() {
+    let state = AppState {
+        recent_games: vec![
+            GameId::Solitaire,
+            GameId::FreeCell,
+            GameId::Spider,
+            GameId::Pyramid,
+        ],
+        ..AppState::default()
+    };
+
+    assert_eq!(scroll_limit(&state, BrowseMode::Recent, 8), 0);
+    assert_eq!(scroll_limit(&state, BrowseMode::Recent, 2), 2);
+}
+
+#[test]
 fn summary_partitions_the_active_browse_shelf() {
     let mut state = AppState::default();
     state.records.solitaire_best_moves = Some(42);

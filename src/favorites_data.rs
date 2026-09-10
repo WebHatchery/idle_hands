@@ -68,6 +68,10 @@ pub fn page_start(total: usize, start: usize, capacity: usize) -> usize {
     start.min(total.saturating_sub(capacity.max(1)))
 }
 
+pub fn scroll_limit(state: &AppState, mode: BrowseMode, capacity: usize) -> usize {
+    games(state, mode).len().saturating_sub(capacity.max(1))
+}
+
 pub fn summary(state: &AppState, mode: BrowseMode) -> BrowseSummary {
     let games = games(state, mode);
     let done = games

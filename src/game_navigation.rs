@@ -75,6 +75,26 @@ impl Game {
             && !self.state.daily_archive_view
     }
 
+    pub(super) fn library_scroll_limit(&self) -> usize {
+        if self.state.screen == Screen::Records
+            && (self.state.favorites_view || self.state.recent_view)
+        {
+            let capacity = if crate::ui::is_portrait() {
+                8
+            } else if crate::ui::is_compact_landscape() {
+                10
+            } else {
+                40
+            };
+            return crate::favorites_data::scroll_limit(
+                &self.state,
+                crate::favorites_data::BrowseMode::from_state(&self.state),
+                capacity,
+            );
+        }
+        GameId::ALL.len().saturating_sub(1)
+    }
+
     pub(super) fn open_game(&mut self, index: usize) {
         let Some(id) = GameId::ALL.get(index).copied() else {
             return;

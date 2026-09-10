@@ -286,7 +286,7 @@ impl Game {
                     .state
                     .library_scroll
                     .saturating_add_signed(delta as isize)
-                    .min(GameId::ALL.len().saturating_sub(1));
+                    .min(self.library_scroll_limit());
             }
             ui::UiAction::DailyArchiveScroll(delta) => {
                 let page_size = crate::daily_archive_ui::page_size();
