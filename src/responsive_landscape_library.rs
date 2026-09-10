@@ -369,6 +369,13 @@ fn draw_filtered_records(state: &AppState) {
             crate::theme::BRASS,
         );
     }
+    text(
+        &crate::records_data::page_label(start, rows.len(), RECORDS_VISIBLE_ROWS),
+        650.,
+        78.,
+        8.,
+        crate::theme::SECONDARY,
+    );
     scroll(Rect::new(430., 330., 100., 44.), "PREV");
     scroll(Rect::new(545., 330., 100., 44.), "NEXT");
     back(Rect::new(700., 330., 110., 44.));

@@ -367,6 +367,13 @@ fn draw_filtered_records(state: &AppState) {
         crate::ui::draw_text(row.label, x, y, 10., crate::theme::CREAM);
         crate::ui::draw_text(&row.score, x + 150., y, 11., crate::theme::BRASS);
     }
+    crate::ui::draw_text(
+        crate::records_data::page_label(start, rows.len(), 56),
+        930.,
+        575.,
+        12.,
+        crate::theme::SECONDARY,
+    );
     panel(Rect::new(930., 590., 180., 48.), crate::theme::MOSS_DARK);
     crate::ui::draw_text("BACK", 990., 621., 18., WHITE);
 }

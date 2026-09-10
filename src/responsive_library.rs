@@ -341,7 +341,8 @@ pub fn draw_records(state: &AppState) {
     scroll_button(Rect::new(250., 602., 100., 44.), "NEXT");
     text(
         &format!(
-            "{}-{} OF {}",
+            "{}  ·  {}-{} OF {}",
+            crate::records_data::page_label(start, rows.len(), RECORDS_VISIBLE_ROWS),
             start + 1,
             (start + RECORDS_VISIBLE_ROWS).min(rows.len()),
             rows.len()
@@ -387,7 +388,8 @@ fn draw_filtered_records(state: &AppState) {
     scroll_button(Rect::new(250., 602., 100., 44.), "NEXT");
     text(
         &format!(
-            "{}-{} OF {}",
+            "{}  ·  {}-{} OF {}",
+            crate::records_data::page_label(start, rows.len(), RECORDS_VISIBLE_ROWS),
             start + 1,
             (start + RECORDS_VISIBLE_ROWS).min(rows.len()),
             rows.len()

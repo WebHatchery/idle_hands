@@ -32,3 +32,10 @@ fn shelf_summary_counts_unique_games_and_variant_rows() {
     assert_eq!(cards.completed, 1);
     assert_eq!(summary_label(&state, 3), "11G / 11R  ·  1 DONE");
 }
+
+#[test]
+fn page_labels_are_stable_at_empty_and_end_boundaries() {
+    assert_eq!(page_label(0, 0, 11), "PAGE 1 / 1");
+    assert_eq!(page_label(11, 23, 11), "PAGE 2 / 3");
+    assert_eq!(page_label(99, 23, 11), "PAGE 3 / 3");
+}

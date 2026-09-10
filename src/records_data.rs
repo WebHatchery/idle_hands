@@ -57,6 +57,13 @@ pub fn summary_label(state: &AppState, filter: u8) -> String {
     )
 }
 
+pub fn page_label(start: usize, total: usize, page_size: usize) -> String {
+    let page_size = page_size.max(1);
+    let pages = total.max(1).div_ceil(page_size);
+    let page = (start / page_size + 1).min(pages);
+    format!("PAGE {} / {}", page, pages)
+}
+
 pub fn rows(state: &AppState, filter: u8) -> Vec<RecordRow> {
     let mut rows = Vec::new();
     add(
