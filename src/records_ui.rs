@@ -273,6 +273,26 @@ pub fn draw_records(state: &AppState) {
             "Paddle Duel best",
             value(state.records.paddle_duel_best_score),
         ),
+        (
+            "Riddle Room best",
+            value(state.records.misc_best_moves[0].map(u32::from)),
+        ),
+        (
+            "Pattern Vault best",
+            value(state.records.misc_best_moves[1].map(u32::from)),
+        ),
+        (
+            "Sum Circuit best",
+            value(state.records.misc_best_moves[2].map(u32::from)),
+        ),
+        (
+            "Orbit Order best",
+            value(state.records.misc_best_moves[3].map(u32::from)),
+        ),
+        (
+            "Word Forge best",
+            value(state.records.misc_best_moves[4].map(u32::from)),
+        ),
     ];
     let mut rows = Vec::new();
     rows.extend(left);
@@ -280,10 +300,10 @@ pub fn draw_records(state: &AppState) {
     rows.extend(right);
     rows.extend(far_right);
     for (index, (label, score)) in rows.iter().enumerate() {
-        let column = index / 11;
-        let row = index % 11;
+        let column = index / 14;
+        let row = index % 14;
         let x = 160. + column as f32 * 200.;
-        let y = 240. + row as f32 * 32.;
+        let y = 230. + row as f32 * 26.;
         crate::ui::draw_text(label, x, y, 10., crate::theme::CREAM);
         crate::ui::draw_text(score, x + 150., y, 11., crate::theme::BRASS);
     }
