@@ -77,6 +77,21 @@ pub fn draw_records(state: &AppState) {
     panel(Rect::new(480., 2., 150., 44.), crate::theme::SURFACE);
     text("DAILY LOG", 510., 30., 9., WHITE);
     draw_rectangle_lines(480., 2., 150., 44., 3., WHITE);
+    panel(Rect::new(310., 2., 150., 44.), crate::theme::SURFACE);
+    text(
+        &format!(
+            "SHELF {}",
+            crate::records_data::filter_label(state.records_filter)
+        ),
+        335.,
+        30.,
+        9.,
+        WHITE,
+    );
+    if state.records_filter != 0 {
+        draw_filtered_records(state);
+        return;
+    }
     let rows = [
         ("2048 best", state.records.best_2048.to_string()),
         ("Mines beginner", value(state.records.minesweeper[0])),
@@ -313,6 +328,46 @@ pub fn draw_records(state: &AppState) {
     draw_rectangle_lines(700., 330., 110., 44., 3., WHITE);
 }
 
+fn draw_filtered_records(state: &AppState) {
+    let rows = crate::records_data::rows(state, state.records_filter);
+    let start = state
+        .library_scroll
+        .min(rows.len().saturating_sub(RECORDS_VISIBLE_ROWS));
+    for (index, row) in rows
+        .iter()
+        .skip(start)
+        .take(RECORDS_VISIBLE_ROWS)
+        .enumerate()
+    {
+        let rect = Rect::new(
+            30. + (index % 2) as f32 * 380.,
+            70. + (index / 2) as f32 * 50.,
+            360.,
+            44.,
+        );
+        panel(rect, Color::new(0.13, 0.09, 0.20, 1.));
+        text(
+            row.label,
+            rect.x + 12.,
+            rect.y + 29.,
+            13.,
+            crate::theme::CREAM,
+        );
+        let width = crate::ui::measure_text(&row.score, None, 14, 1.).width;
+        text(
+            &row.score,
+            rect.right() - width - 12.,
+            rect.y + 29.,
+            14.,
+            crate::theme::BRASS,
+        );
+    }
+    scroll(Rect::new(430., 330., 100., 44.), "PREV");
+    scroll(Rect::new(545., 330., 100., 44.), "NEXT");
+    back(Rect::new(700., 330., 110., 44.));
+    draw_rectangle_lines(700., 330., 110., 44., 3., WHITE);
+}
+
 fn next_achievement(records: &crate::state::CollectionRecords) -> &'static str {
     AchievementId::next_locked(records)
         .map(AchievementId::title)
@@ -322,8 +377,12 @@ fn next_achievement(records: &crate::state::CollectionRecords) -> &'static str {
 fn value(value: Option<u32>) -> String {
     value.map_or_else(|| "-".into(), |number| number.to_string())
 }
-pub fn records_clicks(p: Vec2) -> Vec<UiAction> {
-    if crate::ui::hit(Rect::new(480., 2., 150., 44.), p) {
+pub fn records_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
+    if crate::ui::hit(Rect::new(310., 2., 150., 44.), p) {
+        vec![UiAction::RecordsFilter(crate::records_data::next_filter(
+            state.records_filter,
+        ))]
+    } else if crate::ui::hit(Rect::new(480., 2., 150., 44.), p) {
         vec![UiAction::DailyArchive]
     } else if crate::ui::hit(Rect::new(650., 2., 150., 44.), p) {
         vec![UiAction::Achievements]

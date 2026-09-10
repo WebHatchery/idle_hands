@@ -88,6 +88,22 @@ pub fn draw_records(state: &AppState) {
     panel(Rect::new(190., 76., 155., 44.), crate::theme::SURFACE);
     text("DAILY LOG", 225., 104., 10., WHITE);
     draw_rectangle_lines(190., 76., 155., 44., 3., WHITE);
+    panel(Rect::new(190., 124., 155., 44.), crate::theme::SURFACE);
+    text(
+        &format!(
+            "SHELF {}",
+            crate::records_data::filter_label(state.records_filter)
+        ),
+        214.,
+        152.,
+        10.,
+        WHITE,
+    );
+    draw_rectangle_lines(190., 124., 155., 44., 3., WHITE);
+    if state.records_filter != 0 {
+        draw_filtered_records(state);
+        return;
+    }
     let rows = [
         ("2048 best", state.records.best_2048.to_string()),
         ("Mines beginner", value(state.records.minesweeper[0])),
@@ -302,12 +318,58 @@ pub fn draw_records(state: &AppState) {
         .take(RECORDS_VISIBLE_ROWS)
         .enumerate()
     {
-        let rect = Rect::new(18., 142. + index as f32 * 42., 324., 36.);
+        let rect = Rect::new(18., 174. + index as f32 * 42., 324., 36.);
         panel(rect, Color::new(0.13, 0.09, 0.20, 1.));
         text(label, rect.x + 10., rect.y + 24., 13., crate::theme::CREAM);
         let score_width = crate::ui::measure_text(score, None, 14, 1.).width;
         text(
             score,
+            rect.right() - score_width - 10.,
+            rect.y + 24.,
+            14.,
+            crate::theme::BRASS,
+        );
+    }
+    scroll_button(Rect::new(10., 602., 100., 44.), "PREV");
+    scroll_button(Rect::new(250., 602., 100., 44.), "NEXT");
+    text(
+        &format!(
+            "{}-{} OF {}",
+            start + 1,
+            (start + RECORDS_VISIBLE_ROWS).min(rows.len()),
+            rows.len()
+        ),
+        128.,
+        630.,
+        11.,
+        crate::theme::CREAM,
+    );
+    back_button(714.);
+}
+
+fn draw_filtered_records(state: &AppState) {
+    let rows = crate::records_data::rows(state, state.records_filter);
+    let start = state
+        .library_scroll
+        .min(rows.len().saturating_sub(RECORDS_VISIBLE_ROWS));
+    for (index, row) in rows
+        .iter()
+        .skip(start)
+        .take(RECORDS_VISIBLE_ROWS)
+        .enumerate()
+    {
+        let rect = Rect::new(18., 174. + index as f32 * 42., 324., 36.);
+        panel(rect, Color::new(0.13, 0.09, 0.20, 1.));
+        text(
+            row.label,
+            rect.x + 10.,
+            rect.y + 24.,
+            13.,
+            crate::theme::CREAM,
+        );
+        let score_width = crate::ui::measure_text(&row.score, None, 14, 1.).width;
+        text(
+            &row.score,
             rect.right() - score_width - 10.,
             rect.y + 24.,
             14.,
@@ -337,11 +399,15 @@ fn next_achievement(records: &crate::state::CollectionRecords) -> &'static str {
         .unwrap_or("ALL COMPLETE")
 }
 
-pub fn records_clicks(p: Vec2) -> Vec<UiAction> {
+pub fn records_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(Rect::new(190., 28., 155., 44.), p) {
         vec![UiAction::Achievements]
     } else if crate::ui::hit(Rect::new(190., 76., 155., 44.), p) {
         vec![UiAction::DailyArchive]
+    } else if crate::ui::hit(Rect::new(190., 124., 155., 44.), p) {
+        vec![UiAction::RecordsFilter(crate::records_data::next_filter(
+            state.records_filter,
+        ))]
     } else if crate::ui::hit(Rect::new(10., 602., 100., 44.), p) {
         vec![UiAction::LibraryScroll(-1)]
     } else if crate::ui::hit(Rect::new(250., 602., 100., 44.), p) {

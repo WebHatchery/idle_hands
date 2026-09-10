@@ -15,6 +15,7 @@ pub enum UiAction {
     Recent,
     DailyArchive,
     DailyArchiveScroll(i8),
+    RecordsFilter(u8),
     CabinetFilter(u8),
     CabinetSort,
     CabinetScroll(i8),

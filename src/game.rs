@@ -298,6 +298,14 @@ impl Game {
                             .saturating_sub(page_size),
                     );
             }
+            ui::UiAction::RecordsFilter(filter) => {
+                self.state.records_filter = if crate::records_data::FILTERS.contains(&filter) {
+                    filter
+                } else {
+                    0
+                };
+                self.state.library_scroll = 0;
+            }
             ui::UiAction::Cabinet => {
                 self.state.screen = Screen::Cabinet;
                 self.state.favorites_view = false;
@@ -319,6 +327,7 @@ impl Game {
             ui::UiAction::Records => {
                 self.state.screen = Screen::Records;
                 self.state.library_scroll = 0;
+                self.state.records_filter = 0;
                 self.state.favorites_view = false;
                 self.state.recent_view = false;
                 self.state.daily_archive_view = false;

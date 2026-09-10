@@ -284,10 +284,10 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
             favorites_ui::clicks(state, p)
         }
         Screen::Records if is_compact_landscape() => {
-            responsive_landscape_library::records_clicks(p)
+            responsive_landscape_library::records_clicks(state, p)
         }
-        Screen::Records if is_portrait() => responsive_library::records_clicks(p),
-        Screen::Records => records_ui::records_clicks(p),
+        Screen::Records if is_portrait() => responsive_library::records_clicks(state, p),
+        Screen::Records => records_ui::records_clicks(state, p),
         Screen::Rules if is_compact_landscape() => responsive_landscape_library::rules_clicks(p),
         Screen::Rules if is_portrait() => responsive_library::rules_clicks(p),
         Screen::Rules => library_ui::rules_clicks(p),

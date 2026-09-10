@@ -74,6 +74,21 @@ pub fn draw_records(state: &AppState) {
     crate::ui::draw_text("ACHIEVEMENTS", 925., 129., 14., WHITE);
     panel(Rect::new(900., 154., 210., 44.), crate::theme::SURFACE);
     crate::ui::draw_text("DAILY ARCHIVE", 925., 181., 14., WHITE);
+    panel(Rect::new(900., 206., 210., 44.), crate::theme::SURFACE);
+    crate::ui::draw_text(
+        format!(
+            "SHELF: {}",
+            crate::records_data::filter_label(state.records_filter)
+        ),
+        925.,
+        233.,
+        14.,
+        WHITE,
+    );
+    if state.records_filter != 0 {
+        draw_filtered_records(state);
+        return;
+    }
     let left = [
         ("2048 best score", state.records.best_2048.to_string()),
         ("Minesweeper beginner", value(state.records.minesweeper[0])),
@@ -334,17 +349,36 @@ pub fn draw_records(state: &AppState) {
     crate::ui::draw_text("BACK", 990., 621., 18., WHITE);
 }
 
+fn draw_filtered_records(state: &AppState) {
+    let rows = crate::records_data::rows(state, state.records_filter);
+    let start = state.library_scroll.min(rows.len().saturating_sub(56));
+    for (index, row) in rows.iter().skip(start).take(56).enumerate() {
+        let column = index / 14;
+        let line = index % 14;
+        let x = 160. + column as f32 * 200.;
+        let y = 230. + line as f32 * 26.;
+        crate::ui::draw_text(row.label, x, y, 10., crate::theme::CREAM);
+        crate::ui::draw_text(&row.score, x + 150., y, 11., crate::theme::BRASS);
+    }
+    panel(Rect::new(930., 590., 180., 48.), crate::theme::MOSS_DARK);
+    crate::ui::draw_text("BACK", 990., 621., 18., WHITE);
+}
+
 fn next_achievement(records: &crate::state::CollectionRecords) -> &'static str {
     AchievementId::next_locked(records)
         .map(AchievementId::title)
         .unwrap_or("ALL COMPLETE")
 }
 
-pub fn records_clicks(p: Vec2) -> Vec<UiAction> {
+pub fn records_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if Rect::new(900., 102., 210., 44.).contains(p) {
         vec![UiAction::Achievements]
     } else if Rect::new(900., 154., 210., 44.).contains(p) {
         vec![UiAction::DailyArchive]
+    } else if Rect::new(900., 206., 210., 44.).contains(p) {
+        vec![UiAction::RecordsFilter(crate::records_data::next_filter(
+            state.records_filter,
+        ))]
     } else if Rect::new(930., 590., 180., 48.).contains(p) {
         vec![UiAction::Cabinet]
     } else {

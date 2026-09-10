@@ -115,6 +115,7 @@ mod potion_2048_ui;
 mod progression;
 mod pyramid;
 mod pyramid_ui;
+mod records_data;
 mod records_ui;
 #[cfg(test)]
 mod responsive_bounds;
