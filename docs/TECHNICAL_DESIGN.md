@@ -214,6 +214,9 @@ The runtime-only `records_filter` value cycles the Records shelf through ALL
 and the six cabinet categories. `records_cards` and `records_arcade` capture
 scenes seed mixed completion rows and open the matching category shelf so the
 responsive filter and paging presentation can be inspected deterministically.
+The companion `rules_logic` and `rules_word` scenes open filtered Rules shelves
+directly, keeping capture review independent of pointer timing or filter-cycle
+state.
 
 Conceptual keys:
 

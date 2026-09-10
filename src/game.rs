@@ -25,6 +25,8 @@ mod game_capture;
 mod game_capture_depth;
 #[path = "game_capture_records.rs"]
 mod game_capture_records;
+#[path = "game_capture_rules.rs"]
+mod game_capture_rules;
 #[path = "game_navigation.rs"]
 mod game_navigation;
 #[path = "game_persistence.rs"]

@@ -235,7 +235,7 @@ impl Game {
                 | "favorites_browse"
                 | "favorites_all"
                 | "recent_browse" => Screen::Records,
-                "rules" | "rules_scrolled" => Screen::Rules,
+                "rules" | "rules_scrolled" | "rules_logic" | "rules_word" => Screen::Rules,
                 "credits" => Screen::Credits,
                 "settings" | "settings_accessible" | "settings_reset" => Screen::Settings,
                 _ => Screen::Cabinet,
@@ -569,6 +569,7 @@ impl Game {
             self.state.records.word_ladder_best_moves = Some(5);
         }
         super::game_capture_records::apply(&mut self.state, scene);
+        super::game_capture_rules::apply(&mut self.state, scene);
         if matches!(
             scene,
             "achievements"
