@@ -25,8 +25,11 @@ pub fn draw_settings(state: &AppState) {
     text("SETTINGS", 230., 125., 42., crate::theme::BRASS);
     text(
         &format!(
-            "Profile: {}  •  Stamps: {}",
-            state.profile_name, state.stamps
+            "Profile: {}  •  Stamps: {}  •  Cosmetics open: {}/{}",
+            state.profile_name,
+            state.stamps,
+            cosmetics::total_unlocked(state.stamps),
+            cosmetics::total_options()
         ),
         230.,
         185.,
@@ -108,7 +111,7 @@ pub fn draw_settings(state: &AppState) {
         WHITE,
     );
     text(
-        "Tap a cosmetic row to cycle through the items your stamps have opened.",
+        "Tap a cosmetic row to cycle open items; each row shows its next stamp threshold.",
         230.,
         530.,
         17.,

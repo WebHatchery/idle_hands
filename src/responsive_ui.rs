@@ -299,7 +299,7 @@ pub fn draw_settings(state: &AppState) {
         WHITE,
     );
     text(
-        "Tap a row to cycle unlocked cosmetics.",
+        "Tap a row to cycle open cosmetics; next stamp thresholds stay visible.",
         22.,
         445.,
         13.,

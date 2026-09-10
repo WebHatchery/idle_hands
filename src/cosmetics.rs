@@ -57,6 +57,20 @@ impl CosmeticKind {
     }
 }
 
+pub fn total_options() -> usize {
+    CosmeticKind::ALL
+        .into_iter()
+        .map(|kind| kind.options().len())
+        .sum()
+}
+
+pub fn total_unlocked(stamps: u16) -> usize {
+    CosmeticKind::ALL
+        .into_iter()
+        .map(|kind| kind.unlocked_count(stamps))
+        .sum()
+}
+
 pub const CARD_BACKS: [CosmeticOption; 3] = [
     CosmeticOption {
         name: "Plum",

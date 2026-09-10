@@ -23,4 +23,7 @@ fn cosmetic_catalogs_report_unlock_counts_and_next_costs() {
     assert_eq!(CosmeticKind::BoardTheme.next_cost(7), None);
     assert_eq!(CosmeticKind::SoundSet.options()[1].name, "Rain on glass");
     assert_eq!(CosmeticKind::SoundSet.options()[1].cost, 4);
+    assert_eq!(total_options(), 12);
+    assert_eq!(total_unlocked(0), 4);
+    assert_eq!(total_unlocked(8), 12);
 }
