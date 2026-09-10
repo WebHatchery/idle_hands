@@ -6,6 +6,11 @@ use crate::{
 };
 use macroquad::prelude::*;
 
+const DESKTOP_VISIBLE_GAMES: usize = 40;
+
+#[cfg(test)]
+mod tests;
+
 #[derive(Clone, Copy)]
 struct Layout {
     panel: Rect,
@@ -204,7 +209,7 @@ fn visible_games(state: &AppState) -> Vec<GameId> {
     } else if crate::ui::is_compact_landscape() {
         10
     } else {
-        games.len()
+        DESKTOP_VISIBLE_GAMES
     };
     let first = state
         .library_scroll
@@ -224,7 +229,10 @@ fn scroll_rects() -> Option<(Rect, Rect)> {
             Rect::new(545., 330., 100., 44.),
         ))
     } else {
-        None
+        Some((
+            Rect::new(700., 590., 100., 44.),
+            Rect::new(815., 590., 100., 44.),
+        ))
     }
 }
 
