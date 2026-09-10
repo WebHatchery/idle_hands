@@ -71,7 +71,12 @@ pub fn draw_records(state: &AppState) {
         crate::theme::BRASS,
     );
     text(
-        &format!("NEXT GOAL: {}", next_achievement(&state.records)),
+        &format!(
+            "DRAWERS {}/{}  ·  NEXT {}",
+            completed,
+            GameId::ALL.len(),
+            next_achievement(&state.records)
+        ),
         20.,
         128.,
         9.,
@@ -80,13 +85,9 @@ pub fn draw_records(state: &AppState) {
     panel(Rect::new(190., 28., 155., 44.), crate::theme::SURFACE);
     text("ACHIEVEMENTS", 202., 56., 10., WHITE);
     draw_rectangle_lines(190., 28., 155., 44., 3., WHITE);
-    text(
-        &format!("DRAWERS {}/{}", completed, GameId::ALL.len()),
-        210.,
-        88.,
-        11.,
-        crate::theme::BRASS,
-    );
+    panel(Rect::new(190., 76., 155., 44.), crate::theme::SURFACE);
+    text("DAILY LOG", 225., 104., 10., WHITE);
+    draw_rectangle_lines(190., 76., 155., 44., 3., WHITE);
     let rows = [
         ("2048 best", state.records.best_2048.to_string()),
         ("Mines beginner", value(state.records.minesweeper[0])),
@@ -339,6 +340,8 @@ fn next_achievement(records: &crate::state::CollectionRecords) -> &'static str {
 pub fn records_clicks(p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(Rect::new(190., 28., 155., 44.), p) {
         vec![UiAction::Achievements]
+    } else if crate::ui::hit(Rect::new(190., 76., 155., 44.), p) {
+        vec![UiAction::DailyArchive]
     } else if crate::ui::hit(Rect::new(10., 602., 100., 44.), p) {
         vec![UiAction::LibraryScroll(-1)]
     } else if crate::ui::hit(Rect::new(250., 602., 100., 44.), p) {
