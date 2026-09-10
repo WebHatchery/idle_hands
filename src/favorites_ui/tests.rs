@@ -64,6 +64,19 @@ fn empty_recent_shelf_has_no_clear_action_at_any_size() {
 }
 
 #[test]
+fn short_shelves_have_no_inert_paging_controls() {
+    let state = AppState {
+        recent_view: true,
+        recent_games: vec![GameId::Solitaire],
+        ..Default::default()
+    };
+
+    crate::ui::with_desktop_layout(|| assert!(scroll_rects(&state).is_none()));
+    crate::ui::with_compact_landscape_layout(|| assert!(scroll_rects(&state).is_none()));
+    crate::ui::with_portrait_layout(|| assert!(scroll_rects(&state).is_none()));
+}
+
+#[test]
 fn favorite_card_remove_action_targets_the_starred_drawer() {
     let state = AppState {
         favorites: {

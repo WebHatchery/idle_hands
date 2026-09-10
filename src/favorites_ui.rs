@@ -80,7 +80,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     {
         return vec![UiAction::ClearRecent];
     }
-    if let Some((previous, next)) = scroll_rects() {
+    if let Some((previous, next)) = scroll_rects(state) {
         if previous.contains(point) {
             return vec![UiAction::LibraryScroll(-1)];
         }
@@ -250,7 +250,7 @@ pub fn draw(state: &AppState) {
             );
         }
     }
-    if let Some((previous, next)) = scroll_rects() {
+    if let Some((previous, next)) = scroll_rects(state) {
         panel(previous, crate::theme::SURFACE_DARK);
         panel(next, crate::theme::SURFACE_DARK);
         crate::ui::draw_text("PREV", previous.x + 22., previous.y + 28., 11., WHITE);
@@ -267,38 +267,45 @@ pub fn draw(state: &AppState) {
 }
 
 fn visible_rows(state: &AppState) -> Vec<BrowseRow> {
-    let capacity = if crate::ui::is_portrait() {
+    favorites_data::page_rows(
+        state,
+        BrowseMode::from_state(state),
+        state.library_scroll,
+        visible_capacity(),
+    )
+}
+
+fn visible_capacity() -> usize {
+    if crate::ui::is_portrait() {
         8
     } else if crate::ui::is_compact_landscape() {
         10
     } else {
         DESKTOP_VISIBLE_GAMES
-    };
-    favorites_data::page_rows(
-        state,
-        BrowseMode::from_state(state),
-        state.library_scroll,
-        capacity,
-    )
+    }
 }
 
-fn scroll_rects() -> Option<(Rect, Rect)> {
-    if crate::ui::is_portrait() {
-        Some((
+fn scroll_rects(state: &AppState) -> Option<(Rect, Rect)> {
+    let total = favorites_data::games(state, BrowseMode::from_state(state)).len();
+    if total <= visible_capacity() {
+        return None;
+    }
+    Some(if crate::ui::is_portrait() {
+        (
             Rect::new(10., 650., 100., 44.),
             Rect::new(250., 650., 100., 44.),
-        ))
+        )
     } else if crate::ui::is_compact_landscape() {
-        Some((
+        (
             Rect::new(430., 330., 100., 44.),
             Rect::new(545., 330., 100., 44.),
-        ))
+        )
     } else {
-        Some((
+        (
             Rect::new(700., 590., 100., 44.),
             Rect::new(815., 590., 100., 44.),
-        ))
-    }
+        )
+    })
 }
 
 fn quick_action_rect() -> Rect {
