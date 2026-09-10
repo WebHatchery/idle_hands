@@ -165,7 +165,9 @@ quick-browse lists from the cabinet. Favorites are persisted as a normalized
 boolean vector; recent history is persisted as a deduplicated, newest-first
 list capped at five `GameId` values. Neither list changes the default drawer
 ordering, and selecting a listed game routes through the same `Open` action as
-the main cabinet.
+the main cabinet. The shared quick-browse panel exposes direct FAVORITES and
+RECENT tabs, in-place favorite removal, a clear-recent action, and mixed
+open/done/locked summaries; completed cards reuse the best-clear-time ledger.
 
 The Records summary derives completed-drawer progress from `CollectionRecords`
 through the shared `progression::completed_games` function, keeping the count

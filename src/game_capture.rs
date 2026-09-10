@@ -609,6 +609,8 @@ impl Game {
             ] {
                 self.state.favorites[index] = true;
             }
+            self.state.records.best_2048 = 2048;
+            self.state.records.solitaire_best_moves = Some(42);
             self.state.favorites_view = true;
         }
         if scene == "favorites_all" {
@@ -623,6 +625,8 @@ impl Game {
                 GameId::Solitaire,
                 GameId::Game2048,
             ];
+            self.state.records.best_2048 = 2048;
+            self.state.records.solitaire_best_moves = Some(42);
             self.state.recent_view = true;
         }
         if scene == "freecell_selected" {
