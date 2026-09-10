@@ -195,13 +195,15 @@ fn draw_home(state: &AppState, loaded: usize) {
             crate::theme::SURFACE,
         );
     }
+    let collection = cabinet_status::collection_progress(state);
     text(
         &format!(
-            "{} stamps  ·  {}/{} achievements  ·  {} games  ·  {} textures",
+            "{} stamps  ·  {}/{} achievements  ·  {}/{} drawers  ·  {} textures",
             state.stamps,
             state.achievements.iter().filter(|earned| **earned).count(),
             crate::progression::AchievementId::ALL.len(),
-            GameId::ALL.len(),
+            collection.completed,
+            collection.total,
             loaded
         ),
         930.,

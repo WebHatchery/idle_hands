@@ -119,13 +119,11 @@ fn draw_home(state: &AppState, loaded: usize) {
     for (index, filter) in cabinet_status::CATEGORY_FILTERS.iter().copied().enumerate() {
         category(state, CATEGORY_RECTS[index], filter);
     }
+    let collection = cabinet_status::collection_progress(state);
     text(
         &format!(
-            "{} stamps · {}/{} achievements · {} textures",
-            state.stamps,
-            state.achievements.iter().filter(|earned| **earned).count(),
-            crate::progression::AchievementId::ALL.len(),
-            loaded
+            "{}/{} drawers done  ·  {} stamps  ·  {} textures",
+            collection.completed, collection.total, state.stamps, loaded
         ),
         682.,
         374.,

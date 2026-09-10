@@ -140,6 +140,13 @@ pub fn category_progress(state: &AppState, filter: u8) -> CategoryProgress {
         )
 }
 
+pub fn collection_progress(state: &AppState) -> CategoryProgress {
+    CategoryProgress {
+        completed: crate::progression::completed_games(&state.records),
+        total: GameId::ALL.len(),
+    }
+}
+
 pub fn availability_counts(state: &AppState, filter: u8) -> (usize, usize) {
     GameId::ALL
         .iter()

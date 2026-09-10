@@ -80,3 +80,17 @@ fn category_progress_ignores_drawers_from_other_categories() {
     assert_eq!(category_progress(&state, 3).completed, 1);
     assert_eq!(category_progress(&state, 4).completed, 1);
 }
+
+#[test]
+fn collection_progress_spans_every_drawer() {
+    let mut state = AppState::default();
+    state.records.solitaire_best_moves = Some(42);
+
+    assert_eq!(
+        collection_progress(&state),
+        CategoryProgress {
+            completed: 1,
+            total: GameId::ALL.len(),
+        }
+    );
+}
