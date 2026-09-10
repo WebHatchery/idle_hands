@@ -608,8 +608,7 @@ impl CollectionSave {
         state.tutorial_seen = state_profile::normalize_tutorial_seen(self.tutorial_seen);
         state.favorites = state_profile::normalize_favorites(self.favorites);
         state.recent_games = state_profile::normalize_recent_games(self.recent_games);
-        state.cabinet_sort =
-            self.cabinet_sort % crate::cabinet_status::CabinetSort::ALL.len() as u8;
+        state.cabinet_sort = state_profile::normalize_cabinet_sort(self.cabinet_sort);
     }
 }
 impl Default for AppState {

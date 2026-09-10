@@ -64,6 +64,10 @@ pub(super) fn normalize_recent_games(recent_games: Vec<GameId>) -> Vec<GameId> {
     normalized
 }
 
+pub(super) fn normalize_cabinet_sort(sort: u8) -> u8 {
+    sort % crate::cabinet_status::CabinetSort::ALL.len() as u8
+}
+
 pub(super) fn normalize_achievements(mut achievements: Vec<bool>) -> Vec<bool> {
     achievements.resize(crate::progression::AchievementId::ALL.len(), false);
     achievements.truncate(crate::progression::AchievementId::ALL.len());
@@ -119,7 +123,6 @@ impl ProfileSave {
         state.tutorial_seen = normalize_tutorial_seen(self.tutorial_seen);
         state.favorites = normalize_favorites(self.favorites);
         state.recent_games = normalize_recent_games(self.recent_games);
-        state.cabinet_sort =
-            self.cabinet_sort % crate::cabinet_status::CabinetSort::ALL.len() as u8;
+        state.cabinet_sort = normalize_cabinet_sort(self.cabinet_sort);
     }
 }

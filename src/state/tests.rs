@@ -547,4 +547,11 @@ fn cabinet_sort_preference_round_trips_and_old_profiles_default_to_title() {
     let mut migrated_state = AppState::default();
     migrated.apply_to(&mut migrated_state);
     assert_eq!(migrated_state.cabinet_sort, 0);
+
+    let mut future = serde_json::to_value(&profile).unwrap();
+    future["cabinet_sort"] = serde_json::json!(4);
+    let migrated_future: ProfileSave = serde_json::from_value(future).unwrap();
+    let mut future_state = AppState::default();
+    migrated_future.apply_to(&mut future_state);
+    assert_eq!(future_state.cabinet_sort, 1);
 }
