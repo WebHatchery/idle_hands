@@ -69,17 +69,20 @@ pub fn page_size() -> usize {
 
 pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     let layout = layout();
+    let total = state.records.daily_results.len();
+    let start = state
+        .daily_archive_scroll
+        .min(total.saturating_sub(page_size()));
     if layout.back.contains(point) {
         return vec![UiAction::Records];
     }
     let step = page_size() as i8;
-    if layout.previous.contains(point) {
+    if layout.previous.contains(point) && start > 0 {
         return vec![UiAction::DailyArchiveScroll(-step)];
     }
-    if layout.next.contains(point) {
+    if layout.next.contains(point) && start + page_size() < total {
         return vec![UiAction::DailyArchiveScroll(step)];
     }
-    let _ = state;
     Vec::new()
 }
 
@@ -198,20 +201,13 @@ pub fn draw(state: &AppState) {
     }
     let shown_start = if total == 0 { 0 } else { start + 1 };
     let shown_end = (start + page_size()).min(total);
-    panel(
-        layout.previous,
-        crate::theme::SURFACE_DARK,
+    archive_button(layout.previous, "PREV", start > 0, state.high_contrast);
+    archive_button(
+        layout.next,
+        "NEXT",
+        start + page_size() < total,
         state.high_contrast,
     );
-    panel(layout.next, crate::theme::SURFACE_DARK, state.high_contrast);
-    crate::ui::draw_text(
-        "PREV",
-        layout.previous.x + 20.,
-        layout.previous.y + 29.,
-        11.,
-        WHITE,
-    );
-    crate::ui::draw_text("NEXT", layout.next.x + 20., layout.next.y + 29., 11., WHITE);
     crate::ui::draw_text(
         format!("{}-{} OF {}", shown_start, shown_end, total),
         layout.previous.right() + 14.,
@@ -247,5 +243,28 @@ fn panel(rect: Rect, fill: Color, high_contrast: bool) {
         rect.h,
         2.,
         crate::accessibility::grid_line(high_contrast),
+    );
+}
+
+fn archive_button(rect: Rect, label: &str, enabled: bool, high_contrast: bool) {
+    panel(
+        rect,
+        if enabled {
+            crate::theme::SURFACE_DARK
+        } else {
+            crate::theme::BACKGROUND_DEEP
+        },
+        high_contrast,
+    );
+    crate::ui::draw_text(
+        label,
+        rect.x + 20.,
+        rect.y + 29.,
+        11.,
+        if enabled {
+            WHITE
+        } else {
+            crate::theme::SECONDARY
+        },
     );
 }

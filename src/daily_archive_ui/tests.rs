@@ -6,3 +6,28 @@ fn archive_page_sizes_match_each_touch_layout() {
     crate::ui::with_compact_landscape_layout(|| assert_eq!(page_size(), 6));
     crate::ui::with_portrait_layout(|| assert_eq!(page_size(), 7));
 }
+
+#[test]
+fn archive_paging_buttons_stop_at_the_history_edges() {
+    let mut state = AppState::default();
+    for day in 1..=11 {
+        state
+            .records
+            .record_daily_result(day, day as u32, day % 2 == 0);
+    }
+    crate::ui::with_desktop_layout(|| {
+        let layout = layout();
+        assert!(clicks(&state, layout.previous.center()).is_empty());
+        assert!(matches!(
+            clicks(&state, layout.next.center()).as_slice(),
+            [UiAction::DailyArchiveScroll(10)]
+        ));
+        state.daily_archive_scroll = 1;
+        assert!(matches!(
+            clicks(&state, layout.previous.center()).as_slice(),
+            [UiAction::DailyArchiveScroll(-10)]
+        ));
+        state.daily_archive_scroll = 10;
+        assert!(clicks(&state, layout.next.center()).is_empty());
+    });
+}
