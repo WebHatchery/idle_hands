@@ -111,8 +111,27 @@ fn draw_home(state: &AppState, loaded: usize) {
         state.recent_games.len(),
     );
     panel(Rect::new(234., 172., 116., 68.), crate::theme::SURFACE_DARK);
-    text("DAILY", 258., 194., 10., crate::theme::BRASS);
-    text("CHALLENGE  >", 246., 220., 10., crate::theme::CREAM);
+    text(
+        &crate::daily_challenge::label(
+            state.games.daily_dungeon.day_key,
+            state.games.daily_dungeon.challenge,
+        ),
+        246.,
+        194.,
+        9.,
+        crate::theme::BRASS,
+    );
+    text(
+        if state.games.daily_dungeon.won() {
+            "REPLAY  >"
+        } else {
+            "CHALLENGE  >"
+        },
+        246.,
+        220.,
+        10.,
+        crate::theme::CREAM,
+    );
     for (index, filter) in cabinet_status::CATEGORY_FILTERS.iter().copied().enumerate() {
         category_row(state, CATEGORY_RECTS[index], filter);
     }

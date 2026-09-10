@@ -139,8 +139,28 @@ fn draw_home(state: &AppState, loaded: usize) {
         12.,
         crate::theme::SURFACE_DARK,
     );
-    text("Today's challenge", 982., 154., 17., crate::theme::INK);
-    text("dungeon awaits  >", 982., 178., 14., crate::theme::SURFACE);
+    text(
+        &crate::daily_challenge::status_label(
+            state.games.daily_dungeon.day_key,
+            state.games.daily_dungeon.challenge,
+            state.games.daily_dungeon.phase,
+        ),
+        982.,
+        154.,
+        11.,
+        crate::theme::INK,
+    );
+    text(
+        if state.games.daily_dungeon.won() {
+            "replay route  >"
+        } else {
+            "dungeon awaits  >"
+        },
+        982.,
+        178.,
+        14.,
+        crate::theme::SURFACE,
+    );
     text("Your collection", 260., 240., 15., crate::theme::INK);
     for (index, filter) in cabinet_status::CATEGORY_FILTERS.iter().copied().enumerate() {
         category_card(state, CATEGORY_RECTS[index], filter);
