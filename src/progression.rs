@@ -10,6 +10,18 @@ pub enum AchievementId {
     FullCabinet,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct AchievementProgress {
+    pub current: usize,
+    pub target: usize,
+}
+
+impl AchievementProgress {
+    pub fn is_complete(self) -> bool {
+        self.current >= self.target
+    }
+}
+
 impl AchievementId {
     pub const ALL: [Self; 62] = [
         Self::FirstFinish,
@@ -149,6 +161,40 @@ impl AchievementId {
         match self {
             Self::FullCabinet => 2,
             _ => 1,
+        }
+    }
+
+    pub fn description(self) -> String {
+        match self {
+            Self::FirstFinish => "Finish any drawer".into(),
+            Self::Game(game) => format!("Finish {}", game.title()),
+            Self::FullCabinet => "Finish every drawer".into(),
+        }
+    }
+
+    pub fn progress(self, records: &CollectionRecords) -> AchievementProgress {
+        match self {
+            Self::FirstFinish => AchievementProgress {
+                current: usize::from(completed_games(records) > 0),
+                target: 1,
+            },
+            Self::Game(game) => AchievementProgress {
+                current: usize::from(game_complete(records, game)),
+                target: 1,
+            },
+            Self::FullCabinet => AchievementProgress {
+                current: completed_games(records),
+                target: GameId::ALL.len(),
+            },
+        }
+    }
+
+    pub fn progress_label(self, records: &CollectionRecords) -> String {
+        let progress = self.progress(records);
+        if progress.is_complete() {
+            "COMPLETE".into()
+        } else {
+            format!("{} / {}", progress.current, progress.target)
         }
     }
 

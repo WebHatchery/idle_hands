@@ -91,3 +91,49 @@ fn full_cabinet_counts_every_playable_game() {
     assert_eq!(completed_games(&records), GameId::ALL.len() - 1);
     assert!(!earned(&records, AchievementId::FullCabinet));
 }
+
+#[test]
+fn achievement_progress_explains_single_and_collection_goals() {
+    let records = CollectionRecords::default();
+    assert_eq!(
+        AchievementId::FirstFinish.description(),
+        "Finish any drawer"
+    );
+    assert_eq!(
+        AchievementId::Game(GameId::Solitaire).description(),
+        "Finish Solitaire"
+    );
+    assert_eq!(
+        AchievementId::FullCabinet.description(),
+        "Finish every drawer"
+    );
+    assert_eq!(
+        AchievementId::FullCabinet.progress(&records),
+        AchievementProgress {
+            current: 0,
+            target: GameId::ALL.len()
+        }
+    );
+    assert_eq!(
+        AchievementId::FullCabinet.progress_label(&records),
+        format!("0 / {}", GameId::ALL.len())
+    );
+}
+
+#[test]
+fn achievement_progress_marks_finished_drawers_complete() {
+    let mut records = CollectionRecords::default();
+    records.solitaire_best_moves = Some(42);
+    assert_eq!(
+        AchievementId::FirstFinish.progress_label(&records),
+        "COMPLETE"
+    );
+    assert_eq!(
+        AchievementId::Game(GameId::Solitaire).progress_label(&records),
+        "COMPLETE"
+    );
+    assert_eq!(
+        AchievementId::Game(GameId::FreeCell).progress_label(&records),
+        "0 / 1"
+    );
+}
