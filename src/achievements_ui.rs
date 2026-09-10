@@ -191,7 +191,7 @@ pub fn draw(state: &AppState) {
         crate::ui::draw_text(
             fitted_label(*achievement, portrait),
             rect.x + 20.,
-            rect.y + rect.h * 0.64,
+            rect.y + rect.h * 0.54,
             size,
             if state.high_contrast {
                 WHITE
@@ -201,11 +201,11 @@ pub fn draw(state: &AppState) {
                 Color::new(0.68, 0.64, 0.76, 1.)
             },
         );
-        let status = if earned { "EARNED" } else { "LOCKED" };
+        let status = achievement.progress_label(&state.records);
         crate::ui::draw_text(
             status,
             rect.right() - if portrait { 58. } else { 55. },
-            rect.y + rect.h * 0.64,
+            rect.y + rect.h * 0.54,
             crate::accessibility::text_size(if portrait { 9. } else { 8. }, state.large_text),
             if state.high_contrast {
                 WHITE
@@ -213,6 +213,17 @@ pub fn draw(state: &AppState) {
                 Color::new(0.55, 1., 0.72, 1.)
             } else {
                 Color::new(0.55, 0.50, 0.64, 1.)
+            },
+        );
+        crate::ui::draw_text(
+            fitted_description(*achievement, portrait, compact),
+            rect.x + 20.,
+            rect.y + rect.h - if portrait { 8. } else { 6. },
+            crate::accessibility::text_size(if portrait { 9. } else { 7. }, state.large_text),
+            if state.high_contrast {
+                WHITE
+            } else {
+                crate::theme::SECONDARY
             },
         );
     }
@@ -294,6 +305,28 @@ fn fitted_label(achievement: AchievementId, portrait: bool) -> String {
         format!(
             "{}..",
             label
+                .chars()
+                .take(limit.saturating_sub(2))
+                .collect::<String>()
+        )
+    }
+}
+
+fn fitted_description(achievement: AchievementId, portrait: bool, compact: bool) -> String {
+    let description = achievement.description();
+    let limit = if portrait {
+        34
+    } else if compact {
+        42
+    } else {
+        23
+    };
+    if description.chars().count() <= limit {
+        description
+    } else {
+        format!(
+            "{}..",
+            description
                 .chars()
                 .take(limit.saturating_sub(2))
                 .collect::<String>()

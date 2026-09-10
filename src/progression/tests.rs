@@ -122,8 +122,10 @@ fn achievement_progress_explains_single_and_collection_goals() {
 
 #[test]
 fn achievement_progress_marks_finished_drawers_complete() {
-    let mut records = CollectionRecords::default();
-    records.solitaire_best_moves = Some(42);
+    let records = CollectionRecords {
+        solitaire_best_moves: Some(42),
+        ..Default::default()
+    };
     assert_eq!(
         AchievementId::FirstFinish.progress_label(&records),
         "COMPLETE"
