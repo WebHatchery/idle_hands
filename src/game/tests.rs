@@ -37,6 +37,8 @@ fn card_drag_dispatch_ignores_non_card_screens() {
 
 #[test]
 fn new_game_actions_require_confirmation_but_existing_restart_does_not() {
+    assert!(!ui::UiAction::Open(GameId::Solitaire.index()).starts_new_round());
+    assert!(!ui::UiAction::ContinueGame.starts_new_round());
     assert!(game_restart::requires_new_confirmation(
         ui::UiAction::MatchThreeNew
     ));

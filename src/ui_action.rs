@@ -352,9 +352,7 @@ impl UiAction {
     pub fn starts_new_round(self) -> bool {
         matches!(
             self,
-            Self::Open(_)
-                | Self::ContinueGame
-                | Self::Restart
+            Self::Restart
                 | Self::CycleGameVariant
                 | Self::ConfirmRestart
                 | Self::Game2048Size(_)
