@@ -73,8 +73,14 @@ impl Game {
             .state
             .records
             .best_time(game.index())
-            .map_or("—".to_owned(), format_clock);
-        let label = format!("TIME {}  •  BEST {}", format_clock(current), best);
+            .map_or("—".to_owned(), |seconds| {
+                crate::state_records::format_duration(u64::from(seconds))
+            });
+        let label = format!(
+            "TIME {}  •  BEST {}",
+            crate::state_records::format_duration(u64::from(current)),
+            best
+        );
         crate::ui::draw_text(
             label,
             rect.x + 8.,
@@ -98,7 +104,3 @@ fn time_badge_rect() -> Rect {
 }
 
 use crate::state::Screen;
-
-fn format_clock(seconds: u32) -> String {
-    format!("{:02}:{:02}", seconds / 60, seconds % 60)
-}
