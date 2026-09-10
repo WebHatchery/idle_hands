@@ -194,6 +194,10 @@ themes, sound sets, and cabinet decorations. Settings derive their equipped
 name, open count, and next cost from that catalog across all responsive layouts;
 profile and collection-save restore paths normalize locked indices back to the
 first affordable option.
+The runtime-only `daily_archive_view` and `daily_archive_scroll` values route
+the Records screen to a newest-first view over the bounded `daily_results`
+ledger. Archive pages are sized per viewport, page controls stop at both ends,
+and capture scenes populate mixed attempted and cleared routes for verification.
 The runtime-only `cabinet_filter` value selects ALL, OPEN, or DONE drawers;
 it is never persisted and maps filtered slots back to canonical `GameId`
 indices before dispatching favorite or open actions.

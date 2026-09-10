@@ -169,7 +169,9 @@ old published days; replaying the current day restores the same route.
 The profile keeps a bounded 90-day result ledger with the best score and clear
 state for each day, surfaced in the daily drawer and Records screen. Replaying
 a day merges into that entry rather than creating duplicate attempts or a
-streak obligation.
+streak obligation. Records also opens a newest-first Daily Archive with
+touch-safe paging, so cleared and attempted routes remain useful history rather
+than disappearing into aggregate counts.
 
 ## 7. Presentation and Audio
 
