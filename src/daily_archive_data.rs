@@ -1,5 +1,7 @@
 //! Canonical rows and paging for the Daily Archive shelf.
 
+use std::cmp::Reverse;
+
 use crate::{daily_dungeon::DailyRule, state::AppState, state_records::DailyResult};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -12,13 +14,14 @@ pub struct ArchiveRow {
 }
 
 pub fn rows(state: &AppState) -> Vec<ArchiveRow> {
-    state
+    let mut rows: Vec<ArchiveRow> = state
         .records
         .daily_results
         .iter()
-        .rev()
         .map(ArchiveRow::from_result)
-        .collect()
+        .collect();
+    rows.sort_by_key(|row| Reverse(row.day));
+    rows
 }
 
 pub fn page_rows(state: &AppState, start: usize, capacity: usize) -> Vec<ArchiveRow> {

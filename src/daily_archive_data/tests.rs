@@ -18,6 +18,18 @@ fn archive_rows_are_newest_first_and_keep_challenge_identity() {
 }
 
 #[test]
+fn archive_rows_sort_historical_inserts_by_day_not_save_order() {
+    let mut state = AppState::default();
+    state.records.record_daily_result(42, 120, true);
+    state.records.record_daily_result(40, 80, false);
+
+    let rows = rows(&state);
+
+    assert_eq!(rows[0].day, 42);
+    assert_eq!(rows[1].day, 40);
+}
+
+#[test]
 fn archive_page_rows_clamp_to_the_latest_window() {
     let mut state = AppState::default();
     for day in 1..=4 {
