@@ -103,6 +103,13 @@ pub fn draw_records(state: &AppState) {
         WHITE,
     );
     text(
+        &crate::rules_data::summary_label(state.rules_filter),
+        214.,
+        68.,
+        7.,
+        crate::theme::SECONDARY,
+    );
+    text(
         &crate::records_data::summary_label(state, state.records_filter),
         211.,
         164.,

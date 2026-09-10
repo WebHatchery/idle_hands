@@ -28,6 +28,10 @@ pub fn next_filter(filter: u8) -> u8 {
     FILTERS[(current + 1) % FILTERS.len()]
 }
 
+pub fn summary_label(filter: u8) -> String {
+    format!("{} DRAWERS", rows(filter).len())
+}
+
 pub fn rows(filter: u8) -> Vec<RuleRow> {
     let filter = if FILTERS.contains(&filter) { filter } else { 0 };
     GameId::ALL

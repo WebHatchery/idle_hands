@@ -30,6 +30,13 @@ pub fn draw_rules(state: &AppState) {
         9.,
         WHITE,
     );
+    text(
+        &crate::rules_data::summary_label(state.rules_filter),
+        675.,
+        42.,
+        7.,
+        crate::theme::SECONDARY,
+    );
     if state.rules_filter != 0 {
         draw_filtered_rules(state);
         return;

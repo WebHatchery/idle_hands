@@ -18,3 +18,9 @@ fn filtered_rule_rows_cover_each_category_without_crossovers() {
         assert!(filtered.iter().all(|row| row.category == filter));
     }
 }
+
+#[test]
+fn rule_summary_reports_the_active_drawer_count() {
+    assert_eq!(summary_label(0), "60 DRAWERS");
+    assert_eq!(summary_label(3), "11 DRAWERS");
+}
