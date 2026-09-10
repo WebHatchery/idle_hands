@@ -46,3 +46,37 @@ fn category_filters_partition_the_whole_collection() {
     assert_eq!(filter_count(&state, 7), 11);
     assert_eq!(filter_count(&state, 8), 12);
 }
+
+#[test]
+fn category_progress_counts_finished_drawers_without_losing_the_total() {
+    let mut state = AppState::default();
+    assert_eq!(
+        category_progress(&state, 3),
+        CategoryProgress {
+            completed: 0,
+            total: 11,
+        }
+    );
+
+    state.records.solitaire_best_moves = Some(42);
+    state.records.freecell_best_moves = Some(31);
+    assert_eq!(
+        category_progress(&state, 3),
+        CategoryProgress {
+            completed: 2,
+            total: 11,
+        }
+    );
+    assert_eq!(category_progress(&state, 3).remaining(), 9);
+    assert!(!category_progress(&state, 3).is_complete());
+}
+
+#[test]
+fn category_progress_ignores_drawers_from_other_categories() {
+    let mut state = AppState::default();
+    state.records.solitaire_best_moves = Some(42);
+    state.records.sudoku[0] = Some(12);
+
+    assert_eq!(category_progress(&state, 3).completed, 1);
+    assert_eq!(category_progress(&state, 4).completed, 1);
+}

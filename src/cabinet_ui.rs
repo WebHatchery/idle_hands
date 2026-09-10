@@ -408,11 +408,40 @@ fn category_card(state: &AppState, rect: Rect, filter: u8) {
         crate::theme::CREAM,
     );
     text(
-        &format!("{} games", cabinet_status::filter_count(state, filter)),
+        &format!(
+            "{} games  ·  {}/{} done",
+            cabinet_status::filter_count(state, filter),
+            cabinet_status::category_progress(state, filter).completed,
+            cabinet_status::category_progress(state, filter).total
+        ),
         rect.x + 72.,
         rect.y + 70.,
         12.,
         crate::theme::SECONDARY,
+    );
+    let progress = cabinet_status::category_progress(state, filter);
+    let ratio = if progress.total == 0 {
+        0.
+    } else {
+        progress.completed as f32 / progress.total as f32
+    };
+    draw_rectangle(
+        rect.x + 72.,
+        rect.y + 82.,
+        168.,
+        5.,
+        crate::theme::PAPER_LIGHT,
+    );
+    draw_rectangle(
+        rect.x + 72.,
+        rect.y + 82.,
+        168. * ratio,
+        5.,
+        if progress.is_complete() {
+            crate::theme::MOSS
+        } else {
+            crate::theme::BRASS
+        },
     );
     text(
         "EXPLORE  >",

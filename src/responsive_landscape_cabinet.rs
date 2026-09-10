@@ -251,7 +251,12 @@ fn category(state: &AppState, rect: Rect, filter: u8) {
         crate::theme::CREAM,
     );
     text(
-        &format!("{} games  >", cabinet_status::filter_count(state, filter)),
+        &format!(
+            "{} games  ·  {}/{} done  >",
+            cabinet_status::filter_count(state, filter),
+            cabinet_status::category_progress(state, filter).completed,
+            cabinet_status::category_progress(state, filter).total
+        ),
         rect.x + 49.,
         rect.y + 55.,
         9.,

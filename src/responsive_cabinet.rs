@@ -305,6 +305,18 @@ fn category_row(state: &AppState, rect: Rect, filter: u8) {
         10.,
         crate::theme::SECONDARY,
     );
+    let progress = cabinet_status::category_progress(state, filter);
+    text(
+        &format!("DONE {}/{}", progress.completed, progress.total),
+        rect.x + 220.,
+        rect.y + 46.,
+        9.,
+        if progress.is_complete() {
+            crate::theme::MOSS
+        } else {
+            crate::theme::BRASS
+        },
+    );
     crate::mascots::draw_for_filter(filter, vec2(rect.x + 31., rect.y + 31.), 0.62);
     text(
         ">",

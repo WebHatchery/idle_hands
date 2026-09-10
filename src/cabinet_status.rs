@@ -5,6 +5,22 @@ use crate::minesweeper::MineStatus;
 use crate::state::{AppState, GameId};
 use macroquad::prelude::Color;
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct CategoryProgress {
+    pub completed: usize,
+    pub total: usize,
+}
+
+impl CategoryProgress {
+    pub const fn remaining(self) -> usize {
+        self.total.saturating_sub(self.completed)
+    }
+
+    pub fn is_complete(self) -> bool {
+        self.total > 0 && self.remaining() == 0
+    }
+}
+
 pub fn status(state: &AppState, game: GameId) -> &'static str {
     let complete = match game {
         GameId::Game2048 => state.records.best_2048 >= 2048,
@@ -104,6 +120,24 @@ pub fn filter_count(state: &AppState, filter: u8) -> usize {
         .iter()
         .filter(|game| matches_filter(state, **game, filter))
         .count()
+}
+
+pub fn category_progress(state: &AppState, filter: u8) -> CategoryProgress {
+    GameId::ALL
+        .iter()
+        .copied()
+        .filter(|game| category_filter(*game) == filter)
+        .fold(
+            CategoryProgress {
+                completed: 0,
+                total: 0,
+            },
+            |progress, game| CategoryProgress {
+                completed: progress.completed
+                    + usize::from(crate::progression::game_complete(&state.records, game)),
+                total: progress.total + 1,
+            },
+        )
 }
 
 pub fn availability_counts(state: &AppState, filter: u8) -> (usize, usize) {
