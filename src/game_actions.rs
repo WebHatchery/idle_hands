@@ -10,6 +10,7 @@ pub fn is_shell(action: UiAction) -> bool {
         UiAction::Open(_)
             | UiAction::ContinueGame
             | UiAction::ToggleFavorite(_)
+            | UiAction::ClearRecent
             | UiAction::Cabinet
             | UiAction::Help
             | UiAction::Records

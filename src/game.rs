@@ -253,6 +253,11 @@ impl Game {
                     *favorite = !*favorite;
                 }
             }
+            ui::UiAction::ClearRecent => {
+                self.state.recent_games.clear();
+                self.state.library_scroll = 0;
+                self.notifications.info("Recent shelf cleared");
+            }
             ui::UiAction::CabinetFilter(filter) => {
                 self.state.cabinet_filter = filter.min(9);
                 self.state.cabinet_scroll = 0;

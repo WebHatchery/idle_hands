@@ -65,6 +65,9 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(l.back, point) {
         return vec![UiAction::Cabinet];
     }
+    if state.recent_view && crate::ui::hit(quick_action_rect(), point) {
+        return vec![UiAction::ClearRecent];
+    }
     if let Some((previous, next)) = scroll_rects() {
         if previous.contains(point) {
             return vec![UiAction::LibraryScroll(-1)];
@@ -75,6 +78,9 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     for (slot, &game) in visible_games(state).iter().enumerate() {
         let rect = list_card_rect(l, slot);
+        if !state.recent_view && crate::ui::hit(favorite_remove_rect(rect), point) {
+            return vec![UiAction::ToggleFavorite(game.index())];
+        }
         if rect.contains(point) {
             return vec![UiAction::Open(game.index())];
         }
@@ -128,6 +134,17 @@ pub fn draw(state: &AppState) {
         if crate::ui::is_portrait() { 11. } else { 16. },
         crate::theme::SECONDARY,
     );
+    if recent {
+        let action = quick_action_rect();
+        panel(action, crate::theme::SURFACE_DARK);
+        crate::ui::draw_text(
+            "CLEAR RECENT",
+            action.x + if crate::ui::is_portrait() { 34. } else { 42. },
+            action.y + action.h * 0.64,
+            if crate::ui::is_portrait() { 11. } else { 13. },
+            WHITE,
+        );
+    }
     if count == 0 {
         crate::ui::draw_text(
             if recent {
@@ -171,6 +188,17 @@ pub fn draw(state: &AppState) {
                 rect.y + rect.h * 0.62,
                 8.,
                 crate::cabinet_status::color(status),
+            );
+        }
+        if !recent {
+            let remove = favorite_remove_rect(rect);
+            panel(remove, crate::theme::SURFACE_DARK);
+            crate::ui::draw_text(
+                "−",
+                remove.x + remove.w * 0.38,
+                remove.y + remove.h * 0.68,
+                if crate::ui::is_portrait() { 16. } else { 13. },
+                WHITE,
             );
         }
     }
@@ -234,6 +262,20 @@ fn scroll_rects() -> Option<(Rect, Rect)> {
             Rect::new(815., 590., 100., 44.),
         ))
     }
+}
+
+fn quick_action_rect() -> Rect {
+    if crate::ui::is_portrait() {
+        Rect::new(180., 714., 170., 44.)
+    } else if crate::ui::is_compact_landscape() {
+        Rect::new(540., 20., 250., 36.)
+    } else {
+        Rect::new(700., 102., 180., 44.)
+    }
+}
+
+fn favorite_remove_rect(card: Rect) -> Rect {
+    Rect::new(card.right() - 44., card.y + 4., 38., card.h - 8.)
 }
 
 fn list_card_rect(layout: Layout, slot: usize) -> Rect {

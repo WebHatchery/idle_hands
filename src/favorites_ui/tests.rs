@@ -16,3 +16,51 @@ fn favorite_shelf_uses_a_touch_safe_capacity_at_each_size() {
         assert_eq!(visible_games(&state).len(), 8);
     });
 }
+
+#[test]
+fn recent_shelf_clear_action_is_touchable_at_each_size() {
+    let state = AppState {
+        recent_view: true,
+        recent_games: vec![GameId::Solitaire],
+        ..Default::default()
+    };
+
+    crate::ui::with_desktop_layout(|| {
+        assert!(matches!(
+            clicks(&state, quick_action_rect().center()).as_slice(),
+            [UiAction::ClearRecent]
+        ));
+    });
+    crate::ui::with_compact_landscape_layout(|| {
+        assert!(matches!(
+            clicks(&state, quick_action_rect().center()).as_slice(),
+            [UiAction::ClearRecent]
+        ));
+    });
+    crate::ui::with_portrait_layout(|| {
+        assert!(matches!(
+            clicks(&state, quick_action_rect().center()).as_slice(),
+            [UiAction::ClearRecent]
+        ));
+    });
+}
+
+#[test]
+fn favorite_card_remove_action_targets_the_starred_drawer() {
+    let state = AppState {
+        favorites: {
+            let mut favorites = vec![false; GameId::ALL.len()];
+            favorites[GameId::Solitaire.index()] = true;
+            favorites
+        },
+        ..Default::default()
+    };
+
+    crate::ui::with_portrait_layout(|| {
+        let point = favorite_remove_rect(list_card_rect(layout(), 0)).center();
+        assert!(matches!(
+            clicks(&state, point).as_slice(),
+            [UiAction::ToggleFavorite(index)] if *index == GameId::Solitaire.index()
+        ));
+    });
+}

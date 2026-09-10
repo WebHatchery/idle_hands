@@ -7,6 +7,7 @@ pub enum UiAction {
     Open(usize),
     ContinueGame,
     ToggleFavorite(usize),
+    ClearRecent,
     Cabinet,
     Help,
     Records,
