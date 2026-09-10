@@ -3,6 +3,9 @@
 use crate::{progression::AchievementId, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
+#[cfg(test)]
+mod tests;
+
 #[derive(Clone, Copy)]
 struct Layout {
     panel: Rect,
@@ -133,7 +136,7 @@ pub fn draw(state: &AppState) {
             state.high_contrast,
         );
         crate::ui::draw_text(
-            filter_label(filter as u8),
+            filter_button_label(filter as u8, state),
             rect.x + if portrait { 10. } else { 16. },
             rect.y + rect.h * 0.68,
             crate::accessibility::text_size(if portrait { 8. } else { 10. }, state.large_text),
@@ -272,6 +275,17 @@ fn filter_label(filter: u8) -> &'static str {
         2 => "LOCKED",
         _ => "ALL",
     }
+}
+
+fn filter_button_label(filter: u8, state: &AppState) -> String {
+    format!("{} {}", filter_label(filter), filter_count(filter, state))
+}
+
+fn filter_count(filter: u8, state: &AppState) -> usize {
+    AchievementId::ALL
+        .iter()
+        .filter(|achievement| visible(**achievement, filter, state))
+        .count()
 }
 
 fn filter_rects(layout: Layout) -> [Rect; 3] {
