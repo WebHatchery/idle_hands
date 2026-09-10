@@ -210,6 +210,10 @@ LAST PLAYED ordering; profile and legacy collection restores normalize unknown
 values back into that three-mode cycle. The `cabinet_sorted` capture scene
 seeds mixed completion records so the progress order has a deterministic visual
 fixture.
+The runtime-only `records_filter` value cycles the Records shelf through ALL
+and the six cabinet categories. `records_cards` and `records_arcade` capture
+scenes seed mixed completion rows and open the matching category shelf so the
+responsive filter and paging presentation can be inspected deterministically.
 
 Conceptual keys:
 

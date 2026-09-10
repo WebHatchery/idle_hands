@@ -223,6 +223,8 @@ impl Game {
                 | "records_accessible"
                 | "records_word_ladder"
                 | "records_progress"
+                | "records_cards"
+                | "records_arcade"
                 | "daily_archive"
                 | "daily_archive_accessible"
                 | "daily_archive_scrolled"
@@ -566,16 +568,7 @@ impl Game {
         if scene == "records_word_ladder" {
             self.state.records.word_ladder_best_moves = Some(5);
         }
-        if scene == "records_progress" {
-            self.state.records.best_2048 = 2048;
-            self.state.records.solitaire_best_moves = Some(42);
-            self.state.records.word_ladder_best_moves = Some(5);
-            let _ = crate::progression::sync(
-                &mut self.state.achievements,
-                &mut self.state.stamps,
-                &self.state.records,
-            );
-        }
+        super::game_capture_records::apply(&mut self.state, scene);
         if matches!(
             scene,
             "achievements"
