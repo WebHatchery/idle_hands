@@ -153,6 +153,10 @@ and clear ledger into a calm collection view: drawers played and cleared, daily
 routes, favorites, recent choices, fastest clear, longest session, and the
 drawers that have received the most time. Statistics are descriptive only and
 never add pressure, streaks, or a second progression currency.
+The shelf keeps its BACK control visible in desktop, landscape, and portrait
+layouts, and long drawer names shorten with an ellipsis instead of clipping
+nearby values. High-contrast mode replaces decorative accent hues with neutral
+bright text while preserving the same information hierarchy.
 
 The cabinet may filter its canonical order to ALL, OPEN, or DONE drawers for
 quick collection browsing; filtering never changes a drawer's state or place.

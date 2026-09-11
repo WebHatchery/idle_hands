@@ -193,6 +193,10 @@ sorting and tie-breaking for top-playtime drawers, while `statistics_ui` provide
 desktop, compact-landscape, and portrait layouts with one touchable BACK route.
 No statistics counter is persisted separately, so save migration cannot create
 disagreements between the Records shelf, the cabinet, and the Statistics shelf.
+The `statistics` and `statistics_accessible` capture scenes seed a small mixed
+ledger for visual inspection: several active times, clear records, favorites,
+recent drawers, and daily attempts. Capture setup resets this fixture before
+rendering and never writes it to the player's save slots.
 Achievement flags are stored as a normalized vector keyed by the 62-entry
 `AchievementId::ALL` list. Legacy ten-entry arrays deserialize as vectors and
 are padded with unearned late-game achievements.
