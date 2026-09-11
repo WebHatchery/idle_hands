@@ -532,37 +532,26 @@ pub fn draw_settings(state: &AppState) {
         13.,
         WHITE,
     );
-    for (index, (kind, current)) in cosmetics::CosmeticKind::ALL
+    for (index, row) in crate::settings_data::cosmetic_rows(state)
         .into_iter()
-        .zip([
-            state.card_back,
-            state.board_theme,
-            state.sound_set,
-            state.cabinet_decoration,
-        ])
         .enumerate()
     {
         let rect = Rect::new(40., 68. + index as f32 * 48., 370., 44.);
         panel(rect, Color::new(0.16, 0.11, 0.24, 1.));
-        let options = kind.options();
-        let option = &options[current as usize % options.len()];
-        text(kind.label(), rect.x + 12., rect.y + 20., 11., WHITE);
+        text(row.kind.label(), rect.x + 12., rect.y + 20., 11., WHITE);
         text(
-            option.name,
+            row.option.name,
             rect.x + 190.,
             rect.y + 20.,
             11.,
             crate::theme::BRASS,
         );
-        let next = kind
-            .next_cost(state.stamps)
-            .map_or_else(|| "ALL OPEN".into(), |cost| format!("NEXT {cost} STAMPS"));
         text(
             &format!(
                 "{} / {} OPEN  ·  {}",
-                kind.unlocked_count(state.stamps),
-                options.len(),
-                next
+                row.unlocked,
+                row.total,
+                crate::settings_data::next_label(row)
             ),
             rect.x + 190.,
             rect.y + 36.,

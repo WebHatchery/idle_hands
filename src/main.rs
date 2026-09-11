@@ -138,6 +138,7 @@ mod responsive_ui;
 mod reversi;
 mod reversi_ui;
 mod rules_data;
+mod settings_data;
 mod settings_ui;
 mod sliding_puzzle;
 mod sliding_puzzle_ui;
