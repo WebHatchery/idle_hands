@@ -45,3 +45,24 @@ fn cosmetic_rows_recover_locked_saved_selection_for_display() {
     assert_eq!(rows[1].current, 0);
     assert_eq!(rows[1].option.name, "Walnut felt");
 }
+
+#[test]
+fn cosmetic_action_mapping_matches_shared_row_order() {
+    assert!(matches!(
+        cosmetic_action(0),
+        Some(crate::ui_action::UiAction::CycleCardBack)
+    ));
+    assert!(matches!(
+        cosmetic_action(1),
+        Some(crate::ui_action::UiAction::CycleBoardTheme)
+    ));
+    assert!(matches!(
+        cosmetic_action(2),
+        Some(crate::ui_action::UiAction::CycleSoundSet)
+    ));
+    assert!(matches!(
+        cosmetic_action(3),
+        Some(crate::ui_action::UiAction::CycleCabinetDecoration)
+    ));
+    assert!(cosmetic_action(4).is_none());
+}

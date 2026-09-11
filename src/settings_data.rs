@@ -3,6 +3,7 @@
 use crate::{
     cosmetics::{CosmeticKind, CosmeticOption},
     state::AppState,
+    ui_action::UiAction,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -45,6 +46,16 @@ pub fn next_label(row: CosmeticRow) -> String {
         || "ALL OPEN".to_owned(),
         |cost| format!("NEXT {cost} STAMPS"),
     )
+}
+
+pub fn cosmetic_action(index: usize) -> Option<UiAction> {
+    match index {
+        0 => Some(UiAction::CycleCardBack),
+        1 => Some(UiAction::CycleBoardTheme),
+        2 => Some(UiAction::CycleSoundSet),
+        3 => Some(UiAction::CycleCabinetDecoration),
+        _ => None,
+    }
 }
 
 #[cfg(test)]

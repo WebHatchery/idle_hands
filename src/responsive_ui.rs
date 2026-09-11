@@ -358,14 +358,22 @@ pub fn settings_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(Rect::new(280., 665., 58., 44.), p) {
         return vec![UiAction::ResetData];
     }
+    for (index, rect) in [
+        Rect::new(22., 137., 316., 44.),
+        Rect::new(22., 187., 316., 44.),
+        Rect::new(22., 237., 316., 44.),
+        Rect::new(22., 287., 316., 44.),
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        if rect.contains(p) {
+            if let Some(action) = crate::settings_data::cosmetic_action(index) {
+                return vec![action];
+            }
+        }
+    }
     for (rect, action) in [
-        (Rect::new(22., 137., 316., 44.), UiAction::CycleCardBack),
-        (Rect::new(22., 187., 316., 44.), UiAction::CycleBoardTheme),
-        (Rect::new(22., 237., 316., 44.), UiAction::CycleSoundSet),
-        (
-            Rect::new(22., 287., 316., 44.),
-            UiAction::CycleCabinetDecoration,
-        ),
         (Rect::new(22., 360., 150., 44.), UiAction::ToggleSound),
         (Rect::new(186., 360., 152., 44.), UiAction::ToggleMotion),
         (

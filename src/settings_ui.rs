@@ -169,17 +169,20 @@ pub fn settings_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(Rect::new(590., 560., 150., 48.), p) {
         actions.push(UiAction::Load);
     }
-    if crate::ui::hit(Rect::new(230., 215., 700., 45.), p) {
-        actions.push(UiAction::CycleCardBack);
-    }
-    if crate::ui::hit(Rect::new(230., 265., 700., 45.), p) {
-        actions.push(UiAction::CycleBoardTheme);
-    }
-    if crate::ui::hit(Rect::new(230., 315., 700., 45.), p) {
-        actions.push(UiAction::CycleSoundSet);
-    }
-    if crate::ui::hit(Rect::new(230., 365., 700., 45.), p) {
-        actions.push(UiAction::CycleCabinetDecoration);
+    for (index, rect) in [
+        Rect::new(230., 215., 700., 45.),
+        Rect::new(230., 265., 700., 45.),
+        Rect::new(230., 315., 700., 45.),
+        Rect::new(230., 365., 700., 45.),
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        if crate::ui::hit(rect, p) {
+            if let Some(action) = crate::settings_data::cosmetic_action(index) {
+                actions.push(action);
+            }
+        }
     }
     if crate::ui::hit(Rect::new(230., 415., 350., 45.), p) {
         actions.push(UiAction::ToggleSound);
