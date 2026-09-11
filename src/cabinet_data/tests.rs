@@ -22,6 +22,8 @@ fn range_label_describes_empty_and_partial_pages() {
         range_label(&page),
         format!("1-{} OF {}", page.end, page.total)
     );
+    assert!(!page.has_previous());
+    assert_eq!(page.has_next(), page.total > page.end);
 
     let empty = CabinetPage {
         games: Vec::new(),
@@ -30,6 +32,8 @@ fn range_label_describes_empty_and_partial_pages() {
         total: 0,
     };
     assert_eq!(range_label(&empty), "0-0 OF 0");
+    assert!(!empty.has_previous());
+    assert!(!empty.has_next());
 }
 
 #[test]

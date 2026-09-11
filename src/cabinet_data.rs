@@ -15,6 +15,16 @@ pub struct CabinetPage {
     pub total: usize,
 }
 
+impl CabinetPage {
+    pub fn has_previous(&self) -> bool {
+        self.start > 0
+    }
+
+    pub fn has_next(&self) -> bool {
+        self.end < self.total
+    }
+}
+
 pub fn visible_games(state: &AppState) -> Vec<GameId> {
     crate::cabinet_status::sorted_games(
         state,

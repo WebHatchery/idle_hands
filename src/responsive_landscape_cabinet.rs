@@ -175,7 +175,8 @@ fn draw_library(state: &AppState) {
         9.,
         crate::theme::INK,
     );
-    for (index, game) in page_games(state).iter().copied().enumerate() {
+    let page = crate::cabinet_data::page(state, crate::cabinet_data::COMPACT_LANDSCAPE_PAGE_SIZE);
+    for (index, game) in page.games.iter().copied().enumerate() {
         let rect = game_rect(index);
         panel(rect, crate::theme::PAPER_LIGHT);
         draw_circle(
@@ -214,8 +215,12 @@ fn draw_library(state: &AppState) {
             crate::theme::SURFACE_DARK,
         );
     }
-    button(Rect::new(580., 341., 95., 38.), "< PREV");
-    button(Rect::new(690., 341., 95., 38.), "NEXT >");
+    if page.has_previous() {
+        button(Rect::new(580., 341., 95., 38.), "< PREV");
+    }
+    if page.has_next() {
+        button(Rect::new(690., 341., 95., 38.), "NEXT >");
+    }
 }
 
 fn draw_sidebar(state: &AppState) {
@@ -344,12 +349,13 @@ fn library_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
             return vec![UiAction::Open(game.index())];
         }
     }
-    if crate::ui::hit(Rect::new(580., 341., 95., 38.), p) {
+    let page = crate::cabinet_data::page(state, crate::cabinet_data::COMPACT_LANDSCAPE_PAGE_SIZE);
+    if page.has_previous() && crate::ui::hit(Rect::new(580., 341., 95., 38.), p) {
         return vec![UiAction::CabinetScroll(
             -(crate::cabinet_data::COMPACT_LANDSCAPE_PAGE_SIZE as i8),
         )];
     }
-    if crate::ui::hit(Rect::new(690., 341., 95., 38.), p) {
+    if page.has_next() && crate::ui::hit(Rect::new(690., 341., 95., 38.), p) {
         return vec![UiAction::CabinetScroll(
             crate::cabinet_data::COMPACT_LANDSCAPE_PAGE_SIZE as i8,
         )];

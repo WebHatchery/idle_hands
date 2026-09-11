@@ -238,16 +238,20 @@ fn draw_library(state: &AppState) {
             );
         }
     }
-    button(
-        Rect::new(10., 632., 100., 46.),
-        "< PREV",
-        crate::theme::SURFACE_DARK,
-    );
-    button(
-        Rect::new(250., 632., 100., 46.),
-        "NEXT >",
-        crate::theme::SURFACE_DARK,
-    );
+    if page.has_previous() {
+        button(
+            Rect::new(10., 632., 100., 46.),
+            "< PREV",
+            crate::theme::SURFACE_DARK,
+        );
+    }
+    if page.has_next() {
+        button(
+            Rect::new(250., 632., 100., 46.),
+            "NEXT >",
+            crate::theme::SURFACE_DARK,
+        );
+    }
     text(
         &crate::cabinet_data::range_label(&page),
         139.,
@@ -402,12 +406,13 @@ fn library_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
             return vec![UiAction::Open(game.index())];
         }
     }
-    if crate::ui::hit(Rect::new(10., 632., 100., 46.), p) {
+    let page = crate::cabinet_data::page(state, crate::cabinet_data::PORTRAIT_PAGE_SIZE);
+    if page.has_previous() && crate::ui::hit(Rect::new(10., 632., 100., 46.), p) {
         return vec![UiAction::CabinetScroll(
             -(crate::cabinet_data::PORTRAIT_PAGE_SIZE as i8),
         )];
     }
-    if crate::ui::hit(Rect::new(250., 632., 100., 46.), p) {
+    if page.has_next() && crate::ui::hit(Rect::new(250., 632., 100., 46.), p) {
         return vec![UiAction::CabinetScroll(
             crate::cabinet_data::PORTRAIT_PAGE_SIZE as i8,
         )];
