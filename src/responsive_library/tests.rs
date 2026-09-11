@@ -41,3 +41,19 @@ fn portrait_scrolled_filtered_rule_card_keeps_its_canonical_game() {
 
     assert!(matches!(actions.as_slice(), [UiAction::Open(3)]));
 }
+
+#[test]
+fn portrait_help_routes_all_visible_buttons() {
+    assert!(matches!(
+        help_clicks(vec2(50., 550.)).as_slice(),
+        [UiAction::Rules]
+    ));
+    assert!(matches!(
+        help_clicks(vec2(160., 550.)).as_slice(),
+        [UiAction::Credits]
+    ));
+    assert!(matches!(
+        help_clicks(vec2(270., 550.)).as_slice(),
+        [UiAction::Cabinet]
+    ));
+}
