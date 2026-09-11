@@ -9,6 +9,10 @@ fn variant_confirmation_names_the_rule_card_change() {
     };
 
     assert_eq!(title(&state), "Change the rule card?");
+    assert_eq!(
+        detail(&state),
+        "Current progress will be replaced by the next rule."
+    );
 }
 
 #[test]
@@ -19,6 +23,7 @@ fn ordinary_restart_keeps_the_game_specific_title() {
     };
 
     assert_eq!(title(&state), "Start a new 2048?");
+    assert_eq!(detail(&state), "Current progress will be replaced.");
 }
 
 #[test]

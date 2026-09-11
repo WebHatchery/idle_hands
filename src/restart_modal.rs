@@ -21,6 +21,17 @@ fn title(state: &AppState) -> String {
     }
 }
 
+fn detail(state: &AppState) -> &'static str {
+    if matches!(
+        state.pending_restart.as_ref(),
+        Some(UiAction::CycleGameVariant)
+    ) {
+        "Current progress will be replaced by the next rule."
+    } else {
+        "Current progress will be replaced."
+    }
+}
+
 pub fn clicks(p: Vec2) -> Vec<UiAction> {
     let layout = current_layout();
     if crate::ui::hit(layout.cancel, p) {
@@ -65,7 +76,7 @@ pub fn draw(state: &AppState) {
         WHITE,
     );
     crate::ui::draw_text(
-        "Current progress will be replaced.",
+        detail(state),
         layout.detail_position.x,
         layout.detail_position.y,
         crate::accessibility::text_size(layout.detail_size, state.large_text),
