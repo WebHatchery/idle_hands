@@ -44,6 +44,7 @@ pub fn draw_replay_button(compact_landscape: bool) {
             crate::theme::SURFACE_DARK.b,
             0.96,
         ),
+        false,
     );
     crate::ui::draw_text(
         "TUTORIAL",
@@ -54,24 +55,31 @@ pub fn draw_replay_button(compact_landscape: bool) {
     );
 }
 
-pub fn draw_tutorial(game: GameId, compact_landscape: bool) {
+pub fn draw_tutorial(game: GameId, compact_landscape: bool, large_text: bool, high_contrast: bool) {
     if compact_landscape {
-        draw_landscape(game);
+        draw_landscape(game, large_text, high_contrast);
     } else {
-        draw_portrait(game);
+        draw_portrait(game, large_text, high_contrast);
     }
 }
 
-fn draw_portrait(game: GameId) {
-    panel(PORTRAIT_PANEL, Color::new(0.07, 0.045, 0.13, 0.98));
-    crate::ui::draw_text("HOW TO PLAY", 35., 160., 25., crate::theme::BRASS);
-    crate::ui::draw_text(game.title(), 35., 198., 20., WHITE);
+fn draw_portrait(game: GameId, large_text: bool, high_contrast: bool) {
+    panel(
+        PORTRAIT_PANEL,
+        Color::new(0.07, 0.045, 0.13, 0.98),
+        high_contrast,
+    );
+    let title_size = crate::accessibility::text_size(25., large_text);
+    let game_size = crate::accessibility::text_size(20., large_text);
+    let instruction_size = crate::accessibility::text_size(14., large_text);
+    crate::ui::draw_text("HOW TO PLAY", 35., 160., title_size, crate::theme::BRASS);
+    crate::ui::draw_text(game.title(), 35., 198., game_size, WHITE);
     let mut y = 240.;
     for (index, instruction) in tutorial_ui::instructions(game).iter().enumerate() {
         for (line_index, line) in macroquad_toolkit::ui::wrap_text(
             instruction,
             PORTRAIT_PANEL.right() - 35. - 44.,
-            crate::ui::readable_text_size(14.),
+            instruction_size,
         )
         .iter()
         .enumerate()
@@ -85,26 +93,33 @@ fn draw_portrait(game: GameId) {
                 format!("{}{}", prefix, line),
                 35.,
                 y,
-                14.,
+                instruction_size,
                 Color::new(0.82, 0.78, 0.89, 1.),
             );
-            y += crate::ui::readable_text_size(14.) + 8.;
+            y += instruction_size + 8.;
         }
         y += 9.;
     }
-    draw_continue(false);
+    draw_continue(false, large_text, high_contrast);
 }
 
-fn draw_landscape(game: GameId) {
-    panel(LANDSCAPE_PANEL, Color::new(0.07, 0.045, 0.13, 0.98));
-    crate::ui::draw_text("HOW TO PLAY", 122., 90., 28., crate::theme::BRASS);
-    crate::ui::draw_text(game.title(), 122., 123., 19., WHITE);
+fn draw_landscape(game: GameId, large_text: bool, high_contrast: bool) {
+    panel(
+        LANDSCAPE_PANEL,
+        Color::new(0.07, 0.045, 0.13, 0.98),
+        high_contrast,
+    );
+    let title_size = crate::accessibility::text_size(28., large_text);
+    let game_size = crate::accessibility::text_size(19., large_text);
+    let instruction_size = crate::accessibility::text_size(13., large_text);
+    crate::ui::draw_text("HOW TO PLAY", 122., 90., title_size, crate::theme::BRASS);
+    crate::ui::draw_text(game.title(), 122., 123., game_size, WHITE);
     let mut y = 154.;
     for (index, instruction) in tutorial_ui::instructions(game).iter().enumerate() {
         for (line_index, line) in macroquad_toolkit::ui::wrap_text(
             instruction,
             LANDSCAPE_PANEL.right() - 122. - 44.,
-            crate::ui::readable_text_size(13.),
+            instruction_size,
         )
         .iter()
         .enumerate()
@@ -118,23 +133,29 @@ fn draw_landscape(game: GameId) {
                 format!("{}{}", prefix, line),
                 122.,
                 y,
-                13.,
+                instruction_size,
                 Color::new(0.82, 0.78, 0.89, 1.),
             );
-            y += crate::ui::readable_text_size(13.) + 6.;
+            y += instruction_size + 6.;
         }
         y += 4.;
     }
-    draw_continue(true);
+    draw_continue(true, large_text, high_contrast);
 }
 
-fn draw_continue(compact_landscape: bool) {
+fn draw_continue(compact_landscape: bool, large_text: bool, high_contrast: bool) {
     let rect = continue_rect(compact_landscape);
-    panel(rect, crate::theme::MOSS_DARK);
-    crate::ui::draw_text("CONTINUE", rect.x + 34., rect.y + rect.h * 0.64, 15., WHITE);
+    panel(rect, crate::theme::MOSS_DARK, high_contrast);
+    crate::ui::draw_text(
+        "CONTINUE",
+        rect.x + 34.,
+        rect.y + rect.h * 0.64,
+        crate::accessibility::text_size(15., large_text),
+        WHITE,
+    );
 }
 
-fn panel(rect: Rect, fill: Color) {
+fn panel(rect: Rect, fill: Color, high_contrast: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
     draw_rectangle_lines(
         rect.x,
@@ -142,7 +163,11 @@ fn panel(rect: Rect, fill: Color) {
         rect.w,
         rect.h,
         2.,
-        Color::new(0.55, 0.43, 0.70, 0.9),
+        if high_contrast {
+            WHITE
+        } else {
+            Color::new(0.55, 0.43, 0.70, 0.9)
+        },
     );
 }
 

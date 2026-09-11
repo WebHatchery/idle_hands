@@ -349,11 +349,11 @@ pub fn draw(
     }
     if let Some(game) = state.tutorial {
         if is_compact_landscape() {
-            mobile_tutorial_ui::draw_tutorial(game, true);
+            mobile_tutorial_ui::draw_tutorial(game, true, state.large_text, state.high_contrast);
         } else if is_portrait() {
-            mobile_tutorial_ui::draw_tutorial(game, false);
+            mobile_tutorial_ui::draw_tutorial(game, false, state.large_text, state.high_contrast);
         } else {
-            tutorial_ui::draw_overlay(game);
+            tutorial_ui::draw_overlay(game, state.large_text, state.high_contrast);
         }
     } else if state.screen.is_game() {
         if is_compact_landscape() {

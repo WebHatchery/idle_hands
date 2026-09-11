@@ -49,7 +49,11 @@ pub fn draw_replay_button() {
         WHITE,
     );
 }
-pub fn draw_overlay(game: GameId) {
+pub fn draw_overlay(game: GameId, large_text: bool, high_contrast: bool) {
+    let title_size = crate::accessibility::text_size(38., large_text);
+    let game_size = crate::accessibility::text_size(25., large_text);
+    let instruction_size = crate::accessibility::text_size(17., large_text);
+    let button_size = crate::accessibility::text_size(17., large_text);
     draw_rectangle(
         OVERLAY_RECT.x,
         OVERLAY_RECT.y,
@@ -68,17 +72,21 @@ pub fn draw_overlay(game: GameId) {
         OVERLAY_RECT.w,
         OVERLAY_RECT.h,
         3.,
-        Color::new(0.78, 0.58, 0.30, 0.95),
+        if high_contrast {
+            WHITE
+        } else {
+            Color::new(0.78, 0.58, 0.30, 0.95)
+        },
     );
-    crate::ui::draw_text("HOW TO PLAY", 315., 225., 38., crate::theme::BRASS);
-    crate::ui::draw_text(game.title(), 315., 270., 25., WHITE);
+    crate::ui::draw_text("HOW TO PLAY", 315., 225., title_size, crate::theme::BRASS);
+    crate::ui::draw_text(game.title(), 315., 270., game_size, WHITE);
     let mut y = 330.;
     for line in instructions(game) {
-        for wrapped in macroquad_toolkit::ui::wrap_text(line, 650., 17.) {
-            crate::ui::draw_text(wrapped, 315., y, 17., crate::theme::CREAM);
-            y += 27.;
+        for wrapped in macroquad_toolkit::ui::wrap_text(line, 650., instruction_size) {
+            crate::ui::draw_text(wrapped, 315., y, instruction_size, crate::theme::CREAM);
+            y += instruction_size + 10.;
         }
-        y += 6.;
+        y += 4.;
     }
     draw_rectangle(
         CONTINUE_RECT.x,
@@ -91,7 +99,7 @@ pub fn draw_overlay(game: GameId) {
         "CONTINUE",
         CONTINUE_RECT.x + 42.,
         CONTINUE_RECT.y + 33.,
-        17.,
+        button_size,
         WHITE,
     );
 }
