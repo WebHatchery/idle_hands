@@ -223,6 +223,15 @@ pub fn draw(state: &AppState) {
             },
         );
     }
+    if achievements_data::filter_count(state, state.achievement_filter) == 0 {
+        crate::ui::draw_text(
+            achievements_data::empty_label(state.achievement_filter),
+            l.panel.x + 52.,
+            l.origin.y + 34.,
+            crate::accessibility::text_size(if portrait { 13. } else { 15. }, state.large_text),
+            crate::theme::SECONDARY,
+        );
+    }
     if let Some((previous, next)) = scroll_rects(state) {
         panel(previous, crate::theme::SURFACE_DARK, state.high_contrast);
         panel(next, crate::theme::SURFACE_DARK, state.high_contrast);

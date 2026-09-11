@@ -45,3 +45,10 @@ fn achievement_scroll_limit_follows_filter_size() {
     assert_eq!(scroll_limit(&state, 1, 8), 0);
     assert_eq!(scroll_limit(&state, 0, 10), AchievementId::ALL.len() - 10);
 }
+
+#[test]
+fn achievement_empty_copy_explains_each_filtered_state() {
+    assert_eq!(empty_label(0), "No achievements match this shelf.");
+    assert_eq!(empty_label(1), "No achievements earned yet.");
+    assert_eq!(empty_label(2), "Every achievement is earned.");
+}

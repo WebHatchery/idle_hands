@@ -30,6 +30,14 @@ pub fn filter_label(filter: u8) -> &'static str {
     }
 }
 
+pub fn empty_label(filter: u8) -> &'static str {
+    match normalize_filter(filter) {
+        1 => "No achievements earned yet.",
+        2 => "Every achievement is earned.",
+        _ => "No achievements match this shelf.",
+    }
+}
+
 pub fn rows(state: &AppState, filter: u8) -> Vec<AchievementRow> {
     AchievementId::ALL
         .into_iter()
