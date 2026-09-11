@@ -187,12 +187,14 @@ fn profile_and_game_snapshots_round_trip_independently() {
     };
     state.games.game.score = 77;
     state.records.best_2048 = 77;
+    state.sound_level = 3;
     let profile = ProfileSave::from_state(&state, "1.0.0");
     let snapshot = GameSnapshot::from_state(&state, GameId::Game2048);
     let mut restored = AppState::default();
     profile.apply_to(&mut restored);
     snapshot.apply_to(&mut restored);
     assert_eq!(restored.profile_name, "Separate Slots");
+    assert_eq!(restored.sound_level, 3);
     assert_eq!(restored.games.game.score, 77);
     assert_eq!(GameId::Yahtzee.save_key(), "fivefold");
 }
