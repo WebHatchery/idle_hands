@@ -472,27 +472,38 @@ pub fn credits_clicks(p: Vec2) -> Vec<UiAction> {
     }
 }
 
-pub fn draw_help() {
+pub fn draw_help(state: &AppState) {
     panel(
         Rect::new(20., 12., 804., 365.),
         crate::theme::BACKGROUND_DEEP,
     );
-    text("HOW TO PLAY", 40., 52., 26., crate::theme::BRASS);
+    text(
+        "HOW TO PLAY",
+        40.,
+        52.,
+        crate::accessibility::text_size(26., state.large_text),
+        crate::theme::BRASS,
+    );
     let mut y = 92.;
     for (index, paragraph) in crate::help_data::PARAGRAPHS.iter().enumerate() {
-        for line in macroquad_toolkit::ui::wrap_text(paragraph, 760., 14.) {
+        let size = crate::accessibility::text_size(14., state.large_text);
+        for line in macroquad_toolkit::ui::wrap_text(paragraph, 760., size) {
             text(
                 &line,
                 40.,
                 y,
-                if index == 0 { 16. } else { 14. },
+                if index == 0 {
+                    crate::accessibility::text_size(16., state.large_text)
+                } else {
+                    size
+                },
                 if index == 0 {
                     WHITE
                 } else {
                     Color::new(0.75, 0.70, 0.84, 1.)
                 },
             );
-            y += 24.;
+            y += size + 8.;
         }
         y += 5.;
     }
@@ -502,7 +513,13 @@ pub fn draw_help() {
         (Rect::new(680., 288., 130., 44.), "BACK"),
     ] {
         panel(rect, crate::theme::SURFACE);
-        text(label, rect.x + 30., rect.y + 29., 11., WHITE);
+        text(
+            label,
+            rect.x + 30.,
+            rect.y + 29.,
+            crate::accessibility::text_size(11., state.large_text),
+            WHITE,
+        );
     }
 }
 pub fn help_clicks(p: Vec2) -> Vec<UiAction> {

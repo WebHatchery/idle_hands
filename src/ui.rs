@@ -324,9 +324,9 @@ pub fn draw(
         }
         Screen::Cabinet => cabinet_ui::draw(state, data, loaded_assets, cabinet_texture),
         Screen::Game(_) => ui_game_routes::draw(state, frogger_frog, frogger_car),
-        Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(),
-        Screen::Help if is_portrait() => responsive_library::draw_help(),
-        Screen::Help => draw_help(),
+        Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(state),
+        Screen::Help if is_portrait() => responsive_library::draw_help(state),
+        Screen::Help => draw_help(state),
         Screen::Records if state.achievements_view => achievements_ui::draw(state),
         Screen::Records if state.daily_archive_view => daily_archive_ui::draw(state),
         Screen::Records if state.favorites_view || state.recent_view => favorites_ui::draw(state),
@@ -577,15 +577,22 @@ pub(crate) fn game_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     out
 }
-fn draw_help() {
+fn draw_help(state: &AppState) {
     panel(
         Rect::new(120., 80., 1040., 560.),
         crate::theme::BACKGROUND_DEEP,
     );
-    text("HOW TO PLAY", 170., 145., 42., crate::theme::BRASS);
+    text(
+        "HOW TO PLAY",
+        170.,
+        145.,
+        crate::accessibility::text_size(42., state.large_text),
+        crate::theme::BRASS,
+    );
     let mut y = 200.;
     for (index, paragraph) in crate::help_data::PARAGRAPHS.iter().enumerate() {
-        let size = if index == 0 { 24. } else { 19. };
+        let size =
+            crate::accessibility::text_size(if index == 0 { 24. } else { 19. }, state.large_text);
         for line in macroquad_toolkit::ui::wrap_text(paragraph, 900., size) {
             text(
                 &line,

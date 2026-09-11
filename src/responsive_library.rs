@@ -671,36 +671,61 @@ pub fn credits_clicks(p: Vec2) -> Vec<UiAction> {
     }
 }
 
-pub fn draw_help() {
+pub fn draw_help(state: &AppState) {
     panel(
         Rect::new(8., 38., 344., 602.),
         crate::theme::BACKGROUND_DEEP,
     );
-    text("HOW TO PLAY", 20., 80., 26., crate::theme::BRASS);
+    text(
+        "HOW TO PLAY",
+        20.,
+        80.,
+        crate::accessibility::text_size(26., state.large_text),
+        crate::theme::BRASS,
+    );
     let mut y = 112.;
     for (index, paragraph) in crate::help_data::PARAGRAPHS.iter().enumerate() {
-        for line in macroquad_toolkit::ui::wrap_text(paragraph, 315., 14.) {
+        let size = crate::accessibility::text_size(14., state.large_text);
+        for line in macroquad_toolkit::ui::wrap_text(paragraph, 315., size) {
             text(
                 &line,
                 20.,
                 y,
-                14.,
+                size,
                 if index == 0 {
                     WHITE
                 } else {
                     Color::new(0.75, 0.70, 0.84, 1.)
                 },
             );
-            y += 22.;
+            y += size + 8.;
         }
         y += 8.;
     }
     panel(Rect::new(10., 530., 105., 44.), crate::theme::SURFACE);
     panel(Rect::new(127., 530., 105., 44.), crate::theme::SURFACE);
     panel(Rect::new(244., 530., 106., 44.), crate::theme::MOSS_DARK);
-    text("RULES", 42., 558., 12., WHITE);
-    text("CREDITS", 150., 558., 11., WHITE);
-    text("BACK", 277., 558., 12., WHITE);
+    text(
+        "RULES",
+        42.,
+        558.,
+        crate::accessibility::text_size(12., state.large_text),
+        WHITE,
+    );
+    text(
+        "CREDITS",
+        150.,
+        558.,
+        crate::accessibility::text_size(11., state.large_text),
+        WHITE,
+    );
+    text(
+        "BACK",
+        277.,
+        558.,
+        crate::accessibility::text_size(12., state.large_text),
+        WHITE,
+    );
 }
 pub fn help_clicks(p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(Rect::new(10., 530., 105., 44.), p) {
