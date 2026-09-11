@@ -10,6 +10,13 @@ independent game modules. The shell owns app lifecycle and shared services. A
 game module owns rules and presents state through commands; it does not directly
 change the profile, global settings, or another game's save.
 
+The shell treats a finite frame gap of at least 0.5 seconds as a possible
+visibility return. While a live game is active, it cancels pointer capture,
+flushes the active autosave, and blocks simulation behind a safe-pause sheet.
+The player must tap RESUME PLAY before the game accepts input or advances
+again. Tutorials, restart/reset confirmations, non-game screens, and an
+already-paused round do not open a second sheet.
+
 The original proposed module tree below documents the architectural intent.
 The current implementation uses named Rust source files under src/ with
 game-specific UI siblings and child test modules; the enum-owned host remains
@@ -232,9 +239,9 @@ rule state, elapsed/score data where relevant, and undo history only when that
 game promises undo after resume. The shell keeps a small index for continue
 badges but treats each game slot as authoritative.
 
-Autosave occurs after committed player commands, on return Home, and on pause
-or visibility loss where available. Writes are coalesced so drag previews and
-animations do not create storage churn.
+Autosave occurs after committed player commands, on return Home, and before
+the safe-pause sheet shown after a frame-gap visibility return. Writes are
+coalesced so drag previews and animations do not create storage churn.
 
 Explicit NEW actions use a shared confirmation modal before dispatching the
 game-specific reset command. The pending command is held only in runtime state;

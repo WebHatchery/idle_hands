@@ -197,8 +197,9 @@ equivalent.
 - Preserve readable text at user-selectable UI scale without clipping controls.
 - Convey selection, legality, errors, and game-over state through more than hue.
 - Provide reduced motion, high contrast, sound controls, and tutorial replay.
-- Pause simulation when the page loses focus; autosave before/after lifecycle
-  transitions where the platform permits.
+- If a page or window returns after a visibility gap, pause the live round,
+  flush its autosave, and show a touchable RESUME PLAY sheet before simulation
+  continues. The recovery path never requires a keyboard.
 
 ## 9. Content and Data
 
