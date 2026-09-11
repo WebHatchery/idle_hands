@@ -62,6 +62,31 @@ pub struct CategoryProgress {
     pub total: usize,
 }
 
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub struct AvailabilityCounts {
+    pub playable: usize,
+    pub full_version: usize,
+    pub coming_soon: usize,
+}
+
+impl AvailabilityCounts {
+    pub fn label(self, compact: bool) -> String {
+        let full = if compact {
+            format!("{} full", self.full_version)
+        } else {
+            format!("{} in full version", self.full_version)
+        };
+        if self.coming_soon == 0 {
+            format!("{} playable · {full}", self.playable)
+        } else {
+            format!(
+                "{} playable · {full} · {} coming soon",
+                self.playable, self.coming_soon
+            )
+        }
+    }
+}
+
 impl CategoryProgress {
     pub const fn remaining(self) -> usize {
         self.total.saturating_sub(self.completed)
@@ -233,17 +258,18 @@ fn recent_rank(state: &AppState, game: GameId) -> usize {
         .unwrap_or(usize::MAX)
 }
 
-pub fn availability_counts(state: &AppState, filter: u8) -> (usize, usize) {
+pub fn availability_counts(state: &AppState, filter: u8) -> AvailabilityCounts {
     GameId::ALL
         .iter()
         .copied()
         .filter(|game| matches_filter(state, *game, filter))
-        .fold((0, 0), |(playable, full), game| {
-            if is_available(game) {
-                (playable + 1, full)
-            } else {
-                (playable, full + 1)
+        .fold(AvailabilityCounts::default(), |mut counts, game| {
+            match availability(game) {
+                crate::storefront::GameAvailability::Playable => counts.playable += 1,
+                crate::storefront::GameAvailability::DemoRestricted => counts.full_version += 1,
+                crate::storefront::GameAvailability::ComingSoon => counts.coming_soon += 1,
             }
+            counts
         })
 }
 

@@ -159,3 +159,36 @@ fn cabinet_sort_modes_cycle_and_keep_ordering_deterministic() {
     let recent_sorted = sorted_games(&state, 9, CabinetSort::Recent);
     assert_eq!(&recent_sorted[..2], &[GameId::Solitaire, GameId::Game2048]);
 }
+
+#[test]
+fn availability_counts_name_each_storefront_state() {
+    assert_eq!(
+        AvailabilityCounts {
+            playable: 5,
+            full_version: 6,
+            coming_soon: 0,
+        }
+        .label(false),
+        "5 playable · 6 in full version"
+    );
+    assert_eq!(
+        AvailabilityCounts {
+            playable: 5,
+            full_version: 6,
+            coming_soon: 2,
+        }
+        .label(true),
+        "5 playable · 6 full · 2 coming soon"
+    );
+}
+
+#[test]
+fn availability_counts_match_the_active_category() {
+    let counts = availability_counts(&AppState::default(), 3);
+    assert_eq!(counts.playable, if cfg!(feature = "demo") { 5 } else { 11 });
+    assert_eq!(
+        counts.full_version,
+        if cfg!(feature = "demo") { 6 } else { 0 }
+    );
+    assert_eq!(counts.coming_soon, 0);
+}

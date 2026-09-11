@@ -212,15 +212,17 @@ fn draw_home(state: &AppState, loaded: usize) {
 
 fn draw_library(state: &AppState) {
     let title = cabinet_status::category_name(state.cabinet_filter);
-    let (playable, full) = cabinet_status::availability_counts(state, state.cabinet_filter);
+    let availability = cabinet_status::availability_counts(state, state.cabinet_filter);
     let progress = cabinet_status::category_progress(state, state.cabinet_filter);
     text("<  COLLECTION", 260., 48., 12., crate::theme::SURFACE);
     text(title, 260., 82., 31., crate::theme::INK);
     text(
         &if crate::game_descriptor::is_demo_build() {
             format!(
-                "{playable} playable · {full} in full version · {}/{} done",
-                progress.completed, progress.total
+                "{} · {}/{} done",
+                availability.label(false),
+                progress.completed,
+                progress.total
             )
         } else {
             format!(

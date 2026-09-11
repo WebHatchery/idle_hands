@@ -149,7 +149,7 @@ fn draw_home(state: &AppState, loaded: usize) {
 }
 
 fn draw_library(state: &AppState) {
-    let (playable, full) = cabinet_status::availability_counts(state, state.cabinet_filter);
+    let availability = cabinet_status::availability_counts(state, state.cabinet_filter);
     let progress = cabinet_status::category_progress(state, state.cabinet_filter);
     text("<  HOME", 12., 31., 11., crate::theme::BRASS);
     text(
@@ -162,8 +162,10 @@ fn draw_library(state: &AppState) {
     text(
         &if crate::game_descriptor::is_demo_build() {
             format!(
-                "{playable} playable · {full} full · {}/{} done",
-                progress.completed, progress.total
+                "{} · {}/{} done",
+                availability.label(true),
+                progress.completed,
+                progress.total
             )
         } else {
             format!(
