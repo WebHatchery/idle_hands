@@ -195,3 +195,30 @@ fn notice_log_routes_open_and_close_through_every_layout() {
         ));
     });
 }
+
+#[test]
+fn statistics_entry_routes_from_records_in_every_layout() {
+    let records = crate::state::AppState {
+        screen: crate::state::Screen::Records,
+        ..Default::default()
+    };
+
+    with_desktop_layout(|| {
+        assert!(matches!(
+            actions_at(&records, vec2(1000., 280.)).as_slice(),
+            [UiAction::Statistics]
+        ));
+    });
+    with_portrait_layout(|| {
+        assert!(matches!(
+            actions_at(&records, vec2(70., 145.)).as_slice(),
+            [UiAction::Statistics]
+        ));
+    });
+    with_compact_landscape_layout(|| {
+        assert!(matches!(
+            actions_at(&records, vec2(200., 20.)).as_slice(),
+            [UiAction::Statistics]
+        ));
+    });
+}
