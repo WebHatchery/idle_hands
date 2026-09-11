@@ -214,6 +214,16 @@ fn draw_library(state: &AppState) {
             13.,
             crate::theme::SURFACE_DARK,
         );
+        if cabinet_status::is_available(game) {
+            let favorite = state.favorites.get(game.index()).copied().unwrap_or(false);
+            text(
+                if favorite { "*" } else { "+" },
+                rect.right() - 34.,
+                rect.y + 35.,
+                16.,
+                crate::theme::BRASS,
+            );
+        }
     }
     if page.has_previous() {
         button(Rect::new(580., 341., 95., 38.), "< PREV");
@@ -345,7 +355,13 @@ fn library_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         return vec![UiAction::CabinetSort];
     }
     for (index, game) in page_games(state).iter().copied().enumerate() {
-        if crate::ui::hit(game_rect(index), p) {
+        let rect = game_rect(index);
+        if cabinet_status::is_available(game)
+            && crate::ui::hit(Rect::new(rect.right() - 44., rect.y, 44., rect.h), p)
+        {
+            return vec![UiAction::ToggleFavorite(game.index())];
+        }
+        if crate::ui::hit(rect, p) {
             return vec![UiAction::Open(game.index())];
         }
     }
