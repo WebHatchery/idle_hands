@@ -125,6 +125,16 @@ impl Game {
         self.notifications.info(notice);
     }
 
+    pub(super) fn set_achievement_filter(&mut self, filter: u8) {
+        let filter = crate::achievements_data::normalize_filter(filter);
+        self.state.achievement_filter = filter;
+        self.state.library_scroll = 0;
+        self.notifications.info(format!(
+            "Achievement shelf: {}",
+            crate::achievements_data::filter_label(filter)
+        ));
+    }
+
     pub(super) fn open_game(&mut self, index: usize) {
         let Some(id) = GameId::ALL.get(index).copied() else {
             return;

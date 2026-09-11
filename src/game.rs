@@ -373,8 +373,7 @@ impl Game {
                 self.state.achievement_filter = 0;
             }
             ui::UiAction::AchievementFilter(filter) => {
-                self.state.achievement_filter = filter.min(2);
-                self.state.library_scroll = 0;
+                self.set_achievement_filter(filter);
             }
             ui::UiAction::Rules => {
                 self.state.screen = Screen::Rules;
