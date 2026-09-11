@@ -210,13 +210,15 @@ pub fn draw(state: &AppState) {
         );
     }
     let window = crate::daily_archive_data::window_label(start, total, page_size());
-    archive_button(layout.previous, "PREV", start > 0, state.high_contrast);
-    archive_button(
-        layout.next,
-        "NEXT",
-        start + page_size() < total,
-        state.high_contrast,
-    );
+    if crate::daily_archive_data::needs_paging(total, page_size()) {
+        archive_button(layout.previous, "PREV", start > 0, state.high_contrast);
+        archive_button(
+            layout.next,
+            "NEXT",
+            start + page_size() < total,
+            state.high_contrast,
+        );
+    }
     crate::ui::draw_text(
         window,
         layout.previous.right() + 14.,

@@ -52,6 +52,10 @@ pub fn action_label() -> &'static str {
     }
 }
 
+pub fn needs_paging(total: usize, capacity: usize) -> bool {
+    total > capacity
+}
+
 impl ArchiveRow {
     fn from_result(result: &DailyResult) -> Self {
         Self {

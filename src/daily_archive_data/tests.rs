@@ -55,3 +55,9 @@ fn archive_window_labels_cover_empty_and_end_boundaries() {
 fn archive_action_names_the_available_recovery_path() {
     assert_eq!(action_label(), "REPLAY");
 }
+
+#[test]
+fn archive_paging_only_exists_beyond_the_visible_window() {
+    assert!(!needs_paging(7, 7));
+    assert!(needs_paging(8, 7));
+}
