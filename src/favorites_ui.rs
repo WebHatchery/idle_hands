@@ -155,16 +155,17 @@ pub fn draw(state: &AppState) {
     } else {
         l.panel.y + 98.
     };
+    let restriction = summary.restriction_label();
     crate::ui::draw_text(
         if recent {
             format!(
-                "{} recently opened  ·  {} open  ·  {} done  ·  {} locked",
-                count, summary.open, summary.done, summary.locked
+                "{} recently opened  ·  {} open  ·  {} done  ·  {}",
+                count, summary.open, summary.done, restriction
             )
         } else {
             format!(
-                "{} starred  ·  {} open  ·  {} done  ·  {} locked",
-                count, summary.open, summary.done, summary.locked
+                "{} starred  ·  {} open  ·  {} done  ·  {}",
+                count, summary.open, summary.done, restriction
             )
         },
         l.panel.x + 52.,

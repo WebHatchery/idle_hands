@@ -86,6 +86,22 @@ fn summary_partitions_the_active_browse_shelf() {
             open: 1,
             done: 1,
             locked: 0,
+            coming_soon: 0,
         }
+    );
+}
+
+#[test]
+fn browse_summary_names_future_drawers_without_losing_locked_count() {
+    assert_eq!(
+        (BrowseSummary {
+            total: 4,
+            open: 1,
+            done: 0,
+            locked: 2,
+            coming_soon: 1,
+        })
+        .restriction_label(),
+        "2 locked · 1 soon"
     );
 }

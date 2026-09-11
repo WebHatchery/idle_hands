@@ -34,6 +34,17 @@ pub struct BrowseSummary {
     pub open: usize,
     pub done: usize,
     pub locked: usize,
+    pub coming_soon: usize,
+}
+
+impl BrowseSummary {
+    pub fn restriction_label(self) -> String {
+        if self.coming_soon == 0 {
+            format!("{} locked", self.locked)
+        } else {
+            format!("{} locked · {} soon", self.locked, self.coming_soon)
+        }
+    }
 }
 
 pub fn games(state: &AppState, mode: BrowseMode) -> Vec<GameId> {
@@ -78,15 +89,21 @@ pub fn summary(state: &AppState, mode: BrowseMode) -> BrowseSummary {
         .iter()
         .filter(|game| crate::cabinet_status::status(state, **game) == "COMPLETE")
         .count();
-    let locked = games
-        .iter()
-        .filter(|game| !crate::cabinet_status::is_available(**game))
-        .count();
+    let (locked, coming_soon) =
+        games.iter().fold(
+            (0, 0),
+            |(locked, soon), game| match crate::cabinet_status::availability(*game) {
+                crate::storefront::GameAvailability::Playable => (locked, soon),
+                crate::storefront::GameAvailability::DemoRestricted => (locked + 1, soon),
+                crate::storefront::GameAvailability::ComingSoon => (locked, soon + 1),
+            },
+        );
     BrowseSummary {
         total: games.len(),
-        open: games.len().saturating_sub(done + locked),
+        open: games.len().saturating_sub(done + locked + coming_soon),
         done,
         locked,
+        coming_soon,
     }
 }
 
