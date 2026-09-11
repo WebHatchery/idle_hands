@@ -72,14 +72,13 @@ pub fn draw_overlay(game: GameId) {
     );
     crate::ui::draw_text("HOW TO PLAY", 315., 225., 38., crate::theme::BRASS);
     crate::ui::draw_text(game.title(), 315., 270., 25., WHITE);
-    for (index, line) in instructions(game).iter().enumerate() {
-        crate::ui::draw_text(
-            line,
-            315.,
-            330. + index as f32 * 38.,
-            19.,
-            crate::theme::CREAM,
-        );
+    let mut y = 330.;
+    for line in instructions(game) {
+        for wrapped in macroquad_toolkit::ui::wrap_text(line, 650., 17.) {
+            crate::ui::draw_text(wrapped, 315., y, 17., crate::theme::CREAM);
+            y += 27.;
+        }
+        y += 6.;
     }
     draw_rectangle(
         CONTINUE_RECT.x,
