@@ -16,5 +16,9 @@ fn every_registered_game_has_three_touch_first_lines() {
             let lower = line.to_ascii_lowercase();
             !lower.contains("dismiss") && !lower.contains("confirm")
         }));
+        assert!(lines.iter().all(|line| {
+            let lower = line.to_ascii_lowercase();
+            !lower.contains("keyboard") && !lower.contains("press key") && !lower.contains("click")
+        }));
     }
 }
