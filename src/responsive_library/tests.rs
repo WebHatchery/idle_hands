@@ -38,6 +38,13 @@ fn portrait_filtered_rule_card_opens_its_canonical_game() {
 }
 
 #[test]
+fn portrait_rule_card_info_opens_drawer_details() {
+    let actions = rules_clicks(&AppState::default(), vec2(318., 135.));
+
+    assert!(matches!(actions.as_slice(), [UiAction::Inspect(0)]));
+}
+
+#[test]
 fn portrait_scrolled_filtered_rule_card_keeps_its_canonical_game() {
     let state = AppState {
         rules_filter: 4,

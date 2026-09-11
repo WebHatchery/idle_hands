@@ -20,6 +20,13 @@ fn desktop_rule_card_opens_the_canonical_game() {
 }
 
 #[test]
+fn desktop_rule_card_info_opens_drawer_details() {
+    let actions = rules_clicks(&AppState::default(), vec2(360., 209.));
+
+    assert!(matches!(actions.as_slice(), [UiAction::Inspect(0)]));
+}
+
+#[test]
 fn desktop_credits_back_is_a_touch_target() {
     assert!(matches!(
         credits_clicks(vec2(1100., 660.)).as_slice(),

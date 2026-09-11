@@ -452,7 +452,7 @@ pub fn draw_rules(state: &AppState) {
     );
     text("RULES", 20., 62., 29., crate::theme::BRASS);
     text(
-        "Tap a drawer to open its game.",
+        "Tap a drawer to open it, or INFO to inspect first.",
         20.,
         88.,
         12.,
@@ -500,11 +500,12 @@ pub fn draw_rules(state: &AppState) {
         );
         text(
             crate::rules_data::action_label(*game),
-            rect.right() - 48.,
+            rect.right() - 92.,
             rect.y + 20.,
             9.,
             crate::theme::SECONDARY,
         );
+        draw_rule_info(rect);
     }
     scroll_button(Rect::new(10., 602., 100., 44.), "PREV");
     scroll_button(Rect::new(250., 602., 100., 44.), "NEXT");
@@ -547,11 +548,12 @@ fn draw_filtered_rules(state: &AppState) {
         );
         text(
             crate::rules_data::action_label(row.game),
-            rect.right() - 48.,
+            rect.right() - 92.,
             rect.y + 20.,
             9.,
             crate::theme::SECONDARY,
         );
+        draw_rule_info(rect);
     }
     scroll_button(Rect::new(10., 602., 100., 44.), "PREV");
     scroll_button(Rect::new(250., 602., 100., 44.), "NEXT");
@@ -597,9 +599,23 @@ fn rule_action(state: &AppState, point: Vec2) -> Option<UiAction> {
         .enumerate()
         .find_map(|(index, row)| {
             let rect = Rect::new(18., 108. + index as f32 * 60., 324., 54.);
-            rect.contains(point)
-                .then(|| UiAction::Open(row.game.index()))
+            if crate::ui::hit(rule_info_rect(rect), point) {
+                Some(UiAction::Inspect(row.game.index()))
+            } else {
+                rect.contains(point)
+                    .then(|| UiAction::Open(row.game.index()))
+            }
         })
+}
+
+fn rule_info_rect(row: Rect) -> Rect {
+    Rect::new(row.right() - 42., row.y + 4., 36., row.h - 8.)
+}
+
+fn draw_rule_info(row: Rect) {
+    let info = rule_info_rect(row);
+    panel(info, crate::theme::SURFACE_DARK);
+    text("INFO", info.x + 5., info.y + info.h * 0.66, 8., WHITE);
 }
 
 pub fn draw_credits(state: &AppState) {

@@ -127,7 +127,7 @@ The collection shell owns:
 - settings, accessibility, tutorials, help, and confirmation dialogs;
 - per-game autosave slots and save-version migration dispatch;
 - records, achievements/stamps, and cosmetic unlock inventory;
-- favorites and recent quick shelves with shared Drawer Info routing;
+- favorites, recent, and rules shelves with shared Drawer Info routing;
 - theme tokens, typography, buttons, number pads, and mode selectors;
 - seeded RNG construction and replay identity formatting;
 - audio buses and reduced-motion behavior;
@@ -275,8 +275,9 @@ The runtime-only `DrawerInfo(GameId)` screen is the shared pre-launch details
 route for cabinet and Finder cards. `drawer_info_ui` derives category, status,
 availability, variants, and favorite copy from the existing descriptor,
 storefront, and cabinet-status boundaries, then dispatches the same `Open` and
-`ToggleFavorite` actions used elsewhere. Cabinet, Finder, Favorites, and Recent
-cards reserve a separate INFO touch lane from their favorite lane. The
+`ToggleFavorite` actions used elsewhere. Cabinet, Finder, Favorites, Recent,
+and Rules rows reserve a separate INFO touch lane from their launch or favorite
+lane. The
 `drawer_info`, `drawer_info_accessible`, `favorites_info`, and `recent_info`
 capture fixtures seed representative inspection surfaces without changing
 player saves.

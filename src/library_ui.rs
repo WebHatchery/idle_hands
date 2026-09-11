@@ -54,9 +54,17 @@ fn rule_action(state: &AppState, point: Vec2) -> Option<UiAction> {
             230.,
             32.,
         );
-        rect.contains(point)
-            .then(|| UiAction::Open(row.game.index()))
+        if crate::ui::hit(rule_info_rect(rect), point) {
+            Some(UiAction::Inspect(row.game.index()))
+        } else {
+            rect.contains(point)
+                .then(|| UiAction::Open(row.game.index()))
+        }
     })
+}
+
+fn rule_info_rect(row: Rect) -> Rect {
+    Rect::new(row.right() - 40., row.y + 2., 36., row.h - 4.)
 }
 pub fn credits_clicks(p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(Rect::new(1030., 635., 180., 48.), p) {
@@ -69,7 +77,7 @@ pub fn draw_rules(state: &AppState) {
     panel(Rect::new(120., 55., 1040., 610.));
     crate::ui::draw_text("RULES", 170., 125., 46., crate::theme::BRASS);
     crate::ui::draw_text(
-        "Tap a drawer name to open its game.",
+        "Tap a drawer name to open it, or INFO to inspect first.",
         174.,
         157.,
         19.,
@@ -107,11 +115,12 @@ pub fn draw_rules(state: &AppState) {
         crate::ui::draw_text(game.subtitle(), x, y + 15., 9., crate::theme::CREAM);
         crate::ui::draw_text(
             crate::rules_data::action_label(*game),
-            x + 195.,
+            x + 150.,
             y + 15.,
             8.,
             crate::theme::SECONDARY,
         );
+        crate::ui::draw_text("INFO", x + 194., y + 15., 7., crate::theme::BRASS);
     }
     back_button();
     if state.high_contrast {
@@ -131,11 +140,12 @@ fn draw_filtered_rules(state: &AppState) {
         crate::ui::draw_text(row.subtitle, x, y + 15., 9., crate::theme::CREAM);
         crate::ui::draw_text(
             crate::rules_data::action_label(row.game),
-            x + 195.,
+            x + 150.,
             y + 15.,
             8.,
             crate::theme::SECONDARY,
         );
+        crate::ui::draw_text("INFO", x + 194., y + 15., 7., crate::theme::BRASS);
     }
     crate::ui::draw_text(
         crate::rules_data::page_label(start, rows.len(), 44),

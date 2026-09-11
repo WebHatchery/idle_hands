@@ -184,6 +184,11 @@ The FAVORITES and RECENT quick shelves use the same INFO lane. A player can
 inspect a remembered drawer before opening it, remove a favorite without
 leaving the shelf, or clear the recent list as an explicit shelf action.
 
+The RULES shelf also keeps an INFO lane beside each rule row. Players can read
+the same availability, completion, variant, and favorite details from a rules
+category before choosing OPEN, including for drawers reserved for the full
+version.
+
 The cabinet may filter its canonical order to ALL, OPEN, or DONE drawers for
 quick collection browsing; filtering never changes a drawer's state or place.
 

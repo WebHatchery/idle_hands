@@ -20,7 +20,7 @@ pub fn draw_rules(state: &AppState) {
     );
     text("RULES", 40., 48., 25., crate::theme::BRASS);
     text(
-        "Tap a drawer to open its game.",
+        "Tap a drawer to open it, or INFO to inspect first.",
         40.,
         62.,
         9.,
@@ -98,11 +98,22 @@ fn draw_rule_card(index: usize, game: GameId, title: &str, subtitle: &str) {
     );
     text(
         crate::rules_data::action_label(game),
-        rect.right() - 48.,
+        rect.right() - 92.,
         rect.y + 20.,
         9.,
         crate::theme::SECONDARY,
     );
+    draw_rule_info(rect);
+}
+
+fn rule_info_rect(row: Rect) -> Rect {
+    Rect::new(row.right() - 42., row.y + 4., 36., row.h - 8.)
+}
+
+fn draw_rule_info(row: Rect) {
+    let info = rule_info_rect(row);
+    panel(info, crate::theme::SURFACE_DARK);
+    text("INFO", info.x + 5., info.y + info.h * 0.66, 8., WHITE);
 }
 
 fn draw_controls() {
@@ -142,7 +153,11 @@ fn rule_action(state: &AppState, point: Vec2) -> Option<UiAction> {
                 360.,
                 56.,
             );
-            rect.contains(point)
-                .then(|| UiAction::Open(row.game.index()))
+            if crate::ui::hit(rule_info_rect(rect), point) {
+                Some(UiAction::Inspect(row.game.index()))
+            } else {
+                rect.contains(point)
+                    .then(|| UiAction::Open(row.game.index()))
+            }
         })
 }

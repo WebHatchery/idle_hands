@@ -18,3 +18,10 @@ fn landscape_rule_card_opens_the_canonical_game() {
 
     assert!(matches!(actions.as_slice(), [UiAction::Open(0)]));
 }
+
+#[test]
+fn landscape_rule_card_info_opens_drawer_details() {
+    let actions = rules_clicks(&AppState::default(), vec2(366., 96.));
+
+    assert!(matches!(actions.as_slice(), [UiAction::Inspect(0)]));
+}
