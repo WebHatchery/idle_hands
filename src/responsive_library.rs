@@ -60,10 +60,11 @@ pub fn draw_records(state: &AppState) {
     let summary = crate::collection_summary::from_state(state);
     text(
         &format!(
-            "STAMPS {}  -  ACHIEVEMENTS {}/{}  -  TIME {}  -  {} ACTIVE",
+            "STAMPS {}  -  ACHIEVEMENTS {}/{} ({}%)  -  TIME {}  -  {} ACTIVE",
             summary.stamps,
             summary.earned_achievements,
             summary.total_achievements,
+            summary.achievement_percent(),
             crate::state_records::format_duration(summary.total_playtime_seconds),
             summary.active_games
         ),
@@ -74,9 +75,10 @@ pub fn draw_records(state: &AppState) {
     );
     text(
         &format!(
-            "DRAWERS {}/{}  ·  NEXT {}  ·  {}",
+            "DRAWERS {}/{} ({}%)  ·  NEXT {}  ·  {}",
             summary.completed_games,
             summary.total_games,
+            summary.completion_percent(),
             next_achievement(&state.records),
             summary.fastest_label()
         ),

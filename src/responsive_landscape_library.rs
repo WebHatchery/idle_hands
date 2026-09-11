@@ -52,10 +52,11 @@ pub fn draw_records(state: &AppState) {
     let summary = crate::collection_summary::from_state(state);
     text(
         &format!(
-            "STAMPS {}  -  ACHIEVEMENTS {}/{}  -  DRAWERS {}/{} ({}%)",
+            "STAMPS {}  -  ACHIEVEMENTS {}/{} ({}%)  -  DRAWERS {}/{} ({}%)",
             summary.stamps,
             summary.earned_achievements,
             summary.total_achievements,
+            summary.achievement_percent(),
             summary.completed_games,
             summary.total_games,
             summary.completion_percent()
