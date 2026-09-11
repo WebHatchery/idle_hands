@@ -138,6 +138,7 @@ mod responsive_library;
 mod responsive_puzzles;
 mod responsive_sudoku;
 mod responsive_ui;
+mod restart_modal_data;
 mod reversi;
 mod reversi_ui;
 mod rules_data;

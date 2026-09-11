@@ -22,25 +22,10 @@ fn title(state: &AppState) -> String {
 }
 
 pub fn clicks(p: Vec2) -> Vec<UiAction> {
-    let (cancel, start) = if crate::ui::is_compact_landscape() {
-        (
-            Rect::new(290., 195., 115., 44.),
-            Rect::new(445., 195., 115., 44.),
-        )
-    } else if crate::ui::is_portrait() {
-        (
-            Rect::new(45., 360., 120., 44.),
-            Rect::new(195., 360., 120., 44.),
-        )
-    } else {
-        (
-            Rect::new(450., 360., 160., 48.),
-            Rect::new(670., 360., 160., 48.),
-        )
-    };
-    if crate::ui::hit(cancel, p) {
+    let layout = current_layout();
+    if crate::ui::hit(layout.cancel, p) {
         vec![UiAction::Cancel]
-    } else if crate::ui::hit(start, p) {
+    } else if crate::ui::hit(layout.start, p) {
         vec![UiAction::ConfirmRestart]
     } else {
         vec![]
@@ -49,31 +34,10 @@ pub fn clicks(p: Vec2) -> Vec<UiAction> {
 
 pub fn draw(state: &AppState) {
     let title = title(state);
-    let (panel_rect, cancel, start, title_pos, detail_pos) = if crate::ui::is_compact_landscape() {
-        (
-            Rect::new(270., 95., 320., 170.),
-            Rect::new(290., 195., 115., 44.),
-            Rect::new(445., 195., 115., 44.),
-            vec2(305., 135.),
-            vec2(305., 160.),
-        )
-    } else if crate::ui::is_portrait() {
-        (
-            Rect::new(25., 255., 310., 190.),
-            Rect::new(45., 360., 120., 44.),
-            Rect::new(195., 360., 120., 44.),
-            vec2(55., 300.),
-            vec2(55., 330.),
-        )
-    } else {
-        (
-            Rect::new(390., 250., 500., 200.),
-            Rect::new(450., 360., 160., 48.),
-            Rect::new(670., 360., 160., 48.),
-            vec2(445., 305.),
-            vec2(445., 335.),
-        )
-    };
+    let layout = current_layout();
+    let panel_rect = layout.panel;
+    let cancel = layout.cancel;
+    let start = layout.start;
     draw_rectangle(
         panel_rect.x,
         panel_rect.y,
@@ -91,16 +55,16 @@ pub fn draw(state: &AppState) {
     );
     crate::ui::draw_text(
         &title,
-        title_pos.x,
-        title_pos.y,
-        if crate::ui::is_portrait() { 18. } else { 21. },
+        layout.title_position.x,
+        layout.title_position.y,
+        layout.title_size,
         WHITE,
     );
     crate::ui::draw_text(
         "Current progress will be replaced.",
-        detail_pos.x,
-        detail_pos.y,
-        if crate::ui::is_portrait() { 11. } else { 13. },
+        layout.detail_position.x,
+        layout.detail_position.y,
+        layout.detail_size,
         Color::new(0.72, 0.68, 0.82, 1.),
     );
     for (rect, label, fill) in [
@@ -118,4 +82,8 @@ pub fn draw(state: &AppState) {
             WHITE,
         );
     }
+}
+
+fn current_layout() -> crate::restart_modal_data::Layout {
+    crate::restart_modal_data::layout(crate::ui::is_portrait(), crate::ui::is_compact_landscape())
 }
