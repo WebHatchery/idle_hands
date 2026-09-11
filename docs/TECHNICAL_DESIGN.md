@@ -244,7 +244,10 @@ normalized `tutorial_seen` vector. `tutorial_library_data` owns the visible
 capacity and bounded scroll limit; `tutorial_library_ui` owns the responsive
 card layout and dispatches `OpenTutorial` with the canonical game index. The
 navigation handler opens the same game route as the cabinet, then explicitly
-starts its tutorial so replaying a seen lesson remains touch-complete.
+starts its tutorial so replaying a seen lesson remains touch-complete. The
+runtime-only `tutorial_filter` flag narrows the derived rows to unseen lessons
+and resets `library_scroll` whenever it changes. The `tutorials` capture fixture
+seeds mixed seen state, while `tutorials_accessible` opens the filtered view.
 
 Conceptual keys:
 

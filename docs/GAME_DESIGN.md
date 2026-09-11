@@ -160,7 +160,8 @@ bright text while preserving the same information hierarchy.
 Help also opens a touchable Tutorials shelf. It shows every drawer in canonical
 order, marks lessons already seen, and lets the player tap any drawer to replay
 its exact three-step lesson. Unseen lessons remain discoverable without making
-the player enter a game first.
+the player enter a game first; NEW ONLY narrows the shelf to lessons still
+waiting for their first visit.
 
 The cabinet may filter its canonical order to ALL, OPEN, or DONE drawers for
 quick collection browsing; filtering never changes a drawer's state or place.
