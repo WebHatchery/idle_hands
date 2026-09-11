@@ -226,3 +226,30 @@ fn statistics_entry_routes_from_records_in_every_layout() {
         ));
     });
 }
+
+#[test]
+fn tutorial_entry_routes_from_help_in_every_layout() {
+    let help = crate::state::AppState {
+        screen: crate::state::Screen::Help,
+        ..Default::default()
+    };
+
+    with_desktop_layout(|| {
+        assert!(matches!(
+            actions_at(&help, vec2(450., 650.)).as_slice(),
+            [UiAction::Tutorials]
+        ));
+    });
+    with_portrait_layout(|| {
+        assert!(matches!(
+            actions_at(&help, vec2(50., 495.)).as_slice(),
+            [UiAction::Tutorials]
+        ));
+    });
+    with_compact_landscape_layout(|| {
+        assert!(matches!(
+            actions_at(&help, vec2(350., 300.)).as_slice(),
+            [UiAction::Tutorials]
+        ));
+    });
+}
