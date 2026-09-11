@@ -1,6 +1,6 @@
 //! Compact touch tutorials with exact visible-control instructions.
 
-use crate::{state::GameId, tutorial_ui, ui::UiAction};
+use crate::{state::GameId, tutorial_data, ui::UiAction};
 use macroquad::prelude::*;
 
 const PORTRAIT_PANEL: Rect = Rect::new(15., 70., 330., 650.);
@@ -75,7 +75,7 @@ fn draw_portrait(game: GameId, large_text: bool, high_contrast: bool) {
     crate::ui::draw_text("HOW TO PLAY", 35., 160., title_size, crate::theme::BRASS);
     crate::ui::draw_text(game.title(), 35., 198., game_size, WHITE);
     let mut y = 240.;
-    for (index, instruction) in tutorial_ui::instructions(game).iter().enumerate() {
+    for (index, instruction) in tutorial_data::instructions(game).iter().enumerate() {
         for (line_index, line) in macroquad_toolkit::ui::wrap_text(
             instruction,
             PORTRAIT_PANEL.right() - 35. - 44.,
@@ -115,7 +115,7 @@ fn draw_landscape(game: GameId, large_text: bool, high_contrast: bool) {
     crate::ui::draw_text("HOW TO PLAY", 122., 90., title_size, crate::theme::BRASS);
     crate::ui::draw_text(game.title(), 122., 123., game_size, WHITE);
     let mut y = 154.;
-    for (index, instruction) in tutorial_ui::instructions(game).iter().enumerate() {
+    for (index, instruction) in tutorial_data::instructions(game).iter().enumerate() {
         for (line_index, line) in macroquad_toolkit::ui::wrap_text(
             instruction,
             LANDSCAPE_PANEL.right() - 122. - 44.,

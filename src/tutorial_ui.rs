@@ -1,6 +1,7 @@
 //! First-run and replayable touch tutorials shared by all game drawers.
 
 use crate::state::GameId;
+use crate::tutorial_data::instructions;
 use crate::ui::UiAction;
 use macroquad::prelude::*;
 
@@ -107,6 +108,5 @@ pub fn draw_overlay(game: GameId, large_text: bool, high_contrast: bool) {
         WHITE,
     );
 }
-pub(crate) use crate::tutorial_data::instructions;
 #[cfg(test)]
 mod tests;

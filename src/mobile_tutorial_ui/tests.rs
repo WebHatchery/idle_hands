@@ -3,7 +3,7 @@ use super::*;
 #[test]
 fn every_game_has_three_touch_specific_instructions() {
     for game in GameId::ALL {
-        let lines = tutorial_ui::instructions(game);
+        let lines = crate::tutorial_data::instructions(game);
         assert_eq!(lines.len(), 3);
         assert!(
             lines.iter().any(|line| {
