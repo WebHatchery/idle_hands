@@ -34,7 +34,7 @@ pub fn replay_clicks(point: Vec2, compact_landscape: bool) -> bool {
     crate::ui::hit(replay_rect(compact_landscape), point)
 }
 
-pub fn draw_replay_button(compact_landscape: bool) {
+pub fn draw_replay_button(compact_landscape: bool, large_text: bool, high_contrast: bool) {
     let rect = replay_rect(compact_landscape);
     panel(
         rect,
@@ -44,13 +44,13 @@ pub fn draw_replay_button(compact_landscape: bool) {
             crate::theme::SURFACE_DARK.b,
             0.96,
         ),
-        false,
+        high_contrast,
     );
     crate::ui::draw_text(
         "TUTORIAL",
         rect.x + if compact_landscape { 14. } else { 13. },
         rect.y + rect.h * 0.64,
-        if compact_landscape { 13. } else { 11. },
+        crate::accessibility::text_size(if compact_landscape { 13. } else { 11. }, large_text),
         WHITE,
     );
 }

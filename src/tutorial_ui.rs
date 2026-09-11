@@ -15,7 +15,7 @@ pub fn clicks(p: Vec2) -> Vec<UiAction> {
         vec![]
     }
 }
-pub fn draw_replay_button() {
+pub fn draw_replay_button(large_text: bool, high_contrast: bool) {
     draw_rectangle(
         REPLAY_RECT.x,
         REPLAY_RECT.y,
@@ -34,18 +34,22 @@ pub fn draw_replay_button() {
         REPLAY_RECT.w,
         REPLAY_RECT.h,
         2.,
-        Color::new(
-            crate::theme::BRASS.r,
-            crate::theme::BRASS.g,
-            crate::theme::BRASS.b,
-            0.8,
-        ),
+        if high_contrast {
+            WHITE
+        } else {
+            Color::new(
+                crate::theme::BRASS.r,
+                crate::theme::BRASS.g,
+                crate::theme::BRASS.b,
+                0.8,
+            )
+        },
     );
     crate::ui::draw_text(
         "TUTORIAL",
         REPLAY_RECT.x + 22.,
         REPLAY_RECT.y + 27.,
-        16.,
+        crate::accessibility::text_size(16., large_text),
         WHITE,
     );
 }

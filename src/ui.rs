@@ -357,11 +357,11 @@ pub fn draw(
         }
     } else if state.screen.is_game() {
         if is_compact_landscape() {
-            mobile_tutorial_ui::draw_replay_button(true);
+            mobile_tutorial_ui::draw_replay_button(true, state.large_text, state.high_contrast);
         } else if is_portrait() {
-            mobile_tutorial_ui::draw_replay_button(false);
+            mobile_tutorial_ui::draw_replay_button(false, state.large_text, state.high_contrast);
         } else {
-            tutorial_ui::draw_replay_button();
+            tutorial_ui::draw_replay_button(state.large_text, state.high_contrast);
         }
     }
     if state.confirm_restart && state.pending_restart.is_some() {
