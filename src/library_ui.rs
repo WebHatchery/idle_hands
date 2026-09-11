@@ -114,6 +114,9 @@ pub fn draw_rules(state: &AppState) {
         );
     }
     back_button();
+    if state.high_contrast {
+        draw_rectangle_lines(1030., 635., 180., 48., 3., WHITE);
+    }
 }
 
 fn draw_filtered_rules(state: &AppState) {

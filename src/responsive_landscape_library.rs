@@ -476,6 +476,9 @@ pub fn draw_credits(state: &AppState) {
         y += 4.;
     }
     back(Rect::new(365., 315., 110., 44.));
+    if state.high_contrast {
+        draw_rectangle_lines(365., 315., 110., 44., 3., WHITE);
+    }
 }
 pub fn credits_clicks(p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(Rect::new(365., 315., 110., 44.), p) {
