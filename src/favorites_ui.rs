@@ -244,15 +244,21 @@ pub fn draw(state: &AppState) {
         }
         let info = info_rect(rect, recent);
         panel(info, crate::theme::SURFACE_DARK);
+        if state.high_contrast {
+            draw_rectangle_lines(info.x, info.y, info.w, info.h, 2., WHITE);
+        }
         crate::ui::draw_text(
             "INFO",
             info.x + if crate::ui::is_portrait() { 5. } else { 6. },
             info.y + info.h * 0.66,
-            if crate::ui::is_compact_landscape() {
-                7.
-            } else {
-                8.
-            },
+            crate::accessibility::text_size(
+                if crate::ui::is_compact_landscape() {
+                    7.
+                } else {
+                    8.
+                },
+                state.large_text,
+            ),
             WHITE,
         );
         if !recent {
