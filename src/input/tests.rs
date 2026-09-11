@@ -139,3 +139,46 @@ fn scope_changes_cancel_captured_gestures_before_release() {
     assert!(tracker.sync_scope(tutorial));
     assert_eq!(tracker.release(Some(Vec2::new(10., 10.)), tutorial), None);
 }
+
+#[test]
+fn state_scope_tracks_the_topmost_interaction_layer() {
+    let mut state = AppState::default();
+    assert_eq!(
+        PointerScope::from_state(&state),
+        scope(Screen::Cabinet, PointerLayer::Board)
+    );
+
+    state.screen = Screen::Game(GameId::Game2048);
+    assert_eq!(
+        PointerScope::from_state(&state),
+        scope(Screen::Game(GameId::Game2048), PointerLayer::Board)
+    );
+    state.tutorial = Some(GameId::Game2048);
+    assert_eq!(
+        PointerScope::from_state(&state),
+        scope(Screen::Game(GameId::Game2048), PointerLayer::Tutorial)
+    );
+    state.tutorial = None;
+    state.confirm_restart = true;
+    assert_eq!(
+        PointerScope::from_state(&state),
+        scope(
+            Screen::Game(GameId::Game2048),
+            PointerLayer::RestartConfirmation
+        )
+    );
+    state.confirm_restart = false;
+    state.confirm_reset = true;
+    assert_eq!(
+        PointerScope::from_state(&state),
+        scope(
+            Screen::Game(GameId::Game2048),
+            PointerLayer::ResetConfirmation
+        )
+    );
+    state.lifecycle_paused = true;
+    assert_eq!(
+        PointerScope::from_state(&state),
+        scope(Screen::Game(GameId::Game2048), PointerLayer::LifecyclePause)
+    );
+}
