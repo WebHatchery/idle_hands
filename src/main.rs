@@ -180,6 +180,7 @@ mod ui;
 mod ui_action;
 mod ui_game_routes;
 mod undo;
+mod variant_card_data;
 mod word_grid;
 mod word_grid_ui;
 mod word_ladder;

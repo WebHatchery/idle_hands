@@ -3,18 +3,18 @@
 use crate::{
     game_variants,
     state::{AppState, Screen},
+    variant_card_data,
 };
 use macroquad::prelude::*;
 
 pub fn button_rect() -> Rect {
     let (width, _) = crate::ui::layout_size();
-    if crate::ui::is_portrait() {
-        Rect::new(width - 170., 48., 162., 42.)
-    } else if crate::ui::is_compact_landscape() {
-        Rect::new(width - 350., 5., 166., 34.)
-    } else {
-        Rect::new(width - 370., 16., 176., 38.)
-    }
+    variant_card_data::layout(
+        width,
+        crate::ui::is_portrait(),
+        crate::ui::is_compact_landscape(),
+    )
+    .rect
 }
 
 pub fn clicks(state: &AppState, point: Vec2) -> bool {
@@ -28,6 +28,7 @@ pub fn draw(state: &AppState) {
     let rect = button_rect();
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
+    let layout = variant_card_data::layout(crate::ui::layout_size().0, portrait, compact);
     crate::ui::draw_rounded_panel(
         rect,
         7.,
@@ -42,15 +43,15 @@ pub fn draw(state: &AppState) {
     crate::ui::draw_text(
         "RULE CARD  ›",
         rect.x + 9.,
-        rect.y + if portrait { 15. } else { 14. },
-        if portrait { 8. } else { 9. },
+        layout.title_baseline,
+        layout.title_size,
         crate::theme::BRASS,
     );
     crate::ui::draw_text(
         &label,
-        rect.x + 9.,
-        rect.y + if portrait { 32. } else { 27. },
-        if portrait || compact { 8. } else { 9. },
+        layout.label_rect.x,
+        layout.label_baseline,
+        layout.label_size,
         crate::theme::CREAM,
     );
     draw_icon(game, rect);
