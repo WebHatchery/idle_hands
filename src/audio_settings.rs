@@ -45,5 +45,18 @@ pub const fn volume(enabled: bool, level: u8) -> f32 {
     }
 }
 
+pub const fn meter(enabled: bool, level: u8) -> &'static str {
+    if !enabled {
+        "····"
+    } else {
+        match normalize(level) {
+            0 => "|···",
+            1 => "||··",
+            2 => "|||·",
+            _ => "||||",
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests;

@@ -261,7 +261,17 @@ pub fn draw_settings(state: &AppState) {
         Rect::new(22., 412., 316., 44.),
         Color::new(0.16, 0.11, 0.24, 1.),
     );
-    text(&format!("Volume: {}", labels.volume), 35., 439., 13., WHITE);
+    text(
+        &format!(
+            "Volume: {} {}",
+            labels.volume,
+            crate::settings_data::volume_meter(state)
+        ),
+        35.,
+        439.,
+        13.,
+        WHITE,
+    );
     panel(
         Rect::new(22., 465., 150., 44.),
         Color::new(0.16, 0.11, 0.24, 1.),

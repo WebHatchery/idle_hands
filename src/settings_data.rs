@@ -81,5 +81,9 @@ pub fn accessibility_labels(state: &AppState) -> AccessibilityLabels {
     }
 }
 
+pub fn volume_meter(state: &AppState) -> &'static str {
+    crate::audio_settings::meter(state.sound, state.sound_level)
+}
+
 #[cfg(test)]
 mod tests;

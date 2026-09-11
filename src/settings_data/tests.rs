@@ -92,9 +92,11 @@ fn accessibility_labels_use_consistent_meanings() {
     });
     assert_eq!(quiet.volume, "Quiet");
 
-    let muted = accessibility_labels(&AppState {
+    let muted_state = AppState {
         sound: false,
         ..AppState::default()
-    });
+    };
+    let muted = accessibility_labels(&muted_state);
     assert_eq!(muted.volume, "Off");
+    assert_eq!(volume_meter(&muted_state), "····");
 }

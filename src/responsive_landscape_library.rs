@@ -651,7 +651,11 @@ pub fn draw_settings(state: &AppState) {
     );
     panel(Rect::new(450., 220., 340., 44.), crate::theme::SURFACE);
     text(
-        &format!("VOLUME {}", labels.volume.to_uppercase()),
+        &format!(
+            "VOLUME {} {}",
+            labels.volume.to_uppercase(),
+            crate::settings_data::volume_meter(state)
+        ),
         570.,
         248.,
         11.,
