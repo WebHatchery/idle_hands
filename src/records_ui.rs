@@ -41,12 +41,13 @@ pub fn draw_records(state: &AppState) {
     );
     crate::ui::draw_text(
         format!(
-            "STAMPS  {}   •   ACHIEVEMENTS  {}/{}   •   DRAWERS  {}/{}",
+            "STAMPS  {}   •   ACHIEVEMENTS  {}/{}   •   DRAWERS  {}/{} ({}%)",
             summary.stamps,
             summary.earned_achievements,
             summary.total_achievements,
             summary.completed_games,
-            summary.total_games
+            summary.total_games,
+            summary.completion_percent()
         ),
         174.,
         185.,

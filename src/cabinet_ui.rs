@@ -216,10 +216,11 @@ fn draw_home(state: &AppState, loaded: usize) {
     let summary = crate::collection_summary::from_state(state);
     text(
         &format!(
-            "{} stamps  ·  {}  ·  {}  ·  {} textures",
+            "{} stamps  ·  {}  ·  {} ({}%)  ·  {} textures",
             summary.stamps,
             summary.achievements_label(),
             summary.drawers_label(),
+            summary.completion_percent(),
             loaded
         ),
         930.,
