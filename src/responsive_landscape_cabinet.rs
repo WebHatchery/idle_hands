@@ -270,7 +270,8 @@ fn draw_sidebar(state: &AppState) {
             },
         );
     }
-    text(&state.profile_name, 18., 348., 10., crate::theme::CREAM);
+    let profile_name = crate::profile_data::display_name(&state.profile_name);
+    text(&profile_name, 18., 348., 10., crate::theme::CREAM);
     text(
         &format!("{} stamps", state.stamps),
         18.,

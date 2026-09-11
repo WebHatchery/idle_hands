@@ -199,7 +199,10 @@ pub fn draw_settings(state: &AppState) {
     );
     text("SETTINGS", 22., 82., 30., crate::theme::BRASS);
     text(
-        &format!("Profile: {}", state.profile_name),
+        &format!(
+            "Profile: {}",
+            crate::profile_data::display_name(&state.profile_name)
+        ),
         22.,
         120.,
         15.,

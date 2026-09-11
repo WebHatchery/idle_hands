@@ -569,7 +569,7 @@ pub fn draw_settings(state: &AppState) {
     text(
         &format!(
             "Profile: {}  -  Cosmetics: {}/{}",
-            state.profile_name,
+            crate::profile_data::display_name(&state.profile_name),
             cosmetics::total_unlocked(summary.stamps),
             cosmetics::total_options()
         ),

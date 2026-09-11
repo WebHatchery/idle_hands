@@ -413,7 +413,8 @@ fn draw_sidebar(state: &AppState) {
         crate::theme::SURFACE_DARK,
         crate::theme::BORDER,
     );
-    text(&state.profile_name, 34., 636., 13., crate::theme::CREAM);
+    let profile_name = crate::profile_data::display_name(&state.profile_name);
+    text(&profile_name, 34., 636., 13., crate::theme::CREAM);
     let summary = crate::collection_summary::from_state(state);
     text(
         &format!(
