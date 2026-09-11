@@ -9,7 +9,7 @@ pub struct TutorialRow {
 }
 
 pub fn rows(state: &AppState) -> Vec<TutorialRow> {
-    GameId::ALL
+    let rows = GameId::ALL
         .into_iter()
         .map(|game| TutorialRow {
             game,
@@ -19,11 +19,29 @@ pub fn rows(state: &AppState) -> Vec<TutorialRow> {
                 .copied()
                 .unwrap_or(false),
         })
-        .collect()
+        .collect::<Vec<_>>();
+    if state.tutorial_filter {
+        rows.into_iter().filter(|row| !row.seen).collect()
+    } else {
+        rows
+    }
 }
 
 pub fn seen_count(state: &AppState) -> usize {
-    rows(state).iter().filter(|row| row.seen).count()
+    GameId::ALL
+        .into_iter()
+        .filter(|game| {
+            state
+                .tutorial_seen
+                .get(game.index())
+                .copied()
+                .unwrap_or(false)
+        })
+        .count()
+}
+
+pub fn new_count(state: &AppState) -> usize {
+    GameId::ALL.len().saturating_sub(seen_count(state))
 }
 
 pub fn visible_count() -> usize {

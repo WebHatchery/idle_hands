@@ -29,3 +29,16 @@ fn scroll_limit_never_underflows_short_lists() {
         assert_eq!(scroll_limit(&state), GameId::ALL.len() - 8);
     });
 }
+
+#[test]
+fn new_only_rows_exclude_seen_lessons_without_changing_the_total() {
+    let mut state = AppState::default();
+    state.tutorial_seen[GameId::Solitaire.index()] = true;
+    state.tutorial_filter = true;
+
+    let rows = rows(&state);
+
+    assert_eq!(new_count(&state), GameId::ALL.len() - 1);
+    assert_eq!(rows.len(), GameId::ALL.len() - 1);
+    assert!(rows.iter().all(|row| !row.seen));
+}

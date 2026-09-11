@@ -17,6 +17,7 @@ pub fn is_shell(action: UiAction) -> bool {
             | UiAction::Statistics
             | UiAction::Tutorials
             | UiAction::OpenTutorial(_)
+            | UiAction::ToggleTutorialFilter
             | UiAction::Favorites
             | UiAction::Recent
             | UiAction::DailyArchive

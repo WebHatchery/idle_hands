@@ -11,6 +11,7 @@ impl Game {
             crate::ui::UiAction::Statistics => self.open_statistics(),
             crate::ui::UiAction::Tutorials => self.open_tutorial_library(),
             crate::ui::UiAction::OpenTutorial(index) => self.open_tutorial(index),
+            crate::ui::UiAction::ToggleTutorialFilter => self.toggle_tutorial_filter(),
             crate::ui::UiAction::Favorites => self.open_records_view(true, false),
             crate::ui::UiAction::Recent => self.open_records_view(false, true),
             _ => return false,
@@ -39,6 +40,7 @@ impl Game {
     pub(super) fn open_tutorial_library(&mut self) {
         self.state.screen = Screen::Tutorials;
         self.state.library_scroll = 0;
+        self.state.tutorial_filter = false;
         self.state.favorites_view = false;
         self.state.recent_view = false;
         self.state.daily_archive_view = false;
@@ -54,6 +56,11 @@ impl Game {
         if self.state.screen != before && self.state.screen == Screen::Game(game) {
             self.state.tutorial = Some(game);
         }
+    }
+
+    fn toggle_tutorial_filter(&mut self) {
+        self.state.tutorial_filter = !self.state.tutorial_filter;
+        self.state.library_scroll = 0;
     }
 
     pub(super) fn refresh_daily_challenge(&mut self) {

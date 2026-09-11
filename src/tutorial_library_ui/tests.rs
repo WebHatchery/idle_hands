@@ -40,6 +40,21 @@ fn tapping_a_tutorial_card_routes_to_that_canonical_game() {
 }
 
 #[test]
+fn new_only_filter_is_a_touchable_toggle() {
+    let state = AppState {
+        screen: Screen::Tutorials,
+        ..AppState::default()
+    };
+
+    crate::ui::with_desktop_layout(|| {
+        assert!(matches!(
+            clicks(&state, vec2(950., 100.)).as_slice(),
+            [UiAction::ToggleTutorialFilter]
+        ));
+    });
+}
+
+#[test]
 fn lesson_cards_and_controls_stay_inside_each_viewport() {
     let assert_layout = || {
         let (width, height) = crate::ui::layout_size();

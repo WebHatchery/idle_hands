@@ -39,6 +39,9 @@ fn text(state: &AppState, value: impl AsRef<str>, x: f32, y: f32, size: f32, col
 }
 
 pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
+    if crate::ui::hit(filter_rect(), point) {
+        return vec![UiAction::ToggleTutorialFilter];
+    }
     let (previous, next, back) = control_rects();
     if crate::ui::hit(back, point) {
         return vec![UiAction::Help];
@@ -82,6 +85,7 @@ fn draw_desktop(state: &AppState) {
     );
     heading(state, 170., 105., "Replay every lesson");
     draw_summary(state, 170., 134., 18.);
+    draw_filter_button(state);
     draw_cards(state);
     draw_controls(state);
 }
@@ -94,6 +98,7 @@ fn draw_compact(state: &AppState) {
     );
     heading(state, 40., 47., "Replay every lesson");
     draw_summary(state, 40., 65., 11.);
+    draw_filter_button(state);
     draw_cards(state);
     draw_controls(state);
 }
@@ -106,6 +111,7 @@ fn draw_portrait(state: &AppState) {
     );
     heading(state, 20., 60., "Replay lessons");
     draw_summary(state, 20., 86., 11.);
+    draw_filter_button(state);
     draw_cards(state);
     draw_controls(state);
 }
@@ -119,9 +125,9 @@ fn draw_summary(state: &AppState, x: f32, y: f32, size: f32) {
     text(
         state,
         format!(
-            "{} of {} lessons seen  ·  TAP A DRAWER TO REPLAY",
+            "{} seen  ·  {} new  ·  TAP A DRAWER TO REPLAY",
             tutorial_library_data::seen_count(state),
-            crate::state::GameId::ALL.len()
+            tutorial_library_data::new_count(state)
         ),
         x,
         y,
@@ -200,12 +206,24 @@ fn draw_controls(state: &AppState) {
             state
                 .library_scroll
                 .min(tutorial_library_data::scroll_limit(state)),
-            crate::state::GameId::ALL.len(),
+            tutorial_library_data::rows(state).len(),
         ),
         page_label_position(),
         page_label_y(),
         11.,
         secondary(state),
+    );
+}
+
+fn draw_filter_button(state: &AppState) {
+    button(
+        state,
+        filter_rect(),
+        if state.tutorial_filter {
+            "SHOW ALL"
+        } else {
+            "NEW ONLY"
+        },
     );
 }
 
@@ -261,6 +279,16 @@ fn control_rects() -> (Rect, Rect, Rect) {
             Rect::new(780., 590., 110., 48.),
             Rect::new(930., 590., 180., 48.),
         )
+    }
+}
+
+fn filter_rect() -> Rect {
+    if crate::ui::is_compact_landscape() {
+        Rect::new(650., 20., 150., 44.)
+    } else if crate::ui::is_portrait() {
+        Rect::new(190., 42., 150., 44.)
+    } else {
+        Rect::new(930., 80., 180., 44.)
     }
 }
 

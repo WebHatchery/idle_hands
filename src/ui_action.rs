@@ -14,6 +14,7 @@ pub enum UiAction {
     Statistics,
     Tutorials,
     OpenTutorial(usize),
+    ToggleTutorialFilter,
     Favorites,
     Recent,
     DailyArchive,
