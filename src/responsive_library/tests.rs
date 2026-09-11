@@ -45,6 +45,16 @@ fn portrait_rule_card_info_opens_drawer_details() {
 }
 
 #[test]
+fn portrait_rule_info_lane_stays_inside_the_rule_row() {
+    let row = Rect::new(18., 108., 324., 54.);
+    let info = rule_info_rect(row);
+
+    assert!(info.x > row.x);
+    assert!(info.right() <= row.right());
+    assert!(info.bottom() <= row.bottom());
+}
+
+#[test]
 fn portrait_scrolled_filtered_rule_card_keeps_its_canonical_game() {
     let state = AppState {
         rules_filter: 4,

@@ -25,3 +25,13 @@ fn landscape_rule_card_info_opens_drawer_details() {
 
     assert!(matches!(actions.as_slice(), [UiAction::Inspect(0)]));
 }
+
+#[test]
+fn landscape_rule_info_lane_stays_inside_the_rule_card() {
+    let row = Rect::new(30., 68., 360., 56.);
+    let info = rule_info_rect(row);
+
+    assert!(info.x > row.x);
+    assert!(info.right() <= row.right());
+    assert!(info.bottom() <= row.bottom());
+}

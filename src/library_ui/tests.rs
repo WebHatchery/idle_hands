@@ -27,6 +27,16 @@ fn desktop_rule_card_info_opens_drawer_details() {
 }
 
 #[test]
+fn desktop_rule_info_lane_stays_inside_the_rule_row() {
+    let row = Rect::new(152., 193., 230., 32.);
+    let info = rule_info_rect(row);
+
+    assert!(info.x > row.x);
+    assert!(info.right() <= row.right());
+    assert!(info.bottom() <= row.bottom());
+}
+
+#[test]
 fn desktop_credits_back_is_a_touch_target() {
     assert!(matches!(
         credits_clicks(vec2(1100., 660.)).as_slice(),
