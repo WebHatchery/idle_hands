@@ -4,6 +4,9 @@ use crate::domain::Direction;
 use crate::{game_2048::Game2048Size, palette_ui, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
+#[cfg(test)]
+mod tests;
+
 pub const WIDTH: f32 = 360.;
 pub const HEIGHT: f32 = 780.;
 

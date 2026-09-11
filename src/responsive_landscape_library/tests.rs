@@ -10,3 +10,51 @@ fn landscape_shelf_button_cycles_from_all_to_cards() {
 
     assert!(matches!(actions.as_slice(), [UiAction::RecordsFilter(3)]));
 }
+
+#[test]
+fn landscape_settings_routes_rows_and_accessibility_controls() {
+    let state = AppState::default();
+
+    assert!(matches!(
+        settings_clicks(&state, vec2(50., 75.)).as_slice(),
+        [UiAction::CycleCardBack]
+    ));
+    assert!(matches!(
+        settings_clicks(&state, vec2(50., 123.)).as_slice(),
+        [UiAction::CycleBoardTheme]
+    ));
+    assert!(matches!(
+        settings_clicks(&state, vec2(50., 171.)).as_slice(),
+        [UiAction::CycleSoundSet]
+    ));
+    assert!(matches!(
+        settings_clicks(&state, vec2(50., 219.)).as_slice(),
+        [UiAction::CycleCabinetDecoration]
+    ));
+    assert!(matches!(
+        settings_clicks(&state, vec2(460., 180.)).as_slice(),
+        [UiAction::ToggleHighContrast]
+    ));
+    assert!(matches!(
+        settings_clicks(&state, vec2(640., 180.)).as_slice(),
+        [UiAction::ToggleLargeText]
+    ));
+}
+
+#[test]
+fn landscape_settings_reset_modal_blocks_background_and_routes_buttons() {
+    let state = AppState {
+        confirm_reset: true,
+        ..AppState::default()
+    };
+
+    assert!(settings_clicks(&state, vec2(50., 75.)).is_empty());
+    assert!(matches!(
+        settings_clicks(&state, vec2(300., 250.)).as_slice(),
+        [UiAction::CancelResetData]
+    ));
+    assert!(matches!(
+        settings_clicks(&state, vec2(470., 250.)).as_slice(),
+        [UiAction::ConfirmResetData]
+    ));
+}
