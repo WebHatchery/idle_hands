@@ -1,11 +1,6 @@
 //! Medium landscape layouts for library and settings screens.
 
-use crate::{
-    cosmetics,
-    progression::{completed_games, AchievementId},
-    state::{AppState, GameId},
-    ui::UiAction,
-};
+use crate::{cosmetics, progression::AchievementId, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
 #[cfg(test)]
@@ -54,16 +49,15 @@ pub fn draw_records(state: &AppState) {
         },
     );
     text("RECORDS", 40., 48., 25., crate::theme::BRASS);
-    let earned = state.achievements.iter().filter(|v| **v).count();
-    let completed = completed_games(&state.records);
+    let summary = crate::collection_summary::from_state(state);
     text(
         &format!(
             "STAMPS {}  -  ACHIEVEMENTS {}/{}  -  DRAWERS {}/{}",
-            state.stamps,
-            earned,
-            AchievementId::ALL.len(),
-            completed,
-            GameId::ALL.len()
+            summary.stamps,
+            summary.earned_achievements,
+            summary.total_achievements,
+            summary.completed_games,
+            summary.total_games
         ),
         250.,
         46.,
@@ -77,8 +71,8 @@ pub fn draw_records(state: &AppState) {
             state.records.daily_results.len(),
             value(state.records.daily_best_score()),
             next_achievement(&state.records),
-            crate::state_records::format_duration(state.records.time_summary().total_seconds),
-            state.records.time_summary().active_games
+            crate::state_records::format_duration(summary.total_playtime_seconds),
+            summary.active_games
         ),
         40.,
         62.,

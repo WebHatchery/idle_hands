@@ -1,7 +1,7 @@
 //! Compact portrait layouts for collection-wide library screens.
 
 use crate::{
-    progression::{completed_games, AchievementId},
+    progression::AchievementId,
     state::{AppState, GameId},
     ui::UiAction,
 };
@@ -57,16 +57,15 @@ pub fn draw_records(state: &AppState) {
         10.,
         crate::theme::SECONDARY,
     );
-    let earned = state.achievements.iter().filter(|earned| **earned).count();
-    let completed = completed_games(&state.records);
+    let summary = crate::collection_summary::from_state(state);
     text(
         &format!(
             "STAMPS {}  -  ACHIEVEMENTS {}/{}  -  TIME {}  -  {} ACTIVE",
-            state.stamps,
-            earned,
-            AchievementId::ALL.len(),
-            crate::state_records::format_duration(state.records.time_summary().total_seconds),
-            state.records.time_summary().active_games
+            summary.stamps,
+            summary.earned_achievements,
+            summary.total_achievements,
+            crate::state_records::format_duration(summary.total_playtime_seconds),
+            summary.active_games
         ),
         20.,
         110.,
@@ -76,8 +75,8 @@ pub fn draw_records(state: &AppState) {
     text(
         &format!(
             "DRAWERS {}/{}  ·  NEXT {}",
-            completed,
-            GameId::ALL.len(),
+            summary.completed_games,
+            summary.total_games,
             next_achievement(&state.records)
         ),
         20.,

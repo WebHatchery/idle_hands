@@ -1,8 +1,7 @@
 //! Collection-wide records screen.
 
-use crate::progression::{completed_games, AchievementId};
-use crate::state::{AppState, GameId};
 use crate::ui::UiAction;
+use crate::{progression::AchievementId, state::AppState};
 use macroquad::prelude::*;
 
 #[cfg(test)]
@@ -35,21 +34,19 @@ pub fn draw_records(state: &AppState) {
         19.,
         crate::theme::SECONDARY,
     );
-    let earned = state.achievements.iter().filter(|earned| **earned).count();
-    let completed = completed_games(&state.records);
-    let time = state.records.time_summary();
-    let fastest = time.fastest_seconds.map_or_else(
+    let summary = crate::collection_summary::from_state(state);
+    let fastest = summary.fastest_seconds.map_or_else(
         || "—".into(),
         |seconds| crate::state_records::format_duration(u64::from(seconds)),
     );
     crate::ui::draw_text(
         format!(
             "STAMPS  {}   •   ACHIEVEMENTS  {}/{}   •   DRAWERS  {}/{}",
-            state.stamps,
-            earned,
-            AchievementId::ALL.len(),
-            completed,
-            GameId::ALL.len()
+            summary.stamps,
+            summary.earned_achievements,
+            summary.total_achievements,
+            summary.completed_games,
+            summary.total_games
         ),
         174.,
         185.,
@@ -63,8 +60,8 @@ pub fn draw_records(state: &AppState) {
             state.records.daily_results.len(),
             value(state.records.daily_best_score()),
             next_achievement(&state.records),
-            crate::state_records::format_duration(time.total_seconds),
-            time.active_games,
+            crate::state_records::format_duration(summary.total_playtime_seconds),
+            summary.active_games,
             fastest
         ),
         174.,

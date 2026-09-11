@@ -135,11 +135,13 @@ fn draw_home(state: &AppState, loaded: usize) {
     for (index, filter) in cabinet_status::CATEGORY_FILTERS.iter().copied().enumerate() {
         category(state, CATEGORY_RECTS[index], filter);
     }
-    let collection = cabinet_status::collection_progress(state);
+    let summary = crate::collection_summary::from_state(state);
     text(
         &format!(
-            "{}/{} drawers done  ·  {} stamps  ·  {} textures",
-            collection.completed, collection.total, state.stamps, loaded
+            "{}  ·  {} stamps  ·  {} textures",
+            summary.drawers_label(),
+            summary.stamps,
+            loaded
         ),
         682.,
         374.,

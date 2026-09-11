@@ -213,15 +213,13 @@ fn draw_home(state: &AppState, loaded: usize) {
             crate::theme::SURFACE,
         );
     }
-    let collection = cabinet_status::collection_progress(state);
+    let summary = crate::collection_summary::from_state(state);
     text(
         &format!(
-            "{} stamps  ·  {}/{} achievements  ·  {}/{} drawers  ·  {} textures",
-            state.stamps,
-            state.achievements.iter().filter(|earned| **earned).count(),
-            crate::progression::AchievementId::ALL.len(),
-            collection.completed,
-            collection.total,
+            "{} stamps  ·  {}  ·  {}  ·  {} textures",
+            summary.stamps,
+            summary.achievements_label(),
+            summary.drawers_label(),
             loaded
         ),
         930.,
@@ -410,12 +408,11 @@ fn draw_sidebar(state: &AppState) {
         crate::theme::BORDER,
     );
     text(&state.profile_name, 34., 636., 13., crate::theme::CREAM);
+    let summary = crate::collection_summary::from_state(state);
     text(
         &format!(
             "{} stamps · {}/{} goals",
-            state.stamps,
-            state.achievements.iter().filter(|earned| **earned).count(),
-            crate::progression::AchievementId::ALL.len()
+            summary.stamps, summary.earned_achievements, summary.total_achievements
         ),
         34.,
         659.,

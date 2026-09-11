@@ -83,10 +83,6 @@ pub fn filter_count(state: &AppState, filter: u8) -> usize {
     rows(state, filter).len()
 }
 
-pub fn earned_count(state: &AppState) -> usize {
-    filter_count(state, 1)
-}
-
 pub fn is_earned(state: &AppState, achievement: AchievementId) -> bool {
     state
         .achievements

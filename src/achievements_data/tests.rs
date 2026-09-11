@@ -10,7 +10,10 @@ fn achievement_filters_partition_the_catalog() {
     assert_eq!(filter_count(&state, 0), AchievementId::ALL.len());
     assert_eq!(filter_count(&state, 1), 2);
     assert_eq!(filter_count(&state, 2), AchievementId::ALL.len() - 2);
-    assert_eq!(earned_count(&state), 2);
+    assert_eq!(
+        crate::collection_summary::from_state(&state).earned_achievements,
+        2
+    );
 }
 
 #[test]

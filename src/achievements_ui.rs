@@ -107,7 +107,7 @@ pub fn draw(state: &AppState) {
         crate::accessibility::text_size(title_size, state.large_text),
         crate::theme::BRASS,
     );
-    let earned = achievements_data::earned_count(state);
+    let earned = crate::collection_summary::from_state(state).earned_achievements;
     crate::ui::draw_text(
         format!(
             "{} earned of {}  -  showing {}",

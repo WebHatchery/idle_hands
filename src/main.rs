@@ -26,6 +26,7 @@ mod card_render;
 mod cards;
 mod checkers;
 mod checkers_ui;
+mod collection_summary;
 mod color_sort;
 mod color_sort_ui;
 mod connect_four;

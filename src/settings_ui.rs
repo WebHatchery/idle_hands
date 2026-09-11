@@ -22,6 +22,7 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 
 pub fn draw_settings(state: &AppState) {
     let labels = crate::settings_data::accessibility_labels(state);
+    let summary = crate::collection_summary::from_state(state);
     panel(
         Rect::new(180., 60., 920., 600.),
         crate::theme::BACKGROUND_DEEP,
@@ -31,8 +32,8 @@ pub fn draw_settings(state: &AppState) {
         &format!(
             "Profile: {}  •  Stamps: {}  •  Cosmetics open: {}/{}",
             state.profile_name,
-            state.stamps,
-            cosmetics::total_unlocked(state.stamps),
+            summary.stamps,
+            cosmetics::total_unlocked(summary.stamps),
             cosmetics::total_options()
         ),
         230.,
