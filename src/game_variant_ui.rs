@@ -49,21 +49,33 @@ pub fn draw(state: &AppState) {
         rect.x + 9.,
         layout.title_baseline,
         layout.title_size,
-        crate::theme::BRASS,
+        if state.high_contrast {
+            WHITE
+        } else {
+            crate::theme::BRASS
+        },
     );
     crate::ui::draw_text(
         &label,
         layout.label_rect.x,
         layout.label_baseline,
         layout.label_size,
-        crate::theme::CREAM,
+        if state.high_contrast {
+            WHITE
+        } else {
+            crate::theme::CREAM
+        },
     );
-    draw_icon(game, rect);
+    draw_icon(game, rect, state.high_contrast);
 }
 
-fn draw_icon(game: crate::state::GameId, rect: Rect) {
+fn draw_icon(game: crate::state::GameId, rect: Rect, high_contrast: bool) {
     let center = vec2(rect.right() - 17., rect.y + rect.h * 0.52);
-    let ink = crate::theme::BRASS;
+    let ink = if high_contrast {
+        WHITE
+    } else {
+        crate::theme::BRASS
+    };
     match game {
         crate::state::GameId::Solitaire
         | crate::state::GameId::FreeCell
