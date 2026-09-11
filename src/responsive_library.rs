@@ -595,22 +595,35 @@ fn rule_action(state: &AppState, point: Vec2) -> Option<UiAction> {
         })
 }
 
-pub fn draw_credits() {
+pub fn draw_credits(state: &AppState) {
     panel(
         Rect::new(8., 70., 344., 520.),
         crate::theme::BACKGROUND_DEEP,
     );
-    text("CREDITS", 20., 115., 29., crate::theme::BRASS);
-    text(crate::credits_data::TITLE, 22., 165., 22., WHITE);
+    text(
+        "CREDITS",
+        20.,
+        115.,
+        crate::accessibility::text_size(29., state.large_text),
+        crate::theme::BRASS,
+    );
+    text(
+        crate::credits_data::TITLE,
+        22.,
+        165.,
+        crate::accessibility::text_size(22., state.large_text),
+        WHITE,
+    );
     let mut y = 205.;
     for (index, paragraph) in crate::credits_data::PARAGRAPHS.iter().enumerate() {
-        let size = if index == crate::credits_data::PARAGRAPHS.len() - 1 {
+        let base_size = if index == crate::credits_data::PARAGRAPHS.len() - 1 {
             14.
         } else if index == 0 {
             15.
         } else {
             12.
         };
+        let size = crate::accessibility::text_size(base_size, state.large_text);
         let color = if index == 0 || index == crate::credits_data::PARAGRAPHS.len() - 1 {
             crate::theme::CREAM
         } else {

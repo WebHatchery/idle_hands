@@ -338,9 +338,11 @@ pub fn draw(
         Screen::Rules if is_compact_landscape() => responsive_landscape_rules::draw_rules(state),
         Screen::Rules if is_portrait() => responsive_library::draw_rules(state),
         Screen::Rules => library_ui::draw_rules(state),
-        Screen::Credits if is_compact_landscape() => responsive_landscape_library::draw_credits(),
-        Screen::Credits if is_portrait() => responsive_library::draw_credits(),
-        Screen::Credits => library_ui::draw_credits(),
+        Screen::Credits if is_compact_landscape() => {
+            responsive_landscape_library::draw_credits(state)
+        }
+        Screen::Credits if is_portrait() => responsive_library::draw_credits(state),
+        Screen::Credits => library_ui::draw_credits(state),
         Screen::Settings if is_compact_landscape() => {
             responsive_landscape_library::draw_settings(state)
         }

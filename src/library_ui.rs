@@ -143,19 +143,32 @@ fn draw_filtered_rules(state: &AppState) {
     );
     back_button();
 }
-pub fn draw_credits() {
+pub fn draw_credits(state: &AppState) {
     panel(Rect::new(230., 95., 820., 520.));
-    crate::ui::draw_text("CREDITS", 300., 175., 46., crate::theme::BRASS);
-    crate::ui::draw_text(crate::credits_data::TITLE, 305., 240., 28., WHITE);
+    crate::ui::draw_text(
+        "CREDITS",
+        300.,
+        175.,
+        crate::accessibility::text_size(46., state.large_text),
+        crate::theme::BRASS,
+    );
+    crate::ui::draw_text(
+        crate::credits_data::TITLE,
+        305.,
+        240.,
+        crate::accessibility::text_size(28., state.large_text),
+        WHITE,
+    );
     let mut y = 280.;
     for (index, paragraph) in crate::credits_data::PARAGRAPHS.iter().enumerate() {
-        let size = if index == crate::credits_data::PARAGRAPHS.len() - 1 {
+        let base_size = if index == crate::credits_data::PARAGRAPHS.len() - 1 {
             19.
         } else if index == 0 {
             20.
         } else {
             16.
         };
+        let size = crate::accessibility::text_size(base_size, state.large_text);
         let color = if index == 0 || index == crate::credits_data::PARAGRAPHS.len() - 1 {
             crate::theme::CREAM
         } else {

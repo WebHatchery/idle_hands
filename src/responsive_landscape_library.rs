@@ -425,22 +425,35 @@ pub fn records_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
 }
 
-pub fn draw_credits() {
+pub fn draw_credits(state: &AppState) {
     panel(
         Rect::new(170., 20., 504., 350.),
         crate::theme::BACKGROUND_DEEP,
     );
-    text("CREDITS", 205., 62., 28., crate::theme::BRASS);
-    text(crate::credits_data::TITLE, 205., 115., 20., WHITE);
+    text(
+        "CREDITS",
+        205.,
+        62.,
+        crate::accessibility::text_size(28., state.large_text),
+        crate::theme::BRASS,
+    );
+    text(
+        crate::credits_data::TITLE,
+        205.,
+        115.,
+        crate::accessibility::text_size(20., state.large_text),
+        WHITE,
+    );
     let mut y = 155.;
     for (index, paragraph) in crate::credits_data::PARAGRAPHS.iter().enumerate() {
-        let size = if index == crate::credits_data::PARAGRAPHS.len() - 1 {
+        let base_size = if index == crate::credits_data::PARAGRAPHS.len() - 1 {
             13.
         } else if index == 0 {
             14.
         } else {
             10.
         };
+        let size = crate::accessibility::text_size(base_size, state.large_text);
         let color = if index == 0 || index == crate::credits_data::PARAGRAPHS.len() - 1 {
             crate::theme::CREAM
         } else {
