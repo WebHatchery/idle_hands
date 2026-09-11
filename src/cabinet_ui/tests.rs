@@ -20,3 +20,16 @@ fn desktop_sort_control_is_a_touch_target_in_the_library_header() {
         [UiAction::CabinetSort]
     ));
 }
+
+#[test]
+fn desktop_cards_expose_a_favorite_touch_zone() {
+    let state = AppState {
+        cabinet_filter: 3,
+        ..Default::default()
+    };
+
+    assert!(matches!(
+        clicks(&state, vec2(460., 140.)).as_slice(),
+        [UiAction::ToggleFavorite(_)]
+    ));
+}
