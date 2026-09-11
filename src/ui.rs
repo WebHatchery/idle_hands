@@ -622,9 +622,9 @@ fn draw_help(state: &AppState) {
         y += 4.;
     }
     panel(Rect::new(600., 635., 180., 48.), crate::theme::SURFACE);
-    text("RULES", 660., 666., 18., WHITE);
+    text(crate::help_data::NAV_LABELS[0], 660., 666., 18., WHITE);
     panel(Rect::new(800., 635., 180., 48.), crate::theme::SURFACE);
-    text("CREDITS", 850., 666., 18., WHITE);
+    text(crate::help_data::NAV_LABELS[1], 850., 666., 18., WHITE);
     panel(Rect::new(1030., 635., 180., 48.), crate::theme::MOSS_DARK);
-    text("BACK", 1090., 666., 18., WHITE)
+    text(crate::help_data::NAV_LABELS[2], 1090., 666., 18., WHITE)
 }

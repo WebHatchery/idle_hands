@@ -718,21 +718,21 @@ pub fn draw_help(state: &AppState) {
     panel(Rect::new(127., 530., 105., 44.), crate::theme::SURFACE);
     panel(Rect::new(244., 530., 106., 44.), crate::theme::MOSS_DARK);
     text(
-        "RULES",
+        crate::help_data::NAV_LABELS[0],
         42.,
         558.,
         crate::accessibility::text_size(12., state.large_text),
         WHITE,
     );
     text(
-        "CREDITS",
+        crate::help_data::NAV_LABELS[1],
         150.,
         558.,
         crate::accessibility::text_size(11., state.large_text),
         WHITE,
     );
     text(
-        "BACK",
+        crate::help_data::NAV_LABELS[2],
         277.,
         558.,
         crate::accessibility::text_size(12., state.large_text),

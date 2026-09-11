@@ -520,10 +520,13 @@ pub fn draw_help(state: &AppState) {
         y += 5.;
     }
     for (rect, label) in [
-        (Rect::new(430., 288., 110., 44.), "RULES"),
-        (Rect::new(555., 288., 110., 44.), "CREDITS"),
-        (Rect::new(680., 288., 130., 44.), "BACK"),
-    ] {
+        Rect::new(430., 288., 110., 44.),
+        Rect::new(555., 288., 110., 44.),
+        Rect::new(680., 288., 130., 44.),
+    ]
+    .into_iter()
+    .zip(crate::help_data::NAV_LABELS)
+    {
         panel(rect, crate::theme::SURFACE);
         text(
             label,
