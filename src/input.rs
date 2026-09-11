@@ -11,6 +11,7 @@ pub enum Gesture {
 }
 
 pub const LONG_PRESS_SECONDS: f32 = 0.55;
+pub const DRAG_DISTANCE: f32 = 16.0;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PointerLayer {
@@ -87,7 +88,7 @@ impl PointerTracker {
             return None;
         }
         let end = position?;
-        if (end - start).length() > 16. {
+        if (end - start).length() > DRAG_DISTANCE {
             Some(Gesture::Drag { start, end })
         } else if self.elapsed >= LONG_PRESS_SECONDS {
             Some(Gesture::LongPress(end))

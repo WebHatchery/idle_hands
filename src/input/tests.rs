@@ -125,6 +125,22 @@ fn long_press_requires_the_threshold_and_does_not_override_a_drag() {
 }
 
 #[test]
+fn drag_distance_keeps_the_boundary_between_tap_and_drag_explicit() {
+    let mut tracker = PointerTracker::default();
+    let cabinet = scope(Screen::Cabinet, PointerLayer::Board);
+    tracker.press(Some(Vec2::new(10., 10.)), cabinet);
+    assert!(matches!(
+        tracker.release(Some(Vec2::new(10. + DRAG_DISTANCE, 10.)), cabinet),
+        Some(Gesture::Tap(_))
+    ));
+    tracker.press(Some(Vec2::new(10., 10.)), cabinet);
+    assert!(matches!(
+        tracker.release(Some(Vec2::new(10. + DRAG_DISTANCE + 0.01, 10.)), cabinet),
+        Some(Gesture::Drag { .. })
+    ));
+}
+
+#[test]
 fn scope_changes_cancel_captured_gestures_before_release() {
     let mut tracker = PointerTracker::default();
     let cabinet = scope(Screen::Cabinet, PointerLayer::Board);
