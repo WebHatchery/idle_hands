@@ -431,49 +431,27 @@ pub fn draw_credits() {
         crate::theme::BACKGROUND_DEEP,
     );
     text("CREDITS", 205., 62., 28., crate::theme::BRASS);
-    text("IDLE HANDS", 205., 115., 20., WHITE);
-    text(
-        "A warm collection for small pauses.",
-        205.,
-        155.,
-        14.,
-        crate::theme::CREAM,
-    );
-    text(
-        "Built with Rust, macroquad, and the shared toolkit.",
-        205.,
-        205.,
-        13.,
-        crate::theme::SECONDARY,
-    );
-    text(
-        "Original generated artwork created for Idle Hands.",
-        205.,
-        250.,
-        13.,
-        crate::theme::BRASS,
-    );
-    text(
-        "Artwork provenance ships with the game.",
-        205.,
-        275.,
-        11.,
-        crate::theme::SECONDARY,
-    );
-    text(
-        "PRIVACY: Gameplay analytics are currently disabled.",
-        205.,
-        295.,
-        10.,
-        crate::theme::CREAM,
-    );
-    text(
-        "Your game progress stays in this browser or Windows profile.",
-        205.,
-        310.,
-        10.,
-        crate::theme::CREAM,
-    );
+    text(crate::credits_data::TITLE, 205., 115., 20., WHITE);
+    let mut y = 155.;
+    for (index, paragraph) in crate::credits_data::PARAGRAPHS.iter().enumerate() {
+        let size = if index == crate::credits_data::PARAGRAPHS.len() - 1 {
+            13.
+        } else if index == 0 {
+            14.
+        } else {
+            10.
+        };
+        let color = if index == 0 || index == crate::credits_data::PARAGRAPHS.len() - 1 {
+            crate::theme::CREAM
+        } else {
+            crate::theme::SECONDARY
+        };
+        for line in macroquad_toolkit::ui::wrap_text(paragraph, 440., size) {
+            text(&line, 205., y, size, color);
+            y += size + 4.;
+        }
+        y += 4.;
+    }
     back(Rect::new(365., 315., 110., 44.));
 }
 pub fn credits_clicks(p: Vec2) -> Vec<UiAction> {

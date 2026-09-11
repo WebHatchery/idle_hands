@@ -601,66 +601,27 @@ pub fn draw_credits() {
         crate::theme::BACKGROUND_DEEP,
     );
     text("CREDITS", 20., 115., 29., crate::theme::BRASS);
-    text("IDLE HANDS", 22., 165., 22., WHITE);
-    text("A warm collection for", 22., 210., 15., crate::theme::CREAM);
-    text("small pauses.", 22., 235., 15., crate::theme::CREAM);
-    text(
-        "Built with Rust, macroquad,",
-        22.,
-        295.,
-        13.,
-        crate::theme::SECONDARY,
-    );
-    text(
-        "and the shared toolkit.",
-        22.,
-        320.,
-        13.,
-        crate::theme::SECONDARY,
-    );
-    text(
-        "Original generated artwork",
-        22.,
-        370.,
-        13.,
-        crate::theme::BRASS,
-    );
-    text(
-        "created for Idle Hands.",
-        22.,
-        395.,
-        13.,
-        crate::theme::BRASS,
-    );
-    text(
-        "Provenance ships with the game.",
-        22.,
-        430.,
-        11.,
-        crate::theme::SECONDARY,
-    );
-    text("PRIVACY", 22., 475., 13., crate::theme::CREAM);
-    text(
-        "Anonymous playtime and progress",
-        22.,
-        500.,
-        11.,
-        crate::theme::CREAM,
-    );
-    text(
-        "help improve WebHatchery games.",
-        22.,
-        523.,
-        11.,
-        crate::theme::CREAM,
-    );
-    text(
-        "No ads; no name or email collected.",
-        22.,
-        555.,
-        11.,
-        crate::theme::CREAM,
-    );
+    text(crate::credits_data::TITLE, 22., 165., 22., WHITE);
+    let mut y = 205.;
+    for (index, paragraph) in crate::credits_data::PARAGRAPHS.iter().enumerate() {
+        let size = if index == crate::credits_data::PARAGRAPHS.len() - 1 {
+            14.
+        } else if index == 0 {
+            15.
+        } else {
+            12.
+        };
+        let color = if index == 0 || index == crate::credits_data::PARAGRAPHS.len() - 1 {
+            crate::theme::CREAM
+        } else {
+            crate::theme::SECONDARY
+        };
+        for line in macroquad_toolkit::ui::wrap_text(paragraph, 310., size) {
+            text(&line, 22., y, size, color);
+            y += size + 7.;
+        }
+        y += 7.;
+    }
     back_button(650.);
 }
 pub fn credits_clicks(p: Vec2) -> Vec<UiAction> {

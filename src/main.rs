@@ -31,6 +31,7 @@ mod color_sort_ui;
 mod connect_four;
 mod connect_four_ui;
 mod cosmetics;
+mod credits_data;
 mod daily_archive_data;
 mod daily_archive_ui;
 mod daily_challenge;

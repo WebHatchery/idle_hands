@@ -146,55 +146,26 @@ fn draw_filtered_rules(state: &AppState) {
 pub fn draw_credits() {
     panel(Rect::new(230., 95., 820., 520.));
     crate::ui::draw_text("CREDITS", 300., 175., 46., crate::theme::BRASS);
-    crate::ui::draw_text("IDLE HANDS", 305., 240., 28., WHITE);
-    crate::ui::draw_text(
-        "A warm collection for small pauses.",
-        305.,
-        280.,
-        20.,
-        crate::theme::CREAM,
-    );
-    crate::ui::draw_text(
-        "Built with Rust, macroquad, and the shared macroquad-toolkit.",
-        305.,
-        335.,
-        18.,
-        crate::theme::SECONDARY,
-    );
-    crate::ui::draw_text(
-        "All games are deterministic where practical and designed for touch.",
-        305.,
-        375.,
-        18.,
-        crate::theme::SECONDARY,
-    );
-    crate::ui::draw_text(
-        "Original generated artwork created for Idle Hands; provenance ships with the game.",
-        305.,
-        415.,
-        16.,
-        crate::theme::SECONDARY,
-    );
-    crate::ui::draw_text(
-        "PRIVACY: Gameplay analytics are currently disabled.",
-        305.,
-        470.,
-        14.,
-        crate::theme::CREAM,
-    );
-    crate::ui::draw_text(
-        "Your game progress stays in this browser or Windows profile.",
-        305.,
-        495.,
-        14.,
-        crate::theme::CREAM,
-    );
-    crate::ui::draw_text(
-        "Thank you for spending a minute at the cabinet.",
-        305.,
-        540.,
-        19.,
-        crate::theme::BRASS,
-    );
+    crate::ui::draw_text(crate::credits_data::TITLE, 305., 240., 28., WHITE);
+    let mut y = 280.;
+    for (index, paragraph) in crate::credits_data::PARAGRAPHS.iter().enumerate() {
+        let size = if index == crate::credits_data::PARAGRAPHS.len() - 1 {
+            19.
+        } else if index == 0 {
+            20.
+        } else {
+            16.
+        };
+        let color = if index == 0 || index == crate::credits_data::PARAGRAPHS.len() - 1 {
+            crate::theme::CREAM
+        } else {
+            crate::theme::SECONDARY
+        };
+        for line in macroquad_toolkit::ui::wrap_text(paragraph, 700., size) {
+            crate::ui::draw_text(&line, 305., y, size, color);
+            y += size + 7.;
+        }
+        y += 8.;
+    }
     back_button();
 }
