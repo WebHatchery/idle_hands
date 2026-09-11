@@ -23,6 +23,31 @@ fn drawer_info_actions_open_favorite_and_return() {
 }
 
 #[test]
+fn drawer_info_actions_follow_compact_and_portrait_layouts() {
+    let state = AppState {
+        screen: Screen::DrawerInfo(GameId::Solitaire),
+        ..AppState::default()
+    };
+    let assert_actions = || {
+        assert!(matches!(
+            clicks(&state, open_rect().center()).as_slice(),
+            [UiAction::Open(index)] if *index == GameId::Solitaire.index()
+        ));
+        assert!(matches!(
+            clicks(&state, favorite_rect().center()).as_slice(),
+            [UiAction::ToggleFavorite(index)] if *index == GameId::Solitaire.index()
+        ));
+        assert!(matches!(
+            clicks(&state, back_rect().center()).as_slice(),
+            [UiAction::Cabinet]
+        ));
+    };
+
+    crate::ui::with_compact_landscape_layout(assert_actions);
+    crate::ui::with_portrait_layout(assert_actions);
+}
+
+#[test]
 fn drawer_info_layout_controls_fit_every_viewport() {
     let assert_layout = || {
         let (width, height) = crate::ui::layout_size();
