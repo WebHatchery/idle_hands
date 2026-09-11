@@ -622,9 +622,27 @@ fn draw_help(state: &AppState) {
         y += 4.;
     }
     panel(Rect::new(600., 635., 180., 48.), crate::theme::SURFACE);
-    text(crate::help_data::NAV_LABELS[0], 660., 666., 18., WHITE);
+    text(
+        crate::help_data::NAV_LABELS[0],
+        660.,
+        666.,
+        crate::accessibility::text_size(18., state.large_text),
+        WHITE,
+    );
     panel(Rect::new(800., 635., 180., 48.), crate::theme::SURFACE);
-    text(crate::help_data::NAV_LABELS[1], 850., 666., 18., WHITE);
+    text(
+        crate::help_data::NAV_LABELS[1],
+        850.,
+        666.,
+        crate::accessibility::text_size(18., state.large_text),
+        WHITE,
+    );
     panel(Rect::new(1030., 635., 180., 48.), crate::theme::MOSS_DARK);
-    text(crate::help_data::NAV_LABELS[2], 1090., 666., 18., WHITE)
+    text(
+        crate::help_data::NAV_LABELS[2],
+        1090.,
+        666.,
+        crate::accessibility::text_size(18., state.large_text),
+        WHITE,
+    )
 }
