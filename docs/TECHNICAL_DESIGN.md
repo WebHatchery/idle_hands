@@ -127,6 +127,7 @@ The collection shell owns:
 - settings, accessibility, tutorials, help, and confirmation dialogs;
 - per-game autosave slots and save-version migration dispatch;
 - records, achievements/stamps, and cosmetic unlock inventory;
+- favorites and recent quick shelves with shared Drawer Info routing;
 - theme tokens, typography, buttons, number pads, and mode selectors;
 - seeded RNG construction and replay identity formatting;
 - audio buses and reduced-motion behavior;

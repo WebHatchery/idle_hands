@@ -97,6 +97,39 @@ fn favorite_card_remove_action_targets_the_starred_drawer() {
 }
 
 #[test]
+fn quick_browse_info_lanes_open_drawer_details_at_each_size() {
+    let favorite_state = AppState {
+        favorites: {
+            let mut favorites = vec![false; GameId::ALL.len()];
+            favorites[GameId::Solitaire.index()] = true;
+            favorites
+        },
+        ..Default::default()
+    };
+    let recent_state = AppState {
+        recent_view: true,
+        recent_games: vec![GameId::Solitaire],
+        ..Default::default()
+    };
+
+    let assert_lanes = || {
+        let rect = list_card_rect(layout(), 0);
+        assert!(matches!(
+            clicks(&favorite_state, info_rect(rect, false).center()).as_slice(),
+            [UiAction::Inspect(index)] if *index == GameId::Solitaire.index()
+        ));
+        assert!(matches!(
+            clicks(&recent_state, info_rect(rect, true).center()).as_slice(),
+            [UiAction::Inspect(index)] if *index == GameId::Solitaire.index()
+        ));
+    };
+
+    crate::ui::with_desktop_layout(assert_lanes);
+    crate::ui::with_compact_landscape_layout(assert_lanes);
+    crate::ui::with_portrait_layout(assert_lanes);
+}
+
+#[test]
 fn browse_tabs_switch_between_favorites_and_recent_at_each_size() {
     let state = AppState::default();
     crate::ui::with_desktop_layout(|| {

@@ -180,6 +180,10 @@ card support, and favorite state before launch. OPEN, FAVORITE, and BACK stay
 visible as explicit touch targets, including when a drawer is restricted to
 the full version.
 
+The FAVORITES and RECENT quick shelves use the same INFO lane. A player can
+inspect a remembered drawer before opening it, remove a favorite without
+leaving the shelf, or clear the recent list as an explicit shelf action.
+
 The cabinet may filter its canonical order to ALL, OPEN, or DONE drawers for
 quick collection browsing; filtering never changes a drawer's state or place.
 

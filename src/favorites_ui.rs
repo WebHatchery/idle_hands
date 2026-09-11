@@ -91,6 +91,9 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     for (slot, row) in visible_rows(state).iter().enumerate() {
         let game = row.game;
         let rect = list_card_rect(l, slot);
+        if crate::ui::hit(info_rect(rect, mode.is_recent()), point) {
+            return vec![UiAction::Inspect(game.index())];
+        }
         if !mode.is_recent() && crate::ui::hit(favorite_remove_rect(rect), point) {
             return vec![UiAction::ToggleFavorite(game.index())];
         }
@@ -224,7 +227,7 @@ pub fn draw(state: &AppState) {
             let status = crate::cabinet_status::availability_label(state, game);
             crate::ui::draw_text(
                 browse_status_label(state, game, status),
-                rect.x + rect.w - 72.,
+                rect.x + rect.w - if recent { 92. } else { 122. },
                 rect.y + rect.h * 0.62,
                 8.,
                 crate::cabinet_status::color(status),
@@ -233,12 +236,25 @@ pub fn draw(state: &AppState) {
             let status = crate::cabinet_status::availability_label(state, game);
             crate::ui::draw_text(
                 short_status(status),
-                rect.right() - if recent { 62. } else { 94. },
+                rect.right() - if recent { 64. } else { 126. },
                 rect.y + 18.,
                 8.,
                 crate::cabinet_status::color(status),
             );
         }
+        let info = info_rect(rect, recent);
+        panel(info, crate::theme::SURFACE_DARK);
+        crate::ui::draw_text(
+            "INFO",
+            info.x + if crate::ui::is_portrait() { 5. } else { 6. },
+            info.y + info.h * 0.66,
+            if crate::ui::is_compact_landscape() {
+                7.
+            } else {
+                8.
+            },
+            WHITE,
+        );
         if !recent {
             let remove = favorite_remove_rect(rect);
             panel(remove, crate::theme::SURFACE_DARK);
@@ -340,6 +356,16 @@ fn browse_tab_rects() -> (Rect, Rect) {
 
 fn favorite_remove_rect(card: Rect) -> Rect {
     Rect::new(card.right() - 44., card.y + 4., 38., card.h - 8.)
+}
+
+fn info_rect(card: Rect, recent: bool) -> Rect {
+    let right_inset = if recent { 6. } else { 48. };
+    Rect::new(
+        card.right() - right_inset - 36.,
+        card.y + 4.,
+        36.,
+        card.h - 8.,
+    )
 }
 
 fn short_status(status: &str) -> &'static str {
