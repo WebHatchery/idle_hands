@@ -676,6 +676,18 @@ pub fn draw_help(state: &AppState) {
         Rect::new(8., 38., 344., 602.),
         crate::theme::BACKGROUND_DEEP,
     );
+    draw_rectangle_lines(
+        8.,
+        38.,
+        344.,
+        602.,
+        2.,
+        if state.high_contrast {
+            WHITE
+        } else {
+            crate::theme::BORDER
+        },
+    );
     text(
         "HOW TO PLAY",
         20.,
@@ -692,7 +704,7 @@ pub fn draw_help(state: &AppState) {
                 20.,
                 y,
                 size,
-                if index == 0 {
+                if index == 0 || state.high_contrast {
                     WHITE
                 } else {
                     Color::new(0.75, 0.70, 0.84, 1.)

@@ -41,6 +41,18 @@ pub fn draw_records(state: &AppState) {
         Rect::new(20., 12., 804., 365.),
         crate::theme::BACKGROUND_DEEP,
     );
+    draw_rectangle_lines(
+        20.,
+        12.,
+        804.,
+        365.,
+        2.,
+        if state.high_contrast {
+            WHITE
+        } else {
+            crate::theme::BORDER
+        },
+    );
     text("RECORDS", 40., 48., 25., crate::theme::BRASS);
     let earned = state.achievements.iter().filter(|v| **v).count();
     let completed = completed_games(&state.records);
@@ -497,7 +509,7 @@ pub fn draw_help(state: &AppState) {
                 } else {
                     size
                 },
-                if index == 0 {
+                if index == 0 || state.high_contrast {
                     WHITE
                 } else {
                     Color::new(0.75, 0.70, 0.84, 1.)
