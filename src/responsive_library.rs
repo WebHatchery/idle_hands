@@ -596,10 +596,18 @@ fn rule_action(state: &AppState, point: Vec2) -> Option<UiAction> {
 }
 
 pub fn draw_credits(state: &AppState) {
-    panel(
-        Rect::new(8., 70., 344., 520.),
-        crate::theme::BACKGROUND_DEEP,
-    );
+    let credits_panel = Rect::new(8., 70., 344., 520.);
+    panel(credits_panel, crate::theme::BACKGROUND_DEEP);
+    if state.high_contrast {
+        draw_rectangle_lines(
+            credits_panel.x,
+            credits_panel.y,
+            credits_panel.w,
+            credits_panel.h,
+            3.,
+            WHITE,
+        );
+    }
     text(
         "CREDITS",
         20.,
@@ -624,7 +632,9 @@ pub fn draw_credits(state: &AppState) {
             12.
         };
         let size = crate::accessibility::text_size(base_size, state.large_text);
-        let color = if index == 0 || index == crate::credits_data::PARAGRAPHS.len() - 1 {
+        let color = if state.high_contrast {
+            WHITE
+        } else if index == 0 || index == crate::credits_data::PARAGRAPHS.len() - 1 {
             crate::theme::CREAM
         } else {
             crate::theme::SECONDARY

@@ -144,7 +144,18 @@ fn draw_filtered_rules(state: &AppState) {
     back_button();
 }
 pub fn draw_credits(state: &AppState) {
-    panel(Rect::new(230., 95., 820., 520.));
+    let credits_panel = Rect::new(230., 95., 820., 520.);
+    panel(credits_panel);
+    if state.high_contrast {
+        draw_rectangle_lines(
+            credits_panel.x,
+            credits_panel.y,
+            credits_panel.w,
+            credits_panel.h,
+            3.,
+            WHITE,
+        );
+    }
     crate::ui::draw_text(
         "CREDITS",
         300.,
@@ -169,7 +180,9 @@ pub fn draw_credits(state: &AppState) {
             16.
         };
         let size = crate::accessibility::text_size(base_size, state.large_text);
-        let color = if index == 0 || index == crate::credits_data::PARAGRAPHS.len() - 1 {
+        let color = if state.high_contrast {
+            WHITE
+        } else if index == 0 || index == crate::credits_data::PARAGRAPHS.len() - 1 {
             crate::theme::CREAM
         } else {
             crate::theme::SECONDARY
