@@ -279,7 +279,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
                 vec![]
             }
         }
-        Screen::Records if state.achievements_view => achievements_ui::clicks(p),
+        Screen::Records if state.achievements_view => achievements_ui::clicks(state, p),
         Screen::Records if state.daily_archive_view => daily_archive_ui::clicks(state, p),
         Screen::Records if state.favorites_view || state.recent_view => {
             favorites_ui::clicks(state, p)

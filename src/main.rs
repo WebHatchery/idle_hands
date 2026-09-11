@@ -4,6 +4,7 @@ use macroquad::prelude::*;
 use macroquad_toolkit::capture;
 
 mod accessibility;
+mod achievements_data;
 mod achievements_ui;
 mod analytics;
 mod asteroids;

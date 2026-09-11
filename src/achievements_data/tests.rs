@@ -1,0 +1,38 @@
+use super::*;
+use crate::state::GameId;
+
+#[test]
+fn achievement_filters_partition_the_catalog() {
+    let mut state = AppState::default();
+    state.achievements[AchievementId::FirstFinish.index()] = true;
+    state.achievements[AchievementId::FullCabinet.index()] = true;
+
+    assert_eq!(filter_count(&state, 0), AchievementId::ALL.len());
+    assert_eq!(filter_count(&state, 1), 2);
+    assert_eq!(filter_count(&state, 2), AchievementId::ALL.len() - 2);
+    assert_eq!(earned_count(&state), 2);
+}
+
+#[test]
+fn achievement_rows_keep_catalog_order_and_progress() {
+    let mut state = AppState::default();
+    state.records.solitaire_best_moves = Some(42);
+
+    let rows = rows(&state, 0);
+
+    assert_eq!(rows[0].achievement, AchievementId::FirstFinish);
+    assert_eq!(rows[1].achievement, AchievementId::Game(GameId::Solitaire));
+    assert!(rows[1].progress.is_complete());
+}
+
+#[test]
+fn achievement_pages_clamp_to_the_filtered_window() {
+    let mut state = AppState::default();
+    state.achievements[AchievementId::FirstFinish.index()] = true;
+    state.achievements[AchievementId::Game(GameId::Solitaire).index()] = true;
+
+    let page = page_rows(&state, 1, 99, 1);
+
+    assert_eq!(page.len(), 1);
+    assert_eq!(page[0].achievement, AchievementId::Game(GameId::Solitaire));
+}

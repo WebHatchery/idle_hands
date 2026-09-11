@@ -1,6 +1,11 @@
 //! Responsive achievement shelf opened from the Records screen.
 
-use crate::{progression::AchievementId, state::AppState, ui::UiAction};
+use crate::{
+    achievements_data::{self, AchievementRow},
+    progression::AchievementId,
+    state::AppState,
+    ui::UiAction,
+};
 use macroquad::prelude::*;
 
 #[cfg(test)]
@@ -55,12 +60,12 @@ fn layout() -> Layout {
     }
 }
 
-pub fn clicks(point: Vec2) -> Vec<UiAction> {
+pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     let l = layout();
     if crate::ui::hit(l.back, point) {
         return vec![UiAction::Records];
     }
-    if let Some((previous, next)) = scroll_rects() {
+    if let Some((previous, next)) = scroll_rects(state) {
         if previous.contains(point) {
             return vec![UiAction::LibraryScroll(-1)];
         }
@@ -102,22 +107,13 @@ pub fn draw(state: &AppState) {
         crate::accessibility::text_size(title_size, state.large_text),
         crate::theme::BRASS,
     );
-    let earned = AchievementId::ALL
-        .iter()
-        .filter(|achievement| {
-            state
-                .achievements
-                .get(achievement.index())
-                .copied()
-                .unwrap_or(false)
-        })
-        .count();
+    let earned = achievements_data::earned_count(state);
     crate::ui::draw_text(
         format!(
             "{} earned of {}  -  showing {}",
             earned,
             AchievementId::ALL.len(),
-            filter_label(state.achievement_filter)
+            achievements_data::filter_label(state.achievement_filter)
         ),
         l.panel.x + 52.,
         subtitle_y,
@@ -150,13 +146,10 @@ pub fn draw(state: &AppState) {
             draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 3., WHITE);
         }
     }
-    for (slot, achievement) in visible_achievements(state).iter().enumerate() {
+    for (slot, row) in visible_rows(state).iter().enumerate() {
+        let achievement = row.achievement;
         let rect = card_rect(l, slot);
-        let earned = state
-            .achievements
-            .get(achievement.index())
-            .copied()
-            .unwrap_or(false);
+        let earned = row.earned;
         let fill = if state.high_contrast {
             if earned {
                 Color::new(0.28, 0.28, 0.30, 1.)
@@ -192,7 +185,7 @@ pub fn draw(state: &AppState) {
             state.large_text,
         );
         crate::ui::draw_text(
-            fitted_label(*achievement, portrait),
+            fitted_label(achievement, portrait),
             rect.x + 20.,
             rect.y + rect.h * 0.54,
             size,
@@ -219,7 +212,7 @@ pub fn draw(state: &AppState) {
             },
         );
         crate::ui::draw_text(
-            fitted_description(*achievement, portrait, compact),
+            fitted_description(achievement, portrait, compact),
             rect.x + 20.,
             rect.y + rect.h - if portrait { 8. } else { 6. },
             crate::accessibility::text_size(if portrait { 9. } else { 7. }, state.large_text),
@@ -230,7 +223,7 @@ pub fn draw(state: &AppState) {
             },
         );
     }
-    if let Some((previous, next)) = scroll_rects() {
+    if let Some((previous, next)) = scroll_rects(state) {
         panel(previous, crate::theme::SURFACE_DARK, state.high_contrast);
         panel(next, crate::theme::SURFACE_DARK, state.high_contrast);
         crate::ui::draw_text("PREV", previous.x + 22., previous.y + 28., 11., WHITE);
@@ -253,39 +246,12 @@ fn achievement_label(achievement: AchievementId) -> String {
     }
 }
 
-fn visible(achievement: AchievementId, filter: u8, state: &AppState) -> bool {
-    match filter {
-        1 => state
-            .achievements
-            .get(achievement.index())
-            .copied()
-            .unwrap_or(false),
-        2 => !state
-            .achievements
-            .get(achievement.index())
-            .copied()
-            .unwrap_or(false),
-        _ => true,
-    }
-}
-
-fn filter_label(filter: u8) -> &'static str {
-    match filter {
-        1 => "EARNED",
-        2 => "LOCKED",
-        _ => "ALL",
-    }
-}
-
 fn filter_button_label(filter: u8, state: &AppState) -> String {
-    format!("{} {}", filter_label(filter), filter_count(filter, state))
-}
-
-fn filter_count(filter: u8, state: &AppState) -> usize {
-    AchievementId::ALL
-        .iter()
-        .filter(|achievement| visible(**achievement, filter, state))
-        .count()
+    format!(
+        "{} {}",
+        achievements_data::filter_label(filter),
+        achievements_data::filter_count(state, filter)
+    )
 }
 
 fn filter_rects(layout: Layout) -> [Rect; 3] {
@@ -357,26 +323,29 @@ fn card_rect(layout: Layout, slot: usize) -> Rect {
     )
 }
 
-fn visible_achievements(state: &AppState) -> Vec<AchievementId> {
-    let matches: Vec<_> = AchievementId::ALL
-        .iter()
-        .copied()
-        .filter(|achievement| visible(*achievement, state.achievement_filter, state))
-        .collect();
-    let capacity = if crate::ui::is_portrait() {
+fn visible_rows(state: &AppState) -> Vec<AchievementRow> {
+    achievements_data::page_rows(
+        state,
+        state.achievement_filter,
+        state.library_scroll,
+        visible_capacity(state),
+    )
+}
+
+fn visible_capacity(state: &AppState) -> usize {
+    if crate::ui::is_portrait() {
         8
     } else if crate::ui::is_compact_landscape() {
         10
     } else {
-        matches.len()
-    };
-    let first = state
-        .library_scroll
-        .min(matches.len().saturating_sub(capacity));
-    matches.into_iter().skip(first).take(capacity).collect()
+        achievements_data::filter_count(state, state.achievement_filter)
+    }
 }
 
-fn scroll_rects() -> Option<(Rect, Rect)> {
+fn scroll_rects(state: &AppState) -> Option<(Rect, Rect)> {
+    if achievements_data::filter_count(state, state.achievement_filter) <= visible_capacity(state) {
+        return None;
+    }
     if crate::ui::is_portrait() {
         Some((
             Rect::new(10., 650., 100., 44.),
