@@ -11,6 +11,8 @@ pub enum UiAction {
     Cabinet,
     Finder,
     FinderFilter(u8),
+    Profile,
+    SetProfileName(u8),
     Help,
     Records,
     Statistics,

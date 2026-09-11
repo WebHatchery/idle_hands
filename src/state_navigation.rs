@@ -6,6 +6,7 @@ use crate::state::GameId;
 pub enum Screen {
     Cabinet,
     Finder,
+    Profile,
     Game(GameId),
     Help,
     Records,

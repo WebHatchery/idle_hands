@@ -205,6 +205,8 @@ pub fn draw_settings(state: &AppState) {
         15.,
         WHITE,
     );
+    panel(Rect::new(186., 92., 152., 42.), crate::theme::SURFACE_DARK);
+    text("EDIT NAME", 218., 118., 10., WHITE);
     text(
         &crate::collection_summary::from_state(state).progress_label(),
         22.,
@@ -351,6 +353,9 @@ pub fn settings_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     if crate::ui::hit(Rect::new(280., 665., 58., 44.), p) {
         return vec![UiAction::ResetData];
+    }
+    if crate::ui::hit(Rect::new(186., 92., 152., 42.), p) {
+        return vec![UiAction::Profile];
     }
     for (index, rect) in [
         Rect::new(22., 137., 316., 44.),

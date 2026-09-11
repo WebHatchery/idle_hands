@@ -53,6 +53,7 @@ impl Game {
             UiAction::CycleCabinetDecoration => {
                 self.cycle_cosmetic(CosmeticKind::CabinetDecoration)
             }
+            UiAction::SetProfileName(index) => self.set_profile_name(index),
             _ => return,
         };
         self.notifications.info(message);
@@ -88,5 +89,12 @@ impl Game {
             .find(|row| row.kind == kind)
             .expect("every cosmetic kind has one settings row");
         format!("{}: {} ({value})", kind.label(), row.option.name)
+    }
+
+    fn set_profile_name(&mut self, index: u8) -> String {
+        let name = crate::profile_data::name(index).to_owned();
+        self.state.profile_name = name.clone();
+        self.request_autosave();
+        format!("Profile name: {name}")
     }
 }

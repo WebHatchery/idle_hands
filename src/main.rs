@@ -126,6 +126,8 @@ mod pipe_loop;
 mod pipe_loop_ui;
 mod potion_2048;
 mod potion_2048_ui;
+mod profile_data;
+mod profile_ui;
 mod progression;
 mod pyramid;
 mod pyramid_ui;

@@ -13,6 +13,7 @@ use crate::lifecycle_pause_ui;
 use crate::mobile_tutorial_ui;
 use crate::notice_log_ui;
 use crate::palette_ui;
+use crate::profile_ui;
 use crate::records_ui;
 use crate::responsive_cabinet;
 use crate::responsive_landscape;
@@ -284,6 +285,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Cabinet if is_portrait() => responsive_cabinet::clicks(state, p),
         Screen::Cabinet => cabinet_ui::clicks(state, p),
         Screen::Finder => finder_ui::clicks(state, p),
+        Screen::Profile => profile_ui::clicks(state, p),
         Screen::Game(_) => ui_game_routes::clicks(state, p),
         Screen::Help => {
             if is_compact_landscape() {
@@ -350,6 +352,7 @@ pub fn draw(
         }
         Screen::Cabinet => cabinet_ui::draw(state, data, loaded_assets, cabinet_texture),
         Screen::Finder => finder_ui::draw(state),
+        Screen::Profile => profile_ui::draw(state),
         Screen::Game(_) => ui_game_routes::draw(state, frogger_frog, frogger_car),
         Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(state),
         Screen::Help if is_portrait() => responsive_library::draw_help(state),

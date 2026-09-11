@@ -260,6 +260,16 @@ storefront notice. The `finder`, `finder_filtered`, and `finder_scrolled`
 capture fixtures seed the default, filtered, and paged states without writing
 to player saves.
 
+The runtime-only Profile screen is a touch-first nameplate editor over the
+persisted `profile_name` field. `profile_data` owns the stable curated name
+list and recognizes legacy custom names without rewriting them until the
+player chooses a new plate. `profile_ui` lays out the same eight `SetProfileName`
+cards in desktop, compact-landscape, and portrait modes; BACK returns to
+Settings. The action handler requests the normal profile autosave after a
+selection. `profile` and `profile_accessible` capture fixtures seed a non-default
+plate, with the latter inheriting the shared high-contrast and large-text
+capture setup.
+
 Conceptual keys:
 
 ```text

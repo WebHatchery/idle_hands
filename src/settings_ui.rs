@@ -28,6 +28,7 @@ pub fn draw_settings(state: &AppState) {
         crate::theme::BACKGROUND_DEEP,
     );
     text("SETTINGS", 230., 125., 42., crate::theme::BRASS);
+    panel(Rect::new(230., 145., 700., 55.), crate::theme::SURFACE_DARK);
     text(
         &format!(
             "Profile: {}  •  Cosmetics open: {}/{}",
@@ -40,6 +41,7 @@ pub fn draw_settings(state: &AppState) {
         22.,
         WHITE,
     );
+    text("EDIT NAME", 820., 185., 12., crate::theme::BRASS);
     text(
         &summary.progress_label(),
         230.,
@@ -182,6 +184,10 @@ pub fn settings_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         return vec![];
     }
     let mut actions = Vec::new();
+    if crate::ui::hit(Rect::new(230., 145., 700., 55.), p) {
+        actions.push(UiAction::Profile);
+        return actions;
+    }
     if crate::ui::hit(Rect::new(230., 560., 150., 48.), p) {
         actions.push(UiAction::Cabinet);
     }

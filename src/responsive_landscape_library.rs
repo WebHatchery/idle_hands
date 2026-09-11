@@ -585,6 +585,8 @@ pub fn draw_settings(state: &AppState) {
         10.,
         crate::theme::SECONDARY,
     );
+    panel(Rect::new(450., 268., 160., 44.), crate::theme::SURFACE_DARK);
+    text("EDIT NAME", 500., 296., 11., WHITE);
     for (index, row) in crate::settings_data::cosmetic_rows(state)
         .into_iter()
         .enumerate()
@@ -752,6 +754,9 @@ pub fn settings_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     if crate::ui::hit(Rect::new(220., 268., 160., 44.), p) {
         return vec![UiAction::ResetData];
+    }
+    if crate::ui::hit(Rect::new(450., 268., 160., 44.), p) {
+        return vec![UiAction::Profile];
     }
     vec![]
 }

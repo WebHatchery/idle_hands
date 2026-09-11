@@ -238,6 +238,7 @@ impl Game {
                 "statistics" | "statistics_accessible" => Screen::Statistics,
                 "tutorials" | "tutorials_accessible" => Screen::Tutorials,
                 "finder" | "finder_filtered" | "finder_scrolled" => Screen::Finder,
+                "profile" | "profile_accessible" => Screen::Profile,
                 "rules" | "rules_scrolled" | "rules_logic" | "rules_word" => Screen::Rules,
                 "credits" => Screen::Credits,
                 "settings" | "settings_accessible" | "settings_reset" => Screen::Settings,
@@ -288,6 +289,9 @@ impl Game {
             self.state.cabinet_filter = if scene == "finder_filtered" { 1 } else { 0 };
             self.state.library_scroll = if scene == "finder_scrolled" { 12 } else { 0 };
             self.state.recent_games = vec![GameId::Solitaire, GameId::Snake, GameId::WordLadder];
+        }
+        if matches!(scene, "profile" | "profile_accessible") {
+            self.state.profile_name = crate::profile_data::name(2).to_owned();
         }
         if matches!(
             scene,

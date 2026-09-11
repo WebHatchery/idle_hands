@@ -10,6 +10,7 @@ impl Game {
         match action {
             crate::ui::UiAction::Finder => self.open_finder(),
             crate::ui::UiAction::FinderFilter(filter) => self.set_finder_filter(filter),
+            crate::ui::UiAction::Profile => self.open_profile(),
             crate::ui::UiAction::Statistics => self.open_statistics(),
             crate::ui::UiAction::Tutorials => self.open_tutorial_library(),
             crate::ui::UiAction::OpenTutorial(index) => self.open_tutorial(index),
@@ -79,6 +80,15 @@ impl Game {
         self.state.screen = Screen::Finder;
         self.state.cabinet_filter = crate::finder_data::normalize_filter(filter);
         self.state.library_scroll = 0;
+    }
+
+    fn open_profile(&mut self) {
+        self.state.screen = Screen::Profile;
+        self.state.confirm_reset = false;
+        self.state.favorites_view = false;
+        self.state.recent_view = false;
+        self.state.daily_archive_view = false;
+        self.state.achievements_view = false;
     }
 
     pub(super) fn refresh_daily_challenge(&mut self) {

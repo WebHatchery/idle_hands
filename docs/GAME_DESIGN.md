@@ -169,6 +169,11 @@ letter buckets, visible paging, and one-tap launch cards. The finder keeps the
 same open, complete, locked, and coming-soon language as the cabinet and works
 without a keyboard in desktop, compact-landscape, and portrait layouts.
 
+Settings also opens a Profile nameplate editor. Instead of requiring a
+keyboard, it offers a small set of calm, cabinet-themed identities that can
+be selected with one tap. The current name is shown on the cabinet and
+settings surfaces, and choosing a name saves it with the rest of the profile.
+
 The cabinet may filter its canonical order to ALL, OPEN, or DONE drawers for
 quick collection browsing; filtering never changes a drawer's state or place.
 

@@ -774,7 +774,8 @@ impl Game {
             | ui::UiAction::CycleCardBack
             | ui::UiAction::CycleBoardTheme
             | ui::UiAction::CycleSoundSet
-            | ui::UiAction::CycleCabinetDecoration => self.apply_settings_action(action),
+            | ui::UiAction::CycleCabinetDecoration
+            | ui::UiAction::SetProfileName(_) => self.apply_settings_action(action),
             ui::UiAction::ResetData => self.state.confirm_reset = true,
             ui::UiAction::ConfirmResetData => {
                 self.state = AppState::new(&self.data);
