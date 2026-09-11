@@ -55,6 +55,28 @@ fn long_notice_messages_are_shortened_for_the_log() {
 }
 
 #[test]
+fn recent_notifications_are_newest_first_and_bounded() {
+    let history = [
+        LoggedNotification {
+            message: "old".into(),
+            notification_type: NotificationType::Info,
+        },
+        LoggedNotification {
+            message: "middle".into(),
+            notification_type: NotificationType::Warning,
+        },
+        LoggedNotification {
+            message: "new".into(),
+            notification_type: NotificationType::Success,
+        },
+    ];
+    let recent = recent_notifications(&history, 2);
+    assert_eq!(recent.len(), 2);
+    assert_eq!(recent[0].message, "new");
+    assert_eq!(recent[1].message, "middle");
+}
+
+#[test]
 fn notice_log_controls_stay_inside_each_logical_viewport() {
     crate::ui::with_desktop_layout(assert_layout_fits);
     crate::ui::with_compact_landscape_layout(assert_layout_fits);

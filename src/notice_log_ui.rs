@@ -86,6 +86,10 @@ fn short_message(message: &str, limit: usize) -> String {
     value
 }
 
+fn recent_notifications(history: &[LoggedNotification], limit: usize) -> Vec<&LoggedNotification> {
+    history.iter().rev().take(limit).collect()
+}
+
 fn level_label(notification_type: NotificationType) -> &'static str {
     match notification_type {
         NotificationType::Success => "OK",
@@ -149,8 +153,8 @@ pub fn draw_log(state: &AppState, history: &[LoggedNotification]) {
     let row_height = if compact { 34. } else { 42. };
     let first_y = card.y + if portrait { 78. } else { 88. };
     let limit = if compact { 7 } else { 10 };
-    let start = history.len().saturating_sub(limit);
-    if start == history.len() {
+    let recent = recent_notifications(history, limit);
+    if recent.is_empty() {
         text(
             "No notices have been recorded this session.",
             card.x + if portrait { 18. } else { 28. },
@@ -160,7 +164,7 @@ pub fn draw_log(state: &AppState, history: &[LoggedNotification]) {
             state.large_text,
         );
     } else {
-        for (row, notice) in history[start..].iter().rev().enumerate() {
+        for (row, notice) in recent.iter().enumerate() {
             let y = first_y + row as f32 * row_height;
             let color = if state.high_contrast {
                 WHITE
