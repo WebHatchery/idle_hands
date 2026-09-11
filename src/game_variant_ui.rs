@@ -29,6 +29,8 @@ pub fn draw(state: &AppState) {
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
     let layout = variant_card_data::layout(crate::ui::layout_size().0, portrait, compact);
+    let title_size = crate::accessibility::text_size(layout.title_size, state.large_text);
+    let label_size = crate::accessibility::text_size(layout.label_size, state.large_text);
     crate::ui::draw_rounded_panel(
         rect,
         7.,
@@ -42,13 +44,13 @@ pub fn draw(state: &AppState) {
     let label = macroquad_toolkit::ui::truncate_text_to_width(
         &game_variants::label(state, game),
         layout.label_rect.w,
-        layout.label_size,
+        label_size,
     );
     crate::ui::draw_text(
         "RULE CARD  ›",
         rect.x + 9.,
         layout.title_baseline,
-        layout.title_size,
+        title_size,
         if state.high_contrast {
             WHITE
         } else {
@@ -59,7 +61,7 @@ pub fn draw(state: &AppState) {
         &label,
         layout.label_rect.x,
         layout.label_baseline,
-        layout.label_size,
+        label_size,
         if state.high_contrast {
             WHITE
         } else {
