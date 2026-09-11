@@ -397,11 +397,13 @@ fn older_profile_saves_default_accessibility_fields() {
     let mut value = serde_json::to_value(save).unwrap();
     value.as_object_mut().unwrap().remove("high_contrast");
     value.as_object_mut().unwrap().remove("large_text");
+    value.as_object_mut().unwrap().remove("sound_level");
     let migrated: ProfileSave = serde_json::from_value(value).unwrap();
     let mut restored = AppState::default();
     migrated.apply_to(&mut restored);
     assert!(!restored.high_contrast);
     assert!(!restored.large_text);
+    assert_eq!(restored.sound_level, crate::audio_settings::DEFAULT_LEVEL);
 
     let mut old_daily =
         serde_json::to_value(ProfileSave::from_state(&AppState::default(), "1.0.0")).unwrap();
