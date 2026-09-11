@@ -126,3 +126,33 @@ fn lifecycle_pause_routes_only_resume_touch_in_every_layout() {
         assert!(actions_at(&state, vec2(10., 100.)).is_empty());
     });
 }
+
+#[test]
+fn save_recovery_dismiss_routes_through_every_layout() {
+    let mut notice = crate::save_recovery::SaveRecoveryNotice::new();
+    notice.record(true);
+    let state = crate::state::AppState {
+        screen: crate::state::Screen::Game(crate::state::GameId::Game2048),
+        save_recovery: Some(notice),
+        ..Default::default()
+    };
+
+    with_desktop_layout(|| {
+        assert!(matches!(
+            actions_at(&state, vec2(855., 164.)).as_slice(),
+            [UiAction::DismissSaveRecovery]
+        ));
+    });
+    with_portrait_layout(|| {
+        assert!(matches!(
+            actions_at(&state, vec2(244., 182.)).as_slice(),
+            [UiAction::DismissSaveRecovery]
+        ));
+    });
+    with_compact_landscape_layout(|| {
+        assert!(matches!(
+            actions_at(&state, vec2(602., 149.)).as_slice(),
+            [UiAction::DismissSaveRecovery]
+        ));
+    });
+}
