@@ -33,7 +33,7 @@ impl PointerScope {
             PointerLayer::LifecyclePause
         } else if state.tutorial.is_some() {
             PointerLayer::Tutorial
-        } else if state.confirm_restart {
+        } else if state.confirm_restart && state.pending_restart.is_some() {
             PointerLayer::RestartConfirmation
         } else if state.confirm_reset {
             PointerLayer::ResetConfirmation

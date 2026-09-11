@@ -160,6 +160,7 @@ fn state_scope_tracks_the_topmost_interaction_layer() {
     );
     state.tutorial = None;
     state.confirm_restart = true;
+    state.pending_restart = Some(crate::ui::UiAction::Restart);
     assert_eq!(
         PointerScope::from_state(&state),
         scope(
@@ -168,6 +169,7 @@ fn state_scope_tracks_the_topmost_interaction_layer() {
         )
     );
     state.confirm_restart = false;
+    state.pending_restart = None;
     state.confirm_reset = true;
     assert_eq!(
         PointerScope::from_state(&state),
