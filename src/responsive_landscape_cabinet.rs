@@ -81,15 +81,24 @@ fn draw_home(state: &AppState, loaded: usize) {
         crate::theme::SURFACE,
     );
     panel(CONTINUE, crate::theme::MOSS_DARK);
+    if state.high_contrast {
+        draw_rectangle_lines(CONTINUE.x, CONTINUE.y, CONTINUE.w, CONTINUE.h, 3., WHITE);
+    }
     let selected = crate::continue_data::preferred_game(state);
     text(
         crate::continue_data::title(state),
         185.,
         73.,
-        8.,
+        crate::accessibility::text_size(8., state.large_text),
         crate::theme::BRASS,
     );
-    text(selected.title(), 185., 105., 20., crate::theme::CREAM);
+    text(
+        selected.title(),
+        185.,
+        105.,
+        crate::accessibility::text_size(20., state.large_text),
+        crate::theme::CREAM,
+    );
     text(selected.subtitle(), 185., 125., 9., crate::theme::SECONDARY);
     stat(
         Rect::new(452., 54., 104., 82.),

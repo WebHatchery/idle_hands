@@ -101,15 +101,24 @@ fn draw_home(state: &AppState, loaded: usize) {
         crate::theme::SURFACE_DARK,
     );
     panel(CONTINUE, crate::theme::MOSS_DARK, crate::theme::BRASS);
+    if state.high_contrast {
+        draw_rectangle_lines(CONTINUE.x, CONTINUE.y, CONTINUE.w, CONTINUE.h, 3., WHITE);
+    }
     text(
         crate::continue_data::title(state),
         278.,
         116.,
-        11.,
+        crate::accessibility::text_size(11., state.large_text),
         crate::theme::BRASS,
     );
     let selected = crate::continue_data::preferred_game(state);
-    text(selected.title(), 278., 153., 27., crate::theme::CREAM);
+    text(
+        selected.title(),
+        278.,
+        153.,
+        crate::accessibility::text_size(27., state.large_text),
+        crate::theme::CREAM,
+    );
     text(
         selected.subtitle(),
         278.,
@@ -126,7 +135,7 @@ fn draw_home(state: &AppState, loaded: usize) {
         crate::continue_data::action_label(state),
         495.,
         179.,
-        12.,
+        crate::accessibility::text_size(12., state.large_text),
         crate::theme::CREAM,
     );
     stat_card(
