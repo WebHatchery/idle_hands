@@ -236,6 +236,7 @@ impl Game {
                 | "favorites_all"
                 | "recent_browse" => Screen::Records,
                 "statistics" | "statistics_accessible" => Screen::Statistics,
+                "tutorials" | "tutorials_accessible" => Screen::Tutorials,
                 "rules" | "rules_scrolled" | "rules_logic" | "rules_word" => Screen::Rules,
                 "credits" => Screen::Credits,
                 "settings" | "settings_accessible" | "settings_reset" => Screen::Settings,
@@ -275,6 +276,12 @@ impl Game {
                     day.is_multiple_of(2),
                 );
             }
+        }
+        if matches!(scene, "tutorials" | "tutorials_accessible") {
+            for index in [0, 2, 5, 8, 13, 21, 34] {
+                self.state.tutorial_seen[index] = true;
+            }
+            self.state.tutorial_filter = scene == "tutorials_accessible";
         }
         if matches!(
             scene,
