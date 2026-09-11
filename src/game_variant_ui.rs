@@ -7,6 +7,9 @@ use crate::{
 };
 use macroquad::prelude::*;
 
+#[cfg(test)]
+mod tests;
+
 pub fn button_rect() -> Rect {
     let (width, _) = crate::ui::layout_size();
     variant_card_data::layout(
