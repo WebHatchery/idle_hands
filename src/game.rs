@@ -1,7 +1,6 @@
 //! Application lifecycle and input routing.
 
 use crate::card_hints;
-use crate::cosmetics;
 use crate::domain::Direction;
 use crate::game_input::{card_drag_actions, swipe_direction};
 use crate::input::{Gesture, PointerTracker};
@@ -39,6 +38,8 @@ mod game_realtime;
 mod game_render;
 #[path = "game_restart.rs"]
 mod game_restart;
+#[path = "game_settings.rs"]
+mod game_settings;
 
 pub struct Game {
     pub data: GameData,
@@ -754,30 +755,14 @@ impl Game {
                 self.state.confirm_restart = false;
                 self.state.pending_restart = None;
             }
-            ui::UiAction::ToggleSound => self.state.sound = !self.state.sound,
-            ui::UiAction::ToggleMotion => self.state.reduced_motion = !self.state.reduced_motion,
-            ui::UiAction::ToggleHighContrast => {
-                self.state.high_contrast = !self.state.high_contrast
-            }
-            ui::UiAction::ToggleLargeText => self.state.large_text = !self.state.large_text,
-            ui::UiAction::CycleCardBack => {
-                self.state.card_back =
-                    cosmetics::next_card_back(self.state.card_back, self.state.stamps)
-            }
-            ui::UiAction::CycleBoardTheme => {
-                self.state.board_theme =
-                    cosmetics::next_board_theme(self.state.board_theme, self.state.stamps)
-            }
-            ui::UiAction::CycleSoundSet => {
-                self.state.sound_set =
-                    cosmetics::next_sound_set(self.state.sound_set, self.state.stamps)
-            }
-            ui::UiAction::CycleCabinetDecoration => {
-                self.state.cabinet_decoration = cosmetics::next_cabinet_decoration(
-                    self.state.cabinet_decoration,
-                    self.state.stamps,
-                )
-            }
+            ui::UiAction::ToggleSound
+            | ui::UiAction::ToggleMotion
+            | ui::UiAction::ToggleHighContrast
+            | ui::UiAction::ToggleLargeText
+            | ui::UiAction::CycleCardBack
+            | ui::UiAction::CycleBoardTheme
+            | ui::UiAction::CycleSoundSet
+            | ui::UiAction::CycleCabinetDecoration => self.apply_settings_action(action),
             ui::UiAction::ResetData => self.state.confirm_reset = true,
             ui::UiAction::ConfirmResetData => {
                 self.state = AppState::new(&self.data);
