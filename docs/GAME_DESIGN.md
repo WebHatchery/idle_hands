@@ -163,6 +163,12 @@ its exact three-step lesson. Unseen lessons remain discoverable without making
 the player enter a game first; NEW ONLY narrows the shelf to lessons still
 waiting for their first visit.
 
+The cabinet also offers a Drawer Finder for players who remember a title but
+not its category. FIND opens a touch-first alphabetical shelf with broad
+letter buckets, visible paging, and one-tap launch cards. The finder keeps the
+same open, complete, locked, and coming-soon language as the cabinet and works
+without a keyboard in desktop, compact-landscape, and portrait layouts.
+
 The cabinet may filter its canonical order to ALL, OPEN, or DONE drawers for
 quick collection browsing; filtering never changes a drawer's state or place.
 

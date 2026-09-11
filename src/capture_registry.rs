@@ -46,5 +46,6 @@ mod tests {
         assert_eq!(screen_for_scene("records_progress"), None);
         assert_eq!(screen_for_scene("statistics"), None);
         assert_eq!(screen_for_scene("tutorials"), None);
+        assert_eq!(screen_for_scene("finder"), None);
     }
 }

@@ -80,6 +80,7 @@ fn draw_home(state: &AppState, loaded: usize) {
         10.,
         crate::theme::SURFACE,
     );
+    button(Rect::new(560., 6., 110., 38.), "FIND");
     panel(CONTINUE, crate::theme::MOSS_DARK);
     if state.high_contrast {
         draw_rectangle_lines(CONTINUE.x, CONTINUE.y, CONTINUE.w, CONTINUE.h, 3., WHITE);
@@ -340,6 +341,9 @@ fn category(state: &AppState, rect: Rect, filter: u8) {
 }
 
 fn home_clicks(p: Vec2) -> Vec<UiAction> {
+    if crate::ui::hit(Rect::new(560., 6., 110., 38.), p) {
+        return vec![UiAction::Finder];
+    }
     if crate::ui::hit(CONTINUE, p) {
         return vec![UiAction::ContinueGame];
     }

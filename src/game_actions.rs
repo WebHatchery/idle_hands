@@ -12,6 +12,8 @@ pub fn is_shell(action: UiAction) -> bool {
             | UiAction::ToggleFavorite(_)
             | UiAction::ClearRecent
             | UiAction::Cabinet
+            | UiAction::Finder
+            | UiAction::FinderFilter(_)
             | UiAction::Help
             | UiAction::Records
             | UiAction::Statistics

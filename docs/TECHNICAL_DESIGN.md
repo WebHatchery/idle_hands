@@ -249,6 +249,17 @@ runtime-only `tutorial_filter` flag narrows the derived rows to unseen lessons
 and resets `library_scroll` whenever it changes. The `tutorials` capture fixture
 seeds mixed seen state, while `tutorials_accessible` opens the filtered view.
 
+The runtime-only Finder screen reuses `cabinet_filter` as its five-value
+alphabet bucket while it is open; entering Finder resets the bucket and
+`library_scroll`. `finder_data` sorts the canonical `GameId::ALL` list by
+display title, partitions it into ALL, #–F, G–M, N–S, and T–Z buckets, and
+owns the layout-aware page limits. `finder_ui` owns the responsive cards,
+touchable bucket controls, paging, and BACK route. Cards dispatch the same
+`Open` action used by the cabinet, so unavailable drawers keep their normal
+storefront notice. The `finder`, `finder_filtered`, and `finder_scrolled`
+capture fixtures seed the default, filtered, and paged states without writing
+to player saves.
+
 Conceptual keys:
 
 ```text

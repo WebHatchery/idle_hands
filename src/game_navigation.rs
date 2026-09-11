@@ -8,6 +8,8 @@ use macroquad_toolkit::persistence::slot_exists;
 impl Game {
     pub(super) fn apply_browse_action(&mut self, action: crate::ui::UiAction) -> bool {
         match action {
+            crate::ui::UiAction::Finder => self.open_finder(),
+            crate::ui::UiAction::FinderFilter(filter) => self.set_finder_filter(filter),
             crate::ui::UiAction::Statistics => self.open_statistics(),
             crate::ui::UiAction::Tutorials => self.open_tutorial_library(),
             crate::ui::UiAction::OpenTutorial(index) => self.open_tutorial(index),
@@ -60,6 +62,22 @@ impl Game {
 
     fn toggle_tutorial_filter(&mut self) {
         self.state.tutorial_filter = !self.state.tutorial_filter;
+        self.state.library_scroll = 0;
+    }
+
+    fn open_finder(&mut self) {
+        self.state.screen = Screen::Finder;
+        self.state.cabinet_filter = crate::finder_data::normalize_filter(0);
+        self.state.library_scroll = 0;
+        self.state.favorites_view = false;
+        self.state.recent_view = false;
+        self.state.daily_archive_view = false;
+        self.state.achievements_view = false;
+    }
+
+    fn set_finder_filter(&mut self, filter: u8) {
+        self.state.screen = Screen::Finder;
+        self.state.cabinet_filter = crate::finder_data::normalize_filter(filter);
         self.state.library_scroll = 0;
     }
 
@@ -130,7 +148,7 @@ impl Game {
     fn library_scroll_is_active(&self) -> bool {
         matches!(
             self.state.screen,
-            Screen::Records | Screen::Rules | Screen::Tutorials
+            Screen::Finder | Screen::Records | Screen::Rules | Screen::Tutorials
         ) && !self.state.daily_archive_view
     }
 
@@ -167,6 +185,9 @@ impl Game {
         }
         if self.state.screen == Screen::Tutorials {
             return crate::tutorial_library_data::scroll_limit(&self.state);
+        }
+        if self.state.screen == Screen::Finder {
+            return crate::finder_data::scroll_limit(&self.state);
         }
         GameId::ALL.len().saturating_sub(1)
     }

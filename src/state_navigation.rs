@@ -5,6 +5,7 @@ use crate::state::GameId;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Screen {
     Cabinet,
+    Finder,
     Game(GameId),
     Help,
     Records,

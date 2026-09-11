@@ -48,6 +48,8 @@ mod dungeon_sweeper;
 mod dungeon_sweeper_ui;
 mod favorites_data;
 mod favorites_ui;
+mod finder_data;
+mod finder_ui;
 mod fivefold;
 mod fivefold_ui;
 mod fling_fury;

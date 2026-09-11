@@ -279,6 +279,10 @@ impl Game {
                 self.state.cabinet_filter = filter.min(9);
                 self.state.cabinet_scroll = 0;
             }
+            ui::UiAction::FinderFilter(filter) => {
+                self.state.cabinet_filter = crate::finder_data::normalize_filter(filter);
+                self.state.library_scroll = 0;
+            }
             ui::UiAction::CabinetSort => {
                 let sort =
                     crate::cabinet_status::CabinetSort::from_index(self.state.cabinet_sort).next();

@@ -62,6 +62,9 @@ pub fn clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(Rect::new(306., 10., 42., 40.), p) {
         return vec![UiAction::Settings];
     }
+    if state.cabinet_filter == 0 && crate::ui::hit(Rect::new(190., 10., 104., 40.), p) {
+        return vec![UiAction::Finder];
+    }
     if state.cabinet_filter == 0 {
         home_clicks(state, p)
     } else {
@@ -84,6 +87,11 @@ fn draw_home(state: &AppState, loaded: usize) {
     button(
         Rect::new(306., 10., 42., 40.),
         "SET",
+        crate::theme::SURFACE_DARK,
+    );
+    button(
+        Rect::new(190., 10., 104., 40.),
+        "FIND",
         crate::theme::SURFACE_DARK,
     );
     panel(CONTINUE, crate::theme::MOSS_DARK);

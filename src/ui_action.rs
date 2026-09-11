@@ -9,6 +9,8 @@ pub enum UiAction {
     ToggleFavorite(usize),
     ClearRecent,
     Cabinet,
+    Finder,
+    FinderFilter(u8),
     Help,
     Records,
     Statistics,

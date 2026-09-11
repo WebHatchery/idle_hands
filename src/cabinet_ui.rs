@@ -81,7 +81,7 @@ pub fn clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
 fn draw_home(state: &AppState, loaded: usize) {
     text("Good evening", 260., 55., 30., crate::theme::INK);
     if let Some(badge) = crate::storefront::build_badge() {
-        text(&badge, 1000., 55., 13., crate::theme::BRASS);
+        text(&badge, 1000., 86., 11., crate::theme::BRASS);
     }
     text(
         "Pick a game and unwind.",
@@ -98,6 +98,11 @@ fn draw_home(state: &AppState, loaded: usize) {
     small_button(
         Rect::new(1132., 28., 52., 48.),
         "?",
+        crate::theme::SURFACE_DARK,
+    );
+    small_button(
+        Rect::new(1030., 28., 92., 48.),
+        "FIND",
         crate::theme::SURFACE_DARK,
     );
     panel(CONTINUE, crate::theme::MOSS_DARK, crate::theme::BRASS);
@@ -516,6 +521,9 @@ fn stat_card(rect: Rect, label: &str, count: usize, unit: &str) {
 }
 
 fn home_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
+    if crate::ui::hit(Rect::new(1030., 28., 92., 48.), p) {
+        return vec![UiAction::Finder];
+    }
     if crate::ui::hit(CONTINUE, p) {
         return vec![UiAction::ContinueGame];
     }

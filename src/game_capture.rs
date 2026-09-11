@@ -237,6 +237,7 @@ impl Game {
                 | "recent_browse" => Screen::Records,
                 "statistics" | "statistics_accessible" => Screen::Statistics,
                 "tutorials" | "tutorials_accessible" => Screen::Tutorials,
+                "finder" | "finder_filtered" | "finder_scrolled" => Screen::Finder,
                 "rules" | "rules_scrolled" | "rules_logic" | "rules_word" => Screen::Rules,
                 "credits" => Screen::Credits,
                 "settings" | "settings_accessible" | "settings_reset" => Screen::Settings,
@@ -282,6 +283,11 @@ impl Game {
                 self.state.tutorial_seen[index] = true;
             }
             self.state.tutorial_filter = scene == "tutorials_accessible";
+        }
+        if matches!(scene, "finder" | "finder_filtered" | "finder_scrolled") {
+            self.state.cabinet_filter = if scene == "finder_filtered" { 1 } else { 0 };
+            self.state.library_scroll = if scene == "finder_scrolled" { 12 } else { 0 };
+            self.state.recent_games = vec![GameId::Solitaire, GameId::Snake, GameId::WordLadder];
         }
         if matches!(
             scene,
