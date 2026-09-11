@@ -3,7 +3,7 @@
 use crate::card_hints;
 use crate::domain::Direction;
 use crate::game_input::{card_drag_actions, swipe_direction};
-use crate::input::{Gesture, PointerTracker};
+use crate::input::{Gesture, PointerScope, PointerTracker};
 use crate::sound::SoundBank;
 use crate::{
     data::GameData,
@@ -93,6 +93,8 @@ impl Game {
     }
 
     pub fn update(&mut self, dt: f32) {
+        self.pointer
+            .sync_scope(PointerScope::from_state(&self.state));
         if is_mouse_button_pressed(MouseButton::Left)
             || is_mouse_button_released(MouseButton::Left)
             || !get_keys_pressed().is_empty()
@@ -124,14 +126,19 @@ impl Game {
         self.tick_autosave(dt);
         if is_mouse_button_pressed(MouseButton::Left) {
             let viewport = ui::viewport();
-            self.pointer
-                .press(viewport.screen_to_ui_checked(vec2(mouse_position().0, mouse_position().1)));
+            self.pointer.press(
+                viewport.screen_to_ui_checked(vec2(mouse_position().0, mouse_position().1)),
+                PointerScope::from_state(&self.state),
+            );
         }
         if is_mouse_button_released(MouseButton::Left) {
             let viewport = ui::viewport();
             let position =
                 viewport.screen_to_ui_checked(vec2(mouse_position().0, mouse_position().1));
-            if let Some(gesture) = self.pointer.release(position) {
+            if let Some(gesture) = self
+                .pointer
+                .release(position, PointerScope::from_state(&self.state))
+            {
                 match gesture {
                     Gesture::Drag { start, end }
                         if self.state.screen == Screen::Game(GameId::Game2048)

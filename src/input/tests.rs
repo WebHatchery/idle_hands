@@ -1,4 +1,9 @@
 use super::*;
+use crate::state::GameId;
+
+fn scope(screen: Screen, layer: PointerLayer) -> PointerScope {
+    PointerScope { screen, layer }
+}
 
 #[test]
 fn device_matrix_keeps_rendering_and_input_on_one_transform() {
@@ -76,43 +81,61 @@ fn smallest_phone_matrix_keeps_body_text_physically_readable() {
 #[test]
 fn pointer_tracker_distinguishes_taps_drags_and_cancelled_releases() {
     let mut tracker = PointerTracker::default();
-    tracker.press(Some(Vec2::new(10., 10.)));
+    let cabinet = scope(Screen::Cabinet, PointerLayer::Board);
+    tracker.press(Some(Vec2::new(10., 10.)), cabinet);
     assert_eq!(
-        tracker.release(Some(Vec2::new(12., 12.))),
+        tracker.release(Some(Vec2::new(12., 12.)), cabinet),
         Some(Gesture::Tap(Vec2::new(12., 12.)))
     );
-    tracker.press(Some(Vec2::new(10., 10.)));
+    tracker.press(Some(Vec2::new(10., 10.)), cabinet);
     assert_eq!(
-        tracker.release(Some(Vec2::new(40., 10.))),
+        tracker.release(Some(Vec2::new(40., 10.)), cabinet),
         Some(Gesture::Drag {
             start: Vec2::new(10., 10.),
             end: Vec2::new(40., 10.)
         })
     );
-    tracker.press(Some(Vec2::new(10., 10.)));
+    tracker.press(Some(Vec2::new(10., 10.)), cabinet);
     tracker.cancel();
-    assert_eq!(tracker.release(Some(Vec2::new(40., 10.))), None);
+    assert_eq!(tracker.release(Some(Vec2::new(40., 10.)), cabinet), None);
 }
 
 #[test]
 fn long_press_requires_the_threshold_and_does_not_override_a_drag() {
     let mut tracker = PointerTracker::default();
-    tracker.press(Some(Vec2::new(10., 10.)));
+    let cabinet = scope(Screen::Cabinet, PointerLayer::Board);
+    tracker.press(Some(Vec2::new(10., 10.)), cabinet);
     tracker.tick(LONG_PRESS_SECONDS - 0.01);
     assert_eq!(
-        tracker.release(Some(Vec2::new(10., 10.))),
+        tracker.release(Some(Vec2::new(10., 10.)), cabinet),
         Some(Gesture::Tap(Vec2::new(10., 10.)))
     );
-    tracker.press(Some(Vec2::new(10., 10.)));
+    tracker.press(Some(Vec2::new(10., 10.)), cabinet);
     tracker.tick(LONG_PRESS_SECONDS);
     assert_eq!(
-        tracker.release(Some(Vec2::new(10., 10.))),
+        tracker.release(Some(Vec2::new(10., 10.)), cabinet),
         Some(Gesture::LongPress(Vec2::new(10., 10.)))
     );
-    tracker.press(Some(Vec2::new(10., 10.)));
+    tracker.press(Some(Vec2::new(10., 10.)), cabinet);
     tracker.tick(LONG_PRESS_SECONDS * 2.);
     assert!(matches!(
-        tracker.release(Some(Vec2::new(40., 10.))),
+        tracker.release(Some(Vec2::new(40., 10.)), cabinet),
         Some(Gesture::Drag { .. })
     ));
+}
+
+#[test]
+fn scope_changes_cancel_captured_gestures_before_release() {
+    let mut tracker = PointerTracker::default();
+    let cabinet = scope(Screen::Cabinet, PointerLayer::Board);
+    let game = scope(Screen::Game(GameId::Game2048), PointerLayer::Board);
+    let tutorial = scope(Screen::Game(GameId::Game2048), PointerLayer::Tutorial);
+
+    tracker.press(Some(Vec2::new(10., 10.)), cabinet);
+    assert!(tracker.sync_scope(game));
+    assert_eq!(tracker.release(Some(Vec2::new(40., 10.)), game), None);
+
+    tracker.press(Some(Vec2::new(10., 10.)), game);
+    assert!(tracker.sync_scope(tutorial));
+    assert_eq!(tracker.release(Some(Vec2::new(10., 10.)), tutorial), None);
 }
