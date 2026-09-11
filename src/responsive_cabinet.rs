@@ -301,7 +301,7 @@ fn category_row(state: &AppState, rect: Rect, filter: u8) {
     panel(rect, crate::theme::category_surface(sample, false));
     draw_circle(rect.x + 31., rect.y + 31., 20., crate::theme::PAPER_LIGHT);
     text(
-        ["C", "L", "B", "W", "A", "M"][(filter - 3) as usize],
+        crate::cabinet_data::category_initial(filter),
         rect.x + 24.,
         rect.y + 38.,
         16.,

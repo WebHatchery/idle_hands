@@ -274,7 +274,7 @@ fn category(state: &AppState, rect: Rect, filter: u8) {
         .unwrap_or(GameId::Solitaire);
     panel(rect, crate::theme::category_surface(sample, false));
     text(
-        ["C", "L", "B", "W", "A", "M"][(filter - 3) as usize],
+        crate::cabinet_data::category_initial(filter),
         rect.x + 16.,
         rect.y + 35.,
         18.,

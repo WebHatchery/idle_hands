@@ -37,6 +37,18 @@ pub fn favorite_count(state: &AppState) -> usize {
     state.favorites.iter().filter(|favorite| **favorite).count()
 }
 
+pub fn category_initial(filter: u8) -> &'static str {
+    match filter {
+        3 => "C",
+        4 => "L",
+        5 => "B",
+        6 => "W",
+        7 => "A",
+        8 => "M",
+        _ => "?",
+    }
+}
+
 pub fn page(state: &AppState, page_size: usize) -> CabinetPage {
     let games = visible_games(state);
     let total = games.len();

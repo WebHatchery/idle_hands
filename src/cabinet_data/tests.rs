@@ -55,3 +55,14 @@ fn favorite_count_tracks_only_marked_games() {
     state.favorites[3] = true;
     assert_eq!(favorite_count(&state), 2);
 }
+
+#[test]
+fn category_initials_cover_known_drawers_and_unknown_filters() {
+    assert_eq!(category_initial(3), "C");
+    assert_eq!(category_initial(4), "L");
+    assert_eq!(category_initial(5), "B");
+    assert_eq!(category_initial(6), "W");
+    assert_eq!(category_initial(7), "A");
+    assert_eq!(category_initial(8), "M");
+    assert_eq!(category_initial(9), "?");
+}

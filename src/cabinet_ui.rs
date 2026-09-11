@@ -417,7 +417,7 @@ fn category_card(state: &AppState, rect: Rect, filter: u8) {
         crate::theme::BORDER,
     );
     text(
-        ["C", "L", "B", "W", "A", "M"][(filter - 3) as usize],
+        crate::cabinet_data::category_initial(filter),
         rect.x + 22.,
         rect.y + 42.,
         25.,
