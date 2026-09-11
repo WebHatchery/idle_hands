@@ -180,9 +180,10 @@ games can emphasize one material while sharing typography, spacing, navigation,
 and motion language. Movement should feel tactile: cards settle, dice tumble,
 tiles slide, and discs turn, with reduced-motion substitutions available.
 
-Audio is optional feedback, never required information. Master, effects, and
-music/ambience levels persist separately and each can be muted. Haptics may be
-used only when browser/platform support is safe and every cue also has a visual
+Audio is optional feedback, never required information. The profile can mute
+feedback or choose one of four sound intensities, and the cosmetic sound-set
+family changes the tone palette without changing gameplay. Haptics may be used
+only when browser/platform support is safe and every cue also has a visual
 equivalent.
 
 ## 8. Accessibility and Responsive Requirements
