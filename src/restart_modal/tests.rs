@@ -20,3 +20,40 @@ fn ordinary_restart_keeps_the_game_specific_title() {
 
     assert_eq!(title(&state), "Start a new 2048?");
 }
+
+#[test]
+fn restart_modal_buttons_route_in_every_layout() {
+    crate::ui::with_desktop_layout(|| {
+        let layout = current_layout();
+        assert!(matches!(
+            clicks(layout.cancel.center()).as_slice(),
+            [UiAction::Cancel]
+        ));
+        assert!(matches!(
+            clicks(layout.start.center()).as_slice(),
+            [UiAction::ConfirmRestart]
+        ));
+    });
+    crate::ui::with_portrait_layout(|| {
+        let layout = current_layout();
+        assert!(matches!(
+            clicks(layout.cancel.center()).as_slice(),
+            [UiAction::Cancel]
+        ));
+        assert!(matches!(
+            clicks(layout.start.center()).as_slice(),
+            [UiAction::ConfirmRestart]
+        ));
+    });
+    crate::ui::with_compact_landscape_layout(|| {
+        let layout = current_layout();
+        assert!(matches!(
+            clicks(layout.cancel.center()).as_slice(),
+            [UiAction::Cancel]
+        ));
+        assert!(matches!(
+            clicks(layout.start.center()).as_slice(),
+            [UiAction::ConfirmRestart]
+        ));
+    });
+}
