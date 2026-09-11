@@ -39,7 +39,11 @@ pub fn draw(state: &AppState) {
             crate::theme::BRASS
         },
     );
-    let label = game_variants::label(state, game);
+    let label = macroquad_toolkit::ui::truncate_text_to_width(
+        &game_variants::label(state, game),
+        layout.label_rect.w,
+        layout.label_size,
+    );
     crate::ui::draw_text(
         "RULE CARD  ›",
         rect.x + 9.,
