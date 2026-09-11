@@ -136,6 +136,9 @@ impl Game {
                 Err(error) => self.handle_bad_slot(game.title(), &game_slot, error),
             }
         }
+        if crate::continue_data::repair_selected(&mut self.state) {
+            self.request_autosave();
+        }
         if restored {
             self.notifications.info("Restored the cabinet autosave");
         }

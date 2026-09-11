@@ -70,3 +70,21 @@ fn continue_copy_explains_fresh_active_and_completed_drawers() {
     assert_eq!(title(&state), "PLAY AGAIN");
     assert_eq!(compact_action_label(&state), "REPLAY");
 }
+
+#[test]
+fn repair_selected_replaces_a_locked_saved_target_but_leaves_playable_targets_alone() {
+    let mut locked = AppState {
+        selected: GameId::Blackjack.index(),
+        recent_games: vec![GameId::Solitaire],
+        ..AppState::default()
+    };
+    assert!(repair_selected_for_build(&mut locked, true));
+    assert_eq!(locked.selected, GameId::Solitaire.index());
+
+    let mut playable = AppState {
+        selected: GameId::FreeCell.index(),
+        ..AppState::default()
+    };
+    assert!(!repair_selected_for_build(&mut playable, true));
+    assert_eq!(playable.selected, GameId::FreeCell.index());
+}

@@ -39,6 +39,25 @@ pub fn preferred_game(state: &AppState) -> GameId {
     preferred_game_for_build(state, crate::game_descriptor::is_demo_build())
 }
 
+pub fn repair_selected(state: &mut AppState) -> bool {
+    repair_selected_for_build(state, crate::game_descriptor::is_demo_build())
+}
+
+pub fn repair_selected_for_build(state: &mut AppState, demo_build: bool) -> bool {
+    let selected_is_playable = GameId::ALL.get(state.selected).is_some_and(|game| {
+        crate::storefront_data::availability_for_build(*game, demo_build).is_playable()
+    });
+    if selected_is_playable {
+        return false;
+    }
+    let repaired = preferred_game_for_build(state, demo_build);
+    if state.selected == repaired.index() {
+        return false;
+    }
+    state.selected = repaired.index();
+    true
+}
+
 pub fn preferred_game_for_build(state: &AppState, demo_build: bool) -> GameId {
     selected_if_playable(state.selected, demo_build)
         .or_else(|| {
