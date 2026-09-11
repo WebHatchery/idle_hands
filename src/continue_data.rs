@@ -2,6 +2,39 @@
 
 use crate::state::{AppState, GameId};
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ContinueIntent {
+    Start,
+    Resume,
+    Replay,
+}
+
+impl ContinueIntent {
+    pub const fn title(self) -> &'static str {
+        match self {
+            Self::Start => "START PLAYING",
+            Self::Resume => "CONTINUE PLAYING",
+            Self::Replay => "PLAY AGAIN",
+        }
+    }
+
+    pub const fn action_label(self) -> &'static str {
+        match self {
+            Self::Start => "START  >",
+            Self::Resume => "CONTINUE  >",
+            Self::Replay => "REPLAY  >",
+        }
+    }
+
+    pub const fn compact_action_label(self) -> &'static str {
+        match self {
+            Self::Start => "START",
+            Self::Resume => "CONTINUE",
+            Self::Replay => "REPLAY",
+        }
+    }
+}
+
 pub fn preferred_game(state: &AppState) -> GameId {
     preferred_game_for_build(state, crate::game_descriptor::is_demo_build())
 }
@@ -22,26 +55,22 @@ pub fn preferred_game_for_build(state: &AppState, demo_build: bool) -> GameId {
 }
 
 pub fn title(state: &AppState) -> &'static str {
-    match crate::cabinet_status::status(state, preferred_game(state)) {
-        "PLAY NOW" => "START PLAYING",
-        "COMPLETE" => "PLAY AGAIN",
-        _ => "CONTINUE PLAYING",
-    }
+    intent(state).title()
 }
 
 pub fn action_label(state: &AppState) -> &'static str {
-    match title(state) {
-        "START PLAYING" => "START  >",
-        "PLAY AGAIN" => "REPLAY  >",
-        _ => "CONTINUE  >",
-    }
+    intent(state).action_label()
 }
 
 pub fn compact_action_label(state: &AppState) -> &'static str {
-    match title(state) {
-        "START PLAYING" => "START",
-        "PLAY AGAIN" => "REPLAY",
-        _ => "CONTINUE",
+    intent(state).compact_action_label()
+}
+
+pub fn intent(state: &AppState) -> ContinueIntent {
+    match crate::cabinet_status::status(state, preferred_game(state)) {
+        "PLAY NOW" => ContinueIntent::Start,
+        "COMPLETE" => ContinueIntent::Replay,
+        _ => ContinueIntent::Resume,
     }
 }
 

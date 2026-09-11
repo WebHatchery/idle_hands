@@ -55,15 +55,18 @@ fn invalid_selection_still_resolves_to_a_real_drawer() {
 #[test]
 fn continue_copy_explains_fresh_active_and_completed_drawers() {
     let mut state = AppState::default();
+    assert_eq!(intent(&state), ContinueIntent::Start);
     assert_eq!(title(&state), "START PLAYING");
     assert_eq!(action_label(&state), "START  >");
     assert_eq!(compact_action_label(&state), "START");
 
     state.games.game.score = 8;
+    assert_eq!(intent(&state), ContinueIntent::Resume);
     assert_eq!(title(&state), "CONTINUE PLAYING");
     assert_eq!(action_label(&state), "CONTINUE  >");
 
     state.records.best_2048 = 2048;
+    assert_eq!(intent(&state), ContinueIntent::Replay);
     assert_eq!(title(&state), "PLAY AGAIN");
     assert_eq!(compact_action_label(&state), "REPLAY");
 }
