@@ -52,7 +52,7 @@ fn layout() -> Layout {
             back: Rect::new(930., 590., 180., 48.),
             columns: 5,
             card_w: 185.,
-            card_h: 34.,
+            card_h: 30.,
             origin: vec2(160., 215.),
             gap_x: 205.,
             gap_y: 35.,

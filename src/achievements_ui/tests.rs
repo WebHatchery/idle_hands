@@ -17,3 +17,11 @@ fn achievement_filter_counts_partition_the_shelf() {
     );
     assert_eq!(filter_button_label(1, &state), "EARNED 2");
 }
+
+#[test]
+fn desktop_achievement_grid_stays_inside_its_panel() {
+    crate::ui::with_desktop_layout(|| {
+        let layout = layout();
+        assert!(card_rect(layout, AchievementId::ALL.len() - 1).bottom() <= layout.panel.bottom());
+    });
+}
