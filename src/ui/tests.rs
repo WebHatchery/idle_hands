@@ -253,3 +253,46 @@ fn tutorial_entry_routes_from_help_in_every_layout() {
         ));
     });
 }
+
+#[test]
+fn finder_entry_and_return_are_touchable_in_every_layout() {
+    let cabinet = crate::state::AppState {
+        screen: crate::state::Screen::Cabinet,
+        ..Default::default()
+    };
+    let finder = crate::state::AppState {
+        screen: crate::state::Screen::Finder,
+        ..Default::default()
+    };
+
+    with_desktop_layout(|| {
+        assert!(matches!(
+            actions_at(&cabinet, vec2(1070., 50.)).as_slice(),
+            [UiAction::Finder]
+        ));
+        assert!(matches!(
+            actions_at(&finder, vec2(950., 610.)).as_slice(),
+            [UiAction::Cabinet]
+        ));
+    });
+    with_portrait_layout(|| {
+        assert!(matches!(
+            actions_at(&cabinet, vec2(220., 30.)).as_slice(),
+            [UiAction::Finder]
+        ));
+        assert!(matches!(
+            actions_at(&finder, vec2(50., 675.)).as_slice(),
+            [UiAction::Cabinet]
+        ));
+    });
+    with_compact_landscape_layout(|| {
+        assert!(matches!(
+            actions_at(&cabinet, vec2(600., 20.)).as_slice(),
+            [UiAction::Finder]
+        ));
+        assert!(matches!(
+            actions_at(&finder, vec2(740., 340.)).as_slice(),
+            [UiAction::Cabinet]
+        ));
+    });
+}
