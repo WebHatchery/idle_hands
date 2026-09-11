@@ -44,6 +44,14 @@ pub fn window_label(start: usize, total: usize, capacity: usize) -> String {
     format!("{first}-{last} OF {total}")
 }
 
+pub fn action_label() -> &'static str {
+    if crate::cabinet_status::is_available(crate::state::GameId::DailyDungeon) {
+        "REPLAY"
+    } else {
+        "FULL"
+    }
+}
+
 impl ArchiveRow {
     fn from_result(result: &DailyResult) -> Self {
         Self {

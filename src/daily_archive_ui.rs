@@ -186,7 +186,7 @@ pub fn draw(state: &AppState) {
             },
         );
         crate::ui::draw_text(
-            "REPLAY",
+            crate::daily_archive_data::action_label(),
             rect.right() - if portrait { 52. } else { 58. },
             rect.y + rect.h - 7.,
             crate::accessibility::text_size(if portrait { 9. } else { 8. }, state.large_text),

@@ -50,3 +50,8 @@ fn archive_window_labels_cover_empty_and_end_boundaries() {
     assert_eq!(window_label(0, 11, 7), "1-7 OF 11");
     assert_eq!(window_label(99, 11, 7), "5-11 OF 11");
 }
+
+#[test]
+fn archive_action_names_the_available_recovery_path() {
+    assert_eq!(action_label(), "REPLAY");
+}
