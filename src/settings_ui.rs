@@ -21,6 +21,7 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
 }
 
 pub fn draw_settings(state: &AppState) {
+    let labels = crate::settings_data::accessibility_labels(state);
     panel(
         Rect::new(180., 60., 920., 600.),
         crate::theme::BACKGROUND_DEEP,
@@ -66,8 +67,7 @@ pub fn draw_settings(state: &AppState) {
     text(
         &format!(
             "Sound: {}  •  Reduced motion: {}",
-            if state.sound { "On" } else { "Off" },
-            if state.reduced_motion { "On" } else { "Off" }
+            labels.sound, labels.motion
         ),
         230.,
         445.,
@@ -79,10 +79,7 @@ pub fn draw_settings(state: &AppState) {
         Color::new(0.16, 0.11, 0.24, 1.),
     );
     text(
-        &format!(
-            "High contrast: {}",
-            if state.high_contrast { "On" } else { "Off" }
-        ),
+        &format!("High contrast: {}", labels.contrast),
         250.,
         496.,
         15.,
@@ -93,10 +90,7 @@ pub fn draw_settings(state: &AppState) {
         Color::new(0.16, 0.11, 0.24, 1.),
     );
     text(
-        &format!(
-            "Large text: {}",
-            if state.large_text { "On" } else { "Off" }
-        ),
+        &format!("Large text: {}", labels.text),
         600.,
         496.,
         15.,

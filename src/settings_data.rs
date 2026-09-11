@@ -16,6 +16,14 @@ pub struct CosmeticRow {
     pub next_cost: Option<u16>,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct AccessibilityLabels {
+    pub sound: &'static str,
+    pub motion: &'static str,
+    pub contrast: &'static str,
+    pub text: &'static str,
+}
+
 pub fn cosmetic_rows(state: &AppState) -> [CosmeticRow; 4] {
     CosmeticKind::ALL.map(|kind| {
         let current = current_value(state, kind);
@@ -55,6 +63,19 @@ pub fn cosmetic_action(index: usize) -> Option<UiAction> {
         2 => Some(UiAction::CycleSoundSet),
         3 => Some(UiAction::CycleCabinetDecoration),
         _ => None,
+    }
+}
+
+pub fn accessibility_labels(state: &AppState) -> AccessibilityLabels {
+    AccessibilityLabels {
+        sound: if state.sound { "On" } else { "Off" },
+        motion: if state.reduced_motion {
+            "Reduced"
+        } else {
+            "Full"
+        },
+        contrast: if state.high_contrast { "On" } else { "Off" },
+        text: if state.large_text { "Large" } else { "Normal" },
     }
 }
 

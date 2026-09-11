@@ -66,3 +66,22 @@ fn cosmetic_action_mapping_matches_shared_row_order() {
     ));
     assert!(cosmetic_action(4).is_none());
 }
+
+#[test]
+fn accessibility_labels_use_consistent_meanings() {
+    let labels = accessibility_labels(&AppState {
+        sound: true,
+        reduced_motion: true,
+        high_contrast: true,
+        large_text: true,
+        ..AppState::default()
+    });
+    assert_eq!(labels.sound, "On");
+    assert_eq!(labels.motion, "Reduced");
+    assert_eq!(labels.contrast, "On");
+    assert_eq!(labels.text, "Large");
+
+    let defaults = accessibility_labels(&AppState::default());
+    assert_eq!(defaults.motion, "Full");
+    assert_eq!(defaults.text, "Normal");
+}

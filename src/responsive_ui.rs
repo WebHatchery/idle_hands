@@ -192,6 +192,7 @@ pub fn game2048_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
 }
 
 pub fn draw_settings(state: &AppState) {
+    let labels = crate::settings_data::accessibility_labels(state);
     panel(
         Rect::new(8., 30., 344., 700.),
         crate::theme::BACKGROUND_DEEP,
@@ -237,26 +238,13 @@ pub fn draw_settings(state: &AppState) {
         Rect::new(22., 360., 150., 44.),
         Color::new(0.16, 0.11, 0.24, 1.),
     );
-    text(
-        &format!("Sound: {}", if state.sound { "On" } else { "Off" }),
-        35.,
-        387.,
-        13.,
-        WHITE,
-    );
+    text(&format!("Sound: {}", labels.sound), 35., 387., 13., WHITE);
     panel(
         Rect::new(186., 360., 152., 44.),
         Color::new(0.16, 0.11, 0.24, 1.),
     );
     text(
-        &format!(
-            "Motion: {}",
-            if state.reduced_motion {
-                "Reduced"
-            } else {
-                "Full"
-            }
-        ),
+        &format!("Motion: {}", labels.motion),
         198.,
         387.,
         13.,
@@ -267,10 +255,7 @@ pub fn draw_settings(state: &AppState) {
         Color::new(0.16, 0.11, 0.24, 1.),
     );
     text(
-        &format!(
-            "Contrast: {}",
-            if state.high_contrast { "On" } else { "Off" }
-        ),
+        &format!("Contrast: {}", labels.contrast),
         35.,
         492.,
         12.,
@@ -280,16 +265,7 @@ pub fn draw_settings(state: &AppState) {
         Rect::new(186., 465., 152., 44.),
         Color::new(0.16, 0.11, 0.24, 1.),
     );
-    text(
-        &format!(
-            "Text: {}",
-            if state.large_text { "Large" } else { "Normal" }
-        ),
-        200.,
-        492.,
-        12.,
-        WHITE,
-    );
+    text(&format!("Text: {}", labels.text), 200., 492., 12., WHITE);
     text(
         "Tap a row to cycle open cosmetics; next stamp thresholds stay visible.",
         22.,

@@ -514,6 +514,7 @@ pub fn help_clicks(p: Vec2) -> Vec<UiAction> {
 }
 
 pub fn draw_settings(state: &AppState) {
+    let labels = crate::settings_data::accessibility_labels(state);
     panel(
         Rect::new(20., 10., 804., 370.),
         crate::theme::BACKGROUND_DEEP,
@@ -561,7 +562,7 @@ pub fn draw_settings(state: &AppState) {
     }
     panel(Rect::new(450., 68., 160., 44.), crate::theme::SURFACE);
     text(
-        if state.sound { "SOUND ON" } else { "SOUND OFF" },
+        &format!("SOUND {}", labels.sound.to_uppercase()),
         495.,
         96.,
         11.,
@@ -569,11 +570,7 @@ pub fn draw_settings(state: &AppState) {
     );
     panel(Rect::new(630., 68., 160., 44.), crate::theme::SURFACE);
     text(
-        if state.reduced_motion {
-            "MOTION OFF"
-        } else {
-            "MOTION ON"
-        },
+        &format!("MOTION {}", labels.motion.to_uppercase()),
         670.,
         96.,
         11.,
@@ -591,11 +588,7 @@ pub fn draw_settings(state: &AppState) {
         Color::new(0.16, 0.11, 0.24, 1.),
     );
     text(
-        if state.high_contrast {
-            "CONTRAST ON"
-        } else {
-            "CONTRAST OFF"
-        },
+        &format!("CONTRAST {}", labels.contrast.to_uppercase()),
         475.,
         200.,
         10.,
@@ -606,11 +599,7 @@ pub fn draw_settings(state: &AppState) {
         Color::new(0.16, 0.11, 0.24, 1.),
     );
     text(
-        if state.large_text {
-            "LARGE TEXT ON"
-        } else {
-            "LARGE TEXT OFF"
-        },
+        &format!("LARGE TEXT {}", labels.text.to_uppercase()),
         650.,
         200.,
         10.,
