@@ -9,6 +9,7 @@ pub enum Screen {
     Help,
     Records,
     Statistics,
+    Tutorials,
     Rules,
     Credits,
     Settings,

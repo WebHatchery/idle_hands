@@ -81,6 +81,10 @@ fn landscape_settings_reset_modal_blocks_background_and_routes_buttons() {
 #[test]
 fn landscape_help_routes_all_visible_buttons() {
     assert!(matches!(
+        help_clicks(vec2(350., 300.)).as_slice(),
+        [UiAction::Tutorials]
+    ));
+    assert!(matches!(
         help_clicks(vec2(460., 300.)).as_slice(),
         [UiAction::Rules]
     ));

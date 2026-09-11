@@ -708,25 +708,33 @@ pub fn draw_help(state: &AppState) {
         }
         y += 8.;
     }
+    panel(Rect::new(10., 476., 105., 44.), crate::theme::SURFACE);
+    text(
+        crate::help_data::NAV_LABELS[0],
+        29.,
+        504.,
+        crate::accessibility::text_size(10., state.large_text),
+        WHITE,
+    );
     panel(Rect::new(10., 530., 105., 44.), crate::theme::SURFACE);
     panel(Rect::new(127., 530., 105., 44.), crate::theme::SURFACE);
     panel(Rect::new(244., 530., 106., 44.), crate::theme::MOSS_DARK);
     text(
-        crate::help_data::NAV_LABELS[0],
+        crate::help_data::NAV_LABELS[1],
         42.,
         558.,
         crate::accessibility::text_size(12., state.large_text),
         WHITE,
     );
     text(
-        crate::help_data::NAV_LABELS[1],
+        crate::help_data::NAV_LABELS[2],
         150.,
         558.,
         crate::accessibility::text_size(11., state.large_text),
         WHITE,
     );
     text(
-        crate::help_data::NAV_LABELS[2],
+        crate::help_data::NAV_LABELS[3],
         277.,
         558.,
         crate::accessibility::text_size(12., state.large_text),
@@ -734,7 +742,9 @@ pub fn draw_help(state: &AppState) {
     );
 }
 pub fn help_clicks(p: Vec2) -> Vec<UiAction> {
-    if crate::ui::hit(Rect::new(10., 530., 105., 44.), p) {
+    if crate::ui::hit(Rect::new(10., 476., 105., 44.), p) {
+        vec![UiAction::Tutorials]
+    } else if crate::ui::hit(Rect::new(10., 530., 105., 44.), p) {
         vec![UiAction::Rules]
     } else if crate::ui::hit(Rect::new(127., 530., 105., 44.), p) {
         vec![UiAction::Credits]

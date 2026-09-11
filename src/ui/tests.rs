@@ -19,6 +19,10 @@ fn desktop_help_routes_all_visible_buttons() {
 
     with_desktop_layout(|| {
         assert!(matches!(
+            actions_at(&state, vec2(450., 650.)).as_slice(),
+            [UiAction::Tutorials]
+        ));
+        assert!(matches!(
             actions_at(&state, vec2(650., 650.)).as_slice(),
             [UiAction::Rules]
         ));

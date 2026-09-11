@@ -157,6 +157,10 @@ The shelf keeps its BACK control visible in desktop, landscape, and portrait
 layouts, and long drawer names shorten with an ellipsis instead of clipping
 nearby values. High-contrast mode replaces decorative accent hues with neutral
 bright text while preserving the same information hierarchy.
+Help also opens a touchable Tutorials shelf. It shows every drawer in canonical
+order, marks lessons already seen, and lets the player tap any drawer to replay
+its exact three-step lesson. Unseen lessons remain discoverable without making
+the player enter a game first.
 
 The cabinet may filter its canonical order to ALL, OPEN, or DONE drawers for
 quick collection browsing; filtering never changes a drawer's state or place.

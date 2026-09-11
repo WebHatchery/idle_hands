@@ -187,6 +187,8 @@ mod tiny_tower_defence_ui;
 mod tri_peaks;
 mod tri_peaks_ui;
 mod tutorial_data;
+mod tutorial_library_data;
+mod tutorial_library_ui;
 mod tutorial_ui;
 mod ui;
 mod ui_action;

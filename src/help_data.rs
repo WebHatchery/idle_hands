@@ -7,7 +7,7 @@ pub const PARAGRAPHS: [&str; 4] = [
     "Swipe or drag only when a drawer names that gesture; every required action has a visible touch control.",
 ];
 
-pub const NAV_LABELS: [&str; 3] = ["RULES", "CREDITS", "BACK"];
+pub const NAV_LABELS: [&str; 4] = ["TUTORIALS", "RULES", "CREDITS", "BACK"];
 
 #[cfg(test)]
 mod tests;

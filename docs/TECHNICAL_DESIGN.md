@@ -239,6 +239,13 @@ The companion `rules_logic` and `rules_word` scenes open filtered Rules shelves
 directly, keeping capture review independent of pointer timing or filter-cycle
 state.
 
+The runtime-only Tutorials screen derives its rows from `GameId::ALL` and the
+normalized `tutorial_seen` vector. `tutorial_library_data` owns the visible
+capacity and bounded scroll limit; `tutorial_library_ui` owns the responsive
+card layout and dispatches `OpenTutorial` with the canonical game index. The
+navigation handler opens the same game route as the cabinet, then explicitly
+starts its tutorial so replaying a seen lesson remains touch-complete.
+
 Conceptual keys:
 
 ```text

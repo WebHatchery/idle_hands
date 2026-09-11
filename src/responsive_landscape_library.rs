@@ -526,6 +526,7 @@ pub fn draw_help(state: &AppState) {
         y += 5.;
     }
     for (rect, label) in [
+        Rect::new(300., 288., 110., 44.),
         Rect::new(430., 288., 110., 44.),
         Rect::new(555., 288., 110., 44.),
         Rect::new(680., 288., 130., 44.),
@@ -544,7 +545,9 @@ pub fn draw_help(state: &AppState) {
     }
 }
 pub fn help_clicks(p: Vec2) -> Vec<UiAction> {
-    if crate::ui::hit(Rect::new(430., 288., 110., 44.), p) {
+    if crate::ui::hit(Rect::new(300., 288., 110., 44.), p) {
+        vec![UiAction::Tutorials]
+    } else if crate::ui::hit(Rect::new(430., 288., 110., 44.), p) {
         vec![UiAction::Rules]
     } else if crate::ui::hit(Rect::new(555., 288., 110., 44.), p) {
         vec![UiAction::Credits]

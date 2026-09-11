@@ -12,6 +12,8 @@ pub enum UiAction {
     Help,
     Records,
     Statistics,
+    Tutorials,
+    OpenTutorial(usize),
     Favorites,
     Recent,
     DailyArchive,

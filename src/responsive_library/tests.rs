@@ -52,6 +52,10 @@ fn portrait_scrolled_filtered_rule_card_keeps_its_canonical_game() {
 #[test]
 fn portrait_help_routes_all_visible_buttons() {
     assert!(matches!(
+        help_clicks(vec2(50., 495.)).as_slice(),
+        [UiAction::Tutorials]
+    ));
+    assert!(matches!(
         help_clicks(vec2(50., 550.)).as_slice(),
         [UiAction::Rules]
     ));

@@ -260,6 +260,10 @@ impl Game {
             self.finish_action(previous_screen, action);
             return;
         }
+        if self.apply_browse_action(action) {
+            self.finish_action(previous_screen, action);
+            return;
+        }
         match action {
             ui::UiAction::Open(index) => self.open_game(index),
             ui::UiAction::ContinueGame => {
@@ -353,23 +357,6 @@ impl Game {
                 self.state.records_filter = 0;
                 self.state.favorites_view = false;
                 self.state.recent_view = false;
-                self.state.daily_archive_view = false;
-                self.state.achievements_view = false;
-            }
-            ui::UiAction::Statistics => self.open_statistics(),
-            ui::UiAction::Favorites => {
-                self.state.screen = Screen::Records;
-                self.state.library_scroll = 0;
-                self.state.favorites_view = true;
-                self.state.recent_view = false;
-                self.state.daily_archive_view = false;
-                self.state.achievements_view = false;
-            }
-            ui::UiAction::Recent => {
-                self.state.screen = Screen::Records;
-                self.state.library_scroll = 0;
-                self.state.favorites_view = false;
-                self.state.recent_view = true;
                 self.state.daily_archive_view = false;
                 self.state.achievements_view = false;
             }

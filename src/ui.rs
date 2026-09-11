@@ -23,6 +23,7 @@ use crate::responsive_ui;
 use crate::save_recovery_ui;
 use crate::settings_ui;
 use crate::statistics_ui;
+use crate::tutorial_library_ui;
 use crate::tutorial_ui;
 pub use crate::ui_action::UiAction;
 use crate::ui_game_routes;
@@ -287,6 +288,8 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
                 responsive_landscape_library::help_clicks(p)
             } else if is_portrait() {
                 responsive_library::help_clicks(p)
+            } else if hit(Rect::new(400., 635., 180., 48.), p) {
+                vec![UiAction::Tutorials]
             } else if hit(Rect::new(1030., 635., 180., 48.), p) {
                 vec![UiAction::Cabinet]
             } else if hit(Rect::new(600., 635., 180., 48.), p) {
@@ -308,6 +311,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Records if is_portrait() => responsive_library::records_clicks(state, p),
         Screen::Records => records_ui::records_clicks(state, p),
         Screen::Statistics => statistics_ui::clicks(state, p),
+        Screen::Tutorials => tutorial_library_ui::clicks(state, p),
         Screen::Rules if is_compact_landscape() => {
             responsive_landscape_rules::rules_clicks(state, p)
         }
@@ -356,6 +360,7 @@ pub fn draw(
         Screen::Records if is_portrait() => responsive_library::draw_records(state),
         Screen::Records => records_ui::draw_records(state),
         Screen::Statistics => statistics_ui::draw(state),
+        Screen::Tutorials => tutorial_library_ui::draw(state),
         Screen::Rules if is_compact_landscape() => responsive_landscape_rules::draw_rules(state),
         Screen::Rules if is_portrait() => responsive_library::draw_rules(state),
         Screen::Rules => library_ui::draw_rules(state),
@@ -650,9 +655,17 @@ fn draw_help(state: &AppState) {
         }
         y += 4.;
     }
-    panel(Rect::new(600., 635., 180., 48.), crate::theme::SURFACE);
+    panel(Rect::new(400., 635., 180., 48.), crate::theme::SURFACE);
     text(
         crate::help_data::NAV_LABELS[0],
+        450.,
+        666.,
+        crate::accessibility::text_size(16., state.large_text),
+        WHITE,
+    );
+    panel(Rect::new(600., 635., 180., 48.), crate::theme::SURFACE);
+    text(
+        crate::help_data::NAV_LABELS[1],
         660.,
         666.,
         crate::accessibility::text_size(18., state.large_text),
@@ -660,7 +673,7 @@ fn draw_help(state: &AppState) {
     );
     panel(Rect::new(800., 635., 180., 48.), crate::theme::SURFACE);
     text(
-        crate::help_data::NAV_LABELS[1],
+        crate::help_data::NAV_LABELS[2],
         850.,
         666.,
         crate::accessibility::text_size(18., state.large_text),
@@ -668,7 +681,7 @@ fn draw_help(state: &AppState) {
     );
     panel(Rect::new(1030., 635., 180., 48.), crate::theme::MOSS_DARK);
     text(
-        crate::help_data::NAV_LABELS[2],
+        crate::help_data::NAV_LABELS[3],
         1090.,
         666.,
         crate::accessibility::text_size(18., state.large_text),
