@@ -43,14 +43,17 @@ fn every_profile_card_is_a_touch_target() {
         ..AppState::default()
     };
 
-    crate::ui::with_portrait_layout(|| {
+    let assert_cards = || {
         for (index, rect) in name_rects().iter().copied().enumerate() {
             assert!(matches!(
                 clicks(&state, rect.center()).as_slice(),
                 [UiAction::SetProfileName(value)] if *value as usize == index
             ));
         }
-    });
+    };
+    crate::ui::with_desktop_layout(assert_cards);
+    crate::ui::with_compact_landscape_layout(assert_cards);
+    crate::ui::with_portrait_layout(assert_cards);
 }
 
 #[test]
