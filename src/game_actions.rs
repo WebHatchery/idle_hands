@@ -62,6 +62,7 @@ mod tests {
         assert!(is_shell(UiAction::CabinetSort));
         assert!(is_shell(UiAction::RulesFilter(4)));
         assert!(is_shell(UiAction::Save));
+        assert!(is_shell(UiAction::CycleSoundVolume));
         assert!(!is_shell(UiAction::Game2048Hint));
         assert!(!is_shell(UiAction::Move(crate::domain::Direction::Left)));
     }

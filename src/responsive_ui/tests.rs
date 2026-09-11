@@ -34,6 +34,14 @@ fn portrait_settings_routes_shared_rows_and_accessibility_controls() {
         settings_clicks(&state, vec2(195., 430.)).as_slice(),
         [UiAction::CycleSoundVolume]
     ));
+    assert!(matches!(
+        settings_clicks(&state, vec2(30., 380.)).as_slice(),
+        [UiAction::ToggleSound]
+    ));
+    assert!(matches!(
+        settings_clicks(&state, vec2(195., 380.)).as_slice(),
+        [UiAction::ToggleMotion]
+    ));
 }
 
 #[test]

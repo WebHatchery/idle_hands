@@ -43,6 +43,14 @@ fn landscape_settings_routes_rows_and_accessibility_controls() {
         settings_clicks(&state, vec2(600., 240.)).as_slice(),
         [UiAction::CycleSoundVolume]
     ));
+    assert!(matches!(
+        settings_clicks(&state, vec2(500., 90.)).as_slice(),
+        [UiAction::ToggleSound]
+    ));
+    assert!(matches!(
+        settings_clicks(&state, vec2(700., 90.)).as_slice(),
+        [UiAction::ToggleMotion]
+    ));
 }
 
 #[test]
