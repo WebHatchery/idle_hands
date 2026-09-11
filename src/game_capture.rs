@@ -233,8 +233,10 @@ impl Game {
                 | "achievements_earned"
                 | "achievements_locked"
                 | "favorites_browse"
+                | "favorites_info"
                 | "favorites_all"
-                | "recent_browse" => Screen::Records,
+                | "recent_browse"
+                | "recent_info" => Screen::Records,
                 "statistics" | "statistics_accessible" => Screen::Statistics,
                 "tutorials" | "tutorials_accessible" => Screen::Tutorials,
                 "finder" | "finder_filtered" | "finder_scrolled" => Screen::Finder,
@@ -642,7 +644,7 @@ impl Game {
                 0
             };
         }
-        if scene == "favorites_browse" {
+        if matches!(scene, "favorites_browse" | "favorites_info") {
             for index in [
                 0,
                 GameId::Spider.index(),
@@ -659,7 +661,7 @@ impl Game {
             self.state.favorites.fill(true);
             self.state.favorites_view = true;
         }
-        if scene == "recent_browse" {
+        if matches!(scene, "recent_browse" | "recent_info") {
             self.state.recent_games = vec![
                 GameId::WordLadder,
                 GameId::Spider,

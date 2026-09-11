@@ -275,10 +275,11 @@ The runtime-only `DrawerInfo(GameId)` screen is the shared pre-launch details
 route for cabinet and Finder cards. `drawer_info_ui` derives category, status,
 availability, variants, and favorite copy from the existing descriptor,
 storefront, and cabinet-status boundaries, then dispatches the same `Open` and
-`ToggleFavorite` actions used elsewhere. Each responsive card reserves a
-separate INFO touch lane from its favorite lane. The `drawer_info` and
-`drawer_info_accessible` capture fixtures seed a completed favorite Solitaire
-drawer without changing player saves.
+`ToggleFavorite` actions used elsewhere. Cabinet, Finder, Favorites, and Recent
+cards reserve a separate INFO touch lane from their favorite lane. The
+`drawer_info`, `drawer_info_accessible`, `favorites_info`, and `recent_info`
+capture fixtures seed representative inspection surfaces without changing
+player saves.
 
 Conceptual keys:
 
