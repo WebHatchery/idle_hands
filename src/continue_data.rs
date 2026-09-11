@@ -21,6 +21,30 @@ pub fn preferred_game_for_build(state: &AppState, demo_build: bool) -> GameId {
         .unwrap_or(GameId::ALL[0])
 }
 
+pub fn title(state: &AppState) -> &'static str {
+    match crate::cabinet_status::status(state, preferred_game(state)) {
+        "PLAY NOW" => "START PLAYING",
+        "COMPLETE" => "PLAY AGAIN",
+        _ => "CONTINUE PLAYING",
+    }
+}
+
+pub fn action_label(state: &AppState) -> &'static str {
+    match title(state) {
+        "START PLAYING" => "START  >",
+        "PLAY AGAIN" => "REPLAY  >",
+        _ => "CONTINUE  >",
+    }
+}
+
+pub fn compact_action_label(state: &AppState) -> &'static str {
+    match title(state) {
+        "START PLAYING" => "START",
+        "PLAY AGAIN" => "REPLAY",
+        _ => "CONTINUE",
+    }
+}
+
 fn selected_if_playable(selected: usize, demo_build: bool) -> Option<GameId> {
     GameId::ALL.get(selected).copied().filter(|game| {
         crate::storefront_data::availability_for_build(*game, demo_build).is_playable()

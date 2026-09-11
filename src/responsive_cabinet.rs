@@ -87,7 +87,13 @@ fn draw_home(state: &AppState, loaded: usize) {
         crate::theme::SURFACE_DARK,
     );
     panel(CONTINUE, crate::theme::MOSS_DARK);
-    text("CONTINUE PLAYING", 24., 77., 9., crate::theme::BRASS);
+    text(
+        crate::continue_data::title(state),
+        24.,
+        77.,
+        9.,
+        crate::theme::BRASS,
+    );
     let selected = crate::continue_data::preferred_game(state);
     draw_circle(55., 117., 27., crate::theme::PAPER_LIGHT);
     text(
@@ -100,7 +106,13 @@ fn draw_home(state: &AppState, loaded: usize) {
     text(selected.title(), 94., 112., 20., crate::theme::CREAM);
     text(selected.subtitle(), 94., 133., 10., crate::theme::SECONDARY);
     panel(Rect::new(230., 116., 104., 34.), crate::theme::MOSS);
-    text("CONTINUE", 250., 138., 10., crate::theme::CREAM);
+    text(
+        crate::continue_data::compact_action_label(state),
+        250.,
+        138.,
+        10.,
+        crate::theme::CREAM,
+    );
     stat(
         Rect::new(10., 172., 105., 68.),
         "FAVORITES",

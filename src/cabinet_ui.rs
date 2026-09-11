@@ -101,7 +101,13 @@ fn draw_home(state: &AppState, loaded: usize) {
         crate::theme::SURFACE_DARK,
     );
     panel(CONTINUE, crate::theme::MOSS_DARK, crate::theme::BRASS);
-    text("CONTINUE PLAYING", 278., 116., 11., crate::theme::BRASS);
+    text(
+        crate::continue_data::title(state),
+        278.,
+        116.,
+        11.,
+        crate::theme::BRASS,
+    );
     let selected = crate::continue_data::preferred_game(state);
     text(selected.title(), 278., 153., 27., crate::theme::CREAM);
     text(
@@ -116,7 +122,13 @@ fn draw_home(state: &AppState, loaded: usize) {
         crate::theme::MOSS,
         crate::theme::BRASS,
     );
-    text("CONTINUE  >", 495., 179., 12., crate::theme::CREAM);
+    text(
+        crate::continue_data::action_label(state),
+        495.,
+        179.,
+        12.,
+        crate::theme::CREAM,
+    );
     stat_card(
         Rect::new(645., 92., 145., 118.),
         "FAVORITES",
