@@ -241,9 +241,6 @@ impl Game {
         self.analytics.update(dt, &self.state);
     }
 
-    pub fn end_analytics_session(&mut self) {
-        self.analytics.end_session();
-    }
     fn apply(&mut self, action: ui::UiAction) {
         self.state.games.solitaire_peek = None;
         self.state.games.spider_solitaire_peek = None;
@@ -779,6 +776,7 @@ impl Game {
                 self.state.lifecycle_paused = false;
                 self.notifications.info("The cabinet is ready again");
             }
+            ui::UiAction::DismissSaveRecovery => self.dismiss_save_recovery(),
             ui::UiAction::ToggleSound
             | ui::UiAction::ToggleMotion
             | ui::UiAction::ToggleHighContrast

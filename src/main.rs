@@ -147,6 +147,8 @@ mod restart_modal_data;
 mod reversi;
 mod reversi_ui;
 mod rules_data;
+mod save_recovery;
+mod save_recovery_ui;
 mod settings_data;
 mod settings_ui;
 mod sliding_puzzle;

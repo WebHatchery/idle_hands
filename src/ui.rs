@@ -19,6 +19,7 @@ use crate::responsive_landscape_library;
 use crate::responsive_landscape_rules;
 use crate::responsive_library;
 use crate::responsive_ui;
+use crate::save_recovery_ui;
 use crate::settings_ui;
 use crate::tutorial_ui;
 pub use crate::ui_action::UiAction;
@@ -260,6 +261,11 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if state.confirm_restart && state.pending_restart.is_some() {
         return restart_modal::clicks(p);
     }
+    if state.save_recovery.is_some() {
+        if let Some(action) = save_recovery_ui::clicks(p) {
+            return vec![action];
+        }
+    }
     if game_variant_ui::clicks(state, p) {
         return vec![UiAction::CycleGameVariant];
     }
@@ -373,6 +379,7 @@ pub fn draw(
     if state.confirm_restart && state.pending_restart.is_some() {
         restart_modal::draw(state);
     }
+    save_recovery_ui::draw(state);
     if state.lifecycle_paused {
         lifecycle_pause_ui::draw(state);
     }

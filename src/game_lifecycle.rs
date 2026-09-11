@@ -3,6 +3,10 @@
 use super::Game;
 
 impl Game {
+    pub fn end_analytics_session(&mut self) {
+        self.analytics.end_session();
+    }
+
     pub fn note_frame_gap(&mut self, frame_seconds: f32) {
         if !crate::lifecycle::should_pause_game(
             frame_seconds,

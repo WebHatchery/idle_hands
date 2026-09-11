@@ -11,6 +11,10 @@ use serde::de::DeserializeOwned;
 const AUTOSAVE_DELAY_SECONDS: f32 = 0.75;
 
 impl Game {
+    pub(super) fn dismiss_save_recovery(&mut self) {
+        self.state.save_recovery = None;
+    }
+
     /// Mark the authoritative records dirty. The next few actions are written
     /// together instead of rewriting every save slot after every tap.
     pub(super) fn request_autosave(&mut self) {
@@ -84,6 +88,7 @@ impl Game {
     pub(super) fn load_autosave(&mut self) {
         self.save_dirty = false;
         self.save_timer = 0.0;
+        self.state.save_recovery = None;
         let mut restored = false;
         let collection_slot = self.data.config.save_slot.clone();
         if slot_exists(&self.data.config.game_name, &collection_slot) {
@@ -147,16 +152,26 @@ impl Game {
     fn handle_bad_slot(&mut self, label: &str, slot: &str, error: String) {
         self.notifications
             .warning(format!("{} save could not be loaded: {}", label, error));
-        match quarantine_slot(&self.data.config.game_name, slot) {
-            Ok(quarantine) => self.notifications.warning(format!(
-                "Preserved the damaged {} save as {}",
-                label, quarantine
-            )),
-            Err(quarantine_error) => self.notifications.warning(format!(
-                "Could not quarantine the damaged {} save: {}",
-                label, quarantine_error
-            )),
-        }
+        let quarantined = match quarantine_slot(&self.data.config.game_name, slot) {
+            Ok(quarantine) => {
+                self.notifications.warning(format!(
+                    "Preserved the damaged {} save as {}",
+                    label, quarantine
+                ));
+                true
+            }
+            Err(quarantine_error) => {
+                self.notifications.warning(format!(
+                    "Could not quarantine the damaged {} save: {}",
+                    label, quarantine_error
+                ));
+                false
+            }
+        };
+        self.state
+            .save_recovery
+            .get_or_insert_with(crate::save_recovery::SaveRecoveryNotice::new)
+            .record(quarantined);
     }
 
     fn load_slot<T: DeserializeOwned>(&self, slot: &str) -> Result<T, String> {
