@@ -71,6 +71,10 @@ mod tests {
     #[test]
     fn shell_routing_is_explicit_at_the_boundary() {
         assert!(is_shell(UiAction::Cabinet));
+        assert!(is_shell(UiAction::Inspect(
+            crate::state::GameId::Solitaire.index()
+        )));
+        assert!(is_shell(UiAction::Profile));
         assert!(is_shell(UiAction::CabinetSort));
         assert!(is_shell(UiAction::RulesFilter(4)));
         assert!(is_shell(UiAction::Save));
