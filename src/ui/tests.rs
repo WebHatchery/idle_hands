@@ -366,3 +366,54 @@ fn drawer_info_return_routes_through_the_shared_ui_dispatcher() {
         ));
     });
 }
+
+#[test]
+fn quick_browse_info_routes_through_records_in_every_layout() {
+    let favorites = crate::state::AppState {
+        screen: crate::state::Screen::Records,
+        favorites_view: true,
+        favorites: {
+            let mut favorites = vec![false; crate::state::GameId::ALL.len()];
+            favorites[crate::state::GameId::Solitaire.index()] = true;
+            favorites
+        },
+        ..Default::default()
+    };
+    let recent = crate::state::AppState {
+        screen: crate::state::Screen::Records,
+        recent_view: true,
+        recent_games: vec![crate::state::GameId::Solitaire],
+        ..Default::default()
+    };
+
+    with_desktop_layout(|| {
+        assert!(matches!(
+            actions_at(&favorites, vec2(279., 211.)).as_slice(),
+            [UiAction::Inspect(index)] if *index == crate::state::GameId::Solitaire.index()
+        ));
+        assert!(matches!(
+            actions_at(&recent, vec2(321., 211.)).as_slice(),
+            [UiAction::Inspect(index)] if *index == crate::state::GameId::Solitaire.index()
+        ));
+    });
+    with_compact_landscape_layout(|| {
+        assert!(matches!(
+            actions_at(&favorites, vec2(324., 92.)).as_slice(),
+            [UiAction::Inspect(index)] if *index == crate::state::GameId::Solitaire.index()
+        ));
+        assert!(matches!(
+            actions_at(&recent, vec2(366., 92.)).as_slice(),
+            [UiAction::Inspect(index)] if *index == crate::state::GameId::Solitaire.index()
+        ));
+    });
+    with_portrait_layout(|| {
+        assert!(matches!(
+            actions_at(&favorites, vec2(276., 182.)).as_slice(),
+            [UiAction::Inspect(index)] if *index == crate::state::GameId::Solitaire.index()
+        ));
+        assert!(matches!(
+            actions_at(&recent, vec2(318., 182.)).as_slice(),
+            [UiAction::Inspect(index)] if *index == crate::state::GameId::Solitaire.index()
+        ));
+    });
+}
