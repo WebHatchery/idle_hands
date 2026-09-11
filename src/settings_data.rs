@@ -31,12 +31,13 @@ pub fn cosmetic_rows(state: &AppState) -> [CosmeticRow; 4] {
 }
 
 pub fn current_value(state: &AppState, kind: CosmeticKind) -> u8 {
-    match kind {
+    let current = match kind {
         CosmeticKind::CardBack => state.card_back,
         CosmeticKind::BoardTheme => state.board_theme,
         CosmeticKind::SoundSet => state.sound_set,
         CosmeticKind::CabinetDecoration => state.cabinet_decoration,
-    }
+    };
+    kind.normalize(current, state.stamps)
 }
 
 pub fn next_label(row: CosmeticRow) -> String {
