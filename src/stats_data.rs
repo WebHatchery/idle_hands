@@ -81,5 +81,16 @@ pub fn completion_percent(summary: StatisticsSummary) -> usize {
         .unwrap_or(0)
 }
 
+pub fn short_title(game: GameId, max_chars: usize) -> String {
+    let title = game.title();
+    if title.chars().count() <= max_chars {
+        return title.to_owned();
+    }
+    let keep = max_chars.saturating_sub(1);
+    let mut shortened: String = title.chars().take(keep).collect();
+    shortened.push('…');
+    shortened
+}
+
 #[cfg(test)]
 mod tests;

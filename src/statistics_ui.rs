@@ -323,11 +323,23 @@ fn draw_ledger(state: &AppState, summary: stats_data::StatisticsSummary, rect: R
     );
     let fastest = summary.fastest_clear.map_or_else(
         || "—".to_owned(),
-        |row| format!("{} {}", row.game.title(), duration(row.seconds)),
+        |row| {
+            format!(
+                "{} {}",
+                stats_data::short_title(row.game, if rect.w < 330. { 18 } else { 28 }),
+                duration(row.seconds)
+            )
+        },
     );
     let longest = summary.longest_session.map_or_else(
         || "—".to_owned(),
-        |row| format!("{} {}", row.game.title(), duration(row.seconds)),
+        |row| {
+            format!(
+                "{} {}",
+                stats_data::short_title(row.game, if rect.w < 330. { 18 } else { 28 }),
+                duration(row.seconds)
+            )
+        },
     );
     text(
         state,
@@ -366,7 +378,11 @@ fn draw_top_playtime(state: &AppState, rect: Rect, limit: usize, size: f32) {
         let y = rect.y + 54. + index as f32 * row_spacing;
         text(
             state,
-            format!("{}. {}", index + 1, row.game.title()),
+            format!(
+                "{}. {}",
+                index + 1,
+                stats_data::short_title(row.game, if rect.w < 330. { 17 } else { 24 })
+            ),
             rect.x + 14.,
             y,
             row_size,
