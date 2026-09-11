@@ -95,3 +95,34 @@ fn restart_modal_blocks_game_background_in_every_layout() {
         assert!(actions_at(&state, vec2(10., 100.)).is_empty());
     });
 }
+
+#[test]
+fn lifecycle_pause_routes_only_resume_touch_in_every_layout() {
+    let state = crate::state::AppState {
+        screen: crate::state::Screen::Game(crate::state::GameId::Game2048),
+        lifecycle_paused: true,
+        ..Default::default()
+    };
+
+    with_desktop_layout(|| {
+        assert!(matches!(
+            actions_at(&state, vec2(640., 462.)).as_slice(),
+            [UiAction::ResumeLifecycle]
+        ));
+        assert!(actions_at(&state, vec2(100., 100.)).is_empty());
+    });
+    with_portrait_layout(|| {
+        assert!(matches!(
+            actions_at(&state, vec2(180., 439.)).as_slice(),
+            [UiAction::ResumeLifecycle]
+        ));
+        assert!(actions_at(&state, vec2(10., 100.)).is_empty());
+    });
+    with_compact_landscape_layout(|| {
+        assert!(matches!(
+            actions_at(&state, vec2(420., 276.)).as_slice(),
+            [UiAction::ResumeLifecycle]
+        ));
+        assert!(actions_at(&state, vec2(10., 100.)).is_empty());
+    });
+}
