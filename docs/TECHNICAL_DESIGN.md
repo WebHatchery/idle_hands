@@ -75,8 +75,12 @@ Macroquad reports touch and pointer events; the collection normalizes them into
 one primary-pointer stream before game code sees them. The input layer owns:
 
 - pointer identity and capture from press through release;
+- capture scope tied to the originating screen and topmost visible interaction
+  layer, with release discarded after a scope change;
 - tap slop and drag/swipe thresholds scaled to the logical viewport;
 - cancel behavior when the pointer leaves, the app loses focus, or a modal opens;
+- cancellation when a second touch appears so multi-touch cannot fall through as
+  a single-pointer action;
 - long-press recognition only as an optional shortcut;
 - edge-gesture exclusion so browser navigation does not become a game move;
 - gesture arbitration between a board, a scroll container, and global navigation.
