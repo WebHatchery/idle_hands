@@ -4,13 +4,14 @@ use super::Game;
 
 impl Game {
     pub fn note_frame_gap(&mut self, frame_seconds: f32) {
-        if !crate::lifecycle::should_pause_for_gap(frame_seconds)
-            || !self.state.screen.is_game()
-            || self.state.tutorial.is_some()
-            || self.state.confirm_restart
-            || self.state.confirm_reset
-            || self.state.lifecycle_paused
-        {
+        if !crate::lifecycle::should_pause_game(
+            frame_seconds,
+            self.state.screen.is_game(),
+            self.state.tutorial.is_some(),
+            self.state.confirm_restart,
+            self.state.confirm_reset,
+            self.state.lifecycle_paused,
+        ) {
             return;
         }
         self.pointer.cancel();
