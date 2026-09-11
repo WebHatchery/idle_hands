@@ -94,11 +94,7 @@ fn current_copy(state: &AppState, x: f32, y: f32, size: f32) {
 fn draw_names(state: &AppState) {
     let selected = profile_data::current_index(state);
     for (index, rect) in name_rects().iter().copied().enumerate() {
-        let fill = if selected == Some(index) {
-            crate::theme::MOSS_DARK
-        } else {
-            crate::theme::SURFACE_DARK
-        };
+        let fill = profile_card_fill(state, selected == Some(index));
         panel_fill(state, rect, fill);
         text(
             state,
@@ -217,5 +213,19 @@ fn secondary(state: &AppState) -> Color {
         WHITE
     } else {
         crate::theme::SECONDARY
+    }
+}
+
+fn profile_card_fill(state: &AppState, selected: bool) -> Color {
+    if state.high_contrast {
+        if selected {
+            Color::new(0.30, 0.30, 0.30, 1.)
+        } else {
+            Color::new(0.12, 0.12, 0.12, 1.)
+        }
+    } else if selected {
+        crate::theme::MOSS_DARK
+    } else {
+        crate::theme::SURFACE_DARK
     }
 }

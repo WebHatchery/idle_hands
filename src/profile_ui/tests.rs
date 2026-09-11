@@ -52,3 +52,17 @@ fn every_profile_card_is_a_touch_target() {
         }
     });
 }
+
+#[test]
+fn high_contrast_nameplates_use_neutral_selected_luminance() {
+    let state = AppState {
+        high_contrast: true,
+        ..AppState::default()
+    };
+    let selected = profile_card_fill(&state, true);
+    let unselected = profile_card_fill(&state, false);
+
+    assert_eq!(selected.r, selected.g);
+    assert_eq!(selected.g, selected.b);
+    assert!(selected.r > unselected.r);
+}
