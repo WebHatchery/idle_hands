@@ -63,6 +63,17 @@ pub fn availability(game: GameId) -> GameAvailability {
     availability_for_build(game, game_descriptor::is_demo_build())
 }
 
+pub fn build_badge_for(demo_build: bool) -> Option<String> {
+    demo_build.then(|| format!("DEMO · {} GAMES", playable_count_for_build(demo_build)))
+}
+
+fn playable_count_for_build(demo_build: bool) -> usize {
+    GameId::ALL
+        .iter()
+        .filter(|game| availability_for_build(**game, demo_build).is_playable())
+        .count()
+}
+
 pub fn cabinet_label_for_build(game: GameId, demo_build: bool, compact: bool) -> &'static str {
     let availability = availability_for_build(game, demo_build);
     if availability.is_playable() {

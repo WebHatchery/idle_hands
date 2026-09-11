@@ -13,6 +13,10 @@ pub fn availability(game: crate::state::GameId) -> GameAvailability {
     crate::storefront_data::availability(game)
 }
 
+pub fn build_badge() -> Option<String> {
+    crate::storefront_data::build_badge_for(crate::game_descriptor::is_demo_build())
+}
+
 pub fn cabinet_label(game: crate::state::GameId, compact: bool) -> &'static str {
     match availability(game) {
         GameAvailability::DemoRestricted if compact => COMPACT_LOCKED_LABEL,

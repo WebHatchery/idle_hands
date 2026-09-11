@@ -71,8 +71,8 @@ pub fn clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
 
 fn draw_home(state: &AppState, loaded: usize) {
     text("IDLE HANDS", 77., 35., 23., crate::theme::CREAM);
-    if crate::game_descriptor::is_demo_build() {
-        text("DEMO · 30 GAMES", 236., 35., 8., crate::theme::BRASS);
+    if let Some(badge) = crate::storefront::build_badge() {
+        text(&badge, 236., 35., 8., crate::theme::BRASS);
     }
     text(
         "quiet games for idle hands",

@@ -49,3 +49,9 @@ fn availability_labels_cover_browse_and_compact_surfaces() {
     assert_eq!(GameAvailability::ComingSoon.browse_label(), "COMING SOON");
     assert_eq!(GameAvailability::ComingSoon.short_label(), "SOON");
 }
+
+#[test]
+fn demo_badge_reports_the_curated_count_and_stays_hidden_in_full_builds() {
+    assert_eq!(build_badge_for(true).as_deref(), Some("DEMO · 30 GAMES"));
+    assert_eq!(build_badge_for(false), None);
+}

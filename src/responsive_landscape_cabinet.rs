@@ -70,8 +70,8 @@ pub fn clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
 
 fn draw_home(state: &AppState, loaded: usize) {
     text("Good evening", 170., 34., 21., crate::theme::INK);
-    if crate::game_descriptor::is_demo_build() {
-        text("DEMO · 30 GAMES", 700., 34., 9., crate::theme::BRASS);
+    if let Some(badge) = crate::storefront::build_badge() {
+        text(&badge, 700., 34., 9., crate::theme::BRASS);
     }
     text(
         "Pick a game and unwind.",
