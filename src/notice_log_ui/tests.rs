@@ -53,3 +53,29 @@ fn long_notice_messages_are_shortened_for_the_log() {
     assert_eq!(short_message("abcdef", 4), "abcd…");
     assert_eq!(short_message("short", 10), "short");
 }
+
+#[test]
+fn notice_log_controls_stay_inside_each_logical_viewport() {
+    crate::ui::with_desktop_layout(assert_layout_fits);
+    crate::ui::with_compact_landscape_layout(assert_layout_fits);
+    crate::ui::with_portrait_layout(assert_layout_fits);
+}
+
+fn assert_layout_fits() {
+    let (card, close) = log_layout();
+    let button = button_rect();
+    let (width, height) = crate::ui::layout_size();
+    let viewport = Rect::new(0., 0., width, height);
+    assert!(contains(viewport, card));
+    assert!(contains(card, close));
+    assert!(contains(viewport, button));
+    assert!(close.w >= 140.);
+    assert!(close.h >= 44.);
+}
+
+fn contains(outer: Rect, inner: Rect) -> bool {
+    inner.x >= outer.x
+        && inner.y >= outer.y
+        && inner.right() <= outer.right()
+        && inner.bottom() <= outer.bottom()
+}
