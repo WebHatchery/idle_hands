@@ -290,15 +290,11 @@ fn draw_library(state: &AppState) {
             crate::theme::INK,
         );
         text(
-            if cabinet_status::is_available(game) {
-                game.subtitle()
-            } else {
-                crate::storefront::LOCKED_LABEL
-            },
+            crate::storefront::cabinet_label(game, false),
             rect.x + 48.,
             rect.y + 34.,
             9.,
-            if cabinet_status::is_available(game) {
+            if cabinet_status::availability(game).is_playable() {
                 crate::theme::SURFACE
             } else {
                 crate::theme::BRASS

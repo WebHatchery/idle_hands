@@ -41,11 +41,7 @@ pub fn summary_label(filter: u8) -> String {
 }
 
 pub fn action_label(game: GameId) -> &'static str {
-    if crate::cabinet_status::is_available(game) {
-        "OPEN"
-    } else {
-        "FULL"
-    }
+    crate::storefront::action_label(game)
 }
 
 pub fn page_label(start: usize, total: usize, page_size: usize) -> String {

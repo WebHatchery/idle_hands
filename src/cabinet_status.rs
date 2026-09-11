@@ -328,19 +328,20 @@ pub fn color(status: &str) -> Color {
     }
 }
 
-pub fn is_active(game: GameId) -> bool {
-    descriptor(game).active
+pub fn is_available(game: GameId) -> bool {
+    availability(game).is_playable()
 }
 
-pub fn is_available(game: GameId) -> bool {
-    crate::game_descriptor::is_available(game)
+pub fn availability(game: GameId) -> crate::storefront::GameAvailability {
+    crate::storefront::availability(game)
 }
 
 pub fn availability_label(state: &AppState, game: GameId) -> &'static str {
-    if is_available(game) {
+    let availability = availability(game);
+    if availability.is_playable() {
         status(state, game)
     } else {
-        "FULL VERSION"
+        availability.browse_label()
     }
 }
 

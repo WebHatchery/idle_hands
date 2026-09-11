@@ -206,15 +206,11 @@ fn draw_library(state: &AppState) {
             crate::theme::CREAM,
         );
         text(
-            if cabinet_status::is_available(game) {
-                game.subtitle()
-            } else {
-                crate::storefront::COMPACT_LOCKED_LABEL
-            },
+            crate::storefront::cabinet_label(game, true),
             rect.x + 9.,
             rect.y + 40.,
             8.,
-            if cabinet_status::is_available(game) {
+            if cabinet_status::availability(game).is_playable() {
                 crate::theme::SECONDARY
             } else {
                 crate::theme::BRASS

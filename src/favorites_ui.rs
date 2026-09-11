@@ -344,7 +344,8 @@ fn favorite_remove_rect(card: Rect) -> Rect {
 fn short_status(status: &str) -> &'static str {
     match status {
         "COMPLETE" => "DONE",
-        "FULL VERSION" => "FULL",
+        "FULL VERSION" => crate::storefront::GameAvailability::DemoRestricted.short_label(),
+        "COMING SOON" => crate::storefront::GameAvailability::ComingSoon.short_label(),
         _ => "OPEN",
     }
 }

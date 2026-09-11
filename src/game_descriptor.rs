@@ -657,10 +657,6 @@ pub fn is_demo_game(game: GameId) -> bool {
         .any(|candidate| candidate.id == game)
 }
 
-pub fn is_available(game: GameId) -> bool {
-    descriptor(game).active && (!is_demo_build() || is_demo_game(game))
-}
-
 pub fn descriptor(game: GameId) -> &'static GameDescriptor {
     let index = GameId::ALL
         .iter()

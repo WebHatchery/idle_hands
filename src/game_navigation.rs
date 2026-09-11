@@ -141,34 +141,46 @@ impl Game {
         };
         let from_rules = matches!(self.state.screen, Screen::Rules);
         self.state.selected = index;
-        if crate::cabinet_status::is_available(id) {
-            self.state.favorites_view = false;
-            self.state.recent_view = false;
-            self.state.daily_archive_view = false;
-            self.state.achievements_view = false;
-            self.state.recent_games.retain(|recent| *recent != id);
-            self.state.recent_games.insert(0, id);
-            self.state.recent_games.truncate(5);
-            self.state.screen = Screen::Game(id);
-            if from_rules {
-                self.notifications.info(format!("Opening {}", id.title()));
+        match crate::storefront::availability(id) {
+            crate::storefront::GameAvailability::Playable => {
+                self.state.favorites_view = false;
+                self.state.recent_view = false;
+                self.state.daily_archive_view = false;
+                self.state.achievements_view = false;
+                self.state.recent_games.retain(|recent| *recent != id);
+                self.state.recent_games.insert(0, id);
+                self.state.recent_games.truncate(5);
+                self.state.screen = Screen::Game(id);
+                if from_rules {
+                    self.notifications.info(format!("Opening {}", id.title()));
+                }
+                self.state.tutorial = (!self.state.tutorial_seen[id.index()]).then_some(id);
             }
-            self.state.tutorial = (!self.state.tutorial_seen[id.index()]).then_some(id);
-        } else if crate::game_descriptor::is_demo_build() && crate::cabinet_status::is_active(id) {
-            self.notifications
-                .info(crate::storefront::purchase_message(id.title()));
-        } else {
-            self.notifications
-                .info(format!("{} is coming soon", id.title()));
+            crate::storefront::GameAvailability::DemoRestricted => {
+                self.notifications
+                    .info(crate::storefront::purchase_message(id.title()));
+            }
+            crate::storefront::GameAvailability::ComingSoon => {
+                self.notifications
+                    .info(format!("{} is coming soon", id.title()));
+            }
         }
     }
 
     pub(super) fn open_archived_daily_day(&mut self, day: u64) {
         let id = GameId::DailyDungeon;
-        if !crate::cabinet_status::is_available(id) {
-            self.notifications
-                .info(crate::storefront::purchase_message(id.title()));
-            return;
+        match crate::storefront::availability(id) {
+            crate::storefront::GameAvailability::Playable => {}
+            crate::storefront::GameAvailability::DemoRestricted => {
+                self.notifications
+                    .info(crate::storefront::purchase_message(id.title()));
+                return;
+            }
+            crate::storefront::GameAvailability::ComingSoon => {
+                self.notifications
+                    .info(format!("{} is coming soon", id.title()));
+                return;
+            }
         }
         self.state.games.daily_dungeon = crate::daily_dungeon::DailyDungeon::new_for_day(day);
         self.state.favorites_view = false;

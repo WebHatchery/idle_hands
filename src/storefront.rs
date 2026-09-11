@@ -7,6 +7,24 @@ pub const PRIMARY_STORE: &str = "itch.io";
 pub const LOCKED_LABEL: &str = "FULL VERSION · BUY ON ITCH.IO";
 pub const COMPACT_LOCKED_LABEL: &str = "FULL VERSION · ITCH.IO";
 
+pub use crate::storefront_data::GameAvailability;
+
+pub fn availability(game: crate::state::GameId) -> GameAvailability {
+    crate::storefront_data::availability(game)
+}
+
+pub fn cabinet_label(game: crate::state::GameId, compact: bool) -> &'static str {
+    match availability(game) {
+        GameAvailability::DemoRestricted if compact => COMPACT_LOCKED_LABEL,
+        GameAvailability::DemoRestricted => LOCKED_LABEL,
+        _ => crate::storefront_data::cabinet_label(game, compact),
+    }
+}
+
+pub fn action_label(game: crate::state::GameId) -> &'static str {
+    availability(game).action_label()
+}
+
 pub fn purchase_message(game_title: &str) -> String {
     format!("{game_title} is in the full version — buy Idle Hands on {PRIMARY_STORE}")
 }
