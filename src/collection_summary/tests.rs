@@ -14,6 +14,10 @@ fn empty_collection_summary_reports_the_catalog_shape() {
     assert_eq!(summary.achievements_label(), "0/62 achievements");
     assert_eq!(summary.completion_percent(), 0);
     assert_eq!(summary.achievement_percent(), 0);
+    assert_eq!(
+        summary.progress_label(),
+        "Drawers 0/60  ·  Achievements 0/62  ·  Stamps 0"
+    );
 }
 
 #[test]
@@ -34,4 +38,8 @@ fn summary_collects_progression_and_time_state_in_one_snapshot() {
     assert_eq!(summary.active_games, 0);
     assert_eq!(summary.completion_percent(), 1);
     assert_eq!(summary.achievement_percent(), 1);
+    assert_eq!(
+        summary.progress_label(),
+        "Drawers 1/60  ·  Achievements 1/62  ·  Stamps 7"
+    );
 }

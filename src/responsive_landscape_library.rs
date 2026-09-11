@@ -550,6 +550,7 @@ pub fn help_clicks(p: Vec2) -> Vec<UiAction> {
 
 pub fn draw_settings(state: &AppState) {
     let labels = crate::settings_data::accessibility_labels(state);
+    let summary = crate::collection_summary::from_state(state);
     panel(
         Rect::new(20., 10., 804., 370.),
         crate::theme::BACKGROUND_DEEP,
@@ -557,10 +558,9 @@ pub fn draw_settings(state: &AppState) {
     text("SETTINGS", 40., 45., 25., crate::theme::BRASS);
     text(
         &format!(
-            "Profile: {}  -  Stamps: {}  -  Cosmetics: {}/{}",
+            "Profile: {}  -  Cosmetics: {}/{}",
             state.profile_name,
-            state.stamps,
-            cosmetics::total_unlocked(state.stamps),
+            cosmetics::total_unlocked(summary.stamps),
             cosmetics::total_options()
         ),
         220.,
@@ -568,6 +568,7 @@ pub fn draw_settings(state: &AppState) {
         13.,
         WHITE,
     );
+    text(&summary.progress_label(), 220., 59., 10., crate::theme::SECONDARY);
     for (index, row) in crate::settings_data::cosmetic_rows(state)
         .into_iter()
         .enumerate()

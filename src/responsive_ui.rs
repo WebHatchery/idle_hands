@@ -205,11 +205,18 @@ pub fn draw_settings(state: &AppState) {
         15.,
         WHITE,
     );
+    text(
+        &crate::collection_summary::from_state(state).progress_label(),
+        22.,
+        139.,
+        8.,
+        crate::theme::SECONDARY,
+    );
     for (index, row) in crate::settings_data::cosmetic_rows(state)
         .into_iter()
         .enumerate()
     {
-        let y = 165. + index as f32 * 50.;
+        let y = 175. + index as f32 * 50.;
         panel(
             Rect::new(22., y - 28., 316., 44.),
             Color::new(0.16, 0.11, 0.24, 1.),

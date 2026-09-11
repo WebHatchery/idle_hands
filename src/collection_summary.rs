@@ -40,6 +40,17 @@ impl CollectionSummary {
         )
     }
 
+    pub fn progress_label(self) -> String {
+        format!(
+            "Drawers {}/{}  ·  Achievements {}/{}  ·  Stamps {}",
+            self.completed_games,
+            self.total_games,
+            self.earned_achievements,
+            self.total_achievements,
+            self.stamps
+        )
+    }
+
     pub fn completion_percent(self) -> usize {
         self.completed_games
             .saturating_mul(100)
