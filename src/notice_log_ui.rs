@@ -99,6 +99,14 @@ fn level_label(notification_type: NotificationType) -> &'static str {
     }
 }
 
+fn notice_color(high_contrast: bool, notification_type: NotificationType) -> Color {
+    if high_contrast {
+        WHITE
+    } else {
+        notification_type.color()
+    }
+}
+
 pub fn draw_button(state: &AppState) {
     if state.screen != crate::state::Screen::Settings
         || state.confirm_reset
@@ -166,11 +174,7 @@ pub fn draw_log(state: &AppState, history: &[LoggedNotification]) {
     } else {
         for (row, notice) in recent.iter().enumerate() {
             let y = first_y + row as f32 * row_height;
-            let color = if state.high_contrast {
-                WHITE
-            } else {
-                notice.notification_type.color()
-            };
+            let color = notice_color(state.high_contrast, notice.notification_type);
             text(
                 level_label(notice.notification_type),
                 card.x + if portrait { 18. } else { 28. },

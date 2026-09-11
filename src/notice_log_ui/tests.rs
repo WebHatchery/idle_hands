@@ -77,6 +77,13 @@ fn recent_notifications_are_newest_first_and_bounded() {
 }
 
 #[test]
+fn high_contrast_notice_rows_stop_relying_on_severity_color() {
+    assert_eq!(notice_color(true, NotificationType::Warning), WHITE);
+    let ordinary = notice_color(false, NotificationType::Warning);
+    assert!(ordinary.r < 1.0 || ordinary.g < 1.0 || ordinary.b < 1.0);
+}
+
+#[test]
 fn notice_log_controls_stay_inside_each_logical_viewport() {
     crate::ui::with_desktop_layout(assert_layout_fits);
     crate::ui::with_compact_landscape_layout(assert_layout_fits);
