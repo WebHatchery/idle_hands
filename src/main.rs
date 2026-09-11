@@ -171,6 +171,8 @@ mod state;
 mod state_navigation;
 mod state_records;
 mod state_snapshots;
+mod statistics_ui;
+mod stats_data;
 mod storefront;
 mod storefront_data;
 mod sudoku;

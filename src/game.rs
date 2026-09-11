@@ -356,6 +356,7 @@ impl Game {
                 self.state.daily_archive_view = false;
                 self.state.achievements_view = false;
             }
+            ui::UiAction::Statistics => self.open_statistics(),
             ui::UiAction::Favorites => {
                 self.state.screen = Screen::Records;
                 self.state.library_scroll = 0;

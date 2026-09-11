@@ -8,6 +8,7 @@ pub enum Screen {
     Game(GameId),
     Help,
     Records,
+    Statistics,
     Rules,
     Credits,
     Settings,

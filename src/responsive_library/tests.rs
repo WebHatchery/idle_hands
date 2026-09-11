@@ -12,6 +12,13 @@ fn portrait_shelf_button_cycles_from_all_to_cards() {
 }
 
 #[test]
+fn portrait_statistics_button_opens_the_statistics_shelf() {
+    let actions = records_clicks(&AppState::default(), vec2(70., 145.));
+
+    assert!(matches!(actions.as_slice(), [UiAction::Statistics]));
+}
+
+#[test]
 fn portrait_rules_shelf_button_cycles_from_all_to_cards() {
     let state = AppState::default();
     let actions = rules_clicks(&state, vec2(270., 45.));

@@ -106,6 +106,9 @@ pub fn draw_records(state: &AppState) {
         7.,
         crate::theme::SECONDARY,
     );
+    panel(Rect::new(140., 2., 150., 44.), crate::theme::SURFACE);
+    text("STATS", 195., 30., 9., WHITE);
+    draw_rectangle_lines(140., 2., 150., 44., 3., WHITE);
     if state.records_filter != 0 {
         draw_filtered_records(state);
         return;
@@ -407,6 +410,8 @@ pub fn records_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         vec![UiAction::RecordsFilter(crate::records_data::next_filter(
             state.records_filter,
         ))]
+    } else if crate::ui::hit(Rect::new(140., 2., 150., 44.), p) {
+        vec![UiAction::Statistics]
     } else if crate::ui::hit(Rect::new(480., 2., 150., 44.), p) {
         vec![UiAction::DailyArchive]
     } else if crate::ui::hit(Rect::new(650., 2., 150., 44.), p) {

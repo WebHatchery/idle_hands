@@ -6,6 +6,15 @@ use macroquad::prelude::{get_time, mouse_wheel, Vec2};
 use macroquad_toolkit::persistence::slot_exists;
 
 impl Game {
+    pub(super) fn open_statistics(&mut self) {
+        self.state.screen = Screen::Statistics;
+        self.state.library_scroll = 0;
+        self.state.favorites_view = false;
+        self.state.recent_view = false;
+        self.state.daily_archive_view = false;
+        self.state.achievements_view = false;
+    }
+
     pub(super) fn refresh_daily_challenge(&mut self) {
         let day = crate::daily_challenge::current_day();
         if day == 0 || self.state.games.daily_dungeon.is_for_day(day) {

@@ -11,6 +11,7 @@ pub enum UiAction {
     Cabinet,
     Help,
     Records,
+    Statistics,
     Favorites,
     Recent,
     DailyArchive,

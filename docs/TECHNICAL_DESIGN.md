@@ -187,6 +187,12 @@ The same record envelope keeps normalized elapsed and fastest-completion time
 vectors keyed by `GameId::ALL`; `time_summary` derives total playtime, active
 drawers, timed completions, and the fastest clear without another persisted
 counter. Results and live timer badges use the shared duration formatter.
+The runtime-only Statistics screen derives its collection summary from those same
+vectors plus favorites, recent history, and daily results. `stats_data` owns the
+sorting and tie-breaking for top-playtime drawers, while `statistics_ui` provides
+desktop, compact-landscape, and portrait layouts with one touchable BACK route.
+No statistics counter is persisted separately, so save migration cannot create
+disagreements between the Records shelf, the cabinet, and the Statistics shelf.
 Achievement flags are stored as a normalized vector keyed by the 62-entry
 `AchievementId::ALL` list. Legacy ten-entry arrays deserialize as vectors and
 are padded with unearned late-game achievements.

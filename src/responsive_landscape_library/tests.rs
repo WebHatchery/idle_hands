@@ -12,6 +12,13 @@ fn landscape_shelf_button_cycles_from_all_to_cards() {
 }
 
 #[test]
+fn landscape_statistics_button_opens_the_statistics_shelf() {
+    let actions = records_clicks(&AppState::default(), vec2(200., 20.));
+
+    assert!(matches!(actions.as_slice(), [UiAction::Statistics]));
+}
+
+#[test]
 fn landscape_settings_routes_rows_and_accessibility_controls() {
     let state = AppState::default();
 

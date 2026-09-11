@@ -148,6 +148,12 @@ Records. Destructive restarts require a confirmation sheet that names the game
 and states that its current session will be replaced. Back navigation never
 silently discards play.
 
+Records also opens a touchable Statistics shelf. It turns the existing playtime
+and clear ledger into a calm collection view: drawers played and cleared, daily
+routes, favorites, recent choices, fastest clear, longest session, and the
+drawers that have received the most time. Statistics are descriptive only and
+never add pressure, streaks, or a second progression currency.
+
 The cabinet may filter its canonical order to ALL, OPEN, or DONE drawers for
 quick collection browsing; filtering never changes a drawer's state or place.
 

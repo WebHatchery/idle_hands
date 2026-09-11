@@ -22,6 +22,7 @@ use crate::responsive_library;
 use crate::responsive_ui;
 use crate::save_recovery_ui;
 use crate::settings_ui;
+use crate::statistics_ui;
 use crate::tutorial_ui;
 pub use crate::ui_action::UiAction;
 use crate::ui_game_routes;
@@ -306,6 +307,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         }
         Screen::Records if is_portrait() => responsive_library::records_clicks(state, p),
         Screen::Records => records_ui::records_clicks(state, p),
+        Screen::Statistics => statistics_ui::clicks(state, p),
         Screen::Rules if is_compact_landscape() => {
             responsive_landscape_rules::rules_clicks(state, p)
         }
@@ -353,6 +355,7 @@ pub fn draw(
         }
         Screen::Records if is_portrait() => responsive_library::draw_records(state),
         Screen::Records => records_ui::draw_records(state),
+        Screen::Statistics => statistics_ui::draw(state),
         Screen::Rules if is_compact_landscape() => responsive_landscape_rules::draw_rules(state),
         Screen::Rules if is_portrait() => responsive_library::draw_rules(state),
         Screen::Rules => library_ui::draw_rules(state),
