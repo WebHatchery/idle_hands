@@ -37,7 +37,26 @@ pub fn next_filter(filter: u8) -> u8 {
 }
 
 pub fn summary_label(filter: u8) -> String {
-    format!("{} DRAWERS", rows(filter).len())
+    summary_label_for_build(filter, crate::game_descriptor::is_demo_build())
+}
+
+pub fn summary_label_for_build(filter: u8, demo_build: bool) -> String {
+    let rows = rows(filter);
+    if !demo_build {
+        return format!("{} DRAWERS", rows.len());
+    }
+    let open = rows
+        .iter()
+        .filter(|row| {
+            crate::storefront_data::availability_for_build(row.game, demo_build).is_playable()
+        })
+        .count();
+    format!(
+        "{} DRAWERS · {} OPEN · {} FULL",
+        rows.len(),
+        open,
+        rows.len() - open
+    )
 }
 
 pub fn action_label(game: GameId) -> &'static str {

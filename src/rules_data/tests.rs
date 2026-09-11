@@ -22,8 +22,31 @@ fn filtered_rule_rows_cover_each_category_without_crossovers() {
 
 #[test]
 fn rule_summary_reports_the_active_drawer_count() {
-    assert_eq!(summary_label(0), "60 DRAWERS");
-    assert_eq!(summary_label(3), "11 DRAWERS");
+    assert_eq!(
+        summary_label(0),
+        if cfg!(feature = "demo") {
+            "60 DRAWERS · 30 OPEN · 30 FULL"
+        } else {
+            "60 DRAWERS"
+        }
+    );
+    assert_eq!(
+        summary_label(3),
+        if cfg!(feature = "demo") {
+            "11 DRAWERS · 5 OPEN · 6 FULL"
+        } else {
+            "11 DRAWERS"
+        }
+    );
+}
+
+#[test]
+fn demo_rule_summary_counts_follow_the_curated_shelf() {
+    assert_eq!(
+        summary_label_for_build(3, true),
+        "11 DRAWERS · 5 OPEN · 6 FULL"
+    );
+    assert_eq!(summary_label_for_build(3, false), "11 DRAWERS");
 }
 
 #[test]
