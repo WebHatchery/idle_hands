@@ -252,6 +252,11 @@ affected slot, records a runtime-only recovery notice, and continues with safe
 defaults or the remaining valid slots. DISMISS schedules an autosave of that
 clean state; the notice is not persisted into profile or game snapshots.
 
+The toolkit notification history is bounded and session-only. Settings exposes
+the newest entries through a responsive NOTICES overlay; the view shortens long
+messages, renders newest-first, and uses a neutral high-contrast row color when
+severity accents would be insufficient.
+
 Explicit NEW actions use a shared confirmation modal before dispatching the
 game-specific reset command. The pending command is held only in runtime state;
 CANCEL clears it, while START dispatches the existing reset handler unchanged.

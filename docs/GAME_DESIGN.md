@@ -205,6 +205,9 @@ equivalent.
 - Keep save failures visible: preserve the rejected slot, keep safe defaults
   playable, and let the player dismiss the recovery notice with a touchable
   control that schedules a clean replacement save.
+- Keep important feedback reviewable: Settings exposes a touchable NOTICES
+  drawer with the newest session warnings and confirmations first, without
+  making the player rely on a fading toast or a particular color.
 
 ## 9. Content and Data
 
