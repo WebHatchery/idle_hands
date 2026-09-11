@@ -17,6 +17,10 @@ impl Game {
         }
     }
 
+    pub(super) fn toggle_notice_log(&mut self) {
+        self.state.notice_log_view = !self.state.notice_log_view;
+    }
+
     /// Mark the authoritative records dirty. The next few actions are written
     /// together instead of rewriting every save slot after every tap.
     pub(super) fn request_autosave(&mut self) {
@@ -91,6 +95,7 @@ impl Game {
         self.save_dirty = false;
         self.save_timer = 0.0;
         self.state.save_recovery = None;
+        self.state.notice_log_view = false;
         let mut restored = false;
         let collection_slot = self.data.config.save_slot.clone();
         if slot_exists(&self.data.config.game_name, &collection_slot) {

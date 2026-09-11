@@ -10,6 +10,7 @@ use crate::game_variant_ui;
 use crate::library_ui;
 use crate::lifecycle_pause_ui;
 use crate::mobile_tutorial_ui;
+use crate::notice_log_ui;
 use crate::palette_ui;
 use crate::records_ui;
 use crate::responsive_cabinet;
@@ -261,6 +262,12 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if state.confirm_restart && state.pending_restart.is_some() {
         return restart_modal::clicks(p);
     }
+    if state.notice_log_view {
+        return notice_log_ui::clicks(p);
+    }
+    if let Some(action) = notice_log_ui::button_click(state, p) {
+        return vec![action];
+    }
     if state.save_recovery.is_some() {
         if let Some(action) = save_recovery_ui::clicks(p) {
             return vec![action];
@@ -323,6 +330,7 @@ pub fn draw(
     cabinet_texture: Option<&Texture2D>,
     frogger_frog: Option<&Texture2D>,
     frogger_car: Option<&Texture2D>,
+    notification_history: &[macroquad_toolkit::notifications::LoggedNotification],
 ) {
     TOUCH_SCALE.with(|scale| scale.set(viewport().scale));
     match state.screen {
@@ -379,6 +387,8 @@ pub fn draw(
     if state.confirm_restart && state.pending_restart.is_some() {
         restart_modal::draw(state);
     }
+    notice_log_ui::draw_button(state);
+    notice_log_ui::draw_log(state, notification_history);
     save_recovery_ui::draw(state);
     if state.lifecycle_paused {
         lifecycle_pause_ui::draw(state);

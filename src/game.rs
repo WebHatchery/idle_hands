@@ -772,11 +772,9 @@ impl Game {
                 self.state.confirm_restart = false;
                 self.state.pending_restart = None;
             }
-            ui::UiAction::ResumeLifecycle => {
-                self.state.lifecycle_paused = false;
-                self.notifications.info("The cabinet is ready again");
-            }
+            ui::UiAction::ResumeLifecycle => self.resume_lifecycle(),
             ui::UiAction::DismissSaveRecovery => self.dismiss_save_recovery(),
+            ui::UiAction::ToggleNoticeLog => self.toggle_notice_log(),
             ui::UiAction::ToggleSound
             | ui::UiAction::ToggleMotion
             | ui::UiAction::ToggleHighContrast

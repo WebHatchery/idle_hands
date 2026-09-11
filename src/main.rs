@@ -109,6 +109,7 @@ mod nim;
 mod nim_ui;
 mod nonogram;
 mod nonogram_ui;
+mod notice_log_ui;
 mod number_match;
 mod number_match_ui;
 mod one_room_roguelike;

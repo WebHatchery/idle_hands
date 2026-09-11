@@ -22,6 +22,7 @@ pub enum PointerLayer {
     Board,
     Tutorial,
     RestartConfirmation,
+    NoticeLog,
     ResetConfirmation,
     LifecyclePause,
 }
@@ -40,6 +41,8 @@ impl PointerScope {
             PointerLayer::Tutorial
         } else if state.confirm_restart && state.pending_restart.is_some() {
             PointerLayer::RestartConfirmation
+        } else if state.notice_log_view {
+            PointerLayer::NoticeLog
         } else if state.confirm_reset {
             PointerLayer::ResetConfirmation
         } else {

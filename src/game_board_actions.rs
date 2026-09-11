@@ -680,6 +680,9 @@ impl Game {
         if self.state.screen != previous_screen {
             self.transition = if self.state.reduced_motion { 0. } else { 1. };
         }
+        if self.state.screen != crate::state::Screen::Settings {
+            self.state.notice_log_view = false;
+        }
         self.update_records();
         self.request_autosave();
         self.play_feedback(

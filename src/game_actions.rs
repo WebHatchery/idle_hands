@@ -44,6 +44,7 @@ pub fn is_shell(action: UiAction) -> bool {
             | UiAction::CycleSoundVolume
             | UiAction::ResumeLifecycle
             | UiAction::DismissSaveRecovery
+            | UiAction::ToggleNoticeLog
             | UiAction::ToggleMotion
             | UiAction::ToggleHighContrast
             | UiAction::ToggleLargeText
