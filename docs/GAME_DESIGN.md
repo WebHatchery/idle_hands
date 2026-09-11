@@ -174,6 +174,12 @@ keyboard, it offers a small set of calm, cabinet-themed identities that can
 be selected with one tap. The current name is shown on the cabinet and
 settings surfaces, and choosing a name saves it with the rest of the profile.
 
+Every cabinet and Finder card also exposes a small INFO target. Drawer Info
+shows the game's category, completion status, storefront availability, rule
+card support, and favorite state before launch. OPEN, FAVORITE, and BACK stay
+visible as explicit touch targets, including when a drawer is restricted to
+the full version.
+
 The cabinet may filter its canonical order to ALL, OPEN, or DONE drawers for
 quick collection browsing; filtering never changes a drawer's state or place.
 

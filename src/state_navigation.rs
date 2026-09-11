@@ -7,6 +7,7 @@ pub enum Screen {
     Cabinet,
     Finder,
     Profile,
+    DrawerInfo(GameId),
     Game(GameId),
     Help,
     Records,

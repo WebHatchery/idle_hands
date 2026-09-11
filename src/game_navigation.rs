@@ -11,6 +11,7 @@ impl Game {
             crate::ui::UiAction::Finder => self.open_finder(),
             crate::ui::UiAction::FinderFilter(filter) => self.set_finder_filter(filter),
             crate::ui::UiAction::Profile => self.open_profile(),
+            crate::ui::UiAction::Inspect(index) => self.open_drawer_info(index),
             crate::ui::UiAction::Statistics => self.open_statistics(),
             crate::ui::UiAction::Tutorials => self.open_tutorial_library(),
             crate::ui::UiAction::OpenTutorial(index) => self.open_tutorial(index),
@@ -84,6 +85,18 @@ impl Game {
 
     fn open_profile(&mut self) {
         self.state.screen = Screen::Profile;
+        self.state.confirm_reset = false;
+        self.state.favorites_view = false;
+        self.state.recent_view = false;
+        self.state.daily_archive_view = false;
+        self.state.achievements_view = false;
+    }
+
+    fn open_drawer_info(&mut self, index: usize) {
+        let Some(game) = GameId::ALL.get(index).copied() else {
+            return;
+        };
+        self.state.screen = Screen::DrawerInfo(game);
         self.state.confirm_reset = false;
         self.state.favorites_view = false;
         self.state.recent_view = false;

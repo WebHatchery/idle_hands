@@ -26,6 +26,9 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
         return vec![UiAction::LibraryScroll(finder_data::visible_count() as i8)];
     }
     for (index, game) in finder_data::page(state).into_iter().enumerate() {
+        if crate::ui::hit(info_rect(index), point) {
+            return vec![UiAction::Inspect(game.index())];
+        }
         if crate::ui::hit(card_rect(index), point) {
             return vec![UiAction::Open(game.index())];
         }
@@ -131,6 +134,14 @@ fn draw_cards(state: &AppState) {
                 accent(state)
             },
         );
+        text(
+            state,
+            "i",
+            rect.right() - 27.,
+            rect.y + 25.,
+            16.,
+            accent(state),
+        );
     }
     if finder_data::page(state).is_empty() {
         text(
@@ -221,6 +232,11 @@ fn card_rect(index: usize) -> Rect {
             82.,
         )
     }
+}
+
+fn info_rect(index: usize) -> Rect {
+    let rect = card_rect(index);
+    Rect::new(rect.right() - 48., rect.y, 48., rect.h)
 }
 
 fn filter_rects() -> [Rect; 5] {

@@ -238,6 +238,13 @@ fn draw_library(state: &AppState) {
                 crate::theme::BRASS,
             );
         }
+        text(
+            "i",
+            rect.right() - 52.,
+            rect.y + 28.,
+            13.,
+            crate::theme::BRASS,
+        );
     }
     if page.has_previous() {
         button(Rect::new(580., 341., 95., 38.), "< PREV");
@@ -374,6 +381,9 @@ fn library_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     for (index, game) in page_games(state).iter().copied().enumerate() {
         let rect = game_rect(index);
+        if crate::ui::hit(Rect::new(rect.right() - 84., rect.y, 40., rect.h), p) {
+            return vec![UiAction::Inspect(game.index())];
+        }
         if cabinet_status::is_available(game)
             && crate::ui::hit(Rect::new(rect.right() - 44., rect.y, 44., rect.h), p)
         {

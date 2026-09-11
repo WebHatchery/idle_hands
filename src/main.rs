@@ -44,6 +44,7 @@ mod data;
 mod domain;
 mod dots_boxes;
 mod dots_boxes_ui;
+mod drawer_info_ui;
 mod dungeon_sweeper;
 mod dungeon_sweeper_ui;
 mod favorites_data;

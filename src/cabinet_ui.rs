@@ -337,6 +337,13 @@ fn draw_library(state: &AppState) {
                 crate::theme::SURFACE_DARK,
             );
         }
+        text(
+            "i",
+            rect.right() - 73.,
+            rect.y + 27.,
+            15.,
+            crate::theme::BRASS,
+        );
     }
     if page.has_previous() {
         small_button(
@@ -579,6 +586,9 @@ fn library_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     for (index, game) in page.games.iter().copied().enumerate() {
         let rect = library_rect(index);
+        if crate::ui::hit(Rect::new(rect.right() - 96., rect.y, 48., rect.h), p) {
+            return vec![UiAction::Inspect(game.index())];
+        }
         if cabinet_status::is_available(game)
             && crate::ui::hit(Rect::new(rect.right() - 48., rect.y, 48., rect.h), p)
         {

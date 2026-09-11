@@ -13,6 +13,7 @@ pub enum UiAction {
     FinderFilter(u8),
     Profile,
     SetProfileName(u8),
+    Inspect(usize),
     Help,
     Records,
     Statistics,

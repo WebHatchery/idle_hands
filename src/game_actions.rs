@@ -16,6 +16,7 @@ pub fn is_shell(action: UiAction) -> bool {
             | UiAction::FinderFilter(_)
             | UiAction::Profile
             | UiAction::SetProfileName(_)
+            | UiAction::Inspect(_)
             | UiAction::Help
             | UiAction::Records
             | UiAction::Statistics

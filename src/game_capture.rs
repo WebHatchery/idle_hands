@@ -239,6 +239,7 @@ impl Game {
                 "tutorials" | "tutorials_accessible" => Screen::Tutorials,
                 "finder" | "finder_filtered" | "finder_scrolled" => Screen::Finder,
                 "profile" | "profile_accessible" => Screen::Profile,
+                "drawer_info" | "drawer_info_accessible" => Screen::DrawerInfo(GameId::Solitaire),
                 "rules" | "rules_scrolled" | "rules_logic" | "rules_word" => Screen::Rules,
                 "credits" => Screen::Credits,
                 "settings" | "settings_accessible" | "settings_reset" => Screen::Settings,
@@ -292,6 +293,10 @@ impl Game {
         }
         if matches!(scene, "profile" | "profile_accessible") {
             self.state.profile_name = crate::profile_data::name(2).to_owned();
+        }
+        if matches!(scene, "drawer_info" | "drawer_info_accessible") {
+            self.state.favorites[GameId::Solitaire.index()] = true;
+            self.state.records.solitaire_best_moves = Some(42);
         }
         if matches!(
             scene,

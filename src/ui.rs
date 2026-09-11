@@ -4,6 +4,7 @@ use crate::achievements_ui;
 use crate::cabinet_ui;
 use crate::daily_archive_ui;
 use crate::domain::Direction;
+use crate::drawer_info_ui;
 use crate::favorites_ui;
 use crate::finder_ui;
 use crate::game_2048::Game2048Size;
@@ -286,6 +287,7 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
         Screen::Cabinet => cabinet_ui::clicks(state, p),
         Screen::Finder => finder_ui::clicks(state, p),
         Screen::Profile => profile_ui::clicks(state, p),
+        Screen::DrawerInfo(_) => drawer_info_ui::clicks(state, p),
         Screen::Game(_) => ui_game_routes::clicks(state, p),
         Screen::Help => {
             if is_compact_landscape() {
@@ -353,6 +355,7 @@ pub fn draw(
         Screen::Cabinet => cabinet_ui::draw(state, data, loaded_assets, cabinet_texture),
         Screen::Finder => finder_ui::draw(state),
         Screen::Profile => profile_ui::draw(state),
+        Screen::DrawerInfo(_) => drawer_info_ui::draw(state),
         Screen::Game(_) => ui_game_routes::draw(state, frogger_frog, frogger_car),
         Screen::Help if is_compact_landscape() => responsive_landscape_library::draw_help(state),
         Screen::Help if is_portrait() => responsive_library::draw_help(state),

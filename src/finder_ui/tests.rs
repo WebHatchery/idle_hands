@@ -22,6 +22,10 @@ fn filters_and_navigation_are_touchable_on_desktop() {
             clicks(&state, vec2(950., 610.)).as_slice(),
             [UiAction::Cabinet]
         ));
+        assert!(matches!(
+            clicks(&state, vec2(365., 216.)).as_slice(),
+            [UiAction::Inspect(_)]
+        ));
     });
 }
 

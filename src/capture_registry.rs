@@ -48,5 +48,6 @@ mod tests {
         assert_eq!(screen_for_scene("tutorials"), None);
         assert_eq!(screen_for_scene("finder"), None);
         assert_eq!(screen_for_scene("profile"), None);
+        assert_eq!(screen_for_scene("drawer_info"), None);
     }
 }
