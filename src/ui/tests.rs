@@ -75,3 +75,23 @@ fn credits_round_trip_routes_through_every_layout() {
         ));
     });
 }
+
+#[test]
+fn restart_modal_blocks_game_background_in_every_layout() {
+    let state = crate::state::AppState {
+        screen: crate::state::Screen::Game(crate::state::GameId::Game2048),
+        confirm_restart: true,
+        pending_restart: Some(UiAction::Restart),
+        ..Default::default()
+    };
+
+    with_desktop_layout(|| {
+        assert!(actions_at(&state, vec2(100., 100.)).is_empty());
+    });
+    with_portrait_layout(|| {
+        assert!(actions_at(&state, vec2(10., 100.)).is_empty());
+    });
+    with_compact_landscape_layout(|| {
+        assert!(actions_at(&state, vec2(10., 100.)).is_empty());
+    });
+}
