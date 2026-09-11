@@ -12,7 +12,9 @@ const AUTOSAVE_DELAY_SECONDS: f32 = 0.75;
 
 impl Game {
     pub(super) fn dismiss_save_recovery(&mut self) {
-        self.state.save_recovery = None;
+        if self.state.save_recovery.take().is_some() {
+            self.request_autosave();
+        }
     }
 
     /// Mark the authoritative records dirty. The next few actions are written
