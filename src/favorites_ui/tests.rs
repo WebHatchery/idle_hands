@@ -130,6 +130,26 @@ fn quick_browse_info_lanes_open_drawer_details_at_each_size() {
 }
 
 #[test]
+fn quick_browse_info_lanes_keep_their_touch_geometry_clear() {
+    let assert_geometry = || {
+        let card = list_card_rect(layout(), 0);
+        let favorite_info = info_rect(card, false);
+        let remove = favorite_remove_rect(card);
+        let recent_info = info_rect(card, true);
+
+        assert!(favorite_info.x >= card.x);
+        assert!(favorite_info.right() <= card.right());
+        assert!(favorite_info.right() < remove.x);
+        assert!(recent_info.x >= card.x);
+        assert!(recent_info.right() < card.right());
+    };
+
+    crate::ui::with_desktop_layout(assert_geometry);
+    crate::ui::with_compact_landscape_layout(assert_geometry);
+    crate::ui::with_portrait_layout(assert_geometry);
+}
+
+#[test]
 fn browse_tabs_switch_between_favorites_and_recent_at_each_size() {
     let state = AppState::default();
     crate::ui::with_desktop_layout(|| {
