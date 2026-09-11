@@ -18,6 +18,7 @@ fn empty_collection_summary_reports_the_catalog_shape() {
         summary.progress_label(),
         "Drawers 0/60  ·  Achievements 0/62  ·  Stamps 0"
     );
+    assert_eq!(summary.fastest_label(), "Fastest —");
 }
 
 #[test]
@@ -28,6 +29,7 @@ fn summary_collects_progression_and_time_state_in_one_snapshot() {
     };
     state.achievements[0] = true;
     state.records.solitaire_best_moves = Some(42);
+    state.records.best_time_seconds = vec![Some(95)];
 
     let summary = from_state(&state);
 
@@ -42,4 +44,5 @@ fn summary_collects_progression_and_time_state_in_one_snapshot() {
         summary.progress_label(),
         "Drawers 1/60  ·  Achievements 1/62  ·  Stamps 7"
     );
+    assert_eq!(summary.fastest_label(), "Fastest 1m 35s");
 }

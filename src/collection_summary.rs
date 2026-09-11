@@ -51,6 +51,18 @@ impl CollectionSummary {
         )
     }
 
+    pub fn fastest_label(self) -> String {
+        self.fastest_seconds.map_or_else(
+            || "Fastest —".to_owned(),
+            |seconds| {
+                format!(
+                    "Fastest {}",
+                    crate::state_records::format_duration(u64::from(seconds))
+                )
+            },
+        )
+    }
+
     pub fn completion_percent(self) -> usize {
         self.completed_games
             .saturating_mul(100)

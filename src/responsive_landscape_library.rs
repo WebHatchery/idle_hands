@@ -67,13 +67,14 @@ pub fn draw_records(state: &AppState) {
     );
     text(
         &format!(
-            "DAILY {} CLEARS  -  LOG {}/90  -  BEST {}  -  NEXT {}  -  TIME {}  -  {} ACTIVE",
+            "DAILY {} CLEARS  -  LOG {}/90  -  BEST {}  -  NEXT {}  -  TIME {}  -  {} ACTIVE  -  {}",
             state.records.daily_clear_count(),
             state.records.daily_results.len(),
             value(state.records.daily_best_score()),
             next_achievement(&state.records),
             crate::state_records::format_duration(summary.total_playtime_seconds),
-            summary.active_games
+            summary.active_games,
+            summary.fastest_label()
         ),
         40.,
         62.,
@@ -568,7 +569,13 @@ pub fn draw_settings(state: &AppState) {
         13.,
         WHITE,
     );
-    text(&summary.progress_label(), 220., 59., 10., crate::theme::SECONDARY);
+    text(
+        &summary.progress_label(),
+        220.,
+        59.,
+        10.,
+        crate::theme::SECONDARY,
+    );
     for (index, row) in crate::settings_data::cosmetic_rows(state)
         .into_iter()
         .enumerate()

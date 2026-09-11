@@ -74,10 +74,11 @@ pub fn draw_records(state: &AppState) {
     );
     text(
         &format!(
-            "DRAWERS {}/{}  ·  NEXT {}",
+            "DRAWERS {}/{}  ·  NEXT {}  ·  {}",
             summary.completed_games,
             summary.total_games,
-            next_achievement(&state.records)
+            next_achievement(&state.records),
+            summary.fastest_label()
         ),
         20.,
         148.,

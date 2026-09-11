@@ -35,10 +35,6 @@ pub fn draw_records(state: &AppState) {
         crate::theme::SECONDARY,
     );
     let summary = crate::collection_summary::from_state(state);
-    let fastest = summary.fastest_seconds.map_or_else(
-        || "—".into(),
-        |seconds| crate::state_records::format_duration(u64::from(seconds)),
-    );
     crate::ui::draw_text(
         format!(
             "STAMPS  {}   •   ACHIEVEMENTS  {}/{}   •   DRAWERS  {}/{} ({}%)",
@@ -63,7 +59,7 @@ pub fn draw_records(state: &AppState) {
             next_achievement(&state.records),
             crate::state_records::format_duration(summary.total_playtime_seconds),
             summary.active_games,
-            fastest
+            summary.fastest_label()
         ),
         174.,
         210.,

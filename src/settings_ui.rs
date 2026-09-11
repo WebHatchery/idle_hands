@@ -40,7 +40,13 @@ pub fn draw_settings(state: &AppState) {
         22.,
         WHITE,
     );
-    text(&summary.progress_label(), 230., 214., 16., crate::theme::SECONDARY);
+    text(
+        &summary.progress_label(),
+        230.,
+        214.,
+        16.,
+        crate::theme::SECONDARY,
+    );
     for (index, row) in crate::settings_data::cosmetic_rows(state)
         .into_iter()
         .enumerate()
