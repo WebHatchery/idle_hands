@@ -57,6 +57,10 @@ pub fn page_start(total: usize, start: usize, capacity: usize) -> usize {
     start.min(total.saturating_sub(capacity.max(1)))
 }
 
+pub fn scroll_limit(state: &AppState, filter: u8, capacity: usize) -> usize {
+    filter_count(state, filter).saturating_sub(capacity.max(1))
+}
+
 pub fn filter_count(state: &AppState, filter: u8) -> usize {
     rows(state, filter).len()
 }

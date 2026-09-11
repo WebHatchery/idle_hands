@@ -92,6 +92,20 @@ impl Game {
                 capacity,
             );
         }
+        if self.state.screen == Screen::Records && self.state.achievements_view {
+            let capacity = if crate::ui::is_portrait() {
+                8
+            } else if crate::ui::is_compact_landscape() {
+                10
+            } else {
+                crate::achievements_data::filter_count(&self.state, self.state.achievement_filter)
+            };
+            return crate::achievements_data::scroll_limit(
+                &self.state,
+                self.state.achievement_filter,
+                capacity,
+            );
+        }
         GameId::ALL.len().saturating_sub(1)
     }
 

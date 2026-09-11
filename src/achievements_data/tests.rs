@@ -36,3 +36,12 @@ fn achievement_pages_clamp_to_the_filtered_window() {
     assert_eq!(page.len(), 1);
     assert_eq!(page[0].achievement, AchievementId::Game(GameId::Solitaire));
 }
+
+#[test]
+fn achievement_scroll_limit_follows_filter_size() {
+    let mut state = AppState::default();
+    state.achievements[AchievementId::FirstFinish.index()] = true;
+
+    assert_eq!(scroll_limit(&state, 1, 8), 0);
+    assert_eq!(scroll_limit(&state, 0, 10), AchievementId::ALL.len() - 10);
+}
