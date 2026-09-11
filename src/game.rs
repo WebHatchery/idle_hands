@@ -272,11 +272,16 @@ impl Game {
                     .info(format!("Cabinet order: {}", sort.label()));
             }
             ui::UiAction::CabinetScroll(delta) => {
+                let page_size = crate::cabinet_data::page_size_for_layout(
+                    crate::ui::is_portrait(),
+                    crate::ui::is_compact_landscape(),
+                );
+                let limit = crate::cabinet_data::scroll_limit(&self.state, page_size);
                 self.state.cabinet_scroll = self
                     .state
                     .cabinet_scroll
                     .saturating_add_signed(delta as isize)
-                    .min(GameId::ALL.len().saturating_sub(1));
+                    .min(limit);
             }
             ui::UiAction::LibraryScroll(delta) => {
                 self.state.library_scroll = self

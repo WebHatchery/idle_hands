@@ -17,8 +17,6 @@ const CATEGORY_RECTS: [Rect; 6] = [
     Rect::new(385., 264., 205., 82.),
     Rect::new(600., 264., 205., 82.),
 ];
-const PAGE_SIZE: usize = 16;
-
 #[cfg(test)]
 mod tests;
 
@@ -347,25 +345,20 @@ fn library_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         }
     }
     if crate::ui::hit(Rect::new(580., 341., 95., 38.), p) {
-        return vec![UiAction::CabinetScroll(-(PAGE_SIZE as i8))];
+        return vec![UiAction::CabinetScroll(
+            -(crate::cabinet_data::COMPACT_LANDSCAPE_PAGE_SIZE as i8),
+        )];
     }
     if crate::ui::hit(Rect::new(690., 341., 95., 38.), p) {
-        return vec![UiAction::CabinetScroll(PAGE_SIZE as i8)];
+        return vec![UiAction::CabinetScroll(
+            crate::cabinet_data::COMPACT_LANDSCAPE_PAGE_SIZE as i8,
+        )];
     }
     vec![]
 }
 
-fn visible_games(state: &AppState) -> Vec<GameId> {
-    cabinet_status::sorted_games(
-        state,
-        state.cabinet_filter,
-        cabinet_status::CabinetSort::from_index(state.cabinet_sort),
-    )
-}
 fn page_games(state: &AppState) -> Vec<GameId> {
-    let games = visible_games(state);
-    let start = state.cabinet_scroll.min(games.len().saturating_sub(1));
-    games.into_iter().skip(start).take(PAGE_SIZE).collect()
+    crate::cabinet_data::page(state, crate::cabinet_data::COMPACT_LANDSCAPE_PAGE_SIZE).games
 }
 fn side_rects() -> [Rect; 5] {
     std::array::from_fn(|index| Rect::new(10., 100. + index as f32 * 48., 134., 40.))

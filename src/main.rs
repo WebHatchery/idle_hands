@@ -17,6 +17,7 @@ mod block_stack;
 mod block_stack_ui;
 mod breakout;
 mod breakout_ui;
+mod cabinet_data;
 mod cabinet_status;
 mod cabinet_ui;
 mod capture_registry;

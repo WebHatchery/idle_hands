@@ -17,8 +17,6 @@ const CATEGORY_RECTS: [Rect; 6] = [
     Rect::new(10., 524., 340., 62.),
     Rect::new(10., 592., 340., 62.),
 ];
-const PAGE_SIZE: usize = 12;
-
 #[cfg(test)]
 mod tests;
 
@@ -170,7 +168,7 @@ fn draw_library(state: &AppState) {
         } else {
             format!(
                 "{} quiet games · {}/{} done",
-                visible_games(state).len(),
+                crate::cabinet_data::visible_games(state).len(),
                 progress.completed,
                 progress.total
             )
@@ -196,8 +194,8 @@ fn draw_library(state: &AppState) {
         "SET",
         crate::theme::SURFACE_DARK,
     );
-    let games = page_games(state);
-    for (index, game) in games.iter().copied().enumerate() {
+    let page = crate::cabinet_data::page(state, crate::cabinet_data::PORTRAIT_PAGE_SIZE);
+    for (index, game) in page.games.iter().copied().enumerate() {
         let rect = game_rect(index);
         panel(rect, crate::theme::category_surface(game, true));
         text(
@@ -240,8 +238,6 @@ fn draw_library(state: &AppState) {
             );
         }
     }
-    let total = visible_games(state).len();
-    let start = state.cabinet_scroll.min(total.saturating_sub(1));
     button(
         Rect::new(10., 632., 100., 46.),
         "< PREV",
@@ -253,12 +249,7 @@ fn draw_library(state: &AppState) {
         crate::theme::SURFACE_DARK,
     );
     text(
-        &format!(
-            "{}-{} OF {}",
-            start + usize::from(total > 0),
-            (start + PAGE_SIZE).min(total),
-            total
-        ),
+        &crate::cabinet_data::range_label(&page),
         139.,
         660.,
         9.,
@@ -412,25 +403,20 @@ fn library_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         }
     }
     if crate::ui::hit(Rect::new(10., 632., 100., 46.), p) {
-        return vec![UiAction::CabinetScroll(-(PAGE_SIZE as i8))];
+        return vec![UiAction::CabinetScroll(
+            -(crate::cabinet_data::PORTRAIT_PAGE_SIZE as i8),
+        )];
     }
     if crate::ui::hit(Rect::new(250., 632., 100., 46.), p) {
-        return vec![UiAction::CabinetScroll(PAGE_SIZE as i8)];
+        return vec![UiAction::CabinetScroll(
+            crate::cabinet_data::PORTRAIT_PAGE_SIZE as i8,
+        )];
     }
     vec![]
 }
 
-fn visible_games(state: &AppState) -> Vec<GameId> {
-    cabinet_status::sorted_games(
-        state,
-        state.cabinet_filter,
-        cabinet_status::CabinetSort::from_index(state.cabinet_sort),
-    )
-}
 fn page_games(state: &AppState) -> Vec<GameId> {
-    let games = visible_games(state);
-    let start = state.cabinet_scroll.min(games.len().saturating_sub(1));
-    games.into_iter().skip(start).take(PAGE_SIZE).collect()
+    crate::cabinet_data::page(state, crate::cabinet_data::PORTRAIT_PAGE_SIZE).games
 }
 fn game_rect(index: usize) -> Rect {
     Rect::new(
