@@ -95,6 +95,9 @@ impl Game {
     pub fn update(&mut self, dt: f32) {
         self.pointer
             .sync_scope(PointerScope::from_state(&self.state));
+        if crate::input::should_cancel_for_touch_count(touches().len()) {
+            self.pointer.cancel();
+        }
         if is_mouse_button_pressed(MouseButton::Left)
             || is_mouse_button_released(MouseButton::Left)
             || !get_keys_pressed().is_empty()

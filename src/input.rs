@@ -13,6 +13,10 @@ pub enum Gesture {
 pub const LONG_PRESS_SECONDS: f32 = 0.55;
 pub const DRAG_DISTANCE: f32 = 16.0;
 
+pub fn should_cancel_for_touch_count(touch_count: usize) -> bool {
+    touch_count > 1
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PointerLayer {
     Board,

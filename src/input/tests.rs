@@ -141,6 +141,14 @@ fn drag_distance_keeps_the_boundary_between_tap_and_drag_explicit() {
 }
 
 #[test]
+fn a_second_touch_cancels_single_pointer_capture() {
+    assert!(!should_cancel_for_touch_count(0));
+    assert!(!should_cancel_for_touch_count(1));
+    assert!(should_cancel_for_touch_count(2));
+    assert!(should_cancel_for_touch_count(5));
+}
+
+#[test]
 fn scope_changes_cancel_captured_gestures_before_release() {
     let mut tracker = PointerTracker::default();
     let cabinet = scope(Screen::Cabinet, PointerLayer::Board);
