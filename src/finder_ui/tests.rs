@@ -3,7 +3,7 @@ use crate::state::{AppState, Screen};
 
 #[test]
 fn filters_and_navigation_are_touchable_on_desktop() {
-    let state = AppState {
+    let mut state = AppState {
         screen: Screen::Finder,
         ..AppState::default()
     };
@@ -13,6 +13,7 @@ fn filters_and_navigation_are_touchable_on_desktop() {
             clicks(&state, vec2(345., 145.)).as_slice(),
             [UiAction::FinderFilter(1)]
         ));
+        state.library_scroll = 12;
         assert!(matches!(
             clicks(&state, vec2(680., 610.)).as_slice(),
             [UiAction::LibraryScroll(-12)]
@@ -20,6 +21,28 @@ fn filters_and_navigation_are_touchable_on_desktop() {
         assert!(matches!(
             clicks(&state, vec2(950., 610.)).as_slice(),
             [UiAction::Cabinet]
+        ));
+    });
+}
+
+#[test]
+fn paging_controls_stop_at_both_edges() {
+    let mut state = AppState {
+        screen: Screen::Finder,
+        ..AppState::default()
+    };
+
+    crate::ui::with_desktop_layout(|| {
+        assert!(clicks(&state, vec2(680., 610.)).is_empty());
+        assert!(matches!(
+            clicks(&state, vec2(810., 610.)).as_slice(),
+            [UiAction::LibraryScroll(12)]
+        ));
+        state.library_scroll = finder_data::scroll_limit(&state);
+        assert!(clicks(&state, vec2(810., 610.)).is_empty());
+        assert!(matches!(
+            clicks(&state, vec2(680., 610.)).as_slice(),
+            [UiAction::LibraryScroll(-12)]
         ));
     });
 }

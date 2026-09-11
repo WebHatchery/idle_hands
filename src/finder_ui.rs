@@ -16,12 +16,13 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(back, point) {
         return vec![UiAction::Cabinet];
     }
-    if crate::ui::hit(previous, point) {
+    let start = state.library_scroll.min(finder_data::scroll_limit(state));
+    if crate::ui::hit(previous, point) && start > 0 {
         return vec![UiAction::LibraryScroll(
             -(finder_data::visible_count() as i8),
         )];
     }
-    if crate::ui::hit(next, point) {
+    if crate::ui::hit(next, point) && start < finder_data::scroll_limit(state) {
         return vec![UiAction::LibraryScroll(finder_data::visible_count() as i8)];
     }
     for (index, game) in finder_data::page(state).into_iter().enumerate() {
