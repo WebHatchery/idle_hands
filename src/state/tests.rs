@@ -188,6 +188,9 @@ fn profile_and_game_snapshots_round_trip_independently() {
     state.games.game.score = 77;
     state.records.best_2048 = 77;
     state.sound_level = 3;
+    let mut notice = crate::save_recovery::SaveRecoveryNotice::new();
+    notice.record(true);
+    state.save_recovery = Some(notice);
     let profile = ProfileSave::from_state(&state, "1.0.0");
     let snapshot = GameSnapshot::from_state(&state, GameId::Game2048);
     let mut restored = AppState::default();
@@ -196,6 +199,7 @@ fn profile_and_game_snapshots_round_trip_independently() {
     assert_eq!(restored.profile_name, "Separate Slots");
     assert_eq!(restored.sound_level, 3);
     assert_eq!(restored.games.game.score, 77);
+    assert!(restored.save_recovery.is_none());
     assert_eq!(GameId::Yahtzee.save_key(), "fivefold");
 }
 
