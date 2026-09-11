@@ -296,3 +296,46 @@ fn finder_entry_and_return_are_touchable_in_every_layout() {
         ));
     });
 }
+
+#[test]
+fn profile_editor_entry_and_return_are_touchable_in_every_layout() {
+    let settings = crate::state::AppState {
+        screen: crate::state::Screen::Settings,
+        ..Default::default()
+    };
+    let profile = crate::state::AppState {
+        screen: crate::state::Screen::Profile,
+        ..Default::default()
+    };
+
+    with_desktop_layout(|| {
+        assert!(matches!(
+            actions_at(&settings, vec2(500., 170.)).as_slice(),
+            [UiAction::Profile]
+        ));
+        assert!(matches!(
+            actions_at(&profile, vec2(315., 575.)).as_slice(),
+            [UiAction::Settings]
+        ));
+    });
+    with_portrait_layout(|| {
+        assert!(matches!(
+            actions_at(&settings, vec2(250., 110.)).as_slice(),
+            [UiAction::Profile]
+        ));
+        assert!(matches!(
+            actions_at(&profile, vec2(85., 624.)).as_slice(),
+            [UiAction::Settings]
+        ));
+    });
+    with_compact_landscape_layout(|| {
+        assert!(matches!(
+            actions_at(&settings, vec2(520., 285.)).as_slice(),
+            [UiAction::Profile]
+        ));
+        assert!(matches!(
+            actions_at(&profile, vec2(745., 342.)).as_slice(),
+            [UiAction::Settings]
+        ));
+    });
+}
