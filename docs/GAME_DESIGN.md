@@ -45,6 +45,8 @@ touch contracts.
 3. Continue the saved session or start a new one.
 4. Play through visible controls and direct board gestures.
 5. Finish, abandon, or return to the cabinet; progress is saved automatically.
+   If a save cannot be loaded, the cabinet keeps safe defaults available and
+   offers a touchable SAVE RECOVERY notice before replacing the damaged slot.
 6. Optionally inspect records, rules, or cosmetic stamps.
 
 The Records screen keeps the collection view legible with a compact summary of
@@ -200,6 +202,9 @@ equivalent.
 - If a page or window returns after a visibility gap, pause the live round,
   flush its autosave, and show a touchable RESUME PLAY sheet before simulation
   continues. The recovery path never requires a keyboard.
+- Keep save failures visible: preserve the rejected slot, keep safe defaults
+  playable, and let the player dismiss the recovery notice with a touchable
+  control that schedules a clean replacement save.
 
 ## 9. Content and Data
 

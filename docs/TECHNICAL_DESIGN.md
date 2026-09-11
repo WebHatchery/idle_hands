@@ -247,6 +247,11 @@ Autosave occurs after committed player commands, on return Home, and before
 the safe-pause sheet shown after a frame-gap visibility return. Writes are
 coalesced so drag previews and animations do not create storage churn.
 
+Load failures never overwrite the rejected bytes. The shell quarantines the
+affected slot, records a runtime-only recovery notice, and continues with safe
+defaults or the remaining valid slots. DISMISS schedules an autosave of that
+clean state; the notice is not persisted into profile or game snapshots.
+
 Explicit NEW actions use a shared confirmation modal before dispatching the
 game-specific reset command. The pending command is held only in runtime state;
 CANCEL clears it, while START dispatches the existing reset handler unchanged.
