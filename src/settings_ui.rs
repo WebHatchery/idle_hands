@@ -71,14 +71,28 @@ pub fn draw_settings(state: &AppState) {
             crate::theme::SECONDARY,
         );
     }
+    panel(Rect::new(230., 415., 160., 44.), crate::theme::SURFACE);
     text(
-        &format!(
-            "Sound: {}  •  Reduced motion: {}",
-            labels.sound, labels.motion
-        ),
-        230.,
-        445.,
-        18.,
+        &format!("SOUND {}", labels.sound.to_uppercase()),
+        270.,
+        443.,
+        12.,
+        WHITE,
+    );
+    panel(Rect::new(410., 415., 160., 44.), crate::theme::SURFACE);
+    text(
+        &format!("VOLUME {}", labels.volume.to_uppercase()),
+        430.,
+        443.,
+        11.,
+        WHITE,
+    );
+    panel(Rect::new(590., 415., 340., 44.), crate::theme::SURFACE);
+    text(
+        &format!("REDUCED MOTION {}", labels.motion.to_uppercase()),
+        620.,
+        443.,
+        12.,
         WHITE,
     );
     panel(
@@ -188,10 +202,13 @@ pub fn settings_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
             }
         }
     }
-    if crate::ui::hit(Rect::new(230., 415., 350., 45.), p) {
+    if crate::ui::hit(Rect::new(230., 415., 160., 44.), p) {
         actions.push(UiAction::ToggleSound);
     }
-    if crate::ui::hit(Rect::new(580., 415., 350., 45.), p) {
+    if crate::ui::hit(Rect::new(410., 415., 160., 44.), p) {
+        actions.push(UiAction::CycleSoundVolume);
+    }
+    if crate::ui::hit(Rect::new(590., 415., 340., 44.), p) {
         actions.push(UiAction::ToggleMotion);
     }
     if crate::ui::hit(Rect::new(230., 470., 350., 44.), p) {

@@ -19,6 +19,7 @@ pub struct CosmeticRow {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct AccessibilityLabels {
     pub sound: &'static str,
+    pub volume: &'static str,
     pub motion: &'static str,
     pub contrast: &'static str,
     pub text: &'static str,
@@ -69,6 +70,7 @@ pub fn cosmetic_action(index: usize) -> Option<UiAction> {
 pub fn accessibility_labels(state: &AppState) -> AccessibilityLabels {
     AccessibilityLabels {
         sound: if state.sound { "On" } else { "Off" },
+        volume: crate::audio_settings::label(state.sound, state.sound_level),
         motion: if state.reduced_motion {
             "Reduced"
         } else {

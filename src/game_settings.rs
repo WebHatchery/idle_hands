@@ -1,12 +1,22 @@
 use super::Game;
-use crate::{cosmetics::CosmeticKind, settings_data, ui::UiAction};
+use crate::{audio_settings, cosmetics::CosmeticKind, settings_data, ui::UiAction};
 
 impl Game {
     pub(super) fn apply_settings_action(&mut self, action: UiAction) {
         let message = match action {
             UiAction::ToggleSound => {
                 self.state.sound = !self.state.sound;
-                format!("Sound {}", if self.state.sound { "on" } else { "off" })
+                format!(
+                    "Sound {}",
+                    audio_settings::label(self.state.sound, self.state.sound_level)
+                )
+            }
+            UiAction::CycleSoundVolume => {
+                self.state.sound_level = audio_settings::next_level(self.state.sound_level);
+                format!(
+                    "Sound volume {}",
+                    audio_settings::label(self.state.sound, self.state.sound_level)
+                )
             }
             UiAction::ToggleMotion => {
                 self.state.reduced_motion = !self.state.reduced_motion;

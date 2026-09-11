@@ -77,6 +77,7 @@ fn accessibility_labels_use_consistent_meanings() {
         ..AppState::default()
     });
     assert_eq!(labels.sound, "On");
+    assert_eq!(labels.volume, "Full");
     assert_eq!(labels.motion, "Reduced");
     assert_eq!(labels.contrast, "On");
     assert_eq!(labels.text, "Large");
@@ -84,4 +85,16 @@ fn accessibility_labels_use_consistent_meanings() {
     let defaults = accessibility_labels(&AppState::default());
     assert_eq!(defaults.motion, "Full");
     assert_eq!(defaults.text, "Normal");
+
+    let quiet = accessibility_labels(&AppState {
+        sound_level: 0,
+        ..AppState::default()
+    });
+    assert_eq!(quiet.volume, "Quiet");
+
+    let muted = accessibility_labels(&AppState {
+        sound: false,
+        ..AppState::default()
+    });
+    assert_eq!(muted.volume, "Off");
 }

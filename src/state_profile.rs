@@ -8,6 +8,8 @@ pub struct ProfileSave {
     pub version: String,
     pub profile_name: String,
     pub sound: bool,
+    #[serde(default = "crate::audio_settings::default_level")]
+    pub sound_level: u8,
     pub reduced_motion: bool,
     #[serde(default)]
     pub high_contrast: bool,
@@ -80,6 +82,7 @@ impl ProfileSave {
             version: version.to_owned(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
+            sound_level: state.sound_level,
             reduced_motion: state.reduced_motion,
             high_contrast: state.high_contrast,
             large_text: state.large_text,
@@ -103,6 +106,7 @@ impl ProfileSave {
     pub fn apply_to(self, state: &mut AppState) {
         state.profile_name = self.profile_name;
         state.sound = self.sound;
+        state.sound_level = crate::audio_settings::normalize(self.sound_level);
         state.reduced_motion = self.reduced_motion;
         state.high_contrast = self.high_contrast;
         state.large_text = self.large_text;

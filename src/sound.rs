@@ -36,7 +36,7 @@ impl SoundBank {
         Self { sets }
     }
 
-    pub fn play(&self, set: u8, cue: SoundCue) {
+    pub fn play(&self, set: u8, cue: SoundCue, volume: f32) {
         let Some(sounds) = self.sets.get(set as usize % self.sets.len().max(1)) else {
             return;
         };
@@ -49,7 +49,7 @@ impl SoundBank {
                 sound,
                 PlaySoundParams {
                     looped: false,
-                    volume: 0.7,
+                    volume: volume.clamp(0.0, 1.0),
                 },
             );
         }

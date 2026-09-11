@@ -258,6 +258,11 @@ pub fn draw_settings(state: &AppState) {
         WHITE,
     );
     panel(
+        Rect::new(22., 412., 316., 44.),
+        Color::new(0.16, 0.11, 0.24, 1.),
+    );
+    text(&format!("Volume: {}", labels.volume), 35., 439., 13., WHITE);
+    panel(
         Rect::new(22., 465., 150., 44.),
         Color::new(0.16, 0.11, 0.24, 1.),
     );
@@ -273,13 +278,6 @@ pub fn draw_settings(state: &AppState) {
         Color::new(0.16, 0.11, 0.24, 1.),
     );
     text(&format!("Text: {}", labels.text), 200., 492., 12., WHITE);
-    text(
-        "Tap a row to cycle open cosmetics; next stamp thresholds stay visible.",
-        22.,
-        445.,
-        13.,
-        crate::theme::SECONDARY,
-    );
     for (rect, label) in [
         (Rect::new(22., 665., 76., 44.), "BACK"),
         (Rect::new(108., 665., 76., 44.), "SAVE"),
@@ -362,6 +360,7 @@ pub fn settings_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     for (rect, action) in [
         (Rect::new(22., 360., 150., 44.), UiAction::ToggleSound),
         (Rect::new(186., 360., 152., 44.), UiAction::ToggleMotion),
+        (Rect::new(22., 412., 316., 44.), UiAction::CycleSoundVolume),
         (
             Rect::new(22., 465., 150., 44.),
             UiAction::ToggleHighContrast,

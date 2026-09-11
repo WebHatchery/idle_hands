@@ -43,6 +43,7 @@ pub enum UiAction {
     ConfirmRestart,
     Cancel,
     ToggleSound,
+    CycleSoundVolume,
     ToggleMotion,
     ToggleHighContrast,
     ToggleLargeText,

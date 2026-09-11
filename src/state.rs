@@ -230,6 +230,7 @@ pub struct AppState {
     pub confirm_reset: bool,
     pub profile_name: String,
     pub sound: bool,
+    pub sound_level: u8,
     pub reduced_motion: bool,
     pub high_contrast: bool,
     pub large_text: bool,
@@ -382,6 +383,8 @@ pub struct CollectionSave {
     pub word_forge: MiscGame,
     pub profile_name: String,
     pub sound: bool,
+    #[serde(default = "crate::audio_settings::default_level")]
+    pub sound_level: u8,
     pub reduced_motion: bool,
     #[serde(default)]
     pub high_contrast: bool,
@@ -507,6 +510,7 @@ impl CollectionSave {
             word_forge: state.games.word_forge.clone(),
             profile_name: state.profile_name.clone(),
             sound: state.sound,
+            sound_level: state.sound_level,
             reduced_motion: state.reduced_motion,
             high_contrast: state.high_contrast,
             large_text: state.large_text,
@@ -590,6 +594,7 @@ impl CollectionSave {
         state.games.word_forge = self.word_forge;
         state.profile_name = self.profile_name;
         state.sound = self.sound;
+        state.sound_level = crate::audio_settings::normalize(self.sound_level);
         state.reduced_motion = self.reduced_motion;
         state.high_contrast = self.high_contrast;
         state.large_text = self.large_text;
@@ -630,6 +635,7 @@ impl Default for AppState {
             confirm_reset: false,
             profile_name: "Cabinet Guest".into(),
             sound: true,
+            sound_level: crate::audio_settings::DEFAULT_LEVEL,
             reduced_motion: false,
             high_contrast: false,
             large_text: false,

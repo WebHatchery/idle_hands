@@ -9,6 +9,7 @@ mod achievements_ui;
 mod analytics;
 mod asteroids;
 mod asteroids_ui;
+mod audio_settings;
 mod battleship;
 mod battleship_ui;
 mod blackjack;

@@ -39,6 +39,10 @@ fn landscape_settings_routes_rows_and_accessibility_controls() {
         settings_clicks(&state, vec2(640., 180.)).as_slice(),
         [UiAction::ToggleLargeText]
     ));
+    assert!(matches!(
+        settings_clicks(&state, vec2(600., 240.)).as_slice(),
+        [UiAction::CycleSoundVolume]
+    ));
 }
 
 #[test]

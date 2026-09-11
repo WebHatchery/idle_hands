@@ -30,6 +30,10 @@ fn desktop_settings_routes_rows_and_accessibility_controls() {
         settings_clicks(&state, vec2(590., 475.)).as_slice(),
         [UiAction::ToggleLargeText]
     ));
+    assert!(matches!(
+        settings_clicks(&state, vec2(450., 430.)).as_slice(),
+        [UiAction::CycleSoundVolume]
+    ));
 }
 
 #[test]

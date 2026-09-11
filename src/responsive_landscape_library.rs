@@ -649,12 +649,13 @@ pub fn draw_settings(state: &AppState) {
         10.,
         WHITE,
     );
+    panel(Rect::new(450., 220., 340., 44.), crate::theme::SURFACE);
     text(
-        "Tap a cosmetic row to cycle open items; each row shows its next stamp threshold.",
-        450.,
-        238.,
-        12.,
-        crate::theme::SECONDARY,
+        &format!("VOLUME {}", labels.volume.to_uppercase()),
+        570.,
+        248.,
+        11.,
+        WHITE,
     );
     panel(Rect::new(40., 268., 160., 44.), crate::theme::MOSS_DARK);
     text("BACK", 98., 297., 12., WHITE);
@@ -718,6 +719,9 @@ pub fn settings_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     if crate::ui::hit(Rect::new(630., 68., 160., 44.), p) {
         return vec![UiAction::ToggleMotion];
+    }
+    if crate::ui::hit(Rect::new(450., 220., 340., 44.), p) {
+        return vec![UiAction::CycleSoundVolume];
     }
     if crate::ui::hit(Rect::new(450., 172., 160., 44.), p) {
         return vec![UiAction::ToggleHighContrast];

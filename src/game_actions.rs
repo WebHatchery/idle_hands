@@ -41,6 +41,7 @@ pub fn is_shell(action: UiAction) -> bool {
             | UiAction::ConfirmRestart
             | UiAction::Cancel
             | UiAction::ToggleSound
+            | UiAction::CycleSoundVolume
             | UiAction::ToggleMotion
             | UiAction::ToggleHighContrast
             | UiAction::ToggleLargeText

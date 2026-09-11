@@ -39,8 +39,9 @@ impl Game {
     }
 
     pub(super) fn play_feedback(&self, cue: SoundCue) {
-        if self.state.sound {
-            self.sounds.play(self.state.sound_set, cue);
+        let volume = crate::audio_settings::volume(self.state.sound, self.state.sound_level);
+        if volume > 0.0 {
+            self.sounds.play(self.state.sound_set, cue, volume);
         }
     }
 

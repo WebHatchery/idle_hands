@@ -106,6 +106,7 @@ fn collection_save_round_trips_game_and_profile_state() {
     state.card_back = 1;
     state.board_theme = 1;
     state.sound_set = 1;
+    state.sound_level = 1;
     state.cabinet_decoration = 1;
     state.high_contrast = true;
     state.large_text = true;
@@ -118,6 +119,7 @@ fn collection_save_round_trips_game_and_profile_state() {
     assert_eq!(restored.mine_records[0], Some(42));
     assert_eq!(restored.records.best_2048, 128);
     assert_eq!(restored.records.fivefold_best_total, 275);
+    assert_eq!(restored.sound_level, 1);
     assert_eq!(restored.games.lights_out.moves, 4);
     assert_eq!(restored.records.lights_out_best_moves, Some(4));
     assert_eq!(restored.games.tic_tac_toe.moves, 3);
@@ -343,6 +345,7 @@ fn older_saves_default_new_progression_and_cosmetic_fields() {
         "favorites",
         "high_contrast",
         "large_text",
+        "sound_level",
         "lights_out",
         "tic_tac_toe",
         "memory_pairs",
@@ -384,6 +387,7 @@ fn older_saves_default_new_progression_and_cosmetic_fields() {
     assert_eq!(restored.cabinet_decoration, 0);
     assert!(!restored.high_contrast);
     assert!(!restored.large_text);
+    assert_eq!(restored.sound_level, crate::audio_settings::DEFAULT_LEVEL);
     assert_eq!(restored.favorites, vec![false; GameId::ALL.len()]);
 }
 
