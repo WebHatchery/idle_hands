@@ -239,10 +239,10 @@ fn draw_library(state: &AppState) {
             );
         }
         text(
-            "i",
-            rect.right() - 52.,
-            rect.y + 28.,
-            13.,
+            "INFO",
+            rect.right() - 80.,
+            rect.y + 27.,
+            7.,
             crate::theme::BRASS,
         );
     }

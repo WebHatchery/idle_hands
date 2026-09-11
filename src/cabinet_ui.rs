@@ -338,10 +338,10 @@ fn draw_library(state: &AppState) {
             );
         }
         text(
-            "i",
-            rect.right() - 73.,
-            rect.y + 27.,
-            15.,
+            "INFO",
+            rect.right() - 93.,
+            rect.y + 26.,
+            8.,
             crate::theme::BRASS,
         );
     }

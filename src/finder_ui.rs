@@ -136,10 +136,10 @@ fn draw_cards(state: &AppState) {
         );
         text(
             state,
-            "i",
-            rect.right() - 27.,
+            "INFO",
+            rect.right() - 42.,
             rect.y + 25.,
-            16.,
+            8.,
             accent(state),
         );
     }
