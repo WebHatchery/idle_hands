@@ -81,3 +81,20 @@ fn all_controls_and_cards_fit_each_viewport() {
     crate::ui::with_compact_landscape_layout(assert_layout);
     crate::ui::with_portrait_layout(assert_layout);
 }
+
+#[test]
+fn accessibility_modes_keep_finder_cards_readable() {
+    let high_contrast = AppState {
+        high_contrast: true,
+        ..AppState::default()
+    };
+    assert_eq!(
+        card_fill(&high_contrast, crate::state::GameId::Solitaire, true),
+        crate::theme::SURFACE_DARK
+    );
+
+    assert!(
+        crate::accessibility::text_size(14., true) > crate::accessibility::text_size(14., false),
+        "large-text mode should enlarge the measured title size"
+    );
+}

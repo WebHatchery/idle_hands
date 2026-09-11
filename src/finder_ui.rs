@@ -108,19 +108,11 @@ fn draw_cards(state: &AppState) {
     for (index, game) in finder_data::page(state).into_iter().enumerate() {
         let rect = card_rect(index);
         let available = crate::storefront::availability(game).is_playable();
-        panel_fill(
-            state,
-            rect,
-            if available {
-                crate::theme::category_surface(game, true)
-            } else {
-                crate::theme::SURFACE_DARK
-            },
-        );
+        panel_fill(state, rect, card_fill(state, game, available));
         let title_size = if crate::ui::is_portrait() { 11. } else { 14. };
         text(
             state,
-            fit_title(game.title(), rect.w - 24., title_size),
+            fit_title(game.title(), rect.w - 24., title_size, state.large_text),
             rect.x + 12.,
             rect.y + if crate::ui::is_portrait() { 19. } else { 27. },
             title_size,
@@ -289,15 +281,16 @@ fn empty_message_position() -> (f32, f32) {
     }
 }
 
-fn fit_title(title: &str, max_width: f32, size: f32) -> String {
-    if crate::ui::measure_text(title, None, size as u16, 1.).width <= max_width {
+fn fit_title(title: &str, max_width: f32, size: f32, large_text: bool) -> String {
+    let measure_size = if large_text { size * 1.18 } else { size };
+    if crate::ui::measure_text(title, None, measure_size as u16, 1.).width <= max_width {
         return title.to_owned();
     }
     let mut prefix = title.to_owned();
     while !prefix.is_empty() {
         prefix.pop();
         let candidate = format!("{prefix}…");
-        if crate::ui::measure_text(&candidate, None, size as u16, 1.).width <= max_width {
+        if crate::ui::measure_text(&candidate, None, measure_size as u16, 1.).width <= max_width {
             return candidate;
         }
     }
@@ -317,5 +310,13 @@ fn secondary(state: &AppState) -> Color {
         WHITE
     } else {
         crate::theme::SECONDARY
+    }
+}
+
+fn card_fill(state: &AppState, game: crate::state::GameId, available: bool) -> Color {
+    if state.high_contrast || !available {
+        crate::theme::SURFACE_DARK
+    } else {
+        crate::theme::category_surface(game, true)
     }
 }
