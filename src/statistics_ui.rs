@@ -101,14 +101,7 @@ fn draw_desktop(state: &AppState) {
         Rect::new(170., 270., 490., 250.),
         crate::theme::SURFACE_DARK,
     );
-    text(
-        state,
-        "COLLECTION RHYTHM",
-        195.,
-        305.,
-        17.,
-        crate::theme::BRASS,
-    );
+    text(state, "COLLECTION RHYTHM", 195., 305., 17., accent(state));
     text(
         state,
         format!("Completion {}%", stats_data::completion_percent(summary)),
@@ -185,7 +178,7 @@ fn draw_compact(state: &AppState) {
         Rect::new(40., 145., 360., 145.),
         crate::theme::SURFACE_DARK,
     );
-    text(state, "COLLECTION", 58., 174., 14., crate::theme::BRASS);
+    text(state, "COLLECTION", 58., 174., 14., accent(state));
     text(
         state,
         format!("{}% complete", stats_data::completion_percent(summary)),
@@ -253,7 +246,7 @@ fn draw_portrait(state: &AppState) {
         Rect::new(20., 240., 320., 105.),
         crate::theme::SURFACE_DARK,
     );
-    text(state, "COLLECTION", 34., 268., 14., crate::theme::BRASS);
+    text(state, "COLLECTION", 34., 268., 14., accent(state));
     text(
         state,
         format!("{}% complete", stats_data::completion_percent(summary)),
@@ -287,14 +280,14 @@ fn heading(
     subtitle_x: f32,
     subtitle_y: f32,
 ) {
-    text(state, title, title_x, title_y, 32., crate::theme::BRASS);
+    text(state, title, title_x, title_y, 32., accent(state));
     text(
         state,
         subtitle,
         subtitle_x,
         subtitle_y,
         15.,
-        crate::theme::SECONDARY,
+        secondary(state),
     );
 }
 
@@ -306,7 +299,7 @@ fn metric_card(state: &AppState, rect: Rect, label: &str, value: &str) {
         rect.x + 12.,
         rect.y + 22.,
         11.,
-        crate::theme::SECONDARY,
+        secondary(state),
     );
     text(state, value, rect.x + 12., rect.y + 51., 20., WHITE);
 }
@@ -319,7 +312,7 @@ fn draw_ledger(state: &AppState, summary: stats_data::StatisticsSummary, rect: R
         rect.x + 14.,
         rect.y + 26.,
         size,
-        crate::theme::BRASS,
+        accent(state),
     );
     let fastest = summary.fastest_clear.map_or_else(
         || "—".to_owned(),
@@ -347,7 +340,7 @@ fn draw_ledger(state: &AppState, summary: stats_data::StatisticsSummary, rect: R
         rect.x + 14.,
         rect.y + 52.,
         10.,
-        crate::theme::SECONDARY,
+        secondary(state),
     );
     text(state, fastest, rect.x + 14., rect.y + 69., 12., WHITE);
     text(
@@ -356,7 +349,7 @@ fn draw_ledger(state: &AppState, summary: stats_data::StatisticsSummary, rect: R
         rect.x + 14.,
         rect.y + 89.,
         10.,
-        crate::theme::SECONDARY,
+        secondary(state),
     );
     text(state, longest, rect.x + 14., rect.y + 106., 12., WHITE);
 }
@@ -369,7 +362,7 @@ fn draw_top_playtime(state: &AppState, rect: Rect, limit: usize, size: f32) {
         rect.x + 14.,
         rect.y + 26.,
         size,
-        crate::theme::BRASS,
+        accent(state),
     );
     let rows = stats_data::top_playtime(state, limit);
     let row_spacing = if rect.h < 180. { 22. } else { 30. };
@@ -394,7 +387,7 @@ fn draw_top_playtime(state: &AppState, rect: Rect, limit: usize, size: f32) {
             rect.right() - 76.,
             y,
             row_size,
-            crate::theme::BRASS,
+            accent(state),
         );
     }
     if rows.is_empty() {
@@ -404,13 +397,29 @@ fn draw_top_playtime(state: &AppState, rect: Rect, limit: usize, size: f32) {
             rect.x + 14.,
             rect.y + 58.,
             12.,
-            crate::theme::SECONDARY,
+            secondary(state),
         );
     }
 }
 
 fn duration(seconds: u32) -> String {
     crate::state_records::format_duration(u64::from(seconds))
+}
+
+fn accent(state: &AppState) -> Color {
+    if state.high_contrast {
+        WHITE
+    } else {
+        crate::theme::BRASS
+    }
+}
+
+fn secondary(state: &AppState) -> Color {
+    if state.high_contrast {
+        WHITE
+    } else {
+        crate::theme::SECONDARY
+    }
 }
 
 fn back_rect() -> Rect {

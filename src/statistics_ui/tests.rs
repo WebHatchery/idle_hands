@@ -35,3 +35,14 @@ fn outside_statistics_controls_are_ignored() {
     };
     ui::with_desktop_layout(|| assert!(clicks(&state, vec2(50., 50.)).is_empty()));
 }
+
+#[test]
+fn high_contrast_statistics_accents_are_neutral() {
+    let state = AppState {
+        high_contrast: true,
+        ..AppState::default()
+    };
+
+    assert_eq!(accent(&state), WHITE);
+    assert_eq!(secondary(&state), WHITE);
+}
