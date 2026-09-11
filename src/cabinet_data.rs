@@ -33,6 +33,10 @@ pub fn visible_games(state: &AppState) -> Vec<GameId> {
     )
 }
 
+pub fn favorite_count(state: &AppState) -> usize {
+    state.favorites.iter().filter(|favorite| **favorite).count()
+}
+
 pub fn page(state: &AppState, page_size: usize) -> CabinetPage {
     let games = visible_games(state);
     let total = games.len();

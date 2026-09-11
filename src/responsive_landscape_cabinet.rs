@@ -88,7 +88,7 @@ fn draw_home(state: &AppState, loaded: usize) {
     stat(
         Rect::new(452., 54., 104., 82.),
         "FAVORITES",
-        favorite_count(state),
+        crate::cabinet_data::favorite_count(state),
     );
     stat(
         Rect::new(566., 54., 104., 82.),
@@ -392,9 +392,6 @@ fn game_rect(index: usize) -> Rect {
         150.,
         52.,
     )
-}
-fn favorite_count(state: &AppState) -> usize {
-    state.favorites.iter().filter(|value| **value).count()
 }
 fn stat(rect: Rect, label: &str, count: usize) {
     panel(rect, crate::theme::PAPER_LIGHT);

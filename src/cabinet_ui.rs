@@ -120,7 +120,7 @@ fn draw_home(state: &AppState, loaded: usize) {
     stat_card(
         Rect::new(645., 92., 145., 118.),
         "FAVORITES",
-        favorite_count(state),
+        crate::cabinet_data::favorite_count(state),
         "games",
     );
     stat_card(
@@ -571,9 +571,6 @@ fn recent_games(state: &AppState) -> Vec<GameId> {
     } else {
         state.recent_games.clone()
     }
-}
-fn favorite_count(state: &AppState) -> usize {
-    state.favorites.iter().filter(|value| **value).count()
 }
 fn recent_rect(index: usize) -> Rect {
     Rect::new(260. + index as f32 * 137., 576., 126., 58.)

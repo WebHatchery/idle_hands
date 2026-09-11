@@ -45,3 +45,13 @@ fn layout_page_sizes_match_the_visible_shelves() {
         COMPACT_LANDSCAPE_PAGE_SIZE
     );
 }
+
+#[test]
+fn favorite_count_tracks_only_marked_games() {
+    assert_eq!(favorite_count(&AppState::default()), 0);
+
+    let mut state = AppState::default();
+    state.favorites[0] = true;
+    state.favorites[3] = true;
+    assert_eq!(favorite_count(&state), 2);
+}
