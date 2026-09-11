@@ -42,6 +42,7 @@ pub fn is_shell(action: UiAction) -> bool {
             | UiAction::Cancel
             | UiAction::ToggleSound
             | UiAction::CycleSoundVolume
+            | UiAction::ResumeLifecycle
             | UiAction::ToggleMotion
             | UiAction::ToggleHighContrast
             | UiAction::ToggleLargeText
@@ -63,6 +64,7 @@ mod tests {
         assert!(is_shell(UiAction::RulesFilter(4)));
         assert!(is_shell(UiAction::Save));
         assert!(is_shell(UiAction::CycleSoundVolume));
+        assert!(is_shell(UiAction::ResumeLifecycle));
         assert!(!is_shell(UiAction::Game2048Hint));
         assert!(!is_shell(UiAction::Move(crate::domain::Direction::Left)));
     }

@@ -26,6 +26,8 @@ mod game_capture_depth;
 mod game_capture_records;
 #[path = "game_capture_rules.rs"]
 mod game_capture_rules;
+#[path = "game_lifecycle.rs"]
+mod game_lifecycle;
 #[path = "game_navigation.rs"]
 mod game_navigation;
 #[path = "game_persistence.rs"]
@@ -105,8 +107,12 @@ impl Game {
         } else {
             self.transition = (self.transition - dt * 3.5).max(0.);
         }
-        self.state.games.minesweeper.tick(dt);
-        if self.state.games.minesweeper.status == crate::minesweeper::MineStatus::Won {
+        if !self.state.lifecycle_paused {
+            self.state.games.minesweeper.tick(dt);
+        }
+        if !self.state.lifecycle_paused
+            && self.state.games.minesweeper.status == crate::minesweeper::MineStatus::Won
+        {
             let slot = self.state.games.minesweeper.preset.index();
             let time = self.state.games.minesweeper.elapsed_whole_seconds();
             self.state.mine_records[slot] =
@@ -194,7 +200,7 @@ impl Game {
                 }
             }
         }
-        if is_key_pressed(KeyCode::Escape) {
+        if is_key_pressed(KeyCode::Escape) && !self.state.lifecycle_paused {
             self.pointer.cancel();
             self.state.screen = Screen::Cabinet;
             self.state.favorites_view = false;
@@ -758,6 +764,10 @@ impl Game {
             ui::UiAction::Cancel => {
                 self.state.confirm_restart = false;
                 self.state.pending_restart = None;
+            }
+            ui::UiAction::ResumeLifecycle => {
+                self.state.lifecycle_paused = false;
+                self.notifications.info("The cabinet is ready again");
             }
             ui::UiAction::ToggleSound
             | ui::UiAction::ToggleMotion

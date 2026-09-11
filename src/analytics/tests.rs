@@ -49,6 +49,9 @@ fn active_play_requires_recent_input_and_no_overlay_or_pause() {
     state.games.snake.paused = true;
     assert!(!is_active_play(&state, 1.0));
     state.games.snake.paused = false;
+    state.lifecycle_paused = true;
+    assert!(!is_active_play(&state, 1.0));
+    state.lifecycle_paused = false;
     state.tutorial = Some(GameId::Snake);
     assert!(!is_active_play(&state, 1.0));
 }

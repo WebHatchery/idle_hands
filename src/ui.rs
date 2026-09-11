@@ -8,6 +8,7 @@ use crate::favorites_ui;
 use crate::game_2048::Game2048Size;
 use crate::game_variant_ui;
 use crate::library_ui;
+use crate::lifecycle_pause_ui;
 use crate::mobile_tutorial_ui;
 use crate::palette_ui;
 use crate::records_ui;
@@ -237,6 +238,9 @@ pub fn clicks_at(state: &AppState, point: Vec2) -> Vec<UiAction> {
 }
 
 pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
+    if state.lifecycle_paused {
+        return lifecycle_pause_ui::clicks(p);
+    }
     if state.tutorial.is_some() {
         if is_compact_landscape() {
             return mobile_tutorial_ui::tutorial_clicks(p, true);
@@ -368,6 +372,9 @@ pub fn draw(
     }
     if state.confirm_restart && state.pending_restart.is_some() {
         restart_modal::draw(state);
+    }
+    if state.lifecycle_paused {
+        lifecycle_pause_ui::draw(state);
     }
     // Prime neighbour-aware target growth from the visible action map. Input
     // is handled before drawing, so the next frame can expand small controls

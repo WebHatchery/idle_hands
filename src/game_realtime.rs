@@ -5,7 +5,11 @@ use crate::state::{GameId, Screen};
 
 impl Game {
     pub(super) fn tick_realtime(&mut self, dt: f32) {
-        if self.state.tutorial.is_some() || self.state.confirm_restart || self.state.confirm_reset {
+        if self.state.lifecycle_paused
+            || self.state.tutorial.is_some()
+            || self.state.confirm_restart
+            || self.state.confirm_reset
+        {
             return;
         }
         match self.state.screen {

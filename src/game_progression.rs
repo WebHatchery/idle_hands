@@ -11,6 +11,9 @@ use crate::{
 impl Game {
     pub(super) fn tick_elapsed(&mut self, dt: f32) {
         self.state.records.ensure_time_slots();
+        if self.state.lifecycle_paused {
+            return;
+        }
         let Screen::Game(game) = self.state.screen else {
             return;
         };

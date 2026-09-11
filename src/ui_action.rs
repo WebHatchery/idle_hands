@@ -44,6 +44,7 @@ pub enum UiAction {
     Cancel,
     ToggleSound,
     CycleSoundVolume,
+    ResumeLifecycle,
     ToggleMotion,
     ToggleHighContrast,
     ToggleLargeText,

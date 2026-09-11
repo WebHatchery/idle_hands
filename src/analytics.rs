@@ -170,6 +170,7 @@ fn is_active_play(state: &AppState, recent_input_seconds: f32) -> bool {
         && state.tutorial.is_none()
         && !state.confirm_restart
         && !state.confirm_reset
+        && !state.lifecycle_paused
         && !crate::game::game_progression::round_is_complete(state, game)
         && !is_paused(state, game)
 }

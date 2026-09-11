@@ -81,6 +81,8 @@ mod input;
 mod klondike_golf;
 mod klondike_golf_ui;
 mod library_ui;
+mod lifecycle;
+mod lifecycle_pause_ui;
 mod lights_out;
 mod lights_out_ui;
 mod mahjong_solitaire;
@@ -246,7 +248,9 @@ async fn main() {
 
     prevent_quit();
     loop {
-        let dt = get_frame_time().min(0.1);
+        let frame_seconds = get_frame_time();
+        game.note_frame_gap(frame_seconds);
+        let dt = frame_seconds.min(0.1);
         game.update(dt);
         game.draw();
         if is_quit_requested() {
