@@ -27,9 +27,16 @@ fn desktop_cards_expose_a_favorite_touch_zone() {
         cabinet_filter: 3,
         ..Default::default()
     };
+    let page = crate::cabinet_data::page(&state, crate::cabinet_data::DESKTOP_PAGE_SIZE);
+    let index = page
+        .games
+        .iter()
+        .position(|game| crate::cabinet_status::is_available(*game))
+        .expect("the demo keeps one card drawer playable");
+    let rect = library_rect(index);
 
     assert!(matches!(
-        clicks(&state, vec2(460., 140.)).as_slice(),
+        clicks(&state, vec2(rect.right() - 10., rect.y + 10.)).as_slice(),
         [UiAction::ToggleFavorite(_)]
     ));
 }
