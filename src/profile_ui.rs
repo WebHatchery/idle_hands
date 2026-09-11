@@ -83,7 +83,10 @@ fn heading(state: &AppState, x: f32, y: f32, size: f32, value: &str) {
 fn current_copy(state: &AppState, x: f32, y: f32, size: f32) {
     text(
         state,
-        format!("CURRENT NAME: {}", state.profile_name.to_uppercase()),
+        format!(
+            "CURRENT NAME: {}",
+            profile_data::display_name(&state.profile_name).to_uppercase()
+        ),
         x,
         y,
         size,
