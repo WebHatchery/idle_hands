@@ -150,6 +150,44 @@ fn quick_browse_info_lanes_keep_their_touch_geometry_clear() {
 }
 
 #[test]
+fn restricted_quick_browse_cards_still_open_drawer_details() {
+    let game = if crate::game_descriptor::is_demo_build() {
+        GameId::SpiderSolitaire
+    } else {
+        GameId::Solitaire
+    };
+    let favorite_state = AppState {
+        favorites: {
+            let mut favorites = vec![false; GameId::ALL.len()];
+            favorites[game.index()] = true;
+            favorites
+        },
+        ..Default::default()
+    };
+    let recent_state = AppState {
+        recent_view: true,
+        recent_games: vec![game],
+        ..Default::default()
+    };
+
+    let assert_details = || {
+        let card = list_card_rect(layout(), 0);
+        assert!(matches!(
+            clicks(&favorite_state, info_rect(card, false).center()).as_slice(),
+            [UiAction::Inspect(index)] if *index == game.index()
+        ));
+        assert!(matches!(
+            clicks(&recent_state, info_rect(card, true).center()).as_slice(),
+            [UiAction::Inspect(index)] if *index == game.index()
+        ));
+    };
+
+    crate::ui::with_desktop_layout(assert_details);
+    crate::ui::with_compact_landscape_layout(assert_details);
+    crate::ui::with_portrait_layout(assert_details);
+}
+
+#[test]
 fn browse_tabs_switch_between_favorites_and_recent_at_each_size() {
     let state = AppState::default();
     crate::ui::with_desktop_layout(|| {
