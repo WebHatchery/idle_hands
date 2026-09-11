@@ -52,3 +52,10 @@ fn achievement_empty_copy_explains_each_filtered_state() {
     assert_eq!(empty_label(1), "No achievements earned yet.");
     assert_eq!(empty_label(2), "Every achievement is earned.");
 }
+
+#[test]
+fn achievement_window_labels_clamp_to_the_filtered_end() {
+    assert_eq!(window_label(0, 0, 8), "0-0 OF 0");
+    assert_eq!(window_label(0, 17, 8), "1-8 OF 17");
+    assert_eq!(window_label(99, 17, 8), "10-17 OF 17");
+}

@@ -69,6 +69,16 @@ pub fn scroll_limit(state: &AppState, filter: u8, capacity: usize) -> usize {
     filter_count(state, filter).saturating_sub(capacity.max(1))
 }
 
+pub fn window_label(start: usize, total: usize, capacity: usize) -> String {
+    if total == 0 {
+        return "0-0 OF 0".to_owned();
+    }
+    let start = page_start(total, start, capacity);
+    let first = start + 1;
+    let last = (start + capacity.max(1)).min(total);
+    format!("{first}-{last} OF {total}")
+}
+
 pub fn filter_count(state: &AppState, filter: u8) -> usize {
     rows(state, filter).len()
 }

@@ -237,6 +237,21 @@ pub fn draw(state: &AppState) {
         panel(next, crate::theme::SURFACE_DARK, state.high_contrast);
         crate::ui::draw_text("PREV", previous.x + 22., previous.y + 28., 11., WHITE);
         crate::ui::draw_text("NEXT", next.x + 22., next.y + 28., 11., WHITE);
+        crate::ui::draw_text(
+            achievements_data::window_label(
+                state.library_scroll,
+                achievements_data::filter_count(state, state.achievement_filter),
+                visible_capacity(state),
+            ),
+            if portrait {
+                previous.right() + 16.
+            } else {
+                next.right() + 12.
+            },
+            previous.y + 28.,
+            10.,
+            crate::theme::CREAM,
+        );
     }
     panel(l.back, crate::theme::MOSS_DARK, state.high_contrast);
     crate::ui::draw_text(
