@@ -125,11 +125,7 @@ fn draw_cards(state: &AppState) {
             title_size,
             crate::theme::CREAM,
         );
-        let status = if available {
-            crate::cabinet_status::status(state, game)
-        } else {
-            crate::storefront::cabinet_label(game, crate::ui::is_portrait())
-        };
+        let status = finder_data::status_label(state, game, crate::ui::is_portrait());
         text(
             state,
             status,

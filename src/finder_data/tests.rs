@@ -28,6 +28,16 @@ fn invalid_filters_fall_back_to_all() {
 }
 
 #[test]
+fn playable_finder_rows_use_the_shared_progress_status() {
+    let state = AppState::default();
+
+    assert_eq!(
+        status_label(&state, GameId::Solitaire, false),
+        crate::cabinet_status::status(&state, GameId::Solitaire)
+    );
+}
+
+#[test]
 fn page_limits_are_safe_for_every_layout() {
     let state = AppState::default();
     crate::ui::with_desktop_layout(|| {

@@ -71,6 +71,13 @@ pub fn page_label(state: &AppState) -> String {
     format!("{}–{} OF {}", start + 1, end, total)
 }
 
+pub fn status_label(state: &AppState, game: GameId, compact: bool) -> &'static str {
+    match crate::storefront::availability(game) {
+        crate::storefront::GameAvailability::Playable => crate::cabinet_status::status(state, game),
+        availability => availability.cabinet_label(compact),
+    }
+}
+
 fn first_letter(game: GameId) -> char {
     game.title()
         .chars()
