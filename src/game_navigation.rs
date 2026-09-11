@@ -140,9 +140,9 @@ impl Game {
             return;
         };
         let from_rules = matches!(self.state.screen, Screen::Rules);
-        self.state.selected = index;
         match crate::storefront::availability(id) {
             crate::storefront::GameAvailability::Playable => {
+                self.state.selected = index;
                 self.state.favorites_view = false;
                 self.state.recent_view = false;
                 self.state.daily_archive_view = false;

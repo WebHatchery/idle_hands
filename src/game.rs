@@ -250,8 +250,7 @@ impl Game {
         match action {
             ui::UiAction::Open(index) => self.open_game(index),
             ui::UiAction::ContinueGame => {
-                let index = self.state.selected;
-                self.open_game(index);
+                self.open_game(crate::continue_data::preferred_game(&self.state).index());
             }
             ui::UiAction::ToggleFavorite(index) => self.toggle_favorite(index),
             ui::UiAction::ClearRecent => {

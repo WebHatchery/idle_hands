@@ -30,6 +30,7 @@ mod color_sort;
 mod color_sort_ui;
 mod connect_four;
 mod connect_four_ui;
+mod continue_data;
 mod cosmetics;
 mod credits_data;
 mod daily_archive_data;

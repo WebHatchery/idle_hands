@@ -102,7 +102,7 @@ fn draw_home(state: &AppState, loaded: usize) {
     );
     panel(CONTINUE, crate::theme::MOSS_DARK, crate::theme::BRASS);
     text("CONTINUE PLAYING", 278., 116., 11., crate::theme::BRASS);
-    let selected = GameId::ALL[state.selected.min(GameId::ALL.len() - 1)];
+    let selected = crate::continue_data::preferred_game(state);
     text(selected.title(), 278., 153., 27., crate::theme::CREAM);
     text(
         selected.subtitle(),
