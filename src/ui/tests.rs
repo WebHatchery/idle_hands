@@ -32,3 +32,46 @@ fn desktop_help_routes_all_visible_buttons() {
         ));
     });
 }
+
+#[test]
+fn credits_round_trip_routes_through_every_layout() {
+    let help_state = crate::state::AppState {
+        screen: crate::state::Screen::Help,
+        ..Default::default()
+    };
+    let credits_state = crate::state::AppState {
+        screen: crate::state::Screen::Credits,
+        ..Default::default()
+    };
+
+    with_desktop_layout(|| {
+        assert!(matches!(
+            actions_at(&help_state, vec2(850., 650.)).as_slice(),
+            [UiAction::Credits]
+        ));
+        assert!(matches!(
+            actions_at(&credits_state, vec2(1100., 660.)).as_slice(),
+            [UiAction::Cabinet]
+        ));
+    });
+    with_portrait_layout(|| {
+        assert!(matches!(
+            actions_at(&help_state, vec2(160., 550.)).as_slice(),
+            [UiAction::Credits]
+        ));
+        assert!(matches!(
+            actions_at(&credits_state, vec2(50., 670.)).as_slice(),
+            [UiAction::Cabinet]
+        ));
+    });
+    with_compact_landscape_layout(|| {
+        assert!(matches!(
+            actions_at(&help_state, vec2(600., 300.)).as_slice(),
+            [UiAction::Credits]
+        ));
+        assert!(matches!(
+            actions_at(&credits_state, vec2(400., 330.)).as_slice(),
+            [UiAction::Cabinet]
+        ));
+    });
+}
