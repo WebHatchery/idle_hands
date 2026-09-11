@@ -235,6 +235,7 @@ impl Game {
                 | "favorites_browse"
                 | "favorites_all"
                 | "recent_browse" => Screen::Records,
+                "statistics" | "statistics_accessible" => Screen::Statistics,
                 "rules" | "rules_scrolled" | "rules_logic" | "rules_word" => Screen::Rules,
                 "credits" => Screen::Credits,
                 "settings" | "settings_accessible" | "settings_reset" => Screen::Settings,
@@ -249,6 +250,31 @@ impl Game {
         }
         if matches!(scene, "records_scrolled" | "rules_scrolled") {
             self.state.library_scroll = 12;
+        }
+        if matches!(scene, "statistics" | "statistics_accessible") {
+            self.state.records.ensure_time_slots();
+            for (game, seconds) in [
+                (GameId::Solitaire, 142),
+                (GameId::Game2048, 86),
+                (GameId::Snake, 64),
+                (GameId::Sudoku, 31),
+            ] {
+                let index = game.index();
+                self.state.records.elapsed_seconds[index] = seconds;
+                self.state.records.best_time_seconds[index] = Some(seconds.saturating_sub(18));
+                self.state.favorites[index] = matches!(game, GameId::Solitaire | GameId::Snake);
+            }
+            self.state.records.best_2048 = 2048;
+            self.state.records.solitaire_best_moves = Some(42);
+            self.state.records.snake_best_score = Some(120);
+            self.state.recent_games = vec![GameId::Solitaire, GameId::Snake, GameId::Game2048];
+            for day in 1..=6 {
+                self.state.records.record_daily_result(
+                    day,
+                    40 + day as u32 * 7,
+                    day.is_multiple_of(2),
+                );
+            }
         }
         if matches!(
             scene,

@@ -44,5 +44,6 @@ mod tests {
             Some(Screen::Game(GameId::WordLadder))
         );
         assert_eq!(screen_for_scene("records_progress"), None);
+        assert_eq!(screen_for_scene("statistics"), None);
     }
 }
