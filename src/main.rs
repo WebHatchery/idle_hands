@@ -70,6 +70,7 @@ mod hangman;
 mod hangman_ui;
 mod hanoi;
 mod hanoi_ui;
+mod help_data;
 mod higher_lower;
 mod higher_lower_ui;
 mod input;

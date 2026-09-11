@@ -677,22 +677,24 @@ pub fn draw_help() {
         crate::theme::BACKGROUND_DEEP,
     );
     text("HOW TO PLAY", 20., 80., 26., crate::theme::BRASS);
-    text("Idle Hands is a cabinet", 20., 112., 14., WHITE);
-    text("of calm, tactile games.", 20., 135., 14., WHITE);
-    text(
-        "Tap a cabinet object to open it.",
-        20.,
-        185.,
-        12.,
-        Color::new(0.75, 0.70, 0.84, 1.),
-    );
-    text(
-        "Use the visible controls in every drawer.",
-        20.,
-        215.,
-        12.,
-        Color::new(0.75, 0.70, 0.84, 1.),
-    );
+    let mut y = 112.;
+    for (index, paragraph) in crate::help_data::PARAGRAPHS.iter().enumerate() {
+        for line in macroquad_toolkit::ui::wrap_text(paragraph, 315., 14.) {
+            text(
+                &line,
+                20.,
+                y,
+                14.,
+                if index == 0 {
+                    WHITE
+                } else {
+                    Color::new(0.75, 0.70, 0.84, 1.)
+                },
+            );
+            y += 22.;
+        }
+        y += 8.;
+    }
     panel(Rect::new(10., 530., 105., 44.), crate::theme::SURFACE);
     panel(Rect::new(127., 530., 105., 44.), crate::theme::SURFACE);
     panel(Rect::new(244., 530., 106., 44.), crate::theme::MOSS_DARK);
