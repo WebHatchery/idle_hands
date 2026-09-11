@@ -59,7 +59,7 @@ fn rule_action(state: &AppState, point: Vec2) -> Option<UiAction> {
     })
 }
 pub fn credits_clicks(p: Vec2) -> Vec<UiAction> {
-    if Rect::new(1030., 635., 180., 48.).contains(p) {
+    if crate::ui::hit(Rect::new(1030., 635., 180., 48.), p) {
         vec![UiAction::Cabinet]
     } else {
         vec![]

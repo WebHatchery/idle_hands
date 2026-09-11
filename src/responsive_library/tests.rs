@@ -57,3 +57,11 @@ fn portrait_help_routes_all_visible_buttons() {
         [UiAction::Cabinet]
     ));
 }
+
+#[test]
+fn portrait_credits_back_is_a_touch_target() {
+    assert!(matches!(
+        credits_clicks(vec2(50., 670.)).as_slice(),
+        [UiAction::Cabinet]
+    ));
+}

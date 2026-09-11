@@ -74,3 +74,11 @@ fn landscape_help_routes_all_visible_buttons() {
         [UiAction::Cabinet]
     ));
 }
+
+#[test]
+fn landscape_credits_back_is_a_touch_target() {
+    assert!(matches!(
+        credits_clicks(vec2(400., 330.)).as_slice(),
+        [UiAction::Cabinet]
+    ));
+}

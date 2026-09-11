@@ -18,3 +18,11 @@ fn desktop_rule_card_opens_the_canonical_game() {
 
     assert!(matches!(actions.as_slice(), [UiAction::Open(0)]));
 }
+
+#[test]
+fn desktop_credits_back_is_a_touch_target() {
+    assert!(matches!(
+        credits_clicks(vec2(1100., 660.)).as_slice(),
+        [UiAction::Cabinet]
+    ));
+}
