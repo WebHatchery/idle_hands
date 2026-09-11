@@ -158,11 +158,17 @@ impl Game {
             }
             crate::storefront::GameAvailability::DemoRestricted => {
                 self.notifications
-                    .info(crate::storefront::purchase_message(id.title()));
+                    .info(crate::storefront::availability_message(
+                        id.title(),
+                        crate::storefront::GameAvailability::DemoRestricted,
+                    ));
             }
             crate::storefront::GameAvailability::ComingSoon => {
                 self.notifications
-                    .info(format!("{} is coming soon", id.title()));
+                    .info(crate::storefront::availability_message(
+                        id.title(),
+                        crate::storefront::GameAvailability::ComingSoon,
+                    ));
             }
         }
     }
@@ -173,12 +179,18 @@ impl Game {
             crate::storefront::GameAvailability::Playable => {}
             crate::storefront::GameAvailability::DemoRestricted => {
                 self.notifications
-                    .info(crate::storefront::purchase_message(id.title()));
+                    .info(crate::storefront::availability_message(
+                        id.title(),
+                        crate::storefront::GameAvailability::DemoRestricted,
+                    ));
                 return;
             }
             crate::storefront::GameAvailability::ComingSoon => {
                 self.notifications
-                    .info(format!("{} is coming soon", id.title()));
+                    .info(crate::storefront::availability_message(
+                        id.title(),
+                        crate::storefront::GameAvailability::ComingSoon,
+                    ));
                 return;
             }
         }

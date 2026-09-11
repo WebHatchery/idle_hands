@@ -29,6 +29,14 @@ pub fn action_label(game: crate::state::GameId) -> &'static str {
     availability(game).action_label()
 }
 
+pub fn availability_message(game_title: &str, availability: GameAvailability) -> String {
+    match availability {
+        GameAvailability::Playable => format!("{game_title} is ready to open"),
+        GameAvailability::DemoRestricted => purchase_message(game_title),
+        GameAvailability::ComingSoon => format!("{game_title} is coming soon"),
+    }
+}
+
 pub fn purchase_message(game_title: &str) -> String {
     format!("{game_title} is in the full version — buy Idle Hands on {PRIMARY_STORE}")
 }
