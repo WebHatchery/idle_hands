@@ -57,28 +57,29 @@ pub fn draw(state: &AppState) {
         &title,
         layout.title_position.x,
         layout.title_position.y,
-        layout.title_size,
+        crate::accessibility::text_size(layout.title_size, state.large_text),
         WHITE,
     );
     crate::ui::draw_text(
         "Current progress will be replaced.",
         layout.detail_position.x,
         layout.detail_position.y,
-        layout.detail_size,
+        crate::accessibility::text_size(layout.detail_size, state.large_text),
         Color::new(0.72, 0.68, 0.82, 1.),
     );
+    let button_size = crate::accessibility::text_size(14., state.large_text);
     for (rect, label, fill) in [
         (cancel, "CANCEL", Color::new(0.25, 0.16, 0.32, 1.)),
         (start, "START", Color::new(0.45, 0.22, 0.25, 1.)),
     ] {
         draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
         draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., WHITE);
-        let measured = crate::ui::measure_text(label, None, 14, 1.);
+        let measured = crate::ui::measure_text(label, None, button_size.round() as u16, 1.);
         crate::ui::draw_text(
             label,
             rect.x + (rect.w - measured.width) * 0.5,
             rect.y + rect.h * 0.65,
-            14.,
+            button_size,
             WHITE,
         );
     }
