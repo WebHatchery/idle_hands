@@ -156,3 +156,42 @@ fn save_recovery_dismiss_routes_through_every_layout() {
         ));
     });
 }
+
+#[test]
+fn notice_log_routes_open_and_close_through_every_layout() {
+    let settings = crate::state::AppState {
+        screen: crate::state::Screen::Settings,
+        ..Default::default()
+    };
+    let open_points = [vec2(1035., 584.), vec2(180., 634.), vec2(690., 290.)];
+    with_desktop_layout(|| {
+        assert!(matches!(
+            actions_at(&settings, open_points[0]).as_slice(),
+            [UiAction::ToggleNoticeLog]
+        ));
+    });
+    with_portrait_layout(|| {
+        assert!(matches!(
+            actions_at(&settings, open_points[1]).as_slice(),
+            [UiAction::ToggleNoticeLog]
+        ));
+    });
+    with_compact_landscape_layout(|| {
+        assert!(matches!(
+            actions_at(&settings, open_points[2]).as_slice(),
+            [UiAction::ToggleNoticeLog]
+        ));
+    });
+
+    let open = crate::state::AppState {
+        screen: crate::state::Screen::Settings,
+        notice_log_view: true,
+        ..Default::default()
+    };
+    with_desktop_layout(|| {
+        assert!(matches!(
+            actions_at(&open, vec2(920., 614.)).as_slice(),
+            [UiAction::ToggleNoticeLog]
+        ));
+    });
+}
