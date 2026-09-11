@@ -46,6 +46,13 @@ impl CollectionSummary {
             .checked_div(self.total_games)
             .unwrap_or(0)
     }
+
+    pub fn achievement_percent(self) -> usize {
+        self.earned_achievements
+            .saturating_mul(100)
+            .checked_div(self.total_achievements)
+            .unwrap_or(0)
+    }
 }
 
 #[cfg(test)]

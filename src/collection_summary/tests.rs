@@ -13,6 +13,7 @@ fn empty_collection_summary_reports_the_catalog_shape() {
     assert_eq!(summary.drawers_label(), "0/60 drawers");
     assert_eq!(summary.achievements_label(), "0/62 achievements");
     assert_eq!(summary.completion_percent(), 0);
+    assert_eq!(summary.achievement_percent(), 0);
 }
 
 #[test]
@@ -32,4 +33,5 @@ fn summary_collects_progression_and_time_state_in_one_snapshot() {
     assert_eq!(summary.total_playtime_seconds, 0);
     assert_eq!(summary.active_games, 0);
     assert_eq!(summary.completion_percent(), 1);
+    assert_eq!(summary.achievement_percent(), 1);
 }

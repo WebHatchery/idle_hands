@@ -107,12 +107,13 @@ pub fn draw(state: &AppState) {
         crate::accessibility::text_size(title_size, state.large_text),
         crate::theme::BRASS,
     );
-    let earned = crate::collection_summary::from_state(state).earned_achievements;
+    let summary = crate::collection_summary::from_state(state);
     crate::ui::draw_text(
         format!(
-            "{} earned of {}  -  showing {}",
-            earned,
-            AchievementId::ALL.len(),
+            "{} earned of {} ({}%)  -  showing {}",
+            summary.earned_achievements,
+            summary.total_achievements,
+            summary.achievement_percent(),
             achievements_data::filter_label(state.achievement_filter)
         ),
         l.panel.x + 52.,
