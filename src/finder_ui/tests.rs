@@ -98,3 +98,24 @@ fn accessibility_modes_keep_finder_cards_readable() {
         "large-text mode should enlarge the measured title size"
     );
 }
+
+#[test]
+fn every_visible_finder_card_exposes_a_launch_action() {
+    let state = AppState {
+        screen: Screen::Finder,
+        ..AppState::default()
+    };
+
+    let assert_cards = || {
+        for index in 0..finder_data::visible_count() {
+            let rect = card_rect(index);
+            assert!(matches!(
+                clicks(&state, rect.center()).as_slice(),
+                [UiAction::Open(_)]
+            ));
+        }
+    };
+    crate::ui::with_desktop_layout(assert_cards);
+    crate::ui::with_compact_landscape_layout(assert_cards);
+    crate::ui::with_portrait_layout(assert_cards);
+}
