@@ -4,6 +4,23 @@ use crate::{
 };
 use macroquad::prelude::*;
 
+#[cfg(test)]
+#[path = "restart_modal/tests.rs"]
+mod tests;
+
+fn title(state: &AppState) -> String {
+    if matches!(
+        state.pending_restart.as_ref(),
+        Some(UiAction::CycleGameVariant)
+    ) {
+        return "Change the rule card?".into();
+    }
+    match state.screen {
+        Screen::Game(game) => format!("Start a new {}?", game.title()),
+        _ => "Start a new game?".into(),
+    }
+}
+
 pub fn clicks(p: Vec2) -> Vec<UiAction> {
     let (cancel, start) = if crate::ui::is_compact_landscape() {
         (
@@ -31,10 +48,7 @@ pub fn clicks(p: Vec2) -> Vec<UiAction> {
 }
 
 pub fn draw(state: &AppState) {
-    let title = match state.screen {
-        Screen::Game(game) => format!("Start a new {}?", game.title()),
-        _ => "Start a new game?".into(),
-    };
+    let title = title(state);
     let (panel_rect, cancel, start, title_pos, detail_pos) = if crate::ui::is_compact_landscape() {
         (
             Rect::new(270., 95., 320., 170.),
