@@ -339,3 +339,30 @@ fn profile_editor_entry_and_return_are_touchable_in_every_layout() {
         ));
     });
 }
+
+#[test]
+fn drawer_info_return_routes_through_the_shared_ui_dispatcher() {
+    let drawer_info = crate::state::AppState {
+        screen: crate::state::Screen::DrawerInfo(crate::state::GameId::Solitaire),
+        ..Default::default()
+    };
+
+    with_desktop_layout(|| {
+        assert!(matches!(
+            actions_at(&drawer_info, vec2(1015., 525.)).as_slice(),
+            [UiAction::Cabinet]
+        ));
+    });
+    with_portrait_layout(|| {
+        assert!(matches!(
+            actions_at(&drawer_info, vec2(292., 624.)).as_slice(),
+            [UiAction::Cabinet]
+        ));
+    });
+    with_compact_landscape_layout(|| {
+        assert!(matches!(
+            actions_at(&drawer_info, vec2(745., 337.)).as_slice(),
+            [UiAction::Cabinet]
+        ));
+    });
+}
