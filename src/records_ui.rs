@@ -57,7 +57,7 @@ pub fn draw_records(state: &AppState) {
             state.records.daily_clear_count(),
             state.records.daily_results.len(),
             value(state.records.daily_best_score()),
-            next_achievement(&state.records),
+            next_achievement(state),
             crate::state_records::format_duration(summary.total_playtime_seconds),
             summary.active_games,
             summary.fastest_label()
@@ -378,10 +378,10 @@ fn draw_filtered_records(state: &AppState) {
     crate::ui::draw_text("BACK", 990., 621., 18., WHITE);
 }
 
-fn next_achievement(records: &crate::state::CollectionRecords) -> &'static str {
-    AchievementId::next_locked(records)
-        .map(AchievementId::title)
-        .unwrap_or("ALL COMPLETE")
+fn next_achievement(state: &AppState) -> String {
+    AchievementId::next_locked(&state.records)
+        .map(|achievement| achievement.title_from(&state.content))
+        .unwrap_or_else(|| "ALL COMPLETE".into())
 }
 
 pub fn records_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {

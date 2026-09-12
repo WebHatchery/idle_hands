@@ -79,7 +79,7 @@ pub fn draw_records(state: &AppState) {
             summary.completed_games,
             summary.total_games,
             summary.completion_percent(),
-            next_achievement(&state.records),
+            next_achievement(state),
             summary.fastest_label()
         ),
         20.,
@@ -417,10 +417,10 @@ fn draw_filtered_records(state: &AppState) {
     back_button(714.);
 }
 
-fn next_achievement(records: &crate::state::CollectionRecords) -> &'static str {
-    AchievementId::next_locked(records)
-        .map(AchievementId::title)
-        .unwrap_or("ALL COMPLETE")
+fn next_achievement(state: &AppState) -> String {
+    AchievementId::next_locked(&state.records)
+        .map(|achievement| achievement.title_from(&state.content))
+        .unwrap_or_else(|| "ALL COMPLETE".into())
 }
 
 pub fn records_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
@@ -485,14 +485,14 @@ pub fn draw_rules(state: &AppState) {
         let rect = Rect::new(18., 108. + index as f32 * 60., 324., 54.);
         panel(rect, Color::new(0.13, 0.09, 0.20, 1.));
         text(
-            game.title(),
+            state.game_title(*game),
             rect.x + 10.,
             rect.y + 22.,
             14.,
             crate::theme::BRASS,
         );
         text(
-            game.subtitle(),
+            state.game_subtitle(*game),
             rect.x + 10.,
             rect.y + 43.,
             11.,
@@ -619,6 +619,7 @@ fn draw_rule_info(row: Rect) {
 }
 
 pub fn draw_credits(state: &AppState) {
+    let paragraphs = crate::credits_data::paragraphs(&state.content);
     let credits_panel = Rect::new(8., 70., 344., 520.);
     panel(credits_panel, crate::theme::BACKGROUND_DEEP);
     if state.high_contrast {
@@ -639,15 +640,15 @@ pub fn draw_credits(state: &AppState) {
         crate::theme::BRASS,
     );
     text(
-        crate::credits_data::TITLE,
+        crate::credits_data::title(&state.content),
         22.,
         165.,
         crate::accessibility::text_size(22., state.large_text),
         WHITE,
     );
     let mut y = 205.;
-    for (index, paragraph) in crate::credits_data::PARAGRAPHS.iter().enumerate() {
-        let base_size = if index == crate::credits_data::PARAGRAPHS.len() - 1 {
+    for (index, paragraph) in paragraphs.iter().enumerate() {
+        let base_size = if index == paragraphs.len() - 1 {
             14.
         } else if index == 0 {
             15.
@@ -657,7 +658,7 @@ pub fn draw_credits(state: &AppState) {
         let size = crate::accessibility::text_size(base_size, state.large_text);
         let color = if state.high_contrast {
             WHITE
-        } else if index == 0 || index == crate::credits_data::PARAGRAPHS.len() - 1 {
+        } else if index == 0 || index == paragraphs.len() - 1 {
             crate::theme::CREAM
         } else {
             crate::theme::SECONDARY
@@ -682,6 +683,8 @@ pub fn credits_clicks(p: Vec2) -> Vec<UiAction> {
 }
 
 pub fn draw_help(state: &AppState) {
+    let paragraphs = crate::help_data::paragraphs(&state.content);
+    let navigation = crate::help_data::navigation(&state.content);
     panel(
         Rect::new(8., 38., 344., 602.),
         crate::theme::BACKGROUND_DEEP,
@@ -706,7 +709,7 @@ pub fn draw_help(state: &AppState) {
         crate::theme::BRASS,
     );
     let mut y = 112.;
-    for (index, paragraph) in crate::help_data::PARAGRAPHS.iter().enumerate() {
+    for (index, paragraph) in paragraphs.iter().enumerate() {
         let size = crate::accessibility::text_size(14., state.large_text);
         for line in macroquad_toolkit::ui::wrap_text(paragraph, 315., size) {
             text(
@@ -726,7 +729,7 @@ pub fn draw_help(state: &AppState) {
     }
     panel(Rect::new(10., 476., 105., 44.), crate::theme::SURFACE);
     text(
-        crate::help_data::NAV_LABELS[0],
+        navigation[0].as_str(),
         29.,
         504.,
         crate::accessibility::text_size(10., state.large_text),
@@ -736,21 +739,21 @@ pub fn draw_help(state: &AppState) {
     panel(Rect::new(127., 530., 105., 44.), crate::theme::SURFACE);
     panel(Rect::new(244., 530., 106., 44.), crate::theme::MOSS_DARK);
     text(
-        crate::help_data::NAV_LABELS[1],
+        navigation[1].as_str(),
         42.,
         558.,
         crate::accessibility::text_size(12., state.large_text),
         WHITE,
     );
     text(
-        crate::help_data::NAV_LABELS[2],
+        navigation[2].as_str(),
         150.,
         558.,
         crate::accessibility::text_size(11., state.large_text),
         WHITE,
     );
     text(
-        crate::help_data::NAV_LABELS[3],
+        navigation[3].as_str(),
         277.,
         558.,
         crate::accessibility::text_size(12., state.large_text),

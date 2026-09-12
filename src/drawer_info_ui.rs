@@ -72,7 +72,7 @@ fn draw_game_card(state: &AppState, game: GameId, rect: Rect, initial_size: f32)
     );
     text(
         state,
-        &game.title()[..game.title().len().min(1)],
+        &state.game_title(game)[..state.game_title(game).len().min(1)],
         rect.x + 37.,
         rect.y + rect.h * 0.5 + initial_size * 0.35,
         initial_size,
@@ -80,7 +80,11 @@ fn draw_game_card(state: &AppState, game: GameId, rect: Rect, initial_size: f32)
     );
     text(
         state,
-        crate::stats_data::short_title(game, if crate::ui::is_portrait() { 22 } else { 18 }),
+        crate::stats_data::short_title_from(
+            state,
+            game,
+            if crate::ui::is_portrait() { 22 } else { 18 },
+        ),
         rect.x + 86.,
         rect.y + rect.h * 0.5 + 6.,
         if crate::ui::is_portrait() { 18. } else { 22. },
@@ -95,7 +99,14 @@ fn draw_details(state: &AppState, game: GameId, x: f32, y: f32, size: f32) {
     } else {
         availability.cabinet_label(crate::ui::is_portrait())
     };
-    text(state, game.subtitle(), x, y, size, crate::theme::CREAM);
+    text(
+        state,
+        state.game_subtitle(game),
+        x,
+        y,
+        size,
+        crate::theme::CREAM,
+    );
     text(
         state,
         format!(

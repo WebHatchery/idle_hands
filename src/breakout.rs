@@ -14,6 +14,10 @@ const LEGACY_STEP: f32 = 0.25;
 const PADDLE_SPEED: f32 = 7.;
 const BALL_SPEED: f32 = 5.;
 
+fn default_target_level() -> u8 {
+    TARGET_LEVEL
+}
+
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub enum PaddleMove {
     Left,
@@ -58,6 +62,8 @@ pub struct Breakout {
     pub velocity_x: i8,
     pub velocity_y: i8,
     pub score: u16,
+    #[serde(default = "default_target_level")]
+    pub target_level: u8,
     pub moves: u16,
     #[serde(default = "default_lives")]
     pub lives: u8,
@@ -93,10 +99,16 @@ impl Default for Breakout {
 
 impl Breakout {
     pub fn new(seed: u64) -> Self {
-        Self::new_with_level(seed, 1)
+        let content = crate::data::GameData::default_content();
+        Self::new_with_level_and_target(seed, 1, content.balance.arcade.breakout_target_level)
     }
 
     pub fn new_with_level(seed: u64, level: u8) -> Self {
+        let content = crate::data::GameData::default_content();
+        Self::new_with_level_and_target(seed, level, content.balance.arcade.breakout_target_level)
+    }
+
+    pub fn new_with_level_and_target(seed: u64, level: u8, target_level: u8) -> Self {
         let mut game = Self {
             bricks: vec![false; BRICK_COUNT],
             brick_health: vec![0; BRICK_COUNT],
@@ -106,9 +118,10 @@ impl Breakout {
             velocity_x: if seed & 1 == 0 { 1 } else { -1 },
             velocity_y: -1,
             score: 0,
+            target_level,
             moves: 0,
             lives: STARTING_LIVES,
-            level: level.clamp(1, TARGET_LEVEL),
+            level: level.clamp(1, target_level),
             status: BreakoutStatus::Playing,
             seed,
             control: PaddleMove::Stay,
@@ -221,7 +234,7 @@ impl Breakout {
     }
 
     pub fn reset(&mut self, seed: u64) {
-        *self = Self::new(seed);
+        *self = Self::new_with_level_and_target(seed, 1, self.target_level);
     }
 
     pub fn ball_position(&self) -> (f32, f32) {
@@ -382,7 +395,7 @@ impl Breakout {
     }
 
     fn complete_wall(&mut self) {
-        if self.level >= TARGET_LEVEL {
+        if self.level >= self.target_level {
             self.status = BreakoutStatus::Won;
             self.paused = false;
             self.serve_ready = false;

@@ -1,6 +1,9 @@
 //! One-time cabinet achievements and the shared stamp total.
 
-use crate::state::{CollectionRecords, GameId};
+use crate::{
+    content::{AchievementEntry, GameContent},
+    state::{CollectionRecords, GameId},
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -88,88 +91,33 @@ impl AchievementId {
         Self::FullCabinet,
     ];
 
-    pub fn title(self) -> &'static str {
+    fn content_id(self) -> String {
         match self {
-            Self::FirstFinish => "First finish",
-            Self::Game(game) => match game {
-                GameId::Solitaire => "Card table",
-                GameId::FreeCell => "Open cells",
-                GameId::Sudoku => "Number keeper",
-                GameId::Minesweeper => "Careful surveyor",
-                GameId::Game2048 => "Tile climber",
-                GameId::Nonogram => "Pattern keeper",
-                GameId::Yahtzee => "Scorekeeper",
-                GameId::Reversi => "Board turner",
-                GameId::LightsOut => "Light keeper",
-                GameId::TicTacToe => "Three-in-a-row keeper",
-                GameId::MemoryPairs => "Pair keeper",
-                GameId::SlidingPuzzle => "Tile keeper",
-                GameId::Mastermind => "Code keeper",
-                GameId::Spider => "Web keeper",
-                GameId::WordSearch => "Word keeper",
-                GameId::Hangman => "Letter keeper",
-                GameId::ConnectFour => "Disc keeper",
-                GameId::Checkers => "Piece keeper",
-                GameId::PegSolitaire => "Peg keeper",
-                GameId::MahjongSolitaire => "Tile keeper",
-                GameId::Snake => "Coil keeper",
-                GameId::Breakout => "Brick keeper",
-                GameId::HigherLower => "Card keeper",
-                GameId::KlondikeGolf => "Golf keeper",
-                GameId::Blackjack => "Hand keeper",
-                GameId::SpiderSolitaire => "Web keeper",
-                GameId::DungeonSweeper => "Dungeon keeper",
-                GameId::Potion2048 => "Potion keeper",
-                GameId::TinyTowerDefence => "Tower keeper",
-                GameId::OneRoomRoguelike => "Room keeper",
-                GameId::DailyDungeon => "Daily keeper",
-                GameId::DotsBoxes => "Square keeper",
-                GameId::Sokoban => "Crate keeper",
-                GameId::Mancala => "Stone keeper",
-                GameId::Hanoi => "Disk keeper",
-                GameId::NumberMatch => "Number keeper",
-                GameId::FloodIt => "Color keeper",
-                GameId::ColorSort => "Sort keeper",
-                GameId::Battleship => "Fleet keeper",
-                GameId::WordGrid => "Word keeper",
-                GameId::PipeLoop => "Pipe keeper",
-                GameId::MazeWalk => "Maze keeper",
-                GameId::MatchThree => "Color keeper",
-                GameId::Pyramid => "Pyramid keeper",
-                GameId::TriPeaks => "Peak keeper",
-                GameId::Nim => "Stone keeper",
-                GameId::WordLadder => "Ladder keeper",
-                GameId::SpaceInvaders => "Sky keeper",
-                GameId::Asteroids => "Orbit keeper",
-                GameId::Frogger => "Crossing keeper",
-                GameId::MunchMaze => "Maze keeper",
-                GameId::BlockStack => "Stack keeper",
-                GameId::TerrainCannon => "Terrain keeper",
-                GameId::FlingFury => "Fort keeper",
-                GameId::PaddleDuel => "Rally keeper",
-                GameId::RiddleRoom => "Riddle keeper",
-                GameId::PatternVault => "Pattern keeper",
-                GameId::SumCircuit => "Circuit keeper",
-                GameId::OrbitOrder => "Orbit keeper",
-                GameId::WordForge => "Forge keeper",
-            },
-            Self::FullCabinet => "Full cabinet",
+            Self::FirstFinish => "first_finish".into(),
+            Self::Game(game) => format!("game:{}", game.key()),
+            Self::FullCabinet => "full_cabinet".into(),
         }
     }
 
-    pub fn stamp_value(self) -> u16 {
-        match self {
-            Self::FullCabinet => 2,
-            _ => 1,
-        }
+    fn entry(self, content: &GameContent) -> Option<&AchievementEntry> {
+        let id = self.content_id();
+        content.achievements.iter().find(|entry| entry.id == id)
     }
 
-    pub fn description(self) -> String {
-        match self {
-            Self::FirstFinish => "Finish any drawer".into(),
-            Self::Game(game) => format!("Finish {}", game.title()),
-            Self::FullCabinet => "Finish every drawer".into(),
-        }
+    pub fn title_from(self, content: &GameContent) -> String {
+        self.entry(content)
+            .map(|entry| entry.title.clone())
+            .unwrap_or_else(|| self.content_id())
+    }
+
+    pub fn stamp_value_from(self, content: &GameContent) -> u16 {
+        self.entry(content).map_or(1, |entry| entry.stamp_value)
+    }
+
+    pub fn description_from(self, content: &GameContent) -> String {
+        self.entry(content)
+            .map(|entry| entry.description.clone())
+            .unwrap_or_else(|| format!("Finish {}", self.title_from(content)))
     }
 
     pub fn progress(self, records: &CollectionRecords) -> AchievementProgress {
@@ -293,10 +241,11 @@ pub fn earned(records: &CollectionRecords, achievement: AchievementId) -> bool {
     }
 }
 
-pub fn sync(
+pub fn sync_with_content(
     earned_flags: &mut Vec<bool>,
     stamps: &mut u16,
     records: &CollectionRecords,
+    content: &GameContent,
 ) -> Vec<AchievementId> {
     earned_flags.resize(AchievementId::ALL.len(), false);
     let mut newly_earned = Vec::new();
@@ -304,7 +253,7 @@ pub fn sync(
         let index = achievement.index();
         if !earned_flags[index] && earned(records, achievement) {
             earned_flags[index] = true;
-            *stamps = stamps.saturating_add(achievement.stamp_value());
+            *stamps = stamps.saturating_add(achievement.stamp_value_from(content));
             newly_earned.push(achievement);
         }
     }

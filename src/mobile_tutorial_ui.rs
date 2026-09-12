@@ -1,6 +1,6 @@
 //! Compact touch tutorials with exact visible-control instructions.
 
-use crate::{state::GameId, tutorial_data, ui::UiAction};
+use crate::{content::GameContent, state::GameId, tutorial_data, ui::UiAction};
 use macroquad::prelude::*;
 
 const PORTRAIT_PANEL: Rect = Rect::new(15., 70., 330., 650.);
@@ -55,15 +55,21 @@ pub fn draw_replay_button(compact_landscape: bool, large_text: bool, high_contra
     );
 }
 
-pub fn draw_tutorial(game: GameId, compact_landscape: bool, large_text: bool, high_contrast: bool) {
+pub fn draw_tutorial(
+    game: GameId,
+    content: &GameContent,
+    compact_landscape: bool,
+    large_text: bool,
+    high_contrast: bool,
+) {
     if compact_landscape {
-        draw_landscape(game, large_text, high_contrast);
+        draw_landscape(game, content, large_text, high_contrast);
     } else {
-        draw_portrait(game, large_text, high_contrast);
+        draw_portrait(game, content, large_text, high_contrast);
     }
 }
 
-fn draw_portrait(game: GameId, large_text: bool, high_contrast: bool) {
+fn draw_portrait(game: GameId, content: &GameContent, large_text: bool, high_contrast: bool) {
     panel(
         PORTRAIT_PANEL,
         Color::new(0.07, 0.045, 0.13, 0.98),
@@ -73,9 +79,20 @@ fn draw_portrait(game: GameId, large_text: bool, high_contrast: bool) {
     let game_size = crate::accessibility::text_size(20., large_text);
     let instruction_size = crate::accessibility::text_size(14., large_text);
     crate::ui::draw_text("HOW TO PLAY", 35., 160., title_size, crate::theme::BRASS);
-    crate::ui::draw_text(game.title(), 35., 198., game_size, WHITE);
+    crate::ui::draw_text(
+        content
+            .game(game)
+            .map_or_else(|| game.title(), |entry| entry.title.as_str()),
+        35.,
+        198.,
+        game_size,
+        WHITE,
+    );
     let mut y = 240.;
-    for (index, instruction) in tutorial_data::instructions(game).iter().enumerate() {
+    for (index, instruction) in tutorial_data::instructions(content, game)
+        .iter()
+        .enumerate()
+    {
         for (line_index, line) in macroquad_toolkit::ui::wrap_text(
             instruction,
             PORTRAIT_PANEL.right() - 35. - 44.,
@@ -103,7 +120,7 @@ fn draw_portrait(game: GameId, large_text: bool, high_contrast: bool) {
     draw_continue(false, large_text, high_contrast);
 }
 
-fn draw_landscape(game: GameId, large_text: bool, high_contrast: bool) {
+fn draw_landscape(game: GameId, content: &GameContent, large_text: bool, high_contrast: bool) {
     panel(
         LANDSCAPE_PANEL,
         Color::new(0.07, 0.045, 0.13, 0.98),
@@ -113,9 +130,20 @@ fn draw_landscape(game: GameId, large_text: bool, high_contrast: bool) {
     let game_size = crate::accessibility::text_size(19., large_text);
     let instruction_size = crate::accessibility::text_size(13., large_text);
     crate::ui::draw_text("HOW TO PLAY", 122., 90., title_size, crate::theme::BRASS);
-    crate::ui::draw_text(game.title(), 122., 123., game_size, WHITE);
+    crate::ui::draw_text(
+        content
+            .game(game)
+            .map_or_else(|| game.title(), |entry| entry.title.as_str()),
+        122.,
+        123.,
+        game_size,
+        WHITE,
+    );
     let mut y = 154.;
-    for (index, instruction) in tutorial_data::instructions(game).iter().enumerate() {
+    for (index, instruction) in tutorial_data::instructions(content, game)
+        .iter()
+        .enumerate()
+    {
         for (line_index, line) in macroquad_toolkit::ui::wrap_text(
             instruction,
             LANDSCAPE_PANEL.right() - 122. - 44.,

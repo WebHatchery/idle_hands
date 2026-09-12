@@ -235,17 +235,17 @@ pub fn sorted_games(state: &AppState, filter: u8, sort: CabinetSort) -> Vec<Game
         .filter(|&game| matches_filter(state, game, filter))
         .collect();
     games.sort_by(|left, right| match sort {
-        CabinetSort::Title => left.title().cmp(right.title()),
+        CabinetSort::Title => state.game_title(*left).cmp(state.game_title(*right)),
         CabinetSort::Progress => {
             let left_done = crate::progression::game_complete(&state.records, *left);
             let right_done = crate::progression::game_complete(&state.records, *right);
             left_done
                 .cmp(&right_done)
-                .then_with(|| left.title().cmp(right.title()))
+                .then_with(|| state.game_title(*left).cmp(state.game_title(*right)))
         }
         CabinetSort::Recent => recent_rank(state, *left)
             .cmp(&recent_rank(state, *right))
-            .then_with(|| left.title().cmp(right.title())),
+            .then_with(|| state.game_title(*left).cmp(state.game_title(*right))),
     });
     games
 }

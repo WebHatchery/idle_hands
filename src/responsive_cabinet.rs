@@ -108,20 +108,26 @@ fn draw_home(state: &AppState, loaded: usize) {
     let selected = crate::continue_data::preferred_game(state);
     draw_circle(55., 117., 27., crate::theme::PAPER_LIGHT);
     text(
-        &selected.title()[..selected.title().len().min(1)],
+        &state.game_title(selected)[..state.game_title(selected).len().min(1)],
         48.,
         124.,
         19.,
         crate::theme::INK,
     );
     text(
-        selected.title(),
+        state.game_title(selected),
         94.,
         112.,
         crate::accessibility::text_size(20., state.large_text),
         crate::theme::CREAM,
     );
-    text(selected.subtitle(), 94., 133., 10., crate::theme::SECONDARY);
+    text(
+        state.game_subtitle(selected),
+        94.,
+        133.,
+        10.,
+        crate::theme::SECONDARY,
+    );
     panel(Rect::new(230., 116., 104., 34.), crate::theme::MOSS);
     text(
         crate::continue_data::compact_action_label(state),
@@ -232,10 +238,14 @@ fn draw_library(state: &AppState) {
         let rect = game_rect(index);
         panel(rect, crate::theme::category_surface(game, true));
         text(
-            game.title(),
+            state.game_title(game),
             rect.x + 9.,
             rect.y + 22.,
-            if game.title().len() > 17 { 9. } else { 12. },
+            if state.game_title(game).len() > 17 {
+                9.
+            } else {
+                12.
+            },
             crate::theme::CREAM,
         );
         text(

@@ -8,6 +8,10 @@ const TARGET_SCORE: u16 = 20;
 const MOVE_INTERVAL: f32 = 0.20;
 const GARDEN_ROCKS: usize = 12;
 
+fn default_target_score() -> u16 {
+    TARGET_SCORE
+}
+
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub enum SnakeMode {
     #[default]
@@ -94,6 +98,8 @@ pub struct Snake {
     #[serde(default)]
     pub obstacles: Vec<u16>,
     pub score: u16,
+    #[serde(default = "default_target_score")]
+    pub win_score: u16,
     pub moves: u16,
     pub status: SnakeStatus,
     pub seed: u64,
@@ -113,10 +119,20 @@ impl Default for Snake {
 
 impl Snake {
     pub fn new(seed: u64) -> Self {
-        Self::new_with_mode(seed, SnakeMode::Classic)
+        let content = crate::data::GameData::default_content();
+        Self::new_with_mode_and_target(
+            seed,
+            SnakeMode::Classic,
+            content.balance.arcade.snake_target_score,
+        )
     }
 
     pub fn new_with_mode(seed: u64, mode: SnakeMode) -> Self {
+        let content = crate::data::GameData::default_content();
+        Self::new_with_mode_and_target(seed, mode, content.balance.arcade.snake_target_score)
+    }
+
+    pub fn new_with_mode_and_target(seed: u64, mode: SnakeMode, win_score: u16) -> Self {
         let center = (HEIGHT / 2 * WIDTH + WIDTH / 2) as u16;
         let mut game = Self {
             body: vec![center, center - 1, center - 2],
@@ -126,6 +142,7 @@ impl Snake {
             mode,
             obstacles: Vec::new(),
             score: 0,
+            win_score,
             moves: 0,
             status: SnakeStatus::Playing,
             seed,
@@ -222,7 +239,7 @@ impl Snake {
         self.body.insert(0, next);
         if eating {
             self.score = self.score.saturating_add(self.food_kind.value());
-            if self.score >= TARGET_SCORE {
+            if self.score >= self.win_score {
                 self.status = SnakeStatus::Won;
             } else {
                 self.food = self.next_food();
@@ -279,7 +296,7 @@ impl Snake {
     }
 
     pub fn reset(&mut self, seed: u64) {
-        *self = Self::new_with_mode(seed, self.mode);
+        *self = Self::new_with_mode_and_target(seed, self.mode, self.win_score);
     }
 
     fn next_food(&mut self) -> u16 {

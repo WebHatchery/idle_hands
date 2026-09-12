@@ -50,11 +50,23 @@ impl Game {
             }
             UiAction::HangmanCategory(category) => {
                 let seed = self.state.games.hangman.seed.wrapping_add(1);
-                self.state.games.hangman.set_category(*category, seed);
+                self.state
+                    .games
+                    .hangman
+                    .set_category_with_config_and_balance(
+                        *category,
+                        seed,
+                        &self.data.content.words.hangman,
+                        &self.data.content.balance.word_games,
+                    );
             }
             UiAction::HangmanRule(rule) => {
                 let seed = self.state.games.hangman.seed.wrapping_add(1);
-                self.state.games.hangman.set_rule(*rule, seed);
+                self.state.games.hangman.set_rule_with_balance(
+                    *rule,
+                    seed,
+                    &self.data.content.balance.word_games,
+                );
             }
             UiAction::LightsOutGuide => {
                 self.state.games.lights_out.toggle_guide();

@@ -7,6 +7,10 @@ pub const HEIGHT: u8 = 12;
 const TARGET_WAVE: u8 = 3;
 const STEP_INTERVAL: f32 = 0.10;
 
+fn default_target_wave() -> u8 {
+    TARGET_WAVE
+}
+
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub enum ShipDirection {
     Left,
@@ -63,6 +67,8 @@ pub struct SpaceInvaders {
     pub moves: u16,
     pub lives: u8,
     pub wave: u8,
+    #[serde(default = "default_target_wave")]
+    pub target_wave: u8,
     pub status: SpaceInvadersStatus,
     pub seed: u64,
     pub paused: bool,
@@ -86,6 +92,11 @@ impl Default for SpaceInvaders {
 
 impl SpaceInvaders {
     pub fn new(seed: u64) -> Self {
+        let content = crate::data::GameData::default_content();
+        Self::new_with_target(seed, content.balance.arcade.space_invaders_target_wave)
+    }
+
+    pub fn new_with_target(seed: u64, target_wave: u8) -> Self {
         let mut game = Self {
             ship_x: WIDTH / 2,
             invaders: Vec::new(),
@@ -95,6 +106,7 @@ impl SpaceInvaders {
             moves: 0,
             lives: 3,
             wave: 1,
+            target_wave,
             status: SpaceInvadersStatus::Playing,
             seed,
             paused: false,
@@ -175,7 +187,7 @@ impl SpaceInvaders {
 
     pub fn reset(&mut self, seed: u64) {
         let mode = self.mode;
-        *self = Self::new(seed);
+        *self = Self::new_with_target(seed, self.target_wave);
         self.mode = mode;
         self.build_wave();
     }
@@ -245,7 +257,7 @@ impl SpaceInvaders {
             self.score = self.score.saturating_add(10);
             self.player_shot = None;
             if self.invaders.iter().all(|invader| !invader.alive) {
-                if self.wave >= TARGET_WAVE {
+                if self.wave >= self.target_wave {
                     self.status = SpaceInvadersStatus::Won;
                     self.paused = false;
                 } else {

@@ -4,8 +4,6 @@ use serde::{Deserialize, Serialize};
 
 const SIZE: usize = 10;
 const WORD_COUNT: usize = 6;
-pub const WORDS: [&str; WORD_COUNT] = ["STILL", "SHELF", "CARD", "PAUSE", "GAMES", "DREAM"];
-const NATURE_WORDS: [&str; WORD_COUNT] = ["LEAF", "RIVER", "MOSS", "STONE", "BIRD", "RAIN"];
 const PLACEMENTS: [(usize, usize, isize, isize); WORD_COUNT] = [
     (0, 0, 0, 1),
     (2, 9, 1, 0),
@@ -26,11 +24,11 @@ pub enum WordSearchTheme {
 impl WordSearchTheme {
     pub const ALL: [Self; 3] = [Self::Cabinet, Self::Nature, Self::Workshop];
 
-    pub const fn label(self) -> &'static str {
+    pub const fn key(self) -> &'static str {
         match self {
-            Self::Cabinet => "CABINET WORDS",
-            Self::Nature => "NATURE WORDS",
-            Self::Workshop => "WORKSHOP WORDS",
+            Self::Cabinet => "cabinet",
+            Self::Nature => "nature",
+            Self::Workshop => "workshop",
         }
     }
 }
@@ -51,6 +49,8 @@ pub struct WordSearch {
     pub seed: u64,
     #[serde(default)]
     pub theme: WordSearchTheme,
+    #[serde(default)]
+    pub words: Vec<String>,
 }
 
 impl Default for WordSearch {
@@ -61,19 +61,33 @@ impl Default for WordSearch {
 
 impl WordSearch {
     pub fn new(seed: u64) -> Self {
-        Self::new_with_theme(seed, WordSearchTheme::default())
+        let content = crate::data::GameData::default_content();
+        Self::new_with_theme_config(seed, WordSearchTheme::default(), &content.words.word_search)
     }
 
     pub fn new_with_theme(seed: u64, theme: WordSearchTheme) -> Self {
+        let content = crate::data::GameData::default_content();
+        Self::new_with_theme_config(seed, theme, &content.words.word_search)
+    }
+
+    pub fn new_with_theme_config(
+        seed: u64,
+        theme: WordSearchTheme,
+        themes: &[crate::content::WordSearchTheme],
+    ) -> Self {
+        let words = themes
+            .iter()
+            .find(|entry| entry.id == theme.key())
+            .expect("validated content has every Word Search theme")
+            .words
+            .clone();
         let mut cells = vec![0u8; SIZE * SIZE];
         let mut rng = seed;
         for cell in &mut cells {
             rng = next_seed(rng);
             *cell = (rng % 26) as u8;
         }
-        for (word, &(row, column, row_step, column_step)) in
-            theme.words().iter().zip(PLACEMENTS.iter())
-        {
+        for (word, &(row, column, row_step, column_step)) in words.iter().zip(PLACEMENTS.iter()) {
             for (offset, letter) in word.bytes().enumerate() {
                 let target_row = (row as isize + row_step * offset as isize) as usize;
                 let target_column = (column as isize + column_step * offset as isize) as usize;
@@ -88,6 +102,7 @@ impl WordSearch {
             status: WordSearchStatus::Playing,
             seed,
             theme,
+            words,
         }
     }
 
@@ -118,7 +133,7 @@ impl WordSearch {
     }
 
     pub fn reset(&mut self, seed: u64) {
-        *self = Self::new(seed);
+        *self = Self::new_from_words(seed, self.theme, &self.words);
     }
 
     pub fn hint_word(&self) -> Option<(usize, usize, usize)> {
@@ -127,7 +142,7 @@ impl WordSearch {
         }
         self.found.iter().position(|found| !found).map(|word| {
             let (row, column, row_step, column_step) = PLACEMENTS[word];
-            let end_offset = self.theme.words()[word].len() as isize - 1;
+            let end_offset = self.words[word].len() as isize - 1;
             let end_row = (row as isize + row_step * end_offset) as usize;
             let end_column = (column as isize + column_step * end_offset) as usize;
             (word, row * SIZE + column, end_row * SIZE + end_column)
@@ -140,7 +155,7 @@ impl WordSearch {
             .enumerate()
             .any(|(word, &(row, column, row_step, column_step))| {
                 self.found[word]
-                    && (0..self.theme.words()[word].len()).any(|offset| {
+                    && (0..self.words[word].len()).any(|offset| {
                         let target_row = (row as isize + row_step * offset as isize) as usize;
                         let target_column =
                             (column as isize + column_step * offset as isize) as usize;
@@ -164,39 +179,53 @@ impl WordSearch {
         }
         let row_step = row_delta.signum();
         let column_step = column_delta.signum();
-        self.theme
-            .words()
-            .iter()
-            .enumerate()
-            .find_map(|(word, letters)| {
-                if letters.len() != steps as usize + 1 {
-                    return None;
-                }
-                let matches_forward = letters.bytes().enumerate().all(|(offset, letter)| {
-                    self.cells[((start_row as isize + row_step * offset as isize) as usize) * SIZE
-                        + (start_column as isize + column_step * offset as isize) as usize]
-                        == letter - b'A'
-                });
-                let matches_reverse = letters.bytes().rev().enumerate().all(|(offset, letter)| {
-                    self.cells[((start_row as isize + row_step * offset as isize) as usize) * SIZE
-                        + (start_column as isize + column_step * offset as isize) as usize]
-                        == letter - b'A'
-                });
-                (matches_forward || matches_reverse).then_some(word)
-            })
+        self.words.iter().enumerate().find_map(|(word, letters)| {
+            if letters.len() != steps as usize + 1 {
+                return None;
+            }
+            let matches_forward = letters.bytes().enumerate().all(|(offset, letter)| {
+                self.cells[((start_row as isize + row_step * offset as isize) as usize) * SIZE
+                    + (start_column as isize + column_step * offset as isize) as usize]
+                    == letter - b'A'
+            });
+            let matches_reverse = letters.bytes().rev().enumerate().all(|(offset, letter)| {
+                self.cells[((start_row as isize + row_step * offset as isize) as usize) * SIZE
+                    + (start_column as isize + column_step * offset as isize) as usize]
+                    == letter - b'A'
+            });
+            (matches_forward || matches_reverse).then_some(word)
+        })
     }
 
-    pub fn words(&self) -> [&'static str; WORD_COUNT] {
-        self.theme.words()
+    pub fn words(&self) -> &[String] {
+        &self.words
     }
 }
 
-impl WordSearchTheme {
-    pub const fn words(self) -> [&'static str; WORD_COUNT] {
-        match self {
-            Self::Cabinet => WORDS,
-            Self::Nature => NATURE_WORDS,
-            Self::Workshop => ["HAMMER", "NAIL", "LATHE", "OAK", "INK", "TOOLS"],
+impl WordSearch {
+    fn new_from_words(seed: u64, theme: WordSearchTheme, words: &[String]) -> Self {
+        let mut cells = vec![0u8; SIZE * SIZE];
+        let mut rng = seed;
+        for cell in &mut cells {
+            rng = next_seed(rng);
+            *cell = (rng % 26) as u8;
+        }
+        for (word, &(row, column, row_step, column_step)) in words.iter().zip(PLACEMENTS.iter()) {
+            for (offset, letter) in word.bytes().enumerate() {
+                let target_row = (row as isize + row_step * offset as isize) as usize;
+                let target_column = (column as isize + column_step * offset as isize) as usize;
+                cells[target_row * SIZE + target_column] = letter - b'A';
+            }
+        }
+        Self {
+            cells,
+            found: [false; WORD_COUNT],
+            selected_start: None,
+            moves: 0,
+            status: WordSearchStatus::Playing,
+            seed,
+            theme,
+            words: words.to_vec(),
         }
     }
 }

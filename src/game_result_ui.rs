@@ -53,7 +53,7 @@ pub(crate) fn make(state: &AppState, spec: ResultSpec) -> Option<ResultInfo> {
         kind: spec.kind,
         context: format!(
             "{}  ·  {}",
-            crate::game_descriptor::descriptor(game).title,
+            state.game_title(game),
             crate::game_variants::label(state, game)
         ),
         explanation: spec.explanation,

@@ -7,6 +7,10 @@ pub const HEIGHT: u8 = 20;
 const TARGET_LINES: u16 = 20;
 const STEP_INTERVAL: f32 = 0.55;
 
+fn default_target_lines() -> u16 {
+    TARGET_LINES
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum BlockMove {
     Left,
@@ -49,6 +53,8 @@ pub struct BlockStack {
     pub piece_y: i8,
     pub score: u32,
     pub lines: u16,
+    #[serde(default = "default_target_lines")]
+    pub target_lines: u16,
     pub level: u8,
     pub moves: u16,
     pub status: BlockStatus,
@@ -70,6 +76,11 @@ impl Default for BlockStack {
 
 impl BlockStack {
     pub fn new(seed: u64) -> Self {
+        let content = crate::data::GameData::default_content();
+        Self::new_with_target(seed, content.balance.arcade.block_stack_target_lines)
+    }
+
+    pub fn new_with_target(seed: u64, target_lines: u16) -> Self {
         let mut game = Self {
             board: vec![0; usize::from(WIDTH) * usize::from(HEIGHT)],
             piece: 0,
@@ -79,6 +90,7 @@ impl BlockStack {
             piece_y: 0,
             score: 0,
             lines: 0,
+            target_lines,
             level: 1,
             moves: 0,
             status: BlockStatus::Playing,
@@ -186,7 +198,7 @@ impl BlockStack {
 
     pub fn reset(&mut self, seed: u64) {
         let mode = self.mode;
-        *self = Self::new(seed);
+        *self = Self::new_with_target(seed, self.target_lines);
         self.mode = mode;
     }
 
@@ -240,7 +252,7 @@ impl BlockStack {
             .score
             .saturating_add(u32::from(cleared) * 100 * u32::from(self.level));
         self.level = 1 + (self.lines / 5) as u8;
-        if self.lines >= TARGET_LINES {
+        if self.lines >= self.target_lines {
             self.status = BlockStatus::Won;
             self.paused = false;
             return;

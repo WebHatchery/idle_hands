@@ -92,5 +92,16 @@ pub fn short_title(game: GameId, max_chars: usize) -> String {
     shortened
 }
 
+pub fn short_title_from(state: &crate::state::AppState, game: GameId, max_chars: usize) -> String {
+    let title = state.game_title(game);
+    if title.chars().count() <= max_chars {
+        return title.to_owned();
+    }
+    let keep = max_chars.saturating_sub(1);
+    let mut shortened: String = title.chars().take(keep).collect();
+    shortened.push('…');
+    shortened
+}
+
 #[cfg(test)]
 mod tests;

@@ -26,7 +26,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 format!(
                     "SCORE {} / {}  ·  LENGTH {}",
                     game.score,
-                    crate::snake::Snake::target_score(),
+                    game.win_score,
                     game.body.len()
                 ),
                 UiAction::SnakeNew,
@@ -53,10 +53,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 },
                 format!(
                     "LEVEL {} / {}  ·  SCORE {}  ·  LIVES {}",
-                    game.level,
-                    crate::breakout::Breakout::target_level(),
-                    game.score,
-                    game.lives
+                    game.level, game.target_level, game.score, game.lives
                 ),
                 UiAction::BreakoutNew,
                 "NEW RUN",
@@ -230,10 +227,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 },
                 format!(
                     "WAVE {} / {}  ·  SCORE {}  ·  LIVES {}",
-                    game.wave,
-                    crate::space_invaders::SpaceInvaders::target_wave(),
-                    game.score,
-                    game.lives
+                    game.wave, game.target_wave, game.score, game.lives
                 ),
                 UiAction::SpaceInvadersNew,
                 "NEW WAVE",
@@ -259,10 +253,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 },
                 format!(
                     "SCORE {} / {}  ·  LIVES {}  ·  MOVES {}",
-                    game.score,
-                    crate::asteroids::Asteroids::target_score(),
-                    game.lives,
-                    game.moves
+                    game.score, game.target_score, game.lives, game.moves
                 ),
                 UiAction::AsteroidsNew,
                 "NEW RUN",
@@ -288,10 +279,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 },
                 format!(
                     "CROSSINGS {} / {}  ·  SCORE {}  ·  LIVES {}",
-                    game.crossings,
-                    crate::frogger::Frogger::target_crossings(),
-                    game.score,
-                    game.lives
+                    game.crossings, game.target_crossings, game.score, game.lives
                 ),
                 UiAction::FroggerNew,
                 "NEW CROSSING",
@@ -344,10 +332,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 },
                 format!(
                     "LINES {} / {}  ·  SCORE {}  ·  LEVEL {}",
-                    game.lines,
-                    crate::block_stack::BlockStack::target_lines(),
-                    game.score,
-                    game.level
+                    game.lines, game.target_lines, game.score, game.level
                 ),
                 UiAction::BlockNew,
                 "NEW STACK",
@@ -393,13 +378,13 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 game,
                 kind,
                 if kind == ResultKind::Won {
-                    "You reached seven points first."
+                    "You reached the target first."
                 } else {
-                    "The cabinet reached seven points first."
+                    "The cabinet reached the target first."
                 },
                 format!(
-                    "YOU {}  ·  CABINET {}  ·  RALLIES {}",
-                    game.player_score, game.cpu_score, game.moves
+                    "YOU {} / {}  ·  CABINET {} / {}  ·  RALLIES {}",
+                    game.player_score, game.win_score, game.cpu_score, game.win_score, game.moves
                 ),
                 UiAction::PaddleNew,
                 "NEW RALLY",

@@ -1,0 +1,2527 @@
+{
+  "schema_version": 1,
+  "games": [
+    {
+      "id": "solitaire",
+      "title": "Solitaire",
+      "subtitle": "Classic card table",
+      "save_key": "solitaire",
+      "category": "cards",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "free_cell",
+      "title": "FreeCell",
+      "subtitle": "Four open cells",
+      "save_key": "freecell",
+      "category": "cards",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "sudoku",
+      "title": "Sudoku",
+      "subtitle": "Numbers in every nook",
+      "save_key": "sudoku",
+      "category": "logic",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "minesweeper",
+      "title": "Minesweeper",
+      "subtitle": "Read the field",
+      "save_key": "minesweeper",
+      "category": "logic",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "game_2048",
+      "title": "2048",
+      "subtitle": "Slide the cabinet tiles",
+      "save_key": "2048",
+      "category": "logic",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "nonogram",
+      "title": "Nonogram",
+      "subtitle": "Paint the hidden picture",
+      "save_key": "nonogram",
+      "category": "logic",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "yahtzee",
+      "title": "Fivefold",
+      "subtitle": "Five dice, thirteen calls",
+      "save_key": "fivefold",
+      "category": "misc",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "reversi",
+      "title": "Reversi",
+      "subtitle": "Turn the board",
+      "save_key": "reversi",
+      "category": "board",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "lights_out",
+      "title": "Lights Out",
+      "subtitle": "Settle the lights",
+      "save_key": "lights_out",
+      "category": "logic",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "tic_tac_toe",
+      "title": "Tic-Tac-Toe",
+      "subtitle": "Three in a row",
+      "save_key": "tic_tac_toe",
+      "category": "board",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "memory_pairs",
+      "title": "Memory",
+      "subtitle": "Find the pairs",
+      "save_key": "memory_pairs",
+      "category": "cards",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "sliding_puzzle",
+      "title": "Sliding Puzzle",
+      "subtitle": "Move the tiles",
+      "save_key": "sliding_puzzle",
+      "category": "logic",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "mastermind",
+      "title": "Mastermind",
+      "subtitle": "Read the color code",
+      "save_key": "mastermind",
+      "category": "word",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "spider",
+      "title": "Spider",
+      "subtitle": "Build the webs",
+      "save_key": "spider",
+      "category": "cards",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "word_search",
+      "title": "Word Search",
+      "subtitle": "Find the hidden words",
+      "save_key": "word_search",
+      "category": "word",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "hangman",
+      "title": "Hangman",
+      "subtitle": "Keep the word",
+      "save_key": "hangman",
+      "category": "word",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "connect_four",
+      "title": "Connect Four",
+      "subtitle": "Drop the discs",
+      "save_key": "connect_four",
+      "category": "board",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "checkers",
+      "title": "Checkers",
+      "subtitle": "Turn the pieces",
+      "save_key": "checkers",
+      "category": "board",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "peg_solitaire",
+      "title": "Peg Solitaire",
+      "subtitle": "Leave one peg",
+      "save_key": "peg_solitaire",
+      "category": "logic",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "mahjong_solitaire",
+      "title": "Mahjong Solitaire",
+      "subtitle": "Pair the tiles",
+      "save_key": "mahjong_solitaire",
+      "category": "cards",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "snake",
+      "title": "Snake",
+      "subtitle": "Guide the coil",
+      "save_key": "snake",
+      "category": "arcade",
+      "active": true,
+      "completion": "runtime_only",
+      "has_variants": true
+    },
+    {
+      "id": "breakout",
+      "title": "Breakout",
+      "subtitle": "Bounce the ball",
+      "save_key": "breakout",
+      "category": "arcade",
+      "active": true,
+      "completion": "runtime_only",
+      "has_variants": true
+    },
+    {
+      "id": "higher_lower",
+      "title": "Higher or Lower",
+      "subtitle": "Read the card",
+      "save_key": "higher_lower",
+      "category": "cards",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "klondike_golf",
+      "title": "Klondike Golf",
+      "subtitle": "Clear the columns",
+      "save_key": "klondike_golf",
+      "category": "cards",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "blackjack",
+      "title": "Blackjack",
+      "subtitle": "Hold the hand",
+      "save_key": "blackjack",
+      "category": "cards",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "spider_solitaire",
+      "title": "Spider Solitaire",
+      "subtitle": "Build suited webs",
+      "save_key": "spider_solitaire",
+      "category": "cards",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "dungeon_sweeper",
+      "title": "Dungeon Sweeper",
+      "subtitle": "Recover relics and escape",
+      "save_key": "dungeon_sweeper",
+      "category": "logic",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "potion_2048",
+      "title": "Potion 2048",
+      "subtitle": "Brew the next tile",
+      "save_key": "potion_2048",
+      "category": "misc",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "tiny_tower_defence",
+      "title": "Tiny Tower Defence",
+      "subtitle": "Keep the lanes",
+      "save_key": "tiny_tower_defence",
+      "category": "arcade",
+      "active": true,
+      "completion": "runtime_only",
+      "has_variants": true
+    },
+    {
+      "id": "one_room_roguelike",
+      "title": "One Room Roguelike",
+      "subtitle": "Survive five rooms",
+      "save_key": "one_room_roguelike",
+      "category": "misc",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "daily_dungeon",
+      "title": "Daily Dungeon",
+      "subtitle": "Recover the daily runes",
+      "save_key": "daily_dungeon",
+      "category": "board",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "dots_boxes",
+      "title": "Dots & Boxes",
+      "subtitle": "Draw the squares",
+      "save_key": "dots_boxes",
+      "category": "misc",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "sokoban",
+      "title": "Sokoban",
+      "subtitle": "Push the crates",
+      "save_key": "sokoban",
+      "category": "logic",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "mancala",
+      "title": "Mancala",
+      "subtitle": "Sow the stones",
+      "save_key": "mancala",
+      "category": "board",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "hanoi",
+      "title": "Hanoi",
+      "subtitle": "Move the disks",
+      "save_key": "hanoi",
+      "category": "board",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "number_match",
+      "title": "Number Match",
+      "subtitle": "Pair the numbers",
+      "save_key": "number_match",
+      "category": "word",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "flood_it",
+      "title": "Flood It",
+      "subtitle": "Fill the field",
+      "save_key": "flood_it",
+      "category": "misc",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "color_sort",
+      "title": "Color Sort",
+      "subtitle": "Sort the colors",
+      "save_key": "color_sort",
+      "category": "misc",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "battleship",
+      "title": "Battleship",
+      "subtitle": "Find the fleet",
+      "save_key": "battleship",
+      "category": "board",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "word_grid",
+      "title": "Word Grid",
+      "subtitle": "Solve the word",
+      "save_key": "word_grid",
+      "category": "word",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "pipe_loop",
+      "title": "Pipe Loop",
+      "subtitle": "Join the pipes",
+      "save_key": "pipe_loop",
+      "category": "logic",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "maze_walk",
+      "title": "Maze Walk",
+      "subtitle": "Find the exit",
+      "save_key": "maze_walk",
+      "category": "word",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "match_three",
+      "title": "Match Three",
+      "subtitle": "Clear the colors",
+      "save_key": "match_three",
+      "category": "misc",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "pyramid",
+      "title": "Pyramid",
+      "subtitle": "Pair the thirteen",
+      "save_key": "pyramid",
+      "category": "cards",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "tri_peaks",
+      "title": "TriPeaks",
+      "subtitle": "Clear the three peaks",
+      "save_key": "tri_peaks",
+      "category": "cards",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "nim",
+      "title": "Nim",
+      "subtitle": "Take the stones",
+      "save_key": "nim",
+      "category": "board",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "word_ladder",
+      "title": "Word Ladder",
+      "subtitle": "Climb the words",
+      "save_key": "word_ladder",
+      "category": "word",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "space_invaders",
+      "title": "Space Invaders",
+      "subtitle": "Defend the cabinet sky",
+      "save_key": "space_invaders",
+      "category": "arcade",
+      "active": true,
+      "completion": "runtime_only",
+      "has_variants": true
+    },
+    {
+      "id": "asteroids",
+      "title": "Asteroids",
+      "subtitle": "Split the drifting rocks",
+      "save_key": "asteroids",
+      "category": "arcade",
+      "active": true,
+      "completion": "runtime_only",
+      "has_variants": true
+    },
+    {
+      "id": "frogger",
+      "title": "Frogger",
+      "subtitle": "Cross the moving lanes",
+      "save_key": "frogger",
+      "category": "arcade",
+      "active": true,
+      "completion": "runtime_only",
+      "has_variants": true
+    },
+    {
+      "id": "munch_maze",
+      "title": "Munch Maze",
+      "subtitle": "Clear the glowing pellets",
+      "save_key": "munch_maze",
+      "category": "arcade",
+      "active": true,
+      "completion": "runtime_only",
+      "has_variants": true
+    },
+    {
+      "id": "block_stack",
+      "title": "Block Stack",
+      "subtitle": "Fit the falling blocks",
+      "save_key": "block_stack",
+      "category": "arcade",
+      "active": true,
+      "completion": "runtime_only",
+      "has_variants": true
+    },
+    {
+      "id": "terrain_cannon",
+      "title": "Terrain Cannon",
+      "subtitle": "Carve a path through hills",
+      "save_key": "terrain_cannon",
+      "category": "arcade",
+      "active": true,
+      "completion": "runtime_only",
+      "has_variants": true
+    },
+    {
+      "id": "fling_fury",
+      "title": "Fling Fury",
+      "subtitle": "Break the fort with physics",
+      "save_key": "fling_fury",
+      "category": "arcade",
+      "active": true,
+      "completion": "runtime_only",
+      "has_variants": true
+    },
+    {
+      "id": "paddle_duel",
+      "title": "Paddle Duel",
+      "subtitle": "Return the cabinet rally",
+      "save_key": "paddle_duel",
+      "category": "arcade",
+      "active": true,
+      "completion": "runtime_only",
+      "has_variants": true
+    },
+    {
+      "id": "riddle_room",
+      "title": "Riddle Room",
+      "subtitle": "Solve the cabinet clues",
+      "save_key": "riddle_room",
+      "category": "misc",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "pattern_vault",
+      "title": "Pattern Vault",
+      "subtitle": "Read the next step",
+      "save_key": "pattern_vault",
+      "category": "misc",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "sum_circuit",
+      "title": "Sum Circuit",
+      "subtitle": "Complete each target",
+      "save_key": "sum_circuit",
+      "category": "misc",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "orbit_order",
+      "title": "Orbit Order",
+      "subtitle": "Sort the drifting planets",
+      "save_key": "orbit_order",
+      "category": "misc",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    },
+    {
+      "id": "word_forge",
+      "title": "Word Forge",
+      "subtitle": "Build the hidden word",
+      "save_key": "word_forge",
+      "category": "misc",
+      "active": true,
+      "completion": "record",
+      "has_variants": true
+    }
+  ],
+  "tutorials": {
+    "game_2048": [
+      "Swipe the board to move tiles.",
+      "You can also tap a visible direction arrow.",
+      "Tap TUTORIAL above to see this again."
+    ],
+    "minesweeper": [
+      "Tap a hidden square to reveal it.",
+      "Tap REVEAL MODE / FLAG MODE to mark safely.",
+      "Tap a revealed number to use the visible chord action."
+    ],
+    "sudoku": [
+      "Tap a cell to select it.",
+      "Tap a number on the visible number pad to place it.",
+      "Tap ERASE or PENCIL when you need another mark."
+    ],
+    "nonogram": [
+      "Tap a cell to fill or cross it.",
+      "Tap FILL / CROSS to change the visible mode.",
+      "Drag across a row or column for a straight stroke."
+    ],
+    "solitaire": [
+      "Tap a face-up card to select it.",
+      "Tap a legal tableau or foundation destination.",
+      "Tap STOCK to deal; use the visible UNDO button."
+    ],
+    "free_cell": [
+      "Tap a card to select it.",
+      "Tap a cascade, free cell, or foundation destination.",
+      "Every card stays visible while you build sequences."
+    ],
+    "yahtzee": [
+      "Tap ROLL DICE for the first roll.",
+      "Tap dice to hold them, then tap ROLL AGAIN.",
+      "Tap a score row to record the visible preview."
+    ],
+    "reversi": [
+      "Tap a glowing square to place a disc.",
+      "The captured line flips visibly after your move.",
+      "Tap PASS only when no legal square remains."
+    ],
+    "lights_out": [
+      "Tap a light to toggle its cross. Turn every light off; MOVES and PAR track efficiency.",
+      "Tap GUIDE to outline every switch in a current shortest route, or HINT for its exact first press.",
+      "Tap CLASSIC 12 or DENSE 20 for a new scramble. Use repeated UNDO or NEW BOARD as needed."
+    ],
+    "tic_tac_toe": [
+      "Tap an empty square to place your X.",
+      "The cabinet answers with O after your move.",
+      "Use UNDO or NEW BOARD when you need it."
+    ],
+    "memory_pairs": [
+      "Tap a card to turn it up. A corner dot marks a face-down card you have already seen.",
+      "Consecutive pairs build score; a mismatch costs five and breaks the chain.",
+      "Tap PEEK once to study two cards until your next tap. HINT uses only remembered cards; UNDO is repeatable."
+    ],
+    "sliding_puzzle": [
+      "Tap a tile beside the empty space.",
+      "Put every numbered tile back in order.",
+      "Use UNDO or NEW BOARD whenever you need it."
+    ],
+    "mastermind": [
+      "Tap four colors to build a guess.",
+      "GUESS shows exact and partial matches.",
+      "Use CLEAR, UNDO, or NEW BOARD visibly below."
+    ],
+    "spider": [
+      "Tap a face-up descending run to select it.",
+      "Tap a destination column to move the run.",
+      "Tap STOCK to deal one card to every column."
+    ],
+    "word_search": [
+      "Tap the first letter of a hidden word.",
+      "Tap its final letter in a straight line.",
+      "Use CLEAR or NEW BOARD with the visible controls."
+    ],
+    "hangman": [
+      "Tap a visible letter button. Correct guesses build a score chain; a wrong guess breaks it.",
+      "Tap CABINET, NATURE, or VOYAGE for a new word set. RAPID allows four errors and doubles points.",
+      "Tap REVEAL for one free letter, or use HINT, UNDO, and NEW WORD with the visible controls."
+    ],
+    "connect_four": [
+      "Tap a numbered column to drop your red disc.",
+      "The cabinet answers with a yellow disc.",
+      "Make four in a row; use UNDO or NEW BOARD visibly."
+    ],
+    "checkers": [
+      "Tap a red piece, then tap a diagonal destination.",
+      "Captures are mandatory; continue tapping for a chained jump.",
+      "Reach the far edge to crown a king; use UNDO or NEW BOARD."
+    ],
+    "peg_solitaire": [
+      "Tap a peg, then tap a two-step destination over a neighbor.",
+      "Each jump removes the middle peg; keep clearing the board.",
+      "Leave one peg in the center; use UNDO or NEW BOARD."
+    ],
+    "mahjong_solitaire": [
+      "Tap a free tile, then tap its matching free partner.",
+      "A tile is free when one side is open and no tile covers it.",
+      "Clear every pair; use UNDO or NEW BOARD with the visible controls."
+    ],
+    "snake": [
+      "Tap CLASSIC, WRAP, or GARDEN, then use the visible direction buttons to steer.",
+      "WRAP crosses edges; GARDEN adds rocks. Gold food is worth three and the pace rises.",
+      "Reach 20; tap PAUSE, UNDO, or NEW BOARD with the visible controls."
+    ],
+    "breakout": [
+      "Tap LEFT, STAY, or RIGHT to steer while the ball moves automatically.",
+      "Clear three patterned walls. Armored bricks need two or three hits.",
+      "You have three balls. Tap LAUNCH after a miss, or PAUSE, UNDO, and NEW BOARD as needed."
+    ],
+    "higher_lower": [
+      "Tap HIGHER or LOWER; each button shows its exact chance and green marks the safer side.",
+      "Correct cards grow the pot. After two, tap CASH OUT to bank it, or reach ten for a perfect run.",
+      "FRIENDLY wins ties. HOUSE loses ties but pays double. HINT, UNDO, and NEW ROUND stay visible."
+    ],
+    "klondike_golf": [
+      "Tap a top card one rank above or below the waste.",
+      "Tap STOCK when no column can play; clear every column to win.",
+      "Use UNDO or NEW BOARD with the visible controls."
+    ],
+    "blackjack": [
+      "Tap HIT to take another card or STAND to hold.",
+      "The dealer draws to seventeen; stay at or below twenty-one.",
+      "Use UNDO or NEW ROUND with the visible controls."
+    ],
+    "spider_solitaire": [
+      "Tap a same-suit descending run to select it.",
+      "Tap a destination column; deal STOCK when every column is filled.",
+      "Clear eight suited runs; use UNDO or NEW DEAL visibly."
+    ],
+    "dungeon_sweeper": [
+      "Tap EXPLORER, DELVER, or PERIL to choose hearts, traps, and required relics.",
+      "Reveal rooms for clues; K marks a relic. FLAG MODE and clue taps safely chord rooms.",
+      "Collect every K to unlock EXIT; HINT, UNDO, and NEW DUNGEON stay visible."
+    ],
+    "potion_2048": [
+      "Tap a visible direction to slide the potions.",
+      "Consecutive merging moves multiply score and fill the visible Chain counter.",
+      "Complete the Chain to brew a C catalyst that merges with any tier; UNDO and NEW BREW stay visible."
+    ],
+    "tiny_tower_defence": [
+      "Tap BOLT, FROST, or BURST, then tap an empty lane cell to build.",
+      "Bolt hits hard, Frost slows, and Burst splashes nearby lanes; tap a tower to upgrade it.",
+      "Tap START WAVE and survive wave 8. PAUSE, UNDO, and NEW TOWER remain visible."
+    ],
+    "one_room_roguelike": [
+      "Tap BLADE, WARDEN, or ALCHEMIST to begin with a different hero talent.",
+      "Tap directions to explore; defeat G guards, moving S stalkers, and tough B brutes.",
+      "Clear five rooms and tap onto STAIRS; POTION, UNDO, and NEW RUN stay visible."
+    ],
+    "daily_dungeon": [
+      "Each day is WAYFINDER, FORAGER, or DAREDEVIL with a different trap and SCOUT supply.",
+      "Tap SCOUT to reveal adjacent rooms; entering one unseen earns extra bravery score.",
+      "Find three runes, use + springs, and reach EXIT; HINT, UNDO, and REPLAY DAY stay visible."
+    ],
+    "dots_boxes": [
+      "Tap a gap between two dots to draw one edge.",
+      "Complete a square to keep your turn; a circled ! warns that one edge remains.",
+      "HARD avoids gifts and EXPERT minimizes forced chains; use HINT, UNDO, or NEW BOARD."
+    ],
+    "sokoban": [
+      "Tap UP, LEFT, DOWN, or RIGHT to walk and push; crates cannot be pulled.",
+      "A red X marks a cornered crate; tap UNDO or RESTART to recover.",
+      "Beat PAR across six rooms, then tap NEXT ROOM after each clear."
+    ],
+    "mancala": [
+      "Tap QUICK, CLASSIC, or GRAND for three, four, or five opening stones per pit.",
+      "Tap one of your six pits: E earns another turn and C previews a capture.",
+      "GENTLE, SHARP, and EXPERT change cabinet tactics; gather the majority."
+    ],
+    "hanoi": [
+      "Tap 3 DISKS, 5 DISKS, or 7 DISKS to choose the tower and its par.",
+      "Tap a source peg; green rings are legal destinations and red rings are blocked.",
+      "Move the numbered tower to the far peg; use HINT, multi-step UNDO, or RESTART."
+    ],
+    "number_match": [
+      "Tap NEAR, LINES, or DIAGONAL to choose which clear paths may connect a pair.",
+      "Tap equal numbers or numbers totaling ten; green outlines show valid links.",
+      "Chain pairs for points; if NO LINKS appears, tap multi-step UNDO or REMIX."
+    ],
+    "flood_it": [
+      "Tap a color; its +number forecasts how many cells join the outlined region.",
+      "Chain growing moves for points; three strong gains earn a free SURGE.",
+      "Fill the field before the limit; tap SURGE, HINT, multi-step UNDO, or NEW FIELD."
+    ],
+    "color_sort": [
+      "Tap an unsealed tube; green tubes preview where its full top run can pour.",
+      "Letters identify colors; matching pours build a chain and full tubes seal.",
+      "Seal every color tube; use HINT, multi-step UNDO, or NEW BOARD."
+    ],
+    "battleship": [
+      "Tap unknown water to fire, or tap SONAR then a cell to sweep its 3 × 3 area.",
+      "SONAR marks contacts ! and clear water ~; sunk vessels change to gold S marks.",
+      "Sink all three ships; chain hits for points and use multi-step UNDO or NEW FLEET."
+    ],
+    "word_grid": [
+      "Tap letters to build a five-letter guess, then tap SUBMIT.",
+      "Tiles use = for exact, ? for present, and X for absent; the header counts candidates.",
+      "HARD binds every clue; use HINT, BACKSPACE, multi-step UNDO, or NEW WORD."
+    ],
+    "pipe_loop": [
+      "Tap a pipe tile to rotate it clockwise.",
+      "Bright pipes are powered; red endpoint caps mark leaks that must be closed.",
+      "Power all 25 in SERPENT or TRUNK; use HINT, multi-step UNDO, or NEW LOOP."
+    ],
+    "maze_walk": [
+      "Tap a bright visible direction control; dim controls are blocked by walls.",
+      "Collect both B beacons before entering the E exit; L means it is still locked.",
+      "Try EXPLORE or FOG, and use HINT, multi-step UNDO, or NEW MAZE."
+    ],
+    "match_three": [
+      "Tap two adjacent tiles to swap their positions.",
+      "Match four for a line arrow; match five or a cross for a burst tile.",
+      "Reach the target before moves run out. Tap HINT, UNDO, or NEW BOARD as needed."
+    ],
+    "pyramid": [
+      "Tap an outlined king, or select a card to outline exposed partners totaling 13.",
+      "Chain clears for points; STOCK breaks the chain and DRAW 3 reveals three cards.",
+      "Clear all 28 cards; empty stock can RECYCLE once. Use HINT, UNDO, or NEW PYRAMID."
+    ],
+    "tri_peaks": [
+      "Tap a green outlined card one rank above or below the waste; A↔K WRAP also links ace and king.",
+      "Chain tableau clears for rising points. Tap STOCK for a new waste card, but it breaks the run.",
+      "Tap BRIDGE, then any exposed card, once per deal. Clear all peaks; HINT and UNDO remain visible."
+    ],
+    "nim": [
+      "Tap a non-empty heap to select it.",
+      "Tap TAKE 1–3; SAFE marks a forced win and RISK means the cabinet can answer.",
+      "Take last in NORMAL or avoid last in MISERE; use HINT, multi-step UNDO, or NEW BOARD."
+    ],
+    "word_ladder": [
+      "Tap letters to build a five-letter step, then tap SUBMIT.",
+      "Change exactly one letter; the outlined tile shows which letter changed.",
+      "Climb DIRECT or visit the SCENIC waypoint; use HINT, multi-step UNDO, or NEW LADDER."
+    ],
+    "space_invaders": [
+      "Tap LEFT or RIGHT to line up your ship with the descending fleet.",
+      "Tap FIRE to launch a shot; PAUSE stops the moving formation.",
+      "Clear three waves, or use UNDO and NEW WAVE with the visible controls."
+    ],
+    "asteroids": [
+      "Tap LEFT or RIGHT to steer around the drifting rocks.",
+      "Tap FIRE to split an asteroid before it reaches your ship.",
+      "Reach the score target; PAUSE, UNDO, and NEW FIELD stay visible."
+    ],
+    "frogger": [
+      "Tap the visible arrow controls to move the frog through traffic.",
+      "Cars keep moving while you plan each crossing.",
+      "Reach the far bank three times; PAUSE, UNDO, and NEW CROSSING stay visible."
+    ],
+    "munch_maze": [
+      "Tap UP, DOWN, LEFT, or RIGHT to guide the runner through the maze.",
+      "Collect every glowing pellet while the patrols move in real time.",
+      "Use PAUSE, UNDO, or NEW MAZE with the visible controls."
+    ],
+    "block_stack": [
+      "Tap LEFT or RIGHT to position the falling block.",
+      "Tap ROTATE or DROP; clear twenty lines to finish the stack.",
+      "PAUSE, UNDO, and NEW STACK stay visible below the board."
+    ],
+    "terrain_cannon": [
+      "Tap ANGLE − / + and POWER − / + to set the launch.",
+      "Tap FIRE; every impact removes a chunk from the terrain.",
+      "Use PAUSE, UNDO, or NEW HILLS with the visible controls."
+    ],
+    "fling_fury": [
+      "Tap ANGLE − / + and POWER − / + to aim the sling.",
+      "Tap FLING to send a physics shot through blocks and targets.",
+      "Use PAUSE, UNDO, or NEW FORT with the visible controls."
+    ],
+    "paddle_duel": [
+      "Tap UP or DOWN to move your paddle.",
+      "Return the ball and score seven points before the cabinet does.",
+      "Use PAUSE, UNDO, or NEW MATCH with the visible controls."
+    ],
+    "riddle_room": [
+      "Read the clue and tap one of the four visible answers.",
+      "A correct answer opens the next cabinet riddle; HINT names the answer.",
+      "Solve five clues. Use UNDO or NEW ROUND whenever you need a fresh start."
+    ],
+    "pattern_vault": [
+      "Read the visible number sequence and tap its next value.",
+      "The clue line explains the pattern family; HINT reveals the next value.",
+      "Solve five sequences. Use UNDO or NEW ROUND whenever you need recovery."
+    ],
+    "sum_circuit": [
+      "Tap three tiles whose values add up to the visible target.",
+      "The selected total is shown below the puzzle; tap CLEAR to change it.",
+      "Complete four targets. Use HINT, UNDO, or NEW ROUND with visible controls."
+    ],
+    "orbit_order": [
+      "Tap two numbered planets to swap their positions.",
+      "Restore positions one through five from left to right.",
+      "Use HINT, UNDO, or NEW ROUND when a swap needs correcting."
+    ],
+    "word_forge": [
+      "Tap the scrambled letters in the order that forms a word.",
+      "Your current word appears above the letters; tap CLEAR to start it again.",
+      "Forge five words. Use HINT, UNDO, or NEW ROUND with visible controls."
+    ]
+  },
+  "labels": {
+    "help_paragraphs": [
+      "Idle Hands is a cabinet of calm, tactile games.",
+      "Tap a cabinet object to open it.",
+      "Use the visible controls in every drawer.",
+      "Swipe or drag only when a drawer names that gesture; every required action has a visible touch control."
+    ],
+    "help_navigation": [
+      "TUTORIALS",
+      "RULES",
+      "CREDITS",
+      "BACK"
+    ],
+    "credits_title": "IDLE HANDS",
+    "credits_paragraphs": [
+      "A warm collection for small pauses.",
+      "Built with Rust, macroquad, and the shared macroquad-toolkit.",
+      "Every game is designed for touch and keeps deterministic rules where practical.",
+      "Original generated artwork was created for Idle Hands; provenance ships with the game.",
+      "Privacy: gameplay analytics are currently disabled.",
+      "Your progress stays in this browser or Windows profile.",
+      "Thank you for spending a minute at the cabinet."
+    ],
+    "profile_names": [
+      "Cabinet Guest",
+      "Quiet Solver",
+      "Night Owl",
+      "Puzzle Wanderer",
+      "Cozy Strategist",
+      "One More Round",
+      "Cabinet Keeper",
+      "Curious Tinkerer"
+    ]
+  },
+  "variants": {
+    "solitaire": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "free_cell": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "sudoku": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "minesweeper": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "game_2048": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "nonogram": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "yahtzee": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "reversi": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "lights_out": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "tic_tac_toe": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "memory_pairs": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "sliding_puzzle": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "mastermind": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "spider": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "word_search": [
+      {
+        "id": "cabinet",
+        "label": "CABINET WORDS"
+      },
+      {
+        "id": "nature",
+        "label": "NATURE WORDS"
+      },
+      {
+        "id": "workshop",
+        "label": "WORKSHOP WORDS"
+      }
+    ],
+    "hangman": [
+      {
+        "id": "cabinet",
+        "label": "CABINET"
+      },
+      {
+        "id": "nature",
+        "label": "NATURE"
+      },
+      {
+        "id": "voyage",
+        "label": "VOYAGE"
+      }
+    ],
+    "connect_four": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "checkers": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "peg_solitaire": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "mahjong_solitaire": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "snake": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "breakout": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "higher_lower": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "klondike_golf": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "blackjack": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "spider_solitaire": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "dungeon_sweeper": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "potion_2048": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "tiny_tower_defence": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "one_room_roguelike": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "daily_dungeon": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "dots_boxes": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "sokoban": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "mancala": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "hanoi": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "number_match": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "flood_it": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "color_sort": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "battleship": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "word_grid": [
+      {
+        "id": "default",
+        "label": "CLASSIC"
+      },
+      {
+        "id": "alternate",
+        "label": "HARD"
+      }
+    ],
+    "pipe_loop": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "maze_walk": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "match_three": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "pyramid": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "tri_peaks": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "nim": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "word_ladder": [
+      {
+        "id": "default",
+        "label": "DIRECT"
+      },
+      {
+        "id": "alternate",
+        "label": "SCENIC"
+      }
+    ],
+    "space_invaders": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "asteroids": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "frogger": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "munch_maze": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "block_stack": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "terrain_cannon": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "fling_fury": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "paddle_duel": [
+      {
+        "id": "default",
+        "label": "DEFAULT"
+      },
+      {
+        "id": "alternate",
+        "label": "ALTERNATE"
+      }
+    ],
+    "riddle_room": [
+      {
+        "id": "default",
+        "label": "CLASSIC"
+      },
+      {
+        "id": "alternate",
+        "label": "TWIST"
+      }
+    ],
+    "pattern_vault": [
+      {
+        "id": "default",
+        "label": "CLASSIC"
+      },
+      {
+        "id": "alternate",
+        "label": "TWIST"
+      }
+    ],
+    "sum_circuit": [
+      {
+        "id": "default",
+        "label": "CLASSIC"
+      },
+      {
+        "id": "alternate",
+        "label": "TWIST"
+      }
+    ],
+    "orbit_order": [
+      {
+        "id": "default",
+        "label": "CLASSIC"
+      },
+      {
+        "id": "alternate",
+        "label": "TWIST"
+      }
+    ],
+    "word_forge": [
+      {
+        "id": "default",
+        "label": "CLASSIC"
+      },
+      {
+        "id": "alternate",
+        "label": "TWIST"
+      }
+    ]
+  },
+  "words": {
+    "hangman": {
+      "cabinet": [
+        "STARE",
+        "CABINET",
+        "PAUSE",
+        "SHELF",
+        "MOMENT",
+        "BUTTON",
+        "POCKET",
+        "VELVET"
+      ],
+      "nature": [
+        "GARDEN",
+        "FOREST",
+        "RIVER",
+        "MEADOW",
+        "ORCHARD",
+        "PETAL",
+        "THUNDER",
+        "WILLOW"
+      ],
+      "voyage": [
+        "ANCHOR",
+        "COMPASS",
+        "HARBOR",
+        "ISLAND",
+        "JOURNEY",
+        "SAILOR",
+        "TIDE",
+        "VESSEL"
+      ]
+    },
+    "word_grid": [
+      "STILL",
+      "SHELF",
+      "PAUSE",
+      "GAMES",
+      "SMALL",
+      "WORDS",
+      "MOTIF",
+      "CABIN",
+      "QUIET",
+      "STACK",
+      "BOARD",
+      "TOUCH",
+      "PIXEL",
+      "QUEST",
+      "ROUND",
+      "BRASS",
+      "VAULT",
+      "CHARM",
+      "LEVEL",
+      "TRACK",
+      "SCORE",
+      "LIGHT",
+      "FRAME",
+      "STONE"
+    ],
+    "word_ladder": {
+      "dictionary": [
+        "SLATE",
+        "PLATE",
+        "PLACE",
+        "PLANE",
+        "PLANK",
+        "BLANK",
+        "FLANK",
+        "FLARE",
+        "SHARE",
+        "SHORE",
+        "SCORE",
+        "SCONE",
+        "STONE",
+        "SHONE",
+        "PHONE",
+        "PHONY",
+        "LIGHT",
+        "NIGHT",
+        "MIGHT",
+        "RIGHT",
+        "SIGHT",
+        "FIGHT"
+      ],
+      "puzzles": [
+        {
+          "start": "SLATE",
+          "target": "BLANK",
+          "waypoint": "PLACE"
+        },
+        {
+          "start": "SHARE",
+          "target": "STONE",
+          "waypoint": "SCORE"
+        },
+        {
+          "start": "LIGHT",
+          "target": "NIGHT",
+          "waypoint": "RIGHT"
+        }
+      ]
+    },
+    "word_search": [
+      {
+        "id": "cabinet",
+        "label": "CABINET WORDS",
+        "words": [
+          "STILL",
+          "SHELF",
+          "CARD",
+          "PAUSE",
+          "GAMES",
+          "DREAM"
+        ]
+      },
+      {
+        "id": "nature",
+        "label": "NATURE WORDS",
+        "words": [
+          "LEAF",
+          "RIVER",
+          "MOSS",
+          "STONE",
+          "BIRD",
+          "RAIN"
+        ]
+      },
+      {
+        "id": "workshop",
+        "label": "WORKSHOP WORDS",
+        "words": [
+          "HAMMER",
+          "NAIL",
+          "LATHE",
+          "OAK",
+          "INK",
+          "TOOLS"
+        ]
+      }
+    ],
+    "misc": [
+      {
+        "word": "BRICK",
+        "clue": "A block used to build a wall"
+      },
+      {
+        "word": "CABIN",
+        "clue": "A small wooden house"
+      },
+      {
+        "word": "QUIET",
+        "clue": "Making very little noise"
+      },
+      {
+        "word": "RUNE",
+        "clue": "An ancient carved symbol"
+      },
+      {
+        "word": "TAPES",
+        "clue": "Old cassettes hold these"
+      },
+      {
+        "word": "APPLE",
+        "clue": "A fruit that grows in an orchard"
+      },
+      {
+        "word": "BREAD",
+        "clue": "A loaf from the bakery"
+      },
+      {
+        "word": "CLOUD",
+        "clue": "A white shape in the sky"
+      },
+      {
+        "word": "DREAM",
+        "clue": "A story you see while asleep"
+      },
+      {
+        "word": "EARTH",
+        "clue": "The planet we call home"
+      },
+      {
+        "word": "FLAME",
+        "clue": "The glowing part of a fire"
+      },
+      {
+        "word": "GRAPE",
+        "clue": "A small fruit growing in bunches"
+      },
+      {
+        "word": "HOUSE",
+        "clue": "A building you live in"
+      },
+      {
+        "word": "IVORY",
+        "clue": "The material of an elephant tusk"
+      },
+      {
+        "word": "JELLY",
+        "clue": "A wobbly sweet dessert"
+      },
+      {
+        "word": "KNIFE",
+        "clue": "A tool used for cutting"
+      },
+      {
+        "word": "LEMON",
+        "clue": "A sour yellow fruit"
+      },
+      {
+        "word": "MAPLE",
+        "clue": "A tree famous for its syrup"
+      },
+      {
+        "word": "NIGHT",
+        "clue": "The time between dusk and dawn"
+      },
+      {
+        "word": "OCEAN",
+        "clue": "A vast expanse of salt water"
+      },
+      {
+        "word": "PEARL",
+        "clue": "A gem formed inside an oyster"
+      },
+      {
+        "word": "QUILT",
+        "clue": "A blanket sewn from patches"
+      },
+      {
+        "word": "RIVER",
+        "clue": "Water flowing toward the sea"
+      },
+      {
+        "word": "STONE",
+        "clue": "A small piece of rock"
+      },
+      {
+        "word": "TIGER",
+        "clue": "A big cat with stripes"
+      },
+      {
+        "word": "UNCLE",
+        "clue": "Your parent's brother"
+      },
+      {
+        "word": "VIOLA",
+        "clue": "A string instrument larger than a violin"
+      },
+      {
+        "word": "WHALE",
+        "clue": "A huge mammal of the sea"
+      },
+      {
+        "word": "YACHT",
+        "clue": "A boat used for sailing"
+      },
+      {
+        "word": "ZEBRA",
+        "clue": "A striped relative of the horse"
+      },
+      {
+        "word": "CLOCK",
+        "clue": "An object that tells the time"
+      },
+      {
+        "word": "SPOON",
+        "clue": "Use this utensil to eat soup"
+      },
+      {
+        "word": "CHAIR",
+        "clue": "A seat with a back"
+      },
+      {
+        "word": "CROWN",
+        "clue": "A monarch wears this"
+      },
+      {
+        "word": "HORSE",
+        "clue": "An animal ridden with a saddle"
+      },
+      {
+        "word": "SNAIL",
+        "clue": "A slow creature with a shell"
+      },
+      {
+        "word": "TRAIN",
+        "clue": "A vehicle running on rails"
+      },
+      {
+        "word": "SUGAR",
+        "clue": "Sweet crystals for your tea"
+      },
+      {
+        "word": "BROOM",
+        "clue": "A tool for sweeping floors"
+      },
+      {
+        "word": "FROST",
+        "clue": "A thin coating of ice"
+      }
+    ],
+    "riddles": [
+      {
+        "question": "I have keys but no locks. What am I?",
+        "clue": "A cabinet clue about a familiar object",
+        "answers": ["A piano", "A river", "A candle", "A shadow"],
+        "answer": 0
+      },
+      {
+        "question": "What gets wetter as it dries?",
+        "clue": "Think about a quiet room's linen",
+        "answers": ["A towel", "A cloud", "A sponge", "A brush"],
+        "answer": 0
+      },
+      {
+        "question": "I speak without a mouth. What am I?",
+        "clue": "The answer returns what you send",
+        "answers": ["An echo", "A book", "A bell", "A map"],
+        "answer": 0
+      },
+      {
+        "question": "What has a face and two hands?",
+        "clue": "It keeps the cabinet's calm pace",
+        "answers": ["A clock", "A chair", "A coin", "A door"],
+        "answer": 0
+      },
+      {
+        "question": "What can travel around the world while staying put?",
+        "clue": "Look for it on an old envelope",
+        "answers": ["A stamp", "A suitcase", "A compass", "A postcard"],
+        "answer": 0
+      }
+    ]
+  },
+  "achievements": [
+    {
+      "id": "first_finish",
+      "title": "First finish",
+      "description": "Finish any drawer",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:solitaire",
+      "title": "Card table",
+      "description": "Finish Solitaire",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:free_cell",
+      "title": "Open cells",
+      "description": "Finish FreeCell",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:sudoku",
+      "title": "Number keeper",
+      "description": "Finish Sudoku",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:minesweeper",
+      "title": "Careful surveyor",
+      "description": "Finish Minesweeper",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:game_2048",
+      "title": "Tile climber",
+      "description": "Finish 2048",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:nonogram",
+      "title": "Pattern keeper",
+      "description": "Finish Nonogram",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:yahtzee",
+      "title": "Scorekeeper",
+      "description": "Finish Fivefold",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:reversi",
+      "title": "Board turner",
+      "description": "Finish Reversi",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:lights_out",
+      "title": "Light keeper",
+      "description": "Finish Lights Out",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:tic_tac_toe",
+      "title": "Three-in-a-row keeper",
+      "description": "Finish Tic-Tac-Toe",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:memory_pairs",
+      "title": "Pair keeper",
+      "description": "Finish Memory",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:sliding_puzzle",
+      "title": "Tile keeper",
+      "description": "Finish Sliding Puzzle",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:mastermind",
+      "title": "Code keeper",
+      "description": "Finish Mastermind",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:spider",
+      "title": "Web keeper",
+      "description": "Finish Spider",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:word_search",
+      "title": "Word keeper",
+      "description": "Finish Word Search",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:hangman",
+      "title": "Letter keeper",
+      "description": "Finish Hangman",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:connect_four",
+      "title": "Disc keeper",
+      "description": "Finish Connect Four",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:checkers",
+      "title": "Piece keeper",
+      "description": "Finish Checkers",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:peg_solitaire",
+      "title": "Peg keeper",
+      "description": "Finish Peg Solitaire",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:mahjong_solitaire",
+      "title": "Tile keeper",
+      "description": "Finish Mahjong Solitaire",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:snake",
+      "title": "Coil keeper",
+      "description": "Finish Snake",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:breakout",
+      "title": "Brick keeper",
+      "description": "Finish Breakout",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:higher_lower",
+      "title": "Card keeper",
+      "description": "Finish Higher or Lower",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:klondike_golf",
+      "title": "Golf keeper",
+      "description": "Finish Klondike Golf",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:blackjack",
+      "title": "Hand keeper",
+      "description": "Finish Blackjack",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:spider_solitaire",
+      "title": "Web keeper",
+      "description": "Finish Spider Solitaire",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:dungeon_sweeper",
+      "title": "Dungeon keeper",
+      "description": "Finish Dungeon Sweeper",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:potion_2048",
+      "title": "Potion keeper",
+      "description": "Finish Potion 2048",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:tiny_tower_defence",
+      "title": "Tower keeper",
+      "description": "Finish Tiny Tower Defence",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:one_room_roguelike",
+      "title": "Room keeper",
+      "description": "Finish One Room Roguelike",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:daily_dungeon",
+      "title": "Daily keeper",
+      "description": "Finish Daily Dungeon",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:dots_boxes",
+      "title": "Square keeper",
+      "description": "Finish Dots & Boxes",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:sokoban",
+      "title": "Crate keeper",
+      "description": "Finish Sokoban",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:mancala",
+      "title": "Stone keeper",
+      "description": "Finish Mancala",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:hanoi",
+      "title": "Disk keeper",
+      "description": "Finish Hanoi",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:number_match",
+      "title": "Number keeper",
+      "description": "Finish Number Match",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:flood_it",
+      "title": "Color keeper",
+      "description": "Finish Flood It",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:color_sort",
+      "title": "Sort keeper",
+      "description": "Finish Color Sort",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:battleship",
+      "title": "Fleet keeper",
+      "description": "Finish Battleship",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:word_grid",
+      "title": "Word keeper",
+      "description": "Finish Word Grid",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:pipe_loop",
+      "title": "Pipe keeper",
+      "description": "Finish Pipe Loop",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:maze_walk",
+      "title": "Maze keeper",
+      "description": "Finish Maze Walk",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:match_three",
+      "title": "Color keeper",
+      "description": "Finish Match Three",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:pyramid",
+      "title": "Pyramid keeper",
+      "description": "Finish Pyramid",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:tri_peaks",
+      "title": "Peak keeper",
+      "description": "Finish TriPeaks",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:nim",
+      "title": "Stone keeper",
+      "description": "Finish Nim",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:word_ladder",
+      "title": "Ladder keeper",
+      "description": "Finish Word Ladder",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:space_invaders",
+      "title": "Sky keeper",
+      "description": "Finish Space Invaders",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:asteroids",
+      "title": "Orbit keeper",
+      "description": "Finish Asteroids",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:frogger",
+      "title": "Crossing keeper",
+      "description": "Finish Frogger",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:munch_maze",
+      "title": "Maze keeper",
+      "description": "Finish Munch Maze",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:block_stack",
+      "title": "Stack keeper",
+      "description": "Finish Block Stack",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:terrain_cannon",
+      "title": "Terrain keeper",
+      "description": "Finish Terrain Cannon",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:fling_fury",
+      "title": "Fort keeper",
+      "description": "Finish Fling Fury",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:paddle_duel",
+      "title": "Rally keeper",
+      "description": "Finish Paddle Duel",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:riddle_room",
+      "title": "Riddle keeper",
+      "description": "Finish Riddle Room",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:pattern_vault",
+      "title": "Pattern keeper",
+      "description": "Finish Pattern Vault",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:sum_circuit",
+      "title": "Circuit keeper",
+      "description": "Finish Sum Circuit",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:orbit_order",
+      "title": "Orbit keeper",
+      "description": "Finish Orbit Order",
+      "stamp_value": 1
+    },
+    {
+      "id": "game:word_forge",
+      "title": "Forge keeper",
+      "description": "Finish Word Forge",
+      "stamp_value": 1
+    },
+    {
+      "id": "full_cabinet",
+      "title": "Full cabinet",
+      "description": "Finish every drawer",
+      "stamp_value": 2
+    }
+  ],
+  "hints": {
+    "solitaire": {
+      "fallback": "Tap a face-up card to select it.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "free_cell": {
+      "fallback": "Tap a card to select it.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "sudoku": {
+      "fallback": "Tap a cell to select it.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "minesweeper": {
+      "fallback": "Tap a hidden square to reveal it.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "game_2048": {
+      "fallback": "Swipe the board to move tiles.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "nonogram": {
+      "fallback": "Tap a cell to fill or cross it.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "yahtzee": {
+      "fallback": "Tap ROLL DICE for the first roll.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "reversi": {
+      "fallback": "Tap a glowing square to place a disc.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "lights_out": {
+      "fallback": "Tap a light to toggle its cross. Turn every light off; MOVES and PAR track efficiency.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "tic_tac_toe": {
+      "fallback": "Tap an empty square to place your X.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "memory_pairs": {
+      "fallback": "Tap a card to turn it up. A corner dot marks a face-down card you have already seen.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "sliding_puzzle": {
+      "fallback": "Tap a tile beside the empty space.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "mastermind": {
+      "fallback": "Tap four colors to build a guess.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "spider": {
+      "fallback": "Tap a face-up descending run to select it.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "word_search": {
+      "fallback": "Tap the first letter of a hidden word.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "hangman": {
+      "fallback": "Tap a visible letter button. Correct guesses build a score chain; a wrong guess breaks it.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "connect_four": {
+      "fallback": "Tap a numbered column to drop your red disc.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "checkers": {
+      "fallback": "Tap a red piece, then tap a diagonal destination.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "peg_solitaire": {
+      "fallback": "Tap a peg, then tap a two-step destination over a neighbor.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "mahjong_solitaire": {
+      "fallback": "Tap a free tile, then tap its matching free partner.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "snake": {
+      "fallback": "Tap CLASSIC, WRAP, or GARDEN, then use the visible direction buttons to steer.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "breakout": {
+      "fallback": "Tap LEFT, STAY, or RIGHT to steer while the ball moves automatically.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "higher_lower": {
+      "fallback": "Tap HIGHER or LOWER; each button shows its exact chance and green marks the safer side.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "klondike_golf": {
+      "fallback": "Tap a top card one rank above or below the waste.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "blackjack": {
+      "fallback": "Tap HIT to take another card or STAND to hold.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "spider_solitaire": {
+      "fallback": "Tap a same-suit descending run to select it.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "dungeon_sweeper": {
+      "fallback": "Tap EXPLORER, DELVER, or PERIL to choose hearts, traps, and required relics.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "potion_2048": {
+      "fallback": "Tap a visible direction to slide the potions.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "tiny_tower_defence": {
+      "fallback": "Tap BOLT, FROST, or BURST, then tap an empty lane cell to build.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "one_room_roguelike": {
+      "fallback": "Tap BLADE, WARDEN, or ALCHEMIST to begin with a different hero talent.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "daily_dungeon": {
+      "fallback": "Each day is WAYFINDER, FORAGER, or DAREDEVIL with a different trap and SCOUT supply.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "dots_boxes": {
+      "fallback": "Tap a gap between two dots to draw one edge.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "sokoban": {
+      "fallback": "Tap UP, LEFT, DOWN, or RIGHT to walk and push; crates cannot be pulled.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "mancala": {
+      "fallback": "Tap QUICK, CLASSIC, or GRAND for three, four, or five opening stones per pit.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "hanoi": {
+      "fallback": "Tap 3 DISKS, 5 DISKS, or 7 DISKS to choose the tower and its par.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "number_match": {
+      "fallback": "Tap NEAR, LINES, or DIAGONAL to choose which clear paths may connect a pair.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "flood_it": {
+      "fallback": "Tap a color; its +number forecasts how many cells join the outlined region.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "color_sort": {
+      "fallback": "Tap an unsealed tube; green tubes preview where its full top run can pour.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "battleship": {
+      "fallback": "Tap unknown water to fire, or tap SONAR then a cell to sweep its 3 × 3 area.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "word_grid": {
+      "fallback": "Tap letters to build a five-letter guess, then tap SUBMIT.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "pipe_loop": {
+      "fallback": "Tap a pipe tile to rotate it clockwise.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "maze_walk": {
+      "fallback": "Tap a bright visible direction control; dim controls are blocked by walls.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "match_three": {
+      "fallback": "Tap two adjacent tiles to swap their positions.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "pyramid": {
+      "fallback": "Tap an outlined king, or select a card to outline exposed partners totaling 13.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "tri_peaks": {
+      "fallback": "Tap a green outlined card one rank above or below the waste; A↔K WRAP also links ace and king.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "nim": {
+      "fallback": "Tap a non-empty heap to select it.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "word_ladder": {
+      "fallback": "Tap letters to build a five-letter step, then tap SUBMIT.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "space_invaders": {
+      "fallback": "Tap LEFT or RIGHT to line up your ship with the descending fleet.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "asteroids": {
+      "fallback": "Tap LEFT or RIGHT to steer around the drifting rocks.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "frogger": {
+      "fallback": "Tap the visible arrow controls to move the frog through traffic.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "munch_maze": {
+      "fallback": "Tap UP, DOWN, LEFT, or RIGHT to guide the runner through the maze.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "block_stack": {
+      "fallback": "Tap LEFT or RIGHT to position the falling block.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "terrain_cannon": {
+      "fallback": "Tap ANGLE − / + and POWER − / + to set the launch.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "fling_fury": {
+      "fallback": "Tap ANGLE − / + and POWER − / + to aim the sling.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "paddle_duel": {
+      "fallback": "Tap UP or DOWN to move your paddle.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "riddle_room": {
+      "fallback": "Read the clue and tap one of the four visible answers.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "pattern_vault": {
+      "fallback": "Read the visible number sequence and tap its next value.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "sum_circuit": {
+      "fallback": "Tap three tiles whose values add up to the visible target.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "orbit_order": {
+      "fallback": "Tap two numbered planets to swap their positions.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    },
+    "word_forge": {
+      "fallback": "Tap the scrambled letters in the order that forms a word.",
+      "complete": "This drawer is complete — start a new round when you are ready."
+    }
+  },
+  "balance": {
+    "arcade": {
+      "snake_target_score": 20,
+      "breakout_target_level": 3,
+      "space_invaders_target_wave": 3,
+      "asteroids_target_score": 120,
+      "frogger_target_crossings": 3,
+      "block_stack_target_lines": 20,
+      "paddle_duel_win_score": 7
+    },
+    "word_games": {
+      "word_length": 5,
+      "word_grid_max_guesses": 6,
+      "hangman_classic_wrong": 6,
+      "hangman_rapid_wrong": 4,
+      "hangman_rapid_multiplier": 2
+    },
+    "misc_games": {
+      "riddle_rounds": 5,
+      "pattern_rounds": 5,
+      "sum_rounds": 4,
+      "orbit_size": 8,
+      "word_forge_rounds": 5
+    }
+  }
+}

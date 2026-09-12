@@ -7,6 +7,10 @@ pub const HEIGHT: f32 = 18.;
 const STEP_INTERVAL: f32 = 0.03;
 const WIN_SCORE: u8 = 7;
 
+fn default_win_score() -> u8 {
+    WIN_SCORE
+}
+
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub enum PaddleMove {
     Up,
@@ -48,6 +52,8 @@ pub struct PaddleDuel {
     pub ball_vy: f32,
     pub player_score: u8,
     pub cpu_score: u8,
+    #[serde(default = "default_win_score")]
+    pub win_score: u8,
     pub moves: u16,
     pub status: PaddleStatus,
     pub seed: u64,
@@ -70,6 +76,11 @@ impl Default for PaddleDuel {
 
 impl PaddleDuel {
     pub fn new(seed: u64) -> Self {
+        let content = crate::data::GameData::default_content();
+        Self::new_with_target(seed, content.balance.arcade.paddle_duel_win_score)
+    }
+
+    pub fn new_with_target(seed: u64, win_score: u8) -> Self {
         Self {
             paddle_y: HEIGHT * 0.5,
             cpu_y: HEIGHT * 0.5,
@@ -79,6 +90,7 @@ impl PaddleDuel {
             ball_vy: 2.4,
             player_score: 0,
             cpu_score: 0,
+            win_score,
             moves: 0,
             status: PaddleStatus::Playing,
             seed,
@@ -143,7 +155,7 @@ impl PaddleDuel {
 
     pub fn reset(&mut self, seed: u64) {
         let mode = self.mode;
-        *self = Self::new(seed);
+        *self = Self::new_with_target(seed, self.win_score);
         self.mode = mode;
     }
 
@@ -198,10 +210,10 @@ impl PaddleDuel {
             self.player_score = self.player_score.saturating_add(1);
             self.reset_ball(1.);
         }
-        if self.player_score >= WIN_SCORE {
+        if self.player_score >= self.win_score {
             self.status = PaddleStatus::Won;
             self.paused = false;
-        } else if self.cpu_score >= WIN_SCORE {
+        } else if self.cpu_score >= self.win_score {
             self.status = PaddleStatus::Lost;
             self.paused = false;
         }

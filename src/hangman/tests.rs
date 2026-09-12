@@ -44,12 +44,12 @@ fn hint_letter_is_unplayed_and_does_not_mutate_the_round() {
 #[test]
 fn categories_select_distinct_word_pools_and_survive_reset() {
     let mut game = Hangman::new_with_options(3, HangmanCategory::Nature, HangmanRule::Classic);
-    assert!(NATURE_WORDS.contains(&game.word.as_str()));
+    assert!(game.word_list.contains(&game.word));
     game.reset(4);
     assert_eq!(game.category, HangmanCategory::Nature);
-    assert!(NATURE_WORDS.contains(&game.word.as_str()));
+    assert!(game.word_list.contains(&game.word));
     game.set_category(HangmanCategory::Voyage, 5);
-    assert!(VOYAGE_WORDS.contains(&game.word.as_str()));
+    assert!(game.word_list.contains(&game.word));
 }
 
 #[test]

@@ -69,7 +69,7 @@ impl Game {
         }
 
         if let Screen::Game(game) = self.state.screen {
-            let game_slot = format!("{}_{}", collection_slot, game.save_key());
+            let game_slot = format!("{}_{}", collection_slot, self.state.game_save_key(game));
             if let Err(error) = save_to_slot_with_version(
                 &game_name,
                 &game_slot,
@@ -77,8 +77,11 @@ impl Game {
                 &version,
             ) {
                 succeeded = false;
-                self.notifications
-                    .warning(format!("{} save failed: {}", game.title(), error));
+                self.notifications.warning(format!(
+                    "{} save failed: {}",
+                    self.state.game_title(game),
+                    error
+                ));
             }
         }
 
@@ -136,7 +139,7 @@ impl Game {
         }
 
         for game in GameId::ALL {
-            let game_slot = format!("{}_{}", collection_slot, game.save_key());
+            let game_slot = format!("{}_{}", collection_slot, self.state.game_save_key(game));
             if !slot_exists(&self.data.config.game_name, &game_slot) {
                 continue;
             }
@@ -145,7 +148,10 @@ impl Game {
                     snapshot.apply_to(&mut self.state);
                     restored = true;
                 }
-                Err(error) => self.handle_bad_slot(game.title(), &game_slot, error),
+                Err(error) => {
+                    let game_title = self.state.game_title(game).to_owned();
+                    self.handle_bad_slot(&game_title, &game_slot, error)
+                }
             }
         }
         if crate::continue_data::repair_selected(&mut self.state) {

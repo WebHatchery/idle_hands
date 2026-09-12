@@ -262,9 +262,7 @@ fn status_text(game: &crate::breakout::Breakout) -> String {
     match game.status {
         BreakoutStatus::Playing => format!(
             "Wall {} / {}  •  {} lives",
-            game.level,
-            crate::breakout::Breakout::target_level(),
-            game.lives
+            game.level, game.target_level, game.lives
         ),
         BreakoutStatus::Won => "All three walls are clear".into(),
         BreakoutStatus::Lost => "No balls remain".into(),

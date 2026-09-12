@@ -144,19 +144,23 @@ rules.
 ## 6. Data and Assets
 
 All game JSON is loaded through `macroquad_toolkit::data_loader`. The project
-defines typed schemas and semantic validators. Candidate data files are:
+defines typed schemas and semantic validators. The production construction path
+loads the complete authored catalog from `content_config.json` alongside the
+existing game and puzzle configuration:
 
 ```text
 assets/data/
-  collection.json
-  settings.json
-  themes.json
-  achievements.json
-  solitaire_rules.json
-  sudoku_puzzles.json
-  nonogram_puzzles.json
-  reversi_ai.json
+  content_config.json
+  game_config.json
+  puzzle_config.json
+  texture_manifest.json
 ```
+
+`content_config.json` owns the game catalog, tutorial/help/credit/profile copy,
+variant labels, word and riddle pools, achievement copy, hint fallback copy,
+and tunable game balance. `src/content.rs` validates catalog coverage, ordering,
+word shapes, puzzle references, and balance invariants before `AppState::new`
+constructs a playable state.
 
 Only runtime-loaded assets appear in `asset_registry.json`; embedded JSON does
 not. Missing art uses an obvious development placeholder and fails publish when

@@ -94,13 +94,19 @@ fn draw_home(state: &AppState, loaded: usize) {
         crate::theme::BRASS,
     );
     text(
-        selected.title(),
+        state.game_title(selected),
         185.,
         105.,
         crate::accessibility::text_size(20., state.large_text),
         crate::theme::CREAM,
     );
-    text(selected.subtitle(), 185., 125., 9., crate::theme::SECONDARY);
+    text(
+        state.game_subtitle(selected),
+        185.,
+        125.,
+        9.,
+        crate::theme::SECONDARY,
+    );
     stat(
         Rect::new(452., 54., 104., 82.),
         "FAVORITES",
@@ -204,10 +210,14 @@ fn draw_library(state: &AppState) {
             crate::theme::category_surface(game, true),
         );
         text(
-            game.title(),
+            state.game_title(game),
             rect.x + 35.,
             rect.y + 17.,
-            if game.title().len() > 18 { 8. } else { 10. },
+            if state.game_title(game).len() > 18 {
+                8.
+            } else {
+                10.
+            },
             crate::theme::INK,
         );
         text(

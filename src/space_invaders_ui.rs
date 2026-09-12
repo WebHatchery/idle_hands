@@ -110,10 +110,7 @@ pub fn draw(state: &AppState) {
     text(
         &format!(
             "Wave {} / {}  •  Score {}  •  {} lives",
-            game.wave,
-            SpaceInvaders::target_wave(),
-            game.score,
-            game.lives
+            game.wave, game.target_wave, game.score, game.lives
         ),
         if crate::ui::is_compact_landscape() {
             compact_header().2

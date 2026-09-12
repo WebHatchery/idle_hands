@@ -7,6 +7,10 @@ pub const HEIGHT: u8 = 14;
 const TARGET_SCORE: u16 = 120;
 const STEP_INTERVAL: f32 = 0.12;
 
+fn default_target_score() -> u16 {
+    TARGET_SCORE
+}
+
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub enum ShipDirection {
     Left,
@@ -55,6 +59,8 @@ pub struct Asteroids {
     pub asteroids: Vec<Asteroid>,
     pub shot: Option<Shot>,
     pub score: u16,
+    #[serde(default = "default_target_score")]
+    pub target_score: u16,
     pub moves: u16,
     pub lives: u8,
     pub status: AsteroidsStatus,
@@ -78,11 +84,17 @@ impl Default for Asteroids {
 
 impl Asteroids {
     pub fn new(seed: u64) -> Self {
+        let content = crate::data::GameData::default_content();
+        Self::new_with_target(seed, content.balance.arcade.asteroids_target_score)
+    }
+
+    pub fn new_with_target(seed: u64, target_score: u16) -> Self {
         let mut game = Self {
             ship_x: WIDTH / 2,
             asteroids: Vec::new(),
             shot: None,
             score: 0,
+            target_score,
             moves: 0,
             lives: 3,
             status: AsteroidsStatus::Playing,
@@ -159,7 +171,7 @@ impl Asteroids {
 
     pub fn reset(&mut self, seed: u64) {
         let mode = self.mode;
-        *self = Self::new(seed);
+        *self = Self::new_with_target(seed, self.target_score);
         self.mode = mode;
         self.spawn_field();
     }
@@ -235,7 +247,7 @@ impl Asteroids {
             } else {
                 self.asteroids[index] = self.next_asteroid();
             }
-            if self.score >= TARGET_SCORE {
+            if self.score >= self.target_score {
                 self.status = AsteroidsStatus::Won;
                 self.paused = false;
             }

@@ -2,8 +2,6 @@
 
 use serde::{Deserialize, Serialize};
 
-mod words;
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum MiscKind {
     RiddleRoom,
@@ -38,6 +36,14 @@ pub struct MiscGame {
     pub target: u16,
     pub target_word: String,
     #[serde(default)]
+    pub riddles: Vec<crate::content::RiddleEntry>,
+    #[serde(default)]
+    pub word_list: Vec<crate::content::WordClue>,
+    #[serde(default = "default_round_target")]
+    pub round_target: u32,
+    #[serde(default = "default_orbit_size")]
+    pub orbit_size: usize,
+    #[serde(default)]
     pub hint_used: bool,
     #[serde(skip)]
     history: Vec<Self>,
@@ -51,6 +57,23 @@ impl Default for MiscGame {
 
 impl MiscGame {
     pub fn new(seed: u64, kind: MiscKind) -> Self {
+        let content = crate::data::GameData::default_content();
+        Self::new_with_content(
+            seed,
+            kind,
+            &content.words.riddles,
+            &content.words.misc,
+            &content.balance.misc_games,
+        )
+    }
+
+    pub fn new_with_content(
+        seed: u64,
+        kind: MiscKind,
+        riddles: &[crate::content::RiddleEntry],
+        word_list: &[crate::content::WordClue],
+        balance: &crate::content::MiscGameBalance,
+    ) -> Self {
         let mut game = Self {
             kind,
             seed,
@@ -68,6 +91,16 @@ impl MiscGame {
             solution: Vec::new(),
             target: 0,
             target_word: String::new(),
+            riddles: riddles.to_vec(),
+            word_list: word_list.to_vec(),
+            round_target: match kind {
+                MiscKind::RiddleRoom => balance.riddle_rounds,
+                MiscKind::PatternVault => balance.pattern_rounds,
+                MiscKind::SumCircuit => balance.sum_rounds,
+                MiscKind::OrbitOrder => 1,
+                MiscKind::WordForge => balance.word_forge_rounds,
+            },
+            orbit_size: balance.orbit_size,
             hint_used: false,
             history: Vec::new(),
         };
@@ -76,7 +109,19 @@ impl MiscGame {
     }
 
     pub fn reset(&mut self, seed: u64) {
-        *self = Self::new(seed, self.kind);
+        *self = Self::new_with_content(
+            seed,
+            self.kind,
+            &self.riddles,
+            &self.word_list,
+            &crate::content::MiscGameBalance {
+                riddle_rounds: self.round_target,
+                pattern_rounds: self.round_target,
+                sum_rounds: self.round_target,
+                orbit_size: self.orbit_size,
+                word_forge_rounds: self.round_target,
+            },
+        );
     }
 
     pub fn tap(&mut self, index: usize) -> bool {
@@ -210,7 +255,7 @@ impl MiscGame {
         if index == self.answer {
             self.score = self.score.saturating_add(1);
             self.round = self.round.saturating_add(1);
-            if self.round >= 5 {
+            if self.round >= self.round_target {
                 self.phase = MiscPhase::Won;
             } else {
                 self.prepare();
@@ -328,14 +373,10 @@ impl MiscGame {
     }
 
     fn prepare_riddle(&mut self) {
-        let riddle = RIDDLES[(self.seed as usize + self.round as usize) % RIDDLES.len()];
-        self.prompt = riddle.question.into();
-        self.detail = riddle.clue.into();
-        self.options = riddle
-            .answers
-            .iter()
-            .map(|answer| (*answer).into())
-            .collect();
+        let riddle = &self.riddles[(self.seed as usize + self.round as usize) % self.riddles.len()];
+        self.prompt = riddle.question.clone();
+        self.detail = riddle.clue.clone();
+        self.options = riddle.answers.to_vec();
         self.answer = riddle.answer;
     }
 
@@ -395,11 +436,11 @@ impl MiscGame {
         self.prompt = "RESTORE THE ORBIT".into();
         self.detail = "Put the numbered planets in ascending order".into();
         let mut rng = macroquad_toolkit::rng::SeededRng::new(self.seed);
-        self.board = (1..=8).collect();
+        self.board = (1..=self.orbit_size as u8).collect();
         loop {
             rng.shuffle(&mut self.board);
             // Count permutation cycles: n - cycles is the minimum swap count.
-            let mut visited = [false; 8];
+            let mut visited = vec![false; self.orbit_size];
             let mut cycles = 0;
             for start in 0..8 {
                 if !visited[start] {
@@ -411,7 +452,7 @@ impl MiscGame {
                     }
                 }
             }
-            if 8 - cycles >= 5 {
+            if self.orbit_size - cycles >= 5 {
                 break;
             }
         }
@@ -420,14 +461,14 @@ impl MiscGame {
     fn prepare_word(&mut self) {
         let mut rng =
             macroquad_toolkit::rng::SeededRng::new(pseudo(self.seed, self.round as usize + 9));
-        let mut index = rng.below(words::WORDS.len());
-        if words::WORDS[index].0 == self.target_word {
-            index = (index + 1) % words::WORDS.len();
+        let mut index = rng.below(self.word_list.len());
+        if self.word_list[index].word == self.target_word {
+            index = (index + 1) % self.word_list.len();
         }
-        let (word, clue) = words::WORDS[index];
-        self.target_word = word.into();
+        let entry = &self.word_list[index];
+        self.target_word = entry.word.clone();
         self.prompt = "FORGE THE WORD".into();
-        self.detail = clue.into();
+        self.detail = entry.clue.clone();
         self.board = self.target_word.bytes().collect();
         while self.board == self.target_word.as_bytes() {
             rng.shuffle(&mut self.board);
@@ -444,46 +485,13 @@ impl MiscGame {
     }
 }
 
-#[derive(Clone, Copy)]
-struct Riddle {
-    question: &'static str,
-    clue: &'static str,
-    answers: [&'static str; 4],
-    answer: usize,
+fn default_round_target() -> u32 {
+    5
 }
 
-const RIDDLES: [Riddle; 5] = [
-    Riddle {
-        question: "I have keys but no locks. What am I?",
-        clue: "A cabinet clue about a familiar object",
-        answers: ["A piano", "A river", "A candle", "A shadow"],
-        answer: 0,
-    },
-    Riddle {
-        question: "What gets wetter as it dries?",
-        clue: "Think about a quiet room's linen",
-        answers: ["A towel", "A cloud", "A sponge", "A brush"],
-        answer: 0,
-    },
-    Riddle {
-        question: "I speak without a mouth. What am I?",
-        clue: "The answer returns what you send",
-        answers: ["An echo", "A book", "A bell", "A map"],
-        answer: 0,
-    },
-    Riddle {
-        question: "What has a face and two hands?",
-        clue: "It keeps the cabinet's calm pace",
-        answers: ["A clock", "A chair", "A coin", "A door"],
-        answer: 0,
-    },
-    Riddle {
-        question: "What can travel around the world while staying put?",
-        clue: "Look for it on an old envelope",
-        answers: ["A stamp", "A suitcase", "A compass", "A postcard"],
-        answer: 0,
-    },
-];
+fn default_orbit_size() -> usize {
+    8
+}
 
 fn pseudo(seed: u64, index: usize) -> u64 {
     seed.wrapping_add(index as u64)

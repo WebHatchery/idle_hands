@@ -18,7 +18,7 @@ fn title(state: &AppState) -> String {
         return "Change the rule card?".into();
     }
     match state.screen {
-        Screen::Game(game) => format!("Start a new {}?", game.title()),
+        Screen::Game(game) => format!("Start a new {}?", state.game_title(game)),
         _ => "Start a new game?".into(),
     }
 }

@@ -3,11 +3,16 @@
 use macroquad_toolkit::assets::TextureConfig;
 use macroquad_toolkit::data_loader::{load_embedded_json, load_embedded_json_labeled};
 use serde::{Deserialize, Serialize};
+use std::sync::Arc;
+
+use crate::content::GameContent;
 
 const GAME_CONFIG_JSON: &str =
     macroquad_toolkit::include_json_str!("../assets/data/game_config.json");
 const PUZZLE_CONFIG_JSON: &str =
     macroquad_toolkit::include_json_str!("../assets/data/puzzle_config.json");
+const CONTENT_CONFIG_JSON: &str =
+    macroquad_toolkit::include_json_str!("../assets/data/content_config.json");
 const TEXTURE_MANIFEST_JSON: &str =
     macroquad_toolkit::include_json_str!("../assets/data/texture_manifest.json");
 
@@ -238,6 +243,7 @@ fn validate_difficulties<T>(
 pub struct GameData {
     pub config: GameConfig,
     pub puzzles: PuzzleConfig,
+    pub content: GameContent,
     pub texture_manifest: Vec<TextureConfig>,
 }
 
@@ -247,11 +253,15 @@ impl GameData {
         let puzzles: PuzzleConfig =
             load_embedded_json_labeled("puzzle_config", PUZZLE_CONFIG_JSON)?;
         puzzles.validate()?;
+        let content: GameContent =
+            load_embedded_json_labeled("content_config", CONTENT_CONFIG_JSON)?;
+        content.validate()?;
         let texture_manifest = load_embedded_json(TEXTURE_MANIFEST_JSON)?;
 
         Ok(Self {
             config,
             puzzles,
+            content,
             texture_manifest,
         })
     }
@@ -274,8 +284,71 @@ impl GameData {
                 flood_it: FloodItConfig::default(),
                 match_three: MatchThreeConfig::default(),
             },
+            content: load_embedded_json_labeled("content_config", CONTENT_CONFIG_JSON)
+                .and_then(|content: GameContent| {
+                    content.validate()?;
+                    Ok(content)
+                })
+                .unwrap_or_else(|error| {
+                    eprintln!("Idle Hands content fallback failed: {error}");
+                    GameContent {
+                        schema_version: crate::content::CONTENT_SCHEMA_VERSION,
+                        games: Vec::new(),
+                        tutorials: Default::default(),
+                        labels: crate::content::Labels {
+                            help_paragraphs: Vec::new(),
+                            help_navigation: Vec::new(),
+                            credits_title: String::new(),
+                            credits_paragraphs: Vec::new(),
+                            profile_names: Vec::new(),
+                        },
+                        variants: Default::default(),
+                        words: crate::content::WordLists {
+                            hangman: Default::default(),
+                            word_grid: Vec::new(),
+                            word_ladder: crate::content::WordLadderWords {
+                                dictionary: Vec::new(),
+                                puzzles: Vec::new(),
+                            },
+                            word_search: Vec::new(),
+                            misc: Vec::new(),
+                            riddles: Vec::new(),
+                        },
+                        achievements: Vec::new(),
+                        hints: Default::default(),
+                        balance: crate::content::Balance {
+                            arcade: crate::content::ArcadeBalance {
+                                snake_target_score: 1,
+                                breakout_target_level: 1,
+                                space_invaders_target_wave: 1,
+                                asteroids_target_score: 1,
+                                frogger_target_crossings: 1,
+                                block_stack_target_lines: 1,
+                                paddle_duel_win_score: 1,
+                            },
+                            word_games: crate::content::WordGameBalance {
+                                word_length: 5,
+                                word_grid_max_guesses: 1,
+                                hangman_classic_wrong: 2,
+                                hangman_rapid_wrong: 1,
+                                hangman_rapid_multiplier: 1,
+                            },
+                            misc_games: crate::content::MiscGameBalance {
+                                riddle_rounds: 1,
+                                pattern_rounds: 1,
+                                sum_rounds: 1,
+                                orbit_size: 8,
+                                word_forge_rounds: 1,
+                            },
+                        },
+                    }
+                }),
             texture_manifest: Vec::new(),
         }
+    }
+
+    pub(crate) fn default_content() -> Arc<GameContent> {
+        Arc::new(Self::fallback().content)
     }
 }
 

@@ -1,8 +1,8 @@
 //! First-run and replayable touch tutorials shared by all game drawers.
 
-use crate::state::GameId;
 use crate::tutorial_data::instructions;
 use crate::ui::UiAction;
+use crate::{content::GameContent, state::GameId};
 use macroquad::prelude::*;
 
 pub const REPLAY_RECT: Rect = Rect::new(1080., 8., 150., 42.);
@@ -54,7 +54,7 @@ pub fn draw_replay_button(large_text: bool, high_contrast: bool) {
         WHITE,
     );
 }
-pub fn draw_overlay(game: GameId, large_text: bool, high_contrast: bool) {
+pub fn draw_overlay(game: GameId, content: &GameContent, large_text: bool, high_contrast: bool) {
     let title_size = crate::accessibility::text_size(38., large_text);
     let game_size = crate::accessibility::text_size(25., large_text);
     let instruction_size = crate::accessibility::text_size(17., large_text);
@@ -84,9 +84,17 @@ pub fn draw_overlay(game: GameId, large_text: bool, high_contrast: bool) {
         },
     );
     crate::ui::draw_text("HOW TO PLAY", 315., 225., title_size, crate::theme::BRASS);
-    crate::ui::draw_text(game.title(), 315., 270., game_size, WHITE);
+    crate::ui::draw_text(
+        content
+            .game(game)
+            .map_or_else(|| game.title(), |entry| entry.title.as_str()),
+        315.,
+        270.,
+        game_size,
+        WHITE,
+    );
     let mut y = 330.;
-    for line in instructions(game) {
+    for line in instructions(content, game) {
         for wrapped in macroquad_toolkit::ui::wrap_text(line, 650., instruction_size) {
             crate::ui::draw_text(wrapped, 315., y, instruction_size, crate::theme::CREAM);
             y += instruction_size + 10.;

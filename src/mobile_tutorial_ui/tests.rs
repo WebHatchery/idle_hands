@@ -4,8 +4,9 @@ use super::*;
 
 #[test]
 fn every_game_has_three_touch_specific_instructions() {
+    let content = crate::data::GameData::load().unwrap().content;
     for game in GameId::ALL {
-        let lines = crate::tutorial_data::instructions(game);
+        let lines = crate::tutorial_data::instructions(&content, game);
         assert_eq!(lines.len(), 3);
         assert!(
             lines.iter().any(|line| {

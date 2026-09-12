@@ -57,7 +57,12 @@ pub fn draw_rules(state: &AppState) {
         .take(RULES_VISIBLE_ROWS)
         .enumerate()
     {
-        draw_rule_card(index, *game, game.title(), game.subtitle());
+        draw_rule_card(
+            index,
+            *game,
+            state.game_title(*game),
+            state.game_subtitle(*game),
+        );
     }
     draw_controls();
 }

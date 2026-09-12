@@ -160,7 +160,7 @@ fn draw_cards(state: &AppState) {
         let title_size = if crate::ui::is_portrait() { 12. } else { 14. };
         text(
             state,
-            row.game.title(),
+            state.game_title(row.game),
             rect.x + 12.,
             rect.y + if crate::ui::is_portrait() { 19. } else { 25. },
             title_size,

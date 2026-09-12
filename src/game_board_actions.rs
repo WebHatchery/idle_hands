@@ -35,6 +35,14 @@ impl Game {
         previous_screen: crate::state::Screen,
         action: UiAction,
     ) {
+        if crate::card_hints::is_hint(action) {
+            if let crate::state::Screen::Game(game) = self.state.screen {
+                if super::game_progression::round_is_complete(&self.state, game) {
+                    self.state.card_hint =
+                        Some(crate::card_hints::authored_copy(&self.state, game, true));
+                }
+            }
+        }
         if action.starts_new_round() {
             self.reset_elapsed();
         }

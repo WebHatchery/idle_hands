@@ -138,7 +138,7 @@ pub fn draw(state: &AppState) {
     };
     text("CABINET", 8., 30., 13., muted());
     text("HANGMAN", header_x, header_y, title_size(), accent());
-    let status = status_text(game.status, game.wrong_count, game.rule.max_wrong());
+    let status = status_text(game.status, game.wrong_count, game.max_wrong);
     let instruction = state.card_hint.as_deref().unwrap_or(&status);
     text(
         instruction,
@@ -164,7 +164,13 @@ pub fn draw(state: &AppState) {
     button(layout.hint, "HINT");
     button(layout.reveal, &format!("REVEAL ×{}", game.reveals));
     button(layout.undo, "UNDO");
-    button(layout.category, game.category.label());
+    let category_label = crate::game_variants::configured_label(
+        state,
+        crate::state::GameId::Hangman,
+        game.category.key(),
+    )
+    .unwrap_or_else(|| game.category.label().to_owned());
+    button(layout.category, &category_label);
     button(layout.rule, game.rule.label());
     let stats_y = if portrait {
         layout.keyboard.y - 16.

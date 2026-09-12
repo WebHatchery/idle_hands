@@ -582,17 +582,18 @@ impl Game {
             crate::daily_dungeon::DailyPhase::Exploring => {}
         }
         let previous_stamps = self.state.stamps;
-        let newly_earned = progression::sync(
+        let newly_earned = progression::sync_with_content(
             &mut self.state.achievements,
             &mut self.state.stamps,
             records,
+            &self.state.content,
         );
         if self.state.stamps > previous_stamps {
             if let Some(achievement) = newly_earned.first() {
                 self.notifications.success(format!(
                     "{} — {} — {} stamps",
-                    achievement.title(),
-                    achievement.description(),
+                    achievement.title_from(&self.state.content),
+                    achievement.description_from(&self.state.content),
                     self.state.stamps
                 ));
             }

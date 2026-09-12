@@ -112,14 +112,14 @@ fn draw_home(state: &AppState, loaded: usize) {
     );
     let selected = crate::continue_data::preferred_game(state);
     text(
-        selected.title(),
+        state.game_title(selected),
         278.,
         153.,
         crate::accessibility::text_size(27., state.large_text),
         crate::theme::CREAM,
     );
     text(
-        selected.subtitle(),
+        state.game_subtitle(selected),
         278.,
         178.,
         13.,
@@ -198,7 +198,7 @@ fn draw_home(state: &AppState, loaded: usize) {
             crate::theme::category_surface(game, true),
         );
         text(
-            &fit_recent_title(game.title(), rect.right() - (rect.x + 48.) - 9.),
+            &fit_recent_title(state.game_title(game), rect.right() - (rect.x + 48.) - 9.),
             rect.x + 48.,
             rect.y + 24.,
             12.,
@@ -304,10 +304,14 @@ fn draw_library(state: &AppState) {
             crate::theme::category_surface(game, true),
         );
         text(
-            game.title(),
+            state.game_title(game),
             rect.x + 48.,
             rect.y + 18.,
-            if game.title().len() > 18 { 10. } else { 13. },
+            if state.game_title(game).len() > 18 {
+                10.
+            } else {
+                13.
+            },
             crate::theme::INK,
         );
         text(
@@ -491,7 +495,7 @@ fn category_card(state: &AppState, rect: Rect, filter: u8) {
         },
     );
     let prompt = cabinet_status::next_unfinished_game(state, filter)
-        .map(|game| format!("NEXT: {}", game.title()))
+        .map(|game| format!("NEXT: {}", state.game_title(game)))
         .unwrap_or_else(|| "COMPLETE · EXPLORE  >".to_owned());
     text(
         &fit_recent_title(&prompt, rect.w - 96.),

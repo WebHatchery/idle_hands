@@ -127,7 +127,7 @@ impl Game {
             || GameId::ALL.iter().any(|game| {
                 slot_exists(
                     &self.data.config.game_name,
-                    &format!("{}_{}", collection_slot, game.save_key()),
+                    &format!("{}_{}", collection_slot, self.state.game_save_key(*game)),
                 )
             });
         if !has_saved_state {
@@ -224,9 +224,9 @@ impl Game {
         };
         *favorite = !*favorite;
         let notice = if *favorite {
-            format!("{} added to favorites", game.title())
+            format!("{} added to favorites", self.state.game_title(game))
         } else {
-            format!("{} removed from favorites", game.title())
+            format!("{} removed from favorites", self.state.game_title(game))
         };
         self.notifications.info(notice);
     }
@@ -258,21 +258,22 @@ impl Game {
                 self.state.recent_games.truncate(5);
                 self.state.screen = Screen::Game(id);
                 if from_rules {
-                    self.notifications.info(format!("Opening {}", id.title()));
+                    self.notifications
+                        .info(format!("Opening {}", self.state.game_title(id)));
                 }
                 self.state.tutorial = (!self.state.tutorial_seen[id.index()]).then_some(id);
             }
             crate::storefront::GameAvailability::DemoRestricted => {
                 self.notifications
                     .info(crate::storefront::availability_message(
-                        id.title(),
+                        self.state.game_title(id),
                         crate::storefront::GameAvailability::DemoRestricted,
                     ));
             }
             crate::storefront::GameAvailability::ComingSoon => {
                 self.notifications
                     .info(crate::storefront::availability_message(
-                        id.title(),
+                        self.state.game_title(id),
                         crate::storefront::GameAvailability::ComingSoon,
                     ));
             }
@@ -286,7 +287,7 @@ impl Game {
             crate::storefront::GameAvailability::DemoRestricted => {
                 self.notifications
                     .info(crate::storefront::availability_message(
-                        id.title(),
+                        self.state.game_title(id),
                         crate::storefront::GameAvailability::DemoRestricted,
                     ));
                 return;
@@ -294,7 +295,7 @@ impl Game {
             crate::storefront::GameAvailability::ComingSoon => {
                 self.notifications
                     .info(crate::storefront::availability_message(
-                        id.title(),
+                        self.state.game_title(id),
                         crate::storefront::GameAvailability::ComingSoon,
                     ));
                 return;

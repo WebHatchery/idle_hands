@@ -57,6 +57,7 @@ use crate::word_grid::WordGrid;
 use crate::word_ladder::WordLadder;
 use crate::word_search::WordSearch;
 use serde::{Deserialize, Serialize};
+use std::sync::Arc;
 
 #[path = "state_initialization.rs"]
 mod state_initialization;
@@ -200,6 +201,72 @@ impl GameId {
     pub fn descriptor(self) -> &'static crate::game_descriptor::GameDescriptor {
         crate::game_descriptor::descriptor(self)
     }
+
+    /// Stable content key used by the embedded authored-data catalog.
+    pub const fn key(self) -> &'static str {
+        match self {
+            Self::Solitaire => "solitaire",
+            Self::FreeCell => "free_cell",
+            Self::Sudoku => "sudoku",
+            Self::Minesweeper => "minesweeper",
+            Self::Game2048 => "game_2048",
+            Self::Nonogram => "nonogram",
+            Self::Yahtzee => "yahtzee",
+            Self::Reversi => "reversi",
+            Self::LightsOut => "lights_out",
+            Self::TicTacToe => "tic_tac_toe",
+            Self::MemoryPairs => "memory_pairs",
+            Self::SlidingPuzzle => "sliding_puzzle",
+            Self::Mastermind => "mastermind",
+            Self::Spider => "spider",
+            Self::WordSearch => "word_search",
+            Self::Hangman => "hangman",
+            Self::ConnectFour => "connect_four",
+            Self::Checkers => "checkers",
+            Self::PegSolitaire => "peg_solitaire",
+            Self::MahjongSolitaire => "mahjong_solitaire",
+            Self::Snake => "snake",
+            Self::Breakout => "breakout",
+            Self::HigherLower => "higher_lower",
+            Self::KlondikeGolf => "klondike_golf",
+            Self::Blackjack => "blackjack",
+            Self::SpiderSolitaire => "spider_solitaire",
+            Self::DungeonSweeper => "dungeon_sweeper",
+            Self::Potion2048 => "potion_2048",
+            Self::TinyTowerDefence => "tiny_tower_defence",
+            Self::OneRoomRoguelike => "one_room_roguelike",
+            Self::DailyDungeon => "daily_dungeon",
+            Self::DotsBoxes => "dots_boxes",
+            Self::Sokoban => "sokoban",
+            Self::Mancala => "mancala",
+            Self::Hanoi => "hanoi",
+            Self::NumberMatch => "number_match",
+            Self::FloodIt => "flood_it",
+            Self::ColorSort => "color_sort",
+            Self::Battleship => "battleship",
+            Self::WordGrid => "word_grid",
+            Self::PipeLoop => "pipe_loop",
+            Self::MazeWalk => "maze_walk",
+            Self::MatchThree => "match_three",
+            Self::Pyramid => "pyramid",
+            Self::TriPeaks => "tri_peaks",
+            Self::Nim => "nim",
+            Self::WordLadder => "word_ladder",
+            Self::SpaceInvaders => "space_invaders",
+            Self::Asteroids => "asteroids",
+            Self::Frogger => "frogger",
+            Self::MunchMaze => "munch_maze",
+            Self::BlockStack => "block_stack",
+            Self::TerrainCannon => "terrain_cannon",
+            Self::FlingFury => "fling_fury",
+            Self::PaddleDuel => "paddle_duel",
+            Self::RiddleRoom => "riddle_room",
+            Self::PatternVault => "pattern_vault",
+            Self::SumCircuit => "sum_circuit",
+            Self::OrbitOrder => "orbit_order",
+            Self::WordForge => "word_forge",
+        }
+    }
     pub fn title(self) -> &'static str {
         self.descriptor().title
     }
@@ -214,8 +281,29 @@ impl GameId {
     }
 }
 
+impl AppState {
+    pub fn game_title(&self, game: GameId) -> &str {
+        self.content
+            .game(game)
+            .map_or_else(|| game.title(), |entry| entry.title.as_str())
+    }
+
+    pub fn game_subtitle(&self, game: GameId) -> &str {
+        self.content
+            .game(game)
+            .map_or_else(|| game.subtitle(), |entry| entry.subtitle.as_str())
+    }
+
+    pub fn game_save_key(&self, game: GameId) -> &str {
+        self.content
+            .game(game)
+            .map_or_else(|| game.save_key(), |entry| entry.save_key.as_str())
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct AppState {
+    pub content: Arc<crate::content::GameContent>,
     pub games: GameStore,
     pub screen: Screen,
     pub selected: usize,
@@ -624,7 +712,10 @@ impl CollectionSave {
 }
 impl Default for AppState {
     fn default() -> Self {
+        let content = crate::data::GameData::default_content();
+        let profile_name = crate::profile_data::name(&content, 0).to_owned();
         Self {
+            content,
             games: GameStore::default(),
             screen: Screen::Cabinet,
             selected: 4,
@@ -637,7 +728,7 @@ impl Default for AppState {
             confirm_restart: false,
             pending_restart: None,
             confirm_reset: false,
-            profile_name: "Cabinet Guest".into(),
+            profile_name,
             sound: true,
             sound_level: crate::audio_settings::DEFAULT_LEVEL,
             lifecycle_paused: false,

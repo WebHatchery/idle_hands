@@ -67,7 +67,7 @@ impl Game {
             self.state.recent_games = vec![GameId::Solitaire, GameId::Snake, GameId::WordLadder];
         }
         if matches!(scene, "profile" | "profile_accessible") {
-            self.state.profile_name = crate::profile_data::name(2).to_owned();
+            self.state.profile_name = crate::profile_data::name(&self.state.content, 2).to_owned();
         }
         if matches!(scene, "drawer_info" | "drawer_info_accessible") {
             self.state.favorites[GameId::Solitaire.index()] = true;
@@ -403,10 +403,11 @@ impl Game {
             self.state.records.best_2048 = 2048;
             self.state.records.solitaire_best_moves = Some(42);
             self.state.records.word_ladder_best_moves = Some(5);
-            let _ = crate::progression::sync(
+            let _ = crate::progression::sync_with_content(
                 &mut self.state.achievements,
                 &mut self.state.stamps,
                 &self.state.records,
+                &self.state.content,
             );
             self.state.achievements_view = true;
             self.state.achievement_filter = if scene == "achievements_earned" {

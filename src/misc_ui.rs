@@ -121,6 +121,7 @@ pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
 pub fn draw(state: &AppState) {
     let l = layout();
     let game = game(state);
+    let game_id = state.screen.game().unwrap_or(GameId::RiddleRoom);
     let title_x = if crate::ui::is_compact_landscape() {
         crate::ui::COMPACT_HEADER_TITLE_X
     } else if crate::ui::is_portrait() {
@@ -144,7 +145,7 @@ pub fn draw(state: &AppState) {
         state.large_text,
     );
     text(
-        game.title(),
+        state.game_title(game_id),
         title_x,
         title_y,
         title_size(),
@@ -152,7 +153,7 @@ pub fn draw(state: &AppState) {
         state.large_text,
     );
     text(
-        game.subtitle(),
+        state.game_subtitle(game_id),
         title_x,
         title_y + 24.,
         12.,

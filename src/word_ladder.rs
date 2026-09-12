@@ -5,17 +5,6 @@ use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, VecDeque};
 
 pub const WORD_LENGTH: usize = 5;
-pub const WORDS: [&str; 22] = [
-    "SLATE", "PLATE", "PLACE", "PLANE", "PLANK", "BLANK", "FLANK", "FLARE", "SHARE", "SHORE",
-    "SCORE", "SCONE", "STONE", "SHONE", "PHONE", "PHONY", "LIGHT", "NIGHT", "MIGHT", "RIGHT",
-    "SIGHT", "FIGHT",
-];
-pub const PUZZLES: [(&str, &str, &str); 3] = [
-    ("SLATE", "BLANK", "PLACE"),
-    ("SHARE", "STONE", "SCORE"),
-    ("LIGHT", "NIGHT", "RIGHT"),
-];
-
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum LadderMode {
     #[default]
@@ -56,6 +45,10 @@ pub struct WordLadder {
     pub seed: u64,
     pub phase: WordLadderPhase,
     pub message: String,
+    #[serde(default)]
+    pub dictionary: Vec<String>,
+    #[serde(default)]
+    pub puzzles: Vec<crate::content::WordLadderPuzzle>,
     #[serde(skip)]
     history: UndoStack<Self>,
 }
@@ -68,17 +61,41 @@ impl Default for WordLadder {
 
 impl WordLadder {
     pub fn new(seed: u64) -> Self {
-        Self::new_with_mode(seed, LadderMode::Direct)
+        let content = crate::data::GameData::default_content();
+        Self::new_with_mode_config(
+            seed,
+            LadderMode::Direct,
+            &content.words.word_ladder.dictionary,
+            &content.words.word_ladder.puzzles,
+        )
     }
     pub fn new_with_mode(seed: u64, mode: LadderMode) -> Self {
-        let (start, target, waypoint) = PUZZLES[(seed as usize) % PUZZLES.len()];
-        let direct = shortest_path(start, target).map_or(0, |path| path.len().saturating_sub(1));
-        let scenic = shortest_path(start, waypoint).map_or(0, |path| path.len().saturating_sub(1))
-            + shortest_path(waypoint, target).map_or(0, |path| path.len().saturating_sub(1));
+        let content = crate::data::GameData::default_content();
+        Self::new_with_mode_config(
+            seed,
+            mode,
+            &content.words.word_ladder.dictionary,
+            &content.words.word_ladder.puzzles,
+        )
+    }
+
+    pub fn new_with_mode_config(
+        seed: u64,
+        mode: LadderMode,
+        dictionary: &[String],
+        puzzles: &[crate::content::WordLadderPuzzle],
+    ) -> Self {
+        let puzzle = &puzzles[(seed as usize) % puzzles.len()];
+        let direct = shortest_path(dictionary, &puzzle.start, &puzzle.target)
+            .map_or(0, |path| path.len().saturating_sub(1));
+        let scenic = shortest_path(dictionary, &puzzle.start, &puzzle.waypoint)
+            .map_or(0, |path| path.len().saturating_sub(1))
+            + shortest_path(dictionary, &puzzle.waypoint, &puzzle.target)
+                .map_or(0, |path| path.len().saturating_sub(1));
         Self {
-            start: start.into(),
-            target: target.into(),
-            waypoint: waypoint.into(),
+            start: puzzle.start.clone(),
+            target: puzzle.target.clone(),
+            waypoint: puzzle.waypoint.clone(),
             waypoint_reached: false,
             mode,
             par: if mode == LadderMode::Scenic {
@@ -92,6 +109,8 @@ impl WordLadder {
             seed,
             phase: WordLadderPhase::Playing,
             message: "Change one letter at a time".into(),
+            dictionary: dictionary.to_vec(),
+            puzzles: puzzles.to_vec(),
             history: UndoStack::default(),
         }
     }
@@ -114,7 +133,7 @@ impl WordLadder {
             return false;
         }
         let guess = self.current.clone();
-        if !WORDS.contains(&guess.as_str()) {
+        if !self.dictionary.iter().any(|word| word == &guess) {
             self.message = "That word is not in the dictionary".into();
             return false;
         }
@@ -158,16 +177,17 @@ impl WordLadder {
         true
     }
     pub fn reset(&mut self, seed: u64) {
-        *self = Self::new_with_mode(seed, self.mode);
+        *self = self.with_catalog(seed, self.mode, &self.dictionary, &self.puzzles);
     }
     pub fn set_mode(&mut self, mode: LadderMode, seed: u64) {
-        *self = Self::new_with_mode(seed, mode);
+        *self = self.with_catalog(seed, mode, &self.dictionary, &self.puzzles);
     }
-    pub fn hint_word(&self) -> Option<&'static str> {
+    pub fn hint_word(&self) -> Option<String> {
         if self.phase != WordLadderPhase::Playing {
             return None;
         }
-        self.route().and_then(|path| path.get(1).copied())
+        self.route()
+            .and_then(|path| path.get(1).map(|word| (*word).to_owned()))
     }
 
     pub fn remaining_steps(&self) -> usize {
@@ -176,9 +196,9 @@ impl WordLadder {
 
     pub fn legal_step_count(&self) -> usize {
         let from = self.guesses.last().map_or(&self.start, |word| word);
-        WORDS
+        self.dictionary
             .iter()
-            .filter(|word| **word != from && one_away(from, word))
+            .filter(|word| word.as_str() != from && one_away(from, word))
             .count()
     }
 
@@ -190,7 +210,7 @@ impl WordLadder {
             .count()
     }
 
-    fn route(&self) -> Option<Vec<&'static str>> {
+    fn route(&self) -> Option<Vec<&str>> {
         let from = self
             .guesses
             .last()
@@ -200,7 +220,7 @@ impl WordLadder {
         } else {
             self.target.as_str()
         };
-        shortest_path(from, objective)
+        shortest_path(&self.dictionary, from, objective)
     }
 
     fn clone_without_history(&self) -> Self {
@@ -208,9 +228,27 @@ impl WordLadder {
         copy.history.clear();
         copy
     }
+
+    fn with_catalog(
+        &self,
+        seed: u64,
+        mode: LadderMode,
+        dictionary: &[String],
+        puzzles: &[crate::content::WordLadderPuzzle],
+    ) -> Self {
+        Self::new_with_mode_config(seed, mode, dictionary, puzzles)
+    }
 }
 
-fn shortest_path(start: &str, target: &str) -> Option<Vec<&'static str>> {
+fn shortest_path<'a>(dictionary: &'a [String], start: &str, target: &str) -> Option<Vec<&'a str>> {
+    let start = dictionary
+        .iter()
+        .find(|word| word.as_str() == start)
+        .map(String::as_str)?;
+    let target = dictionary
+        .iter()
+        .find(|word| word.as_str() == target)
+        .map(String::as_str)?;
     let mut queue = VecDeque::from([start]);
     let mut previous: HashMap<&str, Option<&str>> = HashMap::from([(start, None)]);
     while let Some(word) = queue.pop_front() {
@@ -218,13 +256,18 @@ fn shortest_path(start: &str, target: &str) -> Option<Vec<&'static str>> {
             let mut path = Vec::new();
             let mut cursor = Some(word);
             while let Some(next) = cursor {
-                path.push(WORDS.iter().copied().find(|candidate| *candidate == next)?);
+                path.push(
+                    dictionary
+                        .iter()
+                        .find(|candidate| candidate.as_str() == next)?
+                        .as_str(),
+                );
                 cursor = previous[next];
             }
             path.reverse();
             return Some(path);
         }
-        for candidate in WORDS.iter().copied() {
+        for candidate in dictionary.iter().map(String::as_str) {
             if !previous.contains_key(candidate) && one_away(word, candidate) {
                 previous.insert(candidate, Some(word));
                 queue.push_back(candidate);

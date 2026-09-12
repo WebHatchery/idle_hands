@@ -8,6 +8,10 @@ pub const HEIGHT: u8 = 12;
 const TARGET_CROSSINGS: u8 = 3;
 const STEP_INTERVAL: f32 = 0.20;
 
+fn default_target_crossings() -> u8 {
+    TARGET_CROSSINGS
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum FroggerStatus {
     Playing,
@@ -43,6 +47,8 @@ pub struct Frogger {
     pub player_column: u8,
     pub cars: Vec<Car>,
     pub crossings: u8,
+    #[serde(default = "default_target_crossings")]
+    pub target_crossings: u8,
     pub score: u16,
     pub moves: u16,
     pub lives: u8,
@@ -65,11 +71,17 @@ impl Default for Frogger {
 
 impl Frogger {
     pub fn new(seed: u64) -> Self {
+        let content = crate::data::GameData::default_content();
+        Self::new_with_target(seed, content.balance.arcade.frogger_target_crossings)
+    }
+
+    pub fn new_with_target(seed: u64, target_crossings: u8) -> Self {
         let mut game = Self {
             player_row: HEIGHT - 1,
             player_column: WIDTH / 2,
             cars: Vec::new(),
             crossings: 0,
+            target_crossings,
             score: 0,
             moves: 0,
             lives: 3,
@@ -158,7 +170,7 @@ impl Frogger {
 
     pub fn reset(&mut self, seed: u64) {
         let mode = self.mode;
-        *self = Self::new(seed);
+        *self = Self::new_with_target(seed, self.target_crossings);
         self.mode = mode;
         self.build_lanes();
     }
@@ -187,7 +199,7 @@ impl Frogger {
         if self.player_row == 0 {
             self.crossings = self.crossings.saturating_add(1);
             self.score = self.score.saturating_add(25);
-            if self.crossings >= TARGET_CROSSINGS {
+            if self.crossings >= self.target_crossings {
                 self.status = FroggerStatus::Won;
                 self.paused = false;
             } else {

@@ -211,7 +211,7 @@ pub fn draw(state: &AppState) {
             crate::theme::BRASS,
         );
         crate::ui::draw_text(
-            game.title(),
+            state.game_title(game),
             rect.x + 20.,
             rect.y + rect.h * 0.62,
             if crate::ui::is_portrait() {

@@ -1,6 +1,9 @@
 //! Deterministic, non-playing hints for the two card games.
 
-use crate::{freecell::FreeSource, state::AppState};
+use crate::{
+    freecell::FreeSource,
+    state::{AppState, GameId},
+};
 
 #[path = "card_hints_postlaunch.rs"]
 mod postlaunch;
@@ -13,6 +16,21 @@ pub use postlaunch::{
 
 fn color_name(color: u8) -> &'static str {
     ["red", "amber", "green", "blue", "violet", "gold"][color as usize % 6]
+}
+
+pub(crate) fn authored_copy(state: &AppState, game: GameId, complete: bool) -> String {
+    state
+        .content
+        .hints
+        .get(game.key())
+        .map(|copy| {
+            if complete {
+                copy.complete.clone()
+            } else {
+                copy.fallback.clone()
+            }
+        })
+        .unwrap_or_else(|| "No hint is available for this drawer.".into())
 }
 
 pub fn solitaire(state: &AppState) -> String {
@@ -481,7 +499,7 @@ pub fn word_search(state: &AppState) -> String {
         |(word, start, end)| {
             format!(
                 "Try {} from row {}, column {} to row {}, column {}.",
-                crate::word_search::WORDS[word],
+                game.words()[word],
                 start / 10 + 1,
                 start % 10 + 1,
                 end / 10 + 1,

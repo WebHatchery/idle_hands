@@ -72,7 +72,7 @@ pub fn draw_records(state: &AppState) {
             state.records.daily_clear_count(),
             state.records.daily_results.len(),
             value(state.records.daily_best_score()),
-            next_achievement(&state.records),
+            next_achievement(state),
             crate::state_records::format_duration(summary.total_playtime_seconds),
             summary.active_games,
             summary.fastest_label()
@@ -396,10 +396,10 @@ fn draw_filtered_records(state: &AppState) {
     draw_rectangle_lines(700., 330., 110., 44., 3., WHITE);
 }
 
-fn next_achievement(records: &crate::state::CollectionRecords) -> &'static str {
-    AchievementId::next_locked(records)
-        .map(AchievementId::title)
-        .unwrap_or("ALL COMPLETE")
+fn next_achievement(state: &AppState) -> String {
+    AchievementId::next_locked(&state.records)
+        .map(|achievement| achievement.title_from(&state.content))
+        .unwrap_or_else(|| "ALL COMPLETE".into())
 }
 
 fn value(value: Option<u32>) -> String {
@@ -428,6 +428,7 @@ pub fn records_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
 }
 
 pub fn draw_credits(state: &AppState) {
+    let paragraphs = crate::credits_data::paragraphs(&state.content);
     let credits_panel = Rect::new(170., 20., 504., 350.);
     panel(credits_panel, crate::theme::BACKGROUND_DEEP);
     if state.high_contrast {
@@ -448,15 +449,15 @@ pub fn draw_credits(state: &AppState) {
         crate::theme::BRASS,
     );
     text(
-        crate::credits_data::TITLE,
+        crate::credits_data::title(&state.content),
         205.,
         115.,
         crate::accessibility::text_size(20., state.large_text),
         WHITE,
     );
     let mut y = 155.;
-    for (index, paragraph) in crate::credits_data::PARAGRAPHS.iter().enumerate() {
-        let base_size = if index == crate::credits_data::PARAGRAPHS.len() - 1 {
+    for (index, paragraph) in paragraphs.iter().enumerate() {
+        let base_size = if index == paragraphs.len() - 1 {
             13.
         } else if index == 0 {
             14.
@@ -466,7 +467,7 @@ pub fn draw_credits(state: &AppState) {
         let size = crate::accessibility::text_size(base_size, state.large_text);
         let color = if state.high_contrast {
             WHITE
-        } else if index == 0 || index == crate::credits_data::PARAGRAPHS.len() - 1 {
+        } else if index == 0 || index == paragraphs.len() - 1 {
             crate::theme::CREAM
         } else {
             crate::theme::SECONDARY
@@ -491,6 +492,8 @@ pub fn credits_clicks(p: Vec2) -> Vec<UiAction> {
 }
 
 pub fn draw_help(state: &AppState) {
+    let paragraphs = crate::help_data::paragraphs(&state.content);
+    let navigation = crate::help_data::navigation(&state.content);
     panel(
         Rect::new(20., 12., 804., 365.),
         crate::theme::BACKGROUND_DEEP,
@@ -503,7 +506,7 @@ pub fn draw_help(state: &AppState) {
         crate::theme::BRASS,
     );
     let mut y = 92.;
-    for (index, paragraph) in crate::help_data::PARAGRAPHS.iter().enumerate() {
+    for (index, paragraph) in paragraphs.iter().enumerate() {
         let size = crate::accessibility::text_size(14., state.large_text);
         for line in macroquad_toolkit::ui::wrap_text(paragraph, 760., size) {
             text(
@@ -532,7 +535,7 @@ pub fn draw_help(state: &AppState) {
         Rect::new(680., 288., 130., 44.),
     ]
     .into_iter()
-    .zip(crate::help_data::NAV_LABELS)
+    .zip(navigation.iter())
     {
         panel(rect, crate::theme::SURFACE);
         text(

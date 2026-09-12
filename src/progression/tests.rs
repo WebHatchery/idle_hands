@@ -10,11 +10,12 @@ fn first_finish_awards_once_and_full_cabinet_is_worth_two() {
     };
     let mut earned_flags = Vec::new();
     let mut stamps = 0;
-    sync(&mut earned_flags, &mut stamps, &records);
+    let content = crate::data::GameData::load().unwrap().content;
+    sync_with_content(&mut earned_flags, &mut stamps, &records, &content);
     assert_eq!(stamps, 2);
     assert_eq!(earned_flags.len(), AchievementId::ALL.len());
     assert!(earned_flags[AchievementId::FirstFinish.index()]);
-    sync(&mut earned_flags, &mut stamps, &records);
+    sync_with_content(&mut earned_flags, &mut stamps, &records, &content);
     assert_eq!(stamps, 2);
 }
 
@@ -98,16 +99,17 @@ fn full_cabinet_counts_every_playable_game() {
 #[test]
 fn achievement_progress_explains_single_and_collection_goals() {
     let records = CollectionRecords::default();
+    let content = crate::data::GameData::load().unwrap().content;
     assert_eq!(
-        AchievementId::FirstFinish.description(),
+        AchievementId::FirstFinish.description_from(&content),
         "Finish any drawer"
     );
     assert_eq!(
-        AchievementId::Game(GameId::Solitaire).description(),
+        AchievementId::Game(GameId::Solitaire).description_from(&content),
         "Finish Solitaire"
     );
     assert_eq!(
-        AchievementId::FullCabinet.description(),
+        AchievementId::FullCabinet.description_from(&content),
         "Finish every drawer"
     );
     assert_eq!(

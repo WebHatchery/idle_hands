@@ -110,9 +110,7 @@ pub fn draw(state: &AppState) {
     text(
         &format!(
             "Score {} / {}  •  {} lives",
-            game.score,
-            Asteroids::target_score(),
-            game.lives
+            game.score, game.target_score, game.lives
         ),
         if crate::ui::is_compact_landscape() {
             compact_header().2

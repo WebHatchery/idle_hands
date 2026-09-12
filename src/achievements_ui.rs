@@ -186,7 +186,7 @@ pub fn draw(state: &AppState) {
             state.large_text,
         );
         crate::ui::draw_text(
-            fitted_label(achievement, portrait),
+            fitted_label(achievement, portrait, state),
             rect.x + 20.,
             rect.y + rect.h * 0.54,
             size,
@@ -213,7 +213,7 @@ pub fn draw(state: &AppState) {
             },
         );
         crate::ui::draw_text(
-            fitted_description(achievement, portrait, compact),
+            fitted_description(achievement, portrait, compact, state),
             rect.x + 20.,
             rect.y + rect.h - if portrait { 8. } else { 6. },
             crate::accessibility::text_size(if portrait { 9. } else { 7. }, state.large_text),
@@ -264,11 +264,8 @@ pub fn draw(state: &AppState) {
     );
 }
 
-fn achievement_label(achievement: AchievementId) -> String {
-    match achievement {
-        AchievementId::Game(game) => game.title().to_owned(),
-        _ => achievement.title().to_owned(),
-    }
+fn achievement_label(achievement: AchievementId, state: &AppState) -> String {
+    achievement.title_from(&state.content)
 }
 
 fn filter_button_label(filter: u8, state: &AppState) -> String {
@@ -301,8 +298,8 @@ fn filter_rects(layout: Layout) -> [Rect; 3] {
     }
 }
 
-fn fitted_label(achievement: AchievementId, portrait: bool) -> String {
-    let label = achievement_label(achievement);
+fn fitted_label(achievement: AchievementId, portrait: bool, state: &AppState) -> String {
+    let label = achievement_label(achievement, state);
     let limit = if portrait { 28 } else { 24 };
     if label.chars().count() <= limit {
         label
@@ -317,8 +314,13 @@ fn fitted_label(achievement: AchievementId, portrait: bool) -> String {
     }
 }
 
-fn fitted_description(achievement: AchievementId, portrait: bool, compact: bool) -> String {
-    let description = achievement.description();
+fn fitted_description(
+    achievement: AchievementId,
+    portrait: bool,
+    compact: bool,
+    state: &AppState,
+) -> String {
+    let description = achievement.description_from(&state.content);
     let limit = if portrait {
         34
     } else if compact {

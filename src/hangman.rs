@@ -2,16 +2,6 @@
 
 use serde::{Deserialize, Serialize};
 
-pub const CABINET_WORDS: [&str; 8] = [
-    "STARE", "CABINET", "PAUSE", "SHELF", "MOMENT", "BUTTON", "POCKET", "VELVET",
-];
-pub const NATURE_WORDS: [&str; 8] = [
-    "GARDEN", "FOREST", "RIVER", "MEADOW", "ORCHARD", "PETAL", "THUNDER", "WILLOW",
-];
-pub const VOYAGE_WORDS: [&str; 8] = [
-    "ANCHOR", "COMPASS", "HARBOR", "ISLAND", "JOURNEY", "SAILOR", "TIDE", "VESSEL",
-];
-
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum HangmanCategory {
     #[default]
@@ -37,11 +27,11 @@ impl HangmanCategory {
         }
     }
 
-    pub const fn words(self) -> &'static [&'static str] {
+    pub const fn key(self) -> &'static str {
         match self {
-            Self::Cabinet => &CABINET_WORDS,
-            Self::Nature => &NATURE_WORDS,
-            Self::Voyage => &VOYAGE_WORDS,
+            Self::Cabinet => "cabinet",
+            Self::Nature => "nature",
+            Self::Voyage => "voyage",
         }
     }
 }
@@ -58,20 +48,6 @@ impl HangmanRule {
         match self {
             Self::Classic => "CLASSIC 6",
             Self::Rapid => "RAPID 4 ×2",
-        }
-    }
-
-    pub const fn max_wrong(self) -> u8 {
-        match self {
-            Self::Classic => 6,
-            Self::Rapid => 4,
-        }
-    }
-
-    const fn score_multiplier(self) -> u32 {
-        match self {
-            Self::Classic => 1,
-            Self::Rapid => 2,
         }
     }
 }
@@ -114,8 +90,14 @@ pub struct Hangman {
     pub combo: u8,
     #[serde(default)]
     pub best_combo: u8,
+    #[serde(default = "default_classic_wrong")]
+    pub max_wrong: u8,
+    #[serde(default = "default_score_multiplier")]
+    pub score_multiplier: u32,
     #[serde(default = "default_reveals")]
     pub reveals: u8,
+    #[serde(default)]
+    pub word_list: Vec<String>,
     #[serde(skip)]
     history: Vec<Snapshot>,
 }
@@ -128,12 +110,38 @@ impl Default for Hangman {
 
 impl Hangman {
     pub fn new(seed: u64) -> Self {
-        Self::new_with_options(seed, HangmanCategory::Cabinet, HangmanRule::Classic)
+        let content = crate::data::GameData::default_content();
+        Self::new_with_options_config_and_balance(
+            seed,
+            HangmanCategory::Cabinet,
+            HangmanRule::Classic,
+            &content.words.hangman,
+            &content.balance.word_games,
+        )
     }
 
     pub fn new_with_options(seed: u64, category: HangmanCategory, rule: HangmanRule) -> Self {
-        let words = category.words();
-        let word = words[(seed as usize) % words.len()].to_owned();
+        let content = crate::data::GameData::default_content();
+        Self::new_with_options_config_and_balance(
+            seed,
+            category,
+            rule,
+            &content.words.hangman,
+            &content.balance.word_games,
+        )
+    }
+
+    pub fn new_with_options_config_and_balance(
+        seed: u64,
+        category: HangmanCategory,
+        rule: HangmanRule,
+        word_lists: &std::collections::BTreeMap<String, Vec<String>>,
+        balance: &crate::content::WordGameBalance,
+    ) -> Self {
+        let words = word_lists
+            .get(category.key())
+            .expect("validated content has every Hangman category");
+        let word = words[(seed as usize) % words.len()].clone();
         Self {
             word,
             guessed: [false; 26],
@@ -147,7 +155,16 @@ impl Hangman {
             score: 0,
             combo: 0,
             best_combo: 0,
+            max_wrong: match rule {
+                HangmanRule::Classic => balance.hangman_classic_wrong,
+                HangmanRule::Rapid => balance.hangman_rapid_wrong,
+            },
+            score_multiplier: match rule {
+                HangmanRule::Classic => 1,
+                HangmanRule::Rapid => balance.hangman_rapid_multiplier,
+            },
             reveals: default_reveals(),
+            word_list: words.clone(),
             history: Vec::new(),
         }
     }
@@ -199,15 +216,55 @@ impl Hangman {
     }
 
     pub fn reset(&mut self, seed: u64) {
-        *self = Self::new_with_options(seed, self.category, self.rule);
+        *self = Self::with_words(
+            seed,
+            self.category,
+            self.rule,
+            &self.word_list,
+            self.max_wrong,
+            self.score_multiplier,
+        );
     }
 
     pub fn set_category(&mut self, category: HangmanCategory, seed: u64) {
-        *self = Self::new_with_options(seed, category, self.rule);
+        *self = Self::with_words(
+            seed,
+            category,
+            self.rule,
+            &self.word_list,
+            self.max_wrong,
+            self.score_multiplier,
+        );
     }
 
-    pub fn set_rule(&mut self, rule: HangmanRule, seed: u64) {
-        *self = Self::new_with_options(seed, self.category, rule);
+    pub fn set_category_with_config_and_balance(
+        &mut self,
+        category: HangmanCategory,
+        seed: u64,
+        word_lists: &std::collections::BTreeMap<String, Vec<String>>,
+        balance: &crate::content::WordGameBalance,
+    ) {
+        *self = Self::new_with_options_config_and_balance(
+            seed, category, self.rule, word_lists, balance,
+        );
+    }
+
+    pub fn set_rule_with_balance(
+        &mut self,
+        rule: HangmanRule,
+        seed: u64,
+        balance: &crate::content::WordGameBalance,
+    ) {
+        *self = Self::new_with_options_config_and_balance(
+            seed,
+            self.category,
+            rule,
+            &std::collections::BTreeMap::from([(
+                self.category.key().to_owned(),
+                self.word_list.clone(),
+            )]),
+            balance,
+        );
     }
 
     pub fn hint_letter(&self) -> Option<u8> {
@@ -216,10 +273,8 @@ impl Hangman {
         }
         let mut frequency = [0usize; 26];
         for word in self
-            .category
-            .words()
+            .word_list
             .iter()
-            .copied()
             .filter(|word| self.matches_candidate(word))
         {
             let mut counted = [false; 26];
@@ -240,8 +295,7 @@ impl Hangman {
     }
 
     pub fn candidate_count(&self) -> usize {
-        self.category
-            .words()
+        self.word_list
             .iter()
             .filter(|word| self.matches_candidate(word))
             .count()
@@ -264,9 +318,9 @@ impl Hangman {
             if scores {
                 self.combo = self.combo.saturating_add(1);
                 self.best_combo = self.best_combo.max(self.combo);
-                self.score = self.score.saturating_add(
-                    matches * 10 * u32::from(self.combo) * self.rule.score_multiplier(),
-                );
+                self.score = self
+                    .score
+                    .saturating_add(matches * 10 * u32::from(self.combo) * self.score_multiplier);
             }
             if self
                 .word
@@ -275,16 +329,14 @@ impl Hangman {
             {
                 self.status = HangmanStatus::Won;
                 self.score = self.score.saturating_add(
-                    u32::from(self.rule.max_wrong() - self.wrong_count)
-                        * 25
-                        * self.rule.score_multiplier(),
+                    u32::from(self.max_wrong - self.wrong_count) * 25 * self.score_multiplier,
                 );
             }
         } else {
             self.combo = 0;
             self.wrong[letter as usize] = true;
             self.wrong_count = self.wrong_count.saturating_add(1);
-            if self.wrong_count >= self.rule.max_wrong() {
+            if self.wrong_count >= self.max_wrong {
                 self.status = HangmanStatus::Lost;
             }
         }
@@ -318,9 +370,47 @@ impl Hangman {
             self.reveals,
         ));
     }
+
+    fn with_words(
+        seed: u64,
+        category: HangmanCategory,
+        rule: HangmanRule,
+        words: &[String],
+        max_wrong: u8,
+        score_multiplier: u32,
+    ) -> Self {
+        let word = words[(seed as usize) % words.len()].clone();
+        Self {
+            word,
+            guessed: [false; 26],
+            wrong: [false; 26],
+            wrong_count: 0,
+            moves: 0,
+            status: HangmanStatus::Playing,
+            seed,
+            category,
+            rule,
+            score: 0,
+            combo: 0,
+            best_combo: 0,
+            max_wrong,
+            score_multiplier,
+            reveals: default_reveals(),
+            word_list: words.to_vec(),
+            history: Vec::new(),
+        }
+    }
 }
 
 const fn default_reveals() -> u8 {
+    1
+}
+
+fn default_classic_wrong() -> u8 {
+    6
+}
+
+fn default_score_multiplier() -> u32 {
     1
 }
 

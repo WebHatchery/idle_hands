@@ -181,8 +181,8 @@ pub fn draw(state: &AppState) {
 fn status_text(game: &PaddleDuel) -> String {
     match game.status {
         PaddleStatus::Playing => "Tap UP or DOWN to move your paddle".into(),
-        PaddleStatus::Won => "Seven points — you own the table".into(),
-        PaddleStatus::Lost => "The cabinet won this rally — play again".into(),
+        PaddleStatus::Won => format!("{} points — you own the table", game.win_score),
+        PaddleStatus::Lost => format!("The cabinet reached {} — play again", game.win_score),
     }
 }
 fn button(rect: Rect, value: &str, large_text: bool) {

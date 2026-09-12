@@ -11,6 +11,8 @@ use crate::state::AppState;
 impl AppState {
     pub fn new(data: &GameData) -> Self {
         let mut state = Self::default();
+        state.content = std::sync::Arc::new(data.content.clone());
+        state.profile_name = crate::profile_data::name(&state.content, 0).to_owned();
         state.games.dots_boxes = DotsBoxes::new_with_config(
             state.games.dots_boxes.seed,
             DotsDifficulty::Standard,
@@ -31,6 +33,75 @@ impl AppState {
             MatchThreeDifficulty::Standard,
             &data.puzzles.match_three,
         );
+        state.games.word_search = crate::word_search::WordSearch::new_with_theme_config(
+            state.games.word_search.seed,
+            crate::word_search::WordSearchTheme::Cabinet,
+            &data.content.words.word_search,
+        );
+        state.games.hangman = crate::hangman::Hangman::new_with_options_config_and_balance(
+            state.games.hangman.seed,
+            crate::hangman::HangmanCategory::Cabinet,
+            crate::hangman::HangmanRule::Classic,
+            &data.content.words.hangman,
+            &data.content.balance.word_games,
+        );
+        state.games.word_grid = crate::word_grid::WordGrid::new_with_mode_config(
+            state.games.word_grid.seed,
+            crate::word_grid::WordGridMode::Classic,
+            &data.content.words.word_grid,
+            data.content.balance.word_games.word_grid_max_guesses,
+        );
+        state.games.word_ladder = crate::word_ladder::WordLadder::new_with_mode_config(
+            state.games.word_ladder.seed,
+            crate::word_ladder::LadderMode::Direct,
+            &data.content.words.word_ladder.dictionary,
+            &data.content.words.word_ladder.puzzles,
+        );
+        state.games.snake = crate::snake::Snake::new_with_mode_and_target(
+            state.games.snake.seed,
+            crate::snake::SnakeMode::Classic,
+            data.content.balance.arcade.snake_target_score,
+        );
+        state.games.breakout = crate::breakout::Breakout::new_with_level_and_target(
+            state.games.breakout.seed,
+            1,
+            data.content.balance.arcade.breakout_target_level,
+        );
+        state.games.space_invaders = crate::space_invaders::SpaceInvaders::new_with_target(
+            state.games.space_invaders.seed,
+            data.content.balance.arcade.space_invaders_target_wave,
+        );
+        state.games.asteroids = crate::asteroids::Asteroids::new_with_target(
+            state.games.asteroids.seed,
+            data.content.balance.arcade.asteroids_target_score,
+        );
+        state.games.frogger = crate::frogger::Frogger::new_with_target(
+            state.games.frogger.seed,
+            data.content.balance.arcade.frogger_target_crossings,
+        );
+        state.games.block_stack = crate::block_stack::BlockStack::new_with_target(
+            state.games.block_stack.seed,
+            data.content.balance.arcade.block_stack_target_lines,
+        );
+        state.games.paddle_duel = crate::paddle_duel::PaddleDuel::new_with_target(
+            state.games.paddle_duel.seed,
+            data.content.balance.arcade.paddle_duel_win_score,
+        );
+        for (game, kind) in [
+            (&mut state.games.riddle_room, MiscKind::RiddleRoom),
+            (&mut state.games.pattern_vault, MiscKind::PatternVault),
+            (&mut state.games.sum_circuit, MiscKind::SumCircuit),
+            (&mut state.games.orbit_order, MiscKind::OrbitOrder),
+            (&mut state.games.word_forge, MiscKind::WordForge),
+        ] {
+            *game = MiscGame::new_with_content(
+                game.seed,
+                kind,
+                &data.content.words.riddles,
+                &data.content.words.misc,
+                &data.content.balance.misc_games,
+            );
+        }
         state
     }
 
@@ -57,15 +128,33 @@ impl AppState {
         state.games.sliding_puzzle = crate::sliding_puzzle::SlidingPuzzle::new(seed_at(seed, 9));
         state.games.mastermind = crate::mastermind::Mastermind::new(seed_at(seed, 10));
         state.games.spider = crate::spider::Spider::new(seed_at(seed, 11));
-        state.games.word_search = crate::word_search::WordSearch::new(seed_at(seed, 12));
-        state.games.hangman = crate::hangman::Hangman::new(seed_at(seed, 13));
+        state.games.word_search = crate::word_search::WordSearch::new_with_theme_config(
+            seed_at(seed, 12),
+            crate::word_search::WordSearchTheme::Cabinet,
+            &data.content.words.word_search,
+        );
+        state.games.hangman = crate::hangman::Hangman::new_with_options_config_and_balance(
+            seed_at(seed, 13),
+            crate::hangman::HangmanCategory::Cabinet,
+            crate::hangman::HangmanRule::Classic,
+            &data.content.words.hangman,
+            &data.content.balance.word_games,
+        );
         state.games.connect_four = crate::connect_four::ConnectFour::new(seed_at(seed, 14));
         state.games.checkers = crate::checkers::Checkers::new(seed_at(seed, 15));
         state.games.peg_solitaire = crate::peg_solitaire::PegSolitaire::new(seed_at(seed, 16));
         state.games.mahjong_solitaire =
             crate::mahjong_solitaire::MahjongSolitaire::new(seed_at(seed, 17));
-        state.games.snake = crate::snake::Snake::new(seed_at(seed, 18));
-        state.games.breakout = crate::breakout::Breakout::new(seed_at(seed, 19));
+        state.games.snake = crate::snake::Snake::new_with_mode_and_target(
+            seed_at(seed, 18),
+            crate::snake::SnakeMode::Classic,
+            data.content.balance.arcade.snake_target_score,
+        );
+        state.games.breakout = crate::breakout::Breakout::new_with_level_and_target(
+            seed_at(seed, 19),
+            1,
+            data.content.balance.arcade.breakout_target_level,
+        );
         state.games.higher_lower = crate::higher_lower::HigherLower::new(seed_at(seed, 20));
         state.games.klondike_golf = crate::klondike_golf::KlondikeGolf::new(seed_at(seed, 21));
         state.games.blackjack = crate::blackjack::Blackjack::new(seed_at(seed, 22));
@@ -99,7 +188,12 @@ impl AppState {
             &data.puzzles.color_sort,
         );
         state.games.battleship = crate::battleship::Battleship::new(seed_at(seed, 36));
-        state.games.word_grid = crate::word_grid::WordGrid::new(seed_at(seed, 37));
+        state.games.word_grid = crate::word_grid::WordGrid::new_with_mode_config(
+            seed_at(seed, 37),
+            crate::word_grid::WordGridMode::Classic,
+            &data.content.words.word_grid,
+            data.content.balance.word_games.word_grid_max_guesses,
+        );
         state.games.pipe_loop = crate::pipe_loop::PipeLoop::new(seed_at(seed, 38));
         state.games.maze_walk = crate::maze_walk::MazeWalk::new(seed_at(seed, 39));
         state.games.match_three = MatchThree::new_with_config(
@@ -110,20 +204,70 @@ impl AppState {
         state.games.pyramid = crate::pyramid::Pyramid::new(seed_at(seed, 41));
         state.games.tri_peaks = crate::tri_peaks::TriPeaks::new(seed_at(seed, 42));
         state.games.nim = crate::nim::Nim::new(seed_at(seed, 43));
-        state.games.word_ladder = crate::word_ladder::WordLadder::new(seed_at(seed, 44));
-        state.games.space_invaders = crate::space_invaders::SpaceInvaders::new(seed_at(seed, 45));
-        state.games.asteroids = crate::asteroids::Asteroids::new(seed_at(seed, 46));
-        state.games.frogger = crate::frogger::Frogger::new(seed_at(seed, 47));
+        state.games.word_ladder = crate::word_ladder::WordLadder::new_with_mode_config(
+            seed_at(seed, 44),
+            crate::word_ladder::LadderMode::Direct,
+            &data.content.words.word_ladder.dictionary,
+            &data.content.words.word_ladder.puzzles,
+        );
+        state.games.space_invaders = crate::space_invaders::SpaceInvaders::new_with_target(
+            seed_at(seed, 45),
+            data.content.balance.arcade.space_invaders_target_wave,
+        );
+        state.games.asteroids = crate::asteroids::Asteroids::new_with_target(
+            seed_at(seed, 46),
+            data.content.balance.arcade.asteroids_target_score,
+        );
+        state.games.frogger = crate::frogger::Frogger::new_with_target(
+            seed_at(seed, 47),
+            data.content.balance.arcade.frogger_target_crossings,
+        );
         state.games.munch_maze = crate::munch_maze::MunchMaze::new(seed_at(seed, 48));
-        state.games.block_stack = crate::block_stack::BlockStack::new(seed_at(seed, 49));
+        state.games.block_stack = crate::block_stack::BlockStack::new_with_target(
+            seed_at(seed, 49),
+            data.content.balance.arcade.block_stack_target_lines,
+        );
         state.games.terrain_cannon = crate::terrain_cannon::TerrainCannon::new(seed_at(seed, 50));
         state.games.fling_fury = crate::fling_fury::FlingFury::new(seed_at(seed, 51));
-        state.games.paddle_duel = crate::paddle_duel::PaddleDuel::new(seed_at(seed, 52));
-        state.games.riddle_room = MiscGame::new(seed_at(seed, 53), MiscKind::RiddleRoom);
-        state.games.pattern_vault = MiscGame::new(seed_at(seed, 54), MiscKind::PatternVault);
-        state.games.sum_circuit = MiscGame::new(seed_at(seed, 55), MiscKind::SumCircuit);
-        state.games.orbit_order = MiscGame::new(seed_at(seed, 56), MiscKind::OrbitOrder);
-        state.games.word_forge = MiscGame::new(seed_at(seed, 57), MiscKind::WordForge);
+        state.games.paddle_duel = crate::paddle_duel::PaddleDuel::new_with_target(
+            seed_at(seed, 52),
+            data.content.balance.arcade.paddle_duel_win_score,
+        );
+        state.games.riddle_room = MiscGame::new_with_content(
+            seed_at(seed, 53),
+            MiscKind::RiddleRoom,
+            &data.content.words.riddles,
+            &data.content.words.misc,
+            &data.content.balance.misc_games,
+        );
+        state.games.pattern_vault = MiscGame::new_with_content(
+            seed_at(seed, 54),
+            MiscKind::PatternVault,
+            &data.content.words.riddles,
+            &data.content.words.misc,
+            &data.content.balance.misc_games,
+        );
+        state.games.sum_circuit = MiscGame::new_with_content(
+            seed_at(seed, 55),
+            MiscKind::SumCircuit,
+            &data.content.words.riddles,
+            &data.content.words.misc,
+            &data.content.balance.misc_games,
+        );
+        state.games.orbit_order = MiscGame::new_with_content(
+            seed_at(seed, 56),
+            MiscKind::OrbitOrder,
+            &data.content.words.riddles,
+            &data.content.words.misc,
+            &data.content.balance.misc_games,
+        );
+        state.games.word_forge = MiscGame::new_with_content(
+            seed_at(seed, 57),
+            MiscKind::WordForge,
+            &data.content.words.riddles,
+            &data.content.words.misc,
+            &data.content.balance.misc_games,
+        );
         state
     }
 }

@@ -12,7 +12,7 @@ fn seeded_grids_repeat_and_contain_the_catalog_words() {
             .iter()
             .position(|placement| *placement == (row, column, row_step, column_step))
             .unwrap();
-        for (offset, letter) in WORDS[word_index].bytes().enumerate() {
+        for (offset, letter) in first.words()[word_index].bytes().enumerate() {
             let target_row = (row as isize + row_step * offset as isize) as usize;
             let target_column = (column as isize + column_step * offset as isize) as usize;
             assert_eq!(

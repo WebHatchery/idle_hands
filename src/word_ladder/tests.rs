@@ -53,9 +53,9 @@ fn enter(game: &mut WordLadder, word: &str) -> bool {
 #[test]
 fn hint_follows_the_shortest_route_to_the_target() {
     let mut game = WordLadder::new(0);
-    assert_eq!(game.hint_word(), Some("PLATE"));
+    assert_eq!(game.hint_word().as_deref(), Some("PLATE"));
     while let Some(next) = game.hint_word() {
-        assert!(enter(&mut game, next));
+        assert!(enter(&mut game, &next));
     }
     assert_eq!(game.phase, WordLadderPhase::Won);
     assert_eq!(game.moves, game.par);

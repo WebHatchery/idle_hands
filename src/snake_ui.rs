@@ -308,7 +308,7 @@ fn status_text(game: &Snake) -> String {
             "{}  •  Score {} / {}  •  Pace {}",
             game.mode.label(),
             game.score,
-            Snake::target_score(),
+            game.win_score,
             game.speed_stage()
         ),
         SnakeStatus::Won => "The coil is complete".into(),

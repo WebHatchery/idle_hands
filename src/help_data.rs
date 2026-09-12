@@ -1,13 +1,14 @@
-//! Shared cabinet guidance shown by every responsive Help surface.
+//! Shared cabinet guidance loaded from the authored content catalog.
 
-pub const PARAGRAPHS: [&str; 4] = [
-    "Idle Hands is a cabinet of calm, tactile games.",
-    "Tap a cabinet object to open it.",
-    "Use the visible controls in every drawer.",
-    "Swipe or drag only when a drawer names that gesture; every required action has a visible touch control.",
-];
+use crate::content::GameContent;
 
-pub const NAV_LABELS: [&str; 4] = ["TUTORIALS", "RULES", "CREDITS", "BACK"];
+pub fn paragraphs(content: &GameContent) -> &[String] {
+    &content.labels.help_paragraphs
+}
+
+pub fn navigation(content: &GameContent) -> &[String] {
+    &content.labels.help_navigation
+}
 
 #[cfg(test)]
 mod tests;

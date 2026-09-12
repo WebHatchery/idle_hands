@@ -386,11 +386,23 @@ pub fn draw(
     }
     if let Some(game) = state.tutorial {
         if is_compact_landscape() {
-            mobile_tutorial_ui::draw_tutorial(game, true, state.large_text, state.high_contrast);
+            mobile_tutorial_ui::draw_tutorial(
+                game,
+                &state.content,
+                true,
+                state.large_text,
+                state.high_contrast,
+            );
         } else if is_portrait() {
-            mobile_tutorial_ui::draw_tutorial(game, false, state.large_text, state.high_contrast);
+            mobile_tutorial_ui::draw_tutorial(
+                game,
+                &state.content,
+                false,
+                state.large_text,
+                state.high_contrast,
+            );
         } else {
-            tutorial_ui::draw_overlay(game, state.large_text, state.high_contrast);
+            tutorial_ui::draw_overlay(game, &state.content, state.large_text, state.high_contrast);
         }
     } else if state.screen.is_game() {
         if is_compact_landscape() {
@@ -621,6 +633,8 @@ pub(crate) fn game_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     out
 }
 fn draw_help(state: &AppState) {
+    let paragraphs = crate::help_data::paragraphs(&state.content);
+    let navigation = crate::help_data::navigation(&state.content);
     panel(
         Rect::new(120., 80., 1040., 560.),
         crate::theme::BACKGROUND_DEEP,
@@ -645,7 +659,7 @@ fn draw_help(state: &AppState) {
         crate::theme::BRASS,
     );
     let mut y = 200.;
-    for (index, paragraph) in crate::help_data::PARAGRAPHS.iter().enumerate() {
+    for (index, paragraph) in paragraphs.iter().enumerate() {
         let size =
             crate::accessibility::text_size(if index == 0 { 24. } else { 19. }, state.large_text);
         for line in macroquad_toolkit::ui::wrap_text(paragraph, 900., size) {
@@ -666,7 +680,7 @@ fn draw_help(state: &AppState) {
     }
     panel(Rect::new(400., 635., 180., 48.), crate::theme::SURFACE);
     text(
-        crate::help_data::NAV_LABELS[0],
+        navigation[0].as_str(),
         450.,
         666.,
         crate::accessibility::text_size(16., state.large_text),
@@ -674,7 +688,7 @@ fn draw_help(state: &AppState) {
     );
     panel(Rect::new(600., 635., 180., 48.), crate::theme::SURFACE);
     text(
-        crate::help_data::NAV_LABELS[1],
+        navigation[1].as_str(),
         660.,
         666.,
         crate::accessibility::text_size(18., state.large_text),
@@ -682,7 +696,7 @@ fn draw_help(state: &AppState) {
     );
     panel(Rect::new(800., 635., 180., 48.), crate::theme::SURFACE);
     text(
-        crate::help_data::NAV_LABELS[2],
+        navigation[2].as_str(),
         850.,
         666.,
         crate::accessibility::text_size(18., state.large_text),
@@ -690,7 +704,7 @@ fn draw_help(state: &AppState) {
     );
     panel(Rect::new(1030., 635., 180., 48.), crate::theme::MOSS_DARK);
     text(
-        crate::help_data::NAV_LABELS[3],
+        navigation[3].as_str(),
         1090.,
         666.,
         crate::accessibility::text_size(18., state.large_text),

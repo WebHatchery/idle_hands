@@ -66,7 +66,7 @@ fn hint_returns_a_consistent_probe_without_revealing_the_target() {
     let game = WordGrid::new(0);
 
     assert!(game.hint_word().is_some());
-    assert_ne!(game.hint_word(), Some(game.target.as_str()));
+    assert_ne!(game.hint_word().as_deref(), Some(game.target.as_str()));
     assert!(game.guesses.is_empty());
     assert!(game.current.is_empty());
 }

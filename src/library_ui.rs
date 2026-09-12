@@ -111,8 +111,14 @@ pub fn draw_rules(state: &AppState) {
         let row = index % 11;
         let x = 160. + column as f32 * 245.;
         let y = 215. + row as f32 * 38.;
-        crate::ui::draw_text(game.title(), x, y, 12., crate::theme::BRASS);
-        crate::ui::draw_text(game.subtitle(), x, y + 15., 9., crate::theme::CREAM);
+        crate::ui::draw_text(state.game_title(*game), x, y, 12., crate::theme::BRASS);
+        crate::ui::draw_text(
+            state.game_subtitle(*game),
+            x,
+            y + 15.,
+            9.,
+            crate::theme::CREAM,
+        );
         crate::ui::draw_text(
             crate::rules_data::action_label(*game),
             x + 150.,
@@ -157,6 +163,7 @@ fn draw_filtered_rules(state: &AppState) {
     back_button();
 }
 pub fn draw_credits(state: &AppState) {
+    let paragraphs = crate::credits_data::paragraphs(&state.content);
     let credits_panel = Rect::new(230., 95., 820., 520.);
     panel(credits_panel);
     if state.high_contrast {
@@ -177,15 +184,15 @@ pub fn draw_credits(state: &AppState) {
         crate::theme::BRASS,
     );
     crate::ui::draw_text(
-        crate::credits_data::TITLE,
+        crate::credits_data::title(&state.content),
         305.,
         240.,
         crate::accessibility::text_size(28., state.large_text),
         WHITE,
     );
     let mut y = 280.;
-    for (index, paragraph) in crate::credits_data::PARAGRAPHS.iter().enumerate() {
-        let base_size = if index == crate::credits_data::PARAGRAPHS.len() - 1 {
+    for (index, paragraph) in paragraphs.iter().enumerate() {
+        let base_size = if index == paragraphs.len() - 1 {
             19.
         } else if index == 0 {
             20.
@@ -195,7 +202,7 @@ pub fn draw_credits(state: &AppState) {
         let size = crate::accessibility::text_size(base_size, state.large_text);
         let color = if state.high_contrast {
             WHITE
-        } else if index == 0 || index == crate::credits_data::PARAGRAPHS.len() - 1 {
+        } else if index == 0 || index == paragraphs.len() - 1 {
             crate::theme::CREAM
         } else {
             crate::theme::SECONDARY

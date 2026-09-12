@@ -31,7 +31,12 @@ pub(super) fn apply(state: &mut AppState, scene: &str) {
         }
         _ => return,
     }
-    let _ = progression::sync(&mut state.achievements, &mut state.stamps, &state.records);
+    let _ = progression::sync_with_content(
+        &mut state.achievements,
+        &mut state.stamps,
+        &state.records,
+        &state.content,
+    );
 }
 
 #[cfg(test)]

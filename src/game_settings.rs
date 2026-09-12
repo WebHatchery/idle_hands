@@ -96,7 +96,7 @@ impl Game {
     }
 
     fn set_profile_name(&mut self, index: u8) -> String {
-        let name = crate::profile_data::name(index).to_owned();
+        let name = crate::profile_data::name(&self.state.content, index).to_owned();
         self.state.profile_name = name.clone();
         self.request_autosave();
         format!("Profile name: {name}")

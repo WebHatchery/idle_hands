@@ -101,7 +101,7 @@ fn draw_names(state: &AppState) {
         panel_fill(state, rect, fill);
         text(
             state,
-            profile_data::name(index as u8),
+            profile_data::name(&state.content, index as u8),
             rect.x + 14.,
             rect.y + rect.h * 0.62,
             if crate::ui::is_portrait() { 11. } else { 14. },

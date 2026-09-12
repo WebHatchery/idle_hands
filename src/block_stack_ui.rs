@@ -127,9 +127,7 @@ pub fn draw(state: &AppState) {
     label(
         &format!(
             "Lines {} / {}  •  Score {}",
-            game.lines,
-            BlockStack::target_lines(),
-            game.score
+            game.lines, game.target_lines, game.score
         ),
         title_x,
         score_y,

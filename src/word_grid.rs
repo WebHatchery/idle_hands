@@ -5,11 +5,6 @@ use serde::{Deserialize, Serialize};
 
 pub const WORD_LENGTH: usize = 5;
 pub const MAX_GUESSES: usize = 6;
-pub const WORDS: [&str; 24] = [
-    "STILL", "SHELF", "PAUSE", "GAMES", "SMALL", "WORDS", "MOTIF", "CABIN", "QUIET", "STACK",
-    "BOARD", "TOUCH", "PIXEL", "QUEST", "ROUND", "BRASS", "VAULT", "CHARM", "LEVEL", "TRACK",
-    "SCORE", "LIGHT", "FRAME", "STONE",
-];
 
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum WordGridMode {
@@ -56,6 +51,10 @@ pub struct WordGrid {
     #[serde(default)]
     pub notice: String,
     pub phase: WordGridPhase,
+    #[serde(default)]
+    pub dictionary: Vec<String>,
+    #[serde(default = "default_max_guesses")]
+    pub max_guesses: usize,
     #[serde(skip)]
     history: UndoStack<Self>,
 }
@@ -68,11 +67,32 @@ impl Default for WordGrid {
 
 impl WordGrid {
     pub fn new(seed: u64) -> Self {
-        Self::new_with_mode(seed, WordGridMode::Classic)
+        let content = crate::data::GameData::default_content();
+        Self::new_with_mode_config(
+            seed,
+            WordGridMode::Classic,
+            &content.words.word_grid,
+            content.balance.word_games.word_grid_max_guesses,
+        )
     }
 
     pub fn new_with_mode(seed: u64, mode: WordGridMode) -> Self {
-        let target = WORDS[(seed as usize) % WORDS.len()].to_owned();
+        let content = crate::data::GameData::default_content();
+        Self::new_with_mode_config(
+            seed,
+            mode,
+            &content.words.word_grid,
+            content.balance.word_games.word_grid_max_guesses,
+        )
+    }
+
+    pub fn new_with_mode_config(
+        seed: u64,
+        mode: WordGridMode,
+        dictionary: &[String],
+        max_guesses: usize,
+    ) -> Self {
+        let target = dictionary[(seed as usize) % dictionary.len()].clone();
         Self {
             target,
             guesses: Vec::new(),
@@ -84,6 +104,8 @@ impl WordGrid {
             mode,
             notice: String::new(),
             phase: WordGridPhase::Playing,
+            dictionary: dictionary.to_vec(),
+            max_guesses,
             history: UndoStack::default(),
         }
     }
@@ -130,7 +152,7 @@ impl WordGrid {
         self.notice.clear();
         if guess == self.target {
             self.phase = WordGridPhase::Won;
-        } else if self.guesses.len() >= MAX_GUESSES {
+        } else if self.guesses.len() >= self.max_guesses {
             self.phase = WordGridPhase::Lost;
         }
         self.history.push(previous);
@@ -159,23 +181,24 @@ impl WordGrid {
         self.phase == WordGridPhase::Won
     }
 
-    pub fn hint_word(&self) -> Option<&'static str> {
+    pub fn hint_word(&self) -> Option<String> {
         if self.phase != WordGridPhase::Playing {
             return None;
         }
         let remaining = self.remaining_words();
-        WORDS
+        self.dictionary
             .iter()
-            .copied()
+            .map(String::as_str)
             .filter(|candidate| *candidate != self.target)
             .filter(|candidate| !self.guesses.iter().any(|guess| guess == candidate))
             .max_by_key(|candidate| probe_score(candidate, &remaining))
+            .map(str::to_owned)
     }
 
-    pub fn remaining_words(&self) -> Vec<&'static str> {
-        WORDS
+    pub fn remaining_words(&self) -> Vec<&str> {
+        self.dictionary
             .iter()
-            .copied()
+            .map(String::as_str)
             .filter(|candidate| {
                 self.guesses
                     .iter()
@@ -299,6 +322,10 @@ fn state_rank(state: LetterState) -> u8 {
         LetterState::Present => 2,
         LetterState::Correct => 3,
     }
+}
+
+fn default_max_guesses() -> usize {
+    MAX_GUESSES
 }
 
 #[cfg(test)]

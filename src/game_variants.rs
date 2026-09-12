@@ -10,6 +10,15 @@ fn next<T: Copy + PartialEq>(all: &[T], current: T) -> T {
     all[(index + 1) % all.len()]
 }
 
+pub(crate) fn configured_label(state: &AppState, game: GameId, id: &str) -> Option<String> {
+    state
+        .content
+        .variants_for(game)
+        .iter()
+        .find(|entry| entry.id == id)
+        .map(|entry| entry.label.clone())
+}
+
 pub fn label(state: &AppState, game: GameId) -> String {
     match game {
         GameId::Game2048 => format!("BOARD · {}", state.games.game.board_size.label()),
@@ -28,10 +37,13 @@ pub fn label(state: &AppState, game: GameId) -> String {
         GameId::SlidingPuzzle => state.games.sliding_puzzle.variant.label().to_owned(),
         GameId::Mastermind => state.games.mastermind.variant.label().to_owned(),
         GameId::Spider => state.games.spider.mode.label().to_owned(),
-        GameId::WordSearch => state.games.word_search.theme.label().to_owned(),
+        GameId::WordSearch => configured_label(state, game, state.games.word_search.theme.key())
+            .unwrap_or_else(|| "WORD SEARCH".to_owned()),
         GameId::Hangman => format!(
-            "HANGMAN · {:?} / {:?}",
-            state.games.hangman.category, state.games.hangman.rule
+            "HANGMAN · {} / {:?}",
+            configured_label(state, game, state.games.hangman.category.key())
+                .unwrap_or_else(|| state.games.hangman.category.label().to_owned()),
+            state.games.hangman.rule
         )
         .to_uppercase(),
         GameId::ConnectFour => {
@@ -85,10 +97,34 @@ pub fn label(state: &AppState, game: GameId) -> String {
             format!("COLOR SORT · {:?}", state.games.color_sort.difficulty).to_uppercase()
         }
         GameId::Battleship => state.games.battleship.fleet.label().to_owned(),
-        GameId::WordGrid => format!("WORD GRID · {:?}", state.games.word_grid.mode).to_uppercase(),
-        GameId::WordLadder => {
-            format!("WORD LADDER · {:?}", state.games.word_ladder.mode).to_uppercase()
-        }
+        GameId::WordGrid => format!(
+            "WORD GRID · {}",
+            configured_label(
+                state,
+                game,
+                if state.games.word_grid.mode == crate::word_grid::WordGridMode::Classic {
+                    "default"
+                } else {
+                    "alternate"
+                },
+            )
+            .unwrap_or_else(|| format!("{:?}", state.games.word_grid.mode))
+        )
+        .to_uppercase(),
+        GameId::WordLadder => format!(
+            "WORD LADDER · {}",
+            configured_label(
+                state,
+                game,
+                if state.games.word_ladder.mode == crate::word_ladder::LadderMode::Direct {
+                    "default"
+                } else {
+                    "alternate"
+                },
+            )
+            .unwrap_or_else(|| format!("{:?}", state.games.word_ladder.mode))
+        )
+        .to_uppercase(),
         GameId::PipeLoop => {
             format!("PIPE LOOP · {:?}", state.games.pipe_loop.pattern).to_uppercase()
         }
@@ -112,21 +148,24 @@ pub fn label(state: &AppState, game: GameId) -> String {
         GameId::PaddleDuel => format!("PADDLE DUEL · {}", state.games.paddle_duel.mode_label()),
         GameId::RiddleRoom => format!(
             "RIDDLE ROOM · {}",
-            misc_variant(state.games.riddle_room.seed)
+            misc_variant(state, game, state.games.riddle_room.seed)
         ),
         GameId::PatternVault => format!(
             "PATTERN VAULT · {}",
-            misc_variant(state.games.pattern_vault.seed)
+            misc_variant(state, game, state.games.pattern_vault.seed)
         ),
         GameId::SumCircuit => format!(
             "SUM CIRCUIT · {}",
-            misc_variant(state.games.sum_circuit.seed)
+            misc_variant(state, game, state.games.sum_circuit.seed)
         ),
         GameId::OrbitOrder => format!(
             "ORBIT ORDER · {}",
-            misc_variant(state.games.orbit_order.seed)
+            misc_variant(state, game, state.games.orbit_order.seed)
         ),
-        GameId::WordForge => format!("WORD FORGE · {}", misc_variant(state.games.word_forge.seed)),
+        GameId::WordForge => format!(
+            "WORD FORGE · {}",
+            misc_variant(state, game, state.games.word_forge.seed)
+        ),
     }
 }
 
@@ -265,10 +304,12 @@ pub fn cycle(state: &mut AppState, data: &GameData, game: GameId) {
                 crate::hangman::HangmanRule::Classic => crate::hangman::HangmanRule::Rapid,
                 crate::hangman::HangmanRule::Rapid => crate::hangman::HangmanRule::Classic,
             };
-            state.games.hangman = crate::hangman::Hangman::new_with_options(
+            state.games.hangman = crate::hangman::Hangman::new_with_options_config_and_balance(
                 seed(state.games.hangman.seed),
                 category,
                 rule,
+                &data.content.words.hangman,
+                &data.content.balance.word_games,
             );
         }
         GameId::Spider => {
@@ -281,9 +322,10 @@ pub fn cycle(state: &mut AppState, data: &GameData, game: GameId) {
                 &crate::word_search::WordSearchTheme::ALL,
                 state.games.word_search.theme,
             );
-            state.games.word_search = crate::word_search::WordSearch::new_with_theme(
+            state.games.word_search = crate::word_search::WordSearch::new_with_theme_config(
                 seed(state.games.word_search.seed),
                 theme,
+                &data.content.words.word_search,
             );
         }
         GameId::ConnectFour => {
@@ -339,8 +381,7 @@ pub fn cycle(state: &mut AppState, data: &GameData, game: GameId) {
                 crate::snake::Snake::new_with_mode(seed(state.games.snake.seed), mode);
         }
         GameId::Breakout => {
-            let level =
-                (state.games.breakout.level % crate::breakout::Breakout::target_level()) + 1;
+            let level = (state.games.breakout.level % state.games.breakout.target_level) + 1;
             state.games.breakout =
                 crate::breakout::Breakout::new_with_level(seed(state.games.breakout.seed), level);
         }
@@ -523,9 +564,11 @@ pub fn cycle(state: &mut AppState, data: &GameData, game: GameId) {
                 crate::word_grid::WordGridMode::Classic,
                 crate::word_grid::WordGridMode::Hard,
             ];
-            state.games.word_grid = crate::word_grid::WordGrid::new_with_mode(
+            state.games.word_grid = crate::word_grid::WordGrid::new_with_mode_config(
                 seed(state.games.word_grid.seed),
                 next(&all, state.games.word_grid.mode),
+                &data.content.words.word_grid,
+                data.content.balance.word_games.word_grid_max_guesses,
             );
         }
         GameId::WordLadder => {
@@ -533,9 +576,11 @@ pub fn cycle(state: &mut AppState, data: &GameData, game: GameId) {
                 crate::word_ladder::LadderMode::Direct,
                 crate::word_ladder::LadderMode::Scenic,
             ];
-            state.games.word_ladder = crate::word_ladder::WordLadder::new_with_mode(
+            state.games.word_ladder = crate::word_ladder::WordLadder::new_with_mode_config(
                 seed(state.games.word_ladder.seed),
                 next(&all, state.games.word_ladder.mode),
+                &data.content.words.word_ladder.dictionary,
+                &data.content.words.word_ladder.puzzles,
             );
         }
         GameId::PipeLoop => {
@@ -627,12 +672,19 @@ pub fn cycle(state: &mut AppState, data: &GameData, game: GameId) {
     }
 }
 
-fn misc_variant(seed: u64) -> &'static str {
-    if seed.is_multiple_of(2) {
-        "TWIST"
+fn misc_variant(state: &AppState, game: GameId, seed: u64) -> String {
+    let id = if seed.is_multiple_of(2) {
+        "alternate"
     } else {
-        "CLASSIC"
-    }
+        "default"
+    };
+    configured_label(state, game, id).unwrap_or_else(|| {
+        if id == "alternate" {
+            "TWIST".into()
+        } else {
+            "CLASSIC".into()
+        }
+    })
 }
 
 #[cfg(test)]

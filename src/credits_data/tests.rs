@@ -2,16 +2,22 @@
 
 use super::*;
 
+fn content() -> crate::content::GameContent {
+    crate::data::GameData::load().unwrap().content
+}
+
 #[test]
 fn credits_copy_covers_identity_craft_touch_and_privacy() {
-    assert_eq!(TITLE, "IDLE HANDS");
-    assert_eq!(PARAGRAPHS.len(), 7);
-    assert!(PARAGRAPHS[1].contains("Rust"));
-    assert!(PARAGRAPHS[2].contains("touch"));
-    assert!(PARAGRAPHS[3].contains("provenance"));
-    assert!(PARAGRAPHS[4].contains("analytics are currently disabled"));
-    assert!(PARAGRAPHS[5].contains("browser or Windows profile"));
-    assert!(PARAGRAPHS
+    let content = content();
+    let paragraphs = paragraphs(&content);
+    assert_eq!(title(&content), "IDLE HANDS");
+    assert_eq!(paragraphs.len(), 7);
+    assert!(paragraphs[1].contains("Rust"));
+    assert!(paragraphs[2].contains("touch"));
+    assert!(paragraphs[3].contains("provenance"));
+    assert!(paragraphs[4].contains("analytics are currently disabled"));
+    assert!(paragraphs[5].contains("browser or Windows profile"));
+    assert!(paragraphs
         .iter()
         .all(|paragraph| !paragraph.trim().is_empty()));
 }

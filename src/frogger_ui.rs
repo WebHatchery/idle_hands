@@ -116,10 +116,7 @@ pub fn draw(state: &AppState, frog_texture: Option<&Texture2D>, car_texture: Opt
     text(
         &format!(
             "Crossings {} / {}  •  Score {}  •  {} lives",
-            game.crossings,
-            Frogger::target_crossings(),
-            game.score,
-            game.lives
+            game.crossings, game.target_crossings, game.score, game.lives
         ),
         status_x,
         if compact {
