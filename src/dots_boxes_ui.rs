@@ -60,7 +60,7 @@ fn layout() -> Layout {
     }
 }
 
-pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
+pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     let l = layout();
     if crate::ui::hit(Rect::new(0., 0., 110., 42.), point) {
         return vec![UiAction::Cabinet];
@@ -79,7 +79,7 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(l.new_game, point) {
         return vec![UiAction::DotsNew];
     }
-    edge_at(l.board, point, _state.games.dots_boxes.side())
+    edge_at(l.board, point, state.games.dots_boxes.side())
         .map_or_else(Vec::new, |edge| vec![UiAction::DotsEdge(edge)])
 }
 

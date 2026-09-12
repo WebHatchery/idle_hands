@@ -1,3 +1,5 @@
+//! Deterministic rules-screen fixtures used by the screenshot capture harness.
+
 use crate::state::AppState;
 
 pub(super) fn apply(state: &mut AppState, scene: &str) {

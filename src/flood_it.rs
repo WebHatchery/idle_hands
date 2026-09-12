@@ -89,6 +89,7 @@ impl FloodIt {
     }
 
     pub fn new_with_config(seed: u64, difficulty: FloodDifficulty, config: &FloodItConfig) -> Self {
+        // GameData validation guarantees one row for every difficulty variant.
         let settings = config
             .difficulties
             .get(difficulty.index())

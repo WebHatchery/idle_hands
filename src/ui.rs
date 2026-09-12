@@ -352,7 +352,7 @@ pub fn draw(
         Screen::Cabinet if is_portrait() => {
             responsive_cabinet::draw(state, data, loaded_assets, cabinet_texture)
         }
-        Screen::Cabinet => cabinet_ui::draw(state, data, loaded_assets, cabinet_texture),
+        Screen::Cabinet => cabinet_ui::draw(state, loaded_assets, cabinet_texture),
         Screen::Finder => finder_ui::draw(state),
         Screen::Profile => profile_ui::draw(state),
         Screen::DrawerInfo(_) => drawer_info_ui::draw(state),

@@ -142,6 +142,7 @@ impl MazeWalk {
         if self.walls[self.player] & bit != 0 {
             return false;
         }
+        // The move is accepted only for an open edge with a valid neighbour.
         let next = neighbor(self.player, direction).expect("open edge has a neighbor");
         let previous = self.clone_without_history();
         self.player = next;
@@ -246,6 +247,7 @@ fn shortest_first(walls: &[u8], start: usize, target: usize) -> Option<Direction
             if walls[index] & direction_bit(direction) != 0 {
                 continue;
             }
+            // Maze generation marks only edges that lead to another cell.
             let next = neighbor(index, direction).expect("open edge has a neighbor");
             let first = first.or(Some(direction));
             if next == target {
@@ -277,6 +279,7 @@ fn shortest_distance(walls: &[u8], start: usize, target: usize) -> usize {
             if walls[index] & direction_bit(direction) != 0 {
                 continue;
             }
+            // Maze generation marks only edges that lead to another cell.
             let next = neighbor(index, direction).expect("open edge has a neighbor");
             if next == target {
                 return distance + 1;

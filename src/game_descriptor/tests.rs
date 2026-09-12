@@ -1,3 +1,5 @@
+//! Regression coverage for the tests module.
+
 use super::{is_demo_game, GameCategory, ALL, DEMO_GAMES_PER_CATEGORY};
 use crate::state::GameId;
 

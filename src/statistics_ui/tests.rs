@@ -1,3 +1,5 @@
+//! Regression coverage for the tests module.
+
 use super::*;
 use crate::{state::Screen, ui};
 

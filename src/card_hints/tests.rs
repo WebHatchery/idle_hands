@@ -1,17 +1,79 @@
+//! Table-driven regression coverage for the cabinet hint contract.
+
+use crate::state::AppState;
+
 use super::*;
 
-#[test]
-fn default_solitaire_has_a_deterministic_hint() {
-    let state = AppState::default();
-    assert!(!solitaire(&state).is_empty());
-    assert_eq!(solitaire(&state), solitaire(&state));
-}
+type HintCase = (&'static str, fn(&AppState) -> String, &'static str);
 
 #[test]
-fn default_freecell_has_a_deterministic_hint() {
+fn every_default_hint_is_non_empty_deterministic_and_descriptive() {
     let state = AppState::default();
-    assert!(!freecell(&state).is_empty());
-    assert_eq!(freecell(&state), freecell(&state));
+    let cases: &[HintCase] = &[
+        ("solitaire", solitaire, ""),
+        ("freecell", freecell, ""),
+        ("pyramid", pyramid, ""),
+        ("tri_peaks", tri_peaks, ""),
+        ("klondike_golf", klondike_golf, ""),
+        ("spider_solitaire", spider_solitaire, ""),
+        ("nim", nim, "forced-win route"),
+        ("game_2048", game_2048, ""),
+        ("tic_tac_toe", tic_tac_toe, "Try square 5."),
+        ("lights_out", lights_out, ""),
+        ("memory_pairs", memory_pairs, "No known pair yet"),
+        ("sliding_puzzle", sliding_puzzle, ""),
+        ("mastermind", mastermind, "Try the red peg"),
+        ("sudoku", sudoku, "Enter "),
+        ("minesweeper", minesweeper, "Reveal row 5"),
+        ("nonogram", nonogram, "Fill row"),
+        ("word_search", word_search, "Try STILL"),
+        ("hangman", hangman, ""),
+        ("connect_four", connect_four, "Drop a disc"),
+        ("checkers", checkers, ""),
+        ("reversi", reversi, ""),
+        ("peg_solitaire", peg_solitaire, ""),
+        ("mahjong_solitaire", mahjong_solitaire, ""),
+        ("snake", snake, ""),
+        ("breakout", breakout, ""),
+        ("higher_lower", higher_lower, ""),
+        ("blackjack", blackjack, ""),
+        ("dungeon_sweeper", dungeon_sweeper, ""),
+        ("potion_2048", potion_2048, ""),
+        ("tiny_tower_defence", tiny_tower_defence, ""),
+        ("one_room_roguelike", one_room_roguelike, ""),
+        ("daily_dungeon", daily_dungeon, ""),
+        ("dots_boxes", dots_boxes, ""),
+        ("sokoban", sokoban, "Move UP"),
+        ("mancala", mancala, ""),
+        ("hanoi", hanoi, "peg"),
+        ("number_match", number_match, "Pair cells"),
+        ("flood_it", flood_it, "Choose"),
+        ("color_sort", color_sort, "Pour"),
+        ("battleship", battleship, "Sweep near"),
+        ("word_grid", word_grid, "candidates remain"),
+        ("word_ladder", word_ladder, "toward the target"),
+        ("pipe_loop", pipe_loop, "Rotate tile"),
+        ("maze_walk", maze_walk, "Walk"),
+        ("fivefold", fivefold, "Roll DICE"),
+        ("spider", spider, ""),
+        ("match_three", match_three, "Swap tiles"),
+    ];
+
+    for (name, hint, expected) in cases {
+        let first = hint(&state);
+        assert!(!first.is_empty(), "{name} returned an empty hint");
+        assert_eq!(
+            first,
+            hint(&state),
+            "{name} changed between identical reads"
+        );
+        if !expected.is_empty() {
+            assert!(
+                first.contains(expected),
+                "{name} hint {first:?} did not contain {expected:?}"
+            );
+        }
+    }
 }
 
 #[test]
@@ -45,13 +107,6 @@ fn freecell_hint_finds_an_ordinary_cascade_move() {
 }
 
 #[test]
-fn default_pyramid_has_a_deterministic_hint() {
-    let state = AppState::default();
-    assert!(!pyramid(&state).is_empty());
-    assert_eq!(pyramid(&state), pyramid(&state));
-}
-
-#[test]
 fn pyramid_hint_finds_an_exposed_pair() {
     let mut state = AppState::default();
     state.games.pyramid.pyramid = vec![None; 28];
@@ -66,343 +121,6 @@ fn pyramid_hint_finds_an_exposed_pair() {
         face_up: true,
     });
     state.games.pyramid.stock.clear();
+
     assert_eq!(pyramid(&state), "Pair exposed cards 27 and 28.");
-}
-
-#[test]
-fn default_tri_peaks_has_a_deterministic_hint() {
-    let state = AppState::default();
-    assert!(!tri_peaks(&state).is_empty());
-    assert_eq!(tri_peaks(&state), tri_peaks(&state));
-}
-
-#[test]
-fn default_klondike_golf_has_a_deterministic_hint() {
-    let state = AppState::default();
-    assert!(!klondike_golf(&state).is_empty());
-    assert_eq!(klondike_golf(&state), klondike_golf(&state));
-}
-
-#[test]
-fn default_spider_solitaire_has_a_deterministic_hint() {
-    let state = AppState::default();
-    assert!(!spider_solitaire(&state).is_empty());
-    assert_eq!(spider_solitaire(&state), spider_solitaire(&state));
-}
-
-#[test]
-fn default_nim_has_a_deterministic_hint() {
-    let state = AppState::default();
-    assert!(nim(&state).contains("forced-win route"));
-    assert_eq!(nim(&state), nim(&state));
-}
-
-#[test]
-fn default_2048_has_a_deterministic_hint() {
-    let state = AppState::default();
-    assert!(!game_2048(&state).is_empty());
-    assert_eq!(game_2048(&state), game_2048(&state));
-}
-
-#[test]
-fn default_tic_tac_toe_has_a_deterministic_hint() {
-    let state = AppState::default();
-    assert_eq!(tic_tac_toe(&state), "Try square 5.");
-    assert_eq!(tic_tac_toe(&state), tic_tac_toe(&state));
-}
-
-#[test]
-fn default_lights_out_has_a_deterministic_hint() {
-    let state = AppState::default();
-    assert!(!lights_out(&state).is_empty());
-    assert_eq!(lights_out(&state), lights_out(&state));
-}
-
-#[test]
-fn default_memory_pairs_has_a_deterministic_hint() {
-    let state = AppState::default();
-    assert_eq!(
-        memory_pairs(&state),
-        "No known pair yet; inspect unseen card 1."
-    );
-    assert_eq!(memory_pairs(&state), memory_pairs(&state));
-}
-
-#[test]
-fn default_sliding_puzzle_has_a_deterministic_hint() {
-    let state = AppState::default();
-    assert!(!sliding_puzzle(&state).is_empty());
-    assert_eq!(sliding_puzzle(&state), sliding_puzzle(&state));
-}
-
-#[test]
-fn default_mastermind_has_a_deterministic_hint() {
-    let state = AppState::default();
-    assert_eq!(mastermind(&state), "Try the red peg in slot 1.");
-    assert_eq!(mastermind(&state), mastermind(&state));
-}
-
-#[test]
-fn default_sudoku_has_a_deterministic_hint() {
-    let state = AppState::default();
-    assert!(sudoku(&state).starts_with("Enter "));
-    assert_eq!(sudoku(&state), sudoku(&state));
-}
-
-#[test]
-fn default_minesweeper_has_a_deterministic_hint() {
-    let state = AppState::default();
-    assert_eq!(minesweeper(&state), "Reveal row 5, column 5.");
-    assert_eq!(minesweeper(&state), minesweeper(&state));
-}
-
-#[test]
-fn default_nonogram_has_a_deterministic_hint() {
-    let state = AppState::default();
-    assert_eq!(nonogram(&state), "Fill row 1, column 1.");
-    assert_eq!(nonogram(&state), nonogram(&state));
-}
-
-#[test]
-fn default_word_search_has_a_deterministic_hint() {
-    let state = AppState::default();
-    assert_eq!(
-        word_search(&state),
-        "Try STILL from row 1, column 1 to row 1, column 5."
-    );
-    assert_eq!(word_search(&state), word_search(&state));
-}
-
-#[test]
-fn default_hangman_has_a_deterministic_hint() {
-    let state = AppState::default();
-    assert!(!hangman(&state).is_empty());
-    assert_eq!(hangman(&state), hangman(&state));
-}
-
-#[test]
-fn default_connect_four_has_a_deterministic_hint() {
-    let state = AppState::default();
-    assert_eq!(connect_four(&state), "Drop a disc in column 4.");
-    assert_eq!(connect_four(&state), connect_four(&state));
-}
-
-#[test]
-fn default_checkers_has_a_deterministic_hint() {
-    let state = AppState::default();
-    assert!(!checkers(&state).is_empty());
-    assert_eq!(checkers(&state), checkers(&state));
-}
-
-#[test]
-fn default_reversi_has_a_deterministic_hint() {
-    let state = AppState::default();
-    assert!(!reversi(&state).is_empty());
-    assert_eq!(reversi(&state), reversi(&state));
-}
-
-#[test]
-fn default_peg_solitaire_has_a_deterministic_hint() {
-    let state = AppState::default();
-    assert!(!peg_solitaire(&state).is_empty());
-    assert_eq!(peg_solitaire(&state), peg_solitaire(&state));
-}
-
-#[test]
-fn default_mahjong_solitaire_has_a_deterministic_hint() {
-    let state = AppState::default();
-    assert!(!mahjong_solitaire(&state).is_empty());
-    assert_eq!(mahjong_solitaire(&state), mahjong_solitaire(&state));
-}
-
-#[test]
-fn default_snake_has_a_deterministic_hint() {
-    let state = AppState::default();
-
-    assert!(!snake(&state).is_empty());
-    assert_eq!(snake(&state), snake(&state));
-}
-
-#[test]
-fn default_breakout_has_a_deterministic_hint() {
-    let state = AppState::default();
-
-    assert!(!breakout(&state).is_empty());
-    assert_eq!(breakout(&state), breakout(&state));
-}
-
-#[test]
-fn default_higher_lower_has_a_deterministic_hint() {
-    let state = AppState::default();
-
-    assert!(!higher_lower(&state).is_empty());
-    assert_eq!(higher_lower(&state), higher_lower(&state));
-}
-
-#[test]
-fn default_blackjack_has_a_deterministic_hint() {
-    let state = AppState::default();
-
-    assert!(!blackjack(&state).is_empty());
-    assert_eq!(blackjack(&state), blackjack(&state));
-}
-
-#[test]
-fn default_dungeon_sweeper_has_a_deterministic_hint() {
-    let state = AppState::default();
-
-    assert!(!dungeon_sweeper(&state).is_empty());
-    assert_eq!(dungeon_sweeper(&state), dungeon_sweeper(&state));
-}
-
-#[test]
-fn default_potion_2048_has_a_deterministic_hint() {
-    let state = AppState::default();
-
-    assert!(!potion_2048(&state).is_empty());
-    assert_eq!(potion_2048(&state), potion_2048(&state));
-}
-
-#[test]
-fn default_tiny_tower_defence_has_a_deterministic_hint() {
-    let state = AppState::default();
-
-    assert!(!tiny_tower_defence(&state).is_empty());
-    assert_eq!(tiny_tower_defence(&state), tiny_tower_defence(&state));
-}
-
-#[test]
-fn default_one_room_roguelike_has_a_deterministic_hint() {
-    let state = AppState::default();
-
-    assert!(!one_room_roguelike(&state).is_empty());
-    assert_eq!(one_room_roguelike(&state), one_room_roguelike(&state));
-}
-
-#[test]
-fn default_daily_dungeon_has_a_deterministic_hint() {
-    let state = AppState::default();
-
-    assert!(!daily_dungeon(&state).is_empty());
-    assert_eq!(daily_dungeon(&state), daily_dungeon(&state));
-}
-
-#[test]
-fn default_dots_boxes_has_a_deterministic_hint() {
-    let state = AppState::default();
-
-    assert!(!dots_boxes(&state).is_empty());
-    assert_eq!(dots_boxes(&state), dots_boxes(&state));
-}
-
-#[test]
-fn default_sokoban_has_a_deterministic_hint() {
-    let state = AppState::default();
-
-    assert!(sokoban(&state).contains("Move UP"));
-    assert_eq!(sokoban(&state), sokoban(&state));
-}
-
-#[test]
-fn default_mancala_has_a_deterministic_hint() {
-    let state = AppState::default();
-
-    assert!(!mancala(&state).is_empty());
-    assert_eq!(mancala(&state), mancala(&state));
-}
-
-#[test]
-fn default_hanoi_has_a_deterministic_hint() {
-    let state = AppState::default();
-
-    assert!(hanoi(&state).contains("peg"));
-    assert_eq!(hanoi(&state), hanoi(&state));
-}
-
-#[test]
-fn default_number_match_has_a_deterministic_hint() {
-    let state = AppState::default();
-
-    assert!(number_match(&state).contains("Pair cells"));
-    assert_eq!(number_match(&state), number_match(&state));
-}
-
-#[test]
-fn default_flood_it_has_a_deterministic_hint() {
-    let state = AppState::default();
-
-    assert!(flood_it(&state).contains("Choose"));
-    assert_eq!(flood_it(&state), flood_it(&state));
-}
-
-#[test]
-fn default_color_sort_has_a_deterministic_hint() {
-    let state = AppState::default();
-
-    assert!(color_sort(&state).contains("Pour"));
-    assert_eq!(color_sort(&state), color_sort(&state));
-}
-
-#[test]
-fn default_battleship_has_a_deterministic_hint() {
-    let state = AppState::default();
-
-    assert!(battleship(&state).contains("Sweep near"));
-    assert_eq!(battleship(&state), battleship(&state));
-}
-
-#[test]
-fn default_word_grid_has_a_deterministic_probe_hint() {
-    let state = AppState::default();
-
-    assert!(word_grid(&state).contains("candidates remain"));
-    assert_eq!(word_grid(&state), word_grid(&state));
-}
-
-#[test]
-fn default_word_ladder_has_a_deterministic_step_hint() {
-    let state = AppState::default();
-
-    assert!(word_ladder(&state).contains("toward the target"));
-    assert_eq!(word_ladder(&state), word_ladder(&state));
-}
-
-#[test]
-fn default_pipe_loop_has_a_deterministic_hint() {
-    let state = AppState::default();
-
-    assert!(pipe_loop(&state).contains("Rotate tile"));
-    assert_eq!(pipe_loop(&state), pipe_loop(&state));
-}
-
-#[test]
-fn default_maze_walk_has_a_deterministic_hint() {
-    let state = AppState::default();
-
-    assert!(maze_walk(&state).contains("Walk"));
-    assert_eq!(maze_walk(&state), maze_walk(&state));
-}
-
-#[test]
-fn default_fivefold_explains_that_a_roll_is_needed_for_a_category_hint() {
-    let state = AppState::default();
-
-    assert!(fivefold(&state).contains("Roll DICE"));
-    assert_eq!(fivefold(&state), fivefold(&state));
-}
-
-#[test]
-fn default_spider_has_a_deterministic_run_hint() {
-    let state = AppState::default();
-
-    assert!(!spider(&state).is_empty());
-    assert_eq!(spider(&state), spider(&state));
-}
-
-#[test]
-fn default_match_three_has_a_deterministic_swap_hint() {
-    let state = AppState::default();
-
-    assert!(match_three(&state).contains("Swap tiles"));
-    assert_eq!(match_three(&state), match_three(&state));
 }

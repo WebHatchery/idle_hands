@@ -147,7 +147,9 @@ pub fn draw(state: &AppState) {
         kind_button(*rect, kind, game.selected_kind == kind);
     }
     for index in 0..game.towers.len() {
-        let rect = grid.cell_rect(index).unwrap();
+        let Some(rect) = grid.cell_rect(index) else {
+            continue;
+        };
         draw_rectangle(
             rect.x,
             rect.y,

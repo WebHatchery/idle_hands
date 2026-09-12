@@ -1,3 +1,5 @@
+//! Regression coverage for the tests module.
+
 use super::*;
 
 fn card(rank: u8) -> Card {

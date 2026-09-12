@@ -1,3 +1,5 @@
+//! Regression coverage for the tests module.
+
 use super::*;
 
 fn enter(game: &mut WordGrid, word: &str) {

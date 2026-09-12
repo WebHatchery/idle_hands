@@ -71,8 +71,8 @@ fn tube_rects(board: Rect, tube_count: usize) -> Vec<Rect> {
         .collect()
 }
 
-pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
-    let l = layout(_state.games.color_sort.tubes.len());
+pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
+    let l = layout(state.games.color_sort.tubes.len());
     if crate::ui::hit(Rect::new(0., 0., 110., 42.), point) {
         return vec![UiAction::Cabinet];
     }

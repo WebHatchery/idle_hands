@@ -1,3 +1,5 @@
+//! Regression coverage for the tests module.
+
 use super::*;
 
 fn contains(outer: Rect, inner: Rect) -> bool {

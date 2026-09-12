@@ -87,6 +87,7 @@ impl DotsBoxes {
         difficulty: DotsDifficulty,
         config: &DotsBoxesConfig,
     ) -> Self {
+        // GameData validation guarantees one row for every difficulty variant.
         let side = config
             .difficulties
             .get(difficulty.index())

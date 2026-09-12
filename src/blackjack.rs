@@ -92,6 +92,7 @@ impl Blackjack {
             return false;
         }
         self.snapshot();
+        // A playing hand can always draw from the fresh shoe maintained here.
         self.player
             .push(self.deck.pop().expect("deck checked above"));
         if self.total(&self.player) > 21 {
@@ -111,6 +112,7 @@ impl Blackjack {
                 && self.is_soft(&self.dealer)))
             && !self.deck.is_empty()
         {
+            // The dealer draws only while the same non-empty shoe is resolving.
             self.dealer
                 .push(self.deck.pop().expect("deck checked above"));
         }
@@ -181,6 +183,7 @@ impl Blackjack {
     fn start_round(&mut self, seed: u64) {
         let (mut deck, shuffled_seed) = shuffled_deck(seed, true);
         deck.reverse();
+        // A fresh standard deck has enough cards for both opening hands.
         self.player = vec![
             deck.pop().expect("fresh deck"),
             deck.pop().expect("fresh deck"),

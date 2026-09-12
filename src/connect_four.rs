@@ -157,6 +157,7 @@ impl ConnectFour {
                 return false;
             }
             let mut cells = self.cells.clone();
+            // `column_full` above proves that this bounded column has a slot.
             let row = (0..ROWS)
                 .rev()
                 .find(|row| cells[row * COLUMNS + column] == Disc::Empty)

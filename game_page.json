@@ -1,7 +1,6 @@
 {
   "title": "Idle Hands",
   "wasm": "idle_hands",
-  "roost_slug": "rust_idle_hands",
   "status": { "text": "Playable", "class": "playable" },
   "controls_hint": "Tap a cabinet drawer to begin",
   "canvas_rendering": "auto",

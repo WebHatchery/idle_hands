@@ -1,3 +1,5 @@
+//! Hint copy and recommendation logic for the post-launch game drawers.
+
 use crate::state::AppState;
 
 pub fn snake(state: &AppState) -> String {
@@ -424,7 +426,10 @@ pub fn color_sort(state: &AppState) -> String {
     game.hint_move().map_or_else(
         || "No legal tube move remains — tap NEW BOARD to begin again.".into(),
         |(source, destination)| {
-            let preview = game.pour_preview(source, destination).unwrap();
+            let Some(preview) = game.pour_preview(source, destination) else {
+                return "That tube move is no longer available — tap NEW BOARD to begin again."
+                    .into();
+            };
             format!(
                 "Pour {} layer{} from tube {} to tube {}{}.",
                 preview.count,

@@ -1,3 +1,5 @@
+//! Deterministic capture scenarios for the cabinet game suite.
+
 use super::support;
 use crate::state::GameId;
 

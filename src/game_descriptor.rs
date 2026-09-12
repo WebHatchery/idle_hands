@@ -661,6 +661,7 @@ pub fn descriptor(game: GameId) -> &'static GameDescriptor {
     let index = GameId::ALL
         .iter()
         .position(|candidate| *candidate == game)
+        // Every public GameId is required to have one canonical descriptor.
         .expect("every GameId must be registered");
     &ALL[index]
 }

@@ -1,3 +1,5 @@
+//! Regression tests for the 2048 rule engine.
+
 use super::*;
 
 #[test]

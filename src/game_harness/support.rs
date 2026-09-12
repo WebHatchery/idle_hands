@@ -1,3 +1,5 @@
+//! Deterministic capture scenarios for the cabinet game suite.
+
 use crate::data::GameData;
 use crate::game_descriptor;
 use crate::game_variants;

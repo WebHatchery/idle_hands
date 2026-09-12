@@ -255,6 +255,28 @@ impl GameData {
             texture_manifest,
         })
     }
+
+    /// Keep the cabinet playable if an embedded data file is malformed in a
+    /// development build. The validated defaults are intentionally limited to
+    /// the configuration owned by this module; optional textures already have
+    /// a visible placeholder in the asset manager.
+    pub fn fallback() -> Self {
+        Self {
+            config: GameConfig {
+                game_name: "idle_hands".into(),
+                display_name: "Idle Hands".into(),
+                save_slot: "autosave".into(),
+                version: env!("CARGO_PKG_VERSION").into(),
+            },
+            puzzles: PuzzleConfig {
+                color_sort: ColorSortConfig::default(),
+                dots_boxes: DotsBoxesConfig::default(),
+                flood_it: FloodItConfig::default(),
+                match_three: MatchThreeConfig::default(),
+            },
+            texture_manifest: Vec::new(),
+        }
+    }
 }
 
 #[cfg(test)]

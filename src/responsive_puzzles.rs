@@ -76,7 +76,9 @@ pub fn draw_nonogram(state: &AppState) {
     let visible = crate::nonogram::visible_size(game.size, state.games.nonogram_zoomed);
     for local in 0..visible * visible {
         let index = global_index(state, local);
-        let cell = layout.cell_rect(local).unwrap();
+        let Some(cell) = layout.cell_rect(local) else {
+            continue;
+        };
         let rect = Rect::new(cell.x, cell.y, cell.w - 1., cell.h - 1.);
         let selected = game.selected == Some(index);
         let fill = match (game.marks[index], selected) {
@@ -312,7 +314,9 @@ pub fn draw_minesweeper(state: &AppState) {
     panel(MINE_BOARD, accessibility::board_fill(state.high_contrast));
     let layout = mine_grid(state);
     for index in 0..game.cells.len() {
-        let cell_rect = layout.cell_rect(index).unwrap();
+        let Some(cell_rect) = layout.cell_rect(index) else {
+            continue;
+        };
         let rect = Rect::new(cell_rect.x, cell_rect.y, cell_rect.w - 1., cell_rect.h - 1.);
         let cell = game.cells[index];
         let revealed = matches!(cell, crate::minesweeper::Cell::Revealed(value) if value < 9)

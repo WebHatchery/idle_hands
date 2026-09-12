@@ -100,6 +100,7 @@ impl MatchThree {
         difficulty: MatchThreeDifficulty,
         config: &MatchThreeConfig,
     ) -> Self {
+        // GameData validation guarantees one row for every difficulty variant.
         let settings = config
             .difficulties
             .get(difficulty.index())

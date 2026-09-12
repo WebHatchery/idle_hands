@@ -1,3 +1,5 @@
+//! Regression coverage for the tests module.
+
 use super::*;
 
 fn assert_card_fits(layout: CardLayout, width: f32, height: f32) {

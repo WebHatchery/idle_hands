@@ -205,6 +205,7 @@ impl AchievementId {
     }
 
     pub fn index(self) -> usize {
+        // Every achievement is listed exactly once in the canonical order.
         Self::ALL
             .iter()
             .position(|candidate| *candidate == self)

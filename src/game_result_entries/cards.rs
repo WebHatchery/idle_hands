@@ -1,8 +1,9 @@
+//! Terminal result copy for card and solitaire drawers.
+
 use crate::state::{AppState, GameId};
 use crate::ui::UiAction;
 
 use super::super::{ResultInfo, ResultKind};
-use super::result;
 
 pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
     match game {
@@ -11,7 +12,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
             if game.status != crate::solitaire::SolitaireStatus::Won {
                 return None;
             }
-            result(
+            result_entry!(
                 state,
                 game,
                 ResultKind::Won,
@@ -28,7 +29,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
             if game.status != crate::freecell::FreeCellStatus::Won {
                 return None;
             }
-            result(
+            result_entry!(
                 state,
                 game,
                 ResultKind::Won,
@@ -45,7 +46,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
             if game.status != crate::fivefold::FivefoldStatus::Complete {
                 return None;
             }
-            result(
+            result_entry!(
                 state,
                 game,
                 ResultKind::Won,
@@ -62,7 +63,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
             if game.status != crate::spider::SpiderStatus::Won {
                 return None;
             }
-            result(
+            result_entry!(
                 state,
                 game,
                 ResultKind::Won,
@@ -82,7 +83,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 crate::klondike_golf::GolfStatus::Playing => return None,
             };
             let remaining = game.tableau.iter().map(Vec::len).sum::<usize>() + game.stock.len();
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -106,7 +107,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 crate::blackjack::BlackjackStatus::Push => ResultKind::Push,
                 crate::blackjack::BlackjackStatus::Playing => return None,
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -133,7 +134,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
             if game.status != crate::spider_solitaire::SpiderSolitaireStatus::Won {
                 return None;
             }
-            result(
+            result_entry!(
                 state,
                 game,
                 ResultKind::Won,
@@ -152,7 +153,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 crate::pyramid::PyramidStatus::Stuck => ResultKind::Stuck,
                 crate::pyramid::PyramidStatus::Playing => return None,
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -178,7 +179,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 crate::tri_peaks::TriPeaksStatus::Stuck => ResultKind::Stuck,
                 crate::tri_peaks::TriPeaksStatus::Playing => return None,
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,

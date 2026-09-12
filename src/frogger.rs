@@ -96,9 +96,7 @@ impl Frogger {
         };
         let next_row = self.player_row as i8 + row_delta;
         let next_column = self.player_column as i8 + column_delta;
-        if !(0..i8::try_from(HEIGHT).unwrap()).contains(&next_row)
-            || !(0..i8::try_from(WIDTH).unwrap()).contains(&next_column)
-        {
+        if !(0..HEIGHT as i8).contains(&next_row) || !(0..WIDTH as i8).contains(&next_column) {
             return false;
         }
         self.snapshot();

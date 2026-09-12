@@ -100,6 +100,7 @@ impl TriPeaks {
             return false;
         }
         self.snapshot();
+        // The playable-card guard above identifies an occupied tableau slot.
         let card = self.tableau[index].take().expect("playable card");
         self.waste.push(card);
         if self.bridge_armed {
@@ -123,6 +124,7 @@ impl TriPeaks {
             return false;
         }
         self.snapshot();
+        // A non-empty stock is required by the branch above.
         self.waste
             .push(self.stock.pop().expect("stock checked above"));
         self.run = 0;

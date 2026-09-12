@@ -1,3 +1,5 @@
+//! Shared restart confirmation modal layout and touch routing.
+
 use crate::{
     state::{AppState, Screen},
     ui::UiAction,

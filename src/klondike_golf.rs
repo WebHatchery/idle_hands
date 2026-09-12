@@ -116,6 +116,7 @@ impl KlondikeGolf {
             return false;
         }
         self.snapshot();
+        // The guard above establishes that the stock contains a card.
         self.waste.push(self.stock.pop().unwrap());
         self.moves = self.moves.saturating_add(1);
         self.resolve();

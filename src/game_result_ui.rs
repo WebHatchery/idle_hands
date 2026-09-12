@@ -1,6 +1,9 @@
 //! Shared, resume-safe result surfaces for the cabinet games.
 
-use crate::{state::AppState, ui::UiAction};
+use crate::{
+    state::{AppState, GameId},
+    ui::UiAction,
+};
 use macroquad::prelude::*;
 
 #[path = "game_result_entries.rs"]
@@ -33,45 +36,36 @@ pub fn info(state: &AppState) -> Option<ResultInfo> {
     entries::info(state)
 }
 
-// Terminal surfaces always need a result kind, two copy lines, and two
-// independently labelled actions. Keep that compact content contract flat.
-#[allow(clippy::too_many_arguments)]
-pub(super) fn make<T>(
-    state: &AppState,
-    _game: &T,
-    kind: ResultKind,
-    explanation: impl Into<String>,
-    stats: String,
-    primary_action: UiAction,
-    primary_label: &'static str,
-    secondary_action: UiAction,
-    secondary_label: &'static str,
-) -> ResultInfo {
-    let game = state
-        .screen
-        .game()
-        .expect("result info is only for game screens");
-    ResultInfo {
-        kind,
+/// Named content contract for a terminal result surface.
+pub(crate) struct ResultSpec {
+    pub(crate) kind: ResultKind,
+    pub(crate) explanation: String,
+    pub(crate) stats: String,
+    pub(crate) primary_action: UiAction,
+    pub(crate) primary_label: &'static str,
+    pub(crate) secondary_action: UiAction,
+    pub(crate) secondary_label: &'static str,
+}
+
+pub(crate) fn make(state: &AppState, spec: ResultSpec) -> Option<ResultInfo> {
+    let game = state.screen.game()?;
+    Some(ResultInfo {
+        kind: spec.kind,
         context: format!(
             "{}  ·  {}",
             crate::game_descriptor::descriptor(game).title,
             crate::game_variants::label(state, game)
         ),
-        explanation: explanation.into(),
-        stats: with_time_stats(state, stats),
-        primary_label,
-        primary_action,
-        secondary_label,
-        secondary_action,
-    }
+        explanation: spec.explanation,
+        stats: with_time_stats(state, game, spec.stats),
+        primary_label: spec.primary_label,
+        primary_action: spec.primary_action,
+        secondary_label: spec.secondary_label,
+        secondary_action: spec.secondary_action,
+    })
 }
 
-fn with_time_stats(state: &AppState, stats: String) -> String {
-    let game = state
-        .screen
-        .game()
-        .expect("result info is only for game screens");
+fn with_time_stats(state: &AppState, game: GameId, stats: String) -> String {
     let current = state.records.current_time(game.index());
     let best = state.records.best_time(game.index());
     if current == 0 && best.is_none() {

@@ -172,9 +172,15 @@ impl Solitaire {
         self.snapshot();
         let moving = match source {
             CardSource::Waste => self.waste.pop().map(|card| vec![card]),
-            CardSource::Tableau(column, depth) => Some(self.tableau[column].split_off(depth)),
-        }
-        .unwrap();
+            CardSource::Tableau(column, depth) => self
+                .tableau
+                .get_mut(column)
+                .and_then(|cards| (depth <= cards.len()).then(|| cards.split_off(depth))),
+        };
+        let Some(moving) = moving else {
+            self.selected = Some(source);
+            return false;
+        };
         self.tableau[destination].extend(moving);
         self.flip_top();
         self.moves += 1;

@@ -80,6 +80,7 @@ impl MahjongSolitaire {
                 let pair_index = solution_pairs
                     .iter()
                     .position(|(left, right)| *left == position || *right == position)
+                    // Layout construction and solution generation share the same tile set.
                     .expect("every Mahjong tile belongs to one solution pair");
                 Tile {
                     kind: pair_kinds[pair_index],

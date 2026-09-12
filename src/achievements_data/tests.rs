@@ -1,3 +1,5 @@
+//! Regression coverage for achievement data.
+
 use super::*;
 use crate::state::GameId;
 

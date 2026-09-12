@@ -1,3 +1,5 @@
+//! Deterministic capture scenarios for the cabinet game suite.
+
 use crate::battleship::Battleship;
 use crate::checkers::Checkers;
 use crate::color_sort::ColorSort;

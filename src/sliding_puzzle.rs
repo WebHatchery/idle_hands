@@ -141,6 +141,7 @@ impl SlidingPuzzle {
     }
 
     fn blank(&self) -> usize {
+        // All constructors and validated saves contain exactly one blank tile.
         self.cells.iter().position(|cell| *cell == 0).unwrap()
     }
 

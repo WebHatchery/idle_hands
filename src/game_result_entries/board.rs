@@ -1,8 +1,9 @@
+//! Terminal result copy for board and strategy drawers.
+
 use crate::state::{AppState, GameId};
 use crate::ui::UiAction;
 
 use super::super::{ResultInfo, ResultKind};
-use super::result;
 
 pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
     match game {
@@ -16,7 +17,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 Some(2) => "The board is full and the light discs lead.",
                 _ => "The board is full and the final score is recorded.",
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 ResultKind::Won,
@@ -48,7 +49,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 ),
                 crate::tic_tac_toe::TicTacToeStatus::Playing => return None,
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -75,7 +76,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 ),
                 crate::connect_four::ConnectFourStatus::Playing => return None,
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -101,7 +102,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 }
                 crate::checkers::CheckersStatus::Playing => return None,
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -120,7 +121,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 crate::peg_solitaire::PegSolitaireStatus::Stuck => ResultKind::Stuck,
                 crate::peg_solitaire::PegSolitaireStatus::Playing => return None,
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -151,7 +152,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 crate::mahjong_solitaire::MahjongStatus::Playing => return None,
             };
             let remaining = game.tiles.iter().filter(|tile| !tile.removed).count();
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -190,7 +191,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                         "SKIP ROOM",
                     )
                 };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -218,7 +219,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 crate::mancala::MancalaPhase::Lost => ResultKind::Lost,
                 crate::mancala::MancalaPhase::Playing => return None,
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -242,7 +243,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
             if game.phase != crate::hanoi::HanoiPhase::Won {
                 return None;
             }
-            result(
+            result_entry!(
                 state,
                 game,
                 ResultKind::Won,
@@ -266,7 +267,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 crate::nim::NimStatus::Lost => ResultKind::Lost,
                 crate::nim::NimStatus::Playing => return None,
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -292,7 +293,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
             if game.phase != crate::battleship::BattleshipPhase::Won {
                 return None;
             }
-            result(
+            result_entry!(
                 state,
                 game,
                 ResultKind::Won,

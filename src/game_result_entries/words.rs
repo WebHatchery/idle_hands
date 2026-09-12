@@ -1,8 +1,9 @@
+//! Terminal result copy for word drawers.
+
 use crate::state::{AppState, GameId};
 use crate::ui::UiAction;
 
 use super::super::{ResultInfo, ResultKind};
-use super::result;
 
 pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
     match game {
@@ -11,7 +12,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
             if game.status != crate::word_search::WordSearchStatus::Won {
                 return None;
             }
-            result(
+            result_entry!(
                 state,
                 game,
                 ResultKind::Won,
@@ -35,7 +36,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 crate::hangman::HangmanStatus::Lost => ResultKind::Lost,
                 crate::hangman::HangmanStatus::Playing => return None,
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -63,7 +64,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
             } else {
                 format!("The word was {}.", game.target)
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -80,7 +81,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
             if game.phase != crate::word_ladder::WordLadderPhase::Won {
                 return None;
             }
-            result(
+            result_entry!(
                 state,
                 game,
                 ResultKind::Won,

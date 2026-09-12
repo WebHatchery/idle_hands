@@ -1,3 +1,5 @@
+//! Deterministic record fixtures used by the screenshot capture harness.
+
 use crate::{progression, state::AppState};
 
 pub(super) fn apply(state: &mut AppState, scene: &str) {

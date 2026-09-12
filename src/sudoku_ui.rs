@@ -32,7 +32,9 @@ pub fn draw_sudoku(state: &AppState) {
     panel(board, accessibility::board_fill(state.high_contrast));
     let grid = GridLayout::new(Rect::new(board.x + 4., board.y + 4., 486., 486.), 9, 9);
     for index in 0..81 {
-        let cell = grid.cell_rect(index).unwrap();
+        let Some(cell) = grid.cell_rect(index) else {
+            continue;
+        };
         let rect = Rect::new(cell.x, cell.y, cell.w - 2., cell.h - 2.);
         let selected = game.selected == Some(index);
         let conflict = game

@@ -98,7 +98,8 @@ game_name/
 ├── game_page.json          # Data for the generated WebGL host page
 ├── catalog_thumbnail.png   # 16:9 catalog title/menu image
 ├── src/
-│   ├── main.rs             # Entry point, window config
+│   ├── lib.rs              # Library root and intentional public seams
+│   ├── main.rs             # Thin entry point and window config
 │   ├── game.rs             # Game loop & state machine
 │   ├── state.rs            # State module root and re-exports
 │   ├── state/              # State child modules
@@ -112,6 +113,8 @@ game_name/
 │   │   └── loader.rs
 │   ├── ui.rs               # UI helpers module root
 │   └── save.rs             # Persistence
+├── tests/                  # Crate-level public API and integration tests
+│   └── public_api.rs
 ├── assets/
 │   ├── data.json           # Game data
 │   └── images/             # Sprites
@@ -127,13 +130,8 @@ Use Rust's named module source filenames: `foo.rs` for `mod foo;`, and `foo/bar.
 ### Entry Point (`main.rs`)
 
 ```rust
+use my_game::Game;
 use macroquad::prelude::*;
-
-mod game;
-mod state;
-mod data;
-
-use game::Game;
 
 fn window_conf() -> Conf {
     Conf {
@@ -257,7 +255,7 @@ y += 50.0 + PADDING;
 fn draw_button(x: f32, y: f32, text: &str) -> bool {
     let rect = Rect::new(x, y, 200.0, 40.0);
     let hovered = rect.contains(mouse_position().into());
-    let clicked = hovered && is_mouse_button_pressed(MouseButton::Left);
+    let clicked = hovered && is_mouse_button_released(MouseButton::Left);
     
     let color = if hovered { LIGHTGRAY } else { GRAY };
     draw_rectangle(x, y, 200.0, 40.0, color);
@@ -270,7 +268,10 @@ fn draw_button(x: f32, y: f32, text: &str) -> bool {
 **Rules:**
 - UI reads state, returns intents (bools/enums)
 - UI never contains game logic
-- Game logic applies changes
+- Game logic applies changes on the release edge (`is_mouse_button_released`)
+  so a held pointer cannot repeat a one-shot action every frame
+- Browser games expose visible touch controls and do not rely on hover-only
+  affordances
 
 ---
 
@@ -311,6 +312,13 @@ impl CardData {
 }
 ```
 
+Use `macroquad-toolkit`'s JSON loader for authored content and tunable values.
+Deserialize into typed structs, then run game-specific semantic validation
+(ranges, required entries, and cross-field relationships) before constructing
+production state. Keep a clearly documented fallback only for recoverable
+startup failures; do not duplicate the same defaults in both JSON and engine
+constructors.
+
 ---
 
 ## Persistence (Save/Load)
@@ -335,6 +343,12 @@ impl SaveData {
 }
 ```
 
+Keep gameplay modules in `src/lib.rs` so the binary and crate-level tests use
+the same public seams. `main.rs` should only configure the window, construct
+the library's `Game`, and run the frame loop. Put integration tests in
+`tests/`; keep unit tests private to a module only when they genuinely require
+private implementation details.
+
 ### Native/Server Databases
 
 Use database crates only for native/server code. Keep WebGL clients on JSON data plus toolkit persistence.
@@ -357,6 +371,12 @@ Run this with no parameters from the affected project directory after meaningful
 ```powershell
 .\publish.ps1
 ```
+
+After meaningful changes, also run `cargo fmt --all -- --check`,
+`cargo clippy --all-targets --all-features -- -D warnings`, and
+`cargo test --all-targets --all-features`. Verify touch input, persistence
+recovery, resize/fullscreen, audio activation, and release-edge behavior in a
+browser smoke pass.
 
 ### Build Targets
 
@@ -446,12 +466,13 @@ Use a JSON catalog for managing placeholder-to-generated-image transitions.
 1. [ ] Copy `rust_management/template/` to a new workspace-root sibling folder
 2. [ ] Rename the package and update the template data files
 3. [ ] Confirm the toolkit path dependency resolves to `../macroquad-toolkit`
-4. [ ] Implement `GameState` and `StateTransition` enums
-5. [ ] Create `Game` struct with update/draw loop
-6. [ ] Set up `assets/` folder
-7. [ ] Update the template `publish.ps1` wrapper if shared parameters change
-8. [ ] Configure `game_page.json` and add `catalog_thumbnail.png`
-9. [ ] Implement save/load system
+4. [ ] Add `src/lib.rs`, keep `main.rs` thin, and expose only intentional seams
+5. [ ] Implement `GameState` and `StateTransition` enums
+6. [ ] Create `Game` struct with update/draw loop
+7. [ ] Set up typed JSON under `assets/` and validate it before construction
+8. [ ] Update the template `publish.ps1` wrapper if shared parameters change
+9. [ ] Configure `game_page.json` and add `catalog_thumbnail.png`
+10. [ ] Implement save/load system and crate-level regression tests
 
 ### Migration (Web → Rust)
 

@@ -1,3 +1,5 @@
+//! Restart and variant-change confirmation policy.
+
 use crate::ui::UiAction;
 
 pub(super) fn requires_new_confirmation(action: UiAction) -> bool {

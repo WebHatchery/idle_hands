@@ -1,3 +1,5 @@
+//! Regression coverage for the tests module.
+
 use super::*;
 
 fn assert_button_fits(panel: Rect, button: Rect) {

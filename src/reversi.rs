@@ -94,6 +94,7 @@ impl Reversi {
         }
         let chosen = match self.ai_level {
             AiLevel::Gentle => moves[0],
+            // The empty-move case returned above, so the iterator has a value.
             AiLevel::Sharp => moves
                 .into_iter()
                 .max_by_key(|index| self.move_value(*index))

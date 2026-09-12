@@ -1,3 +1,5 @@
+//! Regression coverage for the tests module.
+
 use super::*;
 
 fn disjoint(first: Rect, second: Rect) -> bool {

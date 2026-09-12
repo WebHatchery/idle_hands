@@ -2,7 +2,6 @@
 
 use crate::{
     cabinet_status,
-    data::GameData,
     state::{AppState, GameId},
     ui::UiAction,
 };
@@ -22,12 +21,7 @@ const CATEGORY_RECTS: [Rect; 6] = [
 #[cfg(test)]
 mod tests;
 
-pub fn draw(
-    state: &AppState,
-    _data: &GameData,
-    loaded: usize,
-    cabinet_texture: Option<&Texture2D>,
-) {
+pub fn draw(state: &AppState, loaded: usize, cabinet_texture: Option<&Texture2D>) {
     draw_wood_frame();
     draw_sidebar(state);
     draw_rectangle(MAIN.x, MAIN.y, MAIN.w, MAIN.h, crate::theme::PAPER);

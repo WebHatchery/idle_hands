@@ -53,6 +53,7 @@ impl Category {
         }
     }
     pub fn index(self) -> usize {
+        // Every enum variant is listed exactly once in the canonical order.
         Self::ALL
             .iter()
             .position(|category| *category == self)

@@ -1,7 +1,7 @@
 //! Shared drag routing for the two classic card tables.
 
-use super::Game;
 use crate::domain::Direction;
+use crate::game::Game;
 use crate::{
     freecell_ui, responsive_cards, responsive_landscape_cards, solitaire_ui, spider_solitaire_ui,
     state::{AppState, GameId, Screen},

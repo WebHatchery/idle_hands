@@ -64,7 +64,9 @@ pub fn draw_nonogram(state: &AppState) {
     let grid = desktop_grid(game.size);
     let cell = grid.cell_width;
     for index in 0..game.marks.len() {
-        let cell_rect = grid.cell_rect(index).unwrap();
+        let Some(cell_rect) = grid.cell_rect(index) else {
+            continue;
+        };
         let rect = Rect::new(cell_rect.x, cell_rect.y, cell_rect.w - 2., cell_rect.h - 2.);
         let selected = game.selected == Some(index);
         draw_rectangle(

@@ -1,3 +1,5 @@
+//! Construction of a fresh application state from loaded game data.
+
 use crate::color_sort::{ColorSort, ColorSortDifficulty};
 use crate::data::GameData;
 use crate::dots_boxes::{DotsBoxes, DotsDifficulty};

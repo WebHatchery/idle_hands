@@ -1,8 +1,9 @@
+//! Terminal result copy for the miscellaneous word-and-number drawers.
+
 use crate::state::{AppState, GameId};
 use crate::ui::UiAction;
 
 use super::super::{ResultInfo, ResultKind};
-use super::result;
 
 pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
     let game = match game {
@@ -16,7 +17,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
     if game.phase != crate::misc_games::MiscPhase::Won {
         return None;
     }
-    result(
+    result_entry!(
         state,
         game,
         ResultKind::Won,

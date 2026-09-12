@@ -13,6 +13,7 @@ pub enum SpiderSolitaireStatus {
     Won,
 }
 
+// The shared `Suit` suffix makes the player-facing rule names consistent.
 #[allow(clippy::enum_variant_names)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
 pub enum SpiderRule {

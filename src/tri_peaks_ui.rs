@@ -107,7 +107,7 @@ fn layout() -> Layout {
     }
 }
 
-pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
+pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     let l = layout();
     if crate::ui::hit(back_rect(), point) {
         return vec![UiAction::Cabinet];
@@ -131,7 +131,7 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
         return vec![UiAction::TriPeaksBridge];
     }
     if crate::ui::hit(l.rule, point) {
-        return vec![UiAction::TriPeaksRule(match _state.games.tri_peaks.rule {
+        return vec![UiAction::TriPeaksRule(match state.games.tri_peaks.rule {
             TriPeaksRule::Strict => TriPeaksRule::Wrap,
             TriPeaksRule::Wrap => TriPeaksRule::Strict,
         })];

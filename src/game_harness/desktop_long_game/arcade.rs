@@ -1,3 +1,5 @@
+//! Deterministic capture scenarios for the cabinet game suite.
+
 use crate::asteroids::{Asteroids, ShipDirection as AsteroidDirection};
 use crate::block_stack::{BlockMove, BlockStack};
 use crate::breakout::{Breakout, PaddleMove as BreakoutMove};

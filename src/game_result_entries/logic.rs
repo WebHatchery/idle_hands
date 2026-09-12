@@ -1,8 +1,9 @@
+//! Terminal result copy for logic and puzzle drawers.
+
 use crate::state::{AppState, GameId};
 use crate::ui::UiAction;
 
 use super::super::{ResultInfo, ResultKind};
-use super::result;
 
 pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
     match game {
@@ -15,7 +16,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
             } else {
                 return None;
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -43,7 +44,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 crate::minesweeper::MineStatus::Lost => ResultKind::Lost,
                 _ => return None,
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -69,7 +70,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
             if game.status != crate::sudoku::SudokuStatus::Won {
                 return None;
             }
-            result(
+            result_entry!(
                 state,
                 game,
                 ResultKind::Won,
@@ -86,7 +87,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
             if game.status != crate::nonogram::NonogramStatus::Won {
                 return None;
             }
-            result(
+            result_entry!(
                 state,
                 game,
                 ResultKind::Won,
@@ -106,7 +107,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
             if game.status != crate::lights_out::LightsOutStatus::Won {
                 return None;
             }
-            result(
+            result_entry!(
                 state,
                 game,
                 ResultKind::Won,
@@ -128,7 +129,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
             if game.status != crate::memory_pairs::MemoryStatus::Won {
                 return None;
             }
-            result(
+            result_entry!(
                 state,
                 game,
                 ResultKind::Won,
@@ -148,7 +149,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
             if game.status != crate::sliding_puzzle::SlidingStatus::Won {
                 return None;
             }
-            result(
+            result_entry!(
                 state,
                 game,
                 ResultKind::Won,
@@ -167,7 +168,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 crate::mastermind::MastermindStatus::Lost => ResultKind::Lost,
                 crate::mastermind::MastermindStatus::Playing => return None,
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -190,7 +191,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 crate::dungeon_sweeper::DungeonStatus::Lost => ResultKind::Lost,
                 _ => return None,
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -221,7 +222,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
             } else {
                 return None;
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -259,7 +260,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
             } else {
                 "NEW BOARD"
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -285,7 +286,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 crate::flood_it::FloodPhase::Lost => ResultKind::Lost,
                 crate::flood_it::FloodPhase::Playing => return None,
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -312,7 +313,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
             if game.phase != crate::color_sort::ColorSortPhase::Won {
                 return None;
             }
-            result(
+            result_entry!(
                 state,
                 game,
                 ResultKind::Won,
@@ -335,7 +336,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
             if game.phase != crate::pipe_loop::PipePhase::Won {
                 return None;
             }
-            result(
+            result_entry!(
                 state,
                 game,
                 ResultKind::Won,
@@ -358,7 +359,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
             if game.phase != crate::maze_walk::MazePhase::Won {
                 return None;
             }
-            result(
+            result_entry!(
                 state,
                 game,
                 ResultKind::Won,
@@ -383,7 +384,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 crate::match_three::MatchThreePhase::Lost => ResultKind::Lost,
                 crate::match_three::MatchThreePhase::Playing => return None,
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,

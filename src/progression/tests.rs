@@ -1,3 +1,5 @@
+//! Regression coverage for the tests module.
+
 use super::*;
 
 #[test]
@@ -25,6 +27,7 @@ fn completed_game_count_requires_each_collection_game() {
 }
 
 #[test]
+// This case marks every catalog slot explicitly to verify the full-cabinet boundary.
 #[allow(clippy::field_reassign_with_default)]
 fn full_cabinet_counts_every_playable_game() {
     let mut records = CollectionRecords::default();

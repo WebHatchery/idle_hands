@@ -1,3 +1,5 @@
+//! Regression coverage for the tests module.
+
 use super::*;
 
 fn with_tubes(tubes: Vec<Vec<u8>>) -> ColorSort {

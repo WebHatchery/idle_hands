@@ -1,3 +1,5 @@
+//! Settings action mutation and feedback handling.
+
 use super::Game;
 use crate::{audio_settings, cosmetics::CosmeticKind, settings_data, ui::UiAction};
 
@@ -84,10 +86,12 @@ impl Game {
                 self.state.cabinet_decoration
             }
         };
-        let row = settings_data::cosmetic_rows(&self.state)
+        let Some(row) = settings_data::cosmetic_rows(&self.state)
             .into_iter()
             .find(|row| row.kind == kind)
-            .expect("every cosmetic kind has one settings row");
+        else {
+            return format!("{}: unavailable", kind.label());
+        };
         format!("{}: {} ({value})", kind.label(), row.option.name)
     }
 

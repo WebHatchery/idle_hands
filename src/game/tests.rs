@@ -1,3 +1,9 @@
+//! Regression coverage for the tests module.
+
+use crate::game_input::card_drag_actions;
+use crate::state::{GameId, Screen};
+use crate::ui;
+
 use super::*;
 
 #[test]

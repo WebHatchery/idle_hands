@@ -19,6 +19,22 @@ enum ProgressSignal {
     CabinetCompleted,
 }
 
+#[derive(Debug, Clone, Copy)]
+struct ProgressState {
+    drawer_open: bool,
+    tutorials: usize,
+    completed: usize,
+    demo_completed: usize,
+}
+
+#[derive(Debug, Clone, Copy)]
+struct ProgressSignalsInput {
+    before: ProgressState,
+    after: ProgressState,
+    tutorial_emitted: bool,
+    demo_build: bool,
+}
+
 pub struct GameAnalytics {
     client: Option<AnalyticsClient>,
     recent_input_seconds: f32,
@@ -95,18 +111,22 @@ impl GameAnalytics {
         let current_tutorials = tutorial_count(state);
         let current_completed = progression::completed_games(&state.records);
         let current_demo_completed = completed_demo_games(state);
-        let signals = progress_signals(
-            self.opened_any_drawer,
-            state.screen.is_game(),
-            self.tutorial_count,
-            current_tutorials,
-            self.completed_count,
-            current_completed,
-            self.demo_completed_count,
-            current_demo_completed,
-            self.tutorial_emitted,
-            game_descriptor::is_demo_build(),
-        );
+        let signals = progress_signals(ProgressSignalsInput {
+            before: ProgressState {
+                drawer_open: self.opened_any_drawer,
+                tutorials: self.tutorial_count,
+                completed: self.completed_count,
+                demo_completed: self.demo_completed_count,
+            },
+            after: ProgressState {
+                drawer_open: state.screen.is_game(),
+                tutorials: current_tutorials,
+                completed: current_completed,
+                demo_completed: current_demo_completed,
+            },
+            tutorial_emitted: self.tutorial_emitted,
+            demo_build: game_descriptor::is_demo_build(),
+        });
         self.opened_any_drawer |= state.screen.is_game();
         if current_tutorials > self.tutorial_count {
             self.tutorial_emitted = true;
@@ -192,43 +212,34 @@ fn is_paused(state: &AppState, game: GameId) -> bool {
     }
 }
 
-#[allow(clippy::too_many_arguments)]
-fn progress_signals(
-    opened_before: bool,
-    drawer_open_now: bool,
-    tutorials_before: usize,
-    tutorials_now: usize,
-    completed_before: usize,
-    completed_now: usize,
-    demo_before: usize,
-    demo_now: usize,
-    tutorial_emitted: bool,
-    demo_build: bool,
-) -> Vec<ProgressSignal> {
+fn progress_signals(input: ProgressSignalsInput) -> Vec<ProgressSignal> {
     let mut signals = Vec::new();
-    if !opened_before && drawer_open_now {
+    if !input.before.drawer_open && input.after.drawer_open {
         signals.push(ProgressSignal::FirstDrawerOpened);
     }
-    if !tutorial_emitted && tutorials_now > tutorials_before {
+    if !input.tutorial_emitted && input.after.tutorials > input.before.tutorials {
         signals.push(ProgressSignal::TutorialCompleted);
     }
-    if completed_before == 0 && completed_now > 0 {
+    if input.before.completed == 0 && input.after.completed > 0 {
         signals.push(ProgressSignal::FirstDrawerCompleted);
     }
-    if completed_before < 10 && completed_now >= 10 {
+    if input.before.completed < 10 && input.after.completed >= 10 {
         signals.push(ProgressSignal::TenDrawersCompleted);
     }
     let demo_total = GameId::ALL
         .into_iter()
         .filter(|game| game_descriptor::is_demo_game(*game))
         .count();
-    if demo_build && demo_before < demo_total && demo_now >= demo_total {
+    if input.demo_build
+        && input.before.demo_completed < demo_total
+        && input.after.demo_completed >= demo_total
+    {
         signals.push(ProgressSignal::DemoCompleted);
     }
-    if completed_before < 30 && completed_now >= 30 {
+    if input.before.completed < 30 && input.after.completed >= 30 {
         signals.push(ProgressSignal::ThirtyDrawersCompleted);
     }
-    if completed_before < GameId::ALL.len() && completed_now >= GameId::ALL.len() {
+    if input.before.completed < GameId::ALL.len() && input.after.completed >= GameId::ALL.len() {
         signals.push(ProgressSignal::CabinetCompleted);
     }
     signals

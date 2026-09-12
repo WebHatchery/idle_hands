@@ -1,3 +1,5 @@
+//! Deterministic capture scenarios for the cabinet game suite.
+
 use crate::domain::Direction;
 use crate::game_2048::Game2048;
 use crate::hangman::Hangman;

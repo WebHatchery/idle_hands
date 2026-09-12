@@ -1,8 +1,9 @@
+//! Terminal result copy for arcade and action drawers.
+
 use crate::state::{AppState, GameId};
 use crate::ui::UiAction;
 
 use super::super::{ResultInfo, ResultKind};
-use super::result;
 
 pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
     match game {
@@ -13,7 +14,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 crate::snake::SnakeStatus::Lost => ResultKind::Lost,
                 crate::snake::SnakeStatus::Playing => return None,
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -41,7 +42,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 crate::breakout::BreakoutStatus::Lost => ResultKind::Lost,
                 crate::breakout::BreakoutStatus::Playing => return None,
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -79,7 +80,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
             } else {
                 "The next card did not match your call."
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -101,7 +102,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 crate::tiny_tower_defence::TowerPhase::Lost => ResultKind::Lost,
                 _ => return None,
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -130,7 +131,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 crate::one_room_roguelike::RoomPhase::Lost => ResultKind::Lost,
                 _ => return None,
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -159,7 +160,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 crate::daily_dungeon::DailyPhase::Lost => ResultKind::Lost,
                 crate::daily_dungeon::DailyPhase::Exploring => return None,
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -192,7 +193,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 crate::dots_boxes::DotsPhase::Lost => ResultKind::Lost,
                 crate::dots_boxes::DotsPhase::Playing => return None,
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -218,7 +219,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 crate::space_invaders::SpaceInvadersStatus::Lost => ResultKind::Lost,
                 crate::space_invaders::SpaceInvadersStatus::Playing => return None,
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -247,7 +248,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 crate::asteroids::AsteroidsStatus::Lost => ResultKind::Lost,
                 crate::asteroids::AsteroidsStatus::Playing => return None,
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -276,7 +277,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 crate::frogger::FroggerStatus::Lost => ResultKind::Lost,
                 crate::frogger::FroggerStatus::Playing => return None,
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -306,7 +307,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 crate::munch_maze::MunchStatus::Playing => return None,
             };
             let pellets_left = game.pellets.iter().filter(|pellet| **pellet).count();
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -332,7 +333,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 crate::block_stack::BlockStatus::Lost => ResultKind::Lost,
                 crate::block_stack::BlockStatus::Playing => return None,
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -361,7 +362,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 crate::terrain_cannon::CannonStatus::Lost => ResultKind::Lost,
                 crate::terrain_cannon::CannonStatus::Playing => return None,
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,
@@ -387,7 +388,7 @@ pub(super) fn info(state: &AppState, game: GameId) -> Option<ResultInfo> {
                 crate::paddle_duel::PaddleStatus::Lost => ResultKind::Lost,
                 crate::paddle_duel::PaddleStatus::Playing => return None,
             };
-            result(
+            result_entry!(
                 state,
                 game,
                 kind,

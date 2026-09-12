@@ -137,7 +137,6 @@ impl Game2048 {
         self.undo.is_some()
     }
 
-    #[allow(dead_code)]
     pub fn can_move(&self) -> bool {
         let dimension = self.board_size.dimension();
         self.cells.contains(&0)

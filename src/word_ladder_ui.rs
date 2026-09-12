@@ -68,7 +68,7 @@ fn layout() -> Layout {
     }
 }
 
-pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
+pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     let l = layout();
     if crate::ui::hit(Rect::new(0., 0., 110., 42.), point) {
         return vec![UiAction::Cabinet];
@@ -90,7 +90,7 @@ pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     }
     if crate::ui::hit(l.mode, point) {
         return vec![UiAction::WordLadderMode(
-            match _state.games.word_ladder.mode {
+            match state.games.word_ladder.mode {
                 LadderMode::Direct => LadderMode::Scenic,
                 LadderMode::Scenic => LadderMode::Direct,
             },

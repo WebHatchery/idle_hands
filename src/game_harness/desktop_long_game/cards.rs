@@ -1,3 +1,5 @@
+//! Deterministic capture scenarios for the cabinet game suite.
+
 use crate::blackjack::{Blackjack, BlackjackHint};
 use crate::freecell::FreeCell;
 use crate::klondike_golf::KlondikeGolf;

@@ -1,3 +1,5 @@
+//! Regression coverage for the tests module.
+
 #[test]
 fn compact_long_title_stays_left_of_the_rule_card() {
     let title_x = 150.;

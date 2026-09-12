@@ -222,7 +222,7 @@ impl Spider {
         let complete = if self.mode == SpiderMode::OneSuit {
             is_complete_run(&stack[start..])
         } else {
-            is_complete_run_for_mode(&stack[start..], self.mode)
+            is_complete_run_for_mode(&stack[start..])
         };
         if complete {
             stack.truncate(start);
@@ -255,10 +255,10 @@ pub fn is_run(cards: &[Card]) -> bool {
 }
 
 pub fn is_complete_run(cards: &[Card]) -> bool {
-    is_complete_run_for_mode(cards, SpiderMode::OneSuit)
+    is_complete_run_for_mode(cards)
 }
 
-fn is_complete_run_for_mode(cards: &[Card], _mode: SpiderMode) -> bool {
+fn is_complete_run_for_mode(cards: &[Card]) -> bool {
     cards.len() == RUN
         && cards.iter().all(|card| card.face_up)
         && cards.windows(2).all(|pair| pair[0].suit == pair[1].suit)

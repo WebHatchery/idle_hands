@@ -38,7 +38,9 @@ pub fn draw(state: &AppState) {
     );
     let cell_size = grid.cell_width;
     for index in 0..game.cells.len() {
-        let cell = grid.cell_rect(index).unwrap();
+        let Some(cell) = grid.cell_rect(index) else {
+            continue;
+        };
         let rect = Rect::new(cell.x, cell.y, cell.w - 2., cell.h - 2.);
         let cell = game.cells[index];
         let revealed = matches!(cell, Cell::Revealed(value) if value < 9)

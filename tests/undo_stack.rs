@@ -1,4 +1,6 @@
-use super::UndoStack;
+//! Public contract tests for the bounded undo history.
+
+use idle_hands::undo::UndoStack;
 
 #[test]
 fn history_is_bounded_and_keeps_newest_entries() {

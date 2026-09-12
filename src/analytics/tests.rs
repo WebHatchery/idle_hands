@@ -1,3 +1,5 @@
+//! Regression coverage for the tests module.
+
 use super::*;
 
 #[test]
@@ -8,31 +10,107 @@ fn shipping_configuration_keeps_analytics_disabled() {
 #[test]
 fn first_session_steps_emit_once_when_they_advance() {
     assert_eq!(
-        progress_signals(false, true, 0, 1, 0, 1, 0, 1, false, false),
+        progress_signals(ProgressSignalsInput {
+            before: ProgressState {
+                drawer_open: false,
+                tutorials: 0,
+                completed: 0,
+                demo_completed: 0,
+            },
+            after: ProgressState {
+                drawer_open: true,
+                tutorials: 1,
+                completed: 1,
+                demo_completed: 1,
+            },
+            tutorial_emitted: false,
+            demo_build: false,
+        }),
         vec![
             ProgressSignal::FirstDrawerOpened,
             ProgressSignal::TutorialCompleted,
             ProgressSignal::FirstDrawerCompleted,
         ]
     );
-    assert!(progress_signals(true, true, 1, 1, 1, 1, 1, 1, true, false).is_empty());
+    assert!(progress_signals(ProgressSignalsInput {
+        before: ProgressState {
+            drawer_open: true,
+            tutorials: 1,
+            completed: 1,
+            demo_completed: 1,
+        },
+        after: ProgressState {
+            drawer_open: true,
+            tutorials: 1,
+            completed: 1,
+            demo_completed: 1,
+        },
+        tutorial_emitted: true,
+        demo_build: false,
+    })
+    .is_empty());
 }
 
 #[test]
 fn cabinet_depth_reports_crossed_thresholds() {
     assert_eq!(
-        progress_signals(true, true, 4, 4, 9, 10, 7, 7, true, false),
+        progress_signals(ProgressSignalsInput {
+            before: ProgressState {
+                drawer_open: true,
+                tutorials: 4,
+                completed: 9,
+                demo_completed: 7,
+            },
+            after: ProgressState {
+                drawer_open: true,
+                tutorials: 4,
+                completed: 10,
+                demo_completed: 7,
+            },
+            tutorial_emitted: true,
+            demo_build: false,
+        }),
         vec![ProgressSignal::TenDrawersCompleted]
     );
     assert_eq!(
-        progress_signals(true, true, 4, 4, 29, 30, 29, 30, true, true),
+        progress_signals(ProgressSignalsInput {
+            before: ProgressState {
+                drawer_open: true,
+                tutorials: 4,
+                completed: 29,
+                demo_completed: 29,
+            },
+            after: ProgressState {
+                drawer_open: true,
+                tutorials: 4,
+                completed: 30,
+                demo_completed: 30,
+            },
+            tutorial_emitted: true,
+            demo_build: true,
+        }),
         vec![
             ProgressSignal::DemoCompleted,
             ProgressSignal::ThirtyDrawersCompleted,
         ]
     );
     assert_eq!(
-        progress_signals(true, true, 4, 4, 59, 60, 30, 30, true, false),
+        progress_signals(ProgressSignalsInput {
+            before: ProgressState {
+                drawer_open: true,
+                tutorials: 4,
+                completed: 59,
+                demo_completed: 30,
+            },
+            after: ProgressState {
+                drawer_open: true,
+                tutorials: 4,
+                completed: 60,
+                demo_completed: 30,
+            },
+            tutorial_emitted: true,
+            demo_build: false,
+        }),
         vec![ProgressSignal::CabinetCompleted]
     );
 }

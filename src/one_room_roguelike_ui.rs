@@ -203,7 +203,9 @@ pub fn draw(state: &AppState) {
     let grid =
         crate::grid::GridLayout::new(l.board, OneRoomRoguelike::size(), OneRoomRoguelike::size());
     for index in 0..OneRoomRoguelike::size().pow(2) {
-        let rect = grid.cell_rect(index).unwrap();
+        let Some(rect) = grid.cell_rect(index) else {
+            continue;
+        };
         draw_rectangle(
             rect.x,
             rect.y,

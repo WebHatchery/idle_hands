@@ -142,7 +142,9 @@ pub fn draw(state: &AppState) {
     );
     let grid = GridLayout::new(l.board, 8, 8);
     for index in 0..64 {
-        let rect = grid.cell_rect(index).unwrap();
+        let Some(rect) = grid.cell_rect(index) else {
+            continue;
+        };
         let cell = game.cells[index];
         let revealed = matches!(cell, DungeonCell::Revealed(_));
         let fill = if revealed {

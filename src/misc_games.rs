@@ -370,6 +370,7 @@ impl MiscGame {
         self.detail = "Find the rule across all five values".into();
         let mut options = vec![missing, missing + gap, missing - gap, missing + gap * 2];
         rng.shuffle(&mut options);
+        // The generated answer is always included in the option list.
         self.answer = options.iter().position(|value| *value == missing).unwrap();
         self.options = options.iter().map(i32::to_string).collect();
     }

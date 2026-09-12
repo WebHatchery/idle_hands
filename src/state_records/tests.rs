@@ -1,3 +1,5 @@
+//! Regression coverage for the tests module.
+
 use super::{format_duration, CollectionRecords};
 use crate::state::GameId;
 

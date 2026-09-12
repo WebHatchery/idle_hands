@@ -306,6 +306,7 @@ impl Pyramid {
         let available = (0..28).filter(|&index| self.available(index));
         let mut cards = Vec::new();
         for index in available {
+            // `available` only yields occupied, uncovered cards.
             let card = self.card_at(index).expect("available card");
             if card.rank == 13 {
                 return true;

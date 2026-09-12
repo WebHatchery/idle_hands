@@ -95,6 +95,7 @@ impl ColorSort {
         difficulty: ColorSortDifficulty,
         config: &ColorSortConfig,
     ) -> Self {
+        // GameData validation guarantees one row for every difficulty variant.
         let settings = config
             .difficulties
             .get(difficulty.index())
@@ -132,6 +133,7 @@ impl ColorSort {
                 candidates_seed = next_seed(candidates_seed);
                 let (source, destination, count) = moves[candidates_seed as usize % moves.len()];
                 for _ in 0..count {
+                    // The reverse move count was produced from this tube's length.
                     let value = candidate[source].pop().expect("reverse move counted");
                     candidate[destination].push(value);
                 }
@@ -183,6 +185,7 @@ impl ColorSort {
         let mut previous = self.clone_without_undo();
         previous.selected = None;
         for _ in 0..preview.count {
+            // The preview count is computed from the source tube's current run.
             let value = self.tubes[source].pop().expect("run counted");
             self.tubes[tube].push(value);
         }

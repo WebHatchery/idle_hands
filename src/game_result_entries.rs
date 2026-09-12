@@ -1,7 +1,37 @@
-use crate::state::{AppState, GameId, Screen};
-use crate::ui::UiAction;
+//! Terminal result-content routing for completed cabinet games.
 
-use super::{make, ResultInfo, ResultKind};
+use super::ResultInfo;
+use crate::state::{AppState, GameId, Screen};
+macro_rules! result_entry {
+    (
+        $state:expr,
+        $game:expr,
+        $kind:expr,
+        $explanation:expr,
+        $stats:expr,
+        $primary_action:expr,
+        $primary_label:expr,
+        $secondary_action:expr,
+        $secondary_label:expr $(,)?
+    ) => {{
+        // The game expression remains part of the call shape so each entry can
+        // keep its local game binding for the stats it formats. The named spec
+        // owns the result contract that crosses the helper boundary.
+        let _ = &$game;
+        crate::game_result_ui::make(
+            $state,
+            crate::game_result_ui::ResultSpec {
+                kind: $kind,
+                explanation: ($explanation).into(),
+                stats: $stats,
+                primary_action: $primary_action,
+                primary_label: $primary_label,
+                secondary_action: $secondary_action,
+                secondary_label: $secondary_label,
+            },
+        )
+    }};
+}
 
 #[path = "game_result_entries/arcade.rs"]
 mod arcade;
@@ -84,32 +114,4 @@ pub(super) fn info(state: &AppState) -> Option<ResultInfo> {
         | GameId::WordForge => misc::info(state, game),
         GameId::FlingFury => None,
     }
-}
-
-// The content mapping deliberately keeps the two labelled recovery actions
-// adjacent to each result's copy; wrapping them here would make every entry
-// harder to scan without reducing any distinct player-facing data.
-#[allow(clippy::too_many_arguments)]
-fn result<T>(
-    state: &AppState,
-    game: &T,
-    kind: ResultKind,
-    explanation: impl Into<String>,
-    stats: String,
-    primary_action: UiAction,
-    primary_label: &'static str,
-    secondary_action: UiAction,
-    secondary_label: &'static str,
-) -> Option<ResultInfo> {
-    Some(make(
-        state,
-        game,
-        kind,
-        explanation,
-        stats,
-        primary_action,
-        primary_label,
-        secondary_action,
-        secondary_label,
-    ))
 }
