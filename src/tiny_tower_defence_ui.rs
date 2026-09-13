@@ -8,6 +8,7 @@ use crate::{
 use macroquad::prelude::*;
 
 #[cfg(test)]
+#[path = "../tests/legacy/tiny_tower_defence_ui/tests.rs"]
 mod tests;
 
 #[derive(Clone, Copy)]

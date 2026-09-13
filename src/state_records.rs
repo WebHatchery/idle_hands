@@ -239,4 +239,5 @@ pub fn format_duration(seconds: u64) -> String {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/state_records/tests.rs"]
 mod tests;

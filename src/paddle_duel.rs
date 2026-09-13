@@ -247,4 +247,5 @@ impl PaddleDuel {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/paddle_duel/tests.rs"]
 mod tests;

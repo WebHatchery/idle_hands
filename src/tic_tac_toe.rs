@@ -221,4 +221,5 @@ fn has_won(cells: &[Mark; CELLS], mark: Mark) -> bool {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/tic_tac_toe/tests.rs"]
 mod tests;

@@ -4,6 +4,7 @@ use crate::{cosmetics, progression::AchievementId, state::AppState, ui::UiAction
 use macroquad::prelude::*;
 
 #[cfg(test)]
+#[path = "../tests/legacy/responsive_landscape_library/tests.rs"]
 mod tests;
 
 pub(crate) fn panel(rect: Rect, fill: Color) {

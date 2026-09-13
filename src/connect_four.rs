@@ -268,4 +268,5 @@ fn has_four(cells: &[Disc], disc: Disc) -> bool {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/connect_four/tests.rs"]
 mod tests;

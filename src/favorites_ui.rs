@@ -10,6 +10,7 @@ use macroquad::prelude::*;
 const DESKTOP_VISIBLE_GAMES: usize = 40;
 
 #[cfg(test)]
+#[path = "../tests/legacy/favorites_ui/tests.rs"]
 mod tests;
 
 #[derive(Clone, Copy)]

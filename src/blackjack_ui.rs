@@ -320,4 +320,5 @@ fn back_rect() -> Rect {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/blackjack_ui/tests.rs"]
 mod tests;

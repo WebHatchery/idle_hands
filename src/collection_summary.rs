@@ -79,4 +79,5 @@ impl CollectionSummary {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/collection_summary/tests.rs"]
 mod tests;

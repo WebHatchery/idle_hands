@@ -4,6 +4,7 @@ use crate::{finder_data, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
 #[cfg(test)]
+#[path = "../tests/legacy/finder_ui/tests.rs"]
 mod tests;
 
 pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {

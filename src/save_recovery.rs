@@ -44,4 +44,5 @@ impl Default for SaveRecoveryNotice {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/save_recovery/tests.rs"]
 mod tests;

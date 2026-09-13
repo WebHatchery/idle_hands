@@ -40,4 +40,5 @@ pub fn display_name(name: &str) -> String {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/profile_data/tests.rs"]
 mod tests;

@@ -212,4 +212,5 @@ fn winning_position_cached(
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/nim/tests.rs"]
 mod tests;

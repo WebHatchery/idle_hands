@@ -507,4 +507,5 @@ const fn default_level() -> u8 {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/breakout/tests.rs"]
 mod tests;

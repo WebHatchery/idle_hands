@@ -329,4 +329,5 @@ fn default_max_guesses() -> usize {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/word_grid/tests.rs"]
 mod tests;

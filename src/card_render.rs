@@ -231,4 +231,5 @@ pub fn selection_pulse(time: f32, selected: bool, reduced_motion: bool) -> f32 {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/card_render/tests.rs"]
 mod tests;

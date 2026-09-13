@@ -49,4 +49,5 @@ impl CollectionIndex {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/persistence_models/tests.rs"]
 mod tests;

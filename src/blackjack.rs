@@ -241,4 +241,5 @@ impl Blackjack {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/blackjack/tests.rs"]
 mod tests;

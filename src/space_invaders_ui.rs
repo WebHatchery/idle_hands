@@ -322,4 +322,5 @@ fn back_rect() -> Rect {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/space_invaders_ui/tests.rs"]
 mod tests;

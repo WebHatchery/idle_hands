@@ -9,6 +9,7 @@ use macroquad::prelude::*;
 #[path = "game_result_entries.rs"]
 mod entries;
 #[cfg(test)]
+#[path = "../tests/legacy/game_result_ui/tests.rs"]
 mod tests;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

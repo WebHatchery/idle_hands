@@ -565,4 +565,5 @@ fn rectangles_overlap(left: Rect, right: Rect) -> bool {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/fling_fury/tests.rs"]
 mod tests;

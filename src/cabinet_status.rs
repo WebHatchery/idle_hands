@@ -372,4 +372,5 @@ pub fn availability_label(state: &AppState, game: GameId) -> &'static str {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/cabinet_status/tests.rs"]
 mod tests;

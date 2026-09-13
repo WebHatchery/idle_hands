@@ -411,4 +411,5 @@ fn default_hearts() -> u8 {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/dungeon_sweeper/tests.rs"]
 mod tests;

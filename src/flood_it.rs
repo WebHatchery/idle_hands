@@ -358,4 +358,5 @@ fn default_move_limit() -> u16 {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/flood_it/tests.rs"]
 mod tests;

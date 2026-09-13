@@ -379,4 +379,5 @@ fn default_side() -> usize {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/dots_boxes/tests.rs"]
 mod tests;

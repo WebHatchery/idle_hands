@@ -269,4 +269,5 @@ fn children(index: usize) -> &'static [usize] {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/tri_peaks/tests.rs"]
 mod tests;

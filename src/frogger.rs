@@ -274,4 +274,5 @@ fn car_contains(car: &Car, column: u8) -> bool {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/frogger/tests.rs"]
 mod tests;

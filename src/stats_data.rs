@@ -104,4 +104,5 @@ pub fn short_title_from(state: &crate::state::AppState, game: GameId, max_chars:
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/stats_data/tests.rs"]
 mod tests;

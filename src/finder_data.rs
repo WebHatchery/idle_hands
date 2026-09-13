@@ -87,4 +87,5 @@ fn first_letter(game: GameId) -> char {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/finder_data/tests.rs"]
 mod tests;

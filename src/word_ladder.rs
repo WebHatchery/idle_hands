@@ -286,4 +286,5 @@ fn one_away(a: &str, b: &str) -> bool {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/word_ladder/tests.rs"]
 mod tests;

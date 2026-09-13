@@ -376,4 +376,5 @@ fn muted() -> Color {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/dungeon_sweeper_ui/tests.rs"]
 mod tests;

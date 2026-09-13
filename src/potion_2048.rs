@@ -277,4 +277,5 @@ fn next_seed(seed: u64) -> u64 {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/potion_2048/tests.rs"]
 mod tests;

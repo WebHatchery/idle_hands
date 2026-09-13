@@ -266,4 +266,5 @@ impl Solitaire {
     }
 }
 #[cfg(test)]
+#[path = "../tests/legacy/solitaire/tests.rs"]
 mod tests;

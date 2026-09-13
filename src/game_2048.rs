@@ -192,5 +192,5 @@ impl Game2048 {
 }
 
 #[cfg(test)]
-#[path = "game_2048_tests.rs"]
+#[path = "../tests/legacy/game_2048_tests.rs"]
 mod tests;

@@ -667,4 +667,5 @@ pub fn descriptor(game: GameId) -> &'static GameDescriptor {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/game_descriptor/tests.rs"]
 mod tests;

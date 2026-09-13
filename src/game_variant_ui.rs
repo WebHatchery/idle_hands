@@ -8,6 +8,7 @@ use crate::{
 use macroquad::prelude::*;
 
 #[cfg(test)]
+#[path = "../tests/legacy/game_variant_ui/tests.rs"]
 mod tests;
 
 pub fn button_rect() -> Rect {

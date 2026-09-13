@@ -261,4 +261,5 @@ pub fn sync_with_content(
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/progression/tests.rs"]
 mod tests;

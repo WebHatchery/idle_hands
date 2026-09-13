@@ -198,4 +198,5 @@ fn next_seed(seed: u64) -> u64 {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/lights_out/tests.rs"]
 mod tests;

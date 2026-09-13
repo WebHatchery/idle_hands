@@ -11,6 +11,7 @@ use macroquad::prelude::*;
 const COMPACT_METRICS_X: f32 = 310.;
 
 #[cfg(test)]
+#[path = "../tests/legacy/misc_ui/tests.rs"]
 mod tests;
 
 #[derive(Clone, Copy)]

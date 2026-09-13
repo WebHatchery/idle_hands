@@ -394,4 +394,5 @@ fn default_scramble_steps() -> usize {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/color_sort/tests.rs"]
 mod tests;

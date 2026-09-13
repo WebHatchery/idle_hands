@@ -246,4 +246,5 @@ fn progress_signals(input: ProgressSignalsInput) -> Vec<ProgressSignal> {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/analytics/tests.rs"]
 mod tests;

@@ -372,6 +372,7 @@ fn accent() -> Color {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/tri_peaks_ui/tests.rs"]
 mod tests;
 
 fn muted() -> Color {

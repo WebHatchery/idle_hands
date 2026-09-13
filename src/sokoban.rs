@@ -276,4 +276,5 @@ fn level_from_seed(seed: u64) -> u8 {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/sokoban/tests.rs"]
 mod tests;

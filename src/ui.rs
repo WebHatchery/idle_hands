@@ -93,6 +93,7 @@ thread_local! {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/ui/tests.rs"]
 mod tests;
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum ForcedLayout {

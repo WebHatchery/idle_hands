@@ -4,6 +4,7 @@ use crate::{state::AppState, stats_data, ui::UiAction};
 use macroquad::prelude::*;
 
 #[cfg(test)]
+#[path = "../tests/legacy/statistics_ui/tests.rs"]
 mod tests;
 
 fn panel(state: &AppState, rect: Rect, fill: Color) {

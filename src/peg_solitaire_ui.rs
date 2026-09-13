@@ -9,6 +9,7 @@ use crate::{
 use macroquad::prelude::*;
 
 #[cfg(test)]
+#[path = "../tests/legacy/peg_solitaire_ui/tests.rs"]
 mod tests;
 
 #[derive(Clone, Copy)]

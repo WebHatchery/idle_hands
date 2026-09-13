@@ -251,4 +251,5 @@ fn clues<I: Iterator<Item = bool>>(cells: I) -> Vec<u8> {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/nonogram/tests.rs"]
 mod tests;

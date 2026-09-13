@@ -86,4 +86,5 @@ pub fn volume_meter(state: &AppState) -> &'static str {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/settings_data/tests.rs"]
 mod tests;

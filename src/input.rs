@@ -106,4 +106,5 @@ impl PointerTracker {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/input/tests.rs"]
 mod tests;

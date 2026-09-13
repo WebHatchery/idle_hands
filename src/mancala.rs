@@ -319,4 +319,5 @@ impl Mancala {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/mancala/tests.rs"]
 mod tests;

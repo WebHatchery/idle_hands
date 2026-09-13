@@ -117,4 +117,5 @@ pub fn draw_overlay(game: GameId, content: &GameContent, large_text: bool, high_
     );
 }
 #[cfg(test)]
+#[path = "../tests/legacy/tutorial_ui/tests.rs"]
 mod tests;

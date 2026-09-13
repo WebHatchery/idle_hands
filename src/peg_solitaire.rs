@@ -203,4 +203,5 @@ pub fn valid_hole(index: usize) -> bool {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/peg_solitaire/tests.rs"]
 mod tests;

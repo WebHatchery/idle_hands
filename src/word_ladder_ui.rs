@@ -9,6 +9,7 @@ use crate::{
 use macroquad::prelude::*;
 
 #[cfg(test)]
+#[path = "../tests/legacy/word_ladder_ui/tests.rs"]
 mod tests;
 
 #[derive(Clone, Copy)]

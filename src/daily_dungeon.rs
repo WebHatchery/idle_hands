@@ -420,4 +420,5 @@ fn default_scouts() -> u8 {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/daily_dungeon/tests.rs"]
 mod tests;

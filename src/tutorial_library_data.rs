@@ -65,4 +65,5 @@ pub fn page_label(start: usize, total: usize) -> String {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/tutorial_library_data/tests.rs"]
 mod tests;

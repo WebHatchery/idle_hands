@@ -360,4 +360,5 @@ fn back_rect() -> Rect {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/frogger_ui/tests.rs"]
 mod tests;

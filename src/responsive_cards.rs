@@ -12,6 +12,7 @@ use crate::{
 use macroquad::prelude::*;
 
 #[cfg(test)]
+#[path = "../tests/legacy/responsive_cards/tests.rs"]
 mod tests;
 
 const CARD_W: f32 = 43.;

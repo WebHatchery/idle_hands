@@ -334,4 +334,5 @@ fn next_seed(seed: u64) -> u64 {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/maze_walk/tests.rs"]
 mod tests;

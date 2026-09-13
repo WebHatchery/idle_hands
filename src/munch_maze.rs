@@ -321,4 +321,5 @@ fn default_direction() -> Direction {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/munch_maze/tests.rs"]
 mod tests;

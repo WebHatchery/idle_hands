@@ -338,4 +338,5 @@ fn body_size() -> f32 {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/tic_tac_toe_ui/tests.rs"]
 mod tests;

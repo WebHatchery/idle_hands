@@ -415,4 +415,5 @@ fn default_score_multiplier() -> u32 {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/hangman/tests.rs"]
 mod tests;

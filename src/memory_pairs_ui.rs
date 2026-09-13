@@ -4,6 +4,7 @@ use crate::{accessibility, memory_pairs::MemoryStatus, state::AppState, ui::UiAc
 use macroquad::prelude::*;
 
 #[cfg(test)]
+#[path = "../tests/legacy/memory_pairs_ui/tests.rs"]
 mod tests;
 
 #[derive(Clone, Copy)]

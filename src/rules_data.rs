@@ -91,4 +91,5 @@ pub fn page_rows(filter: u8, start: usize, capacity: usize) -> Vec<RuleRow> {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/rules_data/tests.rs"]
 mod tests;

@@ -300,4 +300,5 @@ const fn default_sonar_charges() -> u8 {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/battleship/tests.rs"]
 mod tests;

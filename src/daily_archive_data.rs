@@ -69,4 +69,5 @@ impl ArchiveRow {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/daily_archive_data/tests.rs"]
 mod tests;

@@ -187,4 +187,5 @@ impl KlondikeGolf {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/klondike_golf/tests.rs"]
 mod tests;

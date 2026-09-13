@@ -698,4 +698,5 @@ pub fn word_ladder(state: &AppState) -> String {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/card_hints/tests.rs"]
 mod tests;

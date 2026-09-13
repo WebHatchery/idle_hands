@@ -100,4 +100,5 @@ fn selected_if_playable(selected: usize, demo_build: bool) -> Option<GameId> {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/continue_data/tests.rs"]
 mod tests;

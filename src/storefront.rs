@@ -42,4 +42,5 @@ pub fn purchase_message(game_title: &str) -> String {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/storefront/tests.rs"]
 mod tests;

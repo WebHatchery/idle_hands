@@ -202,4 +202,5 @@ impl HigherLower {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/higher_lower/tests.rs"]
 mod tests;

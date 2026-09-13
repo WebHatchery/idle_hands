@@ -501,4 +501,5 @@ fn pseudo(seed: u64, index: usize) -> u64 {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/misc_games/tests.rs"]
 mod tests;

@@ -458,4 +458,5 @@ fn is_upper_word(word: &str, min: usize, max: usize) -> bool {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/content/tests.rs"]
 mod tests;

@@ -59,4 +59,5 @@ pub const fn meter(enabled: bool, level: u8) -> &'static str {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/audio_settings/tests.rs"]
 mod tests;

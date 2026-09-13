@@ -4,6 +4,7 @@ use crate::{state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
 #[cfg(test)]
+#[path = "../tests/legacy/save_recovery_ui/tests.rs"]
 mod tests;
 
 fn layout() -> (Rect, Rect) {

@@ -280,4 +280,5 @@ fn random_word(seed: u64, index: usize) -> u64 {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/number_match/tests.rs"]
 mod tests;

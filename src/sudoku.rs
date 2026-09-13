@@ -338,4 +338,5 @@ fn valid_on_board(board: &[u8; 81], index: usize, value: u8) -> bool {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/sudoku/tests.rs"]
 mod tests;

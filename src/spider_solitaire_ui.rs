@@ -336,4 +336,5 @@ fn muted() -> Color {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/spider_solitaire_ui/tests.rs"]
 mod tests;

@@ -9,4 +9,5 @@ pub(crate) fn instructions(content: &GameContent, game: GameId) -> &[String; 3] 
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/tutorial_data/tests.rs"]
 mod tests;

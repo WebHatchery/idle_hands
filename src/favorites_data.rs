@@ -108,4 +108,5 @@ pub fn summary(state: &AppState, mode: BrowseMode) -> BrowseSummary {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/favorites_data/tests.rs"]
 mod tests;

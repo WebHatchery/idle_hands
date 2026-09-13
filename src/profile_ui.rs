@@ -4,6 +4,7 @@ use crate::{profile_data, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
 #[cfg(test)]
+#[path = "../tests/legacy/profile_ui/tests.rs"]
 mod tests;
 
 pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {

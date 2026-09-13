@@ -203,4 +203,5 @@ fn portrait_cell() -> f32 {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/responsive_sudoku/tests.rs"]
 mod tests;

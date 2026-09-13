@@ -88,4 +88,5 @@ pub fn assert_contract(game: GameId, orientation: Orientation) {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/responsive_bounds/tests.rs"]
 mod tests;

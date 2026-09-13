@@ -4,6 +4,7 @@ use crate::{state::AppState, tutorial_library_data, ui::UiAction};
 use macroquad::prelude::*;
 
 #[cfg(test)]
+#[path = "../tests/legacy/tutorial_library_ui/tests.rs"]
 mod tests;
 
 fn panel(state: &AppState, rect: Rect, fill: Color) {

@@ -65,4 +65,5 @@ pub fn preview_action(phase: crate::daily_dungeon::DailyPhase, best_score: Optio
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/daily_challenge/tests.rs"]
 mod tests;

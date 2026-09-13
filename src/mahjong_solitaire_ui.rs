@@ -277,4 +277,5 @@ fn back_rect() -> Rect {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/mahjong_solitaire_ui/tests.rs"]
 mod tests;

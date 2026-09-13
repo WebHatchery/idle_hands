@@ -775,4 +775,5 @@ pub fn reversi_clicks(_state: &AppState, p: Vec2) -> Vec<UiAction> {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/responsive_landscape_games/tests.rs"]
 mod tests;

@@ -183,4 +183,5 @@ pub fn card_back_colors(back: u8) -> (Color, Color) {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/cosmetics/tests.rs"]
 mod tests;

@@ -40,5 +40,5 @@ pub(super) fn apply(state: &mut AppState, scene: &str) {
 }
 
 #[cfg(test)]
-#[path = "game_capture_records/tests.rs"]
+#[path = "../tests/legacy/game_capture_records/tests.rs"]
 mod tests;

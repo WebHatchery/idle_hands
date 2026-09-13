@@ -401,4 +401,5 @@ impl Snake {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/snake/tests.rs"]
 mod tests;

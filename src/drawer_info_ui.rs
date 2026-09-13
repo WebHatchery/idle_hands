@@ -7,6 +7,7 @@ use crate::{
 use macroquad::prelude::*;
 
 #[cfg(test)]
+#[path = "../tests/legacy/drawer_info_ui/tests.rs"]
 mod tests;
 
 pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {

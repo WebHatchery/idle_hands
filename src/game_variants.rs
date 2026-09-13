@@ -688,4 +688,5 @@ fn misc_variant(state: &AppState, game: GameId, seed: u64) -> String {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/game_variants/tests.rs"]
 mod tests;

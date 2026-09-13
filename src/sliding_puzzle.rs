@@ -196,4 +196,5 @@ fn board_distance(cells: &[u8; CELLS]) -> usize {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/sliding_puzzle/tests.rs"]
 mod tests;

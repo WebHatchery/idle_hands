@@ -534,4 +534,5 @@ fn starting_room() -> u16 {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/one_room_roguelike/tests.rs"]
 mod tests;

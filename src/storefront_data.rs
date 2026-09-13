@@ -88,4 +88,5 @@ pub fn cabinet_label(game: GameId, compact: bool) -> &'static str {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/storefront_data/tests.rs"]
 mod tests;

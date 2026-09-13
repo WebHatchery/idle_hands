@@ -284,4 +284,5 @@ fn overlaps(left: &Tile, right: &Tile) -> bool {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/mahjong_solitaire/tests.rs"]
 mod tests;

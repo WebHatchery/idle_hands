@@ -23,4 +23,5 @@ pub fn should_pause_game(
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/lifecycle/tests.rs"]
 mod tests;

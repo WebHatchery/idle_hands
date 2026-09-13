@@ -4,6 +4,7 @@ use crate::{accessibility, mastermind::MastermindStatus, state::AppState, ui::Ui
 use macroquad::prelude::*;
 
 #[cfg(test)]
+#[path = "../tests/legacy/mastermind_ui/tests.rs"]
 mod tests;
 
 #[derive(Clone, Copy)]

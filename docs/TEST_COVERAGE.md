@@ -13,7 +13,9 @@ features should still target at least five meaningful cases, using tables for
 families of equivalent inputs and keeping distinct behavioral boundaries
 named.
 
-The crate-level public API migration is in progress: `tests/public_api.rs` and
-`tests/undo_stack.rs` exercise intentional library seams, while the legacy
-private suites remain under `src/` until their helpers can be exposed without
-making implementation details public.
+The crate-level public API migration is complete for the harness and legacy
+suites. `tests/public_api.rs` and `tests/undo_stack.rs` exercise intentional
+library seams. Cross-game contract, desktop, mobile, and long-session checks
+live under `tests/game_harness/`, while the detailed rule and UI suites live
+under `tests/legacy/`. Source modules retain only cfg(test) path declarations
+so those suites keep private access without placing test source in `src/`.

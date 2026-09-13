@@ -200,4 +200,5 @@ fn panel(rect: Rect, fill: Color, high_contrast: bool) {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/mobile_tutorial_ui/tests.rs"]
 mod tests;

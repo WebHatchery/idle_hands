@@ -262,4 +262,5 @@ impl TerrainCannon {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/terrain_cannon/tests.rs"]
 mod tests;

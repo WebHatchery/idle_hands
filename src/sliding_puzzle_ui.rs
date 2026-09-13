@@ -4,6 +4,7 @@ use crate::{accessibility, sliding_puzzle::SlidingStatus, state::AppState, ui::U
 use macroquad::prelude::*;
 
 #[cfg(test)]
+#[path = "../tests/legacy/sliding_puzzle_ui/tests.rs"]
 mod tests;
 
 #[derive(Clone, Copy)]

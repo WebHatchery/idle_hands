@@ -300,4 +300,5 @@ impl FreeCell {
     }
 }
 #[cfg(test)]
+#[path = "../tests/legacy/freecell/tests.rs"]
 mod tests;

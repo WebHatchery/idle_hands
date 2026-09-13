@@ -476,4 +476,5 @@ fn line_color(high_contrast: bool) -> Color {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/one_room_roguelike_ui/tests.rs"]
 mod tests;

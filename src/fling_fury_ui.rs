@@ -10,6 +10,7 @@ use macroquad::prelude::*;
 
 mod result;
 #[cfg(test)]
+#[path = "../tests/legacy/fling_fury_ui/tests.rs"]
 mod tests;
 
 #[derive(Clone, Copy)]

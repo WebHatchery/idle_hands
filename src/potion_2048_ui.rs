@@ -5,6 +5,7 @@ use crate::{accessibility, potion_2048::PotionDifficulty, state::AppState, ui::U
 use macroquad::prelude::*;
 
 #[cfg(test)]
+#[path = "../tests/legacy/potion_2048_ui/tests.rs"]
 mod tests;
 
 #[derive(Clone, Copy)]

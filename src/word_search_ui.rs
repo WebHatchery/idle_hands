@@ -179,6 +179,7 @@ pub fn draw(state: &AppState) {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/word_search_ui/tests.rs"]
 mod tests;
 
 fn draw_word_list(game: &crate::word_search::WordSearch, _layout: Layout) {

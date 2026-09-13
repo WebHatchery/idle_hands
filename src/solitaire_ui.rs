@@ -243,4 +243,5 @@ pub fn solitaire_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/solitaire_ui/tests.rs"]
 mod tests;

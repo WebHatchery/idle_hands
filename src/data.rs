@@ -353,4 +353,5 @@ impl GameData {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/data/tests.rs"]
 mod tests;

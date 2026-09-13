@@ -403,4 +403,5 @@ fn compact_scoreline_position() -> (f32, f32) {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/word_grid_ui/tests.rs"]
 mod tests;

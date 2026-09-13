@@ -368,4 +368,5 @@ fn row_for(index: usize) -> usize {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/pyramid/tests.rs"]
 mod tests;

@@ -565,4 +565,5 @@ fn contiguous_run(origin: usize, limit: usize, predicate: impl Fn(usize) -> bool
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/match_three/tests.rs"]
 mod tests;

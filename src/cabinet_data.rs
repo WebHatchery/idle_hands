@@ -89,4 +89,5 @@ pub fn page_size_for_layout(portrait: bool, compact_landscape: bool) -> usize {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/cabinet_data/tests.rs"]
 mod tests;

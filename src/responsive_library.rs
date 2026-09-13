@@ -8,6 +8,7 @@ use crate::{
 use macroquad::prelude::*;
 
 #[cfg(test)]
+#[path = "../tests/legacy/responsive_library/tests.rs"]
 mod tests;
 
 fn panel(rect: Rect, fill: Color) {

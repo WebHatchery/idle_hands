@@ -355,4 +355,5 @@ fn piece_cells(kind: u8, rotation: u8) -> [(i8, i8); 4] {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/block_stack/tests.rs"]
 mod tests;

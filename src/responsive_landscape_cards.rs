@@ -289,6 +289,7 @@ pub fn draw_freecell(state: &AppState) {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/responsive_landscape_cards/tests.rs"]
 mod tests;
 pub fn freecell_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(Rect::new(0., 0., 110., 44.), p) {

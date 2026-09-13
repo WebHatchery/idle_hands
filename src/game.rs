@@ -101,4 +101,5 @@ impl Game {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/game/tests.rs"]
 mod tests;

@@ -244,4 +244,5 @@ fn flip_top(stack: &mut [Card]) {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/spider_solitaire/tests.rs"]
 mod tests;

@@ -6,7 +6,7 @@ use macroquad::prelude::*;
 use macroquad_toolkit::notifications::{NotificationAnchor, NotificationRenderConfig};
 
 #[cfg(test)]
-#[path = "game_render/tests.rs"]
+#[path = "../tests/legacy/game_render/tests.rs"]
 mod tests;
 
 impl Game {

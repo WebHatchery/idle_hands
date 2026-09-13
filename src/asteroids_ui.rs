@@ -264,4 +264,5 @@ fn back_rect() -> Rect {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/asteroids_ui/tests.rs"]
 mod tests;

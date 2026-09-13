@@ -4,6 +4,7 @@ use crate::{state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
 #[cfg(test)]
+#[path = "../tests/legacy/daily_archive_ui/tests.rs"]
 mod tests;
 
 #[derive(Clone, Copy)]

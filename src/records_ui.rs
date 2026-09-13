@@ -5,6 +5,7 @@ use crate::{progression::AchievementId, state::AppState};
 use macroquad::prelude::*;
 
 #[cfg(test)]
+#[path = "../tests/legacy/records_ui/tests.rs"]
 mod tests;
 
 fn panel(rect: Rect, fill: Color) {

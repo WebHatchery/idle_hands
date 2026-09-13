@@ -336,6 +336,7 @@ fn moves_summary_y(compact: bool, portrait: bool) -> f32 {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/connect_four_ui/tests.rs"]
 mod tests;
 fn back_rect() -> Rect {
     Rect::new(0., 0., 110., 42.)

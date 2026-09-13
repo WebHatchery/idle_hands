@@ -332,7 +332,7 @@ incremental search across frames is preferred if deeper play is needed.
 
 ## 9. Testing and Verification
 
-Tests live in separate child files (`foo/tests.rs`) and cover:
+Tests live under `tests/` and cover:
 
 - pure rule legality, win/loss/end conditions, scoring, and undo invariants;
 - seeded replay stability and save round trips/migrations;

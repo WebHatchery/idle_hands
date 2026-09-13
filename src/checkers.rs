@@ -390,4 +390,5 @@ impl Checkers {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/checkers/tests.rs"]
 mod tests;

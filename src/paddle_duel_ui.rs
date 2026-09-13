@@ -9,6 +9,7 @@ use crate::{
 use macroquad::prelude::*;
 
 #[cfg(test)]
+#[path = "../tests/legacy/paddle_duel_ui/tests.rs"]
 mod tests;
 
 #[derive(Clone, Copy)]

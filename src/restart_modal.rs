@@ -7,7 +7,7 @@ use crate::{
 use macroquad::prelude::*;
 
 #[cfg(test)]
-#[path = "restart_modal/tests.rs"]
+#[path = "../tests/legacy/restart_modal/tests.rs"]
 mod tests;
 
 fn title(state: &AppState) -> String {

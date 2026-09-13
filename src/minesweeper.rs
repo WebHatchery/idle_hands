@@ -278,4 +278,5 @@ impl Minesweeper {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/minesweeper/tests.rs"]
 mod tests;

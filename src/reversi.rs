@@ -204,4 +204,5 @@ const DIRECTIONS: [(isize, isize); 8] = [
 ];
 
 #[cfg(test)]
+#[path = "../tests/legacy/reversi/tests.rs"]
 mod tests;

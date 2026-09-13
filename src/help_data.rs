@@ -11,4 +11,5 @@ pub fn navigation(content: &GameContent) -> &[String] {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/help_data/tests.rs"]
 mod tests;

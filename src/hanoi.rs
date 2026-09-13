@@ -189,4 +189,5 @@ fn default_disks() -> u8 {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/hanoi/tests.rs"]
 mod tests;

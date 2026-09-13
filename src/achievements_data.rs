@@ -100,4 +100,5 @@ fn matches_filter(state: &AppState, achievement: AchievementId, filter: u8) -> b
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/achievements_data/tests.rs"]
 mod tests;

@@ -433,4 +433,5 @@ fn value(value: Option<u32>) -> String {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/records_data/tests.rs"]
 mod tests;

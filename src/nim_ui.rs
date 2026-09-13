@@ -9,6 +9,7 @@ use crate::{
 use macroquad::prelude::*;
 
 #[cfg(test)]
+#[path = "../tests/legacy/nim_ui/tests.rs"]
 mod tests;
 
 const PORTRAIT_HEAP_X: f32 = 10.;

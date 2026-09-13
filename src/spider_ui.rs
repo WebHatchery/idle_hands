@@ -222,6 +222,7 @@ pub fn draw(state: &AppState) {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/spider_ui/tests.rs"]
 mod tests;
 
 fn draw_card_slot(rect: Rect, card: Option<crate::cards::Card>, state: &AppState) {

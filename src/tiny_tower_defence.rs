@@ -494,4 +494,5 @@ fn tower_cost(kind: TowerKind, level: u8) -> Option<u16> {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/tiny_tower_defence/tests.rs"]
 mod tests;

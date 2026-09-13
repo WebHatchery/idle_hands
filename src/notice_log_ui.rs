@@ -5,6 +5,7 @@ use macroquad::prelude::*;
 use macroquad_toolkit::notifications::{LoggedNotification, NotificationType};
 
 #[cfg(test)]
+#[path = "../tests/legacy/notice_log_ui/tests.rs"]
 mod tests;
 
 fn button_rect() -> Rect {

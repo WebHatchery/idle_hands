@@ -4,6 +4,7 @@ use crate::{accessibility, klondike_golf::GolfStatus, state::AppState, ui::UiAct
 use macroquad::prelude::*;
 
 #[cfg(test)]
+#[path = "../tests/legacy/klondike_golf_ui/tests.rs"]
 mod tests;
 
 #[derive(Clone, Copy)]

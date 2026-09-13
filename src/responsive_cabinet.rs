@@ -18,6 +18,7 @@ const CATEGORY_RECTS: [Rect; 6] = [
     Rect::new(10., 592., 340., 62.),
 ];
 #[cfg(test)]
+#[path = "../tests/legacy/responsive_cabinet/tests.rs"]
 mod tests;
 
 pub fn draw(

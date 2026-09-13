@@ -19,6 +19,7 @@ const CATEGORY_RECTS: [Rect; 6] = [
     Rect::new(880., 400., 292., 132.),
 ];
 #[cfg(test)]
+#[path = "../tests/legacy/cabinet_ui/tests.rs"]
 mod tests;
 
 pub fn draw(state: &AppState, loaded: usize, cabinet_texture: Option<&Texture2D>) {

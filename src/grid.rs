@@ -51,4 +51,5 @@ impl GridLayout {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/grid/tests.rs"]
 mod tests;

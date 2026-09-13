@@ -11,4 +11,5 @@ pub fn paragraphs(content: &GameContent) -> &[String] {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/credits_data/tests.rs"]
 mod tests;

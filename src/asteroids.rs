@@ -304,4 +304,5 @@ impl Asteroids {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/asteroids/tests.rs"]
 mod tests;

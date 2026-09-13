@@ -355,4 +355,5 @@ impl SpaceInvaders {
 }
 
 #[cfg(test)]
+#[path = "../tests/legacy/space_invaders/tests.rs"]
 mod tests;
