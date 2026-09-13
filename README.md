@@ -8,8 +8,8 @@ cards to a dice cup or a little wooden minefield.
 The published `1.0.0` release is a playable 60-game cabinet with persistent
 sessions, records, tutorials, responsive touch layouts, and post-launch
 refinements. itch.io offers a free 30-game browser demo and the unrestricted
-60-game Windows edition. [TODO.md](TODO.md) records the remaining physical-device
-acceptance work.
+60-game Windows edition. [TODO.md](TODO.md) records the current AI-actionable
+backlog; physical-device acceptance remains owner-controlled release verification.
 
 ## Current Collection
 
@@ -89,8 +89,7 @@ Sum Circuit, Orbit Order, and Word Forge.
   game rules, progression, accessibility, and non-goals.
 - [Technical design](docs/TECHNICAL_DESIGN.md) defines responsive layout,
   touch input, shared game contracts, data, persistence, and testing.
-- [TODO](TODO.md) is the phased implementation checklist and source of truth
-  for outstanding work.
+- [TODO](TODO.md) is the concise source of truth for AI-actionable follow-up work.
 - [Release notes](RELEASE_NOTES.md) describe the published `1.0.0` release.
 - [itch.io publishing guide](docs/ITCH_PUBLISHING_GUIDE.md) records the exact
   release workflow, storefront settings, verification, and first-release fixes.
