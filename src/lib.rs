@@ -67,8 +67,6 @@ pub mod game;
 mod game_2048;
 mod game_actions;
 mod game_descriptor;
-#[cfg(test)]
-mod game_harness;
 mod game_input;
 mod game_result_ui;
 mod game_store;
@@ -186,6 +184,8 @@ mod sudoku;
 mod sudoku_ui;
 mod terrain_cannon;
 mod terrain_cannon_ui;
+#[doc(hidden)]
+pub mod testing;
 mod theme;
 mod tic_tac_toe;
 mod tic_tac_toe_ui;

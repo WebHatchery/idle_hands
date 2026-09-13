@@ -214,7 +214,10 @@ impl TinyTowerDefence {
         true
     }
 
-    #[cfg(test)]
+    /// Advances a deterministic session without changing the visible pause control.
+    ///
+    /// The crate-level capture harness uses this seam to exercise both build and
+    /// wave phases while keeping the production action surface unchanged.
     pub fn start_or_advance(&mut self) -> bool {
         match self.phase {
             TowerPhase::Build => self.start_wave(),
@@ -320,7 +323,6 @@ impl TinyTowerDefence {
         true
     }
 
-    #[cfg(test)]
     fn advance_wave(&mut self, record_undo: bool) -> bool {
         if self.enemies.is_empty() {
             return false;

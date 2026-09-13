@@ -94,7 +94,6 @@ thread_local! {
 
 #[cfg(test)]
 mod tests;
-#[cfg(test)]
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum ForcedLayout {
     None,
@@ -102,7 +101,6 @@ enum ForcedLayout {
     CompactLandscape,
     Portrait,
 }
-#[cfg(test)]
 thread_local! {
     static FORCED_LAYOUT: Cell<ForcedLayout> = const { Cell::new(ForcedLayout::None) };
 }
@@ -120,7 +118,6 @@ pub fn layout_size() -> (f32, f32) {
     }
 }
 pub fn is_portrait() -> bool {
-    #[cfg(test)]
     match FORCED_LAYOUT.with(Cell::get) {
         ForcedLayout::Desktop | ForcedLayout::CompactLandscape => return false,
         ForcedLayout::Portrait => return true,
@@ -129,7 +126,6 @@ pub fn is_portrait() -> bool {
     display_height() > display_width() * 1.15
 }
 pub fn is_compact_landscape() -> bool {
-    #[cfg(test)]
     match FORCED_LAYOUT.with(Cell::get) {
         ForcedLayout::Desktop | ForcedLayout::Portrait => return false,
         ForcedLayout::CompactLandscape => return true,
@@ -139,7 +135,6 @@ pub fn is_compact_landscape() -> bool {
 }
 
 pub fn display_width() -> f32 {
-    #[cfg(test)]
     match FORCED_LAYOUT.with(Cell::get) {
         ForcedLayout::Desktop => return LOGICAL_WIDTH,
         ForcedLayout::CompactLandscape => return crate::responsive_landscape::WIDTH,
@@ -150,7 +145,6 @@ pub fn display_width() -> f32 {
 }
 
 pub fn display_height() -> f32 {
-    #[cfg(test)]
     match FORCED_LAYOUT.with(Cell::get) {
         ForcedLayout::Desktop => return LOGICAL_HEIGHT,
         ForcedLayout::CompactLandscape => return crate::responsive_landscape::HEIGHT,
@@ -160,22 +154,18 @@ pub fn display_height() -> f32 {
     macroquad::prelude::screen_height()
 }
 
-#[cfg(test)]
 pub(crate) fn with_desktop_layout<T>(run: impl FnOnce() -> T) -> T {
     with_forced_layout(ForcedLayout::Desktop, run)
 }
 
-#[cfg(test)]
 pub(crate) fn with_compact_landscape_layout<T>(run: impl FnOnce() -> T) -> T {
     with_forced_layout(ForcedLayout::CompactLandscape, run)
 }
 
-#[cfg(test)]
 pub(crate) fn with_portrait_layout<T>(run: impl FnOnce() -> T) -> T {
     with_forced_layout(ForcedLayout::Portrait, run)
 }
 
-#[cfg(test)]
 fn with_forced_layout<T>(layout: ForcedLayout, run: impl FnOnce() -> T) -> T {
     FORCED_LAYOUT.with(|forced| {
         let was_forced = forced.replace(layout);
