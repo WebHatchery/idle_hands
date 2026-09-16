@@ -174,7 +174,7 @@ pub(crate) fn game_complete(records: &CollectionRecords, game: GameId) -> bool {
         GameId::FreeCell => records.freecell_best_moves.is_some(),
         GameId::Sudoku => records.sudoku.iter().any(Option::is_some),
         GameId::Minesweeper => records.minesweeper.iter().any(Option::is_some),
-        GameId::Game2048 => records.best_2048 >= 2048,
+        GameId::Game2048 => records.completed_2048(),
         GameId::Nonogram => records.nonogram.iter().any(Option::is_some),
         GameId::Yahtzee => records.fivefold_best_total > 0,
         GameId::Reversi => records.reversi_best_score > 0,

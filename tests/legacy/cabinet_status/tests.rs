@@ -10,6 +10,7 @@ fn cabinet_filters_keep_new_drawers_open_and_completed_drawers_done() {
     assert!(!matches_filter(&state, GameId::Game2048, 2));
 
     state.records.best_2048 = 2048;
+    state.records.record_time(GameId::Game2048.index());
     assert!(matches_filter(&state, GameId::Game2048, 0));
     assert!(!matches_filter(&state, GameId::Game2048, 1));
     assert!(matches_filter(&state, GameId::Game2048, 2));
@@ -22,6 +23,7 @@ fn open_and_done_counts_move_when_a_drawer_is_finished() {
     let done_before = filter_count(&state, 2);
 
     state.records.best_2048 = 2048;
+    state.records.record_time(GameId::Game2048.index());
 
     assert_eq!(filter_count(&state, 1), open_before - 1);
     assert_eq!(filter_count(&state, 2), done_before + 1);
@@ -154,6 +156,7 @@ fn cabinet_sort_modes_cycle_and_keep_ordering_deterministic() {
     assert_eq!(title_sorted.first(), Some(&GameId::Game2048));
 
     state.records.best_2048 = 2048;
+    state.records.record_time(GameId::Game2048.index());
     let progress_sorted = sorted_games(&state, 9, CabinetSort::Progress);
     assert_eq!(progress_sorted.last(), Some(&GameId::Game2048));
 

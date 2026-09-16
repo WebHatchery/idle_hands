@@ -42,6 +42,7 @@ impl Game {
                 self.state.favorites[index] = matches!(game, GameId::Solitaire | GameId::Snake);
             }
             self.state.records.best_2048 = 2048;
+            self.state.records.record_time(GameId::Game2048.index());
             self.state.records.solitaire_best_moves = Some(42);
             self.state.records.snake_best_score = Some(120);
             self.state.recent_games = vec![GameId::Solitaire, GameId::Snake, GameId::Game2048];
@@ -312,12 +313,14 @@ impl Game {
         }
         if scene == "cabinet_sorted" {
             self.state.records.best_2048 = 2048;
+            self.state.records.record_time(GameId::Game2048.index());
             self.state.records.solitaire_best_moves = Some(42);
             self.state.cabinet_filter = 9;
             self.state.cabinet_sort = crate::cabinet_status::CabinetSort::Progress.index();
         }
         if matches!(scene, "cabinet_open" | "cabinet_done" | "cabinet_empty") {
             self.state.records.best_2048 = 2048;
+            self.state.records.record_time(GameId::Game2048.index());
             self.state.records.solitaire_best_moves = Some(42);
             self.state.cabinet_filter = if scene == "cabinet_empty" {
                 self.state.records = crate::state::CollectionRecords::default();
@@ -399,6 +402,7 @@ impl Game {
                 | "achievements_locked"
         ) {
             self.state.records.best_2048 = 2048;
+            self.state.records.record_time(GameId::Game2048.index());
             self.state.records.solitaire_best_moves = Some(42);
             self.state.records.word_ladder_best_moves = Some(5);
             let _ = crate::progression::sync_with_content(
@@ -426,6 +430,7 @@ impl Game {
                 self.state.favorites[index] = true;
             }
             self.state.records.best_2048 = 2048;
+            self.state.records.record_time(GameId::Game2048.index());
             self.state.records.solitaire_best_moves = Some(42);
             self.state.favorites_view = true;
         }
@@ -442,6 +447,7 @@ impl Game {
                 GameId::Game2048,
             ];
             self.state.records.best_2048 = 2048;
+            self.state.records.record_time(GameId::Game2048.index());
             self.state.records.solitaire_best_moves = Some(42);
             self.state.recent_view = true;
         }

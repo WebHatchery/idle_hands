@@ -158,6 +158,8 @@ impl Game {
             self.request_autosave();
         }
         if restored {
+            self.update_records();
+            self.request_autosave();
             self.notifications.info("Restored the cabinet autosave");
         }
     }

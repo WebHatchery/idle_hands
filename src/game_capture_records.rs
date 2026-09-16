@@ -6,6 +6,9 @@ pub(super) fn apply(state: &mut AppState, scene: &str) {
     match scene {
         "records_progress" => {
             state.records.best_2048 = 2048;
+            state
+                .records
+                .record_time(crate::state::GameId::Game2048.index());
             state.records.solitaire_best_moves = Some(42);
             state.records.word_ladder_best_moves = Some(5);
         }

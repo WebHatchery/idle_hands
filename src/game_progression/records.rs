@@ -10,7 +10,7 @@ impl Game {
             }
         }
         let records = &mut self.state.records;
-        records.best_2048 = records.best_2048.max(self.state.games.game.best);
+        records.record_2048(&self.state.games.game);
         let sudoku_index = match self.state.games.sudoku.difficulty {
             crate::sudoku::SudokuDifficulty::Easy => 0,
             crate::sudoku::SudokuDifficulty::Medium => 1,

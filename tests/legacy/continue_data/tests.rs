@@ -68,6 +68,7 @@ fn continue_copy_explains_fresh_active_and_completed_drawers() {
     assert_eq!(action_label(&state), "CONTINUE  >");
 
     state.records.best_2048 = 2048;
+    state.records.record_time(GameId::Game2048.index());
     assert_eq!(intent(&state), ContinueIntent::Replay);
     assert_eq!(title(&state), "PLAY AGAIN");
     assert_eq!(compact_action_label(&state), "REPLAY");

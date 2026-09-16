@@ -2,9 +2,11 @@
 
 use macroquad::prelude::Vec2;
 
+pub use crate::cabinet_status::status as cabinet_status;
 pub use crate::data::GameData;
 pub use crate::domain::Direction;
 pub use crate::game_descriptor::{descriptor, GameDescriptor};
+pub use crate::progression::completed_games;
 pub use crate::state::{AppState, GameId, Screen};
 pub use crate::state_snapshots::GameSnapshot;
 pub use crate::ui::UiAction;

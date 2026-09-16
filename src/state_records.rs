@@ -136,6 +136,18 @@ pub struct CollectionRecords {
 }
 
 impl CollectionRecords {
+    /// Keep the score and the actual tile victory as separate records.
+    pub fn record_2048(&mut self, game: &crate::game_2048::Game2048) {
+        self.best_2048 = self.best_2048.max(game.best).max(game.score);
+        if game.won() {
+            self.record_time(GameId::Game2048.index());
+        }
+    }
+
+    pub fn completed_2048(&self) -> bool {
+        self.best_time(GameId::Game2048.index()).is_some()
+    }
+
     pub fn ensure_time_slots(&mut self) {
         self.elapsed_seconds.resize(GameId::ALL.len(), 0);
         self.best_time_seconds.resize(GameId::ALL.len(), None);

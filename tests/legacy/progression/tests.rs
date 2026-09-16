@@ -4,10 +4,11 @@ use super::*;
 
 #[test]
 fn first_finish_awards_once_and_full_cabinet_is_worth_two() {
-    let records = CollectionRecords {
+    let mut records = CollectionRecords {
         best_2048: 2048,
         ..Default::default()
     };
+    records.record_time(GameId::Game2048.index());
     let mut earned_flags = Vec::new();
     let mut stamps = 0;
     let content = crate::data::GameData::load().unwrap().content;
@@ -37,6 +38,7 @@ fn full_cabinet_counts_every_playable_game() {
     records.sudoku[0] = Some(1);
     records.minesweeper[0] = Some(1);
     records.best_2048 = 2048;
+    records.record_time(GameId::Game2048.index());
     records.nonogram[0] = Some(1);
     records.fivefold_best_total = 1;
     records.reversi_best_score = 1;
@@ -152,10 +154,11 @@ fn next_locked_achievement_follows_the_collection_order() {
         AchievementId::next_locked(&empty),
         Some(AchievementId::FirstFinish)
     );
-    let records = CollectionRecords {
+    let mut records = CollectionRecords {
         best_2048: 2048,
         ..Default::default()
     };
+    records.record_time(GameId::Game2048.index());
     assert_eq!(
         AchievementId::next_locked(&records),
         Some(AchievementId::Game(GameId::Solitaire))

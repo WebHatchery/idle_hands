@@ -99,7 +99,7 @@ impl CategoryProgress {
 
 pub fn status(state: &AppState, game: GameId) -> &'static str {
     let complete = match game {
-        GameId::Game2048 => state.records.best_2048 >= 2048,
+        GameId::Game2048 => state.records.completed_2048(),
         GameId::Minesweeper => state.records.minesweeper.iter().any(Option::is_some),
         GameId::Sudoku => state.records.sudoku.iter().any(Option::is_some),
         GameId::Nonogram => state.records.nonogram.iter().any(Option::is_some),
