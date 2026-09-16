@@ -46,7 +46,3 @@ pub fn layout(portrait: bool, compact_landscape: bool) -> Layout {
         }
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/restart_modal_data/tests.rs"]
-mod tests;

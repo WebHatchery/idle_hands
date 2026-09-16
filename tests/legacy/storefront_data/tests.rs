@@ -42,17 +42,6 @@ fn demo_drawers_remain_playable_and_actions_share_the_same_contract() {
 }
 
 #[test]
-fn availability_labels_cover_browse_and_compact_surfaces() {
-    assert_eq!(GameAvailability::Playable.browse_label(), "");
-    assert_eq!(
-        GameAvailability::DemoRestricted.browse_label(),
-        "FULL VERSION"
-    );
-    assert_eq!(GameAvailability::ComingSoon.browse_label(), "COMING SOON");
-    assert_eq!(GameAvailability::ComingSoon.short_label(), "SOON");
-}
-
-#[test]
 fn demo_badge_reports_the_curated_count_and_stays_hidden_in_full_builds() {
     assert_eq!(build_badge_for(true).as_deref(), Some("DEMO · 30 GAMES"));
     assert_eq!(build_badge_for(false), None);

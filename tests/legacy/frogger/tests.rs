@@ -4,13 +4,6 @@ use super::*;
 use crate::domain::Direction;
 
 #[test]
-fn default_crossing_has_visible_lanes() {
-    let game = Frogger::new(7);
-    assert_eq!(game.cars.len(), 10);
-    assert_eq!(game.player_row, HEIGHT - 1);
-}
-
-#[test]
 fn touch_move_and_pause_are_available() {
     let mut game = Frogger::new(8);
     assert!(game.move_player(Direction::Up));

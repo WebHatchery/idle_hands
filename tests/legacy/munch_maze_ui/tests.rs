@@ -2,21 +2,6 @@
 
 use super::*;
 
-#[test]
-fn compact_controls_stay_clear_of_the_board() {
-    crate::ui::with_compact_landscape_layout(assert_controls_are_clear);
-}
-
-#[test]
-fn desktop_controls_stay_clear_of_the_board() {
-    crate::ui::with_desktop_layout(assert_controls_are_clear);
-}
-
-#[test]
-fn portrait_controls_stay_clear_of_the_board() {
-    crate::ui::with_portrait_layout(assert_controls_are_clear);
-}
-
 fn assert_controls_are_clear() {
     let layout = layout();
     let controls = [
@@ -37,4 +22,11 @@ fn assert_controls_are_clear() {
             .iter()
             .all(|right| !left.overlaps(right)));
     }
+}
+
+#[test]
+fn controls_stay_clear_of_the_board_in_every_layout() {
+    crate::ui::with_compact_landscape_layout(assert_controls_are_clear);
+    crate::ui::with_desktop_layout(assert_controls_are_clear);
+    crate::ui::with_portrait_layout(assert_controls_are_clear);
 }

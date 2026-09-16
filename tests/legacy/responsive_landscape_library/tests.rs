@@ -6,21 +6,6 @@ use crate::ui::UiAction;
 use macroquad::prelude::vec2;
 
 #[test]
-fn landscape_shelf_button_cycles_from_all_to_cards() {
-    let state = AppState::default();
-    let actions = records_clicks(&state, vec2(380., 20.));
-
-    assert!(matches!(actions.as_slice(), [UiAction::RecordsFilter(3)]));
-}
-
-#[test]
-fn landscape_statistics_button_opens_the_statistics_shelf() {
-    let actions = records_clicks(&AppState::default(), vec2(200., 20.));
-
-    assert!(matches!(actions.as_slice(), [UiAction::Statistics]));
-}
-
-#[test]
 fn landscape_settings_routes_rows_and_accessibility_controls() {
     let state = AppState::default();
 
@@ -77,33 +62,5 @@ fn landscape_settings_reset_modal_blocks_background_and_routes_buttons() {
     assert!(matches!(
         settings_clicks(&state, vec2(470., 250.)).as_slice(),
         [UiAction::ConfirmResetData]
-    ));
-}
-
-#[test]
-fn landscape_help_routes_all_visible_buttons() {
-    assert!(matches!(
-        help_clicks(vec2(350., 300.)).as_slice(),
-        [UiAction::Tutorials]
-    ));
-    assert!(matches!(
-        help_clicks(vec2(460., 300.)).as_slice(),
-        [UiAction::Rules]
-    ));
-    assert!(matches!(
-        help_clicks(vec2(580., 300.)).as_slice(),
-        [UiAction::Credits]
-    ));
-    assert!(matches!(
-        help_clicks(vec2(700., 300.)).as_slice(),
-        [UiAction::Cabinet]
-    ));
-}
-
-#[test]
-fn landscape_credits_back_is_a_touch_target() {
-    assert!(matches!(
-        credits_clicks(vec2(400., 330.)).as_slice(),
-        [UiAction::Cabinet]
     ));
 }

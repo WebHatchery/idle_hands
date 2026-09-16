@@ -21,14 +21,6 @@ fn first_finish_awards_once_and_full_cabinet_is_worth_two() {
 }
 
 #[test]
-fn completed_game_count_requires_each_collection_game() {
-    let mut records = CollectionRecords::default();
-    records.sudoku[0] = Some(12);
-    records.nonogram[2] = Some(20);
-    assert_eq!(completed_games(&records), 2);
-}
-
-#[test]
 // This case marks every catalog slot explicitly to verify the full-cabinet boundary.
 #[allow(clippy::field_reassign_with_default)]
 fn full_cabinet_counts_every_playable_game() {

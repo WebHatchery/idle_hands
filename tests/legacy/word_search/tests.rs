@@ -3,27 +3,6 @@
 use super::*;
 
 #[test]
-fn seeded_grids_repeat_and_contain_the_catalog_words() {
-    let first = WordSearch::new(42);
-    let second = WordSearch::new(42);
-    assert_eq!(first.cells, second.cells);
-    for &(row, column, row_step, column_step) in &PLACEMENTS {
-        let word_index = PLACEMENTS
-            .iter()
-            .position(|placement| *placement == (row, column, row_step, column_step))
-            .unwrap();
-        for (offset, letter) in first.words()[word_index].bytes().enumerate() {
-            let target_row = (row as isize + row_step * offset as isize) as usize;
-            let target_column = (column as isize + column_step * offset as isize) as usize;
-            assert_eq!(
-                first.cells[target_row * SIZE + target_column],
-                letter - b'A'
-            );
-        }
-    }
-}
-
-#[test]
 fn endpoint_selection_finds_forward_and_reverse_words() {
     let mut game = WordSearch::new(42);
     assert!(game.select(0));

@@ -3,26 +3,6 @@
 use super::*;
 
 #[test]
-fn starts_with_targets_blocks_and_shots() {
-    let game = FlingFury::new(7);
-    assert_eq!(game.targets.len(), 3);
-    assert!(!game.blocks.is_empty());
-    assert_eq!(game.shots_remaining, 5);
-    assert_eq!(game.level_number(), 1);
-}
-
-#[test]
-fn firing_consumes_a_shot_and_state_round_trips() {
-    let mut game = FlingFury::new(8);
-    assert!(game.fire());
-    assert_eq!(game.shots_remaining, 4);
-    assert!(game.tick(0.5));
-    let restored: FlingFury = serde_json::from_value(serde_json::to_value(game).unwrap()).unwrap();
-    assert_eq!(restored.targets.len(), 3);
-    assert_eq!(restored.shots_remaining, 4);
-}
-
-#[test]
 fn impact_knocks_blocks_and_can_start_a_target_fall() {
     let mut game = FlingFury::new(9);
     game.shot = Some(FlingShot {

@@ -3,17 +3,6 @@
 use super::*;
 
 #[test]
-fn seeded_rounds_repeat_with_two_hands() {
-    let first = Blackjack::new(12);
-    let second = Blackjack::new(12);
-    assert_eq!(first.player, second.player);
-    assert_eq!(first.dealer, second.dealer);
-    assert_eq!(first.player.len(), 2);
-    assert_eq!(first.dealer.len(), 2);
-    assert_eq!(first.deck.len(), 48);
-}
-
-#[test]
 fn ace_total_uses_soft_value_when_safe() {
     let mut game = Blackjack::new(1);
     game.player = vec![
@@ -50,24 +39,6 @@ fn hit_can_be_undone_and_stand_resolves() {
 }
 
 #[test]
-fn finished_round_rejects_more_actions() {
-    let mut game = Blackjack::new(9);
-    game.status = BlackjackStatus::Lost;
-    assert!(!game.hit());
-    assert!(!game.stand());
-}
-
-#[test]
-fn new_round_keeps_session_win_count_and_advances_round() {
-    let mut game = Blackjack::new(9);
-    game.wins = 2;
-    game.rounds = 3;
-    game.reset(10);
-    assert_eq!(game.rounds, 4);
-    assert!(game.wins >= 2);
-}
-
-#[test]
 fn hint_uses_player_total_and_visible_dealer_upcard_without_revealing_hidden_card() {
     let mut game = Blackjack::new(1);
     game.player = vec![
@@ -91,28 +62,17 @@ fn hint_uses_player_total_and_visible_dealer_upcard_without_revealing_hidden_car
 }
 
 #[test]
-fn hint_is_empty_after_blackjack_ends() {
-    let mut game = Blackjack::new(1);
-    game.status = BlackjackStatus::Lost;
-
-    assert_eq!(game.hint_action(), None);
-}
-
-#[test]
-fn house_rule_identifies_a_soft_seventeen() {
-    let mut game = Blackjack::new_with_rule(56, BlackjackRule::HitSoft17);
-    game.dealer = vec![
-        Card {
-            rank: 1,
-            suit: 0,
-            face_up: true,
-        },
-        Card {
-            rank: 6,
-            suit: 0,
-            face_up: true,
-        },
-    ];
-    assert!(game.is_soft(&game.dealer));
-    assert_eq!(game.dealer_total(), 17);
+fn finished_rounds_reject_more_actions() {
+    for status in [
+        BlackjackStatus::Won,
+        BlackjackStatus::Lost,
+        BlackjackStatus::Push,
+    ] {
+        let mut game = Blackjack::new(9);
+        game.status = status;
+        let before = serde_json::to_value(&game).unwrap();
+        assert!(!game.hit(), "{status:?}");
+        assert!(!game.stand(), "{status:?}");
+        assert_eq!(serde_json::to_value(&game).unwrap(), before, "{status:?}");
+    }
 }

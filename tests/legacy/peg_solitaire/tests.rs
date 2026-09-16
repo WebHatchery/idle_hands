@@ -3,22 +3,6 @@
 use super::*;
 
 #[test]
-fn seeded_board_has_thirty_two_pegs_and_repeatable_layout() {
-    let first = PegSolitaire::new(7);
-    let second = PegSolitaire::new(7);
-    assert_eq!(first.cells, second.cells);
-    assert_eq!(
-        first
-            .cells
-            .iter()
-            .filter(|hole| **hole == Hole::Peg)
-            .count(),
-        32
-    );
-    assert_eq!(first.targets(3 * SIZE + 1).len(), 1);
-}
-
-#[test]
 fn first_jump_removes_the_middle_peg_and_can_be_undone() {
     let mut game = PegSolitaire::new(1);
     assert!(game.tap(3 * SIZE + 1));

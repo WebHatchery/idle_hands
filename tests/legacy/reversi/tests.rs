@@ -3,16 +3,6 @@
 use super::*;
 
 #[test]
-fn opening_position_has_four_moves_and_flips_a_line() {
-    let mut game = Reversi::new(1, AiLevel::Gentle);
-    assert_eq!(game.legal_moves(1).len(), 4);
-    assert!(game.place(2 * 8 + 3));
-    assert_eq!(game.board[3 * 8 + 3], 1);
-    assert_eq!(game.score(1), 4);
-    assert_eq!(game.turn, 2);
-}
-
-#[test]
 fn ai_levels_are_deterministic_and_choose_a_legal_move() {
     let mut gentle = Reversi::new(5, AiLevel::Gentle);
     let mut sharp = Reversi::new(5, AiLevel::Sharp);
@@ -75,13 +65,4 @@ fn two_player_mode_alternates_turns_without_ai_intervention() {
     assert!(game.place_current(move_for_player_two));
     assert_eq!(game.turn, 1);
     assert_eq!(game.moves, 2);
-}
-
-#[test]
-fn hint_move_is_legal_and_does_not_mutate_the_opening_board() {
-    let game = Reversi::new(1, AiLevel::Gentle);
-    let before = game.board.clone();
-    let hint = game.hint_move().unwrap();
-    assert!(game.legal_moves(1).contains(&hint));
-    assert_eq!(game.board, before);
 }

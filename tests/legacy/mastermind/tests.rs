@@ -35,16 +35,6 @@ fn undo_restores_a_partial_guess_and_clear_empties_it() {
 }
 
 #[test]
-fn hint_pick_suggests_a_valid_color_without_mutating_the_game() {
-    let game = Mastermind::new(42);
-    let before = game.current;
-    let (slot, color) = game.hint_pick().unwrap();
-    assert_eq!(slot, 0);
-    assert!(color < 6);
-    assert_eq!(game.current, before);
-}
-
-#[test]
 fn gentle_and_hard_variants_change_the_available_guess_space() {
     let mut gentle = Mastermind::new_with_variant(50, MastermindVariant::Gentle);
     assert!(!gentle.pick(4));

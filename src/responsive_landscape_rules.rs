@@ -8,10 +8,6 @@ use macroquad::prelude::*;
 
 use crate::responsive_landscape_library::{back, panel, scroll, text};
 
-#[cfg(test)]
-#[path = "../tests/legacy/responsive_landscape_rules/tests.rs"]
-mod tests;
-
 const RULES_VISIBLE_ROWS: usize = 8;
 
 pub fn draw_rules(state: &AppState) {

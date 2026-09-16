@@ -1,9 +1,7 @@
 //! Host-level contract suites for every game in the cabinet.
 //!
-//! The game modules keep their detailed rule tests beside their state types.
-//! These suites cover the shared boundary that every drawer must cross:
-//! deterministic construction, catalog metadata, variant cycling, and
-//! independent snapshot restore.
+//! Each long-session case counts against that game's five-case rule budget.
+//! Shared host and input contracts iterate the catalog as table inputs.
 
 #[path = "game_harness/asteroids.rs"]
 mod asteroids;
@@ -130,6 +128,8 @@ mod word_search;
 mod desktop_long_game;
 #[path = "game_harness/desktop_ui.rs"]
 mod desktop_ui;
+#[path = "game_harness/host_contract.rs"]
+mod host_contract;
 #[path = "game_harness/mobile_ui.rs"]
 mod mobile_ui;
 #[path = "game_harness/support.rs"]

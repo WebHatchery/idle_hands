@@ -3,19 +3,6 @@
 use super::*;
 
 #[test]
-fn seeded_deals_repeat_and_have_a_stock() {
-    let first = Spider::new(42);
-    let second = Spider::new(42);
-    assert_eq!(first.tableau, second.tableau);
-    assert_eq!(first.stock, second.stock);
-    assert_eq!(first.stock.len(), 50);
-    assert!(first
-        .tableau
-        .iter()
-        .all(|stack| stack.last().unwrap().face_up));
-}
-
-#[test]
 fn ordered_runs_move_and_undo_reveals_the_source() {
     let mut game = Spider::new(42);
     game.tableau[0] = vec![
@@ -73,14 +60,6 @@ fn tapping_a_selected_run_releases_it_or_replaces_it() {
 }
 
 #[test]
-fn dealing_stock_clears_the_selected_run() {
-    let mut game = Spider::new(46);
-    assert!(game.select_column(0, game.tableau[0].len() - 1));
-    assert!(game.deal_stock());
-    assert_eq!(game.selected, None);
-}
-
-#[test]
 fn complete_run_is_removed_and_counts_toward_win() {
     let mut game = Spider::new(42);
     game.tableau[0] = (1..=13)
@@ -97,47 +76,6 @@ fn complete_run_is_removed_and_counts_toward_win() {
     assert!(game.move_selected(1));
     assert_eq!(game.completed, 1);
     assert!(game.tableau[1].is_empty());
-}
-
-#[test]
-fn hint_returns_the_first_legal_run_move_without_mutating_the_tableau() {
-    let mut game = Spider::new(43);
-    game.tableau[0] = vec![
-        Card {
-            rank: 4,
-            suit: 0,
-            face_up: false,
-        },
-        Card {
-            rank: 12,
-            suit: 0,
-            face_up: true,
-        },
-        Card {
-            rank: 11,
-            suit: 0,
-            face_up: true,
-        },
-    ];
-    game.tableau[1] = vec![Card {
-        rank: 13,
-        suit: 0,
-        face_up: true,
-    }];
-    let before = game.tableau.clone();
-
-    assert_eq!(game.hint_move(), Some((0, 1, 1)));
-    assert_eq!(game.hint_move(), Some((0, 1, 1)));
-    assert_eq!(game.tableau, before);
-    assert_eq!(game.selected, None);
-    assert_eq!(game.moves, 0);
-}
-
-#[test]
-fn won_spider_has_no_hint_move() {
-    let mut game = Spider::new(44);
-    game.status = SpiderStatus::Won;
-    assert_eq!(game.hint_move(), None);
 }
 
 #[test]

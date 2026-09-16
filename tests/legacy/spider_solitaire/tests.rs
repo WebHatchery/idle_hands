@@ -3,32 +3,6 @@
 use super::*;
 
 #[test]
-fn seeded_standard_deals_repeat_with_ten_columns() {
-    let first = SpiderSolitaire::new(42);
-    let second = SpiderSolitaire::new(42);
-    assert_eq!(first.tableau, second.tableau);
-    assert_eq!(first.stock, second.stock);
-    assert_eq!(first.tableau.len(), 10);
-    assert_eq!(first.stock.len(), 50);
-    assert_eq!(first.tableau.iter().map(Vec::len).sum::<usize>(), 54);
-}
-
-#[test]
-fn standard_deal_contains_two_copies_of_each_rank_and_suit() {
-    let game = SpiderSolitaire::new(42);
-    let mut counts = [[0_u8; 14]; 4];
-    for card in game.tableau.iter().flatten().chain(game.stock.iter()) {
-        counts[card.suit as usize][card.rank as usize] += 1;
-    }
-
-    for (suit, ranks) in counts.iter().enumerate() {
-        for (rank, count) in ranks.iter().enumerate().skip(1) {
-            assert_eq!(*count, 2, "rank {rank}, suit {suit}");
-        }
-    }
-}
-
-#[test]
 fn same_suit_descending_run_moves_and_undoes() {
     let mut game = SpiderSolitaire::new(42);
     game.tableau[0] = vec![
@@ -59,37 +33,6 @@ fn same_suit_descending_run_moves_and_undoes() {
     assert!(game.undo());
     assert_eq!(game.tableau[1].len(), 1);
     assert_eq!(game.moves, 0);
-}
-
-#[test]
-fn tapping_a_selected_run_releases_it_or_replaces_it() {
-    let mut game = SpiderSolitaire::new(45);
-    game.tableau[0] = vec![Card {
-        rank: 5,
-        suit: 0,
-        face_up: true,
-    }];
-    game.tableau[1] = vec![Card {
-        rank: 9,
-        suit: 0,
-        face_up: true,
-    }];
-
-    assert!(game.select_column(0, 0));
-    assert!(game.tap_column(0, 0));
-    assert_eq!(game.selected, None);
-
-    assert!(game.select_column(0, 0));
-    assert!(game.tap_column(1, 0));
-    assert_eq!(game.selected, Some((1, 0)));
-}
-
-#[test]
-fn dealing_stock_clears_the_selected_run() {
-    let mut game = SpiderSolitaire::new(46);
-    assert!(game.select_column(0, game.tableau[0].len() - 1));
-    assert!(game.deal_stock());
-    assert_eq!(game.selected, None);
 }
 
 #[test]

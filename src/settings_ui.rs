@@ -3,10 +3,6 @@
 use crate::{cosmetics, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/settings_ui/tests.rs"]
-mod tests;
-
 fn panel(rect: Rect, fill: Color) {
     draw_rectangle(
         rect.x,

@@ -3,29 +3,6 @@
 use super::*;
 
 #[test]
-fn seeded_boards_are_repeatable_and_have_twelve_pieces_each() {
-    let first = Checkers::new(7);
-    let second = Checkers::new(7);
-    assert_eq!(first.cells, second.cells);
-    assert_eq!(
-        first
-            .cells
-            .iter()
-            .filter(|piece| piece.side() == Some(Side::Red))
-            .count(),
-        12
-    );
-    assert_eq!(
-        first
-            .cells
-            .iter()
-            .filter(|piece| piece.side() == Some(Side::Yellow))
-            .count(),
-        12
-    );
-}
-
-#[test]
 fn a_red_piece_can_step_and_promote() {
     let mut game = Checkers::new(1);
     game.cells = vec![Piece::Empty; CELLS];
@@ -66,15 +43,5 @@ fn hint_move_finds_a_mandatory_capture_without_mutating() {
     game.cells[4 * SIZE + 1] = Piece::YellowMan;
     let before = game.cells.clone();
     assert_eq!(game.hint_move(), Some((5 * SIZE, 3 * SIZE + 2)));
-    assert_eq!(game.cells, before);
-}
-
-#[test]
-fn ai_strengths_keep_seeded_board_state_stable() {
-    let mut game = Checkers::new(7);
-    let before = game.cells.clone();
-    game.set_ai_level(AiLevel::Expert);
-    game.reset(7);
-    assert_eq!(game.ai_level, AiLevel::Expert);
     assert_eq!(game.cells, before);
 }

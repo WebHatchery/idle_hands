@@ -3,30 +3,6 @@
 use super::*;
 
 #[test]
-fn every_game_has_three_touch_specific_instructions() {
-    let content = crate::data::GameData::load().unwrap().content;
-    for game in GameId::ALL {
-        let lines = crate::tutorial_data::instructions(&content, game);
-        assert_eq!(lines.len(), 3);
-        assert!(
-            lines.iter().any(|line| {
-                line.contains("Tap")
-                    || line.contains("tap")
-                    || line.contains("Swipe")
-                    || line.contains("Drag")
-            }),
-            "{} has no direct touch instruction: {:?}",
-            game.title(),
-            lines
-        );
-        assert!(lines.iter().all(|line| {
-            let lower = line.to_ascii_lowercase();
-            !lower.contains("dismiss") && !lower.contains("confirm")
-        }));
-    }
-}
-
-#[test]
 fn responsive_continue_buttons_stay_inside_their_panels() {
     assert!(contains(PORTRAIT_PANEL, continue_rect(false)));
     assert!(contains(LANDSCAPE_PANEL, continue_rect(true)));

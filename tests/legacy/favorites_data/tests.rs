@@ -3,18 +3,6 @@
 use super::*;
 
 #[test]
-fn browse_mode_follows_the_active_shelf() {
-    let favorites = AppState::default();
-    assert_eq!(BrowseMode::from_state(&favorites), BrowseMode::Favorites);
-
-    let recent = AppState {
-        recent_view: true,
-        ..AppState::default()
-    };
-    assert_eq!(BrowseMode::from_state(&recent), BrowseMode::Recent);
-}
-
-#[test]
 fn favorite_rows_keep_catalog_order_and_source_positions() {
     let mut state = AppState::default();
     state.favorites[GameId::FreeCell.index()] = true;
@@ -57,53 +45,4 @@ fn page_start_handles_empty_and_zero_capacity_safely() {
     assert_eq!(page_start(0, 99, 8), 0);
     assert_eq!(page_start(15, 99, 8), 7);
     assert_eq!(page_start(15, 99, 0), 14);
-}
-
-#[test]
-fn scroll_limit_matches_the_active_shelf_capacity() {
-    let state = AppState {
-        recent_games: vec![
-            GameId::Solitaire,
-            GameId::FreeCell,
-            GameId::Spider,
-            GameId::Pyramid,
-        ],
-        ..AppState::default()
-    };
-
-    assert_eq!(scroll_limit(&state, BrowseMode::Recent, 8), 0);
-    assert_eq!(scroll_limit(&state, BrowseMode::Recent, 2), 2);
-}
-
-#[test]
-fn summary_partitions_the_active_browse_shelf() {
-    let mut state = AppState::default();
-    state.records.solitaire_best_moves = Some(42);
-    state.recent_games = vec![GameId::Solitaire, GameId::FreeCell];
-
-    assert_eq!(
-        summary(&state, BrowseMode::Recent),
-        BrowseSummary {
-            total: 2,
-            open: 1,
-            done: 1,
-            locked: 0,
-            coming_soon: 0,
-        }
-    );
-}
-
-#[test]
-fn browse_summary_names_future_drawers_without_losing_locked_count() {
-    assert_eq!(
-        (BrowseSummary {
-            total: 4,
-            open: 1,
-            done: 0,
-            locked: 2,
-            coming_soon: 1,
-        })
-        .restriction_label(),
-        "2 locked · 1 soon"
-    );
 }

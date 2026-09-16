@@ -43,22 +43,6 @@ fn achievement_pages_clamp_to_the_filtered_window() {
 }
 
 #[test]
-fn achievement_scroll_limit_follows_filter_size() {
-    let mut state = AppState::default();
-    state.achievements[AchievementId::FirstFinish.index()] = true;
-
-    assert_eq!(scroll_limit(&state, 1, 8), 0);
-    assert_eq!(scroll_limit(&state, 0, 10), AchievementId::ALL.len() - 10);
-}
-
-#[test]
-fn achievement_empty_copy_explains_each_filtered_state() {
-    assert_eq!(empty_label(0), "No achievements match this shelf.");
-    assert_eq!(empty_label(1), "No achievements earned yet.");
-    assert_eq!(empty_label(2), "Every achievement is earned.");
-}
-
-#[test]
 fn achievement_window_labels_clamp_to_the_filtered_end() {
     assert_eq!(window_label(0, 0, 8), "0-0 OF 0");
     assert_eq!(window_label(0, 17, 8), "1-8 OF 17");

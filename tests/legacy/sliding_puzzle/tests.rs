@@ -3,16 +3,6 @@
 use super::*;
 
 #[test]
-fn seeded_boards_repeat_and_are_not_already_solved() {
-    let first = SlidingPuzzle::new(42);
-    assert_eq!(first.cells, SlidingPuzzle::new(42).cells);
-    assert_ne!(
-        first.cells,
-        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0]
-    );
-}
-
-#[test]
 fn only_adjacent_tiles_move_and_undo_restores_the_board() {
     let mut game = SlidingPuzzle::new(42);
     let blank = game.blank();

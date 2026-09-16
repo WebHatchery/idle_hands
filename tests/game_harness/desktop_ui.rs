@@ -10,7 +10,14 @@ use idle_hands::testing::{
 use macroquad::prelude::{vec2, Vec2};
 use std::{collections::HashSet, mem::discriminant};
 
-pub(super) fn run(game: GameId) {
+#[test]
+fn every_game_exposes_desktop_play_and_recovery_actions() {
+    for game in GameId::ALL {
+        assert_tap_routes(game);
+    }
+}
+
+fn assert_tap_routes(game: GameId) {
     with_desktop_layout(|| {
         let state = AppState {
             screen: Screen::Game(game),

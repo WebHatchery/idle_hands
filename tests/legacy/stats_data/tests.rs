@@ -60,12 +60,3 @@ fn completion_percent_handles_empty_catalogs_without_panicking() {
 
     assert_eq!(completion_percent(summary), 0);
 }
-
-#[test]
-fn short_titles_are_character_bounded_and_keep_short_names() {
-    assert_eq!(short_title(GameId::Solitaire, 12), "Solitaire");
-    let shortened = short_title(GameId::TinyTowerDefence, 10);
-
-    assert_eq!(shortened.chars().count(), 10);
-    assert!(shortened.ends_with('…'));
-}

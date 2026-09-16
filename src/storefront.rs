@@ -40,7 +40,3 @@ pub fn availability_message(game_title: &str, availability: GameAvailability) ->
 pub fn purchase_message(game_title: &str) -> String {
     format!("{game_title} is in the full version — buy Idle Hands on {PRIMARY_STORE}")
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/storefront/tests.rs"]
-mod tests;

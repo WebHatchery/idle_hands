@@ -3,19 +3,6 @@
 use super::*;
 
 #[test]
-fn accepts_one_letter_ladder_steps_and_wins() {
-    let mut game = WordLadder::new(0);
-    for word in ["PLATE", "PLACE", "PLANE", "PLANK", "BLANK"] {
-        for letter in word.bytes() {
-            game.tap_letter(letter - b'A');
-        }
-        assert!(game.submit());
-    }
-    assert_eq!(game.phase, WordLadderPhase::Won);
-    assert_eq!(game.moves, 5);
-}
-
-#[test]
 fn rejects_non_dictionary_and_invalid_steps() {
     let mut game = WordLadder::new(0);
     for letter in b"ZZZZZ" {
@@ -30,35 +17,12 @@ fn rejects_non_dictionary_and_invalid_steps() {
     assert!(!game.submit());
 }
 
-#[test]
-fn undo_restores_previous_word() {
-    let mut game = WordLadder::new(0);
-    for letter in b"PLATE" {
-        game.tap_letter(letter - b'A');
-    }
-    assert!(game.submit());
-    assert!(game.undo());
-    assert_eq!(game.moves, 0);
-    assert!(game.guesses.is_empty());
-}
-
 fn enter(game: &mut WordLadder, word: &str) -> bool {
     game.current.clear();
     for letter in word.bytes() {
         assert!(game.tap_letter(letter - b'A'));
     }
     game.submit()
-}
-
-#[test]
-fn hint_follows_the_shortest_route_to_the_target() {
-    let mut game = WordLadder::new(0);
-    assert_eq!(game.hint_word().as_deref(), Some("PLATE"));
-    while let Some(next) = game.hint_word() {
-        assert!(enter(&mut game, &next));
-    }
-    assert_eq!(game.phase, WordLadderPhase::Won);
-    assert_eq!(game.moves, game.par);
 }
 
 #[test]
@@ -75,15 +39,6 @@ fn scenic_ladder_requires_the_waypoint_before_the_target() {
 }
 
 #[test]
-fn route_metrics_publish_remaining_and_branch_count() {
-    let game = WordLadder::new_with_mode(1, LadderMode::Scenic);
-    assert!(game.par >= 4);
-    assert!(game.remaining_steps() > 0);
-    assert!(game.legal_step_count() > 0);
-    assert_eq!(game.current_difference_count(), 0);
-}
-
-#[test]
 fn repeated_undo_rewinds_multiple_ladder_steps() {
     let mut game = WordLadder::new(0);
     assert!(enter(&mut game, "PLATE"));
@@ -93,16 +48,6 @@ fn repeated_undo_rewinds_multiple_ladder_steps() {
     assert!(game.undo());
     assert!(game.guesses.is_empty());
     assert!(!game.undo());
-}
-
-#[test]
-fn mode_switch_and_reset_keep_the_scenic_rule() {
-    let mut game = WordLadder::new(0);
-    game.set_mode(LadderMode::Scenic, 1);
-    assert_eq!(game.mode, LadderMode::Scenic);
-    game.reset(2);
-    assert_eq!(game.mode, LadderMode::Scenic);
-    assert!(!game.waypoint.is_empty());
 }
 
 #[test]

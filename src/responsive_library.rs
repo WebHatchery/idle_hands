@@ -11,11 +11,6 @@ pub use records::{draw_records, records_clicks};
 pub use rules::{draw_rules, rules_clicks};
 
 #[cfg(test)]
-fn rule_info_rect(row: Rect) -> Rect {
-    rules::rule_info_rect(row)
-}
-
-#[cfg(test)]
 #[path = "../tests/legacy/responsive_library/tests.rs"]
 mod tests;
 

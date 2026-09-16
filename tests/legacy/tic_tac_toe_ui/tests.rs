@@ -10,25 +10,10 @@ fn overlaps(left: Rect, right: Rect) -> bool {
 }
 
 #[test]
-fn desktop_layout_separates_header_status_variants_board_and_controls() {
-    assert_layout_is_separated(layout_for(LayoutMode::Desktop));
-}
-
-#[test]
-fn compact_landscape_layout_separates_header_status_variants_board_and_controls() {
-    assert_layout_is_separated(layout_for(LayoutMode::CompactLandscape));
-}
-
-#[test]
 fn compact_status_stays_before_the_rule_card() {
     let layout = layout_for(LayoutMode::CompactLandscape);
     assert!(layout.status.x + 220. < 494.);
     assert!(compact_status_text(TicTacToeStatus::Playing).len() < 30);
-}
-
-#[test]
-fn portrait_layout_separates_header_status_variants_board_and_controls() {
-    assert_layout_is_separated(layout_for(LayoutMode::Portrait));
 }
 
 fn assert_layout_is_separated(layout: Layout) {
@@ -49,4 +34,15 @@ fn assert_layout_is_separated(layout: Layout) {
     assert!(!overlaps(layout.new_board, layout.undo));
     assert!(!overlaps(layout.new_board, layout.hint));
     assert!(!overlaps(layout.undo, layout.hint));
+}
+
+#[test]
+fn every_layout_separates_header_status_variants_board_and_controls() {
+    for mode in [
+        LayoutMode::Desktop,
+        LayoutMode::CompactLandscape,
+        LayoutMode::Portrait,
+    ] {
+        assert_layout_is_separated(layout_for(mode));
+    }
 }

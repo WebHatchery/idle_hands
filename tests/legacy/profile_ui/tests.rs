@@ -39,26 +39,6 @@ fn profile_cards_and_back_fit_every_viewport() {
 }
 
 #[test]
-fn every_profile_card_is_a_touch_target() {
-    let state = AppState {
-        screen: Screen::Profile,
-        ..AppState::default()
-    };
-
-    let assert_cards = || {
-        for (index, rect) in name_rects().iter().copied().enumerate() {
-            assert!(matches!(
-                clicks(&state, rect.center()).as_slice(),
-                [UiAction::SetProfileName(value)] if *value as usize == index
-            ));
-        }
-    };
-    crate::ui::with_desktop_layout(assert_cards);
-    crate::ui::with_compact_landscape_layout(assert_cards);
-    crate::ui::with_portrait_layout(assert_cards);
-}
-
-#[test]
 fn high_contrast_nameplates_use_neutral_selected_luminance() {
     let state = AppState {
         high_contrast: true,

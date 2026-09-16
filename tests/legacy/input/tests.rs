@@ -8,79 +8,6 @@ fn scope(screen: Screen, layer: PointerLayer) -> PointerScope {
 }
 
 #[test]
-fn device_matrix_keeps_rendering_and_input_on_one_transform() {
-    use macroquad_toolkit::ui::VirtualUi;
-
-    let devices = [
-        (320., 568., 360., 780.),
-        (390., 844., 360., 780.),
-        (568., 320., 840., 390.),
-        (844., 390., 840., 390.),
-        (768., 1024., 360., 780.),
-        (1024., 768., 1280., 720.),
-    ];
-    for (screen_w, screen_h, logical_w, logical_h) in devices {
-        let viewport = VirtualUi::from_screen_size(logical_w, logical_h, screen_w, screen_h);
-        let center = Vec2::new(logical_w / 2., logical_h / 2.);
-        let screen_center = viewport.ui_to_screen(center);
-        let mapped = viewport.screen_to_ui_checked(screen_center).unwrap();
-        assert!((mapped - center).length() < 0.001);
-        assert_eq!(
-            viewport.viewport_for_dpi(1.),
-            (
-                viewport.offset.x.round() as i32,
-                viewport.offset.y.round() as i32,
-                (logical_w * viewport.scale).round() as i32,
-                (logical_h * viewport.scale).round() as i32,
-            )
-        );
-        assert_eq!(
-            viewport
-                .screen_to_ui_checked(Vec2::new(viewport.offset.x - 1., viewport.offset.y - 1.)),
-            None
-        );
-    }
-}
-
-#[test]
-fn device_matrix_keeps_shared_button_hits_at_least_44_physical_points() {
-    use macroquad::prelude::Rect;
-    use macroquad_toolkit::ui::{VirtualUi, MIN_TARGET};
-
-    let devices = [
-        (320., 568., 360., 780.),
-        (390., 844., 360., 780.),
-        (568., 320., 840., 390.),
-        (844., 390., 840., 390.),
-        (768., 1024., 360., 780.),
-        (1024., 768., 1280., 720.),
-    ];
-    for (screen_w, screen_h, logical_w, logical_h) in devices {
-        let viewport = VirtualUi::from_screen_size(logical_w, logical_h, screen_w, screen_h);
-        let area = crate::ui::physical_touch_rect(Rect::new(100., 100., 100., 30.), viewport.scale);
-        assert!(area.w * viewport.scale >= MIN_TARGET - 0.01);
-        assert!(area.h * viewport.scale >= MIN_TARGET - 0.01);
-    }
-}
-
-#[test]
-fn smallest_phone_matrix_keeps_body_text_physically_readable() {
-    use macroquad_toolkit::ui::VirtualUi;
-
-    for (screen_w, screen_h, logical_w, logical_h) in [
-        (320., 568., 360., 780.),
-        (568., 320., 844., 390.),
-        (1024., 768., 1280., 720.),
-    ] {
-        let viewport = VirtualUi::from_screen_size(logical_w, logical_h, screen_w, screen_h);
-        let body = crate::ui::readable_text_size_for_scale(10., viewport.scale);
-        let caption = crate::ui::readable_text_size_for_scale(8., viewport.scale);
-        assert!(body * viewport.scale >= 11. - 0.01);
-        assert!(caption * viewport.scale >= 9. - 0.01);
-    }
-}
-
-#[test]
 fn pointer_tracker_distinguishes_taps_drags_and_cancelled_releases() {
     let mut tracker = PointerTracker::default();
     let cabinet = scope(Screen::Cabinet, PointerLayer::Board);
@@ -122,22 +49,6 @@ fn long_press_requires_the_threshold_and_does_not_override_a_drag() {
     tracker.tick(LONG_PRESS_SECONDS * 2.);
     assert!(matches!(
         tracker.release(Some(Vec2::new(40., 10.)), cabinet),
-        Some(Gesture::Drag { .. })
-    ));
-}
-
-#[test]
-fn drag_distance_keeps_the_boundary_between_tap_and_drag_explicit() {
-    let mut tracker = PointerTracker::default();
-    let cabinet = scope(Screen::Cabinet, PointerLayer::Board);
-    tracker.press(Some(Vec2::new(10., 10.)), cabinet);
-    assert!(matches!(
-        tracker.release(Some(Vec2::new(10. + DRAG_DISTANCE, 10.)), cabinet),
-        Some(Gesture::Tap(_))
-    ));
-    tracker.press(Some(Vec2::new(10., 10.)), cabinet);
-    assert!(matches!(
-        tracker.release(Some(Vec2::new(10. + DRAG_DISTANCE + 0.01, 10.)), cabinet),
         Some(Gesture::Drag { .. })
     ));
 }

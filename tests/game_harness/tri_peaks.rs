@@ -1,21 +1,10 @@
 //! Deterministic capture scenarios for the cabinet game suite.
 
-use super::support;
 use idle_hands::testing::GameId;
 
 pub const GAME: GameId = GameId::TriPeaks;
 
 #[test]
-fn host_contract_is_complete() {
-    support::assert_game_contract(GAME);
-}
-
-#[test]
 fn desktop_long_game_is_stable() {
     super::desktop_long_game::run(GAME);
-}
-
-#[test]
-fn desktop_ui_exposes_a_tap_target() {
-    super::desktop_ui::run(GAME);
 }
