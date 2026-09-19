@@ -18,14 +18,16 @@ again. Tutorials, restart/reset confirmations, non-game screens, and an
 already-paused round do not open a second sheet.
 
 The original proposed module tree below documents the architectural intent.
-The current implementation uses named Rust source files under src/ with
-game-specific UI siblings and child test modules; the enum-owned host remains
-the active integration boundary.
+The current implementation uses named Rust source files under `src/` with
+game-specific UI siblings; the enum-owned host remains the active integration
+boundary. Existing source-mounted test modules are migration work tracked in
+`TODO.md`, not a pattern for new tests.
 
 Proposed module boundaries:
 
 ```text
 src/
+  lib.rs                  intentional public game APIs for runtime and tests
   main.rs                 runtime entry and capture harness
   app.rs                  top-level screen state and transitions
   collection.rs           game IDs, descriptors, availability
@@ -44,6 +46,7 @@ src/
     reversi.rs
   cards/                  shared deck, card UI, move animation
   ui/                     shared controls, sheets, typography, themes
+tests/                    public-API suites and test-only helpers
 ```
 
 Named parent files with child directories are used instead of `mod.rs`. Every
@@ -332,15 +335,25 @@ incremental search across frames is preferred if deeper play is needed.
 
 ## 9. Testing and Verification
 
-Tests live under `tests/` and cover:
+Follow `CODE_STANDARDS.md` §11. Tests and test-only helpers belong under the
+crate's `tests/` directory and exercise intentional public APIs. Before
+expanding legacy suites, migrate their source declarations in a separate
+change. Strongly target no more than five cases per cohesive feature across
+all its files; consolidate related inputs, preserve useful regressions, and
+explain distinct coverage that needs more than five cases.
+
+Prioritize simple behavior tests for:
 
 - pure rule legality, win/loss/end conditions, scoring, and undo invariants;
 - seeded replay stability and save round trips/migrations;
 - generated Sudoku uniqueness and Nonogram validity if generators ship;
-- touch gesture thresholds, cancellation, and visible alternative commands;
-- responsive layout bounds and minimum target sizes at every matrix viewport;
 - Reversi AI legal output and bounded work;
 - asset registry consistency and the 800-line source limit.
+
+UI and rendering generally do not need unit tests. Verify touch controls,
+cancellation, layout bounds, and target sizes through the browser smoke pass
+and visual inspection at the supported viewport sizes. Keep any existing
+focused input regression that protects a distinct behavior.
 
 After meaningful work, `publish.ps1` is the required end-to-end path. Capture
 scenes should include cabinet portrait/landscape, every game’s initial/play/end

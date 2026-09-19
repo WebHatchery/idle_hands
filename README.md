@@ -157,10 +157,11 @@ npx playwright install chromium
 npm run test:webgl
 ```
 
-`test_game_suites.ps1` runs one independently filterable host-contract suite
-for each of the 60 catalog games, checks the suite registry against `GameId`,
-and then runs the complete Rust test set. Pass `-TargetDir target-codex` when a
-separate local Cargo target directory is needed.
+`test_game_suites.ps1` runs the complete Rust test set once with
+`cargo test --all-targets`. Pass `-TargetDir target-codex` when a separate
+local Cargo target directory is needed. Test scope, style, placement, and the
+five-case feature target follow `CODE_STANDARDS.md` §11; remaining migration
+work is tracked in `TODO.md`.
 
 The publisher builds and validates the native and WebGL targets. The browser
 smoke suite then serves the packaged preview deployment and checks loading,
