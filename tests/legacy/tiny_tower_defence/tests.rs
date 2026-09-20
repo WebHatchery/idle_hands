@@ -66,10 +66,25 @@ fn tower_selector_sets_role_cost_and_new_towers_keep_that_role() {
     let mut game = TinyTowerDefence::new(2);
     assert!(game.select_kind(TowerKind::Frost));
     assert_eq!(game.tower_cost(8), Some(4));
+    assert_eq!(
+        game.cell_availability(8),
+        TowerCellAvailability::Build {
+            kind: TowerKind::Frost,
+            cost: 4,
+        }
+    );
     assert!(game.build_or_upgrade(8));
     assert_eq!(game.tower_kind(8), TowerKind::Frost);
     assert_eq!(game.gold, 8);
     assert_eq!(game.tower_cost(8), Some(4));
+    assert_eq!(
+        game.cell_availability(8),
+        TowerCellAvailability::Upgrade {
+            kind: TowerKind::Frost,
+            level: 1,
+            cost: 4,
+        }
+    );
 
     assert!(game.select_kind(TowerKind::Burst));
     assert!(game.build_or_upgrade(8));
@@ -78,4 +93,26 @@ fn tower_selector_sets_role_cost_and_new_towers_keep_that_role() {
     assert_eq!(game.towers[8], 1);
     assert_eq!(game.tower_kind(8), TowerKind::Frost);
     assert_eq!(game.selected_kind, TowerKind::Burst);
+    game.towers[8] = 3;
+    assert_eq!(
+        game.cell_availability(8),
+        TowerCellAvailability::MaxLevel {
+            kind: TowerKind::Frost,
+            level: 3,
+        }
+    );
+    game.towers[8] = 0;
+    game.selected_kind = TowerKind::Bolt;
+    game.gold = 2;
+    assert_eq!(
+        game.cell_availability(8),
+        TowerCellAvailability::Build {
+            kind: TowerKind::Bolt,
+            cost: 3
+        }
+    );
+    assert!(!game.build_or_upgrade(8));
+    assert_eq!(game.gold, 2);
+    assert_eq!(game.towers[8], 0);
+    assert_eq!(game.cell_availability(7), TowerCellAvailability::Blocked);
 }

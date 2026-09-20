@@ -48,6 +48,7 @@ impl Game {
             self.state.game_setup_open = false;
             self.state.sudoku_focus_open = false;
             self.state.nonogram_focus_open = false;
+            self.state.tower_inspection = None;
         }
         if self.state.screen != previous_screen {
             self.transition = if self.state.reduced_motion { 0. } else { 1. };

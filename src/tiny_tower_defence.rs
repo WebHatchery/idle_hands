@@ -46,6 +46,26 @@ impl TowerKind {
             Self::Burst => "BURST",
         }
     }
+
+    pub const fn role(self) -> &'static str {
+        match self {
+            Self::Bolt => "DIRECT DAMAGE",
+            Self::Frost => "SLOWS A LANE",
+            Self::Burst => "SPLASH DAMAGE",
+        }
+    }
+
+    pub const fn cost_at_level(self, level: u8) -> Option<u16> {
+        if level >= 3 {
+            return None;
+        }
+        let base = match self {
+            Self::Bolt => 3,
+            Self::Frost => 4,
+            Self::Burst => 5,
+        };
+        Some(base + level.saturating_sub(1) as u16)
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -60,6 +80,24 @@ pub enum TowerPhase {
 pub enum TowerHint {
     Build(usize, TowerKind),
     WaveControl,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum TowerCellAvailability {
+    Blocked,
+    Build {
+        kind: TowerKind,
+        cost: u16,
+    },
+    Upgrade {
+        kind: TowerKind,
+        level: u8,
+        cost: u16,
+    },
+    MaxLevel {
+        kind: TowerKind,
+        level: u8,
+    },
 }
 
 type Snapshot = (
@@ -146,6 +184,23 @@ impl TinyTowerDefence {
             self.tower_kind(index)
         };
         tower_cost(kind, level)
+    }
+
+    pub fn cell_availability(&self, index: usize) -> TowerCellAvailability {
+        if index >= self.towers.len() || index.is_multiple_of(WIDTH) || index % WIDTH == WIDTH - 1 {
+            return TowerCellAvailability::Blocked;
+        }
+        let level = self.towers[index];
+        let kind = if level == 0 {
+            self.selected_kind
+        } else {
+            self.tower_kind(index)
+        };
+        match kind.cost_at_level(level) {
+            Some(cost) if level == 0 => TowerCellAvailability::Build { kind, cost },
+            Some(cost) => TowerCellAvailability::Upgrade { kind, level, cost },
+            None => TowerCellAvailability::MaxLevel { kind, level },
+        }
     }
 
     pub fn tower_kind(&self, index: usize) -> TowerKind {
@@ -482,15 +537,7 @@ impl TinyTowerDefence {
 }
 
 fn tower_cost(kind: TowerKind, level: u8) -> Option<u16> {
-    if level >= 3 {
-        return None;
-    }
-    let base = match kind {
-        TowerKind::Bolt => 3,
-        TowerKind::Frost => 4,
-        TowerKind::Burst => 5,
-    };
-    Some(base + u16::from(level.saturating_sub(1)))
+    kind.cost_at_level(level)
 }
 
 #[cfg(test)]

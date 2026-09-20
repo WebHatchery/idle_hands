@@ -139,6 +139,7 @@ impl Game {
             self.state.game_setup_open = false;
             self.state.sudoku_focus_open = false;
             self.state.nonogram_focus_open = false;
+            self.state.tower_inspection = None;
             self.state.confirm_reset = false;
             self.state.tutorial = None;
             if !self.state.reduced_motion {

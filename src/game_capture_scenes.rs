@@ -127,9 +127,15 @@ pub(super) fn special_screen_for_scene(scene: &str) -> Screen {
             Screen::Game(GameId::Potion2048)
         }
         "potion_2048_accessible" => Screen::Game(GameId::Potion2048),
-        "tiny_tower_defence" | "tiny_tower_defence_hint" | "tiny_tower_roles" => {
-            Screen::Game(GameId::TinyTowerDefence)
-        }
+        "tiny_tower_defence"
+        | "tiny_tower_defence_hint"
+        | "tiny_tower_roles"
+        | "tiny_tower_inspection"
+        | "tiny_tower_insufficient"
+        | "tiny_tower_maxed"
+        | "tiny_tower_inspection_accessible"
+        | "tiny_tower_wave3"
+        | "tiny_tower_loss" => Screen::Game(GameId::TinyTowerDefence),
         "tiny_tower_defence_accessible" | "tiny_tower_defence_hint_accessible" => {
             Screen::Game(GameId::TinyTowerDefence)
         }

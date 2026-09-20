@@ -43,7 +43,29 @@ impl Game {
                     crate::potion_2048::Potion2048::new_with_difficulty(seed, *difficulty);
             }
             UiAction::TowerCell(index) => {
-                self.state.games.tiny_tower_defence.build_or_upgrade(*index);
+                self.state.tower_inspection = Some(*index);
+            }
+            UiAction::TowerInspect(index) => {
+                self.state.tower_inspection = Some(*index);
+                self.state.card_hint = None;
+            }
+            UiAction::TowerBuild(index) => {
+                let (built, message) = {
+                    let game = &mut self.state.games.tiny_tower_defence;
+                    let built = game.build_or_upgrade(*index);
+                    let message = (!built).then(|| tower_failure_message(game, *index));
+                    (built, message)
+                };
+                if built {
+                    self.state.tower_inspection = None;
+                    self.state.card_hint = None;
+                } else {
+                    self.state.card_hint = message;
+                }
+            }
+            UiAction::TowerCancelInspection => {
+                self.state.tower_inspection = None;
+                self.state.card_hint = None;
             }
             UiAction::TowerSelectKind(kind) => {
                 self.state.games.tiny_tower_defence.select_kind(*kind);
@@ -58,5 +80,29 @@ impl Game {
             _ => return false,
         }
         true
+    }
+}
+
+fn tower_failure_message(
+    game: &crate::tiny_tower_defence::TinyTowerDefence,
+    index: usize,
+) -> String {
+    match game.cell_availability(index) {
+        crate::tiny_tower_defence::TowerCellAvailability::Blocked => {
+            "That lane is reserved for entry or the base".to_owned()
+        }
+        crate::tiny_tower_defence::TowerCellAvailability::MaxLevel { .. } => {
+            "That tower is already at maximum level".to_owned()
+        }
+        crate::tiny_tower_defence::TowerCellAvailability::Build { .. }
+        | crate::tiny_tower_defence::TowerCellAvailability::Upgrade { .. }
+            if game.phase != crate::tiny_tower_defence::TowerPhase::Build =>
+        {
+            "Pause the wave before changing towers".to_owned()
+        }
+        crate::tiny_tower_defence::TowerCellAvailability::Build { cost, .. }
+        | crate::tiny_tower_defence::TowerCellAvailability::Upgrade { cost, .. } => {
+            format!("Need {cost} gold, but only {} remains", game.gold)
+        }
     }
 }

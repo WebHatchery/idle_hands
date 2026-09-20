@@ -107,7 +107,7 @@ Safari and Windows touch acceptance remain owner-controlled limitations.
   emulation and the native capture matrix do not certify every device pixel
   ratio.
 
-- [ ] **P1 — Show Tower Defence costs and consequences before spending gold.**
+- [x] **P1 — Show Tower Defence costs and consequences before spending gold.**
   Scope: src/tiny_tower_defence_ui.rs::draw/kind_button/clicks,
   tiny_tower_defence.rs::tower_cost/build_or_upgrade and
   game_board_dispatch/group_6.rs::apply_game_action_group_6. Kind buttons show
@@ -126,6 +126,19 @@ Safari and Windows touch acceptance remain owner-controlled limitations.
   Verify build, wave 3/5, paused, insufficient-gold, level-3 and loss states at
   1280×720, 390×844, 320×568 and 568×320. Touch-build each kind, inspect/upgrade,
   cancel, fail an unaffordable purchase, Undo, start and pause/resume a wave.
+  Verified: kind buttons now show role and starting cost; cell inspection is
+  non-spending and offers explicit Build/Upgrade/Cancel actions with local
+  role, effect, phase, invalid-lane, insufficient-gold and maximum-level
+  feedback. Wave controls remain visible outside the inspection drawer.
+  Evidence: ui_tiny_tower_inspection*.png, ui_portrait_tiny_tower_inspection*.png,
+  ui_landscape_tiny_tower_inspection.png, ui_matrix_*_tiny_tower_inspection.png,
+  ui_tiny_tower_{insufficient,maxed,roles,wave3,loss}.png. Rust tests, browser
+  touch regression (4 total Playwright tests), and publish passed. The required
+  capture matrix covers 1280×720, 390×844, 320×568 and 568×320; 1024×768 and
+  768×1024 were not refreshed for this change, and physical-device touch was
+  not available. The browser touch pass covered build, upgrade and cancel;
+  every tower kind and every listed wave-control gesture was not separately
+  automated.
 
 - [ ] **P2 — Simplify the cabinet into a clear resume-or-browse decision.**
   Scope: src/cabinet_ui.rs::draw_sidebar/recent_games, cabinet_ui/home.rs::draw_home,

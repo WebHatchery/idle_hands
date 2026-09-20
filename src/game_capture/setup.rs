@@ -201,6 +201,39 @@ impl Game {
                 },
             ];
         }
+        if matches!(
+            scene,
+            "tiny_tower_inspection"
+                | "tiny_tower_inspection_accessible"
+                | "tiny_tower_insufficient"
+                | "tiny_tower_maxed"
+        ) {
+            let game = &mut self.state.games.tiny_tower_defence;
+            game.selected_kind = crate::tiny_tower_defence::TowerKind::Burst;
+            self.state.tower_inspection = Some(8);
+            if scene == "tiny_tower_insufficient" {
+                game.gold = 2;
+            }
+            if scene == "tiny_tower_maxed" {
+                game.towers[8] = 3;
+                game.tower_kinds[8] = crate::tiny_tower_defence::TowerKind::Burst;
+            }
+        }
+        if scene == "tiny_tower_wave3" {
+            let game = &mut self.state.games.tiny_tower_defence;
+            game.wave = 3;
+            game.gold = 7;
+            game.selected_kind = crate::tiny_tower_defence::TowerKind::Frost;
+        }
+        if scene == "tiny_tower_loss" {
+            let game = &mut self.state.games.tiny_tower_defence;
+            game.wave = 5;
+            game.gold = 1;
+            game.lives = 0;
+            game.score = 210;
+            game.phase = crate::tiny_tower_defence::TowerPhase::Lost;
+            game.paused = false;
+        }
         if scene == "rogue_roles" {
             use crate::one_room_roguelike::{EnemyKind, HeroClass, OneRoomRoguelike, RoomEnemy};
             let game = &mut self.state.games.one_room_roguelike;
