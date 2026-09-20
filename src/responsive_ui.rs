@@ -31,7 +31,7 @@ pub fn draw_2048(state: &AppState) {
     text("‹ CABINET", 16., 35., 15., crate::theme::BRASS);
     text("2048", 16., 82., 38., crate::theme::BRASS);
     for (index, board_size) in Game2048Size::ALL.iter().enumerate() {
-        let rect = Rect::new(170. + index as f32 * 88., 88., 80., 36.);
+        let rect = Rect::new(170. + index as f32 * 88., 94., 80., 36.);
         panel(
             rect,
             if *board_size == game.board_size {
@@ -43,13 +43,13 @@ pub fn draw_2048(state: &AppState) {
         text(board_size.label(), rect.x + 12., rect.y + 23., 10., WHITE);
     }
     text(
-        &format!("Score {}  -  Best {}", game.score, game.best),
+        &format!("Score {}  ·  Best {}", game.score, game.best),
         18.,
-        108.,
+        128.,
         14.,
         WHITE,
     );
-    let board = Rect::new(20., 140., 320., 320.);
+    let board = Rect::new(20., 145., 320., 320.);
     panel(board, crate::accessibility::board_fill(state.high_contrast));
     let dimension = game.board_size.dimension();
     let tile_size = if dimension == 4 { 72. } else { 54. };
@@ -89,7 +89,7 @@ pub fn draw_2048(state: &AppState) {
             text(
                 &label,
                 rect.x + (rect.w - width) / 2.,
-                rect.y + 45.,
+                rect.y + (rect.h + size * 0.36) * 0.5,
                 size,
                 WHITE,
             );
@@ -104,7 +104,7 @@ pub fn draw_2048(state: &AppState) {
     .iter()
     .enumerate()
     {
-        let rect = Rect::new(20. + index as f32 * 82., 475., 74., 46.);
+        let rect = Rect::new(20. + index as f32 * 82., 480., 74., 46.);
         panel(rect, crate::theme::SURFACE_DARK);
         text(
             ["UP", "LEFT", "DOWN", "RIGHT"][index],
@@ -115,17 +115,14 @@ pub fn draw_2048(state: &AppState) {
         );
         let _ = direction;
     }
-    panel(Rect::new(20., 545., 150., 46.), crate::theme::SURFACE_DARK);
-    text("UNDO", 70., 575., 15., WHITE);
-    panel(Rect::new(190., 545., 150., 46.), crate::theme::SURFACE);
-    text("NEW GAME", 220., 575., 14., WHITE);
-    panel(Rect::new(20., 600., 150., 46.), crate::theme::SURFACE_DARK);
-    text("HINT", 70., 630., 15., WHITE);
+    panel(Rect::new(20., 550., 150., 46.), crate::theme::SURFACE_DARK);
+    text("UNDO", 70., 580., 15., WHITE);
+    panel(Rect::new(190., 550., 150., 46.), crate::theme::SURFACE);
+    text("NEW GAME", 220., 580., 14., WHITE);
+    panel(Rect::new(20., 610., 150., 46.), crate::theme::SURFACE_DARK);
+    text("HINT", 70., 640., 15., WHITE);
     text(
-        state
-            .card_hint
-            .as_deref()
-            .unwrap_or("Swipe the board or tap an arrow."),
+        state.card_hint.as_deref().unwrap_or(""),
         18.,
         685.,
         14.,
@@ -160,17 +157,17 @@ pub fn game2048_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         }
         return vec![];
     }
-    if crate::ui::hit(Rect::new(20., 545., 150., 46.), p) && state.games.game.can_undo() {
+    if crate::ui::hit(Rect::new(20., 550., 150., 46.), p) && state.games.game.can_undo() {
         return vec![UiAction::Undo];
     }
-    if crate::ui::hit(Rect::new(190., 545., 150., 46.), p) {
+    if crate::ui::hit(Rect::new(190., 550., 150., 46.), p) {
         return vec![UiAction::Restart];
     }
-    if crate::ui::hit(Rect::new(20., 600., 150., 46.), p) {
+    if crate::ui::hit(Rect::new(20., 610., 150., 46.), p) {
         return vec![UiAction::Game2048Hint];
     }
     for (index, board_size) in Game2048Size::ALL.iter().enumerate() {
-        if crate::ui::hit(Rect::new(170. + index as f32 * 88., 88., 80., 36.), p)
+        if crate::ui::hit(Rect::new(170. + index as f32 * 88., 94., 80., 36.), p)
             && state.games.game.board_size != *board_size
         {
             return vec![UiAction::Game2048Size(*board_size)];
@@ -185,7 +182,7 @@ pub fn game2048_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     .iter()
     .enumerate()
     {
-        if crate::ui::hit(Rect::new(20. + index as f32 * 82., 475., 74., 46.), p) {
+        if crate::ui::hit(Rect::new(20. + index as f32 * 82., 480., 74., 46.), p) {
             return vec![UiAction::Move(*direction)];
         }
     }

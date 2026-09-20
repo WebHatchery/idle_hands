@@ -79,7 +79,7 @@ pub fn draw_2048(state: &AppState) {
             text(
                 &label,
                 rect.x + (rect.w - width) / 2.,
-                rect.y + 45.,
+                rect.y + (rect.h + size * 0.36) * 0.5,
                 size,
                 WHITE,
             );
@@ -116,16 +116,9 @@ pub fn draw_2048(state: &AppState) {
     text("NEW GAME", 738., 174., 11., WHITE);
     panel(Rect::new(590., 205., 110., 46.), crate::theme::SURFACE_DARK);
     text("HINT", 625., 234., 12., WHITE);
-    text(
-        state
-            .card_hint
-            .as_deref()
-            .unwrap_or("Swipe the board or tap a direction."),
-        380.,
-        285.,
-        13.,
-        crate::theme::SECONDARY,
-    );
+    if let Some(hint) = state.card_hint.as_deref() {
+        text(hint, 380., 285., 13., crate::theme::SECONDARY);
+    }
     if state.confirm_restart {
         panel(
             Rect::new(375., 215., 300., 120.),

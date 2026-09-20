@@ -13,9 +13,11 @@ pub(crate) fn draw_2048(state: &AppState) {
         18.,
         crate::theme::SECONDARY,
     );
-    text("BOARD SIZE", 400., 145., 13., crate::theme::BRASS);
+    score_box(Rect::new(320., 48., 112., 58.), "SCORE", g.score);
+    score_box(Rect::new(444., 48., 112., 58.), "BEST", g.best);
+    text("BOARD", 590., 58., 12., crate::theme::BRASS);
     for (index, board_size) in Game2048Size::ALL.iter().enumerate() {
-        let rect = Rect::new(400. + index as f32 * 155., 150., 145., 34.);
+        let rect = Rect::new(590. + index as f32 * 110., 64., 102., 34.);
         panel(
             rect,
             if *board_size == g.board_size {
@@ -24,17 +26,16 @@ pub(crate) fn draw_2048(state: &AppState) {
                 crate::theme::GAME_PANEL
             },
         );
-        text(board_size.label(), rect.x + 43., rect.y + 22., 12., WHITE);
+        text(board_size.label(), rect.x + 24., rect.y + 22., 12., WHITE);
     }
-    score_box(Rect::new(830., 68., 120., 66.), "SCORE", g.score);
-    score_box(Rect::new(965., 68., 120., 66.), "BEST", g.best);
-    panel(Rect::new(830., 160., 360., 380.), crate::theme::GAME_PANEL);
+    let board = Rect::new(320., 120., 560., 560.);
+    panel(board, crate::theme::GAME_PANEL);
     let dimension = g.board_size.dimension();
-    let tile_size = if dimension == 4 { 76. } else { 60. };
-    let gap = 8.;
+    let gap = 12.;
+    let tile_size = (board.w - 40. - gap * (dimension - 1) as f32) / dimension as f32;
     let grid_side = tile_size * dimension as f32 + gap * (dimension - 1) as f32;
-    let origin_x = 830. + (360. - grid_side) * 0.5;
-    let origin_y = 160. + (380. - grid_side) * 0.5;
+    let origin_x = board.x + (board.w - grid_side) * 0.5;
+    let origin_y = board.y + (board.h - grid_side) * 0.5;
     for i in 0..g.cells.len() {
         let r = Rect::new(
             origin_x + (i % dimension) as f32 * (tile_size + gap),
@@ -53,50 +54,30 @@ pub(crate) fn draw_2048(state: &AppState) {
         if v > 0 {
             let label = v.to_string();
             let fs = if v < 100 {
-                if dimension == 4 {
-                    30.
-                } else {
-                    24.
-                }
+                (tile_size * 0.30).min(34.)
             } else if v < 1000 {
-                if dimension == 4 {
-                    25.
-                } else {
-                    21.
-                }
+                (tile_size * 0.26).min(29.)
             } else {
-                if dimension == 4 {
-                    20.
-                } else {
-                    18.
-                }
+                (tile_size * 0.22).min(25.)
             };
             let tw = crate::ui::measure_text(&label, None, fs as u16, 1.0).width;
             text(
                 &label,
                 r.x + (r.w - tw) / 2.,
-                r.y + 48.,
+                r.y + (r.h + fs * 0.36) * 0.5,
                 fs,
                 crate::theme::CREAM,
             );
         }
     }
-    text(
-        "Every move is touch-complete",
-        830.,
-        570.,
-        17.,
-        crate::theme::SECONDARY,
-    );
-    text(
-        "Swipe the board or use a direction button",
-        830.,
-        594.,
-        16.,
-        Color::new(0.55, 0.50, 0.64, 1.),
-    );
+    text("MOVE", 930., 150., 14., crate::theme::BRASS);
     for (i, label) in ["UP", "LEFT", "DOWN", "RIGHT"].iter().enumerate() {
-        let r = Rect::new(830. + i as f32 * 90., 615., 78., 46.);
+        let r = Rect::new(
+            930. + (i % 2) as f32 * 98.,
+            166. + (i / 2) as f32 * 58.,
+            88.,
+            46.,
+        );
         panel(r, crate::theme::SURFACE_DARK);
         let width = crate::ui::measure_text(label, None, 14, 1.0).width;
         text(
@@ -107,26 +88,11 @@ pub(crate) fn draw_2048(state: &AppState) {
             crate::theme::BRASS,
         );
     }
-    panel(
-        Rect::new(400., 190., 300., 160.),
-        Color::new(0.09, 0.07, 0.14, 0.98),
-    );
-    text("Tap or drag to combine", 425., 230., 23., WHITE);
-    text(
-        "matching tiles into a larger tile.",
-        425.,
-        260.,
-        17.,
-        Color::new(0.72, 0.68, 0.80, 1.),
-    );
-    panel(Rect::new(400., 390., 140., 48.), crate::theme::SURFACE_DARK);
-    text("UNDO", 438., 421., 17., WHITE);
-    panel(Rect::new(560., 390., 140., 48.), crate::theme::SURFACE_DARK);
-    text("NEW GAME", 575., 421., 17., WHITE);
-    panel(Rect::new(400., 450., 140., 48.), crate::theme::SURFACE_DARK);
-    text("HINT", 438., 481., 17., WHITE);
+    action_button(Rect::new(930., 300., 186., 48.), "UNDO");
+    action_button(Rect::new(930., 360., 186., 48.), "HINT");
+    action_button(Rect::new(930., 420., 186., 48.), "NEW GAME");
     if let Some(hint) = state.card_hint.as_deref() {
-        text(hint, 400., 520., 14., Color::new(0.63, 0.95, 0.72, 1.));
+        text(hint, 930., 505., 14., Color::new(0.63, 0.95, 0.72, 1.));
     }
     if state.confirm_restart {
         panel(
@@ -154,22 +120,33 @@ fn score_box(r: Rect, label: &str, value: u32) {
     );
     text(&value.to_string(), r.x + 14., r.y + 51., 24., WHITE)
 }
+fn action_button(rect: Rect, label: &str) {
+    panel(rect, crate::theme::SURFACE_DARK);
+    let width = crate::ui::measure_text(label, None, 17, 1.0).width;
+    text(
+        label,
+        rect.x + (rect.w - width) * 0.5,
+        rect.y + 31.,
+        17.,
+        WHITE,
+    );
+}
 pub(crate) fn game_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     let mut out = vec![];
     if hit(Rect::new(20., 20., 180., 50.), p) {
         out.push(UiAction::Cabinet)
     }
-    if hit(Rect::new(400., 390., 140., 48.), p) && state.games.game.can_undo() {
+    if hit(Rect::new(930., 300., 186., 48.), p) && state.games.game.can_undo() {
         out.push(UiAction::Undo)
     }
-    if hit(Rect::new(560., 390., 140., 48.), p) {
+    if hit(Rect::new(930., 420., 186., 48.), p) {
         out.push(UiAction::Restart)
     }
-    if hit(Rect::new(400., 450., 140., 48.), p) {
+    if hit(Rect::new(930., 360., 186., 48.), p) {
         out.push(UiAction::Game2048Hint)
     }
     for (index, board_size) in Game2048Size::ALL.iter().enumerate() {
-        if hit(Rect::new(400. + index as f32 * 155., 150., 145., 34.), p)
+        if hit(Rect::new(590. + index as f32 * 110., 64., 102., 34.), p)
             && state.games.game.board_size != *board_size
         {
             out.push(UiAction::Game2048Size(*board_size));
@@ -192,7 +169,15 @@ pub(crate) fn game_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         .iter()
         .enumerate()
         {
-            if hit(Rect::new(830. + i as f32 * 90., 615., 78., 46.), p) {
+            if hit(
+                Rect::new(
+                    930. + (i % 2) as f32 * 98.,
+                    166. + (i / 2) as f32 * 58.,
+                    88.,
+                    46.,
+                ),
+                p,
+            ) {
                 out.push(UiAction::Move(*d))
             }
         }

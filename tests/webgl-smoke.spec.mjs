@@ -139,10 +139,10 @@ test("the deployed WebGL game survives its shipping-browser contract", async ({ 
   await tapGame(page, 440, 150);
   await tapGame(page, 890, 626);
   const board = await canvasImage(page);
-  await tapGame(page, 630, 414);
+  await tapGame(page, 1020, 444);
   const confirmation = await canvasImage(page);
   expect(confirmation.equals(board)).toBe(false);
-  await tapGame(page, 455, 362);
+  await tapGame(page, 530, 384);
   const recovered = await canvasImage(page);
   expect(recovered.equals(board)).toBe(true);
 

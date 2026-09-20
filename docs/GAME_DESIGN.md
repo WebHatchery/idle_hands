@@ -192,6 +192,18 @@ version.
 The cabinet may filter its canonical order to ALL, OPEN, or DONE drawers for
 quick collection browsing; filtering never changes a drawer's state or place.
 
+### 5.1 Screen composition briefs
+
+These briefs keep the shared shell and each game phase aligned with the
+touch-first hierarchy described in `UI_STYLE.md`.
+
+| Phase | Current decision | Dominant focus | Primary action and support | Deferred information | Layout and input |
+| --- | --- | --- | --- | --- | --- |
+| Cabinet | Continue the last drawer or choose a new one | The continue drawer or the cabinet shelf | Continue/open, with availability and completion beside each drawer | Detailed rules, records, settings, and drawer inspection | The cabinet fills the viewport; portrait shelves scroll. Every launch, favorite, info, filter, and recovery action has a visible target. |
+| Puzzle/card play | Choose the next legal board move | The board, tableau, or current comparison | The move control or direct board gesture, with score, cost, legality, and undo nearby | Variant selection, tutorials, and detailed rules open from quiet controls | The play surface gets most of the screen at 1280×720 and stacks before shrinking at 320×568. Tap alternatives remain visible for swipe, drag, hold, and keyboard actions. |
+| Live arcade play | Act before the moving threat changes | The active field and affected object | Visible movement/fire/build controls, with pause and the immediate resource or consequence adjacent | Roster detail, extended statistics, and tutorial explanation remain on selection or Help | The field stays large enough to read motion at 1280×720, 568×320, and 320×568. Pause/resume and all essential actions are touch targets. |
+| 2048 | Choose a direction that improves the board | The numbered tile board | Swipe or one of four equal direction buttons; score, best, undo, and hint support the choice | Board size and restart confirmation are setup controls; the tutorial remains replayable from the visible TUTORIAL route | The board is centered and enlarged on desktop, remains the largest region on compact layouts, and shares coordinates between drawing, taps, and swipe handling. |
+
 ## 6. Progression and Retention
 
 The optional meta layer uses one plainly named collectible: stamps. Finishing

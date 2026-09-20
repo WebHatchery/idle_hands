@@ -10,13 +10,14 @@
 
 ## UI_STYLE review — 2026-09-20
 
-Audit/planning only; no game changes made. Preserve the two migration tasks above
-as separate work. No completed checkboxes existed in this file at audit time.
+The first board-composition task is complete and its verification captures are
+kept in `docs/verification/`. Preserve the two migration tasks above as
+separate work. The remaining UI tasks stay in dependency order below.
 Read AGENTS.md, UI_STYLE.md, CODE_STANDARDS.md, GAME_DEVELOPMENT_GUIDE.md,
 README.md, docs/GAME_DESIGN.md and docs/TECHNICAL_DESIGN.md; no project-local
 PROJECT_AGENTS.md was found. Apply UI_STYLE §§1–9 to the work below.
 
-Evidence: inspected current source for the cabinet, game routing, shared header,
+Evidence: inspected source for the cabinet, game routing, shared header,
 viewport/pointer conversion, 2048, Solitaire, Sudoku, Nonogram, Tower Defence,
 and word-game feedback. Visually inspected these existing files directly under
 docs/verification/ (historical evidence, not freshly rendered current builds):
@@ -31,26 +32,15 @@ was run. No publish run is needed for this TODO-only planning change.
 
 ### Verified findings — implementation order
 
-- [ ] **P1 — Establish board-first screen briefs and recompose 2048.**
-  Scope: docs/GAME_DESIGN.md screen briefs; src/ui/game_2048.rs::draw_2048,
-  responsive_ui.rs::draw_2048, responsive_landscape.rs::draw_2048 and their
-  click maps. The desktop board is only 360×380 within a 1280×720 layout,
-  pushed right of a permanent 300×160 instruction panel, size selectors and
-  scattered controls. The inspected capture confirms that instructions and
-  empty space weaken the board's dominance. Product principles exist, but
-  explicit decision/focus/action/support/defer/layout/input briefs are missing.
-  Record briefs for cabinet, puzzle/card play and live arcade play before
-  implementation. Enlarge and center the playable board in the available area;
-  group directions, score and Undo/Hint around it. Remove the permanent teaching
-  card and “Every move is touch-complete” copy; teach through the existing
-  dismissible tutorial and keep a visible Help route. Treat touch directions as
-  equally valid actions, not four differently ranked choices. Coordinate rule
-  selectors with the next task instead of creating another settings surface.
-  Acceptance: board is the immediate focus; normal play has at most 2–3 strong
-  attention regions; reclaimed space enlarges play rather than becoming blank.
-  Verify initial, full 5×5, large-value, hint, win/loss and restart states at
-  1280×720, 1024×768, 390×844, 320×568 and 568×320; exercise swipe and all four
-  visible direction controls, Undo, Help and restart cancellation by touch.
+The completed 2048 composition is documented in the screen briefs above. The
+desktop board now occupies 560×560 logical units with equal direction controls
+and nearby score/recovery actions; compact portrait and landscape layouts keep
+the board as the largest play region and preserve matching click maps. The
+permanent teaching card and repeated touch-complete copy were removed, while
+the replayable TUTORIAL control remains visible. Captures cover initial, hint,
+restart-confirmation, high-contrast/large-text, desktop, portrait, compact
+landscape, 320×568, 568×320, 844×390, and 1024×768 states. Physical iPhone/iPad
+Safari and Windows touch acceptance remain owner-controlled limitations.
 
 - [ ] **P1 — Consolidate game setup and separate it from play and navigation.**
   Depends on the screen briefs. Scope: src/game_render.rs::draw_time_badge,
