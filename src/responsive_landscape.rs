@@ -1,7 +1,7 @@
 //! Medium landscape layouts for short touch screens.
 
 use crate::domain::Direction;
-use crate::{game_2048::Game2048Size, palette_ui, state::AppState, ui::UiAction};
+use crate::{palette_ui, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
 pub const WIDTH: f32 = 844.;
@@ -27,18 +27,6 @@ pub fn draw_2048(state: &AppState) {
         12.,
         WHITE,
     );
-    for (index, board_size) in Game2048Size::ALL.iter().enumerate() {
-        let rect = Rect::new(380. + index as f32 * 100., 75., 90., 40.);
-        panel(
-            rect,
-            if *board_size == game.board_size {
-                crate::theme::LEATHER
-            } else {
-                crate::theme::GAME_PANEL
-            },
-        );
-        text(board_size.label(), rect.x + 18., rect.y + 26., 10., WHITE);
-    }
     let board = Rect::new(12., 65., 320., 320.);
     panel(board, crate::theme::GAME_PANEL);
     let dimension = game.board_size.dimension();
@@ -112,8 +100,6 @@ pub fn draw_2048(state: &AppState) {
     }
     panel(Rect::new(590., 145., 110., 46.), crate::theme::SURFACE_DARK);
     text("UNDO", 625., 174., 12., WHITE);
-    panel(Rect::new(715., 145., 115., 46.), crate::theme::SURFACE);
-    text("NEW GAME", 738., 174., 11., WHITE);
     panel(Rect::new(590., 205., 110., 46.), crate::theme::SURFACE_DARK);
     text("HINT", 625., 234., 12., WHITE);
     if let Some(hint) = state.card_hint.as_deref() {
@@ -151,18 +137,8 @@ pub fn game2048_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(Rect::new(590., 145., 110., 46.), p) && state.games.game.can_undo() {
         return vec![UiAction::Undo];
     }
-    if crate::ui::hit(Rect::new(715., 145., 115., 46.), p) {
-        return vec![UiAction::Restart];
-    }
     if crate::ui::hit(Rect::new(590., 205., 110., 46.), p) {
         return vec![UiAction::Game2048Hint];
-    }
-    for (index, board_size) in Game2048Size::ALL.iter().enumerate() {
-        if crate::ui::hit(Rect::new(380. + index as f32 * 100., 75., 90., 40.), p)
-            && state.games.game.board_size != *board_size
-        {
-            return vec![UiAction::Game2048Size(*board_size)];
-        }
     }
     for (index, direction) in [
         Direction::Up,

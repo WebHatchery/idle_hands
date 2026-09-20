@@ -48,6 +48,7 @@ pub enum UiAction {
     Game2048Size(crate::game_2048::Game2048Size),
     Undo,
     Restart,
+    ToggleGameSetup,
     CycleGameVariant,
     ConfirmRestart,
     Cancel,

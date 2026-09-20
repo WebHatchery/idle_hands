@@ -3,6 +3,11 @@ use super::*;
 impl Game {
     pub(super) fn apply_shell_group_10(&mut self, action: ui::UiAction) -> ShellActionResult {
         match action {
+            ui::UiAction::ToggleGameSetup => {
+                if self.state.screen.is_game() {
+                    self.state.game_setup_open = !self.state.game_setup_open;
+                }
+            }
             ui::UiAction::ConfirmRestart => {
                 if let Some(restart) = self.state.pending_restart.take() {
                     self.state.confirm_restart = false;
@@ -11,8 +16,11 @@ impl Game {
                     self.confirmation_bypass = false;
                     return ShellActionResult::Stop;
                 }
-                self.state.games.game =
-                    crate::state::Game2048::new(self.state.games.game.seed.wrapping_add(1));
+                let board_size = self.state.games.game.board_size;
+                self.state.games.game = crate::state::Game2048::new_with_size(
+                    self.state.games.game.seed.wrapping_add(1),
+                    board_size,
+                );
                 self.state.confirm_restart = false;
             }
             ui::UiAction::Cancel => {

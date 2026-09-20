@@ -29,10 +29,7 @@ fn portrait_solitaire_routes_every_primary_tap_target() {
         solitaire_clicks(&state, vec2(125., 665.)).as_slice(),
         [UiAction::SolitaireUndo]
     ));
-    assert!(matches!(
-        solitaire_clicks(&state, vec2(240., 665.)).as_slice(),
-        [UiAction::SolitaireNew]
-    ));
+    assert!(solitaire_clicks(&state, vec2(350., 750.)).is_empty());
 }
 
 #[test]

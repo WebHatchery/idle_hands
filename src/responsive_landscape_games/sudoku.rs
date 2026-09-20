@@ -1,10 +1,5 @@
 use super::{back, panel, text};
-use crate::{
-    accessibility,
-    state::AppState,
-    sudoku::{SudokuDifficulty, SudokuStatus},
-    ui::UiAction,
-};
+use crate::{accessibility, state::AppState, sudoku::SudokuStatus, ui::UiAction};
 use macroquad::prelude::*;
 
 const SUDOKU_BOARD: Rect = Rect {
@@ -86,18 +81,6 @@ pub fn draw_sudoku(state: &AppState) {
         14.,
         Color::new(0.63, 0.95, 0.72, 1.),
     );
-    for (index, difficulty) in SudokuDifficulty::ALL.iter().enumerate() {
-        let rect = Rect::new(400. + index as f32 * 120., 72., 112., 44.);
-        panel(
-            rect,
-            if *difficulty == game.difficulty {
-                Color::new(0.45, 0.25, 0.42, 1.)
-            } else {
-                Color::new(0.16, 0.11, 0.24, 1.)
-            },
-        );
-        text(difficulty.label(), rect.x + 17., rect.y + 29., 10., WHITE);
-    }
     for value in 1..=9 {
         let index = value - 1;
         let rect = Rect::new(
@@ -145,11 +128,6 @@ pub fn sudoku_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         let row = ((p.y - 28.) / 40.) as usize;
         if row < 9 && col < 9 {
             return vec![UiAction::SudokuCell(row * 9 + col)];
-        }
-    }
-    for (index, difficulty) in SudokuDifficulty::ALL.iter().enumerate() {
-        if crate::ui::hit(Rect::new(400. + index as f32 * 120., 72., 112., 44.), p) {
-            return vec![UiAction::SudokuDifficulty(*difficulty)];
         }
     }
     for value in 1..=9 {

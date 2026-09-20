@@ -42,7 +42,7 @@ restart-confirmation, high-contrast/large-text, desktop, portrait, compact
 landscape, 320×568, 568×320, 844×390, and 1024×768 states. Physical iPhone/iPad
 Safari and Windows touch acceptance remain owner-controlled limitations.
 
-- [ ] **P1 — Consolidate game setup and separate it from play and navigation.**
+- [x] **P1 — Consolidate game setup and separate it from play and navigation.**
   Depends on the screen briefs. Scope: src/game_render.rs::draw_time_badge,
   game_variant_ui.rs, variant_card_data.rs, ui.rs::draw/actions_at,
   tutorial_ui.rs, mobile_tutorial_ui.rs, and the 2048/Solitaire/Sudoku/Nonogram
@@ -61,6 +61,15 @@ Safari and Windows touch acceptance remain owner-controlled limitations.
   Verify default and long variant labels, large text/high contrast, and selected
   states at 1280×720, 320×568 and 568×320. Touch-test changing a variant, Cancel,
   confirmed restart, Help dismissal, Cabinet and Continue with session restored.
+  Implemented with the shared ROUND SETUP disclosure, option-specific restart
+  confirmation, relocated 2048/Solitaire/Sudoku/Nonogram setup controls, and
+  record/result-only personal-best time presentation. Fresh evidence is in
+  target/verification_setup_desktop/, target/verification_setup_portrait/,
+  target/verification_setup_landscape/ and target/verification_setup_accessible/;
+  the browser smoke path covers opening setup, changing board size, canceling,
+  canceling a new-board confirmation, and confirming a new board. Physical
+  device touch, Help dismissal, and restored-session Continue remain owner-
+  controlled limitations.
 
 - [ ] **P1 — Reflow minimum-size layouts and provide precise dense-board selection.**
   Depends on the space reclaimed above. Scope: src/ui.rs::layout_size/viewport/

@@ -45,18 +45,6 @@ pub fn draw_nonogram(state: &AppState) {
         18.,
         crate::theme::SECONDARY,
     );
-    for (index, preset) in crate::nonogram::NonogramPreset::ALL.iter().enumerate() {
-        let rect = Rect::new(830. + index as f32 * 115., 95., 105., 34.);
-        panel(
-            rect,
-            if *preset == game.preset {
-                crate::theme::LEATHER
-            } else {
-                crate::theme::GAME_PANEL
-            },
-        );
-        text(preset.label(), rect.x + 15., rect.y + 22., 14., WHITE);
-    }
     panel(
         DESKTOP_BOARD,
         accessibility::board_fill(state.high_contrast),
@@ -190,11 +178,6 @@ pub fn draw_nonogram(state: &AppState) {
 pub fn nonogram_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if Rect::new(20., 20., 180., 50.).contains(p) {
         return vec![UiAction::Cabinet];
-    }
-    for (index, preset) in crate::nonogram::NonogramPreset::ALL.iter().enumerate() {
-        if Rect::new(830. + index as f32 * 115., 95., 105., 34.).contains(p) {
-            return vec![UiAction::NonogramPreset(*preset)];
-        }
     }
     if Rect::new(850., 275., 180., 48.).contains(p) {
         return vec![UiAction::NonogramMode];

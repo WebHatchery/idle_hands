@@ -2,7 +2,7 @@ use super::{back, panel, text};
 use crate::{
     accessibility,
     grid::GridLayout,
-    nonogram::{NonogramMark, NonogramMode, NonogramPreset, NonogramStatus},
+    nonogram::{NonogramMark, NonogramMode, NonogramStatus},
     state::AppState,
     ui::UiAction,
 };
@@ -106,18 +106,6 @@ pub fn draw_nonogram(state: &AppState) {
         14.,
         Color::new(0.63, 0.95, 0.72, 1.),
     );
-    for (index, preset) in NonogramPreset::ALL.iter().enumerate() {
-        let rect = Rect::new(400. + index as f32 * 120., 75., 112., 44.);
-        panel(
-            rect,
-            if *preset == game.preset {
-                Color::new(0.45, 0.25, 0.42, 1.)
-            } else {
-                Color::new(0.16, 0.11, 0.24, 1.)
-            },
-        );
-        text(preset.label(), rect.x + 14., rect.y + 29., 10., WHITE);
-    }
     panel(
         Rect::new(400., 135., 160., 44.),
         if game.mode == NonogramMode::Fill {
@@ -199,11 +187,6 @@ fn nonogram_global_index(state: &AppState, local: usize) -> usize {
 pub fn nonogram_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(Rect::new(0., 0., 110., 44.), p) {
         return vec![UiAction::Cabinet];
-    }
-    for (index, preset) in NonogramPreset::ALL.iter().enumerate() {
-        if crate::ui::hit(Rect::new(400. + index as f32 * 120., 75., 112., 44.), p) {
-            return vec![UiAction::NonogramPreset(*preset)];
-        }
     }
     if crate::ui::hit(Rect::new(400., 135., 160., 44.), p) {
         return vec![UiAction::NonogramMode];

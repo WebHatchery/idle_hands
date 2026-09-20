@@ -54,13 +54,6 @@ pub fn draw_solitaire(state: &AppState) {
         12.,
         crate::theme::SECONDARY,
     );
-    text(
-        game.ruleset.label(),
-        260.,
-        32.,
-        10.,
-        Color::new(0.63, 0.95, 0.72, 1.),
-    );
     let stock = card_rect(10., 35., 75., 95.);
     panel(stock, crate::theme::SURFACE);
     if let Some(card) = game.stock.last() {
@@ -132,8 +125,6 @@ pub fn draw_solitaire(state: &AppState) {
         Color::new(0.18, 0.26, 0.34, 1.),
     );
     text("UNDO", 53., 359., 12., WHITE);
-    panel(Rect::new(150., 330., 145., 44.), crate::theme::SURFACE);
-    text("NEW DEAL", 193., 359., 12., WHITE);
     text(
         &format!("Moves {}", game.moves),
         330.,
@@ -167,9 +158,6 @@ pub fn solitaire_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     if crate::ui::hit(Rect::new(10., 330., 125., 44.), p) {
         return vec![UiAction::SolitaireUndo];
-    }
-    if crate::ui::hit(Rect::new(150., 330., 145., 44.), p) {
-        return vec![UiAction::SolitaireNew];
     }
     for column in 0..7 {
         let x = card_x(column);

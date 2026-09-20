@@ -7,7 +7,6 @@ use crate::domain::Direction;
 use crate::drawer_info_ui;
 use crate::favorites_ui;
 use crate::finder_ui;
-use crate::game_2048::Game2048Size;
 use crate::game_variant_ui;
 use crate::library_ui;
 use crate::lifecycle_pause_ui;
@@ -274,8 +273,13 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
             return vec![action];
         }
     }
+    if state.game_setup_open {
+        return game_variant_ui::setup_clicks(state, p)
+            .into_iter()
+            .collect();
+    }
     if game_variant_ui::clicks(state, p) {
-        return vec![UiAction::CycleGameVariant];
+        return vec![UiAction::ToggleGameSetup];
     }
     match state.screen {
         Screen::Cabinet if is_compact_landscape() => responsive_landscape_cabinet::clicks(state, p),

@@ -1,4 +1,4 @@
-use super::{hit, panel, text, Direction, Game2048Size};
+use super::{hit, panel, text, Direction};
 use crate::{palette_ui, state::AppState, ui_action::UiAction};
 use macroquad::prelude::*;
 
@@ -15,19 +15,6 @@ pub(crate) fn draw_2048(state: &AppState) {
     );
     score_box(Rect::new(320., 48., 112., 58.), "SCORE", g.score);
     score_box(Rect::new(444., 48., 112., 58.), "BEST", g.best);
-    text("BOARD", 590., 58., 12., crate::theme::BRASS);
-    for (index, board_size) in Game2048Size::ALL.iter().enumerate() {
-        let rect = Rect::new(590. + index as f32 * 110., 64., 102., 34.);
-        panel(
-            rect,
-            if *board_size == g.board_size {
-                crate::theme::LEATHER
-            } else {
-                crate::theme::GAME_PANEL
-            },
-        );
-        text(board_size.label(), rect.x + 24., rect.y + 22., 12., WHITE);
-    }
     let board = Rect::new(320., 120., 560., 560.);
     panel(board, crate::theme::GAME_PANEL);
     let dimension = g.board_size.dimension();
@@ -90,7 +77,6 @@ pub(crate) fn draw_2048(state: &AppState) {
     }
     action_button(Rect::new(930., 300., 186., 48.), "UNDO");
     action_button(Rect::new(930., 360., 186., 48.), "HINT");
-    action_button(Rect::new(930., 420., 186., 48.), "NEW GAME");
     if let Some(hint) = state.card_hint.as_deref() {
         text(hint, 930., 505., 14., Color::new(0.63, 0.95, 0.72, 1.));
     }
@@ -144,13 +130,6 @@ pub(crate) fn game_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     if hit(Rect::new(930., 360., 186., 48.), p) {
         out.push(UiAction::Game2048Hint)
-    }
-    for (index, board_size) in Game2048Size::ALL.iter().enumerate() {
-        if hit(Rect::new(590. + index as f32 * 110., 64., 102., 34.), p)
-            && state.games.game.board_size != *board_size
-        {
-            out.push(UiAction::Game2048Size(*board_size));
-        }
     }
     if state.confirm_restart {
         if hit(Rect::new(380., 340., 150., 44.), p) {

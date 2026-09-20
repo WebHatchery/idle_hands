@@ -134,17 +134,32 @@ test("the deployed WebGL game survives its shipping-browser contract", async ({ 
   ).toBe(true);
 
   // Enter 2048 entirely by touch, dismiss its exact visible tutorial control,
-  // and prove the visible NEW GAME / CANCEL recovery path restores the board.
+  // open round setup, and prove both option cancellation and new-board recovery.
   phase = "recovery";
   await tapGame(page, 440, 150);
   await tapGame(page, 890, 626);
   const board = await canvasImage(page);
-  await tapGame(page, 1020, 444);
-  const confirmation = await canvasImage(page);
-  expect(confirmation.equals(board)).toBe(false);
+  await tapGame(page, 998, 35);
+  const setup = await canvasImage(page);
+  expect(setup.equals(board)).toBe(false);
+  await tapGame(page, 740, 405);
+  const optionConfirmation = await canvasImage(page);
+  expect(optionConfirmation.equals(setup)).toBe(false);
   await tapGame(page, 530, 384);
-  const recovered = await canvasImage(page);
-  expect(recovered.equals(board)).toBe(true);
+  const cancelledSetup = await canvasImage(page);
+  expect(cancelledSetup.equals(optionConfirmation)).toBe(false);
+  await tapGame(page, 740, 315);
+  await tapGame(page, 998, 35);
+  await tapGame(page, 640, 482);
+  const newBoardConfirmation = await canvasImage(page);
+  expect(newBoardConfirmation.equals(board)).toBe(false);
+  await tapGame(page, 455, 362);
+  const cancelledNewBoard = await canvasImage(page);
+  expect(cancelledNewBoard.equals(newBoardConfirmation)).toBe(false);
+  await tapGame(page, 998, 35);
+  await tapGame(page, 640, 482);
+  await tapGame(page, 625, 362);
+  expect((await canvasImage(page)).equals(board)).toBe(false);
 
   // Resize to a phone-shaped viewport. The WebHatchery storefront supplies its
   // own fullscreen controls; the itch package intentionally ships only canvas.

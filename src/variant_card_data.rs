@@ -18,7 +18,7 @@ pub fn layout(width: f32, portrait: bool, compact_landscape: bool) -> CardLayout
     } else if compact_landscape {
         (Rect::new(width - 350., 5., 166., 34.), 14., 27., 9., 8.)
     } else {
-        (Rect::new(width - 370., 16., 176., 38.), 14., 27., 9., 9.)
+        (Rect::new(width - 390., 16., 176., 38.), 14., 27., 9., 9.)
     };
     let label_height = if portrait { 17. } else { 14. };
     CardLayout {

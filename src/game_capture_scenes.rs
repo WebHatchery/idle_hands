@@ -4,25 +4,37 @@ use crate::state::{GameId, Screen};
 
 pub(super) fn special_screen_for_scene(scene: &str) -> Screen {
     match scene {
-        "2048" | "2048_confirm" | "gameplay" | "2048_hint" | "2048_hint_accessible" => {
-            Screen::Game(GameId::Game2048)
-        }
+        "2048"
+        | "2048_confirm"
+        | "2048_setup"
+        | "2048_setup_accessible"
+        | "gameplay"
+        | "2048_hint"
+        | "2048_hint_accessible" => Screen::Game(GameId::Game2048),
         "minesweeper"
         | "minesweeper_accessible"
         | "minesweeper_hint"
         | "minesweeper_hint_accessible"
         | "minesweeper_confirm" => Screen::Game(GameId::Minesweeper),
-        "sudoku" | "sudoku_accessible" | "sudoku_hint" | "sudoku_hint_accessible" => {
-            Screen::Game(GameId::Sudoku)
-        }
+        "sudoku"
+        | "sudoku_setup"
+        | "sudoku_setup_accessible"
+        | "sudoku_accessible"
+        | "sudoku_hint"
+        | "sudoku_hint_accessible" => Screen::Game(GameId::Sudoku),
         "nonogram"
+        | "nonogram_setup"
+        | "nonogram_setup_accessible"
         | "nonogram_large"
         | "nonogram_accessible"
         | "nonogram_hint"
         | "nonogram_hint_accessible" => Screen::Game(GameId::Nonogram),
-        "solitaire" | "solitaire_hint" | "solitaire_selected" | "solitaire_peek" => {
-            Screen::Game(GameId::Solitaire)
-        }
+        "solitaire"
+        | "solitaire_setup"
+        | "solitaire_setup_accessible"
+        | "solitaire_hint"
+        | "solitaire_selected"
+        | "solitaire_peek" => Screen::Game(GameId::Solitaire),
         "freecell" | "freecell_hint" | "freecell_selected" => Screen::Game(GameId::FreeCell),
         "fivefold" | "fivefold_hint" | "fivefold_hint_accessible" => Screen::Game(GameId::Yahtzee),
         "reversi" | "reversi_hint" | "reversi_hint_accessible" => Screen::Game(GameId::Reversi),

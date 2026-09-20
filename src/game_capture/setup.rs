@@ -92,6 +92,19 @@ impl Game {
             self.state.confirm_restart = true;
             self.state.pending_restart = Some(crate::ui::UiAction::Restart);
         }
+        if matches!(
+            scene,
+            "2048_setup"
+                | "2048_setup_accessible"
+                | "sudoku_setup"
+                | "sudoku_setup_accessible"
+                | "nonogram_setup"
+                | "nonogram_setup_accessible"
+                | "solitaire_setup"
+                | "solitaire_setup_accessible"
+        ) {
+            self.state.game_setup_open = true;
+        }
         if scene == "nonogram_large" {
             self.state.games.nonogram =
                 crate::nonogram::Nonogram::new(crate::nonogram::NonogramPreset::Large);

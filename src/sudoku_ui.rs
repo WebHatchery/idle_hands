@@ -174,18 +174,6 @@ pub fn draw_sudoku(state: &AppState) {
         15.,
         Color::new(0.63, 0.58, 0.72, 1.),
     );
-    for (index, difficulty) in crate::sudoku::SudokuDifficulty::ALL.iter().enumerate() {
-        let rect = Rect::new(850. + index as f32 * 110., 105., 100., 32.);
-        panel(
-            rect,
-            if *difficulty == game.difficulty {
-                crate::theme::LEATHER
-            } else {
-                crate::theme::GAME_PANEL
-            },
-        );
-        text(difficulty.label(), rect.x + 14., rect.y + 21., 12., WHITE);
-    }
 }
 
 pub fn sudoku_clicks(_state: &AppState, p: Vec2) -> Vec<UiAction> {
@@ -202,11 +190,6 @@ pub fn sudoku_clicks(_state: &AppState, p: Vec2) -> Vec<UiAction> {
         let row = (number - 1) / 3;
         if Rect::new(850. + col as f32 * 78., 260. + row as f32 * 62., 66., 50.).contains(p) {
             return vec![UiAction::SudokuNumber(number as u8)];
-        }
-    }
-    for (index, difficulty) in crate::sudoku::SudokuDifficulty::ALL.iter().enumerate() {
-        if Rect::new(850. + index as f32 * 110., 105., 100., 32.).contains(p) {
-            return vec![UiAction::SudokuDifficulty(*difficulty)];
         }
     }
     if Rect::new(850., 465., 210., 48.).contains(p) {

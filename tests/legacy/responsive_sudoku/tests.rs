@@ -3,15 +3,8 @@
 use super::*;
 
 #[test]
-fn portrait_difficulty_row_stays_below_the_rule_card() {
-    let rule_card_right = 220.;
-
-    for index in 0..3 {
-        let difficulty = portrait_difficulty_rect(index);
-        assert!(difficulty.right() <= rule_card_right);
-        assert!(difficulty.y >= 100.);
-    }
-    assert!(portrait_board().y > portrait_difficulty_rect(0).bottom() + 8.);
+fn portrait_board_stays_below_the_shared_header() {
+    assert!(portrait_board().y >= 120.);
 }
 
 #[test]

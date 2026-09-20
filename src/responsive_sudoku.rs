@@ -23,18 +23,6 @@ pub fn draw(state: &AppState) {
     panel(Rect::new(0., 0., 110., 44.), crate::theme::SURFACE_DARK);
     text("‹ CABINET", 10., 29., 14., crate::theme::BRASS);
     text("SUDOKU", 12., 78., 34., crate::theme::BRASS);
-    for (index, difficulty) in crate::sudoku::SudokuDifficulty::ALL.iter().enumerate() {
-        let rect = portrait_difficulty_rect(index);
-        panel(
-            rect,
-            if *difficulty == game.difficulty {
-                crate::theme::LEATHER
-            } else {
-                Color::new(0.16, 0.11, 0.24, 1.)
-            },
-        );
-        text(difficulty.label(), rect.x + 8., rect.y + 28., 10., WHITE);
-    }
     let board = portrait_board();
     panel(board, crate::accessibility::board_fill(state.high_contrast));
     let cell = portrait_cell();
@@ -162,11 +150,6 @@ pub fn clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
             return vec![UiAction::SudokuCell(row * 9 + col)];
         }
     }
-    for (index, difficulty) in crate::sudoku::SudokuDifficulty::ALL.iter().enumerate() {
-        if crate::ui::hit(portrait_difficulty_rect(index), p) {
-            return vec![UiAction::SudokuDifficulty(*difficulty)];
-        }
-    }
     for number in 1..=9 {
         let col = (number - 1) % 3;
         let row = (number - 1) / 3;
@@ -188,10 +171,6 @@ pub fn clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     let _ = state;
     vec![]
-}
-
-fn portrait_difficulty_rect(index: usize) -> Rect {
-    Rect::new(12. + index as f32 * 68., 100., 62., 44.)
 }
 
 fn portrait_board() -> Rect {

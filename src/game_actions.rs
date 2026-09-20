@@ -47,6 +47,7 @@ pub fn is_shell(action: UiAction) -> bool {
             | UiAction::Save
             | UiAction::Load
             | UiAction::Restart
+            | UiAction::ToggleGameSetup
             | UiAction::ConfirmRestart
             | UiAction::Cancel
             | UiAction::ToggleSound
