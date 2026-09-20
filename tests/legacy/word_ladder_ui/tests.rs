@@ -17,3 +17,14 @@ fn portrait_word_ladder_controls_stay_inside_the_logical_width() {
         assert!(layout.new_game.right() < layout.mode.x);
     });
 }
+
+#[test]
+fn partial_word_input_replaces_stale_validation_feedback() {
+    let mut game = WordLadder::new(0);
+    game.message = "That word is not in the dictionary".into();
+    game.current = "AB".into();
+
+    let feedback = contextual_message(&game);
+    assert!(feedback.starts_with("INPUT 2/5  ·  "));
+    assert!(!feedback.contains("not in the dictionary"));
+}

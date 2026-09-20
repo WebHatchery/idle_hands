@@ -283,6 +283,8 @@ fn nim_tactics(state: &mut AppState) {
     game.moves = 3;
     game.last_player_take = 1;
     game.last_ai_take = 2;
+    game.last_player_heap = Some(1);
+    game.last_ai_heap = Some(2);
 }
 
 fn word_ladder_routes(state: &mut AppState) {

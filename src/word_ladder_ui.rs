@@ -4,7 +4,7 @@ use crate::{
     accessibility,
     state::AppState,
     ui::UiAction,
-    word_ladder::{LadderMode, WordLadder, WordLadderPhase},
+    word_ladder::{LadderMode, WordLadder, WordLadderPhase, WORD_LENGTH},
 };
 use macroquad::prelude::*;
 
@@ -220,8 +220,13 @@ pub fn draw(state: &AppState) {
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW LADDER", state.large_text);
     mode_button(l.mode, game.mode.label(), state.large_text);
+    let feedback = state
+        .card_hint
+        .as_deref()
+        .map(str::to_owned)
+        .unwrap_or_else(|| contextual_message(game));
     crate::ui::draw_text(
-        state.card_hint.as_deref().unwrap_or(&game.message),
+        &feedback,
         if compact { 40. } else { title_x },
         if compact {
             275.
@@ -233,6 +238,18 @@ pub fn draw(state: &AppState) {
         accessibility::text_size(15., state.large_text),
         muted(),
     );
+}
+
+fn contextual_message(game: &WordLadder) -> String {
+    if game.current.is_empty() || game.current.len() == WORD_LENGTH {
+        return game.message.clone();
+    }
+    format!(
+        "INPUT {}/{}  ·  {} legal next",
+        game.current.len(),
+        WORD_LENGTH,
+        game.legal_step_count()
+    )
 }
 
 fn title_size(compact: bool, portrait: bool) -> f32 {

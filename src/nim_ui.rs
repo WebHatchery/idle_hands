@@ -203,6 +203,25 @@ pub fn draw(state: &AppState) {
             accent(),
             state.large_text,
         );
+        if game.last_player_heap == Some(index) {
+            text(
+                &format!("YOU -{}", game.last_player_take),
+                rect.x + 12.,
+                rect.y + rect.h - 18.,
+                10.,
+                crate::theme::CREAM,
+                state.large_text,
+            );
+        } else if game.last_ai_heap == Some(index) {
+            text(
+                &format!("CABINET -{}", game.last_ai_take),
+                rect.x + 12.,
+                rect.y + rect.h - 18.,
+                10.,
+                crate::theme::CREAM,
+                state.large_text,
+            );
+        }
     }
     for amount in 0..3 {
         let preview = game
@@ -227,29 +246,42 @@ pub fn draw(state: &AppState) {
         .card_hint
         .as_deref()
         .unwrap_or_else(|| instruction(game.status, game.rule));
-    let turn_note = if portrait() && game.last_player_take > 0 {
+    let history = if game.last_player_take > 0 && game.last_ai_take > 0 {
         format!(
-            "M{} • YOU {} / CPU {} • SAFE = forced win",
-            game.moves, game.last_player_take, game.last_ai_take
+            "LAST TURN  ·  YOU -{}  ·  CABINET -{}",
+            game.last_player_take, game.last_ai_take
         )
     } else if game.last_player_take > 0 {
-        format!(
-            "Moves {}  •  Last YOU {} / CABINET {}  •  {}",
-            game.moves, game.last_player_take, game.last_ai_take, detail
-        )
+        format!("LAST TURN  ·  YOU -{}", game.last_player_take)
     } else {
-        format!("Moves {}  •  {}", game.moves, detail)
+        format!("MOVES {}", game.moves)
+    };
+    let history_y = if portrait() {
+        605.
+    } else if compact() {
+        82.
+    } else {
+        566.
+    };
+    let detail_y = if portrait() {
+        625.
+    } else if compact() {
+        99.
+    } else {
+        590.
     };
     text(
-        &turn_note,
+        &history,
         if portrait() || compact() { 12. } else { 30. },
-        if portrait() {
-            625.
-        } else if compact() {
-            98.
-        } else {
-            590.
-        },
+        history_y,
+        12.,
+        muted(),
+        state.large_text,
+    );
+    text(
+        &format!("MOVES {}  ·  {}", game.moves, detail),
+        if portrait() || compact() { 12. } else { 30. },
+        detail_y,
         12.,
         muted(),
         state.large_text,

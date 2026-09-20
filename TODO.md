@@ -179,7 +179,7 @@ Safari and Windows touch acceptance remain owner-controlled limitations.
   home and the utility routing; locked-drawer interaction was verified from the
   existing demo capture rather than the full-build browser.
 
-- [ ] **P2 — Replace persistent event prose with contextual feedback.**
+- [x] **P2 — Replace persistent event prose with contextual feedback.**
   Scope: src/word_ladder.rs::submit/tap_letter/backspace, word_ladder_ui.rs::draw,
   nim_ui.rs::draw, and shared notification/hint presentation. Source confirms
   Word Ladder stores “Good step — keep climbing” and validation errors in one
@@ -198,6 +198,18 @@ Safari and Windows touch acceptance remain owner-controlled limitations.
   Verify Word Ladder invalid/edit/valid/waypoint/win/undo and Nim player/AI/undo/
   end states at 1280×720, 320×568 and 568×320, including reduced motion. Touch
   open/dismiss history and Help and confirm the next decision stays understandable.
+  Verified: Word Ladder now replaces stale validation prose with live partial
+  input guidance while preserving full-input errors and accepted-step/result
+  feedback. Nim separates the persistent rule instruction from last-turn
+  history, and annotates the heaps affected by the player and cabinet removals;
+  selecting a new heap clears the old turn annotation. Evidence:
+  ui_*word_ladder_{progress,routes}.png and ui_*nim_{tactics,hint}.png across
+  1280×720, 320×568 and 568×320, with existing result/undo/accessible captures
+  retained. Rust tests (460 plus integration suites) passed. The capture review
+  covered accepted progress, partial input, hint, last-turn, and compact
+  touch-layout states; reduced-motion behavior has no task-specific animation
+  path and was not separately captured. Physical-device touch was unavailable,
+  and a dedicated browser path for every Word Ladder/Nim route was not run.
 
 ### Further inspection — not established defects
 

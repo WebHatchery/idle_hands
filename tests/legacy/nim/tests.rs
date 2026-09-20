@@ -10,6 +10,7 @@ fn misere_rule_makes_the_final_take_lose() {
     game.select_heap(2);
     assert!(game.take(1));
     assert_eq!(game.status, NimStatus::Lost);
+    assert_eq!(game.last_player_heap, Some(2));
 }
 
 #[test]
@@ -57,4 +58,6 @@ fn taking_the_last_heap_wins_before_the_opponent_moves() {
     game.select_heap(2);
     assert!(game.take(1));
     assert_eq!(game.status, NimStatus::Won);
+    assert_eq!(game.last_player_heap, Some(2));
+    assert_eq!(game.last_ai_heap, None);
 }

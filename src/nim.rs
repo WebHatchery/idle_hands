@@ -40,6 +40,10 @@ pub struct Nim {
     pub last_player_take: u8,
     #[serde(default)]
     pub last_ai_take: u8,
+    #[serde(default)]
+    pub last_player_heap: Option<usize>,
+    #[serde(default)]
+    pub last_ai_heap: Option<usize>,
     pub status: NimStatus,
     #[serde(skip)]
     history: Vec<Snapshot>,
@@ -61,6 +65,8 @@ impl Nim {
             rule: NimRule::Normal,
             last_player_take: 0,
             last_ai_take: 0,
+            last_player_heap: None,
+            last_ai_heap: None,
             status: NimStatus::Playing,
             history: Vec::new(),
         };
@@ -79,6 +85,8 @@ impl Nim {
         self.moves = 0;
         self.last_player_take = 0;
         self.last_ai_take = 0;
+        self.last_player_heap = None;
+        self.last_ai_heap = None;
         self.status = NimStatus::Playing;
         self.history.clear();
     }
@@ -91,6 +99,10 @@ impl Nim {
     pub fn select_heap(&mut self, heap: usize) {
         if self.status == NimStatus::Playing && heap < self.heaps.len() && self.heaps[heap] > 0 {
             self.selected_heap = Some(heap);
+            self.last_player_take = 0;
+            self.last_ai_take = 0;
+            self.last_player_heap = None;
+            self.last_ai_heap = None;
         }
     }
 
@@ -109,6 +121,8 @@ impl Nim {
         self.heaps[heap] -= amount;
         self.last_player_take = amount;
         self.last_ai_take = 0;
+        self.last_player_heap = Some(heap);
+        self.last_ai_heap = None;
         self.selected_heap = None;
         self.moves = self.moves.saturating_add(1);
         if self.heaps == [0; 3] {
@@ -130,6 +144,8 @@ impl Nim {
             self.selected_heap = None;
             self.last_player_take = 0;
             self.last_ai_take = 0;
+            self.last_player_heap = None;
+            self.last_ai_heap = None;
             true
         } else {
             false
@@ -173,6 +189,7 @@ impl Nim {
         if amount > 0 {
             self.heaps[heap] -= amount;
             self.last_ai_take = amount;
+            self.last_ai_heap = Some(heap);
         }
         if self.heaps == [0; 3] {
             self.status = match self.rule {
