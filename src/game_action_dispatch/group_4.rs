@@ -3,6 +3,12 @@ use super::*;
 impl Game {
     pub(super) fn apply_shell_group_4(&mut self, action: ui::UiAction) -> ShellActionResult {
         match action {
+            ui::UiAction::SudokuFocus => {
+                if self.state.games.sudoku.selected.is_none() {
+                    self.state.games.sudoku.selected = Some(40);
+                }
+                self.state.sudoku_focus_open = !self.state.sudoku_focus_open;
+            }
             ui::UiAction::SudokuErase => {
                 if let Some(index) = self.state.games.sudoku.selected {
                     self.state.games.sudoku.erase(index);
@@ -30,6 +36,28 @@ impl Game {
             }
             ui::UiAction::NonogramHint => {
                 self.state.card_hint = Some(card_hints::nonogram(&self.state));
+            }
+            ui::UiAction::NonogramFocusMove(delta_row, delta_col) => {
+                let size = self.state.games.nonogram.size;
+                let selected = self
+                    .state
+                    .games
+                    .nonogram
+                    .selected
+                    .unwrap_or((size / 2) * size + size / 2);
+                let row = (selected / size) as isize;
+                let col = (selected % size) as isize;
+                let next_row = (row + delta_row as isize).clamp(0, size as isize - 1) as usize;
+                let next_col = (col + delta_col as isize).clamp(0, size as isize - 1) as usize;
+                self.state.games.nonogram.selected = Some(next_row * size + next_col);
+            }
+            ui::UiAction::NonogramFocus => {
+                if self.state.games.nonogram.selected.is_none() {
+                    let center = self.state.games.nonogram.size / 2;
+                    self.state.games.nonogram.selected =
+                        Some(center * self.state.games.nonogram.size + center);
+                }
+                self.state.nonogram_focus_open = !self.state.nonogram_focus_open;
             }
             ui::UiAction::NonogramUndo => {
                 self.state.games.nonogram.undo();

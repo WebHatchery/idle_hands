@@ -278,6 +278,12 @@ pub fn actions_at(state: &AppState, p: Vec2) -> Vec<UiAction> {
             .into_iter()
             .collect();
     }
+    if crate::dense_focus_ui::is_open(state) {
+        return crate::dense_focus_ui::clicks(state, p);
+    }
+    if let Some(action) = crate::dense_focus_ui::entry_action(state, p) {
+        return vec![action];
+    }
     if game_variant_ui::clicks(state, p) {
         return vec![UiAction::ToggleGameSetup];
     }

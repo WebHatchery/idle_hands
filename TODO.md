@@ -71,7 +71,7 @@ Safari and Windows touch acceptance remain owner-controlled limitations.
   device touch, Help dismissal, and restored-session Continue remain owner-
   controlled limitations.
 
-- [ ] **P1 — Reflow minimum-size layouts and provide precise dense-board selection.**
+- [x] **P1 — Reflow minimum-size layouts and provide precise dense-board selection.**
   Depends on the space reclaimed above. Scope: src/ui.rs::layout_size/viewport/
   readable_text_size_for_scale/hit, responsive_sudoku.rs::portrait_board/
   portrait_cell/clicks, responsive_puzzles.rs Nonogram grid/focus controls,
@@ -92,6 +92,20 @@ Safari and Windows touch acceptance remain owner-controlled limitations.
   large text and multiple device pixel ratios. Touch-select neighboring Sudoku
   cells, enter/erase notes, fill/cross and pan all corners of a 15×15 Nonogram,
   undo, resize/rotate and repeat. Do not claim success from geometry tests alone.
+  Implemented with the visible FOCUS CELLS / FOCUS CELL routes in
+  src/dense_focus_ui.rs. Sudoku gets a magnified 3×3 neighborhood, number pad,
+  pencil, erase, undo and DONE controls; Nonogram gets the same magnified
+  neighborhood plus explicit LEFT/RIGHT/UP/DOWN focus navigation, fill/cross,
+  hint, undo and DONE controls. The whole-board/clue views remain the default,
+  and focus state is cleared on Escape, game changes and new rounds.
+  Fresh evidence is in docs/verification/ui_*_focus*.png and the seven-size
+  matrix files for both dense games. The deployed browser touch regression in
+  tests/dense-focus-smoke.spec.mjs selects a neighboring Sudoku cell, enters a
+  number, pans Nonogram without marking intermediate cells, marks a cell and
+  returns to each full-board view. Physical iPhone/iPad Safari and Windows
+  touch acceptance remain owner-controlled limitations; Chromium touch
+  emulation and the native capture matrix do not certify every device pixel
+  ratio.
 
 - [ ] **P1 — Show Tower Defence costs and consequences before spending gold.**
   Scope: src/tiny_tower_defence_ui.rs::draw/kind_button/clicks,

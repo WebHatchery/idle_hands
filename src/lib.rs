@@ -43,6 +43,7 @@ mod daily_challenge;
 mod daily_dungeon;
 mod daily_dungeon_ui;
 mod data;
+mod dense_focus_ui;
 mod domain;
 mod dots_boxes;
 mod dots_boxes_ui;

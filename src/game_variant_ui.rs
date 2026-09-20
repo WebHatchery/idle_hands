@@ -50,6 +50,9 @@ pub fn draw(state: &AppState) {
     let Screen::Game(game) = state.screen else {
         return;
     };
+    if crate::dense_focus_ui::is_open(state) {
+        return;
+    }
     let rect = button_rect();
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();

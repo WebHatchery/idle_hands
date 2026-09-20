@@ -233,5 +233,7 @@ pub fn draw(state: &AppState, frogger_frog: Option<&Texture2D>, frogger_car: Opt
         | Screen::Game(GameId::WordForge) => crate::misc_ui::draw(state),
         _ => {}
     }
+    crate::dense_focus_ui::draw_entry_controls(state);
+    crate::dense_focus_ui::draw(state);
     crate::game_result_ui::draw(state);
 }

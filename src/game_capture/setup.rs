@@ -105,6 +105,16 @@ impl Game {
         ) {
             self.state.game_setup_open = true;
         }
+        if matches!(scene, "sudoku_focus" | "sudoku_focus_accessible") {
+            self.state.games.sudoku.selected = Some(40);
+            self.state.sudoku_focus_open = true;
+        }
+        if matches!(scene, "nonogram_focus" | "nonogram_focus_accessible") {
+            let center = self.state.games.nonogram.size / 2;
+            self.state.games.nonogram.selected =
+                Some(center * self.state.games.nonogram.size + center);
+            self.state.nonogram_focus_open = true;
+        }
         if scene == "nonogram_large" {
             self.state.games.nonogram =
                 crate::nonogram::Nonogram::new(crate::nonogram::NonogramPreset::Large);

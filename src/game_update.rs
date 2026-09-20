@@ -137,6 +137,8 @@ impl Game {
             self.state.confirm_restart = false;
             self.state.pending_restart = None;
             self.state.game_setup_open = false;
+            self.state.sudoku_focus_open = false;
+            self.state.nonogram_focus_open = false;
             self.state.confirm_reset = false;
             self.state.tutorial = None;
             if !self.state.reduced_motion {

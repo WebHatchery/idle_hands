@@ -46,6 +46,8 @@ impl Game {
         if action.starts_new_round() {
             self.reset_elapsed();
             self.state.game_setup_open = false;
+            self.state.sudoku_focus_open = false;
+            self.state.nonogram_focus_open = false;
         }
         if self.state.screen != previous_screen {
             self.transition = if self.state.reduced_motion { 0. } else { 1. };
