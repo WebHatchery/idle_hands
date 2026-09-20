@@ -33,10 +33,6 @@ pub fn visible_games(state: &AppState) -> Vec<GameId> {
     )
 }
 
-pub fn favorite_count(state: &AppState) -> usize {
-    state.favorites.iter().filter(|favorite| **favorite).count()
-}
-
 pub fn category_initial(filter: u8) -> &'static str {
     match filter {
         3 => "C",

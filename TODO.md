@@ -140,7 +140,7 @@ Safari and Windows touch acceptance remain owner-controlled limitations.
   every tower kind and every listed wave-control gesture was not separately
   automated.
 
-- [ ] **P2 — Simplify the cabinet into a clear resume-or-browse decision.**
+- [x] **P2 — Simplify the cabinet into a clear resume-or-browse decision.**
   Scope: src/cabinet_ui.rs::draw_sidebar/recent_games, cabinet_ui/home.rs::draw_home,
   cabinet_ui/library.rs, responsive_cabinet.rs and responsive_landscape_cabinet.rs.
   The desktop capture shows Continue, Favorites/Recent counts, Daily, six category
@@ -160,6 +160,24 @@ Safari and Windows touch acceptance remain owner-controlled limitations.
   Verify new/returning profiles, populated/empty favorites and history, filtered
   empty shelves and demo-locked drawers at 1280×720, 320×568 and 568×320. Touch
   Continue, browse/page, favorite, inspect, open a locked drawer and return home.
+  Verified: home now gives Continue and Browse by category the visual priority;
+  desktop utilities stay in the sidebar, while portrait and compact landscape
+  retain quiet Recent and Daily routes without count cards. Empty history no
+  longer invents starter games, populated history remains a truthful strip,
+  progress/stamp/texture counters leave the home surface for Records, and
+  redundant PLAY/EXPLORE prompts are gone from obvious cards. Finder, favorites,
+  INFO, availability labels, filters, Help, Settings and recovery routes remain
+  available. Evidence: ui_cabinet*.png, ui_portrait_cabinet*.png,
+  ui_landscape_cabinet*.png, ui_favorites_all_*.png, ui_recent_browse_*.png,
+  ui_demo_cabinet.png. Rust tests (459 plus integration suites), cabinet touch
+  regression, and publish passed. Visual coverage includes 1280×720, 320×568
+  and 568×320; the browser wrapper kept its canvas in a 16:9 host box during
+  resize, so portrait touch was verified through the direct portrait-layout
+  regression and the 320×568 capture rather than claimed as browser-device
+  interaction. Physical iPhone/iPad/Windows touch was not available. The
+  browser touch pass covered Continue, browse/page, favorite, inspect, return
+  home and the utility routing; locked-drawer interaction was verified from the
+  existing demo capture rather than the full-build browser.
 
 - [ ] **P2 — Replace persistent event prose with contextual feedback.**
   Scope: src/word_ladder.rs::submit/tap_letter/backspace, word_ladder_ui.rs::draw,

@@ -9,7 +9,7 @@ use macroquad::prelude::*;
 
 const SIDEBAR_W: f32 = 220.;
 const MAIN: Rect = Rect::new(230., 10., 1040., 700.);
-const CONTINUE: Rect = Rect::new(260., 92., 365., 118.);
+const CONTINUE: Rect = Rect::new(260., 92., 912., 118.);
 const CATEGORY_RECTS: [Rect; 6] = [
     Rect::new(260., 252., 292., 132.),
     Rect::new(570., 252., 292., 132.),
@@ -124,23 +124,12 @@ fn draw_sidebar(state: &AppState) {
         );
     }
     panel(
-        Rect::new(18., 606., 184., 76.),
+        Rect::new(18., 618., 184., 58.),
         crate::theme::SURFACE_DARK,
         crate::theme::BORDER,
     );
     let profile_name = crate::profile_data::display_name(&state.profile_name);
-    text(&profile_name, 34., 636., 13., crate::theme::CREAM);
-    let summary = crate::collection_summary::from_state(state);
-    text(
-        &format!(
-            "{} stamps · {}/{} goals",
-            summary.stamps, summary.earned_achievements, summary.total_achievements
-        ),
-        34.,
-        659.,
-        10.,
-        crate::theme::SECONDARY,
-    );
+    text(&profile_name, 34., 650., 13., crate::theme::CREAM);
 }
 
 fn category_card(state: &AppState, rect: Rect, filter: u8) {
@@ -217,40 +206,12 @@ fn category_card(state: &AppState, rect: Rect, filter: u8) {
     crate::mascots::draw_for_filter(filter, vec2(rect.right() - 43., rect.y + 66.), 0.95);
 }
 
-fn stat_card(rect: Rect, label: &str, count: usize, unit: &str) {
-    panel(rect, crate::theme::PAPER_LIGHT, crate::theme::BORDER);
-    text(
-        label,
-        rect.x + 15.,
-        rect.y + 28.,
-        11.,
-        crate::theme::SURFACE_DARK,
-    );
-    text(
-        &count.to_string(),
-        rect.x + 54.,
-        rect.y + 70.,
-        25.,
-        crate::theme::INK,
-    );
-    text(unit, rect.x + 55., rect.y + 91., 10., crate::theme::SURFACE);
-}
-
 fn home_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(Rect::new(1030., 28., 92., 48.), p) {
         return vec![UiAction::Finder];
     }
     if crate::ui::hit(CONTINUE, p) {
         return vec![UiAction::ContinueGame];
-    }
-    if crate::ui::hit(Rect::new(645., 92., 145., 118.), p) {
-        return vec![UiAction::Favorites];
-    }
-    if crate::ui::hit(Rect::new(805., 92., 145., 118.), p) {
-        return vec![UiAction::Recent];
-    }
-    if crate::ui::hit(Rect::new(965., 92., 207., 118.), p) {
-        return vec![UiAction::Open(GameId::DailyDungeon.index())];
     }
     for (index, rect) in CATEGORY_RECTS.iter().copied().enumerate() {
         if crate::ui::hit(rect, p) {
@@ -310,11 +271,7 @@ fn library_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
 }
 
 fn recent_games(state: &AppState) -> Vec<GameId> {
-    if state.recent_games.is_empty() {
-        GameId::ALL[..7].to_vec()
-    } else {
-        state.recent_games.clone()
-    }
+    state.recent_games.clone()
 }
 fn recent_rect(index: usize) -> Rect {
     Rect::new(260. + index as f32 * 137., 576., 126., 58.)

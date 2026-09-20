@@ -29,17 +29,6 @@ pub fn from_state(state: &AppState) -> CollectionSummary {
 }
 
 impl CollectionSummary {
-    pub fn drawers_label(self) -> String {
-        format!("{}/{} drawers", self.completed_games, self.total_games)
-    }
-
-    pub fn achievements_label(self) -> String {
-        format!(
-            "{}/{} achievements",
-            self.earned_achievements, self.total_achievements
-        )
-    }
-
     pub fn progress_label(self) -> String {
         format!(
             "Drawers {}/{}  ·  Achievements {}/{}  ·  Stamps {}",

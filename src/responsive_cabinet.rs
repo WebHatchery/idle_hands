@@ -24,7 +24,7 @@ mod tests;
 pub fn draw(
     state: &AppState,
     _data: &GameData,
-    loaded: usize,
+    _loaded: usize,
     cabinet_texture: Option<&Texture2D>,
 ) {
     draw_rectangle(3., 3., 354., 774., crate::theme::BACKGROUND_DEEP);
@@ -42,7 +42,7 @@ pub fn draw(
         );
     }
     if state.cabinet_filter == 0 {
-        draw_home(state, loaded);
+        draw_home(state, _loaded);
     } else {
         draw_library(state);
     }
@@ -73,7 +73,7 @@ pub fn clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
 }
 
-fn draw_home(state: &AppState, loaded: usize) {
+fn draw_home(state: &AppState, _loaded: usize) {
     text("IDLE HANDS", 77., 35., 23., crate::theme::CREAM);
     if let Some(badge) = crate::storefront::build_badge() {
         text(&badge, 236., 35., 8., crate::theme::BRASS);
@@ -137,53 +137,15 @@ fn draw_home(state: &AppState, loaded: usize) {
         crate::accessibility::text_size(10., state.large_text),
         crate::theme::CREAM,
     );
-    stat(
-        Rect::new(10., 172., 105., 68.),
-        "FAVORITES",
-        crate::cabinet_data::favorite_count(state),
+    utility_link(Rect::new(10., 178., 105., 54.), "RECENT", "OPEN LAST GAMES");
+    let daily_detail = crate::daily_challenge::preview_action(
+        state.games.daily_dungeon.phase,
+        state.records.daily_score(state.games.daily_dungeon.day_key),
     );
-    stat(
-        Rect::new(122., 172., 105., 68.),
-        "RECENT",
-        state.recent_games.len(),
-    );
-    panel(Rect::new(234., 172., 116., 68.), crate::theme::SURFACE_DARK);
-    text(
-        &crate::daily_challenge::label(
-            state.games.daily_dungeon.day_key,
-            state.games.daily_dungeon.challenge,
-        ),
-        246.,
-        194.,
-        9.,
-        crate::theme::BRASS,
-    );
-    text(
-        &crate::daily_challenge::preview_action(
-            state.games.daily_dungeon.phase,
-            state.records.daily_score(state.games.daily_dungeon.day_key),
-        ),
-        246.,
-        220.,
-        10.,
-        crate::theme::CREAM,
-    );
+    utility_link(Rect::new(122., 178., 116., 54.), "DAILY", &daily_detail);
     for (index, filter) in cabinet_status::CATEGORY_FILTERS.iter().copied().enumerate() {
         category_row(state, CATEGORY_RECTS[index], filter);
     }
-    let summary = crate::collection_summary::from_state(state);
-    text(
-        &format!(
-            "{}  ·  {} stamps  ·  {} textures",
-            summary.drawers_label(),
-            summary.stamps,
-            loaded
-        ),
-        12.,
-        680.,
-        9.,
-        crate::theme::SECONDARY,
-    );
 }
 
 fn draw_library(state: &AppState) {
@@ -259,13 +221,6 @@ fn draw_library(state: &AppState) {
             } else {
                 crate::theme::BRASS
             },
-        );
-        text(
-            "PLAY  >",
-            rect.x + 9.,
-            rect.y + 60.,
-            9.,
-            crate::theme::BRASS,
         );
         if cabinet_status::is_available(game) {
             let fav = state.favorites.get(game.index()).copied().unwrap_or(false);
@@ -417,13 +372,10 @@ fn home_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(CONTINUE, p) {
         return vec![UiAction::ContinueGame];
     }
-    if crate::ui::hit(Rect::new(10., 172., 105., 68.), p) {
-        return vec![UiAction::Favorites];
-    }
-    if crate::ui::hit(Rect::new(122., 172., 105., 68.), p) {
+    if crate::ui::hit(Rect::new(10., 178., 105., 54.), p) {
         return vec![UiAction::Recent];
     }
-    if crate::ui::hit(Rect::new(234., 172., 116., 68.), p) {
+    if crate::ui::hit(Rect::new(122., 178., 116., 54.), p) {
         return vec![UiAction::Open(GameId::DailyDungeon.index())];
     }
     for (index, rect) in CATEGORY_RECTS.iter().copied().enumerate() {
@@ -484,15 +436,22 @@ fn game_rect(index: usize) -> Rect {
 fn bottom_rects() -> [Rect; 4] {
     std::array::from_fn(|index| Rect::new(4. + index as f32 * 88., 708., 88., 66.))
 }
-fn stat(rect: Rect, label: &str, count: usize) {
-    panel(rect, crate::theme::SURFACE_DARK);
-    text(label, rect.x + 11., rect.y + 22., 9., crate::theme::BRASS);
+fn utility_link(rect: Rect, label: &str, detail: &str) {
+    draw_line(
+        rect.x,
+        rect.bottom() - 2.,
+        rect.right(),
+        rect.bottom() - 2.,
+        2.,
+        crate::theme::BORDER,
+    );
+    text(label, rect.x + 4., rect.y + 20., 8., crate::theme::BRASS);
     text(
-        &count.to_string(),
-        rect.x + 45.,
-        rect.y + 50.,
-        20.,
-        crate::theme::CREAM,
+        detail,
+        rect.x + 4.,
+        rect.y + 39.,
+        8.,
+        crate::theme::SECONDARY,
     );
 }
 fn button(rect: Rect, label: &str, fill: Color) {
