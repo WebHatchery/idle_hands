@@ -12,10 +12,18 @@ This guide covers both creating new games and migrating existing web application
 
 ### New Game Setup
 
-```bash
-cargo new my_game
-cd my_game
+Start from the working template and follow its README's rename checklist:
+
+```powershell
+# Run from the RustGames workspace root.
+Copy-Item .\rust_management\template .\my_game -Recurse
+Set-Location .\my_game
 ```
+
+Read [UI_STYLE.md](UI_STYLE.md) and record its screen brief in the new game's
+GDD or README before building the first screen. The template demonstrates
+toolkit integration; recompose its demo UI around the new game's current
+decision instead of carrying its panels and permanent help into normal play.
 
 ### Dependencies (`Cargo.toml`)
 
@@ -94,12 +102,12 @@ the `quad-net.js` browser bridge for WebGL packages.
 game_name/
 ├── Cargo.toml
 ├── CODE_STANDARDS.md       # Coding standards
+├── UI_STYLE.md             # Screen composition and visual review
 ├── publish.ps1             # Build & deploy script
 ├── game_page.json          # Data for the generated WebGL host page
 ├── catalog_thumbnail.png   # 16:9 catalog title/menu image
 ├── src/
-│   ├── lib.rs              # Library root and intentional public seams
-│   ├── main.rs             # Thin entry point and window config
+│   ├── main.rs             # Entry point, window config
 │   ├── game.rs             # Game loop & state machine
 │   ├── state.rs            # State module root and re-exports
 │   ├── state/              # State child modules
@@ -113,8 +121,6 @@ game_name/
 │   │   └── loader.rs
 │   ├── ui.rs               # UI helpers module root
 │   └── save.rs             # Persistence
-├── tests/                  # Crate-level public API and integration tests
-│   └── public_api.rs
 ├── assets/
 │   ├── data.json           # Game data
 │   └── images/             # Sprites
@@ -130,8 +136,13 @@ Use Rust's named module source filenames: `foo.rs` for `mod foo;`, and `foo/bar.
 ### Entry Point (`main.rs`)
 
 ```rust
-use my_game::Game;
 use macroquad::prelude::*;
+
+mod game;
+mod state;
+mod data;
+
+use game::Game;
 
 fn window_conf() -> Conf {
     Conf {
@@ -228,6 +239,12 @@ impl Game {
 
 ## UI: Immediate Mode
 
+Follow [UI_STYLE.md](UI_STYLE.md) for player decisions, hierarchy, contextual
+information, camera framing, and responsive layout. Use its subtraction pass
+when improving an existing screen and its visual review before accepting UI
+changes. The examples below explain implementation mechanics, not a finished
+screen design; use toolkit widgets and input helpers in production UI.
+
 ### Layout (Replacing CSS Flexbox)
 
 **React (CSS):**
@@ -255,7 +272,7 @@ y += 50.0 + PADDING;
 fn draw_button(x: f32, y: f32, text: &str) -> bool {
     let rect = Rect::new(x, y, 200.0, 40.0);
     let hovered = rect.contains(mouse_position().into());
-    let clicked = hovered && is_mouse_button_released(MouseButton::Left);
+    let clicked = hovered && is_mouse_button_pressed(MouseButton::Left);
     
     let color = if hovered { LIGHTGRAY } else { GRAY };
     draw_rectangle(x, y, 200.0, 40.0, color);
@@ -268,10 +285,7 @@ fn draw_button(x: f32, y: f32, text: &str) -> bool {
 **Rules:**
 - UI reads state, returns intents (bools/enums)
 - UI never contains game logic
-- Game logic applies changes on the release edge (`is_mouse_button_released`)
-  so a held pointer cannot repeat a one-shot action every frame
-- Browser games expose visible touch controls and do not rely on hover-only
-  affordances
+- Game logic applies changes
 
 ---
 
@@ -312,13 +326,6 @@ impl CardData {
 }
 ```
 
-Use `macroquad-toolkit`'s JSON loader for authored content and tunable values.
-Deserialize into typed structs, then run game-specific semantic validation
-(ranges, required entries, and cross-field relationships) before constructing
-production state. Keep a clearly documented fallback only for recoverable
-startup failures; do not duplicate the same defaults in both JSON and engine
-constructors.
-
 ---
 
 ## Persistence (Save/Load)
@@ -343,12 +350,6 @@ impl SaveData {
 }
 ```
 
-Keep gameplay modules in `src/lib.rs` so the binary and crate-level tests use
-the same public seams. `main.rs` should only configure the window, construct
-the library's `Game`, and run the frame loop. Put integration tests in
-`tests/`; keep unit tests private to a module only when they genuinely require
-private implementation details.
-
 ### Native/Server Databases
 
 Use database crates only for native/server code. Keep WebGL clients on JSON data plus toolkit persistence.
@@ -372,12 +373,6 @@ Run this with no parameters from the affected project directory after meaningful
 .\publish.ps1
 ```
 
-After meaningful changes, also run `cargo fmt --all -- --check`,
-`cargo clippy --all-targets --all-features -- -D warnings`, and
-`cargo test --all-targets --all-features`. Verify touch input, persistence
-recovery, resize/fullscreen, audio activation, and release-edge behavior in a
-browser smoke pass.
-
 ### Build Targets
 
 ```bash
@@ -400,7 +395,6 @@ Only `title` is required; the publisher derives defaults for omitted values:
 {
   "title": "My Game",
   "wasm": "my_game",
-  "roost_slug": "rust_my_game",
   "status": { "text": "In Development", "class": "in-development" },
   "controls_hint": "Tap the visible controls to play",
   "canvas_rendering": "pixelated",
@@ -466,13 +460,14 @@ Use a JSON catalog for managing placeholder-to-generated-image transitions.
 1. [ ] Copy `rust_management/template/` to a new workspace-root sibling folder
 2. [ ] Rename the package and update the template data files
 3. [ ] Confirm the toolkit path dependency resolves to `../macroquad-toolkit`
-4. [ ] Add `src/lib.rs`, keep `main.rs` thin, and expose only intentional seams
+4. [ ] Read `UI_STYLE.md`, record the screen brief, and adapt the template's demo layout to the current gameplay decision
 5. [ ] Implement `GameState` and `StateTransition` enums
 6. [ ] Create `Game` struct with update/draw loop
-7. [ ] Set up typed JSON under `assets/` and validate it before construction
+7. [ ] Set up `assets/` folder
 8. [ ] Update the template `publish.ps1` wrapper if shared parameters change
 9. [ ] Configure `game_page.json` and add `catalog_thumbnail.png`
-10. [ ] Implement save/load system and crate-level regression tests
+10. [ ] Implement save/load system
+11. [ ] Complete the `UI_STYLE.md` visual review and the affected game's publish validation
 
 ### Migration (Web → Rust)
 
@@ -480,9 +475,10 @@ Use a JSON catalog for managing placeholder-to-generated-image transitions.
 2. [ ] Set up `macroquad::main` entry point
 3. [ ] Copy `publish.ps1` and `game_page.json` from the template
 4. [ ] Port PHP/backend logic to Rust functions
-5. [ ] Rebuild React UI using immediate-mode
+5. [ ] Redesign screens around the current gameplay decision with `UI_STYLE.md`, then implement immediate-mode views
 6. [ ] Migrate MySQL data to JSON or SQLite
-7. [ ] Wire UI to modify game state
+7. [ ] Wire UI intents to game-state action handlers
+8. [ ] Complete the `UI_STYLE.md` visual review and the affected game's publish validation
 
 ---
 
