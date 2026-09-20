@@ -132,8 +132,10 @@ Safari and Windows touch acceptance remain owner-controlled limitations.
   feedback. Wave controls remain visible outside the inspection drawer.
   Evidence: ui_tiny_tower_inspection*.png, ui_portrait_tiny_tower_inspection*.png,
   ui_landscape_tiny_tower_inspection.png, ui_matrix_*_tiny_tower_inspection.png,
-  ui_tiny_tower_{insufficient,maxed,roles,wave3,loss}.png. Rust tests, browser
-  touch regression (4 total Playwright tests), and publish passed. The required
+  ui_tiny_tower_{insufficient,maxed,roles,wave3,loss}.png. Rust tests, the
+  Tower-specific browser touch regression, and publish passed. The broader
+  four-test Playwright run had one existing dense Nonogram screenshot-change
+  flake while the other three passed. The required
   capture matrix covers 1280×720, 390×844, 320×568 and 568×320; 1024×768 and
   768×1024 were not refreshed for this change, and physical-device touch was
   not available. The browser touch pass covered build, upgrade and cancel;
