@@ -24,11 +24,11 @@ pub use postlaunch::{
     one_room_roguelike, pipe_loop, potion_2048, snake, sokoban, tiny_tower_defence, word_grid,
 };
 
-fn color_name(color: u8) -> &'static str {
+pub fn color_name(color: u8) -> &'static str {
     ["red", "amber", "green", "blue", "violet", "gold"][color as usize % 6]
 }
 
-pub(crate) fn authored_copy(state: &AppState, game: GameId, complete: bool) -> String {
+pub fn authored_copy(state: &AppState, game: GameId, complete: bool) -> String {
     state
         .content
         .hints
@@ -42,7 +42,3 @@ pub(crate) fn authored_copy(state: &AppState, game: GameId, complete: bool) -> S
         })
         .unwrap_or_else(|| "No hint is available for this drawer.".into())
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/card_hints/tests.rs"]
-mod tests;

@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::records_data::*;
 
 #[test]
 fn filtered_rows_keep_their_category_and_record_values() {

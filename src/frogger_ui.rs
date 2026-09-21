@@ -10,19 +10,19 @@ use crate::{
 use macroquad::prelude::*;
 
 #[derive(Clone, Copy)]
-struct Layout {
-    board: Rect,
-    cell: f32,
-    up: Rect,
-    left: Rect,
-    down: Rect,
-    right: Rect,
-    pause: Rect,
-    undo: Rect,
-    new_game: Rect,
+pub struct Layout {
+    pub board: Rect,
+    pub cell: f32,
+    pub up: Rect,
+    pub left: Rect,
+    pub down: Rect,
+    pub right: Rect,
+    pub pause: Rect,
+    pub undo: Rect,
+    pub new_game: Rect,
 }
 
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         compact_layout()
     } else if crate::ui::is_portrait() {
@@ -52,7 +52,7 @@ fn layout() -> Layout {
     }
 }
 
-fn compact_layout() -> Layout {
+pub fn compact_layout() -> Layout {
     Layout {
         board: Rect::new(12., 56., 288., 288.),
         cell: 24.,
@@ -66,7 +66,7 @@ fn compact_layout() -> Layout {
     }
 }
 
-fn compact_header() -> (f32, f32, f32, f32) {
+pub fn compact_header() -> (f32, f32, f32, f32) {
     (120., 30., 120., 46.)
 }
 
@@ -194,7 +194,7 @@ pub fn draw(state: &AppState, frog_texture: Option<&Texture2D>, car_texture: Opt
     button(l.new_game, "NEW CROSSING", state.large_text);
 }
 
-fn draw_frog(
+pub fn draw_frog(
     layout: Layout,
     cell: Rect,
     texture: Option<&Texture2D>,
@@ -244,7 +244,7 @@ fn draw_frog(
     let _ = layout;
 }
 
-fn draw_car(
+pub fn draw_car(
     layout: Layout,
     car: &Car,
     texture: Option<&Texture2D>,
@@ -301,11 +301,11 @@ fn draw_car(
     }
 }
 
-fn car_fits_board(car: &Car) -> bool {
+pub fn car_fits_board(car: &Car) -> bool {
     usize::from(car.x) + usize::from(car.length) <= usize::from(WIDTH)
 }
 
-fn cell_rect(layout: Layout, row: u8, column: u8) -> Rect {
+pub fn cell_rect(layout: Layout, row: u8, column: u8) -> Rect {
     Rect::new(
         layout.board.x + f32::from(column) * layout.cell,
         layout.board.y + f32::from(row) * layout.cell,
@@ -313,14 +313,14 @@ fn cell_rect(layout: Layout, row: u8, column: u8) -> Rect {
         layout.cell,
     )
 }
-fn status_text(game: &Frogger) -> String {
+pub fn status_text(game: &Frogger) -> String {
     match game.status {
         FroggerStatus::Playing => "Tap the arrows to cross • traffic keeps moving".into(),
         FroggerStatus::Won => "Three safe crossings — riverbank reached".into(),
         FroggerStatus::Lost => "The traffic took all three chances".into(),
     }
 }
-fn button(rect: Rect, label: &str, large_text: bool) {
+pub fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     let size = accessibility::text_size(10., large_text);
@@ -332,33 +332,29 @@ fn button(rect: Rect, label: &str, large_text: bool) {
         WHITE,
     );
 }
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
-fn title_size() -> f32 {
+pub fn title_size() -> f32 {
     if crate::ui::is_portrait() {
         25.
     } else {
         30.
     }
 }
-fn body_size() -> f32 {
+pub fn body_size() -> f32 {
     if crate::ui::is_portrait() {
         10.
     } else {
         12.
     }
 }
-fn accent() -> Color {
+pub fn accent() -> Color {
     crate::theme::BRASS
 }
-fn muted() -> Color {
+pub fn muted() -> Color {
     crate::theme::SECONDARY
 }
-fn back_rect() -> Rect {
+pub fn back_rect() -> Rect {
     Rect::new(0., 0., 110., 42.)
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/frogger_ui/tests.rs"]
-mod tests;

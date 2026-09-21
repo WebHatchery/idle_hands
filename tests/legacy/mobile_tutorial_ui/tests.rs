@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::mobile_tutorial_ui::*;
 
 #[test]
 fn responsive_continue_buttons_stay_inside_their_panels() {

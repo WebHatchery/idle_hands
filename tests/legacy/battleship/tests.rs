@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::battleship::*;
 
 #[test]
 fn firing_reveals_hit_or_miss_and_rejects_repeat_shots() {

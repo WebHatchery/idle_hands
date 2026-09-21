@@ -8,24 +8,20 @@ use crate::{
 };
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/block_stack_ui/tests.rs"]
-mod tests;
-
 #[derive(Clone, Copy)]
-struct Layout {
-    board: Rect,
-    cell: f32,
-    left: Rect,
-    right: Rect,
-    rotate: Rect,
-    drop: Rect,
-    pause: Rect,
-    undo: Rect,
-    new_game: Rect,
+pub struct Layout {
+    pub board: Rect,
+    pub cell: f32,
+    pub left: Rect,
+    pub right: Rect,
+    pub rotate: Rect,
+    pub drop: Rect,
+    pub pause: Rect,
+    pub undo: Rect,
+    pub new_game: Rect,
 }
 
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         let cell = 20.;
         Layout {
@@ -189,7 +185,7 @@ pub fn draw(state: &AppState) {
     button(l.new_game, "NEW STACK", state.large_text);
 }
 
-fn draw_block(x: f32, y: f32, cell: f32, kind: u8, high_contrast: bool) {
+pub fn draw_block(x: f32, y: f32, cell: f32, kind: u8, high_contrast: bool) {
     let colors = [
         Color::new(0.27, 0.85, 1., 1.),
         Color::new(1., 0.78, 0.24, 1.),
@@ -215,14 +211,14 @@ fn draw_block(x: f32, y: f32, cell: f32, kind: u8, high_contrast: bool) {
     );
 }
 
-fn status_text(game: &BlockStack) -> String {
+pub fn status_text(game: &BlockStack) -> String {
     match game.status {
         BlockStatus::Playing => "Tap LEFT / RIGHT, ROTATE, or DROP to place the next block".into(),
         BlockStatus::Won => "Twenty lines cleared — the stack stands tall".into(),
         BlockStatus::Lost => "The stack reached the ceiling — start a new run".into(),
     }
 }
-fn button(rect: Rect, value: &str, large_text: bool) {
+pub fn button(rect: Rect, value: &str, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     let size = accessibility::text_size(11., large_text);
@@ -234,29 +230,29 @@ fn button(rect: Rect, value: &str, large_text: bool) {
         WHITE,
     );
 }
-fn label(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn label(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
-fn title_size() -> f32 {
+pub fn title_size() -> f32 {
     if crate::ui::is_portrait() {
         24.
     } else {
         30.
     }
 }
-fn body_size() -> f32 {
+pub fn body_size() -> f32 {
     if crate::ui::is_portrait() {
         10.
     } else {
         12.
     }
 }
-fn accent() -> Color {
+pub fn accent() -> Color {
     crate::theme::BRASS
 }
-fn muted() -> Color {
+pub fn muted() -> Color {
     crate::theme::SECONDARY
 }
-fn back_rect() -> Rect {
+pub fn back_rect() -> Rect {
     Rect::new(0., 0., 115., 42.)
 }

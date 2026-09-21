@@ -36,7 +36,7 @@ pub enum CardSource {
     Waste,
 }
 
-type SolitaireSnapshot = (Vec<Vec<Card>>, Vec<Card>, Vec<Card>, [u8; 4], u32);
+pub type SolitaireSnapshot = (Vec<Vec<Card>>, Vec<Card>, Vec<Card>, [u8; 4], u32);
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Solitaire {
@@ -51,7 +51,7 @@ pub struct Solitaire {
     #[serde(default)]
     pub ruleset: SolitaireRuleset,
     #[serde(skip)]
-    history: Vec<SolitaireSnapshot>,
+    pub history: Vec<SolitaireSnapshot>,
 }
 
 impl Default for Solitaire {
@@ -239,7 +239,7 @@ impl Solitaire {
             false
         }
     }
-    fn can_place(&self, destination: usize, card: Card) -> bool {
+    pub fn can_place(&self, destination: usize, card: Card) -> bool {
         let Some(column) = self.tableau.get(destination) else {
             return false;
         };
@@ -248,14 +248,14 @@ impl Solitaire {
             Some(top) => top.face_up && top.rank == card.rank + 1 && top.red() != card.red(),
         }
     }
-    fn flip_top(&mut self) {
+    pub fn flip_top(&mut self) {
         for column in &mut self.tableau {
             if let Some(card) = column.last_mut() {
                 card.face_up = true;
             }
         }
     }
-    fn snapshot(&mut self) {
+    pub fn snapshot(&mut self) {
         self.history.push((
             self.tableau.clone(),
             self.stock.clone(),
@@ -265,6 +265,3 @@ impl Solitaire {
         ));
     }
 }
-#[cfg(test)]
-#[path = "../tests/legacy/solitaire/tests.rs"]
-mod tests;

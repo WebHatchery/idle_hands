@@ -8,25 +8,21 @@ use crate::{
 };
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/word_ladder_ui/tests.rs"]
-mod tests;
-
 #[derive(Clone, Copy)]
-struct Layout {
-    keyboard: Rect,
-    back: Rect,
-    submit: Rect,
-    hint: Rect,
-    undo: Rect,
-    new_game: Rect,
-    mode: Rect,
-    columns: usize,
-    key_w: f32,
-    key_h: f32,
+pub struct Layout {
+    pub keyboard: Rect,
+    pub back: Rect,
+    pub submit: Rect,
+    pub hint: Rect,
+    pub undo: Rect,
+    pub new_game: Rect,
+    pub mode: Rect,
+    pub columns: usize,
+    pub key_w: f32,
+    pub key_h: f32,
 }
 
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             keyboard: Rect::new(35., 290., 754., 84.),
@@ -240,7 +236,7 @@ pub fn draw(state: &AppState) {
     );
 }
 
-fn contextual_message(game: &WordLadder) -> String {
+pub fn contextual_message(game: &WordLadder) -> String {
     if game.current.is_empty() || game.current.len() == WORD_LENGTH {
         return game.message.clone();
     }
@@ -252,7 +248,7 @@ fn contextual_message(game: &WordLadder) -> String {
     )
 }
 
-fn title_size(compact: bool, portrait: bool) -> f32 {
+pub fn title_size(compact: bool, portrait: bool) -> f32 {
     if compact {
         22.
     } else if portrait {
@@ -262,7 +258,7 @@ fn title_size(compact: bool, portrait: bool) -> f32 {
     }
 }
 
-fn draw_words(game: &WordLadder, x: f32, y: f32, width: f32) {
+pub fn draw_words(game: &WordLadder, x: f32, y: f32, width: f32) {
     let cell = (width / 5.).min(62.);
     let input_row = game.guesses.len() + 1;
     for row in 0..=input_row {
@@ -338,7 +334,7 @@ fn draw_words(game: &WordLadder, x: f32, y: f32, width: f32) {
         );
     }
 }
-fn mode_button(rect: Rect, label: &str, large_text: bool) {
+pub fn mode_button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -356,7 +352,7 @@ fn mode_button(rect: Rect, label: &str, large_text: bool) {
     );
 }
 
-fn draw_keyboard(l: Layout, game: &WordLadder, large_text: bool) {
+pub fn draw_keyboard(l: Layout, game: &WordLadder, large_text: bool) {
     for index in 0..26 {
         let rect = Rect::new(
             l.keyboard.x + (index % l.columns) as f32 * l.key_w,
@@ -397,7 +393,7 @@ fn draw_keyboard(l: Layout, game: &WordLadder, large_text: bool) {
         );
     }
 }
-fn button(rect: Rect, label: &str, large_text: bool) {
+pub fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -421,9 +417,9 @@ fn button(rect: Rect, label: &str, large_text: bool) {
         WHITE,
     );
 }
-fn accent() -> Color {
+pub fn accent() -> Color {
     Color::new(0.55, 1., 0.72, 1.)
 }
-fn muted() -> Color {
+pub fn muted() -> Color {
     Color::new(0.58, 0.68, 0.68, 1.)
 }

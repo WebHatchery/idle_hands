@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::cards::*;
 use std::collections::HashSet;
 
 #[test]

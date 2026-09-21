@@ -8,20 +8,16 @@ use crate::{
 };
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/pipe_loop_ui/tests.rs"]
-mod tests;
-
 #[derive(Clone, Copy)]
-struct Layout {
-    board: Rect,
-    hint: Rect,
-    undo: Rect,
-    new_game: Rect,
-    pattern: Rect,
+pub struct Layout {
+    pub board: Rect,
+    pub hint: Rect,
+    pub undo: Rect,
+    pub new_game: Rect,
+    pub pattern: Rect,
 }
 
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             board: Rect::new(260., 44., 300., 300.),
@@ -170,7 +166,7 @@ pub fn draw(state: &AppState) {
     );
 }
 
-fn draw_board(board: Rect, game: &PipeLoop, high_contrast: bool) {
+pub fn draw_board(board: Rect, game: &PipeLoop, high_contrast: bool) {
     let cell = board.w / SIDE as f32;
     let powered = game.powered_mask();
     for (index, &is_powered) in powered.iter().enumerate().take(SIDE * SIDE) {
@@ -237,18 +233,18 @@ fn draw_board(board: Rect, game: &PipeLoop, high_contrast: bool) {
     }
 }
 
-fn status(phase: PipePhase) -> &'static str {
+pub fn status(phase: PipePhase) -> &'static str {
     match phase {
         PipePhase::Playing => "Rotate tiles until all 25 are powered and every red leak closes",
         PipePhase::Won => "Network complete — tap NEW LOOP",
     }
 }
 
-fn use_compact_scoreline(compact: bool, portrait: bool, width: f32) -> bool {
+pub fn use_compact_scoreline(compact: bool, portrait: bool, width: f32) -> bool {
     compact || portrait || width < 360.
 }
 
-fn mode_button(rect: Rect, label: &str, large_text: bool) {
+pub fn mode_button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -259,7 +255,7 @@ fn mode_button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     center_text(label, rect, accessibility::text_size(9., large_text), WHITE);
 }
-fn button(rect: Rect, label: &str, large_text: bool) {
+pub fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     center_text(
@@ -269,7 +265,7 @@ fn button(rect: Rect, label: &str, large_text: bool) {
         WHITE,
     );
 }
-fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
+pub fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
     let measured = crate::ui::measure_text(label, None, size as u16, 1.);
     crate::ui::draw_text(
         label,
@@ -279,7 +275,7 @@ fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
         color,
     );
 }
-fn title_size() -> f32 {
+pub fn title_size() -> f32 {
     if crate::ui::is_compact_landscape() {
         20.
     } else if crate::ui::is_portrait() {
@@ -288,26 +284,26 @@ fn title_size() -> f32 {
         27.
     }
 }
-fn body_size() -> f32 {
+pub fn body_size() -> f32 {
     if crate::ui::is_portrait() {
         10.
     } else {
         12.
     }
 }
-fn accent() -> Color {
+pub fn accent() -> Color {
     crate::theme::BRASS
 }
-fn pipe_color(high_contrast: bool) -> Color {
+pub fn pipe_color(high_contrast: bool) -> Color {
     if high_contrast {
         Color::new(0.05, 1., 0.85, 1.)
     } else {
         Color::new(0.35, 0.82, 0.70, 1.)
     }
 }
-fn muted() -> Color {
+pub fn muted() -> Color {
     crate::theme::SECONDARY
 }
-fn line_color(high_contrast: bool) -> Color {
+pub fn line_color(high_contrast: bool) -> Color {
     accessibility::grid_line(high_contrast)
 }

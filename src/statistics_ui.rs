@@ -3,11 +3,7 @@
 use crate::{state::AppState, stats_data, ui::UiAction};
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/statistics_ui/tests.rs"]
-mod tests;
-
-fn panel(state: &AppState, rect: Rect, fill: Color) {
+pub fn panel(state: &AppState, rect: Rect, fill: Color) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -29,7 +25,7 @@ fn panel(state: &AppState, rect: Rect, fill: Color) {
     );
 }
 
-fn text(state: &AppState, value: impl AsRef<str>, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(state: &AppState, value: impl AsRef<str>, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(
         value,
         x,
@@ -55,7 +51,7 @@ pub fn draw(state: &AppState) {
     }
 }
 
-fn draw_desktop(state: &AppState) {
+pub fn draw_desktop(state: &AppState) {
     let summary = stats_data::from_state(state);
     panel(
         state,
@@ -140,7 +136,7 @@ fn draw_desktop(state: &AppState) {
     back_button(state, back_rect());
 }
 
-fn draw_compact(state: &AppState) {
+pub fn draw_compact(state: &AppState) {
     let summary = stats_data::from_state(state);
     panel(
         state,
@@ -211,7 +207,7 @@ fn draw_compact(state: &AppState) {
     back_button(state, back_rect());
 }
 
-fn draw_portrait(state: &AppState) {
+pub fn draw_portrait(state: &AppState) {
     let summary = stats_data::from_state(state);
     panel(
         state,
@@ -272,7 +268,7 @@ fn draw_portrait(state: &AppState) {
     back_button(state, back_rect());
 }
 
-fn heading(
+pub fn heading(
     state: &AppState,
     title: &str,
     subtitle: &str,
@@ -292,7 +288,7 @@ fn heading(
     );
 }
 
-fn metric_card(state: &AppState, rect: Rect, label: &str, value: &str) {
+pub fn metric_card(state: &AppState, rect: Rect, label: &str, value: &str) {
     panel(state, rect, crate::theme::SURFACE_DARK);
     text(
         state,
@@ -305,7 +301,12 @@ fn metric_card(state: &AppState, rect: Rect, label: &str, value: &str) {
     text(state, value, rect.x + 12., rect.y + 51., 20., WHITE);
 }
 
-fn draw_ledger(state: &AppState, summary: stats_data::StatisticsSummary, rect: Rect, size: f32) {
+pub fn draw_ledger(
+    state: &AppState,
+    summary: stats_data::StatisticsSummary,
+    rect: Rect,
+    size: f32,
+) {
     panel(state, rect, crate::theme::SURFACE_DARK);
     text(
         state,
@@ -355,7 +356,7 @@ fn draw_ledger(state: &AppState, summary: stats_data::StatisticsSummary, rect: R
     text(state, longest, rect.x + 14., rect.y + 106., 12., WHITE);
 }
 
-fn draw_top_playtime(state: &AppState, rect: Rect, limit: usize, size: f32) {
+pub fn draw_top_playtime(state: &AppState, rect: Rect, limit: usize, size: f32) {
     panel(state, rect, crate::theme::SURFACE_DARK);
     text(
         state,
@@ -403,11 +404,11 @@ fn draw_top_playtime(state: &AppState, rect: Rect, limit: usize, size: f32) {
     }
 }
 
-fn duration(seconds: u32) -> String {
+pub fn duration(seconds: u32) -> String {
     crate::state_records::format_duration(u64::from(seconds))
 }
 
-fn accent(state: &AppState) -> Color {
+pub fn accent(state: &AppState) -> Color {
     if state.high_contrast {
         WHITE
     } else {
@@ -415,7 +416,7 @@ fn accent(state: &AppState) -> Color {
     }
 }
 
-fn secondary(state: &AppState) -> Color {
+pub fn secondary(state: &AppState) -> Color {
     if state.high_contrast {
         WHITE
     } else {
@@ -423,7 +424,7 @@ fn secondary(state: &AppState) -> Color {
     }
 }
 
-fn back_rect() -> Rect {
+pub fn back_rect() -> Rect {
     if crate::ui::is_compact_landscape() {
         Rect::new(690., 320., 110., 44.)
     } else if crate::ui::is_portrait() {
@@ -433,7 +434,7 @@ fn back_rect() -> Rect {
     }
 }
 
-fn back_button(state: &AppState, rect: Rect) {
+pub fn back_button(state: &AppState, rect: Rect) {
     panel(state, rect, crate::theme::MOSS_DARK);
     text(
         state,

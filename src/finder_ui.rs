@@ -3,10 +3,6 @@
 use crate::{finder_data, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/finder_ui/tests.rs"]
-mod tests;
-
 pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     for (index, rect) in filter_rects().iter().copied().enumerate() {
         if crate::ui::hit(rect, point) {
@@ -47,7 +43,7 @@ pub fn draw(state: &AppState) {
     }
 }
 
-fn draw_desktop(state: &AppState) {
+pub fn draw_desktop(state: &AppState) {
     panel(state, Rect::new(120., 30., 1040., 650.));
     heading(state, 170., 90., 32., "FIND A DRAWER");
     text(
@@ -63,7 +59,7 @@ fn draw_desktop(state: &AppState) {
     draw_controls(state);
 }
 
-fn draw_compact(state: &AppState) {
+pub fn draw_compact(state: &AppState) {
     panel(state, Rect::new(20., 12., 804., 365.));
     heading(state, 40., 47., 22., "FIND A DRAWER");
     text(
@@ -79,7 +75,7 @@ fn draw_compact(state: &AppState) {
     draw_controls(state);
 }
 
-fn draw_portrait(state: &AppState) {
+pub fn draw_portrait(state: &AppState) {
     panel(state, Rect::new(8., 16., 344., 688.));
     heading(state, 20., 60., 25., "FIND A DRAWER");
     text(state, "Browse by name", 20., 85., 11., secondary(state));
@@ -88,11 +84,11 @@ fn draw_portrait(state: &AppState) {
     draw_controls(state);
 }
 
-fn heading(state: &AppState, x: f32, y: f32, size: f32, value: &str) {
+pub fn heading(state: &AppState, x: f32, y: f32, size: f32, value: &str) {
     text(state, value, x, y, size, accent(state));
 }
 
-fn draw_filters(state: &AppState) {
+pub fn draw_filters(state: &AppState) {
     for (index, rect) in filter_rects().iter().copied().enumerate() {
         let selected = state.cabinet_filter == index as u8;
         button(
@@ -108,7 +104,7 @@ fn draw_filters(state: &AppState) {
     }
 }
 
-fn draw_cards(state: &AppState) {
+pub fn draw_cards(state: &AppState) {
     for (index, game) in finder_data::page(state).into_iter().enumerate() {
         let rect = card_rect(index);
         let available = crate::storefront::availability(game).is_playable();
@@ -161,7 +157,7 @@ fn draw_cards(state: &AppState) {
     }
 }
 
-fn draw_controls(state: &AppState) {
+pub fn draw_controls(state: &AppState) {
     let (previous, next, back) = control_rects();
     button(state, previous, "PREV", crate::theme::SURFACE_DARK);
     button(state, next, "NEXT", crate::theme::SURFACE_DARK);
@@ -171,7 +167,7 @@ fn draw_controls(state: &AppState) {
     text(state, label, x, y, 11., secondary(state));
 }
 
-fn button(state: &AppState, rect: Rect, label: &str, fill: Color) {
+pub fn button(state: &AppState, rect: Rect, label: &str, fill: Color) {
     panel_fill(state, rect, fill);
     let width = crate::ui::measure_text(label, None, 12, 1.).width;
     text(
@@ -184,11 +180,11 @@ fn button(state: &AppState, rect: Rect, label: &str, fill: Color) {
     );
 }
 
-fn panel(state: &AppState, rect: Rect) {
+pub fn panel(state: &AppState, rect: Rect) {
     panel_fill(state, rect, crate::theme::BACKGROUND_DEEP);
 }
 
-fn panel_fill(state: &AppState, rect: Rect, fill: Color) {
+pub fn panel_fill(state: &AppState, rect: Rect, fill: Color) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -210,7 +206,7 @@ fn panel_fill(state: &AppState, rect: Rect, fill: Color) {
     );
 }
 
-fn text(state: &AppState, value: impl AsRef<str>, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(state: &AppState, value: impl AsRef<str>, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(
         value,
         x,
@@ -220,7 +216,7 @@ fn text(state: &AppState, value: impl AsRef<str>, x: f32, y: f32, size: f32, col
     );
 }
 
-fn card_rect(index: usize) -> Rect {
+pub fn card_rect(index: usize) -> Rect {
     if crate::ui::is_compact_landscape() {
         Rect::new(
             40. + (index % 2) as f32 * 390.,
@@ -240,12 +236,12 @@ fn card_rect(index: usize) -> Rect {
     }
 }
 
-fn info_rect(index: usize) -> Rect {
+pub fn info_rect(index: usize) -> Rect {
     let rect = card_rect(index);
     Rect::new(rect.right() - 48., rect.y, 48., rect.h)
 }
 
-fn filter_rects() -> [Rect; 5] {
+pub fn filter_rects() -> [Rect; 5] {
     if crate::ui::is_portrait() {
         [
             Rect::new(20., 100., 96., 38.),
@@ -261,7 +257,7 @@ fn filter_rects() -> [Rect; 5] {
     }
 }
 
-fn control_rects() -> (Rect, Rect, Rect) {
+pub fn control_rects() -> (Rect, Rect, Rect) {
     if crate::ui::is_portrait() {
         (
             Rect::new(10., 602., 100., 44.),
@@ -283,7 +279,7 @@ fn control_rects() -> (Rect, Rect, Rect) {
     }
 }
 
-fn page_label_position() -> (f32, f32) {
+pub fn page_label_position() -> (f32, f32) {
     if crate::ui::is_portrait() {
         (125., 630.)
     } else if crate::ui::is_compact_landscape() {
@@ -293,7 +289,7 @@ fn page_label_position() -> (f32, f32) {
     }
 }
 
-fn empty_message_position() -> (f32, f32) {
+pub fn empty_message_position() -> (f32, f32) {
     if crate::ui::is_portrait() {
         (20., 220.)
     } else if crate::ui::is_compact_landscape() {
@@ -303,7 +299,7 @@ fn empty_message_position() -> (f32, f32) {
     }
 }
 
-fn fit_title(title: &str, max_width: f32, size: f32, large_text: bool) -> String {
+pub fn fit_title(title: &str, max_width: f32, size: f32, large_text: bool) -> String {
     let measure_size = if large_text { size * 1.18 } else { size };
     if crate::ui::measure_text(title, None, measure_size as u16, 1.).width <= max_width {
         return title.to_owned();
@@ -319,7 +315,7 @@ fn fit_title(title: &str, max_width: f32, size: f32, large_text: bool) -> String
     "…".to_owned()
 }
 
-fn accent(state: &AppState) -> Color {
+pub fn accent(state: &AppState) -> Color {
     if state.high_contrast {
         WHITE
     } else {
@@ -327,7 +323,7 @@ fn accent(state: &AppState) -> Color {
     }
 }
 
-fn secondary(state: &AppState) -> Color {
+pub fn secondary(state: &AppState) -> Color {
     if state.high_contrast {
         WHITE
     } else {
@@ -335,7 +331,7 @@ fn secondary(state: &AppState) -> Color {
     }
 }
 
-fn card_fill(state: &AppState, game: crate::state::GameId, available: bool) -> Color {
+pub fn card_fill(state: &AppState, game: crate::state::GameId, available: bool) -> Color {
     if state.high_contrast || !available {
         crate::theme::SURFACE_DARK
     } else {

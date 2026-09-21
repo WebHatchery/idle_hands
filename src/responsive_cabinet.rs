@@ -8,8 +8,8 @@ use crate::{
 };
 use macroquad::prelude::*;
 
-const CONTINUE: Rect = Rect::new(10., 58., 340., 104.);
-const CATEGORY_RECTS: [Rect; 6] = [
+pub const CONTINUE: Rect = Rect::new(10., 58., 340., 104.);
+pub const CATEGORY_RECTS: [Rect; 6] = [
     Rect::new(10., 252., 340., 62.),
     Rect::new(10., 320., 340., 62.),
     Rect::new(10., 388., 340., 62.),
@@ -17,9 +17,6 @@ const CATEGORY_RECTS: [Rect; 6] = [
     Rect::new(10., 524., 340., 62.),
     Rect::new(10., 592., 340., 62.),
 ];
-#[cfg(test)]
-#[path = "../tests/legacy/responsive_cabinet/tests.rs"]
-mod tests;
 
 pub fn draw(
     state: &AppState,
@@ -73,7 +70,7 @@ pub fn clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
 }
 
-fn draw_home(state: &AppState, _loaded: usize) {
+pub fn draw_home(state: &AppState, _loaded: usize) {
     text("IDLE HANDS", 77., 35., 23., crate::theme::CREAM);
     if let Some(badge) = crate::storefront::build_badge() {
         text(&badge, 236., 35., 8., crate::theme::BRASS);
@@ -148,7 +145,7 @@ fn draw_home(state: &AppState, _loaded: usize) {
     }
 }
 
-fn draw_library(state: &AppState) {
+pub fn draw_library(state: &AppState) {
     let availability = cabinet_status::availability_counts(state, state.cabinet_filter);
     let progress = cabinet_status::category_progress(state, state.cabinet_filter);
     text("<  HOME", 12., 31., 11., crate::theme::BRASS);
@@ -263,7 +260,7 @@ fn draw_library(state: &AppState) {
     );
 }
 
-fn draw_bottom_nav(state: &AppState) {
+pub fn draw_bottom_nav(state: &AppState) {
     draw_line(3., 704., 357., 704., 2., crate::theme::BORDER);
     let labels = ["HOME", "ALL GAMES", "FAVORITES", "RECORDS"];
     for (index, rect) in bottom_rects().iter().copied().enumerate() {
@@ -294,7 +291,7 @@ fn draw_bottom_nav(state: &AppState) {
     }
 }
 
-fn category_row(state: &AppState, rect: Rect, filter: u8) {
+pub fn category_row(state: &AppState, rect: Rect, filter: u8) {
     let sample = GameId::ALL
         .iter()
         .copied()
@@ -368,7 +365,7 @@ fn category_row(state: &AppState, rect: Rect, filter: u8) {
     );
 }
 
-fn home_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
+pub fn home_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(CONTINUE, p) {
         return vec![UiAction::ContinueGame];
     }
@@ -387,7 +384,7 @@ fn home_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     vec![]
 }
 
-fn library_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
+pub fn library_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(Rect::new(4., 4., 120., 84.), p) {
         return vec![UiAction::CabinetFilter(0)];
     }
@@ -422,10 +419,10 @@ fn library_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     vec![]
 }
 
-fn page_games(state: &AppState) -> Vec<GameId> {
+pub fn page_games(state: &AppState) -> Vec<GameId> {
     crate::cabinet_data::page(state, crate::cabinet_data::PORTRAIT_PAGE_SIZE).games
 }
-fn game_rect(index: usize) -> Rect {
+pub fn game_rect(index: usize) -> Rect {
     Rect::new(
         8. + (index % 2) as f32 * 174.,
         98. + (index / 2) as f32 * 86.,
@@ -433,10 +430,10 @@ fn game_rect(index: usize) -> Rect {
         78.,
     )
 }
-fn bottom_rects() -> [Rect; 4] {
+pub fn bottom_rects() -> [Rect; 4] {
     std::array::from_fn(|index| Rect::new(4. + index as f32 * 88., 708., 88., 66.))
 }
-fn utility_link(rect: Rect, label: &str, detail: &str) {
+pub fn utility_link(rect: Rect, label: &str, detail: &str) {
     draw_line(
         rect.x,
         rect.bottom() - 2.,
@@ -454,13 +451,13 @@ fn utility_link(rect: Rect, label: &str, detail: &str) {
         crate::theme::SECONDARY,
     );
 }
-fn button(rect: Rect, label: &str, fill: Color) {
+pub fn button(rect: Rect, label: &str, fill: Color) {
     panel(rect, fill);
     text(label, rect.x + 13., rect.y + 29., 9., crate::theme::CREAM);
 }
-fn panel(rect: Rect, fill: Color) {
+pub fn panel(rect: Rect, fill: Color) {
     crate::ui::draw_rounded_panel(rect, 8., fill, crate::theme::BORDER);
 }
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, size, color);
 }

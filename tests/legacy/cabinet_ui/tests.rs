@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::cabinet_ui::*;
 
 #[test]
 fn desktop_sort_control_is_a_touch_target_in_the_library_header() {

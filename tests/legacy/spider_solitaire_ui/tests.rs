@@ -1,6 +1,7 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::spider_solitaire_ui::*;
+use idle_hands::testing::spider_solitaire::SpiderSolitaire;
 
 #[test]
 fn compact_spider_solitaire_subtitle_stays_before_the_rule_card() {
@@ -10,12 +11,12 @@ fn compact_spider_solitaire_subtitle_stays_before_the_rule_card() {
 
 #[test]
 fn portrait_title_uses_the_header_lane_before_the_rule_card() {
-    crate::ui::with_portrait_layout(|| assert_eq!(title_size(), 20.));
+    idle_hands::testing::ui::with_portrait_layout(|| assert_eq!(title_size(), 20.));
 }
 
 #[test]
 fn held_pointer_can_peek_at_a_hidden_tableau_card() {
-    crate::ui::with_desktop_layout(|| {
+    idle_hands::testing::ui::with_desktop_layout(|| {
         let game = SpiderSolitaire::new(42);
         let layout = layout();
         let hidden_depth = 0;
@@ -27,7 +28,7 @@ fn held_pointer_can_peek_at_a_hidden_tableau_card() {
 
 #[test]
 fn peek_ignores_space_below_the_tableau_stack() {
-    crate::ui::with_desktop_layout(|| {
+    idle_hands::testing::ui::with_desktop_layout(|| {
         let game = SpiderSolitaire::new(42);
         let layout = layout();
         let last = game.tableau[0].len() - 1;

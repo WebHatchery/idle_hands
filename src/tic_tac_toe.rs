@@ -2,8 +2,8 @@
 
 use serde::{Deserialize, Serialize};
 
-const CELLS: usize = 9;
-const LINES: [[usize; 3]; 8] = [
+pub const CELLS: usize = 9;
+pub const LINES: [[usize; 3]; 8] = [
     [0, 1, 2],
     [3, 4, 5],
     [6, 7, 8],
@@ -35,7 +35,7 @@ pub enum AiLevel {
     Expert,
 }
 
-fn default_ai_level() -> AiLevel {
+pub fn default_ai_level() -> AiLevel {
     AiLevel::Sharp
 }
 
@@ -48,7 +48,7 @@ pub struct TicTacToe {
     #[serde(default = "default_ai_level")]
     pub ai_level: AiLevel,
     #[serde(skip)]
-    undo: Option<([Mark; CELLS], TicTacToeStatus, u8, u64)>,
+    pub undo: Option<([Mark; CELLS], TicTacToeStatus, u8, u64)>,
 }
 
 impl Default for TicTacToe {
@@ -123,7 +123,7 @@ impl TicTacToe {
             .or_else(|| self.cells.iter().position(|mark| *mark == Mark::Empty))
     }
 
-    fn ai_move(&mut self) {
+    pub fn ai_move(&mut self) {
         let index = match self.ai_level {
             AiLevel::Gentle => self.cells.iter().position(|mark| *mark == Mark::Empty),
             AiLevel::Sharp => self
@@ -145,7 +145,7 @@ impl TicTacToe {
         }
     }
 
-    fn winning_move(&self, mark: Mark) -> Option<usize> {
+    pub fn winning_move(&self, mark: Mark) -> Option<usize> {
         self.cells.iter().enumerate().find_map(|(index, cell)| {
             if *cell != Mark::Empty {
                 return None;
@@ -156,7 +156,7 @@ impl TicTacToe {
         })
     }
 
-    fn expert_move(&self) -> Option<usize> {
+    pub fn expert_move(&self) -> Option<usize> {
         let mut best = None;
         let mut best_score = i32::MIN;
         for index in 0..CELLS {
@@ -174,7 +174,7 @@ impl TicTacToe {
         best
     }
 
-    fn resolve(&mut self) {
+    pub fn resolve(&mut self) {
         if let Some(mark) = [Mark::X, Mark::O]
             .into_iter()
             .find(|&mark| has_won(&self.cells, mark))
@@ -186,7 +186,7 @@ impl TicTacToe {
     }
 }
 
-fn minimax(cells: &mut [Mark; CELLS], turn: Mark, depth: i32) -> i32 {
+pub fn minimax(cells: &mut [Mark; CELLS], turn: Mark, depth: i32) -> i32 {
     if has_won(cells, Mark::O) {
         return 10 - depth;
     }
@@ -214,12 +214,8 @@ fn minimax(cells: &mut [Mark; CELLS], turn: Mark, depth: i32) -> i32 {
     score
 }
 
-fn has_won(cells: &[Mark; CELLS], mark: Mark) -> bool {
+pub fn has_won(cells: &[Mark; CELLS], mark: Mark) -> bool {
     LINES
         .iter()
         .any(|line| line.iter().all(|&index| cells[index] == mark))
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/tic_tac_toe/tests.rs"]
-mod tests;

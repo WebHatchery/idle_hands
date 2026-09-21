@@ -3,14 +3,14 @@
 use crate::domain::Direction;
 use serde::{Deserialize, Serialize};
 
-const SIZE: usize = 7;
-const CELLS: usize = SIZE * SIZE;
-const START_HEALTH: u8 = 10;
-const START_POTIONS: u8 = 2;
-const START_ROOM: u16 = 1;
-const TARGET_ROOM: u16 = 5;
-const START_ENEMY_HEALTH: [u8; 4] = [3, 4, 4, 5];
-const EMPTY: usize = usize::MAX;
+pub const SIZE: usize = 7;
+pub const CELLS: usize = SIZE * SIZE;
+pub const START_HEALTH: u8 = 10;
+pub const START_POTIONS: u8 = 2;
+pub const START_ROOM: u16 = 1;
+pub const TARGET_ROOM: u16 = 5;
+pub const START_ENEMY_HEALTH: [u8; 4] = [3, 4, 4, 5];
+pub const EMPTY: usize = usize::MAX;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub struct RoomEnemy {
@@ -64,7 +64,7 @@ pub enum RogueHint {
     Move(Direction),
 }
 
-type Snapshot = (
+pub type Snapshot = (
     usize,
     Vec<RoomEnemy>,
     usize,
@@ -94,7 +94,7 @@ pub struct OneRoomRoguelike {
     #[serde(default = "starting_room")]
     pub room: u16,
     #[serde(skip)]
-    history: Vec<Snapshot>,
+    pub history: Vec<Snapshot>,
 }
 
 impl Default for OneRoomRoguelike {
@@ -259,7 +259,7 @@ impl OneRoomRoguelike {
         self.phase == RoomPhase::Won
     }
 
-    fn resolve_strike(&mut self, enemy: usize) {
+    pub fn resolve_strike(&mut self, enemy: usize) {
         self.turns = self.turns.saturating_add(1);
         let damage = self.attack_damage();
         if self.enemies[enemy].health <= damage {
@@ -275,7 +275,7 @@ impl OneRoomRoguelike {
         }
     }
 
-    fn enemy_turn(&mut self) {
+    pub fn enemy_turn(&mut self) {
         self.move_stalkers();
         let damage: u8 = self
             .enemies
@@ -297,7 +297,7 @@ impl OneRoomRoguelike {
         }
     }
 
-    fn finish_if_at_exit(&mut self) {
+    pub fn finish_if_at_exit(&mut self) {
         if self.phase == RoomPhase::Exploring && self.enemies.is_empty() {
             self.phase = RoomPhase::Stairs;
         }
@@ -311,7 +311,7 @@ impl OneRoomRoguelike {
         }
     }
 
-    fn collect_treasure(&mut self) {
+    pub fn collect_treasure(&mut self) {
         if self.player == self.treasure {
             self.treasure = EMPTY;
             self.potions = self.potions.saturating_add(1);
@@ -319,7 +319,7 @@ impl OneRoomRoguelike {
         }
     }
 
-    fn destination(&self, direction: Direction) -> Option<usize> {
+    pub fn destination(&self, direction: Direction) -> Option<usize> {
         let row = self.player / SIZE;
         let column = self.player % SIZE;
         match direction {
@@ -331,19 +331,19 @@ impl OneRoomRoguelike {
         }
     }
 
-    fn adjacent_enemy(&self) -> Option<usize> {
+    pub fn adjacent_enemy(&self) -> Option<usize> {
         self.enemies
             .iter()
             .position(|enemy| Self::distance(enemy.position, self.player) == 1)
     }
 
-    fn enemy_at(&self, position: usize) -> Option<usize> {
+    pub fn enemy_at(&self, position: usize) -> Option<usize> {
         self.enemies
             .iter()
             .position(|enemy| enemy.position == position)
     }
 
-    fn place_room(&mut self) {
+    pub fn place_room(&mut self) {
         self.enemies.clear();
         let mut occupied = vec![self.player, self.exit];
         for index in 0..self.enemy_count() {
@@ -360,7 +360,7 @@ impl OneRoomRoguelike {
         self.treasure = self.open_position(&occupied);
     }
 
-    fn enter_next_room(&mut self) {
+    pub fn enter_next_room(&mut self) {
         self.room = self.room.saturating_add(1);
         self.player = Self::center();
         self.exit = CELLS - SIZE;
@@ -369,11 +369,11 @@ impl OneRoomRoguelike {
         self.place_room();
     }
 
-    fn enemy_count(&self) -> usize {
+    pub fn enemy_count(&self) -> usize {
         4 + self.room.saturating_sub(1).min(4) as usize
     }
 
-    fn enemy_kind(&self, index: usize) -> EnemyKind {
+    pub fn enemy_kind(&self, index: usize) -> EnemyKind {
         if self.room == START_ROOM {
             EnemyKind::Guard
         } else if self.room == TARGET_ROOM && index == 0
@@ -387,7 +387,7 @@ impl OneRoomRoguelike {
         }
     }
 
-    fn enemy_health(&self, index: usize, kind: EnemyKind) -> u8 {
+    pub fn enemy_health(&self, index: usize, kind: EnemyKind) -> u8 {
         if self.room == START_ROOM && index < START_ENEMY_HEALTH.len() {
             START_ENEMY_HEALTH[index]
         } else {
@@ -399,7 +399,7 @@ impl OneRoomRoguelike {
         }
     }
 
-    fn enemy_damage(&self, kind: EnemyKind) -> u8 {
+    pub fn enemy_damage(&self, kind: EnemyKind) -> u8 {
         match kind {
             EnemyKind::Guard => 1 + (self.room.saturating_sub(1) / 3).min(2) as u8,
             EnemyKind::Stalker => 1 + (self.room / 4).min(1) as u8,
@@ -407,7 +407,7 @@ impl OneRoomRoguelike {
         }
     }
 
-    fn enemy_score(&self, kind: EnemyKind) -> u32 {
+    pub fn enemy_score(&self, kind: EnemyKind) -> u32 {
         let base = 10 + u32::from(self.room.saturating_sub(1)) * 2;
         base + match kind {
             EnemyKind::Guard => 0,
@@ -416,15 +416,15 @@ impl OneRoomRoguelike {
         }
     }
 
-    fn treasure_score(&self) -> u32 {
+    pub fn treasure_score(&self) -> u32 {
         5 + u32::from(self.room.saturating_sub(1))
     }
 
-    fn room_clear_score(&self) -> u32 {
+    pub fn room_clear_score(&self) -> u32 {
         50 + u32::from(self.room.saturating_sub(1)) * 10
     }
 
-    fn move_stalkers(&mut self) {
+    pub fn move_stalkers(&mut self) {
         for index in 0..self.enemies.len() {
             if self.enemies[index].kind != EnemyKind::Stalker
                 || Self::distance(self.enemies[index].position, self.player) <= 1
@@ -470,21 +470,21 @@ impl OneRoomRoguelike {
         }
     }
 
-    const fn class_max_health(hero_class: HeroClass) -> u8 {
+    pub const fn class_max_health(hero_class: HeroClass) -> u8 {
         match hero_class {
             HeroClass::Blade | HeroClass::Alchemist => START_HEALTH,
             HeroClass::Warden => 14,
         }
     }
 
-    const fn class_starting_potions(hero_class: HeroClass) -> u8 {
+    pub const fn class_starting_potions(hero_class: HeroClass) -> u8 {
         match hero_class {
             HeroClass::Blade | HeroClass::Warden => START_POTIONS,
             HeroClass::Alchemist => 3,
         }
     }
 
-    fn open_position(&mut self, occupied: &[usize]) -> usize {
+    pub fn open_position(&mut self, occupied: &[usize]) -> usize {
         loop {
             let position = (self.next_random() as usize) % CELLS;
             if !occupied.contains(&position) && Self::distance(position, self.player) > 1 {
@@ -493,11 +493,11 @@ impl OneRoomRoguelike {
         }
     }
 
-    fn center() -> usize {
+    pub fn center() -> usize {
         (SIZE / 2) * SIZE + SIZE / 2
     }
 
-    fn distance(first: usize, second: usize) -> usize {
+    pub fn distance(first: usize, second: usize) -> usize {
         let first_row = first / SIZE;
         let first_column = first % SIZE;
         let second_row = second / SIZE;
@@ -505,7 +505,7 @@ impl OneRoomRoguelike {
         first_row.abs_diff(second_row) + first_column.abs_diff(second_column)
     }
 
-    fn next_random(&mut self) -> u64 {
+    pub fn next_random(&mut self) -> u64 {
         self.seed = self
             .seed
             .wrapping_mul(6364136223846793005)
@@ -513,7 +513,7 @@ impl OneRoomRoguelike {
         self.seed
     }
 
-    fn snapshot(&mut self) {
+    pub fn snapshot(&mut self) {
         self.history.push((
             self.player,
             self.enemies.clone(),
@@ -529,10 +529,6 @@ impl OneRoomRoguelike {
     }
 }
 
-fn starting_room() -> u16 {
+pub fn starting_room() -> u16 {
     START_ROOM
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/one_room_roguelike/tests.rs"]
-mod tests;

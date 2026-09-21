@@ -1,7 +1,7 @@
 //! Regression coverage for the tests module.
 
-use super::*;
-use crate::state::GameId;
+use idle_hands::testing::modules::finder_data::*;
+use idle_hands::testing::state::GameId;
 
 #[test]
 fn rows_are_alphabetical_and_cover_the_collection() {

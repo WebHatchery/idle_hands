@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::mahjong_solitaire::*;
 
 #[test]
 fn a_board_without_remaining_pairs_becomes_stuck() {

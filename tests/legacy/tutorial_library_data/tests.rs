@@ -1,7 +1,7 @@
 //! Regression coverage for the tests module.
 
-use super::*;
-use crate::state::GameId;
+use idle_hands::testing::modules::tutorial_library_data::*;
+use idle_hands::testing::state::GameId;
 
 #[test]
 fn rows_follow_the_canonical_game_order_and_seen_flags() {

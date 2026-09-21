@@ -4,7 +4,7 @@ use crate::undo::UndoStack;
 use serde::{Deserialize, Serialize};
 
 pub const SIDE: usize = 5;
-const CELLS: usize = SIDE * SIDE;
+pub const CELLS: usize = SIDE * SIDE;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum PipePhase {
@@ -40,7 +40,7 @@ pub struct PipeLoop {
     pub par: u16,
     pub phase: PipePhase,
     #[serde(skip)]
-    history: UndoStack<Self>,
+    pub history: UndoStack<Self>,
 }
 
 impl Default for PipeLoop {
@@ -198,14 +198,14 @@ impl PipeLoop {
         self.connected_count() == CELLS && self.leak_count() == 0
     }
 
-    fn clone_without_history(&self) -> Self {
+    pub fn clone_without_history(&self) -> Self {
         let mut copy = self.clone();
         copy.history.clear();
         copy
     }
 }
 
-fn solved_pipes(pattern: PipePattern) -> Vec<u8> {
+pub fn solved_pipes(pattern: PipePattern) -> Vec<u8> {
     let mut pipes = vec![0; CELLS];
     for row in 0..SIDE {
         for col in 0..SIDE {
@@ -245,7 +245,7 @@ fn solved_pipes(pattern: PipePattern) -> Vec<u8> {
     pipes
 }
 
-fn neighbor_for(index: usize, bit: u8) -> Option<usize> {
+pub fn neighbor_for(index: usize, bit: u8) -> Option<usize> {
     let row = index / SIDE;
     let col = index % SIDE;
     match bit {
@@ -257,7 +257,7 @@ fn neighbor_for(index: usize, bit: u8) -> Option<usize> {
     }
 }
 
-fn neighbors(index: usize) -> Vec<(u8, usize, u8)> {
+pub fn neighbors(index: usize) -> Vec<(u8, usize, u8)> {
     [(1, 4), (2, 8), (4, 1), (8, 2)]
         .into_iter()
         .filter_map(|(bit, reciprocal)| {
@@ -266,7 +266,7 @@ fn neighbors(index: usize) -> Vec<(u8, usize, u8)> {
         .collect()
 }
 
-fn rotation_distance(mut current: u8, target: u8) -> u8 {
+pub fn rotation_distance(mut current: u8, target: u8) -> u8 {
     for count in 0..4 {
         if current == target {
             return count;
@@ -276,15 +276,11 @@ fn rotation_distance(mut current: u8, target: u8) -> u8 {
     0
 }
 
-fn rotate_mask(mask: u8) -> u8 {
+pub fn rotate_mask(mask: u8) -> u8 {
     ((mask << 1) & 0x0F) | ((mask >> 3) & 1)
 }
 
-fn next_seed(seed: u64) -> u64 {
+pub fn next_seed(seed: u64) -> u64 {
     seed.wrapping_mul(6364136223846793005)
         .wrapping_add(1442695040888963407)
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/pipe_loop/tests.rs"]
-mod tests;

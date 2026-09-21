@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::match_three::*;
 
 #[test]
 fn cleared_spaces_collapse_survivors_and_refill_only_from_the_top() {

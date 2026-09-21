@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::card_render::*;
 
 #[test]
 fn card_labels_are_safe_for_catalog_and_invalid_values() {

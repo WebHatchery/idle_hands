@@ -3,10 +3,10 @@
 use crate::domain::Direction;
 use serde::{Deserialize, Serialize};
 
-const SIZE: usize = 6;
-const CELLS: usize = SIZE * SIZE;
-const RUNES: usize = 3;
-const START_HEARTS: u8 = 3;
+pub const SIZE: usize = 6;
+pub const CELLS: usize = SIZE * SIZE;
+pub const RUNES: usize = 3;
+pub const START_HEARTS: u8 = 3;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum DailyTile {
@@ -36,7 +36,7 @@ impl DailyRule {
         }
     }
 
-    const fn trap_count(self) -> usize {
+    pub const fn trap_count(self) -> usize {
         match self {
             Self::Wayfinder => 8,
             Self::Forager => 7,
@@ -44,14 +44,14 @@ impl DailyRule {
         }
     }
 
-    const fn spring_count(self) -> usize {
+    pub const fn spring_count(self) -> usize {
         match self {
             Self::Forager => 2,
             Self::Wayfinder | Self::Daredevil => 1,
         }
     }
 
-    const fn starting_scouts(self) -> u8 {
+    pub const fn starting_scouts(self) -> u8 {
         match self {
             Self::Wayfinder => 3,
             Self::Forager => 2,
@@ -59,7 +59,7 @@ impl DailyRule {
         }
     }
 
-    const fn bravery_score(self) -> u32 {
+    pub const fn bravery_score(self) -> u32 {
         match self {
             Self::Daredevil => 4,
             Self::Wayfinder | Self::Forager => 2,
@@ -80,7 +80,7 @@ pub enum DailyHint {
     Move(Direction),
 }
 
-type Snapshot = (
+pub type Snapshot = (
     usize,
     Vec<DailyTile>,
     Vec<bool>,
@@ -112,7 +112,7 @@ pub struct DailyDungeon {
     #[serde(default)]
     pub rule: DailyRule,
     #[serde(skip)]
-    history: Vec<Snapshot>,
+    pub history: Vec<Snapshot>,
 }
 
 impl Default for DailyDungeon {
@@ -331,7 +331,7 @@ impl DailyDungeon {
         self.phase == DailyPhase::Won
     }
 
-    fn destination(&self, direction: Direction) -> Option<usize> {
+    pub fn destination(&self, direction: Direction) -> Option<usize> {
         let row = self.player / SIZE;
         let column = self.player % SIZE;
         match direction {
@@ -343,7 +343,7 @@ impl DailyDungeon {
         }
     }
 
-    fn distance(first: usize, second: usize) -> usize {
+    pub fn distance(first: usize, second: usize) -> usize {
         let first_row = first / SIZE;
         let first_column = first % SIZE;
         let second_row = second / SIZE;
@@ -351,7 +351,7 @@ impl DailyDungeon {
         first_row.abs_diff(second_row) + first_column.abs_diff(second_column)
     }
 
-    fn neighbors(position: usize) -> [Option<usize>; 4] {
+    pub fn neighbors(position: usize) -> [Option<usize>; 4] {
         let row = position / SIZE;
         let column = position % SIZE;
         [
@@ -362,7 +362,7 @@ impl DailyDungeon {
         ]
     }
 
-    fn place_tiles(&mut self) {
+    pub fn place_tiles(&mut self) {
         let mut occupied = vec![0, CELLS - 1];
         self.tiles[CELLS - 1] = DailyTile::Exit;
         for _ in 0..RUNES {
@@ -382,7 +382,7 @@ impl DailyDungeon {
         }
     }
 
-    fn open_position(&mut self, occupied: &[usize]) -> usize {
+    pub fn open_position(&mut self, occupied: &[usize]) -> usize {
         loop {
             let position = (self.next_random() as usize) % CELLS;
             if !occupied.contains(&position) {
@@ -391,7 +391,7 @@ impl DailyDungeon {
         }
     }
 
-    fn next_random(&mut self) -> u64 {
+    pub fn next_random(&mut self) -> u64 {
         self.seed = self
             .seed
             .wrapping_mul(6364136223846793005)
@@ -399,7 +399,7 @@ impl DailyDungeon {
         self.seed
     }
 
-    fn snapshot(&mut self) {
+    pub fn snapshot(&mut self) {
         self.history.push((
             self.player,
             self.tiles.clone(),
@@ -415,10 +415,6 @@ impl DailyDungeon {
     }
 }
 
-fn default_scouts() -> u8 {
+pub fn default_scouts() -> u8 {
     2
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/daily_dungeon/tests.rs"]
-mod tests;

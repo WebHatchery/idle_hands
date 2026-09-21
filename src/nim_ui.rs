@@ -8,23 +8,19 @@ use crate::{
 };
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/nim_ui/tests.rs"]
-mod tests;
+pub const PORTRAIT_HEAP_X: f32 = 10.;
+pub const PORTRAIT_HEAP_GAP: f32 = 116.;
+pub const PORTRAIT_HEAP_WIDTH: f32 = 108.;
 
-const PORTRAIT_HEAP_X: f32 = 10.;
-const PORTRAIT_HEAP_GAP: f32 = 116.;
-const PORTRAIT_HEAP_WIDTH: f32 = 108.;
-
-fn portrait() -> bool {
+pub fn portrait() -> bool {
     crate::ui::is_portrait()
 }
 
-fn compact() -> bool {
+pub fn compact() -> bool {
     crate::ui::is_compact_landscape()
 }
 
-fn heap_rect(index: usize) -> Rect {
+pub fn heap_rect(index: usize) -> Rect {
     if portrait() {
         Rect::new(
             PORTRAIT_HEAP_X + index as f32 * PORTRAIT_HEAP_GAP,
@@ -39,7 +35,7 @@ fn heap_rect(index: usize) -> Rect {
     }
 }
 
-fn take_rect(amount: usize) -> Rect {
+pub fn take_rect(amount: usize) -> Rect {
     let y = if portrait() {
         430.
     } else if compact() {
@@ -71,7 +67,7 @@ fn take_rect(amount: usize) -> Rect {
     Rect::new(x, y, width, 48.)
 }
 
-fn bottom_rects() -> (Rect, Rect, Rect, Rect) {
+pub fn bottom_rects() -> (Rect, Rect, Rect, Rect) {
     if portrait() {
         (
             Rect::new(5., 650., 70., 42.),
@@ -288,7 +284,7 @@ pub fn draw(state: &AppState) {
     );
 }
 
-fn status(status: NimStatus, rule: NimRule) -> &'static str {
+pub fn status(status: NimStatus, rule: NimRule) -> &'static str {
     match (status, rule) {
         (NimStatus::Playing, _) => "YOUR TURN",
         (NimStatus::Won, NimRule::Normal) => "YOU TOOK THE FINAL STONE",
@@ -298,7 +294,7 @@ fn status(status: NimStatus, rule: NimRule) -> &'static str {
     }
 }
 
-fn instruction(status: NimStatus, rule: NimRule) -> &'static str {
+pub fn instruction(status: NimStatus, rule: NimRule) -> &'static str {
     match (status, rule) {
         (NimStatus::Playing, NimRule::Normal) => "Select a heap; SAFE previews a forced win",
         (NimStatus::Playing, NimRule::Misere) => {
@@ -309,7 +305,7 @@ fn instruction(status: NimStatus, rule: NimRule) -> &'static str {
     }
 }
 
-fn mode_button(rect: Rect, label: &str, large_text: bool) {
+pub fn mode_button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -321,7 +317,7 @@ fn mode_button(rect: Rect, label: &str, large_text: bool) {
     text(label, rect.x + 10., rect.y + 27., 10., WHITE, large_text);
 }
 
-fn stone_color(index: u8) -> Color {
+pub fn stone_color(index: u8) -> Color {
     if index.is_multiple_of(2) {
         Color::new(0.82, 0.48, 0.30, 1.)
     } else {
@@ -329,13 +325,13 @@ fn stone_color(index: u8) -> Color {
     }
 }
 
-fn button(rect: Rect, label: &str, large_text: bool) {
+pub fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     text(label, rect.x + 12., rect.y + 29., 12., WHITE, large_text);
 }
 
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color, large_text: bool) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color, large_text: bool) {
     crate::ui::draw_text(
         value,
         x,
@@ -345,10 +341,10 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color, large_text: bool) 
     );
 }
 
-fn accent() -> Color {
+pub fn accent() -> Color {
     crate::theme::BRASS
 }
 
-fn muted() -> Color {
+pub fn muted() -> Color {
     crate::theme::SECONDARY
 }

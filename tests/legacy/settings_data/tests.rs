@@ -1,7 +1,7 @@
 //! Regression coverage for the tests module.
 
-use super::*;
-use crate::cosmetics::CosmeticKind;
+use idle_hands::testing::cosmetics::CosmeticKind;
+use idle_hands::testing::modules::settings_data::*;
 
 #[test]
 fn cosmetic_rows_follow_state_values_and_stamp_unlocks() {

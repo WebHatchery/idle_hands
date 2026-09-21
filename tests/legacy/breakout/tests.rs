@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::breakout::*;
 
 #[test]
 fn missing_the_final_ball_loses_the_run() {

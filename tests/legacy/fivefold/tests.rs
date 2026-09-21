@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::fivefold::*;
 
 #[test]
 fn seeded_rolls_repeat_and_holds_survive_a_roll() {

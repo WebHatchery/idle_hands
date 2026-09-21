@@ -2,7 +2,7 @@
 
 use crate::{progression, state::AppState};
 
-pub(super) fn apply(state: &mut AppState, scene: &str) {
+pub fn apply(state: &mut AppState, scene: &str) {
     match scene {
         "records_progress" => {
             state.records.best_2048 = 2048;
@@ -41,7 +41,3 @@ pub(super) fn apply(state: &mut AppState, scene: &str) {
         &state.content,
     );
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/game_capture_records/tests.rs"]
-mod tests;

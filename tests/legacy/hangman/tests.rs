@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::hangman::*;
 
 #[test]
 fn six_wrong_letters_lose_the_round() {

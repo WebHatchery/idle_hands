@@ -161,32 +161,31 @@ pub struct CollectionSave {
     pub cabinet_sort: u8,
 }
 
-fn default_selected() -> usize {
+pub fn default_selected() -> usize {
     4
 }
 
-fn default_riddle_room() -> MiscGame {
+pub fn default_riddle_room() -> MiscGame {
     MiscGame::new(0x4D49_5343_0001, MiscKind::RiddleRoom)
 }
 
-fn default_pattern_vault() -> MiscGame {
+pub fn default_pattern_vault() -> MiscGame {
     MiscGame::new(0x4D49_5343_0002, MiscKind::PatternVault)
 }
 
-fn default_sum_circuit() -> MiscGame {
+pub fn default_sum_circuit() -> MiscGame {
     MiscGame::new(0x4D49_5343_0003, MiscKind::SumCircuit)
 }
 
-fn default_orbit_order() -> MiscGame {
+pub fn default_orbit_order() -> MiscGame {
     MiscGame::new(0x4D49_5343_0004, MiscKind::OrbitOrder)
 }
 
-fn default_word_forge() -> MiscGame {
+pub fn default_word_forge() -> MiscGame {
     MiscGame::new(0x4D49_5343_0005, MiscKind::WordForge)
 }
 
 impl CollectionSave {
-    #[cfg(test)]
     pub fn from_state(state: &AppState, version: &str) -> Self {
         Self {
             version: version.to_owned(),

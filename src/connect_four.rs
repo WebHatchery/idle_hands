@@ -2,9 +2,9 @@
 
 use serde::{Deserialize, Serialize};
 
-const COLUMNS: usize = 7;
-const ROWS: usize = 6;
-const CELLS: usize = COLUMNS * ROWS;
+pub const COLUMNS: usize = 7;
+pub const ROWS: usize = 6;
+pub const CELLS: usize = COLUMNS * ROWS;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Disc {
@@ -27,11 +27,11 @@ pub enum AiLevel {
     Expert,
 }
 
-fn default_ai_level() -> AiLevel {
+pub fn default_ai_level() -> AiLevel {
     AiLevel::Sharp
 }
 
-type Snapshot = (Vec<Disc>, ConnectFourStatus, u8, u64);
+pub type Snapshot = (Vec<Disc>, ConnectFourStatus, u8, u64);
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ConnectFour {
@@ -42,7 +42,7 @@ pub struct ConnectFour {
     #[serde(default = "default_ai_level")]
     pub ai_level: AiLevel,
     #[serde(skip)]
-    undo: Option<Snapshot>,
+    pub undo: Option<Snapshot>,
 }
 
 impl Default for ConnectFour {
@@ -113,7 +113,7 @@ impl ConnectFour {
         column >= COLUMNS || self.cells[column] != Disc::Empty
     }
 
-    fn place(&mut self, column: usize, disc: Disc) -> bool {
+    pub fn place(&mut self, column: usize, disc: Disc) -> bool {
         if column >= COLUMNS {
             return false;
         }
@@ -132,7 +132,7 @@ impl ConnectFour {
         true
     }
 
-    fn ai_move(&mut self) {
+    pub fn ai_move(&mut self) {
         let column = match self.ai_level {
             AiLevel::Gentle => (0..COLUMNS).find(|&column| !self.column_full(column)),
             AiLevel::Sharp => self
@@ -151,7 +151,7 @@ impl ConnectFour {
         }
     }
 
-    fn winning_column(&self, disc: Disc) -> Option<usize> {
+    pub fn winning_column(&self, disc: Disc) -> Option<usize> {
         (0..COLUMNS).find(|&column| {
             if self.column_full(column) {
                 return false;
@@ -167,7 +167,7 @@ impl ConnectFour {
         })
     }
 
-    fn resolve(&mut self, disc: Disc) {
+    pub fn resolve(&mut self, disc: Disc) {
         if has_four(&self.cells, disc) {
             self.status = ConnectFourStatus::Won(disc);
         } else if self.cells.iter().all(|cell| *cell != Disc::Empty) {
@@ -175,7 +175,7 @@ impl ConnectFour {
         }
     }
 
-    fn expert_column(&self) -> Option<usize> {
+    pub fn expert_column(&self) -> Option<usize> {
         let mut best = None;
         let mut best_score = i32::MIN;
         for column in 0..COLUMNS {
@@ -192,7 +192,7 @@ impl ConnectFour {
     }
 }
 
-fn drop_disc(cells: &[Disc], column: usize, disc: Disc) -> Option<Vec<Disc>> {
+pub fn drop_disc(cells: &[Disc], column: usize, disc: Disc) -> Option<Vec<Disc>> {
     if column >= COLUMNS {
         return None;
     }
@@ -204,7 +204,7 @@ fn drop_disc(cells: &[Disc], column: usize, disc: Disc) -> Option<Vec<Disc>> {
     Some(next)
 }
 
-fn connect_four_minimax(cells: &[Disc], turn: Disc, depth: u8) -> i32 {
+pub fn connect_four_minimax(cells: &[Disc], turn: Disc, depth: u8) -> i32 {
     if has_four(cells, Disc::Yellow) {
         return 10_000 + i32::from(depth);
     }
@@ -234,7 +234,7 @@ fn connect_four_minimax(cells: &[Disc], turn: Disc, depth: u8) -> i32 {
     score
 }
 
-fn board_value(cells: &[Disc]) -> i32 {
+pub fn board_value(cells: &[Disc]) -> i32 {
     cells
         .iter()
         .enumerate()
@@ -246,7 +246,7 @@ fn board_value(cells: &[Disc]) -> i32 {
         .sum()
 }
 
-fn has_four(cells: &[Disc], disc: Disc) -> bool {
+pub fn has_four(cells: &[Disc], disc: Disc) -> bool {
     for row in 0..ROWS {
         for column in 0..COLUMNS {
             for (row_step, column_step) in [(0isize, 1isize), (1, 0), (1, 1), (1, -1)] {
@@ -266,7 +266,3 @@ fn has_four(cells: &[Disc], disc: Disc) -> bool {
     }
     false
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/connect_four/tests.rs"]
-mod tests;

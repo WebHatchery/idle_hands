@@ -91,14 +91,10 @@ pub fn is_earned(state: &AppState, achievement: AchievementId) -> bool {
         .unwrap_or(false)
 }
 
-fn matches_filter(state: &AppState, achievement: AchievementId, filter: u8) -> bool {
+pub fn matches_filter(state: &AppState, achievement: AchievementId, filter: u8) -> bool {
     match normalize_filter(filter) {
         1 => is_earned(state, achievement),
         2 => !is_earned(state, achievement),
         _ => true,
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/achievements_data/tests.rs"]
-mod tests;

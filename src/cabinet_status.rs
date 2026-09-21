@@ -250,7 +250,7 @@ pub fn sorted_games(state: &AppState, filter: u8, sort: CabinetSort) -> Vec<Game
     games
 }
 
-fn recent_rank(state: &AppState, game: GameId) -> usize {
+pub fn recent_rank(state: &AppState, game: GameId) -> usize {
     state
         .recent_games
         .iter()
@@ -273,7 +273,7 @@ pub fn availability_counts(state: &AppState, filter: u8) -> AvailabilityCounts {
         })
 }
 
-fn has_progress(state: &AppState, game: GameId) -> bool {
+pub fn has_progress(state: &AppState, game: GameId) -> bool {
     match game {
         GameId::Game2048 => state.games.game.score > 0 || state.games.game.best > 0,
         GameId::Minesweeper => state.games.minesweeper.status != MineStatus::Ready,
@@ -370,7 +370,3 @@ pub fn availability_label(state: &AppState, game: GameId) -> &'static str {
         availability.browse_label()
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/cabinet_status/tests.rs"]
-mod tests;

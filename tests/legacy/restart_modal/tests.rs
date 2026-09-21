@@ -1,11 +1,12 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::ui::restart_modal::*;
+use idle_hands::testing::{AppState, Screen, UiAction};
 
 #[test]
 fn variant_confirmation_names_the_rule_card_change() {
     let state = AppState {
-        screen: Screen::Game(crate::state::GameId::Game2048),
+        screen: Screen::Game(idle_hands::testing::state::GameId::Game2048),
         pending_restart: Some(UiAction::CycleGameVariant),
         ..Default::default()
     };
@@ -19,7 +20,7 @@ fn variant_confirmation_names_the_rule_card_change() {
 
 #[test]
 fn restart_modal_buttons_route_in_every_layout() {
-    crate::ui::with_desktop_layout(|| {
+    idle_hands::testing::ui::with_desktop_layout(|| {
         let layout = current_layout();
         assert!(matches!(
             clicks(layout.cancel.center()).as_slice(),
@@ -30,7 +31,7 @@ fn restart_modal_buttons_route_in_every_layout() {
             [UiAction::ConfirmRestart]
         ));
     });
-    crate::ui::with_portrait_layout(|| {
+    idle_hands::testing::ui::with_portrait_layout(|| {
         let layout = current_layout();
         assert!(matches!(
             clicks(layout.cancel.center()).as_slice(),
@@ -41,7 +42,7 @@ fn restart_modal_buttons_route_in_every_layout() {
             [UiAction::ConfirmRestart]
         ));
     });
-    crate::ui::with_compact_landscape_layout(|| {
+    idle_hands::testing::ui::with_compact_landscape_layout(|| {
         let layout = current_layout();
         assert!(matches!(
             clicks(layout.cancel.center()).as_slice(),

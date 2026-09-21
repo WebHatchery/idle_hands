@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::reversi::*;
 
 #[test]
 fn ai_levels_are_deterministic_and_choose_a_legal_move() {

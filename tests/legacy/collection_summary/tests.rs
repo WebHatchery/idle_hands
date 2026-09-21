@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::collection_summary::*;
 
 #[test]
 fn summary_collects_progression_and_time_state_in_one_snapshot() {

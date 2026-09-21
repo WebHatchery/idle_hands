@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::variant_card_data::*;
 
 fn assert_card_fits(layout: CardLayout, width: f32, height: f32) {
     assert!(layout.rect.x >= 0.);

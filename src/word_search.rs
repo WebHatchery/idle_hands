@@ -2,9 +2,9 @@
 
 use serde::{Deserialize, Serialize};
 
-const SIZE: usize = 10;
-const WORD_COUNT: usize = 6;
-const PLACEMENTS: [(usize, usize, isize, isize); WORD_COUNT] = [
+pub const SIZE: usize = 10;
+pub const WORD_COUNT: usize = 6;
+pub const PLACEMENTS: [(usize, usize, isize, isize); WORD_COUNT] = [
     (0, 0, 0, 1),
     (2, 9, 1, 0),
     (9, 0, 0, 1),
@@ -164,7 +164,7 @@ impl WordSearch {
             })
     }
 
-    fn matching_word(&self, start: usize, end: usize) -> Option<usize> {
+    pub fn matching_word(&self, start: usize, end: usize) -> Option<usize> {
         let start_row = start / SIZE;
         let start_column = start % SIZE;
         let end_row = end / SIZE;
@@ -203,7 +203,7 @@ impl WordSearch {
 }
 
 impl WordSearch {
-    fn new_from_words(seed: u64, theme: WordSearchTheme, words: &[String]) -> Self {
+    pub fn new_from_words(seed: u64, theme: WordSearchTheme, words: &[String]) -> Self {
         let mut cells = vec![0u8; SIZE * SIZE];
         let mut rng = seed;
         for cell in &mut cells {
@@ -230,11 +230,7 @@ impl WordSearch {
     }
 }
 
-fn next_seed(seed: u64) -> u64 {
+pub fn next_seed(seed: u64) -> u64 {
     seed.wrapping_mul(6364136223846793005)
         .wrapping_add(1442695040888963407)
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/word_search/tests.rs"]
-mod tests;

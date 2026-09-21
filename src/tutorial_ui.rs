@@ -6,8 +6,8 @@ use crate::{content::GameContent, state::GameId};
 use macroquad::prelude::*;
 
 pub const REPLAY_RECT: Rect = Rect::new(1080., 8., 150., 42.);
-const OVERLAY_RECT: Rect = Rect::new(250., 120., 780., 560.);
-const CONTINUE_RECT: Rect = Rect::new(800., 600., 180., 52.);
+pub const OVERLAY_RECT: Rect = Rect::new(250., 120., 780., 560.);
+pub const CONTINUE_RECT: Rect = Rect::new(800., 600., 180., 52.);
 
 pub fn clicks(p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(CONTINUE_RECT, p) {
@@ -116,6 +116,3 @@ pub fn draw_overlay(game: GameId, content: &GameContent, large_text: bool, high_
         WHITE,
     );
 }
-#[cfg(test)]
-#[path = "../tests/legacy/tutorial_ui/tests.rs"]
-mod tests;

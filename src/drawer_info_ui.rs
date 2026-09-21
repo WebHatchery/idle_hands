@@ -6,10 +6,6 @@ use crate::{
 };
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/drawer_info_ui/tests.rs"]
-mod tests;
-
 pub fn clicks(state: &AppState, point: Vec2) -> Vec<UiAction> {
     let Screen::DrawerInfo(game) = state.screen else {
         return Vec::new();
@@ -39,7 +35,7 @@ pub fn draw(state: &AppState) {
     }
 }
 
-fn draw_desktop(state: &AppState, game: GameId) {
+pub fn draw_desktop(state: &AppState, game: GameId) {
     panel(state, Rect::new(160., 35., 960., 650.));
     text(state, "DRAWER INFO", 220., 94., 34., accent(state));
     draw_game_card(state, game, Rect::new(220., 145., 260., 300.), 30.);
@@ -47,7 +43,7 @@ fn draw_desktop(state: &AppState, game: GameId) {
     draw_actions(state);
 }
 
-fn draw_compact(state: &AppState, game: GameId) {
+pub fn draw_compact(state: &AppState, game: GameId) {
     panel(state, Rect::new(20., 12., 804., 365.));
     text(state, "DRAWER INFO", 40., 48., 25., accent(state));
     draw_game_card(state, game, Rect::new(40., 85., 205., 175.), 22.);
@@ -55,7 +51,7 @@ fn draw_compact(state: &AppState, game: GameId) {
     draw_actions(state);
 }
 
-fn draw_portrait(state: &AppState, game: GameId) {
+pub fn draw_portrait(state: &AppState, game: GameId) {
     panel(state, Rect::new(8., 16., 344., 688.));
     text(state, "DRAWER INFO", 20., 60., 27., accent(state));
     draw_game_card(state, game, Rect::new(20., 82., 320., 120.), 24.);
@@ -63,7 +59,7 @@ fn draw_portrait(state: &AppState, game: GameId) {
     draw_actions(state);
 }
 
-fn draw_game_card(state: &AppState, game: GameId, rect: Rect, initial_size: f32) {
+pub fn draw_game_card(state: &AppState, game: GameId, rect: Rect, initial_size: f32) {
     panel_fill(state, rect, crate::theme::category_surface(game, true));
     draw_circle(
         rect.x + 48.,
@@ -93,7 +89,7 @@ fn draw_game_card(state: &AppState, game: GameId, rect: Rect, initial_size: f32)
     );
 }
 
-fn draw_details(state: &AppState, game: GameId, x: f32, y: f32, size: f32) {
+pub fn draw_details(state: &AppState, game: GameId, x: f32, y: f32, size: f32) {
     let availability = crate::storefront::availability(game);
     let status = if availability.is_playable() {
         crate::cabinet_status::status(state, game)
@@ -157,7 +153,7 @@ fn draw_details(state: &AppState, game: GameId, x: f32, y: f32, size: f32) {
     );
 }
 
-fn draw_actions(state: &AppState) {
+pub fn draw_actions(state: &AppState) {
     let game = match state.screen {
         Screen::DrawerInfo(game) => game,
         _ => return,
@@ -179,7 +175,7 @@ fn draw_actions(state: &AppState) {
     button(state, back_rect(), "BACK", crate::theme::SURFACE_DARK);
 }
 
-fn button(state: &AppState, rect: Rect, label: &str, fill: Color) {
+pub fn button(state: &AppState, rect: Rect, label: &str, fill: Color) {
     panel_fill(state, rect, fill);
     let width = crate::ui::measure_text(label, None, 12, 1.).width;
     text(
@@ -192,11 +188,11 @@ fn button(state: &AppState, rect: Rect, label: &str, fill: Color) {
     );
 }
 
-fn panel(state: &AppState, rect: Rect) {
+pub fn panel(state: &AppState, rect: Rect) {
     panel_fill(state, rect, crate::theme::BACKGROUND_DEEP);
 }
 
-fn panel_fill(state: &AppState, rect: Rect, fill: Color) {
+pub fn panel_fill(state: &AppState, rect: Rect, fill: Color) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -218,7 +214,7 @@ fn panel_fill(state: &AppState, rect: Rect, fill: Color) {
     );
 }
 
-fn text(state: &AppState, value: impl AsRef<str>, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(state: &AppState, value: impl AsRef<str>, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(
         value,
         x,
@@ -228,7 +224,7 @@ fn text(state: &AppState, value: impl AsRef<str>, x: f32, y: f32, size: f32, col
     );
 }
 
-fn open_rect() -> Rect {
+pub fn open_rect() -> Rect {
     if crate::ui::is_portrait() {
         Rect::new(10., 602., 100., 44.)
     } else if crate::ui::is_compact_landscape() {
@@ -238,7 +234,7 @@ fn open_rect() -> Rect {
     }
 }
 
-fn favorite_rect() -> Rect {
+pub fn favorite_rect() -> Rect {
     if crate::ui::is_portrait() {
         Rect::new(122., 602., 108., 44.)
     } else if crate::ui::is_compact_landscape() {
@@ -248,7 +244,7 @@ fn favorite_rect() -> Rect {
     }
 }
 
-fn back_rect() -> Rect {
+pub fn back_rect() -> Rect {
     if crate::ui::is_portrait() {
         Rect::new(242., 602., 100., 44.)
     } else if crate::ui::is_compact_landscape() {
@@ -258,7 +254,7 @@ fn back_rect() -> Rect {
     }
 }
 
-fn accent(state: &AppState) -> Color {
+pub fn accent(state: &AppState) -> Color {
     if state.high_contrast {
         WHITE
     } else {
@@ -266,7 +262,7 @@ fn accent(state: &AppState) -> Color {
     }
 }
 
-fn secondary(state: &AppState) -> Color {
+pub fn secondary(state: &AppState) -> Color {
     if state.high_contrast {
         WHITE
     } else {

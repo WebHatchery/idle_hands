@@ -3,7 +3,7 @@
 use crate::state::{AppState, GameId};
 
 pub const FILTERS: [u8; 5] = [0, 1, 2, 3, 4];
-const LABELS: [&str; 5] = ["ALL", "#–F", "G–M", "N–S", "T–Z"];
+pub const LABELS: [&str; 5] = ["ALL", "#–F", "G–M", "N–S", "T–Z"];
 
 pub fn normalize_filter(filter: u8) -> u8 {
     if FILTERS.contains(&filter) {
@@ -78,14 +78,10 @@ pub fn status_label(state: &AppState, game: GameId, compact: bool) -> &'static s
     }
 }
 
-fn first_letter(game: GameId) -> char {
+pub fn first_letter(game: GameId) -> char {
     game.title()
         .chars()
         .next()
         .unwrap_or('Z')
         .to_ascii_uppercase()
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/finder_data/tests.rs"]
-mod tests;

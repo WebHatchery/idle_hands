@@ -4,11 +4,7 @@ use crate::ui::UiAction;
 use crate::{progression::AchievementId, state::AppState};
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/records_ui/tests.rs"]
-mod tests;
-
-fn panel(rect: Rect, fill: Color) {
+pub fn panel(rect: Rect, fill: Color) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -18,7 +14,7 @@ fn panel(rect: Rect, fill: Color) {
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
-fn value(value: Option<u32>) -> String {
+pub fn value(value: Option<u32>) -> String {
     value.map_or_else(|| "—".into(), |number| number.to_string())
 }
 
@@ -357,7 +353,7 @@ pub fn draw_records(state: &AppState) {
     crate::ui::draw_text("BACK", 990., 621., 18., WHITE);
 }
 
-fn draw_filtered_records(state: &AppState) {
+pub fn draw_filtered_records(state: &AppState) {
     let rows = crate::records_data::rows(state, state.records_filter);
     let start = state.library_scroll.min(rows.len().saturating_sub(56));
     for (index, row) in rows.iter().skip(start).take(56).enumerate() {
@@ -379,7 +375,7 @@ fn draw_filtered_records(state: &AppState) {
     crate::ui::draw_text("BACK", 990., 621., 18., WHITE);
 }
 
-fn next_achievement(state: &AppState) -> String {
+pub fn next_achievement(state: &AppState) -> String {
     AchievementId::next_locked(&state.records)
         .map(|achievement| achievement.title_from(&state.content))
         .unwrap_or_else(|| "ALL COMPLETE".into())

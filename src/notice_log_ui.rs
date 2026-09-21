@@ -4,11 +4,7 @@ use crate::{state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 use macroquad_toolkit::notifications::{LoggedNotification, NotificationType};
 
-#[cfg(test)]
-#[path = "../tests/legacy/notice_log_ui/tests.rs"]
-mod tests;
-
-fn button_rect() -> Rect {
+pub fn button_rect() -> Rect {
     if crate::ui::is_compact_landscape() {
         Rect::new(600., 268., 180., 44.)
     } else if crate::ui::is_portrait() {
@@ -18,7 +14,7 @@ fn button_rect() -> Rect {
     }
 }
 
-fn log_layout() -> (Rect, Rect) {
+pub fn log_layout() -> (Rect, Rect) {
     if crate::ui::is_compact_landscape() {
         (
             Rect::new(30., 16., 780., 358.),
@@ -57,7 +53,7 @@ pub fn clicks(point: Vec2) -> Vec<UiAction> {
     }
 }
 
-fn panel(rect: Rect, fill: Color, high_contrast: bool) {
+pub fn panel(rect: Rect, fill: Color, high_contrast: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
     draw_rectangle_lines(
         rect.x,
@@ -69,7 +65,7 @@ fn panel(rect: Rect, fill: Color, high_contrast: bool) {
     );
 }
 
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color, large_text: bool) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color, large_text: bool) {
     crate::ui::draw_text(
         value,
         x,
@@ -79,7 +75,7 @@ fn text(value: &str, x: f32, y: f32, size: f32, color: Color, large_text: bool) 
     );
 }
 
-fn short_message(message: &str, limit: usize) -> String {
+pub fn short_message(message: &str, limit: usize) -> String {
     let mut value: String = message.chars().take(limit).collect();
     if message.chars().count() > limit {
         value.push('…');
@@ -87,11 +83,14 @@ fn short_message(message: &str, limit: usize) -> String {
     value
 }
 
-fn recent_notifications(history: &[LoggedNotification], limit: usize) -> Vec<&LoggedNotification> {
+pub fn recent_notifications(
+    history: &[LoggedNotification],
+    limit: usize,
+) -> Vec<&LoggedNotification> {
     history.iter().rev().take(limit).collect()
 }
 
-fn level_label(notification_type: NotificationType) -> &'static str {
+pub fn level_label(notification_type: NotificationType) -> &'static str {
     match notification_type {
         NotificationType::Success => "OK",
         NotificationType::Info => "INFO",
@@ -100,7 +99,7 @@ fn level_label(notification_type: NotificationType) -> &'static str {
     }
 }
 
-fn notice_color(high_contrast: bool, notification_type: NotificationType) -> Color {
+pub fn notice_color(high_contrast: bool, notification_type: NotificationType) -> Color {
     if high_contrast {
         WHITE
     } else {

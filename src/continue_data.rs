@@ -93,12 +93,8 @@ pub fn intent(state: &AppState) -> ContinueIntent {
     }
 }
 
-fn selected_if_playable(selected: usize, demo_build: bool) -> Option<GameId> {
+pub fn selected_if_playable(selected: usize, demo_build: bool) -> Option<GameId> {
     GameId::ALL.get(selected).copied().filter(|game| {
         crate::storefront_data::availability_for_build(*game, demo_build).is_playable()
     })
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/continue_data/tests.rs"]
-mod tests;

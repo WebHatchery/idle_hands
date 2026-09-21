@@ -9,21 +9,21 @@ use crate::{
 use macroquad::prelude::*;
 
 #[derive(Clone, Copy)]
-struct Layout {
-    board: Rect,
-    keyboard: Rect,
-    key_w: f32,
-    key_h: f32,
-    columns: usize,
-    backspace: Rect,
-    submit: Rect,
-    hint: Rect,
-    undo: Rect,
-    new_game: Rect,
-    mode: Rect,
+pub struct Layout {
+    pub board: Rect,
+    pub keyboard: Rect,
+    pub key_w: f32,
+    pub key_h: f32,
+    pub columns: usize,
+    pub backspace: Rect,
+    pub submit: Rect,
+    pub hint: Rect,
+    pub undo: Rect,
+    pub new_game: Rect,
+    pub mode: Rect,
 }
 
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             board: Rect::new(35., 44., 240., 240.),
@@ -197,7 +197,7 @@ pub fn draw(state: &AppState) {
     );
 }
 
-fn draw_board(board: Rect, game: &WordGrid, high_contrast: bool, large_text: bool) {
+pub fn draw_board(board: Rect, game: &WordGrid, high_contrast: bool, large_text: bool) {
     let cell = board.w / WORD_LENGTH as f32;
     for row in 0..MAX_GUESSES {
         for col in 0..WORD_LENGTH {
@@ -264,7 +264,7 @@ fn draw_board(board: Rect, game: &WordGrid, high_contrast: bool, large_text: boo
     }
 }
 
-fn draw_keyboard(l: Layout, game: &WordGrid, high_contrast: bool, large_text: bool) {
+pub fn draw_keyboard(l: Layout, game: &WordGrid, high_contrast: bool, large_text: bool) {
     for index in 0..26 {
         let rect = Rect::new(
             l.keyboard.x + (index % l.columns) as f32 * l.key_w,
@@ -297,7 +297,7 @@ fn draw_keyboard(l: Layout, game: &WordGrid, high_contrast: bool, large_text: bo
     }
 }
 
-fn status(phase: WordGridPhase) -> &'static str {
+pub fn status(phase: WordGridPhase) -> &'static str {
     match phase {
         WordGridPhase::Playing => "Build five letters, then tap SUBMIT",
         WordGridPhase::Won => "Word found — tap NEW WORD",
@@ -305,7 +305,7 @@ fn status(phase: WordGridPhase) -> &'static str {
     }
 }
 
-fn mode_button(rect: Rect, label: &str, large_text: bool) {
+pub fn mode_button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -316,7 +316,7 @@ fn mode_button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     center_text(label, rect, accessibility::text_size(9., large_text), WHITE);
 }
-fn tile_color(state: LetterState, high_contrast: bool) -> Color {
+pub fn tile_color(state: LetterState, high_contrast: bool) -> Color {
     if high_contrast {
         return match state {
             LetterState::Unknown => accessibility::board_fill(true),
@@ -332,7 +332,7 @@ fn tile_color(state: LetterState, high_contrast: bool) -> Color {
         LetterState::Correct => Color::new(0.22, 0.55, 0.38, 1.),
     }
 }
-fn key_color(state: LetterState, high_contrast: bool) -> Color {
+pub fn key_color(state: LetterState, high_contrast: bool) -> Color {
     if high_contrast {
         return match state {
             LetterState::Unknown => Color::new(0.18, 0.14, 0.26, 1.),
@@ -348,7 +348,7 @@ fn key_color(state: LetterState, high_contrast: bool) -> Color {
         LetterState::Correct => Color::new(0.20, 0.45, 0.30, 1.),
     }
 }
-fn button(rect: Rect, label: &str, large_text: bool) {
+pub fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     center_text(
@@ -358,7 +358,7 @@ fn button(rect: Rect, label: &str, large_text: bool) {
         WHITE,
     );
 }
-fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
+pub fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
     let measured = crate::ui::measure_text(label, None, size as u16, 1.);
     crate::ui::draw_text(
         label,
@@ -368,7 +368,7 @@ fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
         color,
     );
 }
-fn title_size() -> f32 {
+pub fn title_size() -> f32 {
     if crate::ui::is_compact_landscape() {
         20.
     } else if crate::ui::is_portrait() {
@@ -377,31 +377,27 @@ fn title_size() -> f32 {
         27.
     }
 }
-fn body_size() -> f32 {
+pub fn body_size() -> f32 {
     if crate::ui::is_portrait() {
         10.
     } else {
         12.
     }
 }
-fn accent() -> Color {
+pub fn accent() -> Color {
     crate::theme::BRASS
 }
-fn muted() -> Color {
+pub fn muted() -> Color {
     crate::theme::SECONDARY
 }
-fn line_color(high_contrast: bool) -> Color {
+pub fn line_color(high_contrast: bool) -> Color {
     accessibility::grid_line(high_contrast)
 }
 
-fn portrait_scoreline_position() -> (f32, f32) {
+pub fn portrait_scoreline_position() -> (f32, f32) {
     (12., 100.)
 }
 
-fn compact_scoreline_position() -> (f32, f32) {
+pub fn compact_scoreline_position() -> (f32, f32) {
     (280., 28.)
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/word_grid_ui/tests.rs"]
-mod tests;

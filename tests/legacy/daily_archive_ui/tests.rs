@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::daily_archive_ui::*;
 
 #[test]
 fn archive_paging_buttons_stop_at_the_history_edges() {
@@ -10,7 +10,7 @@ fn archive_paging_buttons_stop_at_the_history_edges() {
             .records
             .record_daily_result(day, day as u32, day % 2 == 0);
     }
-    crate::ui::with_desktop_layout(|| {
+    idle_hands::testing::ui::with_desktop_layout(|| {
         let layout = layout();
         assert!(clicks(&state, layout.previous.center()).is_empty());
         assert!(matches!(
@@ -32,21 +32,21 @@ fn archive_rows_offer_their_exact_day_at_each_touch_layout() {
     let mut state = AppState::default();
     state.records.record_daily_result(42, 120, true);
 
-    crate::ui::with_desktop_layout(|| {
+    idle_hands::testing::ui::with_desktop_layout(|| {
         let layout = layout();
         assert!(matches!(
             clicks(&state, archive_rect(layout, 0).center()).as_slice(),
             [UiAction::DailyArchiveOpen(42)]
         ));
     });
-    crate::ui::with_compact_landscape_layout(|| {
+    idle_hands::testing::ui::with_compact_landscape_layout(|| {
         let layout = layout();
         assert!(matches!(
             clicks(&state, archive_rect(layout, 0).center()).as_slice(),
             [UiAction::DailyArchiveOpen(42)]
         ));
     });
-    crate::ui::with_portrait_layout(|| {
+    idle_hands::testing::ui::with_portrait_layout(|| {
         let layout = layout();
         assert!(matches!(
             clicks(&state, archive_rect(layout, 0).center()).as_slice(),

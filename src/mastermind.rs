@@ -2,11 +2,11 @@
 
 use serde::{Deserialize, Serialize};
 
-const PEGS: usize = 4;
-const ROWS: usize = 10;
-const EMPTY: u8 = 255;
+pub const PEGS: usize = 4;
+pub const ROWS: usize = 10;
+pub const EMPTY: u8 = 255;
 
-type MastermindSnapshot = (
+pub type MastermindSnapshot = (
     [[u8; PEGS]; ROWS],
     [u8; ROWS],
     [u8; ROWS],
@@ -69,7 +69,7 @@ pub struct Mastermind {
     #[serde(default)]
     pub variant: MastermindVariant,
     #[serde(skip)]
-    undo: Option<MastermindSnapshot>,
+    pub undo: Option<MastermindSnapshot>,
 }
 
 impl Default for Mastermind {
@@ -193,7 +193,7 @@ impl Mastermind {
             .map(|(color, _)| (slot, color as u8))
     }
 
-    fn snapshot(&self) -> MastermindSnapshot {
+    pub fn snapshot(&self) -> MastermindSnapshot {
         (
             self.guesses,
             self.exact,
@@ -204,7 +204,7 @@ impl Mastermind {
         )
     }
 
-    fn restore(&mut self, snapshot: MastermindSnapshot) {
+    pub fn restore(&mut self, snapshot: MastermindSnapshot) {
         (
             self.guesses,
             self.exact,
@@ -232,11 +232,7 @@ pub fn score_guess(secret: &[u8; PEGS], guess: &[u8; PEGS]) -> (u8, u8) {
     (exact, partial)
 }
 
-fn next_seed(seed: u64) -> u64 {
+pub fn next_seed(seed: u64) -> u64 {
     seed.wrapping_mul(6364136223846793005)
         .wrapping_add(1442695040888963407)
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/mastermind/tests.rs"]
-mod tests;

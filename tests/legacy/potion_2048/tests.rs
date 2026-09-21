@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::potion_2048::*;
 
 #[test]
 fn merge_and_undo_restore_the_brew() {

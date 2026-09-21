@@ -213,7 +213,7 @@ impl CollectionRecords {
             return;
         }
         self.daily_results.push(DailyResult { day, score, won });
-        const HISTORY_LIMIT: usize = 90;
+        pub const HISTORY_LIMIT: usize = 90;
         if self.daily_results.len() > HISTORY_LIMIT {
             let excess = self.daily_results.len() - HISTORY_LIMIT;
             self.daily_results.drain(..excess);
@@ -249,7 +249,3 @@ pub fn format_duration(seconds: u64) -> String {
         format!("{minutes}m {remainder:02}s")
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/state_records/tests.rs"]
-mod tests;

@@ -2,25 +2,25 @@
 
 use serde::{Deserialize, Serialize};
 
-const CELLS: usize = 16;
-const PAIRS: usize = CELLS / 2;
+pub const CELLS: usize = 16;
+pub const PAIRS: usize = CELLS / 2;
 
 #[derive(Debug, Clone, Copy)]
-struct MemoryUndo {
-    cards: [MemoryCard; CELLS],
-    selected: [Option<usize>; 2],
-    mismatch_waiting: bool,
-    matched_pairs: u8,
-    moves: u16,
-    status: MemoryStatus,
-    seen: [bool; CELLS],
-    score: u32,
-    combo: u8,
-    best_combo: u8,
-    mistakes: u8,
-    peeks: u8,
-    peeked: [Option<usize>; 2],
-    peek_waiting: bool,
+pub struct MemoryUndo {
+    pub cards: [MemoryCard; CELLS],
+    pub selected: [Option<usize>; 2],
+    pub mismatch_waiting: bool,
+    pub matched_pairs: u8,
+    pub moves: u16,
+    pub status: MemoryStatus,
+    pub seen: [bool; CELLS],
+    pub score: u32,
+    pub combo: u8,
+    pub best_combo: u8,
+    pub mistakes: u8,
+    pub peeks: u8,
+    pub peeked: [Option<usize>; 2],
+    pub peek_waiting: bool,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -55,14 +55,14 @@ impl MemoryVariant {
         }
     }
 
-    const fn peeks(self) -> u8 {
+    pub const fn peeks(self) -> u8 {
         match self {
             Self::Classic | Self::Rush => 1,
             Self::Focus => 0,
         }
     }
 
-    const fn mismatch_penalty(self) -> u32 {
+    pub const fn mismatch_penalty(self) -> u32 {
         match self {
             Self::Rush => 10,
             Self::Classic | Self::Focus => 5,
@@ -98,7 +98,7 @@ pub struct MemoryPairs {
     #[serde(default)]
     pub peek_waiting: bool,
     #[serde(skip)]
-    history: Vec<MemoryUndo>,
+    pub history: Vec<MemoryUndo>,
 }
 
 impl Default for MemoryPairs {
@@ -288,7 +288,7 @@ impl MemoryPairs {
         self.seen.iter().filter(|seen| **seen).count()
     }
 
-    fn snapshot(&mut self) {
+    pub fn snapshot(&mut self) {
         self.history.push(MemoryUndo {
             cards: self.cards,
             selected: self.selected,
@@ -308,15 +308,11 @@ impl MemoryPairs {
     }
 }
 
-const fn default_peeks() -> u8 {
+pub const fn default_peeks() -> u8 {
     1
 }
 
-fn next_seed(seed: u64) -> u64 {
+pub fn next_seed(seed: u64) -> u64 {
     seed.wrapping_mul(6364136223846793005)
         .wrapping_add(1442695040888963407)
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/memory_pairs/tests.rs"]
-mod tests;

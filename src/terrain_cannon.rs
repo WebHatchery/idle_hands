@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 pub const WIDTH: u8 = 32;
 pub const HEIGHT: u8 = 18;
-const STEP_INTERVAL: f32 = 0.03;
+pub const STEP_INTERVAL: f32 = 0.03;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum CannonStatus {
@@ -22,17 +22,17 @@ pub struct CannonShot {
 }
 
 #[derive(Debug, Clone)]
-struct Snapshot {
-    terrain: Vec<u8>,
-    target_health: u8,
-    angle: u16,
-    power: u8,
-    shot: Option<CannonShot>,
-    score: u16,
-    moves: u16,
-    status: CannonStatus,
-    seed: u64,
-    paused: bool,
+pub struct Snapshot {
+    pub terrain: Vec<u8>,
+    pub target_health: u8,
+    pub angle: u16,
+    pub power: u8,
+    pub shot: Option<CannonShot>,
+    pub score: u16,
+    pub moves: u16,
+    pub status: CannonStatus,
+    pub seed: u64,
+    pub paused: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -51,9 +51,9 @@ pub struct TerrainCannon {
     #[serde(default)]
     pub mode: u8,
     #[serde(skip)]
-    undo: Option<Box<Snapshot>>,
+    pub undo: Option<Box<Snapshot>>,
     #[serde(skip)]
-    elapsed: f32,
+    pub elapsed: f32,
 }
 
 impl Default for TerrainCannon {
@@ -184,7 +184,7 @@ impl TerrainCannon {
         }
     }
 
-    fn advance_one(&mut self, dt: f32) {
+    pub fn advance_one(&mut self, dt: f32) {
         let Some(mut shot) = self.shot else {
             return;
         };
@@ -217,7 +217,7 @@ impl TerrainCannon {
         }
     }
 
-    fn carve(&mut self, center: usize) {
+    pub fn carve(&mut self, center: usize) {
         for offset in -2_i32..=2 {
             let index = center as i32 + offset;
             if !(0..i32::from(WIDTH)).contains(&index) {
@@ -230,7 +230,7 @@ impl TerrainCannon {
         }
     }
 
-    fn build_terrain(&mut self) {
+    pub fn build_terrain(&mut self) {
         for (index, height) in self.terrain.iter_mut().enumerate() {
             self.seed = self
                 .seed
@@ -245,7 +245,7 @@ impl TerrainCannon {
         }
     }
 
-    fn snapshot(&mut self) {
+    pub fn snapshot(&mut self) {
         self.undo = Some(Box::new(Snapshot {
             terrain: self.terrain.clone(),
             target_health: self.target_health,
@@ -260,7 +260,3 @@ impl TerrainCannon {
         }));
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/terrain_cannon/tests.rs"]
-mod tests;

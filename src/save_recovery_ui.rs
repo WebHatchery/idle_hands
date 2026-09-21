@@ -3,11 +3,7 @@
 use crate::{state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/save_recovery_ui/tests.rs"]
-mod tests;
-
-fn layout() -> (Rect, Rect) {
+pub fn layout() -> (Rect, Rect) {
     if crate::ui::is_compact_landscape() {
         (
             Rect::new(135., 54., 570., 140.),
@@ -31,7 +27,7 @@ pub fn clicks(point: Vec2) -> Option<UiAction> {
     crate::ui::hit(dismiss, point).then_some(UiAction::DismissSaveRecovery)
 }
 
-fn panel(rect: Rect, fill: Color, high_contrast: bool) {
+pub fn panel(rect: Rect, fill: Color, high_contrast: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
     draw_rectangle_lines(
         rect.x,
@@ -43,7 +39,7 @@ fn panel(rect: Rect, fill: Color, high_contrast: bool) {
     );
 }
 
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color, large_text: bool) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color, large_text: bool) {
     crate::ui::draw_text(
         value,
         x,

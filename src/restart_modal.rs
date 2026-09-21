@@ -6,11 +6,7 @@ use crate::{
 };
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/restart_modal/tests.rs"]
-mod tests;
-
-fn title(state: &AppState) -> String {
+pub fn title(state: &AppState) -> String {
     if matches!(
         state.pending_restart.as_ref(),
         Some(UiAction::CycleGameVariant)
@@ -23,7 +19,7 @@ fn title(state: &AppState) -> String {
     }
 }
 
-fn detail(state: &AppState) -> &'static str {
+pub fn detail(state: &AppState) -> &'static str {
     if matches!(
         state.pending_restart.as_ref(),
         Some(UiAction::CycleGameVariant)
@@ -111,6 +107,6 @@ pub fn draw(state: &AppState) {
     }
 }
 
-fn current_layout() -> crate::restart_modal_data::Layout {
+pub fn current_layout() -> crate::restart_modal_data::Layout {
     crate::restart_modal_data::layout(crate::ui::is_portrait(), crate::ui::is_compact_landscape())
 }

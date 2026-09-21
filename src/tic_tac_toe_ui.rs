@@ -9,19 +9,19 @@ use crate::{
 use macroquad::prelude::*;
 
 #[derive(Clone, Copy)]
-struct Layout {
-    board: Rect,
-    cell: f32,
-    new_board: Rect,
-    undo: Rect,
-    hint: Rect,
-    levels: [Rect; 3],
-    header: Vec2,
-    status: Vec2,
-    hint_text: Vec2,
+pub struct Layout {
+    pub board: Rect,
+    pub cell: f32,
+    pub new_board: Rect,
+    pub undo: Rect,
+    pub hint: Rect,
+    pub levels: [Rect; 3],
+    pub header: Vec2,
+    pub status: Vec2,
+    pub hint_text: Vec2,
 }
 
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     let mode = if crate::ui::is_compact_landscape() {
         LayoutMode::CompactLandscape
     } else if crate::ui::is_portrait() {
@@ -33,13 +33,13 @@ fn layout() -> Layout {
 }
 
 #[derive(Clone, Copy)]
-enum LayoutMode {
+pub enum LayoutMode {
     Desktop,
     CompactLandscape,
     Portrait,
 }
 
-fn layout_for(mode: LayoutMode) -> Layout {
+pub fn layout_for(mode: LayoutMode) -> Layout {
     match mode {
         LayoutMode::CompactLandscape => Layout {
             board: Rect::new(24., 48., 300., 300.),
@@ -218,7 +218,7 @@ pub fn draw(state: &AppState) {
     }
 }
 
-fn draw_x(rect: Rect, high_contrast: bool) {
+pub fn draw_x(rect: Rect, high_contrast: bool) {
     let inset = rect.w * 0.25;
     let color = if high_contrast {
         Color::new(1., 0.15, 0.20, 1.)
@@ -243,7 +243,7 @@ fn draw_x(rect: Rect, high_contrast: bool) {
     );
 }
 
-fn status_text(status: TicTacToeStatus) -> &'static str {
+pub fn status_text(status: TicTacToeStatus) -> &'static str {
     match status {
         TicTacToeStatus::Playing => "Your turn • the cabinet answers after each move",
         TicTacToeStatus::Won(Mark::X) => "You made three in a row.",
@@ -253,7 +253,7 @@ fn status_text(status: TicTacToeStatus) -> &'static str {
     }
 }
 
-fn compact_status_text(status: TicTacToeStatus) -> &'static str {
+pub fn compact_status_text(status: TicTacToeStatus) -> &'static str {
     match status {
         TicTacToeStatus::Playing => "Your turn • make a move",
         TicTacToeStatus::Won(Mark::X) => "You made three in a row.",
@@ -263,7 +263,7 @@ fn compact_status_text(status: TicTacToeStatus) -> &'static str {
     }
 }
 
-fn back_rect() -> Rect {
+pub fn back_rect() -> Rect {
     if crate::ui::is_compact_landscape() {
         Rect::new(10., 8., 100., 30.)
     } else if crate::ui::is_portrait() {
@@ -273,7 +273,7 @@ fn back_rect() -> Rect {
     }
 }
 
-fn button(rect: Rect, label: &str, large_text: bool) {
+pub fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -291,7 +291,7 @@ fn button(rect: Rect, label: &str, large_text: bool) {
     );
 }
 
-fn button_selected(rect: Rect, label: &str, selected: bool, large_text: bool) {
+pub fn button_selected(rect: Rect, label: &str, selected: bool, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -313,30 +313,26 @@ fn button_selected(rect: Rect, label: &str, selected: bool, large_text: bool) {
     );
 }
 
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
-fn accent() -> Color {
+pub fn accent() -> Color {
     crate::theme::BRASS
 }
-fn muted() -> Color {
+pub fn muted() -> Color {
     Color::new(0.76, 0.70, 0.86, 1.)
 }
-fn title_size() -> f32 {
+pub fn title_size() -> f32 {
     if crate::ui::is_portrait() {
         26.
     } else {
         32.
     }
 }
-fn body_size() -> f32 {
+pub fn body_size() -> f32 {
     if crate::ui::is_portrait() {
         12.
     } else {
         15.
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/tic_tac_toe_ui/tests.rs"]
-mod tests;

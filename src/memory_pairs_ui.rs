@@ -3,21 +3,17 @@
 use crate::{accessibility, memory_pairs::MemoryStatus, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/memory_pairs_ui/tests.rs"]
-mod tests;
-
 #[derive(Clone, Copy)]
-struct Layout {
-    board: Rect,
-    cell: f32,
-    new_board: Rect,
-    undo: Rect,
-    hint: Rect,
-    peek: Rect,
+pub struct Layout {
+    pub board: Rect,
+    pub cell: f32,
+    pub new_board: Rect,
+    pub undo: Rect,
+    pub hint: Rect,
+    pub peek: Rect,
 }
 
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             board: Rect::new(10., 48., 300., 300.),
@@ -214,18 +210,18 @@ pub fn draw(state: &AppState) {
     );
 }
 
-fn status_text(status: MemoryStatus, pairs: u8) -> String {
+pub fn status_text(status: MemoryStatus, pairs: u8) -> String {
     match status {
         MemoryStatus::Playing => format!("Find the pairs  •  {} of 8 found", pairs),
         MemoryStatus::Won => "Every pair is resting. Start another board to play again.".into(),
     }
 }
 
-fn pair_label(pair: u8) -> String {
+pub fn pair_label(pair: u8) -> String {
     char::from(b'A' + pair).to_string()
 }
 
-fn pair_color(pair: u8, high_contrast: bool) -> Color {
+pub fn pair_color(pair: u8, high_contrast: bool) -> Color {
     if high_contrast {
         let palette = [
             (0.10, 0.45, 1.0),
@@ -254,7 +250,7 @@ fn pair_color(pair: u8, high_contrast: bool) -> Color {
     Color::new(r, g, b, 1.)
 }
 
-fn back_rect() -> Rect {
+pub fn back_rect() -> Rect {
     if crate::ui::is_compact_landscape() {
         Rect::new(10., 8., 100., 30.)
     } else if crate::ui::is_portrait() {
@@ -264,7 +260,7 @@ fn back_rect() -> Rect {
     }
 }
 
-fn button(rect: Rect, label: &str, large_text: bool) {
+pub fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -282,19 +278,19 @@ fn button(rect: Rect, label: &str, large_text: bool) {
     );
 }
 
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
 
-fn accent() -> Color {
+pub fn accent() -> Color {
     crate::theme::BRASS
 }
 
-fn muted() -> Color {
+pub fn muted() -> Color {
     Color::new(0.76, 0.70, 0.86, 1.)
 }
 
-fn title_size() -> f32 {
+pub fn title_size() -> f32 {
     if crate::ui::is_portrait() {
         20.
     } else {
@@ -302,7 +298,7 @@ fn title_size() -> f32 {
     }
 }
 
-fn body_size() -> f32 {
+pub fn body_size() -> f32 {
     if crate::ui::is_portrait() {
         12.
     } else {

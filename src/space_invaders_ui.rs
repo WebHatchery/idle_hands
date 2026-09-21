@@ -9,18 +9,18 @@ use crate::{
 use macroquad::prelude::*;
 
 #[derive(Clone, Copy)]
-struct Layout {
-    board: Rect,
-    cell: f32,
-    left: Rect,
-    right: Rect,
-    fire: Rect,
-    pause: Rect,
-    undo: Rect,
-    new_game: Rect,
+pub struct Layout {
+    pub board: Rect,
+    pub cell: f32,
+    pub left: Rect,
+    pub right: Rect,
+    pub fire: Rect,
+    pub pause: Rect,
+    pub undo: Rect,
+    pub new_game: Rect,
 }
 
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         compact_layout()
     } else if crate::ui::is_portrait() {
@@ -48,7 +48,7 @@ fn layout() -> Layout {
     }
 }
 
-fn compact_layout() -> Layout {
+pub fn compact_layout() -> Layout {
     Layout {
         board: Rect::new(12., 54., 440., 264.),
         cell: 22.,
@@ -61,7 +61,7 @@ fn compact_layout() -> Layout {
     }
 }
 
-fn compact_header() -> (f32, f32, f32, f32) {
+pub fn compact_header() -> (f32, f32, f32, f32) {
     (120., 30., 120., 45.)
 }
 
@@ -211,7 +211,7 @@ pub fn draw(state: &AppState) {
     button(l.new_game, "NEW WAVE", state.large_text);
 }
 
-fn draw_invader(layout: Layout, invader: &Invader, high_contrast: bool) {
+pub fn draw_invader(layout: Layout, invader: &Invader, high_contrast: bool) {
     let x = cell_x(layout, invader.x);
     let y = cell_y(layout, invader.y);
     let color = match invader.kind {
@@ -266,7 +266,7 @@ fn draw_invader(layout: Layout, invader: &Invader, high_contrast: bool) {
     );
 }
 
-fn status_text(game: &SpaceInvaders) -> String {
+pub fn status_text(game: &SpaceInvaders) -> String {
     match game.status {
         SpaceInvadersStatus::Playing => "Tap LEFT or RIGHT to line up • tap FIRE to launch".into(),
         SpaceInvadersStatus::Won => "The sky is clear — new wave ready".into(),
@@ -274,14 +274,14 @@ fn status_text(game: &SpaceInvaders) -> String {
     }
 }
 
-fn cell_x(layout: Layout, column: u8) -> f32 {
+pub fn cell_x(layout: Layout, column: u8) -> f32 {
     layout.board.x + f32::from(column) * layout.cell
 }
-fn cell_y(layout: Layout, row: u8) -> f32 {
+pub fn cell_y(layout: Layout, row: u8) -> f32 {
     layout.board.y + f32::from(row) * layout.cell
 }
 
-fn button(rect: Rect, label: &str, large_text: bool) {
+pub fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     let size = accessibility::text_size(11., large_text);
@@ -294,33 +294,29 @@ fn button(rect: Rect, label: &str, large_text: bool) {
     );
 }
 
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
-fn title_size() -> f32 {
+pub fn title_size() -> f32 {
     if crate::ui::is_portrait() {
         22.
     } else {
         29.
     }
 }
-fn body_size() -> f32 {
+pub fn body_size() -> f32 {
     if crate::ui::is_portrait() {
         10.
     } else {
         12.
     }
 }
-fn accent() -> Color {
+pub fn accent() -> Color {
     crate::theme::BRASS
 }
-fn muted() -> Color {
+pub fn muted() -> Color {
     crate::theme::SECONDARY
 }
-fn back_rect() -> Rect {
+pub fn back_rect() -> Rect {
     Rect::new(0., 0., 115., 42.)
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/space_invaders_ui/tests.rs"]
-mod tests;

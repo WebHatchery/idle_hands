@@ -3,7 +3,7 @@
 use crate::{state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
-fn panel(rect: Rect, fill: Color) {
+pub fn panel(rect: Rect, fill: Color) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -14,7 +14,7 @@ fn panel(rect: Rect, fill: Color) {
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
 
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
 
@@ -173,14 +173,10 @@ pub fn clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     vec![]
 }
 
-fn portrait_board() -> Rect {
+pub fn portrait_board() -> Rect {
     Rect::new(45., 155., 300., 300.)
 }
 
-fn portrait_cell() -> f32 {
+pub fn portrait_cell() -> f32 {
     32.2
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/responsive_sudoku/tests.rs"]
-mod tests;

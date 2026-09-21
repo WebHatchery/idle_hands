@@ -30,7 +30,7 @@ impl HigherLowerRule {
         }
     }
 
-    const fn multiplier(self) -> u32 {
+    pub const fn multiplier(self) -> u32 {
         match self {
             Self::Friendly => 1,
             Self::House => 2,
@@ -38,7 +38,7 @@ impl HigherLowerRule {
     }
 }
 
-type Snapshot = (u8, u8, u16, u16, HigherLowerStatus, u64, u32, u32, bool);
+pub type Snapshot = (u8, u8, u16, u16, HigherLowerStatus, u64, u32, u32, bool);
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct HigherLower {
@@ -57,7 +57,7 @@ pub struct HigherLower {
     #[serde(default)]
     pub cashed_out: bool,
     #[serde(skip)]
-    history: Vec<Snapshot>,
+    pub history: Vec<Snapshot>,
 }
 
 impl Default for HigherLower {
@@ -142,7 +142,7 @@ impl HigherLower {
         self.rule = rule;
     }
 
-    fn snapshot(&mut self) {
+    pub fn snapshot(&mut self) {
         self.history.push((
             self.current,
             self.next,
@@ -192,7 +192,7 @@ impl HigherLower {
         *self = Self::new(seed);
         self.rule = rule;
     }
-    fn draw(&mut self) -> u8 {
+    pub fn draw(&mut self) -> u8 {
         self.seed = self
             .seed
             .wrapping_mul(6364136223846793005)
@@ -200,7 +200,3 @@ impl HigherLower {
         ((self.seed % 13) + 1) as u8
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/higher_lower/tests.rs"]
-mod tests;

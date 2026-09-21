@@ -21,7 +21,3 @@ pub fn should_pause_game(
         && !reset_confirmation
         && !already_paused
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/lifecycle/tests.rs"]
-mod tests;

@@ -6,11 +6,7 @@ use crate::{
 };
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/library_ui/tests.rs"]
-mod tests;
-
-fn panel(rect: Rect) {
+pub fn panel(rect: Rect) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -20,7 +16,7 @@ fn panel(rect: Rect) {
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
-fn back_button() {
+pub fn back_button() {
     draw_rectangle(1030., 635., 180., 48., crate::theme::MOSS_DARK);
     crate::ui::draw_text("BACK", 1090., 666., 18., WHITE);
 }
@@ -38,7 +34,7 @@ pub fn rules_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
 }
 
-fn rule_action(state: &AppState, point: Vec2) -> Option<UiAction> {
+pub fn rule_action(state: &AppState, point: Vec2) -> Option<UiAction> {
     let rows = crate::rules_data::rows(state.rules_filter);
     let visible = if state.rules_filter == 0 {
         rows
@@ -64,7 +60,7 @@ fn rule_action(state: &AppState, point: Vec2) -> Option<UiAction> {
     })
 }
 
-fn rule_info_rect(row: Rect) -> Rect {
+pub fn rule_info_rect(row: Rect) -> Rect {
     Rect::new(row.right() - 40., row.y + 2., 36., row.h - 4.)
 }
 pub fn credits_clicks(p: Vec2) -> Vec<UiAction> {
@@ -135,7 +131,7 @@ pub fn draw_rules(state: &AppState) {
     }
 }
 
-fn draw_filtered_rules(state: &AppState) {
+pub fn draw_filtered_rules(state: &AppState) {
     let rows = crate::rules_data::rows(state.rules_filter);
     let start = state.library_scroll.min(rows.len().saturating_sub(44));
     for (index, row) in rows.iter().skip(start).take(44).enumerate() {

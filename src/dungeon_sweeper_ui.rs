@@ -9,15 +9,15 @@ use crate::{
 use macroquad::prelude::*;
 
 #[derive(Clone, Copy)]
-struct Layout {
-    board: Rect,
-    flag: Rect,
-    hint: Rect,
-    undo: Rect,
-    new_game: Rect,
-    difficulties: [Rect; 3],
+pub struct Layout {
+    pub board: Rect,
+    pub flag: Rect,
+    pub hint: Rect,
+    pub undo: Rect,
+    pub new_game: Rect,
+    pub difficulties: [Rect; 3],
 }
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             board: Rect::new(250., 66., 560., 280.),
@@ -290,7 +290,7 @@ pub fn draw(state: &AppState) {
     }
 }
 use crate::grid::GridLayout;
-fn status_text(status: DungeonStatus, moves: u16) -> String {
+pub fn status_text(status: DungeonStatus, moves: u16) -> String {
     match status {
         DungeonStatus::Ready => "Tap a room to enter".into(),
         DungeonStatus::Playing => format!("Find EXIT • tap clues to chord • {} moves", moves),
@@ -298,7 +298,7 @@ fn status_text(status: DungeonStatus, moves: u16) -> String {
         DungeonStatus::Lost => "A trap closed the path".into(),
     }
 }
-fn button(rect: Rect, label: &str, large_text: bool) {
+pub fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     text(
@@ -309,7 +309,12 @@ fn button(rect: Rect, label: &str, large_text: bool) {
         WHITE,
     );
 }
-fn difficulty_button(rect: Rect, difficulty: DungeonDifficulty, selected: bool, large_text: bool) {
+pub fn difficulty_button(
+    rect: Rect,
+    difficulty: DungeonDifficulty,
+    selected: bool,
+    large_text: bool,
+) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -344,37 +349,33 @@ fn difficulty_button(rect: Rect, difficulty: DungeonDifficulty, selected: bool, 
         if selected { accent() } else { WHITE },
     );
 }
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
-fn title_size() -> f32 {
+pub fn title_size() -> f32 {
     if crate::ui::is_portrait() {
         22.
     } else {
         28.
     }
 }
-fn body_size() -> f32 {
+pub fn body_size() -> f32 {
     if crate::ui::is_portrait() {
         11.
     } else {
         13.
     }
 }
-fn cell_size(large_text: bool) -> f32 {
+pub fn cell_size(large_text: bool) -> f32 {
     if crate::ui::is_portrait() {
         accessibility::text_size(20., large_text).min(24.)
     } else {
         accessibility::text_size(28., large_text).min(32.)
     }
 }
-fn accent() -> Color {
+pub fn accent() -> Color {
     crate::theme::BRASS
 }
-fn muted() -> Color {
+pub fn muted() -> Color {
     crate::theme::SECONDARY
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/dungeon_sweeper_ui/tests.rs"]
-mod tests;

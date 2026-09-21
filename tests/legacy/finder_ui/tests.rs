@@ -1,7 +1,8 @@
 //! Regression coverage for the tests module.
 
-use super::*;
-use crate::state::{AppState, Screen};
+use idle_hands::testing::finder_data;
+use idle_hands::testing::modules::finder_ui::*;
+use idle_hands::testing::state::{AppState, Screen};
 
 #[test]
 fn paging_controls_stop_at_both_edges() {
@@ -10,7 +11,7 @@ fn paging_controls_stop_at_both_edges() {
         ..AppState::default()
     };
 
-    crate::ui::with_desktop_layout(|| {
+    idle_hands::testing::ui::with_desktop_layout(|| {
         assert!(clicks(&state, vec2(680., 610.)).is_empty());
         assert!(matches!(
             clicks(&state, vec2(810., 610.)).as_slice(),
@@ -32,12 +33,17 @@ fn accessibility_modes_keep_finder_cards_readable() {
         ..AppState::default()
     };
     assert_eq!(
-        card_fill(&high_contrast, crate::state::GameId::Solitaire, true),
-        crate::theme::SURFACE_DARK
+        card_fill(
+            &high_contrast,
+            idle_hands::testing::state::GameId::Solitaire,
+            true
+        ),
+        idle_hands::testing::theme::SURFACE_DARK
     );
 
     assert!(
-        crate::accessibility::text_size(14., true) > crate::accessibility::text_size(14., false),
+        idle_hands::testing::accessibility::text_size(14., true)
+            > idle_hands::testing::accessibility::text_size(14., false),
         "large-text mode should enlarge the measured title size"
     );
 }
@@ -58,7 +64,7 @@ fn every_visible_finder_card_exposes_a_launch_action() {
             ));
         }
     };
-    crate::ui::with_desktop_layout(assert_cards);
-    crate::ui::with_compact_landscape_layout(assert_cards);
-    crate::ui::with_portrait_layout(assert_cards);
+    idle_hands::testing::ui::with_desktop_layout(assert_cards);
+    idle_hands::testing::ui::with_compact_landscape_layout(assert_cards);
+    idle_hands::testing::ui::with_portrait_layout(assert_cards);
 }

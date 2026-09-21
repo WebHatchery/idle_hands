@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::blackjack::*;
 
 #[test]
 fn ace_total_uses_soft_value_when_safe() {

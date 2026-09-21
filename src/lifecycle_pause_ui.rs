@@ -3,11 +3,7 @@
 use crate::{state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/lifecycle_pause_ui/tests.rs"]
-mod tests;
-
-fn layout() -> (Rect, Rect) {
+pub fn layout() -> (Rect, Rect) {
     if crate::ui::is_compact_landscape() {
         (
             Rect::new(150., 45., 540., 300.),
@@ -35,7 +31,7 @@ pub fn clicks(point: Vec2) -> Vec<UiAction> {
     }
 }
 
-fn panel(rect: Rect, fill: Color, high_contrast: bool) {
+pub fn panel(rect: Rect, fill: Color, high_contrast: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
     draw_rectangle_lines(
         rect.x,
@@ -47,7 +43,7 @@ fn panel(rect: Rect, fill: Color, high_contrast: bool) {
     );
 }
 
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
 

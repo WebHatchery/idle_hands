@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::analytics::*;
 
 #[test]
 fn shipping_configuration_keeps_analytics_disabled() {

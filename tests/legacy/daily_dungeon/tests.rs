@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::daily_dungeon::*;
 
 #[test]
 fn exit_wins_only_after_all_runes() {

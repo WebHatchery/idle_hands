@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::cabinet_status::*;
 
 #[test]
 fn category_filters_partition_the_whole_collection() {

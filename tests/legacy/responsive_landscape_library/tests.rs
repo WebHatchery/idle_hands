@@ -1,8 +1,8 @@
 //! Regression coverage for the tests module.
 
-use super::*;
-use crate::state::AppState;
-use crate::ui::UiAction;
+use idle_hands::testing::modules::responsive_landscape_library::*;
+use idle_hands::testing::state::AppState;
+use idle_hands::testing::ui::UiAction;
 use macroquad::prelude::vec2;
 
 #[test]

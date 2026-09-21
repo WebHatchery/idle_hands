@@ -2,8 +2,8 @@
 
 use serde::{Deserialize, Serialize};
 
-const WIDTH: usize = 8;
-const HEIGHT: usize = 8;
+pub const WIDTH: usize = 8;
+pub const HEIGHT: usize = 8;
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub enum DungeonDifficulty {
@@ -24,7 +24,7 @@ impl DungeonDifficulty {
         }
     }
 
-    const fn traps(self) -> usize {
+    pub const fn traps(self) -> usize {
         match self {
             Self::Explorer => 10,
             Self::Delver => 12,
@@ -32,7 +32,7 @@ impl DungeonDifficulty {
         }
     }
 
-    const fn hearts(self) -> u8 {
+    pub const fn hearts(self) -> u8 {
         match self {
             Self::Explorer => 3,
             Self::Delver => 2,
@@ -40,7 +40,7 @@ impl DungeonDifficulty {
         }
     }
 
-    const fn relics(self) -> u8 {
+    pub const fn relics(self) -> u8 {
         match self {
             Self::Explorer => 2,
             Self::Delver | Self::Peril => 3,
@@ -66,15 +66,15 @@ pub enum DungeonStatus {
 }
 
 #[derive(Debug, Clone)]
-struct Snapshot {
-    cells: Vec<DungeonCell>,
-    seed: u64,
-    first_reveal: bool,
-    moves: u16,
-    status: DungeonStatus,
-    hearts: u8,
-    relics: Vec<usize>,
-    collected_relics: Vec<usize>,
+pub struct Snapshot {
+    pub cells: Vec<DungeonCell>,
+    pub seed: u64,
+    pub first_reveal: bool,
+    pub moves: u16,
+    pub status: DungeonStatus,
+    pub hearts: u8,
+    pub relics: Vec<usize>,
+    pub collected_relics: Vec<usize>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -99,7 +99,7 @@ pub struct DungeonSweeper {
     #[serde(default)]
     pub required_relics: u8,
     #[serde(skip)]
-    history: Vec<Snapshot>,
+    pub history: Vec<Snapshot>,
 }
 
 impl Default for DungeonSweeper {
@@ -319,7 +319,7 @@ impl DungeonSweeper {
         *self = Self::new_with_difficulty(seed, self.difficulty);
     }
 
-    fn place_traps(&mut self, safe: usize) {
+    pub fn place_traps(&mut self, safe: usize) {
         let mut placed = 0;
         while placed < self.traps {
             self.seed = self
@@ -338,7 +338,7 @@ impl DungeonSweeper {
         }
     }
 
-    fn place_relics(&mut self, safe: usize) {
+    pub fn place_relics(&mut self, safe: usize) {
         while self.relics.len() < self.required_relics as usize {
             self.seed = self
                 .seed
@@ -356,13 +356,13 @@ impl DungeonSweeper {
         }
     }
 
-    fn collect_relic_at(&mut self, index: usize) {
+    pub fn collect_relic_at(&mut self, index: usize) {
         if self.relics.contains(&index) && !self.collected_relics.contains(&index) {
             self.collected_relics.push(index);
         }
     }
 
-    fn finish_if_ready(&mut self) {
+    pub fn finish_if_ready(&mut self) {
         if self.relics_found() >= self.relic_total()
             && matches!(self.cells[self.exit], DungeonCell::Revealed(_))
         {
@@ -370,14 +370,14 @@ impl DungeonSweeper {
         }
     }
 
-    fn is_trap(&self, index: usize) -> bool {
+    pub fn is_trap(&self, index: usize) -> bool {
         matches!(
             self.cells[index],
             DungeonCell::Trap | DungeonCell::FlaggedTrap
         )
     }
 
-    fn snapshot(&mut self) {
+    pub fn snapshot(&mut self) {
         self.history.push(Snapshot {
             cells: self.cells.clone(),
             seed: self.seed,
@@ -390,7 +390,7 @@ impl DungeonSweeper {
         });
     }
 
-    fn neighbors(&self, index: usize) -> impl Iterator<Item = usize> + '_ {
+    pub fn neighbors(&self, index: usize) -> impl Iterator<Item = usize> + '_ {
         let x = index % self.width;
         let y = index / self.width;
         (-1i32..=1)
@@ -406,10 +406,6 @@ impl DungeonSweeper {
     }
 }
 
-fn default_hearts() -> u8 {
+pub fn default_hearts() -> u8 {
     2
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/dungeon_sweeper/tests.rs"]
-mod tests;

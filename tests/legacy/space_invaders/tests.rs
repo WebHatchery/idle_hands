@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::space_invaders::*;
 
 #[test]
 fn default_wave_has_a_touch_playable_formation() {

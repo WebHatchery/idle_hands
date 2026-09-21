@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::paddle_duel::*;
 
 #[test]
 fn starts_with_a_live_ball_and_score() {

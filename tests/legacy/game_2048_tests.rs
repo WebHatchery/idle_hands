@@ -1,6 +1,6 @@
 //! Regression tests for the 2048 rule engine.
 
-use super::*;
+use idle_hands::testing::modules::game_2048::*;
 
 #[test]
 fn hint_returns_the_first_legal_direction() {

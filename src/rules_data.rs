@@ -89,7 +89,3 @@ pub fn page_rows(filter: u8, start: usize, capacity: usize) -> Vec<RuleRow> {
     let start = start.min(rows.len());
     rows.into_iter().skip(start).take(capacity).collect()
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/rules_data/tests.rs"]
-mod tests;

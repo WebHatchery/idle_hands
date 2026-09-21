@@ -1,6 +1,8 @@
 //! Regression coverage for the tests module.
 
-use super::{is_demo_game, GameCategory, ALL, DEMO_GAMES_PER_CATEGORY};
+use idle_hands::testing::modules::game_descriptor::{
+    is_demo_game, GameCategory, ALL, DEMO_GAMES_PER_CATEGORY,
+};
 
 #[test]
 fn demo_contains_five_games_from_every_category() {

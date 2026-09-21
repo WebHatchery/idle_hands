@@ -4,10 +4,10 @@ use serde::{Deserialize, Serialize};
 
 pub const WIDTH: f32 = 32.;
 pub const HEIGHT: f32 = 18.;
-const STEP_INTERVAL: f32 = 0.03;
-const WIN_SCORE: u8 = 7;
+pub const STEP_INTERVAL: f32 = 0.03;
+pub const WIN_SCORE: u8 = 7;
 
-fn default_win_score() -> u8 {
+pub fn default_win_score() -> u8 {
     WIN_SCORE
 }
 
@@ -27,19 +27,19 @@ pub enum PaddleStatus {
 }
 
 #[derive(Debug, Clone)]
-struct Snapshot {
-    paddle_y: f32,
-    cpu_y: f32,
-    ball_x: f32,
-    ball_y: f32,
-    ball_vx: f32,
-    ball_vy: f32,
-    player_score: u8,
-    cpu_score: u8,
-    moves: u16,
-    status: PaddleStatus,
-    seed: u64,
-    paused: bool,
+pub struct Snapshot {
+    pub paddle_y: f32,
+    pub cpu_y: f32,
+    pub ball_x: f32,
+    pub ball_y: f32,
+    pub ball_vx: f32,
+    pub ball_vy: f32,
+    pub player_score: u8,
+    pub cpu_score: u8,
+    pub moves: u16,
+    pub status: PaddleStatus,
+    pub seed: u64,
+    pub paused: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -61,11 +61,11 @@ pub struct PaddleDuel {
     #[serde(default)]
     pub mode: u8,
     #[serde(skip)]
-    undo: Option<Box<Snapshot>>,
+    pub undo: Option<Box<Snapshot>>,
     #[serde(skip)]
-    elapsed: f32,
+    pub elapsed: f32,
     #[serde(skip)]
-    control: PaddleMove,
+    pub control: PaddleMove,
 }
 
 impl Default for PaddleDuel {
@@ -175,7 +175,7 @@ impl PaddleDuel {
         }
     }
 
-    fn advance_one(&mut self, dt: f32) {
+    pub fn advance_one(&mut self, dt: f32) {
         self.snapshot();
         match self.control {
             PaddleMove::Up => self.paddle_y -= 7. * dt,
@@ -219,7 +219,7 @@ impl PaddleDuel {
         }
     }
 
-    fn reset_ball(&mut self, direction: f32) {
+    pub fn reset_ball(&mut self, direction: f32) {
         self.ball_x = WIDTH * 0.5;
         self.ball_y = HEIGHT * 0.5;
         self.seed = self.seed.wrapping_mul(6364136223846793005).wrapping_add(1);
@@ -228,7 +228,7 @@ impl PaddleDuel {
         self.ball_vy = vertical;
     }
 
-    fn snapshot(&mut self) {
+    pub fn snapshot(&mut self) {
         self.undo = Some(Box::new(Snapshot {
             paddle_y: self.paddle_y,
             cpu_y: self.cpu_y,
@@ -245,7 +245,3 @@ impl PaddleDuel {
         }));
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/paddle_duel/tests.rs"]
-mod tests;

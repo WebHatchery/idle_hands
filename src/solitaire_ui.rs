@@ -8,24 +8,24 @@ use crate::{
 };
 use macroquad::prelude::*;
 
-const TOP_ROW_Y: f32 = 150.;
-const TABLEAU_LABEL_Y: f32 = 305.;
-const TABLEAU_TOP: f32 = 315.;
-const TABLEAU_BOTTOM: f32 = 614.;
-const MAX_TABLEAU_GAP: f32 = 30.;
-const MIN_TABLEAU_GAP: f32 = 12.;
+pub const TOP_ROW_Y: f32 = 150.;
+pub const TABLEAU_LABEL_Y: f32 = 305.;
+pub const TABLEAU_TOP: f32 = 315.;
+pub const TABLEAU_BOTTOM: f32 = 614.;
+pub const MAX_TABLEAU_GAP: f32 = 30.;
+pub const MIN_TABLEAU_GAP: f32 = 12.;
 
-fn text(s: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(s: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(s, x, y, crate::ui::readable_text_size(size), color);
 }
-fn card_rect(x: f32, y: f32) -> Rect {
+pub fn card_rect(x: f32, y: f32) -> Rect {
     Rect::new(x, y, 92., 116.)
 }
-fn draw_card(rect: Rect, card: Card, selected: bool, back_style: u8, reduced_motion: bool) {
+pub fn draw_card(rect: Rect, card: Card, selected: bool, back_style: u8, reduced_motion: bool) {
     crate::card_render::draw_card(rect, card, selected, back_style, reduced_motion);
 }
 
-fn tableau_gap(game: &Solitaire) -> f32 {
+pub fn tableau_gap(game: &Solitaire) -> f32 {
     let deepest = game
         .tableau
         .iter()
@@ -38,14 +38,14 @@ fn tableau_gap(game: &Solitaire) -> f32 {
     ((TABLEAU_BOTTOM - TABLEAU_TOP - 116.) / deepest as f32).clamp(MIN_TABLEAU_GAP, MAX_TABLEAU_GAP)
 }
 
-fn tableau_depth_at(game: &Solitaire, column: usize, y: f32, gap: f32) -> usize {
+pub fn tableau_depth_at(game: &Solitaire, column: usize, y: f32, gap: f32) -> usize {
     if game.tableau[column].is_empty() || y < TABLEAU_TOP {
         return 0;
     }
     (((y - TABLEAU_TOP) / gap).floor() as usize).min(game.tableau[column].len() - 1)
 }
 
-pub(crate) fn tableau_card_at(game: &Solitaire, p: Vec2) -> Option<(usize, usize)> {
+pub fn tableau_card_at(game: &Solitaire, p: Vec2) -> Option<(usize, usize)> {
     if p.y < TABLEAU_TOP || p.y > crate::ui::LOGICAL_HEIGHT {
         return None;
     }
@@ -187,7 +187,7 @@ pub fn draw_solitaire(state: &AppState) {
     text("HINT", 737., 648., 16., WHITE);
 }
 
-fn panel(rect: Rect, fill: Color) {
+pub fn panel(rect: Rect, fill: Color) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -229,7 +229,3 @@ pub fn solitaire_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
     vec![]
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/solitaire_ui/tests.rs"]
-mod tests;

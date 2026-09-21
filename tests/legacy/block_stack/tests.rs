@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::block_stack::*;
 
 #[test]
 fn starts_with_a_piece_and_next_piece() {

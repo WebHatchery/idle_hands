@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::munch_maze_ui::*;
 
 fn assert_controls_are_clear() {
     let layout = layout();
@@ -26,7 +26,7 @@ fn assert_controls_are_clear() {
 
 #[test]
 fn controls_stay_clear_of_the_board_in_every_layout() {
-    crate::ui::with_compact_landscape_layout(assert_controls_are_clear);
-    crate::ui::with_desktop_layout(assert_controls_are_clear);
-    crate::ui::with_portrait_layout(assert_controls_are_clear);
+    idle_hands::testing::ui::with_compact_landscape_layout(assert_controls_are_clear);
+    idle_hands::testing::ui::with_desktop_layout(assert_controls_are_clear);
+    idle_hands::testing::ui::with_portrait_layout(assert_controls_are_clear);
 }

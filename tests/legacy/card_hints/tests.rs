@@ -1,8 +1,8 @@
 //! Table-driven regression coverage for the cabinet hint contract.
 
-use crate::state::AppState;
+use idle_hands::testing::state::AppState;
 
-use super::*;
+use idle_hands::testing::modules::card_hints::*;
 
 type HintCase = (&'static str, fn(&AppState) -> String, &'static str);
 
@@ -82,12 +82,12 @@ fn freecell_hint_finds_an_ordinary_cascade_move() {
     state.games.freecell.cells = [None; 4];
     state.games.freecell.foundations = [0; 4];
     state.games.freecell.cascades = vec![
-        vec![crate::cards::Card {
+        vec![idle_hands::testing::cards::Card {
             rank: 7,
             suit: 0,
             face_up: true,
         }],
-        vec![crate::cards::Card {
+        vec![idle_hands::testing::cards::Card {
             rank: 8,
             suit: 1,
             face_up: true,
@@ -110,12 +110,12 @@ fn freecell_hint_finds_an_ordinary_cascade_move() {
 fn pyramid_hint_finds_an_exposed_pair() {
     let mut state = AppState::default();
     state.games.pyramid.pyramid = vec![None; 28];
-    state.games.pyramid.pyramid[26] = Some(crate::cards::Card {
+    state.games.pyramid.pyramid[26] = Some(idle_hands::testing::cards::Card {
         rank: 5,
         suit: 0,
         face_up: true,
     });
-    state.games.pyramid.pyramid[27] = Some(crate::cards::Card {
+    state.games.pyramid.pyramid[27] = Some(idle_hands::testing::cards::Card {
         rank: 8,
         suit: 1,
         face_up: true,

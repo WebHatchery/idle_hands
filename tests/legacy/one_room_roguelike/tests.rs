@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::one_room_roguelike::*;
 
 #[test]
 fn potion_restores_health_and_enemy_can_defeat_player() {

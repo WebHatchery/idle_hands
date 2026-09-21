@@ -4,20 +4,16 @@ use crate::domain::Direction;
 use crate::{accessibility, potion_2048::PotionDifficulty, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/potion_2048_ui/tests.rs"]
-mod tests;
-
 #[derive(Clone, Copy)]
-struct Layout {
-    board: Rect,
-    arrows: [Rect; 4],
-    hint: Rect,
-    undo: Rect,
-    new_game: Rect,
-    difficulty: [Rect; 3],
+pub struct Layout {
+    pub board: Rect,
+    pub arrows: [Rect; 4],
+    pub hint: Rect,
+    pub undo: Rect,
+    pub new_game: Rect,
+    pub difficulty: [Rect; 3],
 }
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             board: Rect::new(300., 65., 280., 280.),
@@ -255,13 +251,13 @@ pub fn draw(state: &AppState) {
     }
 }
 
-fn portrait_brew_status(score: u32, best: u32, target: u32, catalysts: u32) -> String {
+pub fn portrait_brew_status(score: u32, best: u32, target: u32, catalysts: u32) -> String {
     format!(
         "S{}  •  B{}  •  G{}  •  C{}",
         score, best, target, catalysts
     )
 }
-fn tile_color(value: u16, high_contrast: bool) -> Color {
+pub fn tile_color(value: u16, high_contrast: bool) -> Color {
     if high_contrast {
         return match value {
             0 => accessibility::board_fill(true),
@@ -285,7 +281,7 @@ fn tile_color(value: u16, high_contrast: bool) -> Color {
         _ => Color::new(0.36, 0.22, 0.48, 1.),
     }
 }
-fn button(rect: Rect, label: &str, large_text: bool) {
+pub fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     let size = accessibility::text_size(11., large_text);
@@ -297,7 +293,7 @@ fn button(rect: Rect, label: &str, large_text: bool) {
         WHITE,
     );
 }
-fn mode_button(rect: Rect, label: &str, selected: bool, large_text: bool) {
+pub fn mode_button(rect: Rect, label: &str, selected: bool, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -325,26 +321,26 @@ fn mode_button(rect: Rect, label: &str, selected: bool, large_text: bool) {
         WHITE,
     );
 }
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
-fn title_size() -> f32 {
+pub fn title_size() -> f32 {
     if crate::ui::is_portrait() {
         23.
     } else {
         29.
     }
 }
-fn body_size() -> f32 {
+pub fn body_size() -> f32 {
     if crate::ui::is_portrait() {
         11.
     } else {
         13.
     }
 }
-fn accent() -> Color {
+pub fn accent() -> Color {
     crate::theme::BRASS
 }
-fn muted() -> Color {
+pub fn muted() -> Color {
     crate::theme::SECONDARY
 }

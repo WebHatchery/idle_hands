@@ -1,7 +1,7 @@
 //! Regression coverage for the tests module.
 
-use super::*;
-use crate::cards::Card;
+use idle_hands::testing::cards::Card;
+use idle_hands::testing::modules::freecell::*;
 
 #[test]
 fn foundations_require_the_next_card_of_the_matching_suit() {

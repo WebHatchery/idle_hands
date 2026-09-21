@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 pub const WIDTH: u8 = 19;
 pub const HEIGHT: u8 = 15;
-const STEP_INTERVAL: f32 = 0.16;
+pub const STEP_INTERVAL: f32 = 0.16;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum MunchStatus {
@@ -22,16 +22,16 @@ pub struct Ghost {
 }
 
 #[derive(Debug, Clone)]
-struct Snapshot {
-    player: usize,
-    ghosts: Vec<Ghost>,
-    pellets: Vec<bool>,
-    score: u16,
-    moves: u16,
-    lives: u8,
-    status: MunchStatus,
-    paused: bool,
-    seed: u64,
+pub struct Snapshot {
+    pub player: usize,
+    pub ghosts: Vec<Ghost>,
+    pub pellets: Vec<bool>,
+    pub score: u16,
+    pub moves: u16,
+    pub lives: u8,
+    pub status: MunchStatus,
+    pub paused: bool,
+    pub seed: u64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -49,13 +49,13 @@ pub struct MunchMaze {
     #[serde(default)]
     pub mode: u8,
     #[serde(skip)]
-    undo: Option<Box<Snapshot>>,
+    pub undo: Option<Box<Snapshot>>,
     #[serde(skip)]
-    elapsed: f32,
+    pub elapsed: f32,
     #[serde(skip, default = "default_direction")]
-    direction: Direction,
+    pub direction: Direction,
     #[serde(skip, default = "default_direction")]
-    desired: Direction,
+    pub desired: Direction,
 }
 
 impl Default for MunchMaze {
@@ -187,7 +187,7 @@ impl MunchMaze {
         x >= WIDTH || y >= HEIGHT || self.walls[cell(x, y)]
     }
 
-    fn advance_one(&mut self) {
+    pub fn advance_one(&mut self) {
         self.snapshot();
         self.moves = self.moves.saturating_add(1);
         if can_step(self.player, self.desired, &self.walls) {
@@ -227,7 +227,7 @@ impl MunchMaze {
         }
     }
 
-    fn ghost_direction(&self, index: usize) -> Direction {
+    pub fn ghost_direction(&self, index: usize) -> Direction {
         let ghost = self.ghosts[index];
         let choices = [
             Direction::Up,
@@ -255,7 +255,7 @@ impl MunchMaze {
         best
     }
 
-    fn snapshot(&mut self) {
+    pub fn snapshot(&mut self) {
         self.undo = Some(Box::new(Snapshot {
             player: self.player,
             ghosts: self.ghosts.clone(),
@@ -270,7 +270,7 @@ impl MunchMaze {
     }
 }
 
-fn build_walls() -> Vec<bool> {
+pub fn build_walls() -> Vec<bool> {
     let mut walls = vec![false; usize::from(WIDTH) * usize::from(HEIGHT)];
     for y in 0..HEIGHT {
         for x in 0..WIDTH {
@@ -286,11 +286,11 @@ fn build_walls() -> Vec<bool> {
     walls
 }
 
-fn cell(x: u8, y: u8) -> usize {
+pub fn cell(x: u8, y: u8) -> usize {
     usize::from(y) * usize::from(WIDTH) + usize::from(x)
 }
 
-fn can_step(position: usize, direction: Direction, walls: &[bool]) -> bool {
+pub fn can_step(position: usize, direction: Direction, walls: &[bool]) -> bool {
     let x = position % usize::from(WIDTH);
     let y = position / usize::from(WIDTH);
     let (next_x, next_y) = match direction {
@@ -304,7 +304,7 @@ fn can_step(position: usize, direction: Direction, walls: &[bool]) -> bool {
         && !walls[next_y * usize::from(WIDTH) + next_x]
 }
 
-fn next_cell(position: usize, direction: Direction) -> usize {
+pub fn next_cell(position: usize, direction: Direction) -> usize {
     let x = position % usize::from(WIDTH);
     let y = position / usize::from(WIDTH);
     let (next_x, next_y) = match direction {
@@ -316,10 +316,6 @@ fn next_cell(position: usize, direction: Direction) -> usize {
     next_y * usize::from(WIDTH) + next_x
 }
 
-fn default_direction() -> Direction {
+pub fn default_direction() -> Direction {
     Direction::Right
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/munch_maze/tests.rs"]
-mod tests;

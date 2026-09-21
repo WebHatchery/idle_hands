@@ -3,11 +3,11 @@
 use macroquad_toolkit::rng::{random_u64, SeededRng};
 use serde::{Deserialize, Serialize};
 
-const PUZZLE: &str =
+pub const PUZZLE: &str =
     "530070000600195000098000060800060003400803001700020006060000280000419005000080079";
-const EASY: &str =
+pub const EASY: &str =
     "534670000672195000098300060850760003420803001710020006960000280200419005300080079";
-const HARD: &str =
+pub const HARD: &str =
     "005300000800000020070010500400005300010070006003200080060500009004000030000009700";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -33,7 +33,7 @@ impl SudokuDifficulty {
         }
     }
 
-    fn source(self) -> &'static str {
+    pub fn source(self) -> &'static str {
         match self {
             Self::Easy => EASY,
             Self::Medium => PUZZLE,
@@ -56,7 +56,7 @@ pub struct Sudoku {
     #[serde(default)]
     pub best_moves: Option<u32>,
     #[serde(skip)]
-    history: Vec<(Vec<u8>, Vec<u16>, SudokuStatus, u32)>,
+    pub history: Vec<(Vec<u8>, Vec<u16>, SudokuStatus, u32)>,
 }
 impl Default for Sudoku {
     fn default() -> Self {
@@ -180,12 +180,12 @@ impl Sudoku {
             other == index || self.values[other] != value || !Self::peers(index, other)
         })
     }
-    fn peers(left: usize, right: usize) -> bool {
+    pub fn peers(left: usize, right: usize) -> bool {
         left / 9 == right / 9
             || left % 9 == right % 9
             || (left / 27 == right / 27 && left % 9 / 3 == right % 9 / 3)
     }
-    fn check_win(&mut self) {
+    pub fn check_win(&mut self) {
         self.status = if self.values.iter().all(|&value| value != 0)
             && (0..81).all(|index| self.is_valid(index, self.values[index]))
         {
@@ -200,7 +200,7 @@ impl Sudoku {
             );
         }
     }
-    fn push_history(&mut self) {
+    pub fn push_history(&mut self) {
         self.history.push((
             self.values.clone(),
             self.notes.clone(),
@@ -210,7 +210,7 @@ impl Sudoku {
     }
 }
 
-fn count_solutions(puzzle: &[u8], limit: u8) -> u8 {
+pub fn count_solutions(puzzle: &[u8], limit: u8) -> u8 {
     if puzzle.len() != 81 || limit == 0 {
         return 0;
     }
@@ -219,7 +219,7 @@ fn count_solutions(puzzle: &[u8], limit: u8) -> u8 {
     solve_count(&mut board, 0, limit)
 }
 
-fn randomized_puzzle(source: &str, rng: &mut SeededRng) -> Vec<u8> {
+pub fn randomized_puzzle(source: &str, rng: &mut SeededRng) -> Vec<u8> {
     let source: Vec<u8> = source.bytes().map(|digit| digit - b'0').collect();
     assert_eq!(source.len(), 81, "Sudoku source must contain 81 cells");
     let rows = shuffled_units(rng);
@@ -240,7 +240,7 @@ fn randomized_puzzle(source: &str, rng: &mut SeededRng) -> Vec<u8> {
     puzzle
 }
 
-fn shuffled_units(rng: &mut SeededRng) -> Vec<usize> {
+pub fn shuffled_units(rng: &mut SeededRng) -> Vec<usize> {
     let mut units: Vec<Vec<usize>> = (0..3)
         .map(|unit| {
             let mut members = (0..3).map(|offset| unit * 3 + offset).collect::<Vec<_>>();
@@ -252,7 +252,7 @@ fn shuffled_units(rng: &mut SeededRng) -> Vec<usize> {
     units.into_iter().flatten().collect()
 }
 
-fn solve_count(board: &mut [u8; 81], found: u8, limit: u8) -> u8 {
+pub fn solve_count(board: &mut [u8; 81], found: u8, limit: u8) -> u8 {
     if found >= limit {
         return found;
     }
@@ -295,7 +295,7 @@ fn solve_count(board: &mut [u8; 81], found: u8, limit: u8) -> u8 {
     found
 }
 
-fn solve_first(board: &mut [u8; 81]) -> bool {
+pub fn solve_first(board: &mut [u8; 81]) -> bool {
     let mut best_index = None;
     let mut best_candidates = [0u8; 9];
     let mut best_count = 10;
@@ -333,10 +333,6 @@ fn solve_first(board: &mut [u8; 81]) -> bool {
     false
 }
 
-fn valid_on_board(board: &[u8; 81], index: usize, value: u8) -> bool {
+pub fn valid_on_board(board: &[u8; 81], index: usize, value: u8) -> bool {
     (0..81).all(|other| other == index || board[other] != value || !Sudoku::peers(index, other))
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/sudoku/tests.rs"]
-mod tests;

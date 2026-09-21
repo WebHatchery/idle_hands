@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::data::MatchThreeConfig;
 
-const EMPTY: u8 = u8::MAX;
+pub const EMPTY: u8 = u8::MAX;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
 pub enum MatchThreeDifficulty {
@@ -25,7 +25,7 @@ impl MatchThreeDifficulty {
         }
     }
 
-    fn index(self) -> usize {
+    pub fn index(self) -> usize {
         match self {
             Self::Standard => 0,
             Self::Hard => 1,
@@ -68,16 +68,16 @@ pub struct MatchThree {
     #[serde(default)]
     pub difficulty: MatchThreeDifficulty,
     #[serde(default = "default_side")]
-    side: usize,
+    pub side: usize,
     #[serde(default = "default_colors")]
-    colors: u8,
+    pub colors: u8,
     #[serde(default = "default_target_score")]
-    target_score: u16,
+    pub target_score: u16,
     #[serde(default)]
-    move_limit: u16,
+    pub move_limit: u16,
     pub phase: MatchThreePhase,
     #[serde(skip)]
-    undo: Option<Box<Self>>,
+    pub undo: Option<Box<Self>>,
 }
 
 impl Default for MatchThree {
@@ -115,7 +115,7 @@ impl MatchThree {
         )
     }
 
-    fn new_with_settings(
+    pub fn new_with_settings(
         mut seed: u64,
         difficulty: MatchThreeDifficulty,
         side: usize,
@@ -238,7 +238,7 @@ impl MatchThree {
         best.map(|(_, first, second)| (first, second))
     }
 
-    fn resolve(&mut self, first: usize, second: usize, activates_special: bool) {
+    pub fn resolve(&mut self, first: usize, second: usize, activates_special: bool) {
         let mut cascade = 0_u8;
         let mut first_pass = true;
         loop {
@@ -281,7 +281,7 @@ impl MatchThree {
         }
     }
 
-    fn special_for_match(
+    pub fn special_for_match(
         &self,
         matches: &[bool],
         preferred: Option<usize>,
@@ -319,7 +319,7 @@ impl MatchThree {
         })
     }
 
-    fn expand_specials(&self, matches: &mut [bool]) {
+    pub fn expand_specials(&self, matches: &mut [bool]) {
         let side = self.side();
         let mut pending: Vec<usize> = matches
             .iter()
@@ -357,7 +357,7 @@ impl MatchThree {
         }
     }
 
-    fn collapse_columns(&mut self) {
+    pub fn collapse_columns(&mut self) {
         let side = self.side();
         for col in 0..side {
             // Read survivors from the top down, then place them from the
@@ -384,7 +384,7 @@ impl MatchThree {
         }
     }
 
-    fn reshuffle(&mut self) {
+    pub fn reshuffle(&mut self) {
         self.specials.fill(MatchThreeSpecial::None);
         for attempt in 0..64_u64 {
             for index in (1..self.cells.len()).rev() {
@@ -415,7 +415,7 @@ impl MatchThree {
         self.reshuffles = self.reshuffles.saturating_add(1);
     }
 
-    fn has_legal_swap(&self) -> bool {
+    pub fn has_legal_swap(&self) -> bool {
         let board_len = self.side() * self.side();
         for first in 0..board_len {
             for second in [first + 1, first + self.side()] {
@@ -440,13 +440,13 @@ impl MatchThree {
         false
     }
 
-    fn normalize_specials(&mut self) {
+    pub fn normalize_specials(&mut self) {
         if self.specials.len() != self.cells.len() {
             self.specials = vec![MatchThreeSpecial::None; self.cells.len()];
         }
     }
 
-    fn clone_without_undo(&self) -> Self {
+    pub fn clone_without_undo(&self) -> Self {
         let mut copy = self.clone();
         copy.undo = None;
         copy
@@ -484,20 +484,20 @@ impl MatchThree {
     }
 }
 
-fn creates_match_for_side(cells: &[u8], index: usize, color: u8, side: usize) -> bool {
+pub fn creates_match_for_side(cells: &[u8], index: usize, color: u8, side: usize) -> bool {
     let col = index % side;
     let row = index / side;
     (col >= 2 && cells[index - 1] == color && cells[index - 2] == color)
         || (row >= 2 && cells[index - side] == color && cells[index - side * 2] == color)
 }
 
-fn adjacent_for_side(first: usize, second: usize, side: usize) -> bool {
+pub fn adjacent_for_side(first: usize, second: usize, side: usize) -> bool {
     let row_delta = (first / side).abs_diff(second / side);
     let col_delta = (first % side).abs_diff(second % side);
     row_delta + col_delta == 1
 }
 
-fn find_matches_for_side(cells: &[u8], side: usize) -> Vec<bool> {
+pub fn find_matches_for_side(cells: &[u8], side: usize) -> Vec<bool> {
     let cells_count = side * side;
     let mut matches = vec![false; cells_count];
     for row in 0..side {
@@ -535,24 +535,24 @@ fn find_matches_for_side(cells: &[u8], side: usize) -> Vec<bool> {
     matches
 }
 
-fn next_seed(seed: u64) -> u64 {
+pub fn next_seed(seed: u64) -> u64 {
     seed.wrapping_mul(6364136223846793005)
         .wrapping_add(1442695040888963407)
 }
 
-fn default_side() -> usize {
+pub fn default_side() -> usize {
     MatchThreeConfig::default().difficulties[0].side
 }
 
-fn default_colors() -> u8 {
+pub fn default_colors() -> u8 {
     MatchThreeConfig::default().difficulties[0].colors
 }
 
-fn default_target_score() -> u16 {
+pub fn default_target_score() -> u16 {
     MatchThreeConfig::default().difficulties[0].target_score
 }
 
-fn contiguous_run(origin: usize, limit: usize, predicate: impl Fn(usize) -> bool) -> usize {
+pub fn contiguous_run(origin: usize, limit: usize, predicate: impl Fn(usize) -> bool) -> usize {
     let mut start = origin;
     while start > 0 && predicate(start - 1) {
         start -= 1;
@@ -563,7 +563,3 @@ fn contiguous_run(origin: usize, limit: usize, predicate: impl Fn(usize) -> bool
     }
     end - start + 1
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/match_three/tests.rs"]
-mod tests;

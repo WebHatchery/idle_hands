@@ -8,20 +8,16 @@ use crate::{
 };
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/match_three_ui/tests.rs"]
-mod tests;
-
 #[derive(Clone, Copy)]
-struct Layout {
-    board: Rect,
-    hint: Rect,
-    undo: Rect,
-    new_game: Rect,
-    difficulty: [Rect; 3],
+pub struct Layout {
+    pub board: Rect,
+    pub hint: Rect,
+    pub undo: Rect,
+    pub new_game: Rect,
+    pub difficulty: [Rect; 3],
 }
 
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             board: Rect::new(250., 44., 300., 300.),
@@ -196,7 +192,7 @@ pub fn draw(state: &AppState) {
     );
 }
 
-fn draw_board(board: Rect, game: &MatchThree, high_contrast: bool) {
+pub fn draw_board(board: Rect, game: &MatchThree, high_contrast: bool) {
     let side = game.side();
     let cell = board.w / side as f32;
     for index in 0..side * side {
@@ -229,7 +225,7 @@ fn draw_board(board: Rect, game: &MatchThree, high_contrast: bool) {
     }
 }
 
-fn status(phase: MatchThreePhase) -> &'static str {
+pub fn status(phase: MatchThreePhase) -> &'static str {
     match phase {
         MatchThreePhase::Playing => "REACH THE TARGET",
         MatchThreePhase::Won => "FIELD CLEARED",
@@ -237,10 +233,10 @@ fn status(phase: MatchThreePhase) -> &'static str {
     }
 }
 
-fn portrait_summary(score: u32, moves_left: u32, target: u32) -> String {
+pub fn portrait_summary(score: u32, moves_left: u32, target: u32) -> String {
     format!("{} pts  •  {} moves  •  T{}", score, moves_left, target)
 }
-fn draw_special(rect: Rect, special: MatchThreeSpecial, high_contrast: bool) {
+pub fn draw_special(rect: Rect, special: MatchThreeSpecial, high_contrast: bool) {
     let ink = if high_contrast {
         BLACK
     } else {
@@ -285,7 +281,7 @@ fn draw_special(rect: Rect, special: MatchThreeSpecial, high_contrast: bool) {
         }
     }
 }
-fn palette(color: u8, high_contrast: bool) -> Color {
+pub fn palette(color: u8, high_contrast: bool) -> Color {
     if high_contrast {
         [
             Color::new(1., 0.20, 0.25, 1.),
@@ -308,7 +304,7 @@ fn palette(color: u8, high_contrast: bool) -> Color {
         ][color as usize % 7]
     }
 }
-fn button(rect: Rect, label: &str, large_text: bool) {
+pub fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     center_text(
@@ -318,7 +314,7 @@ fn button(rect: Rect, label: &str, large_text: bool) {
         WHITE,
     );
 }
-fn mode_button(rect: Rect, label: &str, selected: bool, large_text: bool) {
+pub fn mode_button(rect: Rect, label: &str, selected: bool, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -345,7 +341,7 @@ fn mode_button(rect: Rect, label: &str, selected: bool, large_text: bool) {
         WHITE,
     );
 }
-fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
+pub fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
     let measured = crate::ui::measure_text(label, None, size as u16, 1.);
     crate::ui::draw_text(
         label,
@@ -355,7 +351,7 @@ fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
         color,
     );
 }
-fn title_size() -> f32 {
+pub fn title_size() -> f32 {
     if crate::ui::is_compact_landscape() {
         20.
     } else if crate::ui::is_portrait() {
@@ -364,19 +360,19 @@ fn title_size() -> f32 {
         27.
     }
 }
-fn body_size() -> f32 {
+pub fn body_size() -> f32 {
     if crate::ui::is_portrait() {
         10.
     } else {
         12.
     }
 }
-fn accent() -> Color {
+pub fn accent() -> Color {
     crate::theme::BRASS
 }
-fn muted() -> Color {
+pub fn muted() -> Color {
     crate::theme::SECONDARY
 }
-fn line_color(high_contrast: bool) -> Color {
+pub fn line_color(high_contrast: bool) -> Color {
     accessibility::grid_line(high_contrast)
 }

@@ -25,29 +25,3 @@ pub fn screen_for_scene(scene: &str) -> Option<Screen> {
         .max_by_key(|game| game.save_key().len())
         .map(Screen::Game)
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn every_catalog_game_has_a_canonical_capture_prefix() {
-        for game in GameId::ALL {
-            assert_eq!(screen_for_scene(game.save_key()), Some(Screen::Game(game)));
-        }
-    }
-
-    #[test]
-    fn fixture_suffixes_share_their_game_route() {
-        assert_eq!(
-            screen_for_scene("word_ladder_routes"),
-            Some(Screen::Game(GameId::WordLadder))
-        );
-        assert_eq!(screen_for_scene("records_progress"), None);
-        assert_eq!(screen_for_scene("statistics"), None);
-        assert_eq!(screen_for_scene("tutorials"), None);
-        assert_eq!(screen_for_scene("finder"), None);
-        assert_eq!(screen_for_scene("profile"), None);
-        assert_eq!(screen_for_scene("drawer_info"), None);
-    }
-}

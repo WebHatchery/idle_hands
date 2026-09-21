@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::daily_archive_data::*;
 
 #[test]
 fn archive_rows_sort_historical_inserts_by_day_not_save_order() {

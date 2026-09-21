@@ -4,10 +4,10 @@ use serde::{Deserialize, Serialize};
 
 pub const WIDTH: u8 = 20;
 pub const HEIGHT: u8 = 14;
-const TARGET_SCORE: u16 = 120;
-const STEP_INTERVAL: f32 = 0.12;
+pub const TARGET_SCORE: u16 = 120;
+pub const STEP_INTERVAL: f32 = 0.12;
 
-fn default_target_score() -> u16 {
+pub fn default_target_score() -> u16 {
     TARGET_SCORE
 }
 
@@ -41,16 +41,16 @@ pub struct Shot {
 }
 
 #[derive(Debug, Clone)]
-struct Snapshot {
-    ship_x: u8,
-    asteroids: Vec<Asteroid>,
-    shot: Option<Shot>,
-    score: u16,
-    moves: u16,
-    lives: u8,
-    status: AsteroidsStatus,
-    seed: u64,
-    paused: bool,
+pub struct Snapshot {
+    pub ship_x: u8,
+    pub asteroids: Vec<Asteroid>,
+    pub shot: Option<Shot>,
+    pub score: u16,
+    pub moves: u16,
+    pub lives: u8,
+    pub status: AsteroidsStatus,
+    pub seed: u64,
+    pub paused: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -69,11 +69,11 @@ pub struct Asteroids {
     #[serde(default)]
     pub mode: u8,
     #[serde(skip)]
-    undo: Option<Box<Snapshot>>,
+    pub undo: Option<Box<Snapshot>>,
     #[serde(skip)]
-    elapsed: f32,
+    pub elapsed: f32,
     #[serde(skip)]
-    control: ShipDirection,
+    pub control: ShipDirection,
 }
 
 impl Default for Asteroids {
@@ -196,7 +196,7 @@ impl Asteroids {
         TARGET_SCORE
     }
 
-    fn advance_one(&mut self) {
+    pub fn advance_one(&mut self) {
         self.snapshot();
         self.moves = self.moves.saturating_add(1);
         match self.control {
@@ -221,7 +221,7 @@ impl Asteroids {
         }
     }
 
-    fn advance_shot(&mut self) {
+    pub fn advance_shot(&mut self) {
         let Some(mut shot) = self.shot else {
             return;
         };
@@ -256,7 +256,7 @@ impl Asteroids {
         }
     }
 
-    fn hit_ship(&mut self) {
+    pub fn hit_ship(&mut self) {
         self.lives = self.lives.saturating_sub(1);
         if self.lives == 0 {
             self.status = AsteroidsStatus::Lost;
@@ -264,18 +264,18 @@ impl Asteroids {
         }
     }
 
-    fn spawn_field(&mut self) {
+    pub fn spawn_field(&mut self) {
         let count = if self.mode == 0 { 8 } else { 10 };
         self.asteroids = (0..count)
             .map(|index| self.next_asteroid_at(index))
             .collect();
     }
 
-    fn next_asteroid(&mut self) -> Asteroid {
+    pub fn next_asteroid(&mut self) -> Asteroid {
         self.next_asteroid_at(self.moves as usize + self.asteroids.len())
     }
 
-    fn next_asteroid_at(&mut self, index: usize) -> Asteroid {
+    pub fn next_asteroid_at(&mut self, index: usize) -> Asteroid {
         self.seed = self
             .seed
             .wrapping_mul(6364136223846793005)
@@ -288,7 +288,7 @@ impl Asteroids {
         }
     }
 
-    fn snapshot(&mut self) {
+    pub fn snapshot(&mut self) {
         self.undo = Some(Box::new(Snapshot {
             ship_x: self.ship_x,
             asteroids: self.asteroids.clone(),
@@ -302,7 +302,3 @@ impl Asteroids {
         }));
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/asteroids/tests.rs"]
-mod tests;

@@ -4,23 +4,23 @@ use crate::{spider::SpiderStatus, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
 #[derive(Clone, Copy)]
-struct Layout {
-    top: f32,
-    card_w: f32,
-    card_h: f32,
-    overlap: f32,
-    gap: f32,
-    stock: Rect,
-    hint: Rect,
-    undo: Rect,
-    new_game: Rect,
+pub struct Layout {
+    pub top: f32,
+    pub card_w: f32,
+    pub card_h: f32,
+    pub overlap: f32,
+    pub gap: f32,
+    pub stock: Rect,
+    pub hint: Rect,
+    pub undo: Rect,
+    pub new_game: Rect,
 }
 
 impl Layout {
-    fn column_x(self, column: usize) -> f32 {
+    pub fn column_x(self, column: usize) -> f32 {
         4. + column as f32 * (self.card_w + self.gap)
     }
-    fn card_rect(self, column: usize, depth: usize) -> Rect {
+    pub fn card_rect(self, column: usize, depth: usize) -> Rect {
         Rect::new(
             self.column_x(column),
             self.top + depth as f32 * self.overlap,
@@ -30,7 +30,7 @@ impl Layout {
     }
 }
 
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             top: 91.,
@@ -221,11 +221,7 @@ pub fn draw(state: &AppState) {
     );
 }
 
-#[cfg(test)]
-#[path = "../tests/legacy/spider_ui/tests.rs"]
-mod tests;
-
-fn draw_card_slot(rect: Rect, card: Option<crate::cards::Card>, state: &AppState) {
+pub fn draw_card_slot(rect: Rect, card: Option<crate::cards::Card>, state: &AppState) {
     if let Some(card) = card {
         crate::card_render::draw_card(rect, card, false, state.card_back, state.reduced_motion);
     } else {
@@ -233,32 +229,32 @@ fn draw_card_slot(rect: Rect, card: Option<crate::cards::Card>, state: &AppState
     }
 }
 
-fn button(rect: Rect, label: &str) {
+pub fn button(rect: Rect, label: &str) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     text(label, rect.x + 12., rect.y + 26., 11., WHITE);
 }
 
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
-fn title_size() -> f32 {
+pub fn title_size() -> f32 {
     if crate::ui::is_portrait() {
         29.
     } else {
         31.
     }
 }
-fn body_size() -> f32 {
+pub fn body_size() -> f32 {
     if crate::ui::is_portrait() {
         11.
     } else {
         13.
     }
 }
-fn accent() -> Color {
+pub fn accent() -> Color {
     crate::theme::BRASS
 }
-fn muted() -> Color {
+pub fn muted() -> Color {
     crate::theme::SECONDARY
 }

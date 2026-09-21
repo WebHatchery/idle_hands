@@ -6,11 +6,12 @@ pub const WIDTH: u8 = 32;
 pub const HEIGHT: u8 = 18;
 pub const GROUND_Y: f32 = 14.0;
 pub const LEVEL_COUNT: u8 = 3;
-const STEP_INTERVAL: f32 = 0.016;
-const GRAVITY: f32 = 10.5;
-const DEFAULT_SHOTS: u8 = 5;
+pub const STEP_INTERVAL: f32 = 0.016;
+pub const GRAVITY: f32 = 10.5;
+pub const DEFAULT_SHOTS: u8 = 5;
 
-const LEVEL_NAMES: [&str; LEVEL_COUNT as usize] = ["COPPER YARD", "STACKED WORKS", "TOWER RUSH"];
+pub const LEVEL_NAMES: [&str; LEVEL_COUNT as usize] =
+    ["COPPER YARD", "STACKED WORKS", "TOWER RUSH"];
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum FlingStatus {
@@ -64,18 +65,18 @@ pub struct FlingTarget {
 }
 
 #[derive(Debug, Clone)]
-struct Snapshot {
-    blocks: Vec<FlingBlock>,
-    targets: Vec<FlingTarget>,
-    shot: Option<FlingShot>,
-    angle: u16,
-    power: u8,
-    shots_remaining: u8,
-    score: u16,
-    moves: u16,
-    status: FlingStatus,
-    seed: u64,
-    paused: bool,
+pub struct Snapshot {
+    pub blocks: Vec<FlingBlock>,
+    pub targets: Vec<FlingTarget>,
+    pub shot: Option<FlingShot>,
+    pub angle: u16,
+    pub power: u8,
+    pub shots_remaining: u8,
+    pub score: u16,
+    pub moves: u16,
+    pub status: FlingStatus,
+    pub seed: u64,
+    pub paused: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -96,12 +97,12 @@ pub struct FlingFury {
     #[serde(default)]
     pub mode: u8,
     #[serde(skip)]
-    undo: Option<Box<Snapshot>>,
+    pub undo: Option<Box<Snapshot>>,
     #[serde(skip)]
-    elapsed: f32,
+    pub elapsed: f32,
 }
 
-fn default_shots() -> u8 {
+pub fn default_shots() -> u8 {
     DEFAULT_SHOTS
 }
 
@@ -116,7 +117,7 @@ impl FlingFury {
         Self::new_at_level(seed, 0)
     }
 
-    fn new_at_level(seed: u64, mode: u8) -> Self {
+    pub fn new_at_level(seed: u64, mode: u8) -> Self {
         let mode = mode % LEVEL_COUNT;
         let (blocks, targets) = level_layout(mode);
         Self {
@@ -260,7 +261,7 @@ impl FlingFury {
         }
     }
 
-    fn advance_one(&mut self, dt: f32) {
+    pub fn advance_one(&mut self, dt: f32) {
         if let Some(mut shot) = self.shot {
             shot.x += shot.vx * dt;
             shot.y += shot.vy * dt;
@@ -324,7 +325,7 @@ impl FlingFury {
         self.finish_if_ready();
     }
 
-    fn advance_blocks(&mut self, dt: f32) {
+    pub fn advance_blocks(&mut self, dt: f32) {
         for block in &mut self.blocks {
             if !block.knocked {
                 continue;
@@ -349,7 +350,7 @@ impl FlingFury {
         }
     }
 
-    fn advance_targets(&mut self, dt: f32) {
+    pub fn advance_targets(&mut self, dt: f32) {
         for target in &mut self.targets {
             if !target.alive || !target.falling {
                 continue;
@@ -367,7 +368,7 @@ impl FlingFury {
         }
     }
 
-    fn resolve_block_contacts(&mut self) {
+    pub fn resolve_block_contacts(&mut self) {
         let len = self.blocks.len();
         for source_index in 0..len {
             if !self.blocks[source_index].knocked {
@@ -391,7 +392,7 @@ impl FlingFury {
         }
     }
 
-    fn resolve_target_contacts(&mut self) {
+    pub fn resolve_target_contacts(&mut self) {
         for block in &self.blocks {
             if !block.knocked {
                 continue;
@@ -407,7 +408,7 @@ impl FlingFury {
         }
     }
 
-    fn finish_if_ready(&mut self) {
+    pub fn finish_if_ready(&mut self) {
         if self.targets.iter().all(|target| !target.alive) {
             self.status = FlingStatus::Won;
             self.paused = false;
@@ -421,7 +422,7 @@ impl FlingFury {
         }
     }
 
-    fn snapshot(&mut self) {
+    pub fn snapshot(&mut self) {
         self.undo = Some(Box::new(Snapshot {
             blocks: self.blocks.clone(),
             targets: self.targets.clone(),
@@ -438,7 +439,7 @@ impl FlingFury {
     }
 }
 
-fn level_layout(mode: u8) -> (Vec<FlingBlock>, Vec<FlingTarget>) {
+pub fn level_layout(mode: u8) -> (Vec<FlingBlock>, Vec<FlingTarget>) {
     match mode {
         1 => (
             vec![
@@ -483,7 +484,7 @@ fn level_layout(mode: u8) -> (Vec<FlingBlock>, Vec<FlingTarget>) {
     }
 }
 
-fn block(x: f32, y: f32, w: f32, h: f32, health: u8) -> FlingBlock {
+pub fn block(x: f32, y: f32, w: f32, h: f32, health: u8) -> FlingBlock {
     FlingBlock {
         x,
         y,
@@ -498,7 +499,7 @@ fn block(x: f32, y: f32, w: f32, h: f32, health: u8) -> FlingBlock {
     }
 }
 
-fn target(x: f32, y: f32) -> FlingTarget {
+pub fn target(x: f32, y: f32) -> FlingTarget {
     FlingTarget {
         x,
         y,
@@ -511,7 +512,7 @@ fn target(x: f32, y: f32) -> FlingTarget {
     }
 }
 
-fn topple_target(target: &mut FlingTarget, vx: f32, vy: f32) {
+pub fn topple_target(target: &mut FlingTarget, vx: f32, vy: f32) {
     target.falling = true;
     target.vx = vx;
     target.vy = vy;
@@ -519,11 +520,11 @@ fn topple_target(target: &mut FlingTarget, vx: f32, vy: f32) {
     target.score_awarded = true;
 }
 
-fn distance(x: f32, y: f32, other_x: f32, other_y: f32) -> f32 {
+pub fn distance(x: f32, y: f32, other_x: f32, other_y: f32) -> f32 {
     ((x - other_x).powi(2) + (y - other_y).powi(2)).sqrt()
 }
 
-fn in_block(x: f32, y: f32, block: FlingBlock) -> bool {
+pub fn in_block(x: f32, y: f32, block: FlingBlock) -> bool {
     point_in_rect(
         x,
         y,
@@ -537,14 +538,14 @@ fn in_block(x: f32, y: f32, block: FlingBlock) -> bool {
 }
 
 #[derive(Debug, Clone, Copy)]
-struct Rect {
-    x: f32,
-    y: f32,
-    w: f32,
-    h: f32,
+pub struct Rect {
+    pub x: f32,
+    pub y: f32,
+    pub w: f32,
+    pub h: f32,
 }
 
-fn expanded_block(block: FlingBlock, margin: f32) -> Rect {
+pub fn expanded_block(block: FlingBlock, margin: f32) -> Rect {
     Rect {
         x: block.x - margin,
         y: block.y - margin,
@@ -553,17 +554,13 @@ fn expanded_block(block: FlingBlock, margin: f32) -> Rect {
     }
 }
 
-fn point_in_rect(x: f32, y: f32, rect: Rect) -> bool {
+pub fn point_in_rect(x: f32, y: f32, rect: Rect) -> bool {
     x >= rect.x && x <= rect.x + rect.w && y >= rect.y && y <= rect.y + rect.h
 }
 
-fn rectangles_overlap(left: Rect, right: Rect) -> bool {
+pub fn rectangles_overlap(left: Rect, right: Rect) -> bool {
     left.x < right.x + right.w
         && left.x + left.w > right.x
         && left.y < right.y + right.h
         && left.y + left.h > right.y
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/fling_fury/tests.rs"]
-mod tests;

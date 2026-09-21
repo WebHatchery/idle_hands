@@ -1,9 +1,9 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::credits_data::*;
 
-fn content() -> crate::content::GameContent {
-    crate::data::GameData::load().unwrap().content
+fn content() -> idle_hands::testing::content::GameContent {
+    idle_hands::testing::data::GameData::load().unwrap().content
 }
 
 #[test]

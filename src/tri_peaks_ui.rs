@@ -9,24 +9,24 @@ use crate::{
 use macroquad::prelude::*;
 
 #[derive(Clone, Copy)]
-struct Layout {
-    base_x: f32,
-    top: f32,
-    card_w: f32,
-    card_h: f32,
-    row_gap: f32,
-    gap: f32,
-    stock: Rect,
-    waste: Rect,
-    hint: Rect,
-    undo: Rect,
-    new_game: Rect,
-    bridge: Rect,
-    rule: Rect,
+pub struct Layout {
+    pub base_x: f32,
+    pub top: f32,
+    pub card_w: f32,
+    pub card_h: f32,
+    pub row_gap: f32,
+    pub gap: f32,
+    pub stock: Rect,
+    pub waste: Rect,
+    pub hint: Rect,
+    pub undo: Rect,
+    pub new_game: Rect,
+    pub bridge: Rect,
+    pub rule: Rect,
 }
 
 impl Layout {
-    fn card_rect(self, index: usize) -> Rect {
+    pub fn card_rect(self, index: usize) -> Rect {
         let (row, column) = if index < 3 {
             (0, index)
         } else if index < 9 {
@@ -52,7 +52,7 @@ impl Layout {
     }
 }
 
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             base_x: 92.,
@@ -297,7 +297,7 @@ pub fn draw(state: &AppState) {
     );
 }
 
-fn draw_slot(rect: Rect, card: Option<crate::cards::Card>, state: &AppState) {
+pub fn draw_slot(rect: Rect, card: Option<crate::cards::Card>, state: &AppState) {
     if let Some(card) = card {
         crate::card_render::draw_card_accessible(
             rect,
@@ -320,11 +320,11 @@ fn draw_slot(rect: Rect, card: Option<crate::cards::Card>, state: &AppState) {
     }
 }
 
-fn button(rect: Rect, label: &str, large_text: bool) {
+pub fn button(rect: Rect, label: &str, large_text: bool) {
     button_active(rect, label, false, large_text);
 }
 
-fn button_active(rect: Rect, label: &str, active: bool, large_text: bool) {
+pub fn button_active(rect: Rect, label: &str, active: bool, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(
         rect.x,
@@ -343,7 +343,7 @@ fn button_active(rect: Rect, label: &str, active: bool, large_text: bool) {
     );
 }
 
-fn status_text(status: TriPeaksStatus) -> &'static str {
+pub fn status_text(status: TriPeaksStatus) -> &'static str {
     match status {
         TriPeaksStatus::Playing => "Clear the three peaks",
         TriPeaksStatus::Won => "The peaks are clear",
@@ -351,7 +351,7 @@ fn status_text(status: TriPeaksStatus) -> &'static str {
     }
 }
 
-fn compact_status_text(status: TriPeaksStatus) -> &'static str {
+pub fn compact_status_text(status: TriPeaksStatus) -> &'static str {
     match status {
         TriPeaksStatus::Playing => "Clear peaks",
         TriPeaksStatus::Won => "Peaks clear",
@@ -359,30 +359,26 @@ fn compact_status_text(status: TriPeaksStatus) -> &'static str {
     }
 }
 
-fn scaled(size: f32, state: &AppState) -> f32 {
+pub fn scaled(size: f32, state: &AppState) -> f32 {
     accessibility::text_size(size, state.large_text)
 }
 
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
 
-fn accent() -> Color {
+pub fn accent() -> Color {
     crate::theme::BRASS
 }
 
-#[cfg(test)]
-#[path = "../tests/legacy/tri_peaks_ui/tests.rs"]
-mod tests;
-
-fn muted() -> Color {
+pub fn muted() -> Color {
     crate::theme::SECONDARY
 }
 
-fn playable() -> Color {
+pub fn playable() -> Color {
     Color::from_rgba(80, 224, 126, 255)
 }
 
-fn back_rect() -> Rect {
+pub fn back_rect() -> Rect {
     Rect::new(0., 0., 110., 42.)
 }

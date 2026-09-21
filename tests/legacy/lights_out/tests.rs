@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::lights_out::*;
 
 #[test]
 fn pressing_a_cell_toggles_its_cross_and_undo_restores_it() {

@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::dots_boxes::*;
 
 #[test]
 fn claims_a_box_and_keeps_the_turn() {

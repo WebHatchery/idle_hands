@@ -35,7 +35,3 @@ pub fn layout(width: f32, portrait: bool, compact_landscape: bool) -> CardLayout
         label_size,
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/variant_card_data/tests.rs"]
-mod tests;

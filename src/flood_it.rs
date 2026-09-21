@@ -26,7 +26,7 @@ impl FloodDifficulty {
         }
     }
 
-    fn index(self) -> usize {
+    pub fn index(self) -> usize {
         match self {
             Self::Standard => 0,
             Self::Hard => 1,
@@ -51,11 +51,11 @@ pub struct FloodIt {
     #[serde(default)]
     pub difficulty: FloodDifficulty,
     #[serde(default = "default_side")]
-    side: usize,
+    pub side: usize,
     #[serde(default = "default_colors")]
-    colors: u8,
+    pub colors: u8,
     #[serde(default = "default_move_limit")]
-    move_limit: u16,
+    pub move_limit: u16,
     #[serde(default)]
     pub last_gain: u16,
     #[serde(default)]
@@ -70,7 +70,7 @@ pub struct FloodIt {
     pub surges: u8,
     pub phase: FloodPhase,
     #[serde(skip)]
-    history: UndoStack<Self>,
+    pub history: UndoStack<Self>,
 }
 
 impl Default for FloodIt {
@@ -103,7 +103,7 @@ impl FloodIt {
         )
     }
 
-    fn new_with_settings(
+    pub fn new_with_settings(
         mut seed: u64,
         difficulty: FloodDifficulty,
         side: usize,
@@ -175,7 +175,7 @@ impl FloodIt {
         true
     }
 
-    fn apply_color(&mut self, color: u8) {
+    pub fn apply_color(&mut self, color: u8) {
         let old_color = self.active_color;
         self.active_color = color;
         let mut queue = VecDeque::from([0usize]);
@@ -194,7 +194,7 @@ impl FloodIt {
         }
     }
 
-    fn finish_after_move(&mut self) {
+    pub fn finish_after_move(&mut self) {
         if self.cells.iter().all(|&cell| cell == self.active_color) {
             self.phase = FloodPhase::Won;
         } else if self.moves >= self.move_limit() {
@@ -202,7 +202,7 @@ impl FloodIt {
         }
     }
 
-    fn record_growth(&mut self, gain: usize, earn_surge: bool) {
+    pub fn record_growth(&mut self, gain: usize, earn_surge: bool) {
         self.last_gain = gain.min(u16::MAX as usize) as u16;
         if gain > 0 {
             self.combo = self.combo.saturating_add(1);
@@ -270,7 +270,7 @@ impl FloodIt {
         best.map(|(_, color)| color)
     }
 
-    fn clone_without_undo(&self) -> Self {
+    pub fn clone_without_undo(&self) -> Self {
         let mut copy = self.clone();
         copy.history.clear();
         copy
@@ -307,14 +307,14 @@ impl FloodIt {
     }
 }
 
-fn origin_region_size(cells: &[u8], side: usize) -> usize {
+pub fn origin_region_size(cells: &[u8], side: usize) -> usize {
     origin_region_mask(cells, side)
         .into_iter()
         .filter(|included| *included)
         .count()
 }
 
-fn origin_region_mask(cells: &[u8], side: usize) -> Vec<bool> {
+pub fn origin_region_mask(cells: &[u8], side: usize) -> Vec<bool> {
     let color = cells[0];
     let mut queue = VecDeque::from([0usize]);
     let mut visited = vec![false; cells.len()];
@@ -332,7 +332,7 @@ fn origin_region_mask(cells: &[u8], side: usize) -> Vec<bool> {
     visited
 }
 
-fn neighbors(index: usize, side: usize) -> impl Iterator<Item = usize> {
+pub fn neighbors(index: usize, side: usize) -> impl Iterator<Item = usize> {
     let row = index / side;
     let col = index % side;
     [
@@ -345,18 +345,14 @@ fn neighbors(index: usize, side: usize) -> impl Iterator<Item = usize> {
     .flatten()
 }
 
-fn default_side() -> usize {
+pub fn default_side() -> usize {
     FloodItConfig::default().difficulties[0].side
 }
 
-fn default_colors() -> u8 {
+pub fn default_colors() -> u8 {
     FloodItConfig::default().difficulties[0].colors
 }
 
-fn default_move_limit() -> u16 {
+pub fn default_move_limit() -> u16 {
     FloodItConfig::default().difficulties[0].move_limit
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/flood_it/tests.rs"]
-mod tests;

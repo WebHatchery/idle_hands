@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::mahjong_solitaire_ui::*;
 
 #[test]
 fn compact_title_and_instruction_use_separate_rows() {
@@ -22,7 +22,7 @@ fn portrait_title_budget_stays_left_of_the_rule_card() {
 
 #[test]
 fn portrait_mahjong_title_uses_a_narrow_readable_size() {
-    crate::ui::with_portrait_layout(|| {
+    idle_hands::testing::ui::with_portrait_layout(|| {
         assert_eq!(title_size(), 17.);
         assert_eq!(title_text(), "MAHJONG");
     });

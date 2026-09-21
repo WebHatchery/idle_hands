@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::flood_it::*;
 
 #[test]
 fn move_limit_produces_a_loss() {

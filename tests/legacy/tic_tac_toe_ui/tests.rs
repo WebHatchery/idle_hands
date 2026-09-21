@@ -1,6 +1,7 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::tic_tac_toe_ui::*;
+use idle_hands::testing::tic_tac_toe::TicTacToeStatus;
 
 fn overlaps(left: Rect, right: Rect) -> bool {
     left.x < right.right()

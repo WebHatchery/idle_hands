@@ -4,15 +4,15 @@ use crate::{state::AppState, ui::UiAction, word_search::WordSearchStatus};
 use macroquad::prelude::*;
 
 #[derive(Clone, Copy)]
-struct Layout {
-    board: Rect,
-    cell: f32,
-    clear: Rect,
-    new_game: Rect,
-    hint: Rect,
+pub struct Layout {
+    pub board: Rect,
+    pub cell: f32,
+    pub clear: Rect,
+    pub new_game: Rect,
+    pub hint: Rect,
 }
 
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             board: Rect::new(8., 48., 300., 300.),
@@ -178,11 +178,7 @@ pub fn draw(state: &AppState) {
     button(layout.hint, "HINT");
 }
 
-#[cfg(test)]
-#[path = "../tests/legacy/word_search_ui/tests.rs"]
-mod tests;
-
-fn draw_word_list(game: &crate::word_search::WordSearch, _layout: Layout) {
+pub fn draw_word_list(game: &crate::word_search::WordSearch, _layout: Layout) {
     let words = game.words();
     if crate::ui::is_portrait() {
         text("FIND THESE", 20., 548., 13., accent());
@@ -224,38 +220,38 @@ fn draw_word_list(game: &crate::word_search::WordSearch, _layout: Layout) {
     }
 }
 
-fn compact_instruction_position() -> Vec2 {
+pub fn compact_instruction_position() -> Vec2 {
     vec2(370., 30.)
 }
 
-fn button(rect: Rect, label: &str) {
+pub fn button(rect: Rect, label: &str) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     text(label, rect.x + 12., rect.y + 27., 11., WHITE);
 }
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
-fn title_size() -> f32 {
+pub fn title_size() -> f32 {
     if crate::ui::is_portrait() {
         29.
     } else {
         31.
     }
 }
-fn body_size() -> f32 {
+pub fn body_size() -> f32 {
     if crate::ui::is_portrait() {
         11.
     } else {
         13.
     }
 }
-fn accent() -> Color {
+pub fn accent() -> Color {
     crate::theme::BRASS
 }
-fn muted() -> Color {
+pub fn muted() -> Color {
     crate::theme::SECONDARY
 }
-fn back_rect() -> Rect {
+pub fn back_rect() -> Rect {
     Rect::new(0., 0., 110., 42.)
 }

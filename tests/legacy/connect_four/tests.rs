@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::connect_four::*;
 
 #[test]
 fn gravity_and_four_in_a_row_are_detected() {

@@ -1,7 +1,7 @@
 //! Regression coverage for the tests module.
 
-use super::*;
-use crate::cards::Card;
+use idle_hands::testing::cards::Card;
+use idle_hands::testing::modules::state::*;
 
 #[test]
 fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
@@ -135,7 +135,7 @@ fn older_saves_default_new_progression_and_cosmetic_fields() {
     assert_eq!(restored.stamps, 0);
     assert_eq!(
         restored.achievements,
-        vec![false; crate::progression::AchievementId::ALL.len()]
+        vec![false; idle_hands::testing::progression::AchievementId::ALL.len()]
     );
     assert_eq!(restored.card_back, 0);
     assert_eq!(restored.board_theme, 0);
@@ -143,6 +143,9 @@ fn older_saves_default_new_progression_and_cosmetic_fields() {
     assert_eq!(restored.cabinet_decoration, 0);
     assert!(!restored.high_contrast);
     assert!(!restored.large_text);
-    assert_eq!(restored.sound_level, crate::audio_settings::DEFAULT_LEVEL);
+    assert_eq!(
+        restored.sound_level,
+        idle_hands::testing::audio_settings::DEFAULT_LEVEL
+    );
     assert_eq!(restored.favorites, vec![false; GameId::ALL.len()]);
 }

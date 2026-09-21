@@ -59,7 +59,7 @@ pub struct Battleship {
     #[serde(default)]
     pub fleet: BattleshipFleet,
     #[serde(skip)]
-    history: UndoStack<Self>,
+    pub history: UndoStack<Self>,
 }
 
 impl Default for Battleship {
@@ -168,7 +168,7 @@ impl Battleship {
         true
     }
 
-    fn scan(&mut self, cell: usize) -> bool {
+    pub fn scan(&mut self, cell: usize) -> bool {
         if cell >= CELLS || self.sonar_charges == 0 {
             return false;
         }
@@ -282,23 +282,19 @@ impl Battleship {
             .or_else(|| self.shots.iter().position(|shot| *shot == Shot::Unknown))
     }
 
-    fn ensure_scanned_shape(&mut self) {
+    pub fn ensure_scanned_shape(&mut self) {
         if self.scanned.len() != CELLS {
             self.scanned.resize(CELLS, false);
         }
     }
 
-    fn clone_without_history(&self) -> Self {
+    pub fn clone_without_history(&self) -> Self {
         let mut copy = self.clone();
         copy.history.clear();
         copy
     }
 }
 
-const fn default_sonar_charges() -> u8 {
+pub const fn default_sonar_charges() -> u8 {
     2
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/battleship/tests.rs"]
-mod tests;

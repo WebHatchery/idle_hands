@@ -3,23 +3,19 @@
 use crate::{state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/daily_archive_ui/tests.rs"]
-mod tests;
-
 #[derive(Clone, Copy)]
-struct Layout {
-    panel: Rect,
-    back: Rect,
-    previous: Rect,
-    next: Rect,
-    columns: usize,
-    row_size: Vec2,
-    origin: Vec2,
-    gap: Vec2,
+pub struct Layout {
+    pub panel: Rect,
+    pub back: Rect,
+    pub previous: Rect,
+    pub next: Rect,
+    pub columns: usize,
+    pub row_size: Vec2,
+    pub origin: Vec2,
+    pub gap: Vec2,
 }
 
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             panel: Rect::new(20., 12., 804., 365.),
@@ -237,7 +233,7 @@ pub fn draw(state: &AppState) {
     );
 }
 
-fn archive_rect(layout: Layout, slot: usize) -> Rect {
+pub fn archive_rect(layout: Layout, slot: usize) -> Rect {
     Rect::new(
         layout.origin.x + (slot % layout.columns) as f32 * layout.gap.x,
         layout.origin.y + (slot / layout.columns) as f32 * layout.gap.y,
@@ -246,7 +242,7 @@ fn archive_rect(layout: Layout, slot: usize) -> Rect {
     )
 }
 
-fn panel(rect: Rect, fill: Color, high_contrast: bool) {
+pub fn panel(rect: Rect, fill: Color, high_contrast: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
     draw_rectangle_lines(
         rect.x,
@@ -258,7 +254,7 @@ fn panel(rect: Rect, fill: Color, high_contrast: bool) {
     );
 }
 
-fn archive_button(rect: Rect, label: &str, enabled: bool, high_contrast: bool) {
+pub fn archive_button(rect: Rect, label: &str, enabled: bool, high_contrast: bool) {
     panel(
         rect,
         if enabled {

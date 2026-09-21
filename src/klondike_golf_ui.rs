@@ -3,21 +3,17 @@
 use crate::{accessibility, klondike_golf::GolfStatus, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/klondike_golf_ui/tests.rs"]
-mod tests;
-
 #[derive(Clone, Copy)]
-struct Layout {
-    board: Rect,
-    col_w: f32,
-    card_h: f32,
-    stock: Rect,
-    hint: Rect,
-    undo: Rect,
-    new_game: Rect,
+pub struct Layout {
+    pub board: Rect,
+    pub col_w: f32,
+    pub card_h: f32,
+    pub stock: Rect,
+    pub hint: Rect,
+    pub undo: Rect,
+    pub new_game: Rect,
 }
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             board: Rect::new(18., 85., 560., 190.),
@@ -43,7 +39,7 @@ fn layout() -> Layout {
     }
 }
 
-fn desktop_layout() -> Layout {
+pub fn desktop_layout() -> Layout {
     Layout {
         board: Rect::new(350., 90., 560., 310.),
         col_w: 78.,
@@ -215,7 +211,7 @@ pub fn draw(state: &AppState) {
     button(l.undo, "UNDO", state.large_text);
     button(l.new_game, "NEW BOARD", state.large_text);
 }
-fn draw_card(rank: u8, suit: u8, rect: Rect, high_contrast: bool, large_text: bool) {
+pub fn draw_card(rank: u8, suit: u8, rect: Rect, high_contrast: bool, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -249,14 +245,14 @@ fn draw_card(rank: u8, suit: u8, rect: Rect, high_contrast: bool, large_text: bo
         crate::card_render::suit_color(suit, high_contrast),
     );
 }
-fn status_text(status: GolfStatus) -> &'static str {
+pub fn status_text(status: GolfStatus) -> &'static str {
     match status {
         GolfStatus::Playing => "Clear the columns",
         GolfStatus::Won => "The columns are clear",
         GolfStatus::Stuck => "No golf move remains",
     }
 }
-fn button(rect: Rect, label: &str, large_text: bool) {
+pub fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     text(
@@ -267,32 +263,32 @@ fn button(rect: Rect, label: &str, large_text: bool) {
         WHITE,
     );
 }
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
-fn title_size() -> f32 {
+pub fn title_size() -> f32 {
     if crate::ui::is_portrait() {
         20.
     } else {
         30.
     }
 }
-fn title_text() -> &'static str {
+pub fn title_text() -> &'static str {
     "KLONDIKE GOLF"
 }
-fn body_size() -> f32 {
+pub fn body_size() -> f32 {
     if crate::ui::is_portrait() {
         11.
     } else {
         13.
     }
 }
-fn accent() -> Color {
+pub fn accent() -> Color {
     crate::theme::BRASS
 }
-fn muted() -> Color {
+pub fn muted() -> Color {
     crate::theme::SECONDARY
 }
-fn back_rect() -> Rect {
+pub fn back_rect() -> Rect {
     Rect::new(0., 0., 110., 42.)
 }

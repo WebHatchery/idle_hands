@@ -1,7 +1,7 @@
 //! Regression coverage for the tests module.
 
-use super::*;
-use crate::state::{AppState, Screen};
+use idle_hands::testing::modules::profile_ui::*;
+use idle_hands::testing::state::{AppState, Screen};
 
 #[test]
 fn profile_choices_route_to_visible_touch_actions() {
@@ -10,7 +10,7 @@ fn profile_choices_route_to_visible_touch_actions() {
         ..AppState::default()
     };
 
-    crate::ui::with_desktop_layout(|| {
+    idle_hands::testing::ui::with_desktop_layout(|| {
         assert!(matches!(
             clicks(&state, name_rects()[3].center()).as_slice(),
             [UiAction::SetProfileName(3)]
@@ -25,7 +25,7 @@ fn profile_choices_route_to_visible_touch_actions() {
 #[test]
 fn profile_cards_and_back_fit_every_viewport() {
     let assert_layout = || {
-        let (width, height) = crate::ui::layout_size();
+        let (width, height) = idle_hands::testing::ui::layout_size();
         for rect in name_rects() {
             assert!(rect.x >= 0. && rect.y >= 0.);
             assert!(rect.right() <= width && rect.bottom() <= height);
@@ -33,9 +33,9 @@ fn profile_cards_and_back_fit_every_viewport() {
         let back = back_rect();
         assert!(back.right() <= width && back.bottom() <= height);
     };
-    crate::ui::with_desktop_layout(assert_layout);
-    crate::ui::with_compact_landscape_layout(assert_layout);
-    crate::ui::with_portrait_layout(assert_layout);
+    idle_hands::testing::ui::with_desktop_layout(assert_layout);
+    idle_hands::testing::ui::with_compact_landscape_layout(assert_layout);
+    idle_hands::testing::ui::with_portrait_layout(assert_layout);
 }
 
 #[test]

@@ -81,7 +81,7 @@ pub struct Nonogram {
     pub variant: u8,
     pub status: NonogramStatus,
     #[serde(skip)]
-    history: Vec<(Vec<NonogramMark>, u32, NonogramStatus)>,
+    pub history: Vec<(Vec<NonogramMark>, u32, NonogramStatus)>,
 }
 
 impl Default for Nonogram {
@@ -188,7 +188,7 @@ impl Nonogram {
             .position(|mark| *mark == NonogramMark::Empty)
             .map(|index| (index, self.solution[index]))
     }
-    fn check_win(&mut self) {
+    pub fn check_win(&mut self) {
         if self
             .marks
             .iter()
@@ -204,7 +204,7 @@ impl Nonogram {
     }
 }
 
-fn variant_from_seed(seed: u64) -> u8 {
+pub fn variant_from_seed(seed: u64) -> u8 {
     let mixed = seed ^ seed.rotate_left(17) ^ 0x9E37_79B9_7F4A_7C15;
     (mixed.wrapping_mul(0xBF58_476D_1CE4_E5B9) % u64::from(VARIANT_COUNT)) as u8
 }
@@ -230,7 +230,7 @@ pub fn stroke_indices(size: usize, start: (usize, usize), end: (usize, usize)) -
     }
 }
 
-fn clues<I: Iterator<Item = bool>>(cells: I) -> Vec<u8> {
+pub fn clues<I: Iterator<Item = bool>>(cells: I) -> Vec<u8> {
     let mut result = Vec::new();
     let mut run = 0;
     for filled in cells {
@@ -249,7 +249,3 @@ fn clues<I: Iterator<Item = bool>>(cells: I) -> Vec<u8> {
     }
     result
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/nonogram/tests.rs"]
-mod tests;

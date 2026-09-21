@@ -8,34 +8,30 @@ use crate::{
 };
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/pyramid_ui/tests.rs"]
-mod tests;
-
 #[derive(Clone, Copy)]
-struct Layout {
-    base_x: f32,
-    top: f32,
-    card_w: f32,
-    card_h: f32,
-    row_gap: f32,
-    card_gap: f32,
-    stock: Rect,
-    waste: Rect,
-    hint: Rect,
-    undo: Rect,
-    new_game: Rect,
-    draw_rule: Rect,
+pub struct Layout {
+    pub base_x: f32,
+    pub top: f32,
+    pub card_w: f32,
+    pub card_h: f32,
+    pub row_gap: f32,
+    pub card_gap: f32,
+    pub stock: Rect,
+    pub waste: Rect,
+    pub hint: Rect,
+    pub undo: Rect,
+    pub new_game: Rect,
+    pub draw_rule: Rect,
 }
 
 impl Layout {
-    fn row_x(self, row: usize, column: usize) -> f32 {
+    pub fn row_x(self, row: usize, column: usize) -> f32 {
         self.base_x
             + (3. - row as f32 / 2.) * (self.card_w + self.card_gap)
             + column as f32 * (self.card_w + self.card_gap)
     }
 
-    fn card_rect(self, index: usize) -> Rect {
+    pub fn card_rect(self, index: usize) -> Rect {
         let row = row_for(index);
         let column = index - row_start(row);
         Rect::new(
@@ -47,7 +43,7 @@ impl Layout {
     }
 }
 
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             base_x: 105.,
@@ -292,7 +288,7 @@ pub fn draw(state: &AppState) {
     }
 }
 
-fn preview_target(game: &crate::pyramid::Pyramid, index: usize) -> bool {
+pub fn preview_target(game: &crate::pyramid::Pyramid, index: usize) -> bool {
     if !game.available(index) {
         return false;
     }
@@ -308,7 +304,7 @@ fn preview_target(game: &crate::pyramid::Pyramid, index: usize) -> bool {
     }
 }
 
-fn mode_button(rect: Rect, label: &str, large_text: bool) {
+pub fn mode_button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -326,7 +322,7 @@ fn mode_button(rect: Rect, label: &str, large_text: bool) {
     );
 }
 
-fn draw_slot(rect: Rect, card: Option<crate::cards::Card>, back: bool, state: &AppState) {
+pub fn draw_slot(rect: Rect, card: Option<crate::cards::Card>, back: bool, state: &AppState) {
     if let Some(card) = card {
         crate::card_render::draw_card_accessible(
             rect,
@@ -349,7 +345,7 @@ fn draw_slot(rect: Rect, card: Option<crate::cards::Card>, back: bool, state: &A
     }
 }
 
-fn button(rect: Rect, label: &str, large_text: bool) {
+pub fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     text(
@@ -361,7 +357,7 @@ fn button(rect: Rect, label: &str, large_text: bool) {
     );
 }
 
-fn status_text(status: PyramidStatus) -> &'static str {
+pub fn status_text(status: PyramidStatus) -> &'static str {
     match status {
         PyramidStatus::Playing => "Clear the pyramid",
         PyramidStatus::Won => "The pyramid is clear",
@@ -369,26 +365,26 @@ fn status_text(status: PyramidStatus) -> &'static str {
     }
 }
 
-fn row_start(row: usize) -> usize {
+pub fn row_start(row: usize) -> usize {
     row * (row + 1) / 2
 }
 
-fn row_for(index: usize) -> usize {
+pub fn row_for(index: usize) -> usize {
     (0..7).find(|&row| index < row_start(row + 1)).unwrap_or(6)
 }
 
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
 
-fn accent() -> Color {
+pub fn accent() -> Color {
     crate::theme::BRASS
 }
 
-fn muted() -> Color {
+pub fn muted() -> Color {
     crate::theme::SECONDARY
 }
 
-fn back_rect() -> Rect {
+pub fn back_rect() -> Rect {
     Rect::new(0., 0., 110., 42.)
 }

@@ -1,14 +1,14 @@
 //! Regression coverage for the tests module.
 
-use crate::game_input::card_drag_actions;
-use crate::state::{GameId, Screen};
-use crate::ui;
+use idle_hands::testing::game_input::card_drag_actions;
+use idle_hands::testing::state::{GameId, Screen};
+use idle_hands::testing::ui;
 
-use super::*;
+use idle_hands::testing::modules::game::*;
 
 #[test]
 fn portrait_card_drag_dispatches_source_and_destination_actions() {
-    let solitaire = crate::state::AppState {
+    let solitaire = idle_hands::testing::state::AppState {
         screen: Screen::Game(GameId::Solitaire),
         ..Default::default()
     };
@@ -21,7 +21,7 @@ fn portrait_card_drag_dispatches_source_and_destination_actions() {
         ]
     ));
 
-    let freecell = crate::state::AppState {
+    let freecell = idle_hands::testing::state::AppState {
         screen: Screen::Game(GameId::FreeCell),
         ..Default::default()
     };
@@ -37,7 +37,7 @@ fn portrait_card_drag_dispatches_source_and_destination_actions() {
 
 #[test]
 fn card_drag_dispatch_ignores_non_card_screens() {
-    let state = crate::state::AppState::default();
+    let state = idle_hands::testing::state::AppState::default();
     assert!(card_drag_actions(&state, vec2(6., 205.), vec2(55., 205.), true, false).is_empty());
 }
 
@@ -58,13 +58,13 @@ fn new_game_actions_require_confirmation_but_existing_restart_does_not() {
         ui::UiAction::MineRestart
     ));
     assert!(game_restart::requires_new_confirmation(
-        ui::UiAction::MinePreset(crate::minesweeper::MinePreset::Beginner)
+        ui::UiAction::MinePreset(idle_hands::testing::minesweeper::MinePreset::Beginner)
     ));
     assert!(game_restart::requires_new_confirmation(
-        ui::UiAction::SudokuDifficulty(crate::sudoku::SudokuDifficulty::Easy)
+        ui::UiAction::SudokuDifficulty(idle_hands::testing::sudoku::SudokuDifficulty::Easy)
     ));
     assert!(game_restart::requires_new_confirmation(
-        ui::UiAction::NonogramPreset(crate::nonogram::NonogramPreset::Small)
+        ui::UiAction::NonogramPreset(idle_hands::testing::nonogram::NonogramPreset::Small)
     ));
     assert!(!game_restart::requires_new_confirmation(
         ui::UiAction::MatchThreeHint
@@ -77,13 +77,13 @@ fn new_game_actions_require_confirmation_but_existing_restart_does_not() {
 #[test]
 fn depth_mode_controls_confirm_before_discarding_an_active_round() {
     let actions = [
-        ui::UiAction::PyramidDrawRule(crate::pyramid::PyramidDraw::Three),
-        ui::UiAction::TriPeaksRule(crate::tri_peaks::TriPeaksRule::Wrap),
-        ui::UiAction::NimRule(crate::nim::NimRule::Misere),
-        ui::UiAction::WordGridMode(crate::word_grid::WordGridMode::Hard),
-        ui::UiAction::WordLadderMode(crate::word_ladder::LadderMode::Scenic),
-        ui::UiAction::PipePattern(crate::pipe_loop::PipePattern::Trunk),
-        ui::UiAction::MazeMode(crate::maze_walk::MazeMode::Fog),
+        ui::UiAction::PyramidDrawRule(idle_hands::testing::pyramid::PyramidDraw::Three),
+        ui::UiAction::TriPeaksRule(idle_hands::testing::tri_peaks::TriPeaksRule::Wrap),
+        ui::UiAction::NimRule(idle_hands::testing::nim::NimRule::Misere),
+        ui::UiAction::WordGridMode(idle_hands::testing::word_grid::WordGridMode::Hard),
+        ui::UiAction::WordLadderMode(idle_hands::testing::word_ladder::LadderMode::Scenic),
+        ui::UiAction::PipePattern(idle_hands::testing::pipe_loop::PipePattern::Trunk),
+        ui::UiAction::MazeMode(idle_hands::testing::maze_walk::MazeMode::Fog),
     ];
     for action in actions {
         assert!(

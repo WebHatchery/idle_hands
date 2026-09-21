@@ -8,26 +8,22 @@ use crate::{
 };
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/snake_ui/tests.rs"]
-mod tests;
-
 #[derive(Clone, Copy)]
-struct Layout {
-    board: Rect,
-    cell: f32,
-    up: Rect,
-    left: Rect,
-    down: Rect,
-    right: Rect,
-    hint: Rect,
-    undo: Rect,
-    pause: Rect,
-    new_game: Rect,
-    modes: [Rect; 3],
+pub struct Layout {
+    pub board: Rect,
+    pub cell: f32,
+    pub up: Rect,
+    pub left: Rect,
+    pub down: Rect,
+    pub right: Rect,
+    pub hint: Rect,
+    pub undo: Rect,
+    pub pause: Rect,
+    pub new_game: Rect,
+    pub modes: [Rect; 3],
 }
 
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             board: Rect::new(20., 48., 384., 288.),
@@ -303,7 +299,7 @@ pub fn draw(state: &AppState) {
     button(layout.new_game, "NEW BOARD", state.large_text);
 }
 
-fn status_text(game: &Snake) -> String {
+pub fn status_text(game: &Snake) -> String {
     match game.status {
         SnakeStatus::Playing => format!(
             "{}  •  Score {} / {}  •  Pace {}",
@@ -316,7 +312,7 @@ fn status_text(game: &Snake) -> String {
         SnakeStatus::Lost => "The coil struck an obstacle".into(),
     }
 }
-fn mode_button(rect: Rect, mode: SnakeMode, selected: bool, large_text: bool) {
+pub fn mode_button(rect: Rect, mode: SnakeMode, selected: bool, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -344,7 +340,7 @@ fn mode_button(rect: Rect, mode: SnakeMode, selected: bool, large_text: bool) {
     center_text(label, rect, accessibility::text_size(8., large_text), WHITE);
 }
 
-fn draw_head_eyes(
+pub fn draw_head_eyes(
     layout: Layout,
     row: i32,
     column: i32,
@@ -372,7 +368,7 @@ fn draw_head_eyes(
     }
 }
 
-fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
+pub fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
     let measured = crate::ui::measure_text(label, None, size as u16, 1.);
     text(
         label,
@@ -382,7 +378,7 @@ fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
         color,
     );
 }
-fn button(rect: Rect, label: &str, large_text: bool) {
+pub fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     text(
@@ -393,29 +389,29 @@ fn button(rect: Rect, label: &str, large_text: bool) {
         WHITE,
     );
 }
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
-fn title_size() -> f32 {
+pub fn title_size() -> f32 {
     if crate::ui::is_portrait() {
         29.
     } else {
         31.
     }
 }
-fn body_size() -> f32 {
+pub fn body_size() -> f32 {
     if crate::ui::is_portrait() {
         11.
     } else {
         13.
     }
 }
-fn accent() -> Color {
+pub fn accent() -> Color {
     crate::theme::BRASS
 }
-fn muted() -> Color {
+pub fn muted() -> Color {
     crate::theme::SECONDARY
 }
-fn back_rect() -> Rect {
+pub fn back_rect() -> Rect {
     Rect::new(0., 0., 110., 42.)
 }

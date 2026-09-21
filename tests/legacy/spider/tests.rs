@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::spider::*;
 
 #[test]
 fn ordered_runs_move_and_undo_reveals_the_source() {

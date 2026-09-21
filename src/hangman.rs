@@ -59,7 +59,7 @@ pub enum HangmanStatus {
     Lost,
 }
 
-type Snapshot = (
+pub type Snapshot = (
     [bool; 26],
     [bool; 26],
     u8,
@@ -99,7 +99,7 @@ pub struct Hangman {
     #[serde(default)]
     pub word_list: Vec<String>,
     #[serde(skip)]
-    history: Vec<Snapshot>,
+    pub history: Vec<Snapshot>,
 }
 
 impl Default for Hangman {
@@ -305,7 +305,7 @@ impl Hangman {
         character < 26 && self.guessed[character as usize]
     }
 
-    fn apply_letter(&mut self, letter: u8, scores: bool) {
+    pub fn apply_letter(&mut self, letter: u8, scores: bool) {
         self.guessed[letter as usize] = true;
         self.moves = self.moves.saturating_add(1);
         let character = b'A' + letter;
@@ -342,7 +342,7 @@ impl Hangman {
         }
     }
 
-    fn matches_candidate(&self, candidate: &str) -> bool {
+    pub fn matches_candidate(&self, candidate: &str) -> bool {
         candidate.len() == self.word.len()
             && self
                 .word
@@ -357,7 +357,7 @@ impl Hangman {
                 })
     }
 
-    fn snapshot(&mut self) {
+    pub fn snapshot(&mut self) {
         self.history.push((
             self.guessed,
             self.wrong,
@@ -371,7 +371,7 @@ impl Hangman {
         ));
     }
 
-    fn with_words(
+    pub fn with_words(
         seed: u64,
         category: HangmanCategory,
         rule: HangmanRule,
@@ -402,18 +402,14 @@ impl Hangman {
     }
 }
 
-const fn default_reveals() -> u8 {
+pub const fn default_reveals() -> u8 {
     1
 }
 
-fn default_classic_wrong() -> u8 {
+pub fn default_classic_wrong() -> u8 {
     6
 }
 
-fn default_score_multiplier() -> u32 {
+pub fn default_score_multiplier() -> u32 {
     1
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/hangman/tests.rs"]
-mod tests;

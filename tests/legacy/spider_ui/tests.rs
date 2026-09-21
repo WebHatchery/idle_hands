@@ -1,8 +1,8 @@
 //! Regression coverage for the tests module.
 
-use super::*;
-use crate::state::AppState;
-use crate::ui::UiAction;
+use idle_hands::testing::modules::spider_ui::*;
+use idle_hands::testing::state::AppState;
+use idle_hands::testing::ui::UiAction;
 use macroquad::prelude::vec2;
 
 #[test]
@@ -14,7 +14,7 @@ fn compact_spider_subtitle_stays_before_the_rule_card() {
 
 #[test]
 fn desktop_spider_routes_visible_controls_and_face_up_cards() {
-    crate::ui::with_desktop_layout(|| {
+    idle_hands::testing::ui::with_desktop_layout(|| {
         let state = AppState::default();
         let layout = layout();
         assert!(matches!(
@@ -70,6 +70,6 @@ fn compact_and_portrait_spider_keep_the_stock_and_action_row_clickable() {
         ));
     }
 
-    crate::ui::with_compact_landscape_layout(assert_targets);
-    crate::ui::with_portrait_layout(assert_targets);
+    idle_hands::testing::ui::with_compact_landscape_layout(assert_targets);
+    idle_hands::testing::ui::with_portrait_layout(assert_targets);
 }

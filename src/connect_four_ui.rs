@@ -9,17 +9,17 @@ use crate::{
 use macroquad::prelude::*;
 
 #[derive(Clone, Copy)]
-struct Layout {
-    board: Rect,
-    cell: f32,
-    drops: Rect,
-    hint: Rect,
-    undo: Rect,
-    new_game: Rect,
-    levels: [Rect; 3],
+pub struct Layout {
+    pub board: Rect,
+    pub cell: f32,
+    pub drops: Rect,
+    pub hint: Rect,
+    pub undo: Rect,
+    pub new_game: Rect,
+    pub levels: [Rect; 3],
 }
 
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             board: Rect::new(10., 48., 350., 300.),
@@ -233,7 +233,7 @@ pub fn draw(state: &AppState) {
     }
 }
 
-fn disc_color(disc: Disc, high_contrast: bool) -> Color {
+pub fn disc_color(disc: Disc, high_contrast: bool) -> Color {
     match disc {
         Disc::Empty => accessibility::board_fill(high_contrast),
         Disc::Red => {
@@ -252,7 +252,7 @@ fn disc_color(disc: Disc, high_contrast: bool) -> Color {
         }
     }
 }
-fn status_text(status: ConnectFourStatus) -> &'static str {
+pub fn status_text(status: ConnectFourStatus) -> &'static str {
     match status {
         ConnectFourStatus::Playing => "Drop four in a row",
         ConnectFourStatus::Won(Disc::Red) => "Red takes the row",
@@ -261,7 +261,7 @@ fn status_text(status: ConnectFourStatus) -> &'static str {
         ConnectFourStatus::Draw => "The board is full",
     }
 }
-fn button(rect: Rect, label: &str, large_text: bool) {
+pub fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     text(
@@ -272,7 +272,7 @@ fn button(rect: Rect, label: &str, large_text: bool) {
         WHITE,
     );
 }
-fn button_selected(rect: Rect, label: &str, selected: bool, large_text: bool) {
+pub fn button_selected(rect: Rect, label: &str, selected: bool, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -293,39 +293,39 @@ fn button_selected(rect: Rect, label: &str, selected: bool, large_text: bool) {
         WHITE,
     );
 }
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
-fn title_size() -> f32 {
+pub fn title_size() -> f32 {
     if crate::ui::is_portrait() {
         22.
     } else {
         31.
     }
 }
-fn body_size() -> f32 {
+pub fn body_size() -> f32 {
     if crate::ui::is_portrait() {
         11.
     } else {
         13.
     }
 }
-fn accent() -> Color {
+pub fn accent() -> Color {
     crate::theme::BRASS
 }
-fn muted() -> Color {
+pub fn muted() -> Color {
     crate::theme::SECONDARY
 }
 
-fn show_drop_prompt(portrait: bool, compact: bool) -> bool {
+pub fn show_drop_prompt(portrait: bool, compact: bool) -> bool {
     !portrait && !compact
 }
 
-fn compact_instruction_position() -> Vec2 {
+pub fn compact_instruction_position() -> Vec2 {
     vec2(430., 45.)
 }
 
-fn moves_summary_y(compact: bool, portrait: bool) -> f32 {
+pub fn moves_summary_y(compact: bool, portrait: bool) -> f32 {
     if compact {
         150.
     } else if portrait {
@@ -335,9 +335,6 @@ fn moves_summary_y(compact: bool, portrait: bool) -> f32 {
     }
 }
 
-#[cfg(test)]
-#[path = "../tests/legacy/connect_four_ui/tests.rs"]
-mod tests;
-fn back_rect() -> Rect {
+pub fn back_rect() -> Rect {
     Rect::new(0., 0., 110., 42.)
 }

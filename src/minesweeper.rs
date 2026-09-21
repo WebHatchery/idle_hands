@@ -216,7 +216,7 @@ impl Minesweeper {
         }
         None
     }
-    fn place_mines(&mut self, safe: usize) {
+    pub fn place_mines(&mut self, safe: usize) {
         let safe_zone: Vec<usize> = std::iter::once(safe).chain(self.neighbors(safe)).collect();
         let mut placed = 0;
         while placed < self.mines {
@@ -232,10 +232,10 @@ impl Minesweeper {
             placed += 1;
         }
     }
-    fn is_mine(&self, index: usize) -> bool {
+    pub fn is_mine(&self, index: usize) -> bool {
         matches!(self.cells[index], Cell::Mine | Cell::FlaggedMine)
     }
-    fn flood_reveal(&mut self, start: usize) {
+    pub fn flood_reveal(&mut self, start: usize) {
         let mut queue = vec![start];
         while let Some(index) = queue.pop() {
             if !matches!(self.cells[index], Cell::Hidden) || self.is_mine(index) {
@@ -251,7 +251,7 @@ impl Minesweeper {
             }
         }
     }
-    fn check_win(&mut self) {
+    pub fn check_win(&mut self) {
         let safe = self
             .cells
             .iter()
@@ -261,7 +261,7 @@ impl Minesweeper {
             self.status = MineStatus::Won;
         }
     }
-    fn neighbors(&self, index: usize) -> impl Iterator<Item = usize> + '_ {
+    pub fn neighbors(&self, index: usize) -> impl Iterator<Item = usize> + '_ {
         let x = index % self.width;
         let y = index / self.width;
         (-1i32..=1)
@@ -276,7 +276,3 @@ impl Minesweeper {
             .map(move |(nx, ny)| ny as usize * self.width + nx as usize)
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/minesweeper/tests.rs"]
-mod tests;

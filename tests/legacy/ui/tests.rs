@@ -1,15 +1,15 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::ui::*;
 
 #[test]
 fn credits_round_trip_routes_through_every_layout() {
-    let help_state = crate::state::AppState {
-        screen: crate::state::Screen::Help,
+    let help_state = idle_hands::testing::state::AppState {
+        screen: idle_hands::testing::state::Screen::Help,
         ..Default::default()
     };
-    let credits_state = crate::state::AppState {
-        screen: crate::state::Screen::Credits,
+    let credits_state = idle_hands::testing::state::AppState {
+        screen: idle_hands::testing::state::Screen::Credits,
         ..Default::default()
     };
 
@@ -47,8 +47,10 @@ fn credits_round_trip_routes_through_every_layout() {
 
 #[test]
 fn restart_modal_blocks_game_background_in_every_layout() {
-    let state = crate::state::AppState {
-        screen: crate::state::Screen::Game(crate::state::GameId::Game2048),
+    let state = idle_hands::testing::state::AppState {
+        screen: idle_hands::testing::state::Screen::Game(
+            idle_hands::testing::state::GameId::Game2048,
+        ),
         confirm_restart: true,
         pending_restart: Some(UiAction::Restart),
         ..Default::default()
@@ -67,8 +69,10 @@ fn restart_modal_blocks_game_background_in_every_layout() {
 
 #[test]
 fn lifecycle_pause_routes_only_resume_touch_in_every_layout() {
-    let state = crate::state::AppState {
-        screen: crate::state::Screen::Game(crate::state::GameId::Game2048),
+    let state = idle_hands::testing::state::AppState {
+        screen: idle_hands::testing::state::Screen::Game(
+            idle_hands::testing::state::GameId::Game2048,
+        ),
         lifecycle_paused: true,
         ..Default::default()
     };
@@ -98,10 +102,12 @@ fn lifecycle_pause_routes_only_resume_touch_in_every_layout() {
 
 #[test]
 fn save_recovery_dismiss_routes_through_every_layout() {
-    let mut notice = crate::save_recovery::SaveRecoveryNotice::new();
+    let mut notice = idle_hands::testing::save_recovery::SaveRecoveryNotice::new();
     notice.record(true);
-    let state = crate::state::AppState {
-        screen: crate::state::Screen::Game(crate::state::GameId::Game2048),
+    let state = idle_hands::testing::state::AppState {
+        screen: idle_hands::testing::state::Screen::Game(
+            idle_hands::testing::state::GameId::Game2048,
+        ),
         save_recovery: Some(notice),
         ..Default::default()
     };
@@ -128,8 +134,8 @@ fn save_recovery_dismiss_routes_through_every_layout() {
 
 #[test]
 fn notice_log_routes_open_and_close_through_every_layout() {
-    let settings = crate::state::AppState {
-        screen: crate::state::Screen::Settings,
+    let settings = idle_hands::testing::state::AppState {
+        screen: idle_hands::testing::state::Screen::Settings,
         ..Default::default()
     };
     let open_points = [vec2(1035., 584.), vec2(180., 634.), vec2(690., 290.)];
@@ -152,8 +158,8 @@ fn notice_log_routes_open_and_close_through_every_layout() {
         ));
     });
 
-    let open = crate::state::AppState {
-        screen: crate::state::Screen::Settings,
+    let open = idle_hands::testing::state::AppState {
+        screen: idle_hands::testing::state::Screen::Settings,
         notice_log_view: true,
         ..Default::default()
     };

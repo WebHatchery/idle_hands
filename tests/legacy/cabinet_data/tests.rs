@@ -1,7 +1,7 @@
 //! Regression coverage for the tests module.
 
-use super::*;
-use crate::state::AppState;
+use idle_hands::testing::modules::cabinet_data::*;
+use idle_hands::testing::state::AppState;
 
 #[test]
 fn page_start_clamps_to_the_last_full_view() {

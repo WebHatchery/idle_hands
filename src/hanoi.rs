@@ -4,8 +4,8 @@ use crate::undo::UndoStack;
 use serde::{Deserialize, Serialize};
 use std::collections::VecDeque;
 
-const DEFAULT_DISKS: u8 = 5;
-const DISK_VARIANTS: [u8; 3] = [3, 5, 7];
+pub const DEFAULT_DISKS: u8 = 5;
+pub const DISK_VARIANTS: [u8; 3] = [3, 5, 7];
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum HanoiPhase {
@@ -23,7 +23,7 @@ pub struct Hanoi {
     pub disks: u8,
     pub phase: HanoiPhase,
     #[serde(skip)]
-    history: UndoStack<Self>,
+    pub history: UndoStack<Self>,
 }
 
 impl Default for Hanoi {
@@ -177,17 +177,13 @@ impl Hanoi {
         None
     }
 
-    fn clone_without_undo(&self) -> Self {
+    pub fn clone_without_undo(&self) -> Self {
         let mut copy = self.clone();
         copy.history.clear();
         copy
     }
 }
 
-fn default_disks() -> u8 {
+pub fn default_disks() -> u8 {
     DEFAULT_DISKS
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/hanoi/tests.rs"]
-mod tests;

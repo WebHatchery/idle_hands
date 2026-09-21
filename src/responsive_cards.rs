@@ -18,35 +18,27 @@ pub use freecell::{draw_freecell, freecell_clicks};
 mod reversi;
 pub use reversi::{draw_reversi, reversi_clicks};
 
-#[cfg(test)]
-#[path = "../tests/legacy/responsive_cards/tests.rs"]
-mod tests;
+pub const CARD_W: f32 = 43.;
+pub const CARD_H: f32 = 58.;
+pub const COL_GAP: f32 = 7.;
 
-const CARD_W: f32 = 43.;
-const CARD_H: f32 = 58.;
-const COL_GAP: f32 = 7.;
-
-#[cfg(test)]
-fn free_card_rect(x: f32, y: f32) -> Rect {
+pub fn free_card_rect(x: f32, y: f32) -> Rect {
     freecell::free_card_rect(x, y)
 }
 
-#[cfg(test)]
-fn free_card_x(slot: usize) -> f32 {
+pub fn free_card_x(slot: usize) -> f32 {
     freecell::free_card_x(slot)
 }
 
-#[cfg(test)]
-fn free_foundation_x(suit: usize) -> f32 {
+pub fn free_foundation_x(suit: usize) -> f32 {
     freecell::free_foundation_x(suit)
 }
 
-#[cfg(test)]
-fn reversi_subtitle() -> &'static str {
+pub fn reversi_subtitle() -> &'static str {
     reversi::reversi_subtitle()
 }
 
-fn panel(rect: Rect, fill: Color) {
+pub fn panel(rect: Rect, fill: Color) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -57,23 +49,23 @@ fn panel(rect: Rect, fill: Color) {
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
 
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
 
-fn card_rect(x: f32, y: f32) -> Rect {
+pub fn card_rect(x: f32, y: f32) -> Rect {
     Rect::new(x, y, CARD_W, CARD_H)
 }
 
-fn card_x(column: usize) -> f32 {
+pub fn card_x(column: usize) -> f32 {
     4. + column as f32 * (CARD_W + COL_GAP)
 }
 
-fn draw_card(rect: Rect, card: Card, selected: bool, back_style: u8, reduced_motion: bool) {
+pub fn draw_card(rect: Rect, card: Card, selected: bool, back_style: u8, reduced_motion: bool) {
     crate::card_render::draw_card(rect, card, selected, back_style, reduced_motion);
 }
 
-fn back() {
+pub fn back() {
     panel(Rect::new(0., 0., 110., 44.), crate::theme::SURFACE_DARK);
     text("CABINET", 8., 29., 13., crate::theme::BRASS);
 }

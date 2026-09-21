@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::match_three_ui::*;
 
 #[test]
 fn portrait_match_three_summary_stays_before_the_rule_card() {

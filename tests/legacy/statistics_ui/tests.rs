@@ -1,7 +1,7 @@
 //! Regression coverage for the tests module.
 
-use super::*;
-use crate::{state::Screen, ui};
+use idle_hands::testing::modules::statistics_ui::*;
+use idle_hands::testing::{state::Screen, ui};
 
 #[test]
 fn back_button_routes_from_every_layout() {

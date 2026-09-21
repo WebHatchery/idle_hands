@@ -4,10 +4,10 @@ use serde::{Deserialize, Serialize};
 
 pub const WIDTH: u8 = 10;
 pub const HEIGHT: u8 = 20;
-const TARGET_LINES: u16 = 20;
-const STEP_INTERVAL: f32 = 0.55;
+pub const TARGET_LINES: u16 = 20;
+pub const STEP_INTERVAL: f32 = 0.55;
 
-fn default_target_lines() -> u16 {
+pub fn default_target_lines() -> u16 {
     TARGET_LINES
 }
 
@@ -27,20 +27,20 @@ pub enum BlockStatus {
 }
 
 #[derive(Debug, Clone)]
-struct Snapshot {
-    board: Vec<u8>,
-    piece: u8,
-    next_piece: u8,
-    rotation: u8,
-    piece_x: i8,
-    piece_y: i8,
-    score: u32,
-    lines: u16,
-    level: u8,
-    moves: u16,
-    status: BlockStatus,
-    seed: u64,
-    paused: bool,
+pub struct Snapshot {
+    pub board: Vec<u8>,
+    pub piece: u8,
+    pub next_piece: u8,
+    pub rotation: u8,
+    pub piece_x: i8,
+    pub piece_y: i8,
+    pub score: u32,
+    pub lines: u16,
+    pub level: u8,
+    pub moves: u16,
+    pub status: BlockStatus,
+    pub seed: u64,
+    pub paused: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -63,9 +63,9 @@ pub struct BlockStack {
     #[serde(default)]
     pub mode: u8,
     #[serde(skip)]
-    undo: Option<Box<Snapshot>>,
+    pub undo: Option<Box<Snapshot>>,
     #[serde(skip)]
-    elapsed: f32,
+    pub elapsed: f32,
 }
 
 impl Default for BlockStack {
@@ -225,7 +225,7 @@ impl BlockStack {
         piece_cells(self.piece, self.rotation)
     }
 
-    fn advance_one(&mut self) {
+    pub fn advance_one(&mut self) {
         self.snapshot();
         if self.can_place(self.piece_x, self.piece_y + 1, self.rotation) {
             self.piece_y += 1;
@@ -234,7 +234,7 @@ impl BlockStack {
         }
     }
 
-    fn lock_piece(&mut self) {
+    pub fn lock_piece(&mut self) {
         for (x, y) in self.active_cells() {
             let board_x = self.piece_x + x;
             let board_y = self.piece_y + y;
@@ -268,7 +268,7 @@ impl BlockStack {
         }
     }
 
-    fn clear_lines(&mut self) -> u16 {
+    pub fn clear_lines(&mut self) -> u16 {
         let mut kept = Vec::with_capacity(self.board.len());
         let mut cleared = 0;
         for row in self.board.chunks(usize::from(WIDTH)) {
@@ -287,7 +287,7 @@ impl BlockStack {
         cleared
     }
 
-    fn can_place(&self, x: i8, y: i8, rotation: u8) -> bool {
+    pub fn can_place(&self, x: i8, y: i8, rotation: u8) -> bool {
         piece_cells(self.piece, rotation)
             .into_iter()
             .all(|(cell_x, cell_y)| {
@@ -303,7 +303,7 @@ impl BlockStack {
             })
     }
 
-    fn draw_piece(&mut self) -> u8 {
+    pub fn draw_piece(&mut self) -> u8 {
         self.seed = self
             .seed
             .wrapping_mul(6364136223846793005)
@@ -311,7 +311,7 @@ impl BlockStack {
         (self.seed % 7) as u8
     }
 
-    fn snapshot(&mut self) {
+    pub fn snapshot(&mut self) {
         self.undo = Some(Box::new(Snapshot {
             board: self.board.clone(),
             piece: self.piece,
@@ -330,7 +330,7 @@ impl BlockStack {
     }
 }
 
-fn piece_cells(kind: u8, rotation: u8) -> [(i8, i8); 4] {
+pub fn piece_cells(kind: u8, rotation: u8) -> [(i8, i8); 4] {
     let mut cells = match kind % 7 {
         0 => [(0, 1), (1, 1), (2, 1), (3, 1)],
         1 => [(0, 0), (1, 0), (0, 1), (1, 1)],
@@ -353,7 +353,3 @@ fn piece_cells(kind: u8, rotation: u8) -> [(i8, i8); 4] {
     }
     cells
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/block_stack/tests.rs"]
-mod tests;

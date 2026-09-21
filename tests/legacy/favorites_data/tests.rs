@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::favorites_data::*;
 
 #[test]
 fn favorite_rows_keep_catalog_order_and_source_positions() {

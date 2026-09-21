@@ -2,11 +2,11 @@
 
 use serde::{Deserialize, Serialize};
 
-const TILE_COUNT: usize = 36;
-const PAIR_COUNT: usize = TILE_COUNT / 2;
+pub const TILE_COUNT: usize = 36;
+pub const PAIR_COUNT: usize = TILE_COUNT / 2;
 
-type Position = (u8, u8, u8);
-type PairPositions = (Position, Position);
+pub type Position = (u8, u8, u8);
+pub type PairPositions = (Position, Position);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Tile {
@@ -42,7 +42,7 @@ impl MahjongLayout {
     }
 }
 
-type Snapshot = (Vec<Tile>, MahjongStatus, u16);
+pub type Snapshot = (Vec<Tile>, MahjongStatus, u16);
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MahjongSolitaire {
@@ -54,7 +54,7 @@ pub struct MahjongSolitaire {
     #[serde(default)]
     pub layout: MahjongLayout,
     #[serde(skip)]
-    undo: Option<Snapshot>,
+    pub undo: Option<Snapshot>,
 }
 
 impl Default for MahjongSolitaire {
@@ -176,7 +176,7 @@ impl MahjongSolitaire {
             && (!self.side_blocked(tile, -1) || !self.side_blocked(tile, 1))
     }
 
-    fn side_blocked(&self, tile: &Tile, direction: i8) -> bool {
+    pub fn side_blocked(&self, tile: &Tile, direction: i8) -> bool {
         self.tiles.iter().any(|other| {
             !other.removed
                 && other.layer == tile.layer
@@ -185,7 +185,7 @@ impl MahjongSolitaire {
         })
     }
 
-    fn resolve(&mut self) {
+    pub fn resolve(&mut self) {
         if self.tiles.iter().all(|tile| tile.removed) {
             self.status = MahjongStatus::Won;
         } else if !self.has_pair() {
@@ -193,7 +193,7 @@ impl MahjongSolitaire {
         }
     }
 
-    fn has_pair(&self) -> bool {
+    pub fn has_pair(&self) -> bool {
         self.tiles.iter().enumerate().any(|(index, tile)| {
             self.available(index)
                 && self.tiles.iter().enumerate().any(|(other_index, other)| {
@@ -203,7 +203,7 @@ impl MahjongSolitaire {
     }
 }
 
-fn layout_positions(layout: MahjongLayout) -> Vec<(u8, u8, u8)> {
+pub fn layout_positions(layout: MahjongLayout) -> Vec<(u8, u8, u8)> {
     let mut positions = Vec::with_capacity(TILE_COUNT);
     for y in 0..4u8 {
         for x in 0..8u8 {
@@ -231,7 +231,7 @@ fn layout_positions(layout: MahjongLayout) -> Vec<(u8, u8, u8)> {
     positions
 }
 
-fn solution_pairs(layout: MahjongLayout) -> Vec<PairPositions> {
+pub fn solution_pairs(layout: MahjongLayout) -> Vec<PairPositions> {
     let mut pairs = Vec::with_capacity(PAIR_COUNT);
     match layout {
         MahjongLayout::Classic => {
@@ -247,13 +247,13 @@ fn solution_pairs(layout: MahjongLayout) -> Vec<PairPositions> {
     pairs
 }
 
-fn append_base_row_pairs(pairs: &mut Vec<PairPositions>, rows: &[(u8, u8, u8)]) {
+pub fn append_base_row_pairs(pairs: &mut Vec<PairPositions>, rows: &[(u8, u8, u8)]) {
     for &(y, first_x, last_x) in rows {
         append_row_pairs(pairs, y, first_x, last_x, 0);
     }
 }
 
-fn append_row_pairs(pairs: &mut Vec<PairPositions>, y: u8, first_x: u8, last_x: u8, layer: u8) {
+pub fn append_row_pairs(pairs: &mut Vec<PairPositions>, y: u8, first_x: u8, last_x: u8, layer: u8) {
     let mut left = first_x;
     let mut right = last_x;
     while left < right {
@@ -263,7 +263,7 @@ fn append_row_pairs(pairs: &mut Vec<PairPositions>, y: u8, first_x: u8, last_x: 
     }
 }
 
-fn shuffled_pair_kinds(seed: u64) -> [u8; PAIR_COUNT] {
+pub fn shuffled_pair_kinds(seed: u64) -> [u8; PAIR_COUNT] {
     let mut kinds = [0; PAIR_COUNT];
     for (index, kind) in kinds.iter_mut().enumerate() {
         *kind = index as u8;
@@ -279,10 +279,6 @@ fn shuffled_pair_kinds(seed: u64) -> [u8; PAIR_COUNT] {
     kinds
 }
 
-fn overlaps(left: &Tile, right: &Tile) -> bool {
+pub fn overlaps(left: &Tile, right: &Tile) -> bool {
     left.x == right.x && left.y == right.y
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/mahjong_solitaire/tests.rs"]
-mod tests;

@@ -1,7 +1,7 @@
 //! Regression coverage for the tests module.
 
-use super::*;
-use crate::state::AppState;
+use idle_hands::testing::modules::favorites_ui::*;
+use idle_hands::testing::state::AppState;
 
 #[test]
 fn favorite_card_remove_action_targets_the_starred_drawer() {
@@ -14,7 +14,7 @@ fn favorite_card_remove_action_targets_the_starred_drawer() {
         ..Default::default()
     };
 
-    crate::ui::with_portrait_layout(|| {
+    idle_hands::testing::ui::with_portrait_layout(|| {
         let point = favorite_remove_rect(list_card_rect(layout(), 0)).center();
         assert!(matches!(
             clicks(&state, point).as_slice(),
@@ -26,7 +26,7 @@ fn favorite_card_remove_action_targets_the_starred_drawer() {
 #[test]
 fn browse_tabs_switch_between_favorites_and_recent_at_each_size() {
     let state = AppState::default();
-    crate::ui::with_desktop_layout(|| {
+    idle_hands::testing::ui::with_desktop_layout(|| {
         let (favorites, recent) = browse_tab_rects();
         assert!(matches!(
             clicks(&state, favorites.center()).as_slice(),
@@ -37,7 +37,7 @@ fn browse_tabs_switch_between_favorites_and_recent_at_each_size() {
             [UiAction::Recent]
         ));
     });
-    crate::ui::with_compact_landscape_layout(|| {
+    idle_hands::testing::ui::with_compact_landscape_layout(|| {
         let (favorites, recent) = browse_tab_rects();
         assert!(matches!(
             clicks(&state, favorites.center()).as_slice(),
@@ -48,7 +48,7 @@ fn browse_tabs_switch_between_favorites_and_recent_at_each_size() {
             [UiAction::Recent]
         ));
     });
-    crate::ui::with_portrait_layout(|| {
+    idle_hands::testing::ui::with_portrait_layout(|| {
         let (favorites, recent) = browse_tab_rects();
         assert!(matches!(
             clicks(&state, favorites.center()).as_slice(),

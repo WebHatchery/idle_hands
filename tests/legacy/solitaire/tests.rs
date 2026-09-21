@@ -1,7 +1,7 @@
 //! Regression coverage for the tests module.
 
-use super::*;
-use crate::cards::Card;
+use idle_hands::testing::cards::Card;
+use idle_hands::testing::modules::solitaire::*;
 
 #[test]
 fn stock_draw_and_undo_restore_the_deal() {

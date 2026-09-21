@@ -10,18 +10,18 @@ use crate::{
 use macroquad::prelude::*;
 
 #[derive(Clone, Copy)]
-struct Layout {
-    board: Rect,
-    directions: [Rect; 4],
-    strike: Rect,
-    potion: Rect,
-    hint: Rect,
-    undo: Rect,
-    new_game: Rect,
-    classes: [Rect; 3],
+pub struct Layout {
+    pub board: Rect,
+    pub directions: [Rect; 4],
+    pub strike: Rect,
+    pub potion: Rect,
+    pub hint: Rect,
+    pub undo: Rect,
+    pub new_game: Rect,
+    pub classes: [Rect; 3],
 }
 
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             board: Rect::new(300., 55., 280., 280.),
@@ -315,7 +315,7 @@ pub fn draw(state: &AppState) {
     }
 }
 
-fn hero_label(hero_class: HeroClass) -> &'static str {
+pub fn hero_label(hero_class: HeroClass) -> &'static str {
     match hero_class {
         HeroClass::Blade => "B",
         HeroClass::Warden => "W",
@@ -323,7 +323,7 @@ fn hero_label(hero_class: HeroClass) -> &'static str {
     }
 }
 
-fn enemy_label(kind: EnemyKind) -> &'static str {
+pub fn enemy_label(kind: EnemyKind) -> &'static str {
     match kind {
         EnemyKind::Guard => "G",
         EnemyKind::Stalker => "S",
@@ -331,7 +331,7 @@ fn enemy_label(kind: EnemyKind) -> &'static str {
     }
 }
 
-fn enemy_color(kind: EnemyKind, high_contrast: bool) -> Color {
+pub fn enemy_color(kind: EnemyKind, high_contrast: bool) -> Color {
     match (kind, high_contrast) {
         (EnemyKind::Guard, false) => Color::new(0.62, 0.22, 0.35, 1.),
         (EnemyKind::Stalker, false) => Color::new(0.28, 0.45, 0.72, 1.),
@@ -342,7 +342,7 @@ fn enemy_color(kind: EnemyKind, high_contrast: bool) -> Color {
     }
 }
 
-fn cell_fill(index: usize, game: &OneRoomRoguelike, high_contrast: bool) -> Color {
+pub fn cell_fill(index: usize, game: &OneRoomRoguelike, high_contrast: bool) -> Color {
     if index == game.exit {
         if game.phase == RoomPhase::Stairs && high_contrast {
             Color::new(0.80, 0.52, 0.05, 1.)
@@ -364,7 +364,7 @@ fn cell_fill(index: usize, game: &OneRoomRoguelike, high_contrast: bool) -> Colo
     }
 }
 
-fn status_text(phase: RoomPhase, turns: u16) -> String {
+pub fn status_text(phase: RoomPhase, turns: u16) -> String {
     match phase {
         RoomPhase::Exploring => format!("G guard  •  S stalker  •  B brute  •  {} turns", turns),
         RoomPhase::Stairs => format!("The room is clear  •  Move to STAIRS  •  {} turns", turns),
@@ -373,7 +373,7 @@ fn status_text(phase: RoomPhase, turns: u16) -> String {
     }
 }
 
-fn button(rect: Rect, label: &str, large_text: bool) {
+pub fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     center_text(
@@ -384,7 +384,7 @@ fn button(rect: Rect, label: &str, large_text: bool) {
     );
 }
 
-fn class_button(rect: Rect, hero_class: HeroClass, selected: bool, large_text: bool) {
+pub fn class_button(rect: Rect, hero_class: HeroClass, selected: bool, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -412,7 +412,7 @@ fn class_button(rect: Rect, hero_class: HeroClass, selected: bool, large_text: b
     );
 }
 
-fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
+pub fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
     let measured = crate::ui::measure_text(label, None, size as u16, 1.);
     crate::ui::draw_text(
         label,
@@ -423,11 +423,11 @@ fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
     );
 }
 
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
 
-fn title_size() -> f32 {
+pub fn title_size() -> f32 {
     if crate::ui::is_compact_landscape() || crate::ui::is_portrait() {
         20.
     } else {
@@ -435,11 +435,11 @@ fn title_size() -> f32 {
     }
 }
 
-fn compact_header_positions() -> (f32, f32) {
+pub fn compact_header_positions() -> (f32, f32) {
     (82., 280.)
 }
 
-fn body_size() -> f32 {
+pub fn body_size() -> f32 {
     if crate::ui::is_portrait() {
         10.
     } else {
@@ -447,7 +447,7 @@ fn body_size() -> f32 {
     }
 }
 
-fn cell_size(large_text: bool) -> f32 {
+pub fn cell_size(large_text: bool) -> f32 {
     if crate::ui::is_portrait() {
         accessibility::text_size(18., large_text).min(22.)
     } else {
@@ -455,7 +455,7 @@ fn cell_size(large_text: bool) -> f32 {
     }
 }
 
-fn small_size(large_text: bool) -> f32 {
+pub fn small_size(large_text: bool) -> f32 {
     if crate::ui::is_portrait() {
         accessibility::text_size(8., large_text).min(10.)
     } else {
@@ -463,18 +463,14 @@ fn small_size(large_text: bool) -> f32 {
     }
 }
 
-fn accent() -> Color {
+pub fn accent() -> Color {
     crate::theme::BRASS
 }
 
-fn muted() -> Color {
+pub fn muted() -> Color {
     crate::theme::SECONDARY
 }
 
-fn line_color(high_contrast: bool) -> Color {
+pub fn line_color(high_contrast: bool) -> Color {
     accessibility::grid_line(high_contrast)
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/one_room_roguelike_ui/tests.rs"]
-mod tests;

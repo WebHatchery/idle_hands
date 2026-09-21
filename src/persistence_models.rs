@@ -47,7 +47,3 @@ impl CollectionIndex {
         state.screen = self.active_game.map_or(Screen::Cabinet, Screen::Game);
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/persistence_models/tests.rs"]
-mod tests;

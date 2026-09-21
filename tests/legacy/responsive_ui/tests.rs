@@ -1,7 +1,7 @@
 //! Regression coverage for the tests module.
 
-use super::*;
-use crate::{state::AppState, ui::UiAction};
+use idle_hands::testing::modules::responsive_ui::*;
+use idle_hands::testing::{state::AppState, ui::UiAction};
 use macroquad::prelude::vec2;
 
 #[test]

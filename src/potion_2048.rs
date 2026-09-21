@@ -22,7 +22,7 @@ impl PotionDifficulty {
         }
     }
 
-    fn settings(self) -> (usize, u16) {
+    pub fn settings(self) -> (usize, u16) {
         match self {
             Self::Standard => (4, 4096),
             Self::Hard => (5, 8192),
@@ -40,14 +40,14 @@ impl PotionDifficulty {
 }
 
 #[derive(Debug, Clone)]
-struct Snapshot {
-    cells: Vec<u16>,
-    score: u32,
-    seed: u64,
-    combo: u8,
-    best_combo: u8,
-    catalysts_brewed: u16,
-    last_merges: u8,
+pub struct Snapshot {
+    pub cells: Vec<u16>,
+    pub score: u32,
+    pub seed: u64,
+    pub combo: u8,
+    pub best_combo: u8,
+    pub catalysts_brewed: u16,
+    pub last_merges: u8,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -67,7 +67,7 @@ pub struct Potion2048 {
     #[serde(default)]
     pub last_merges: u8,
     #[serde(skip)]
-    undo: Option<Snapshot>,
+    pub undo: Option<Snapshot>,
 }
 
 impl Default for Potion2048 {
@@ -221,7 +221,7 @@ impl Potion2048 {
     pub fn won(&self) -> bool {
         self.cells.iter().any(|&value| value >= self.target())
     }
-    fn spawn(&mut self, catalyst: bool) {
+    pub fn spawn(&mut self, catalyst: bool) {
         let empty: Vec<usize> = self
             .cells
             .iter()
@@ -252,7 +252,7 @@ impl Potion2048 {
     }
 }
 
-fn reaction(first: u16, second: u16) -> Option<u16> {
+pub fn reaction(first: u16, second: u16) -> Option<u16> {
     if first == second {
         Some(first.saturating_mul(2))
     } else if first == 1 || second == 1 {
@@ -262,7 +262,7 @@ fn reaction(first: u16, second: u16) -> Option<u16> {
     }
 }
 
-fn line_indices(side: usize, line: usize, direction: Direction) -> Vec<usize> {
+pub fn line_indices(side: usize, line: usize, direction: Direction) -> Vec<usize> {
     let indices: Vec<usize> = match direction {
         Direction::Left => (0..side).map(|offset| line * side + offset).collect(),
         Direction::Right => (0..side).rev().map(|offset| line * side + offset).collect(),
@@ -271,11 +271,7 @@ fn line_indices(side: usize, line: usize, direction: Direction) -> Vec<usize> {
     };
     indices
 }
-fn next_seed(seed: u64) -> u64 {
+pub fn next_seed(seed: u64) -> u64 {
     seed.wrapping_mul(6364136223846793005)
         .wrapping_add(1442695040888963407)
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/potion_2048/tests.rs"]
-mod tests;

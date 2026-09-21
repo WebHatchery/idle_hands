@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::responsive_cabinet::*;
 
 #[test]
 fn portrait_cards_expose_a_favorite_touch_zone() {
@@ -8,11 +8,14 @@ fn portrait_cards_expose_a_favorite_touch_zone() {
         cabinet_filter: 3,
         ..Default::default()
     };
-    let page = crate::cabinet_data::page(&state, crate::cabinet_data::PORTRAIT_PAGE_SIZE);
+    let page = idle_hands::testing::cabinet_data::page(
+        &state,
+        idle_hands::testing::cabinet_data::PORTRAIT_PAGE_SIZE,
+    );
     let index = page
         .games
         .iter()
-        .position(|game| crate::cabinet_status::is_available(*game))
+        .position(|game| idle_hands::testing::cabinet_status::is_available(*game))
         .expect("the demo keeps one card drawer playable");
     let rect = game_rect(index);
 
@@ -22,7 +25,7 @@ fn portrait_cards_expose_a_favorite_touch_zone() {
     ));
 
     let home = AppState::default();
-    crate::ui::with_portrait_layout(|| {
+    idle_hands::testing::ui::with_portrait_layout(|| {
         assert!(matches!(
             clicks(&home, vec2(52., 204.)).as_slice(),
             [UiAction::Recent]

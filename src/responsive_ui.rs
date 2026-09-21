@@ -4,14 +4,10 @@ use crate::domain::Direction;
 use crate::{palette_ui, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/responsive_ui/tests.rs"]
-mod tests;
-
 pub const WIDTH: f32 = 360.;
 pub const HEIGHT: f32 = 780.;
 
-fn panel(rect: Rect, fill: Color) {
+pub fn panel(rect: Rect, fill: Color) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -21,7 +17,7 @@ fn panel(rect: Rect, fill: Color) {
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
 

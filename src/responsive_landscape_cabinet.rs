@@ -8,8 +8,8 @@ use crate::{
 };
 use macroquad::prelude::*;
 
-const CONTINUE: Rect = Rect::new(170., 54., 270., 82.);
-const CATEGORY_RECTS: [Rect; 6] = [
+pub const CONTINUE: Rect = Rect::new(170., 54., 270., 82.);
+pub const CATEGORY_RECTS: [Rect; 6] = [
     Rect::new(170., 170., 205., 82.),
     Rect::new(385., 170., 205., 82.),
     Rect::new(600., 170., 205., 82.),
@@ -17,9 +17,6 @@ const CATEGORY_RECTS: [Rect; 6] = [
     Rect::new(385., 264., 205., 82.),
     Rect::new(600., 264., 205., 82.),
 ];
-#[cfg(test)]
-#[path = "../tests/legacy/responsive_landscape_cabinet/tests.rs"]
-mod tests;
 
 pub fn draw(
     state: &AppState,
@@ -69,7 +66,7 @@ pub fn clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     }
 }
 
-fn draw_home(state: &AppState, _loaded: usize) {
+pub fn draw_home(state: &AppState, _loaded: usize) {
     text("Good evening", 170., 34., 21., crate::theme::INK);
     if let Some(badge) = crate::storefront::build_badge() {
         text(&badge, 700., 34., 9., crate::theme::BRASS);
@@ -120,7 +117,7 @@ fn draw_home(state: &AppState, _loaded: usize) {
     }
 }
 
-fn draw_library(state: &AppState) {
+pub fn draw_library(state: &AppState) {
     let availability = cabinet_status::availability_counts(state, state.cabinet_filter);
     let progress = cabinet_status::category_progress(state, state.cabinet_filter);
     text("< HOME", 170., 28., 9., crate::theme::SURFACE);
@@ -227,7 +224,7 @@ fn draw_library(state: &AppState) {
     }
 }
 
-fn draw_sidebar(state: &AppState) {
+pub fn draw_sidebar(state: &AppState) {
     text("IDLE", 30., 38., 24., crate::theme::CREAM);
     text("HANDS", 30., 64., 24., crate::theme::CREAM);
     text("quiet games", 31., 81., 8., crate::theme::SECONDARY);
@@ -254,7 +251,7 @@ fn draw_sidebar(state: &AppState) {
     text(&profile_name, 18., 348., 10., crate::theme::CREAM);
 }
 
-fn category(state: &AppState, rect: Rect, filter: u8) {
+pub fn category(state: &AppState, rect: Rect, filter: u8) {
     let sample = GameId::ALL
         .iter()
         .copied()
@@ -314,7 +311,7 @@ fn category(state: &AppState, rect: Rect, filter: u8) {
     crate::mascots::draw_for_filter(filter, vec2(rect.right() - 29., rect.y + 41.), 0.68);
 }
 
-fn home_clicks(p: Vec2) -> Vec<UiAction> {
+pub fn home_clicks(p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(Rect::new(560., 6., 110., 38.), p) {
         return vec![UiAction::Finder];
     }
@@ -335,7 +332,7 @@ fn home_clicks(p: Vec2) -> Vec<UiAction> {
     vec![]
 }
 
-fn library_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
+pub fn library_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(Rect::new(160., 4., 110., 58.), p) {
         return vec![UiAction::CabinetFilter(0)];
     }
@@ -370,13 +367,13 @@ fn library_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     vec![]
 }
 
-fn page_games(state: &AppState) -> Vec<GameId> {
+pub fn page_games(state: &AppState) -> Vec<GameId> {
     crate::cabinet_data::page(state, crate::cabinet_data::COMPACT_LANDSCAPE_PAGE_SIZE).games
 }
-fn side_rects() -> [Rect; 5] {
+pub fn side_rects() -> [Rect; 5] {
     std::array::from_fn(|index| Rect::new(10., 100. + index as f32 * 48., 134., 40.))
 }
-fn game_rect(index: usize) -> Rect {
+pub fn game_rect(index: usize) -> Rect {
     Rect::new(
         170. + (index % 4) as f32 * 160.,
         70. + (index / 4) as f32 * 63.,
@@ -384,7 +381,7 @@ fn game_rect(index: usize) -> Rect {
         52.,
     )
 }
-fn utility_link(rect: Rect, label: &str, detail: &str) {
+pub fn utility_link(rect: Rect, label: &str, detail: &str) {
     draw_line(
         rect.x,
         rect.bottom() - 2.,
@@ -402,13 +399,13 @@ fn utility_link(rect: Rect, label: &str, detail: &str) {
         crate::theme::SECONDARY,
     );
 }
-fn button(rect: Rect, label: &str) {
+pub fn button(rect: Rect, label: &str) {
     panel(rect, crate::theme::SURFACE_DARK);
     text(label, rect.x + 17., rect.y + 24., 9., crate::theme::CREAM);
 }
-fn panel(rect: Rect, fill: Color) {
+pub fn panel(rect: Rect, fill: Color) {
     crate::ui::draw_rounded_panel(rect, 8., fill, crate::theme::BORDER);
 }
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, size, color);
 }

@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::minesweeper::*;
 
 #[test]
 fn first_reveal_is_safe_and_seeded() {

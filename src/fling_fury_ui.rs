@@ -11,26 +11,23 @@ use macroquad::prelude::*;
 #[path = "fling_fury_ui/board.rs"]
 mod board;
 mod result;
-#[cfg(test)]
-#[path = "../tests/legacy/fling_fury_ui/tests.rs"]
-mod tests;
 
 #[derive(Clone, Copy)]
-struct Layout {
-    board: Rect,
-    cell: f32,
-    angle_down: Rect,
-    angle_up: Rect,
-    power_down: Rect,
-    power_up: Rect,
-    fire: Rect,
-    pause: Rect,
-    undo: Rect,
-    new_game: Rect,
-    restart: Rect,
+pub struct Layout {
+    pub board: Rect,
+    pub cell: f32,
+    pub angle_down: Rect,
+    pub angle_up: Rect,
+    pub power_down: Rect,
+    pub power_up: Rect,
+    pub fire: Rect,
+    pub pause: Rect,
+    pub undo: Rect,
+    pub new_game: Rect,
+    pub restart: Rect,
 }
 
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         let cell = 14.;
         Layout {
@@ -248,7 +245,7 @@ pub fn draw(state: &AppState) {
     }
 }
 
-fn rotated_corners(center: Vec2, width: f32, height: f32, rotation: f32) -> [Vec2; 4] {
+pub fn rotated_corners(center: Vec2, width: f32, height: f32, rotation: f32) -> [Vec2; 4] {
     let cos = rotation.cos();
     let sin = rotation.sin();
     [
@@ -259,11 +256,11 @@ fn rotated_corners(center: Vec2, width: f32, height: f32, rotation: f32) -> [Vec
     ]
 }
 
-fn rotate_offset(x: f32, y: f32, center: Vec2, cos: f32, sin: f32) -> Vec2 {
+pub fn rotate_offset(x: f32, y: f32, center: Vec2, cos: f32, sin: f32) -> Vec2 {
     center + vec2(x * cos - y * sin, x * sin + y * cos)
 }
 
-fn status_text(game: &FlingFury) -> String {
+pub fn status_text(game: &FlingFury) -> String {
     match game.status {
         FlingStatus::Playing => {
             "Orange SHOT is ready — aim at the CYAN TARGETS, then tap FLING".into()
@@ -273,7 +270,7 @@ fn status_text(game: &FlingFury) -> String {
     }
 }
 
-fn button(rect: Rect, value: &str, large_text: bool) {
+pub fn button(rect: Rect, value: &str, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     let size = accessibility::text_size(10., large_text);
@@ -286,11 +283,11 @@ fn button(rect: Rect, value: &str, large_text: bool) {
     );
 }
 
-fn label(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn label(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
 
-fn title_size() -> f32 {
+pub fn title_size() -> f32 {
     if crate::ui::is_portrait() {
         24.
     } else {
@@ -298,7 +295,7 @@ fn title_size() -> f32 {
     }
 }
 
-fn body_size() -> f32 {
+pub fn body_size() -> f32 {
     if crate::ui::is_portrait() {
         9.
     } else {
@@ -306,14 +303,14 @@ fn body_size() -> f32 {
     }
 }
 
-fn accent() -> Color {
+pub fn accent() -> Color {
     crate::theme::BRASS
 }
 
-fn muted() -> Color {
+pub fn muted() -> Color {
     crate::theme::SECONDARY
 }
 
-fn back_rect() -> Rect {
+pub fn back_rect() -> Rect {
     Rect::new(0., 0., 115., 42.)
 }

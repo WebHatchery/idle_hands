@@ -56,7 +56,7 @@ pub struct WordGrid {
     #[serde(default = "default_max_guesses")]
     pub max_guesses: usize,
     #[serde(skip)]
-    history: UndoStack<Self>,
+    pub history: UndoStack<Self>,
 }
 
 impl Default for WordGrid {
@@ -255,14 +255,14 @@ impl WordGrid {
         None
     }
 
-    fn clone_without_history(&self) -> Self {
+    pub fn clone_without_history(&self) -> Self {
         let mut copy = self.clone();
         copy.history.clear();
         copy
     }
 }
 
-fn probe_score(probe: &str, remaining: &[&str]) -> usize {
+pub fn probe_score(probe: &str, remaining: &[&str]) -> usize {
     let mut seen = [false; 26];
     probe
         .bytes()
@@ -282,7 +282,7 @@ fn probe_score(probe: &str, remaining: &[&str]) -> usize {
         .sum()
 }
 
-fn score_guess(target: &str, guess: &str) -> [LetterState; WORD_LENGTH] {
+pub fn score_guess(target: &str, guess: &str) -> [LetterState; WORD_LENGTH] {
     let target_bytes = target.as_bytes();
     let guess_bytes = guess.as_bytes();
     let mut result = [LetterState::Absent; WORD_LENGTH];
@@ -307,7 +307,7 @@ fn score_guess(target: &str, guess: &str) -> [LetterState; WORD_LENGTH] {
     result
 }
 
-fn stronger(old: LetterState, new: LetterState) -> LetterState {
+pub fn stronger(old: LetterState, new: LetterState) -> LetterState {
     if state_rank(new) > state_rank(old) {
         new
     } else {
@@ -315,7 +315,7 @@ fn stronger(old: LetterState, new: LetterState) -> LetterState {
     }
 }
 
-fn state_rank(state: LetterState) -> u8 {
+pub fn state_rank(state: LetterState) -> u8 {
     match state {
         LetterState::Unknown => 0,
         LetterState::Absent => 1,
@@ -324,10 +324,6 @@ fn state_rank(state: LetterState) -> u8 {
     }
 }
 
-fn default_max_guesses() -> usize {
+pub fn default_max_guesses() -> usize {
     MAX_GUESSES
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/word_grid/tests.rs"]
-mod tests;

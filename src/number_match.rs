@@ -4,7 +4,7 @@ use crate::undo::UndoStack;
 use serde::{Deserialize, Serialize};
 
 pub const SIDE: usize = 6;
-const CELLS: usize = SIDE * SIDE;
+pub const CELLS: usize = SIDE * SIDE;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum NumberMatchPhase {
@@ -20,11 +20,11 @@ pub enum LinkRule {
     Diagonals,
 }
 
-fn default_rule() -> LinkRule {
+pub fn default_rule() -> LinkRule {
     LinkRule::Neighbors
 }
 
-fn default_remixes() -> u8 {
+pub fn default_remixes() -> u8 {
     2
 }
 
@@ -47,7 +47,7 @@ pub struct NumberMatch {
     pub seed: u64,
     pub phase: NumberMatchPhase,
     #[serde(skip)]
-    history: UndoStack<Self>,
+    pub history: UndoStack<Self>,
 }
 
 impl Default for NumberMatch {
@@ -234,11 +234,11 @@ impl NumberMatch {
         }
     }
 
-    fn valid_pair(&self, first: usize, second: usize) -> bool {
+    pub fn valid_pair(&self, first: usize, second: usize) -> bool {
         self.cells[first] == self.cells[second] || self.cells[first] + self.cells[second] == 10
     }
 
-    fn path_is_clear(&self, first: usize, second: usize) -> bool {
+    pub fn path_is_clear(&self, first: usize, second: usize) -> bool {
         let first_row = first / SIDE;
         let first_col = first % SIDE;
         let second_row = second / SIDE;
@@ -257,14 +257,14 @@ impl NumberMatch {
         true
     }
 
-    fn clone_without_undo(&self) -> Self {
+    pub fn clone_without_undo(&self) -> Self {
         let mut copy = self.clone();
         copy.history.clear();
         copy
     }
 }
 
-fn step(from: usize, to: usize) -> isize {
+pub fn step(from: usize, to: usize) -> isize {
     match from.cmp(&to) {
         std::cmp::Ordering::Less => 1,
         std::cmp::Ordering::Equal => 0,
@@ -272,13 +272,9 @@ fn step(from: usize, to: usize) -> isize {
     }
 }
 
-fn random_word(seed: u64, index: usize) -> u64 {
+pub fn random_word(seed: u64, index: usize) -> u64 {
     seed.wrapping_add(index as u64)
         .wrapping_mul(6364136223846793005)
         .wrapping_add(1442695040888963407)
         ^ seed.rotate_left((index % 63) as u32 + 1)
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/number_match/tests.rs"]
-mod tests;

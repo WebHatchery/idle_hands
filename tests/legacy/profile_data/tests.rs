@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::profile_data::*;
 
 #[test]
 fn saved_custom_names_remain_visible_without_a_selected_preset() {

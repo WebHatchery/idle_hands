@@ -8,20 +8,16 @@ use crate::{
 };
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/dots_boxes_ui/tests.rs"]
-mod tests;
-
 #[derive(Clone, Copy)]
-struct Layout {
-    board: Rect,
-    hint: Rect,
-    undo: Rect,
-    new_game: Rect,
-    difficulty: [Rect; 3],
+pub struct Layout {
+    pub board: Rect,
+    pub hint: Rect,
+    pub undo: Rect,
+    pub new_game: Rect,
+    pub difficulty: [Rect; 3],
 }
 
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             board: Rect::new(250., 54., 300., 300.),
@@ -192,7 +188,7 @@ pub fn draw(state: &AppState) {
     }
 }
 
-fn draw_board(board: Rect, game: &DotsBoxes, high_contrast: bool, large_text: bool) {
+pub fn draw_board(board: Rect, game: &DotsBoxes, high_contrast: bool, large_text: bool) {
     let side = game.side();
     let step = board.w / side as f32;
     for row in 0..=side {
@@ -318,7 +314,7 @@ fn draw_board(board: Rect, game: &DotsBoxes, high_contrast: bool, large_text: bo
     }
 }
 
-fn edge_at(board: Rect, point: Vec2, side: usize) -> Option<Edge> {
+pub fn edge_at(board: Rect, point: Vec2, side: usize) -> Option<Edge> {
     let step = board.w / side as f32;
     let local = point - vec2(board.x, board.y);
     if local.x < -20. || local.y < -20. || local.x > board.w + 20. || local.y > board.h + 20. {
@@ -339,7 +335,7 @@ fn edge_at(board: Rect, point: Vec2, side: usize) -> Option<Edge> {
     }
 }
 
-fn edge_color(index: usize, horizontal: bool, game: &DotsBoxes, high_contrast: bool) -> Color {
+pub fn edge_color(index: usize, horizontal: bool, game: &DotsBoxes, high_contrast: bool) -> Color {
     let owner = if horizontal {
         game.edge_owner(Edge::Horizontal(index))
     } else {
@@ -362,7 +358,7 @@ fn edge_color(index: usize, horizontal: bool, game: &DotsBoxes, high_contrast: b
     }
 }
 
-fn status_text(phase: DotsPhase) -> &'static str {
+pub fn status_text(phase: DotsPhase) -> &'static str {
     match phase {
         DotsPhase::Playing => "Draw a line beside an open box",
         DotsPhase::Won => "The red boxes hold the board",
@@ -370,11 +366,11 @@ fn status_text(phase: DotsPhase) -> &'static str {
     }
 }
 
-fn portrait_score_status(red: usize, blue: usize, moves: usize) -> String {
+pub fn portrait_score_status(red: usize, blue: usize, moves: usize) -> String {
     format!("Red {}  •  Blue {}  •  {} moves", red, blue, moves)
 }
 
-fn button(rect: Rect, label: &str, large_text: bool) {
+pub fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     center_text(
@@ -385,7 +381,7 @@ fn button(rect: Rect, label: &str, large_text: bool) {
     );
 }
 
-fn mode_button(rect: Rect, label: &str, selected: bool, large_text: bool) {
+pub fn mode_button(rect: Rect, label: &str, selected: bool, large_text: bool) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -413,7 +409,7 @@ fn mode_button(rect: Rect, label: &str, selected: bool, large_text: bool) {
     );
 }
 
-fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
+pub fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
     let measured = crate::ui::measure_text(label, None, size as u16, 1.);
     crate::ui::draw_text(
         label,
@@ -424,11 +420,11 @@ fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
     );
 }
 
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
 
-fn title_size() -> f32 {
+pub fn title_size() -> f32 {
     if crate::ui::is_compact_landscape() {
         20.
     } else if crate::ui::is_portrait() {
@@ -438,7 +434,7 @@ fn title_size() -> f32 {
     }
 }
 
-fn body_size() -> f32 {
+pub fn body_size() -> f32 {
     if crate::ui::is_portrait() {
         10.
     } else {
@@ -446,9 +442,9 @@ fn body_size() -> f32 {
     }
 }
 
-fn accent() -> Color {
+pub fn accent() -> Color {
     crate::theme::BRASS
 }
-fn muted() -> Color {
+pub fn muted() -> Color {
     crate::theme::SECONDARY
 }

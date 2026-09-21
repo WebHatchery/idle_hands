@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::misc_games::*;
 
 #[test]
 fn sum_circuit_keeps_generating_solvable_rounds() {

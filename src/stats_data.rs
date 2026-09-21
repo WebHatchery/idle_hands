@@ -51,7 +51,7 @@ pub fn top_playtime(state: &AppState, limit: usize) -> Vec<PlaytimeRow> {
     rows
 }
 
-fn fastest_clear(state: &AppState) -> Option<PlaytimeRow> {
+pub fn fastest_clear(state: &AppState) -> Option<PlaytimeRow> {
     GameId::ALL
         .into_iter()
         .filter_map(|game| {
@@ -63,7 +63,7 @@ fn fastest_clear(state: &AppState) -> Option<PlaytimeRow> {
         .min_by_key(|row| (row.seconds, row.game.index()))
 }
 
-fn longest_session(state: &AppState) -> Option<PlaytimeRow> {
+pub fn longest_session(state: &AppState) -> Option<PlaytimeRow> {
     GameId::ALL
         .into_iter()
         .filter_map(|game| {
@@ -102,7 +102,3 @@ pub fn short_title_from(state: &crate::state::AppState, game: GameId, max_chars:
     shortened.push('…');
     shortened
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/stats_data/tests.rs"]
-mod tests;

@@ -1,7 +1,7 @@
 //! Regression coverage for the tests module.
 
-use super::*;
-use crate::daily_dungeon::{DailyPhase, DailyRule};
+use idle_hands::testing::daily_dungeon::{DailyPhase, DailyRule};
+use idle_hands::testing::modules::daily_challenge::*;
 
 #[test]
 fn day_seed_and_challenge_are_stable() {

@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::nonogram::*;
 
 #[test]
 fn nonogram_focus_window_keeps_large_boards_touchable() {

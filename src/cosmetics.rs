@@ -140,10 +140,10 @@ pub const CABINET_DECORATIONS: [CosmeticOption; 3] = [
     },
 ];
 
-const CARD_BACK_COSTS: [u16; 3] = [0, 2, 5];
-const BOARD_THEME_COSTS: [u16; 3] = [0, 3, 7];
-const SOUND_SET_COSTS: [u16; 3] = [0, 4, 8];
-const CABINET_DECORATION_COSTS: [u16; 3] = [0, 4, 8];
+pub const CARD_BACK_COSTS: [u16; 3] = [0, 2, 5];
+pub const BOARD_THEME_COSTS: [u16; 3] = [0, 3, 7];
+pub const SOUND_SET_COSTS: [u16; 3] = [0, 4, 8];
+pub const CABINET_DECORATION_COSTS: [u16; 3] = [0, 4, 8];
 
 pub fn next_card_back(current: u8, stamps: u16) -> u8 {
     next_unlocked(current, stamps, &CARD_BACK_COSTS)
@@ -158,7 +158,7 @@ pub fn next_cabinet_decoration(current: u8, stamps: u16) -> u8 {
     next_unlocked(current, stamps, &CABINET_DECORATION_COSTS)
 }
 
-fn next_unlocked(current: u8, stamps: u16, costs: &[u16]) -> u8 {
+pub fn next_unlocked(current: u8, stamps: u16, costs: &[u16]) -> u8 {
     let start = current as usize % costs.len();
     (1..=costs.len())
         .map(|offset| (start + offset) % costs.len())
@@ -181,7 +181,3 @@ pub fn card_back_colors(back: u8) -> (Color, Color) {
         _ => (crate::theme::LEATHER, crate::theme::BRASS),
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/cosmetics/tests.rs"]
-mod tests;

@@ -8,20 +8,16 @@ use crate::{
 };
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/peg_solitaire_ui/tests.rs"]
-mod tests;
-
 #[derive(Clone, Copy)]
-struct Layout {
-    board: Rect,
-    cell: f32,
-    hint: Rect,
-    undo: Rect,
-    new_game: Rect,
+pub struct Layout {
+    pub board: Rect,
+    pub cell: f32,
+    pub hint: Rect,
+    pub undo: Rect,
+    pub new_game: Rect,
 }
 
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             board: Rect::new(18., 48., 280., 280.),
@@ -162,7 +158,7 @@ pub fn draw(state: &AppState) {
     button(layout.hint, "HINT", state.large_text);
 }
 
-fn draw_board(game: &crate::peg_solitaire::PegSolitaire, layout: Layout, high_contrast: bool) {
+pub fn draw_board(game: &crate::peg_solitaire::PegSolitaire, layout: Layout, high_contrast: bool) {
     for row in 0..7 {
         for column in 0..7 {
             let index = row * 7 + column;
@@ -218,14 +214,14 @@ fn draw_board(game: &crate::peg_solitaire::PegSolitaire, layout: Layout, high_co
     }
 }
 
-fn status_text(status: PegSolitaireStatus) -> &'static str {
+pub fn status_text(status: PegSolitaireStatus) -> &'static str {
     match status {
         PegSolitaireStatus::Playing => "Clear the board",
         PegSolitaireStatus::Won => "One peg remains",
         PegSolitaireStatus::Stuck => "No jumps remain",
     }
 }
-fn button(rect: Rect, label: &str, large_text: bool) {
+pub fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     text(
@@ -236,29 +232,29 @@ fn button(rect: Rect, label: &str, large_text: bool) {
         WHITE,
     );
 }
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
-fn title_size() -> f32 {
+pub fn title_size() -> f32 {
     if crate::ui::is_portrait() {
         24.
     } else {
         31.
     }
 }
-fn body_size() -> f32 {
+pub fn body_size() -> f32 {
     if crate::ui::is_portrait() {
         11.
     } else {
         13.
     }
 }
-fn accent() -> Color {
+pub fn accent() -> Color {
     crate::theme::BRASS
 }
-fn muted() -> Color {
+pub fn muted() -> Color {
     crate::theme::SECONDARY
 }
-fn back_rect() -> Rect {
+pub fn back_rect() -> Rect {
     Rect::new(0., 0., 110., 42.)
 }

@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::word_search::*;
 
 #[test]
 fn endpoint_selection_finds_forward_and_reverse_words() {

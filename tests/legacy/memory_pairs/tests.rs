@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::memory_pairs::*;
 
 #[test]
 fn a_mismatch_stays_visible_until_the_next_selection_and_undo_restores_it() {

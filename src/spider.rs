@@ -3,9 +3,9 @@
 use crate::cards::Card;
 use serde::{Deserialize, Serialize};
 
-const COLUMNS: usize = 8;
-const SUITS: usize = 8;
-const RUN: usize = 13;
+pub const COLUMNS: usize = 8;
+pub const SUITS: usize = 8;
+pub const RUN: usize = 13;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum SpiderStatus {
@@ -30,7 +30,7 @@ impl SpiderMode {
         }
     }
 
-    const fn suit_count(self) -> u8 {
+    pub const fn suit_count(self) -> u8 {
         match self {
             Self::OneSuit => 1,
             Self::TwoSuit => 2,
@@ -38,7 +38,7 @@ impl SpiderMode {
     }
 }
 
-type SpiderSnapshot = (Vec<Vec<Card>>, Vec<Card>, u8, u32, SpiderStatus);
+pub type SpiderSnapshot = (Vec<Vec<Card>>, Vec<Card>, u8, u32, SpiderStatus);
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Spider {
@@ -52,7 +52,7 @@ pub struct Spider {
     #[serde(default)]
     pub mode: SpiderMode,
     #[serde(skip)]
-    history: Vec<SpiderSnapshot>,
+    pub history: Vec<SpiderSnapshot>,
 }
 
 impl Default for Spider {
@@ -203,7 +203,7 @@ impl Spider {
         None
     }
 
-    fn can_place(&self, destination: usize, depth: usize, source: usize) -> bool {
+    pub fn can_place(&self, destination: usize, depth: usize, source: usize) -> bool {
         let Some(card) = self.tableau[source].get(depth) else {
             return false;
         };
@@ -213,7 +213,7 @@ impl Spider {
         top.face_up && top.rank == card.rank + 1
     }
 
-    fn remove_completed_run(&mut self, destination: usize) {
+    pub fn remove_completed_run(&mut self, destination: usize) {
         let stack = &mut self.tableau[destination];
         if stack.len() < RUN {
             return;
@@ -233,7 +233,7 @@ impl Spider {
         }
     }
 
-    fn snapshot(&mut self) {
+    pub fn snapshot(&mut self) {
         self.history.push((
             self.tableau.clone(),
             self.stock.clone(),
@@ -258,7 +258,7 @@ pub fn is_complete_run(cards: &[Card]) -> bool {
     is_complete_run_for_mode(cards)
 }
 
-fn is_complete_run_for_mode(cards: &[Card]) -> bool {
+pub fn is_complete_run_for_mode(cards: &[Card]) -> bool {
     cards.len() == RUN
         && cards.iter().all(|card| card.face_up)
         && cards.windows(2).all(|pair| pair[0].suit == pair[1].suit)
@@ -269,17 +269,13 @@ fn is_complete_run_for_mode(cards: &[Card]) -> bool {
         && cards.last().is_some_and(|card| card.rank == 1)
 }
 
-fn flip_top(stack: &mut [Card]) {
+pub fn flip_top(stack: &mut [Card]) {
     if let Some(card) = stack.last_mut() {
         card.face_up = true;
     }
 }
 
-fn next_seed(seed: u64) -> u64 {
+pub fn next_seed(seed: u64) -> u64 {
     seed.wrapping_mul(6364136223846793005)
         .wrapping_add(1442695040888963407)
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/spider/tests.rs"]
-mod tests;

@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::responsive_sudoku::*;
 
 #[test]
 fn portrait_board_stays_below_the_shared_header() {

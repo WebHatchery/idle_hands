@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::color_sort::*;
 
 fn with_tubes(tubes: Vec<Vec<u8>>) -> ColorSort {
     ColorSort {

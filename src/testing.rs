@@ -266,3 +266,251 @@ pub mod games {
         pub use crate::word_search::*;
     }
 }
+
+/// Source-module seams for the migrated regression suites.
+///
+/// These modules are deliberately grouped below the hidden `testing` boundary:
+/// production callers continue to use the crate's normal public surface while
+/// integration tests can exercise the existing rule and layout seams without
+/// reintroducing test code into `src/`.
+pub mod modules {
+    macro_rules! expose_modules {
+        ($($module:ident),* $(,)?) => {
+            $(
+                #[allow(ambiguous_glob_reexports, unused_imports)]
+                pub mod $module {
+                    pub use crate::$module::*;
+                    pub use crate::cards::Card;
+                    pub use crate::data::GameData;
+                    pub use crate::domain::Direction;
+                    pub use crate::state::{AppState, CollectionRecords, GameId, Screen};
+                    pub use crate::ui::UiAction;
+                    pub use macroquad::prelude::*;
+                    pub use macroquad_toolkit::notifications::LoggedNotification;
+                    pub use macroquad_toolkit::rng::SeededRng;
+                }
+            )*
+        };
+    }
+
+    pub mod game {
+        pub use crate::domain::Direction;
+        pub use crate::game::*;
+        pub use crate::state::{AppState, GameId, Screen};
+        pub use crate::ui::UiAction;
+        pub use macroquad::prelude::*;
+
+        pub mod game_restart {
+            pub use crate::game::testing::game_restart::*;
+        }
+        pub mod game_capture_records {
+            pub use crate::game::testing::game_capture_records::*;
+            pub use crate::state::{AppState, GameId, Screen};
+        }
+        pub mod game_capture_rules {
+            pub use crate::game::testing::game_capture_rules::*;
+            pub use crate::state::{AppState, GameId, Screen};
+        }
+    }
+
+    #[allow(ambiguous_glob_reexports, unused_imports)]
+    pub mod ui {
+        pub use crate::state::{AppState, GameId, Screen};
+        pub use crate::testing::{
+            with_compact_landscape_layout, with_desktop_layout, with_portrait_layout,
+        };
+        pub use crate::ui::UiAction;
+        pub use crate::ui::*;
+        pub use macroquad::prelude::*;
+
+        pub mod restart_modal {
+            pub use crate::ui::testing::restart_modal::*;
+        }
+    }
+
+    expose_modules!(
+        achievements_data,
+        achievements_ui,
+        analytics,
+        accessibility,
+        asteroids,
+        asteroids_ui,
+        audio_settings,
+        battleship,
+        blackjack,
+        blackjack_ui,
+        block_stack,
+        block_stack_ui,
+        breakout,
+        breakout_ui,
+        cabinet_data,
+        cabinet_status,
+        cabinet_ui,
+        capture_registry,
+        card_hints,
+        card_render,
+        cards,
+        checkers,
+        collection_summary,
+        color_sort,
+        connect_four,
+        connect_four_ui,
+        content,
+        continue_data,
+        cosmetics,
+        credits_data,
+        daily_archive_data,
+        daily_archive_ui,
+        daily_challenge,
+        daily_dungeon,
+        data,
+        dense_focus_ui,
+        domain,
+        dots_boxes,
+        dots_boxes_ui,
+        drawer_info_ui,
+        dungeon_sweeper,
+        dungeon_sweeper_ui,
+        favorites_data,
+        favorites_ui,
+        finder_data,
+        finder_ui,
+        fivefold,
+        fling_fury,
+        fling_fury_ui,
+        flood_it,
+        freecell,
+        frogger,
+        frogger_ui,
+        game_2048,
+        game_actions,
+        game_descriptor,
+        game_input,
+        game_result_ui,
+        game_store,
+        game_variant_ui,
+        game_variants,
+        grid,
+        hangman,
+        hangman_ui,
+        hanoi,
+        help_data,
+        higher_lower,
+        higher_lower_ui,
+        input,
+        klondike_golf,
+        klondike_golf_ui,
+        library_ui,
+        lifecycle,
+        lifecycle_pause_ui,
+        lights_out,
+        lights_out_ui,
+        mahjong_solitaire,
+        mahjong_solitaire_ui,
+        mancala,
+        mastermind,
+        mastermind_ui,
+        match_three,
+        match_three_ui,
+        maze_walk,
+        maze_walk_ui,
+        memory_pairs,
+        memory_pairs_ui,
+        minesweeper,
+        misc_games,
+        misc_ui,
+        mobile_tutorial_ui,
+        munch_maze,
+        munch_maze_ui,
+        nim,
+        nim_ui,
+        nonogram,
+        notice_log_ui,
+        number_match,
+        number_match_ui,
+        one_room_roguelike,
+        one_room_roguelike_ui,
+        paddle_duel,
+        paddle_duel_ui,
+        peg_solitaire,
+        peg_solitaire_ui,
+        persistence_models,
+        pipe_loop,
+        pipe_loop_ui,
+        potion_2048,
+        potion_2048_ui,
+        profile_data,
+        profile_ui,
+        progression,
+        pyramid,
+        pyramid_ui,
+        records_data,
+        records_ui,
+        responsive_cabinet,
+        responsive_cards,
+        responsive_fivefold,
+        responsive_landscape,
+        responsive_landscape_cabinet,
+        responsive_landscape_cards,
+        responsive_landscape_games,
+        responsive_landscape_library,
+        responsive_landscape_rules,
+        responsive_library,
+        responsive_sudoku,
+        responsive_puzzles,
+        responsive_ui,
+        reversi,
+        rules_data,
+        save_recovery,
+        save_recovery_ui,
+        settings_data,
+        sliding_puzzle,
+        sliding_puzzle_ui,
+        snake,
+        snake_ui,
+        sokoban,
+        solitaire,
+        solitaire_ui,
+        space_invaders,
+        space_invaders_ui,
+        spider,
+        spider_solitaire,
+        spider_solitaire_ui,
+        spider_ui,
+        sound,
+        state,
+        state_navigation,
+        state_records,
+        state_snapshots,
+        statistics_ui,
+        stats_data,
+        storefront_data,
+        sudoku,
+        terrain_cannon,
+        terrain_cannon_ui,
+        tic_tac_toe,
+        tic_tac_toe_ui,
+        tiny_tower_defence,
+        tiny_tower_defence_ui,
+        theme,
+        tri_peaks,
+        tri_peaks_ui,
+        tutorial_data,
+        tutorial_library_data,
+        tutorial_library_ui,
+        tutorial_ui,
+        ui_action,
+        ui_game_routes,
+        variant_card_data,
+        word_grid,
+        word_grid_ui,
+        word_ladder,
+        word_ladder_ui,
+        word_search,
+        word_search_ui,
+    );
+}
+
+// Keep the short `testing::state` style used inside migrated suites while the
+// explicit `modules` namespace remains the canonical import location.
+pub use modules::*;

@@ -6,10 +6,10 @@ use crate::{
 };
 use macroquad_toolkit::analytics::{AnalyticsClient, AnalyticsConfig};
 
-const ACTIVE_INPUT_GRACE_SECONDS: f32 = 30.0;
+pub const ACTIVE_INPUT_GRACE_SECONDS: f32 = 30.0;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum ProgressSignal {
+pub enum ProgressSignal {
     FirstDrawerOpened,
     TutorialCompleted,
     FirstDrawerCompleted,
@@ -20,29 +20,29 @@ enum ProgressSignal {
 }
 
 #[derive(Debug, Clone, Copy)]
-struct ProgressState {
-    drawer_open: bool,
-    tutorials: usize,
-    completed: usize,
-    demo_completed: usize,
+pub struct ProgressState {
+    pub drawer_open: bool,
+    pub tutorials: usize,
+    pub completed: usize,
+    pub demo_completed: usize,
 }
 
 #[derive(Debug, Clone, Copy)]
-struct ProgressSignalsInput {
-    before: ProgressState,
-    after: ProgressState,
-    tutorial_emitted: bool,
-    demo_build: bool,
+pub struct ProgressSignalsInput {
+    pub before: ProgressState,
+    pub after: ProgressState,
+    pub tutorial_emitted: bool,
+    pub demo_build: bool,
 }
 
 pub struct GameAnalytics {
-    client: Option<AnalyticsClient>,
-    recent_input_seconds: f32,
-    opened_any_drawer: bool,
-    tutorial_count: usize,
-    completed_count: usize,
-    demo_completed_count: usize,
-    tutorial_emitted: bool,
+    pub client: Option<AnalyticsClient>,
+    pub recent_input_seconds: f32,
+    pub opened_any_drawer: bool,
+    pub tutorial_count: usize,
+    pub completed_count: usize,
+    pub demo_completed_count: usize,
+    pub tutorial_emitted: bool,
 }
 
 impl GameAnalytics {
@@ -107,7 +107,7 @@ impl GameAnalytics {
         }
     }
 
-    fn observe_progress(&mut self, state: &AppState) -> Vec<ProgressSignal> {
+    pub fn observe_progress(&mut self, state: &AppState) -> Vec<ProgressSignal> {
         let current_tutorials = tutorial_count(state);
         let current_completed = progression::completed_games(&state.records);
         let current_demo_completed = completed_demo_games(state);
@@ -138,11 +138,11 @@ impl GameAnalytics {
     }
 }
 
-fn analytics_enabled() -> bool {
+pub fn analytics_enabled() -> bool {
     option_env!("IDLE_HANDS_ANALYTICS_ENABLED") == Some("true")
 }
 
-fn analytics_config() -> Option<AnalyticsConfig> {
+pub fn analytics_config() -> Option<AnalyticsConfig> {
     // Ordinary catalog builds require no game-local Cargo environment. An
     // explicitly enabled analytics build must also provide both settings.
     let endpoint = option_env!("IDLE_HANDS_ANALYTICS_ENDPOINT")?;
@@ -175,11 +175,11 @@ fn analytics_config() -> Option<AnalyticsConfig> {
     }
 }
 
-fn tutorial_count(state: &AppState) -> usize {
+pub fn tutorial_count(state: &AppState) -> usize {
     state.tutorial_seen.iter().filter(|seen| **seen).count()
 }
 
-fn completed_demo_games(state: &AppState) -> usize {
+pub fn completed_demo_games(state: &AppState) -> usize {
     GameId::ALL
         .into_iter()
         .filter(|game| game_descriptor::is_demo_game(*game))
@@ -187,7 +187,7 @@ fn completed_demo_games(state: &AppState) -> usize {
         .count()
 }
 
-fn is_active_play(state: &AppState, recent_input_seconds: f32) -> bool {
+pub fn is_active_play(state: &AppState, recent_input_seconds: f32) -> bool {
     let Screen::Game(game) = state.screen else {
         return false;
     };
@@ -200,7 +200,7 @@ fn is_active_play(state: &AppState, recent_input_seconds: f32) -> bool {
         && !is_paused(state, game)
 }
 
-fn is_paused(state: &AppState, game: GameId) -> bool {
+pub fn is_paused(state: &AppState, game: GameId) -> bool {
     match game {
         GameId::Snake => state.games.snake.paused,
         GameId::Breakout => state.games.breakout.paused,
@@ -217,7 +217,7 @@ fn is_paused(state: &AppState, game: GameId) -> bool {
     }
 }
 
-fn progress_signals(input: ProgressSignalsInput) -> Vec<ProgressSignal> {
+pub fn progress_signals(input: ProgressSignalsInput) -> Vec<ProgressSignal> {
     let mut signals = Vec::new();
     if !input.before.drawer_open && input.after.drawer_open {
         signals.push(ProgressSignal::FirstDrawerOpened);
@@ -249,7 +249,3 @@ fn progress_signals(input: ProgressSignalsInput) -> Vec<ProgressSignal> {
     }
     signals
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/analytics/tests.rs"]
-mod tests;

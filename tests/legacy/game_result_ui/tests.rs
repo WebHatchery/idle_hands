@@ -1,7 +1,7 @@
 //! Regression coverage for the tests module.
 
-use super::*;
-use crate::state::{AppState, GameId, GameSnapshot, Screen};
+use idle_hands::testing::modules::game_result_ui::*;
+use idle_hands::testing::state::{AppState, GameId, GameSnapshot, Screen};
 
 fn game_state(game: GameId) -> AppState {
     AppState {
@@ -13,10 +13,10 @@ fn game_state(game: GameId) -> AppState {
 #[test]
 fn win_loss_and_stuck_states_have_explicit_result_kinds() {
     let mut state = game_state(GameId::Minesweeper);
-    state.games.minesweeper.status = crate::minesweeper::MineStatus::Won;
+    state.games.minesweeper.status = idle_hands::testing::minesweeper::MineStatus::Won;
     assert_eq!(info(&state).unwrap().kind, ResultKind::Won);
 
-    state.games.minesweeper.status = crate::minesweeper::MineStatus::Lost;
+    state.games.minesweeper.status = idle_hands::testing::minesweeper::MineStatus::Lost;
     assert_eq!(info(&state).unwrap().kind, ResultKind::Lost);
 
     let mut board = game_state(GameId::Game2048);
@@ -27,7 +27,7 @@ fn win_loss_and_stuck_states_have_explicit_result_kinds() {
 #[test]
 fn autosaved_terminal_status_survives_serialized_snapshot_restore() {
     let mut saved = game_state(GameId::MatchThree);
-    saved.games.match_three.phase = crate::match_three::MatchThreePhase::Lost;
+    saved.games.match_three.phase = idle_hands::testing::match_three::MatchThreePhase::Lost;
     saved.games.match_three.score = 42;
     let snapshot = GameSnapshot::from_state(&saved, GameId::MatchThree);
     let encoded = serde_json::to_value(&snapshot).expect("terminal snapshot should serialize");
@@ -43,7 +43,7 @@ fn autosaved_terminal_status_survives_serialized_snapshot_restore() {
 #[test]
 fn timed_result_cards_show_the_run_and_personal_best() {
     let mut state = game_state(GameId::Minesweeper);
-    state.games.minesweeper.status = crate::minesweeper::MineStatus::Won;
+    state.games.minesweeper.status = idle_hands::testing::minesweeper::MineStatus::Won;
     state.records.ensure_time_slots();
     state.records.elapsed_seconds[GameId::Minesweeper.index()] = 61;
     state.records.best_time_seconds[GameId::Minesweeper.index()] = Some(54);
@@ -56,12 +56,12 @@ fn timed_result_cards_show_the_run_and_personal_best() {
 fn every_result_layout_keeps_two_touch_targets_inside_the_viewport() {
     let state = {
         let mut state = game_state(GameId::TicTacToe);
-        state.games.tic_tac_toe.status = crate::tic_tac_toe::TicTacToeStatus::Draw;
+        state.games.tic_tac_toe.status = idle_hands::testing::tic_tac_toe::TicTacToeStatus::Draw;
         state
     };
-    crate::ui::with_desktop_layout(|| assert_layout(&state, 1280., 720.));
-    crate::ui::with_compact_landscape_layout(|| assert_layout(&state, 844., 390.));
-    crate::ui::with_portrait_layout(|| assert_layout(&state, 360., 780.));
+    idle_hands::testing::ui::with_desktop_layout(|| assert_layout(&state, 1280., 720.));
+    idle_hands::testing::ui::with_compact_landscape_layout(|| assert_layout(&state, 844., 390.));
+    idle_hands::testing::ui::with_portrait_layout(|| assert_layout(&state, 360., 780.));
 }
 
 fn assert_layout(state: &AppState, width: f32, height: f32) {

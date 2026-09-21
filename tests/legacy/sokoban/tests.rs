@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::sokoban::*;
 
 #[test]
 fn cannot_push_a_crate_into_a_wall() {

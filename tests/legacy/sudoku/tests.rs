@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::sudoku::*;
 
 #[test]
 fn puzzle_has_a_fixed_solution_shape_and_given_cells_cannot_change() {

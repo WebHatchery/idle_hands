@@ -1,12 +1,13 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::misc_games::{MiscGame, MiscKind};
+use idle_hands::testing::modules::misc_ui::*;
 
 #[test]
 fn portrait_misc_titles_and_metrics_use_the_header_lane() {
     let game = MiscGame::new(0x4D49_5343_0001, MiscKind::OrbitOrder);
 
-    crate::ui::with_portrait_layout(|| {
+    idle_hands::testing::ui::with_portrait_layout(|| {
         assert_eq!(title_size(), 21.);
         assert_eq!(metrics_text(&game, true), "R0 • S0 • M0");
     });
@@ -14,17 +15,17 @@ fn portrait_misc_titles_and_metrics_use_the_header_lane() {
 
 #[test]
 fn compact_misc_controls_stay_clear_of_the_panel() {
-    crate::ui::with_compact_landscape_layout(|| assert_layout_is_clear(844., 390.));
+    idle_hands::testing::ui::with_compact_landscape_layout(|| assert_layout_is_clear(844., 390.));
 }
 
 #[test]
 fn portrait_misc_controls_stay_clear_of_the_panel() {
-    crate::ui::with_portrait_layout(|| assert_layout_is_clear(360., 780.));
+    idle_hands::testing::ui::with_portrait_layout(|| assert_layout_is_clear(360., 780.));
 }
 
 #[test]
 fn desktop_misc_controls_stay_clear_of_the_panel() {
-    crate::ui::with_desktop_layout(|| assert_layout_is_clear(1280., 720.));
+    idle_hands::testing::ui::with_desktop_layout(|| assert_layout_is_clear(1280., 720.));
 }
 
 fn assert_layout_is_clear(width: f32, height: f32) {

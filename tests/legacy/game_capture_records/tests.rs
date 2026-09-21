@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::game::game_capture_records::*;
 
 #[test]
 fn card_capture_selects_cards_and_seeds_mixed_records() {

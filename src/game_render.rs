@@ -5,10 +5,6 @@ use crate::{cosmetics, ui};
 use macroquad::prelude::*;
 use macroquad_toolkit::notifications::{NotificationAnchor, NotificationRenderConfig};
 
-#[cfg(test)]
-#[path = "../tests/legacy/game_render/tests.rs"]
-mod tests;
-
 impl Game {
     pub fn draw(&mut self) {
         clear_background(cosmetics::background(self.state.board_theme));

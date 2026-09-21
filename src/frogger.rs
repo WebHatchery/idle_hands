@@ -5,10 +5,10 @@ use serde::{Deserialize, Serialize};
 
 pub const WIDTH: u8 = 12;
 pub const HEIGHT: u8 = 12;
-const TARGET_CROSSINGS: u8 = 3;
-const STEP_INTERVAL: f32 = 0.20;
+pub const TARGET_CROSSINGS: u8 = 3;
+pub const STEP_INTERVAL: f32 = 0.20;
 
-fn default_target_crossings() -> u8 {
+pub fn default_target_crossings() -> u8 {
     TARGET_CROSSINGS
 }
 
@@ -28,17 +28,17 @@ pub struct Car {
 }
 
 #[derive(Debug, Clone)]
-struct Snapshot {
-    player_row: u8,
-    player_column: u8,
-    cars: Vec<Car>,
-    crossings: u8,
-    score: u16,
-    moves: u16,
-    lives: u8,
-    status: FroggerStatus,
-    seed: u64,
-    paused: bool,
+pub struct Snapshot {
+    pub player_row: u8,
+    pub player_column: u8,
+    pub cars: Vec<Car>,
+    pub crossings: u8,
+    pub score: u16,
+    pub moves: u16,
+    pub lives: u8,
+    pub status: FroggerStatus,
+    pub seed: u64,
+    pub paused: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -58,9 +58,9 @@ pub struct Frogger {
     #[serde(default)]
     pub mode: u8,
     #[serde(skip)]
-    undo: Option<Box<Snapshot>>,
+    pub undo: Option<Box<Snapshot>>,
     #[serde(skip)]
-    elapsed: f32,
+    pub elapsed: f32,
 }
 
 impl Default for Frogger {
@@ -195,7 +195,7 @@ impl Frogger {
         TARGET_CROSSINGS
     }
 
-    fn resolve_position(&mut self) {
+    pub fn resolve_position(&mut self) {
         if self.player_row == 0 {
             self.crossings = self.crossings.saturating_add(1);
             self.score = self.score.saturating_add(25);
@@ -224,7 +224,7 @@ impl Frogger {
         }
     }
 
-    fn build_lanes(&mut self) {
+    pub fn build_lanes(&mut self) {
         self.cars.clear();
         for (lane, row) in [2, 4, 6, 8, 10].into_iter().enumerate() {
             let direction = if lane.is_multiple_of(2) { 1 } else { -1 };
@@ -245,7 +245,7 @@ impl Frogger {
         }
     }
 
-    fn next_random(&mut self) -> u8 {
+    pub fn next_random(&mut self) -> u8 {
         self.seed = self
             .seed
             .wrapping_mul(6364136223846793005)
@@ -253,7 +253,7 @@ impl Frogger {
         (self.seed >> 24) as u8
     }
 
-    fn snapshot(&mut self) {
+    pub fn snapshot(&mut self) {
         self.undo = Some(Box::new(Snapshot {
             player_row: self.player_row,
             player_column: self.player_column,
@@ -269,10 +269,6 @@ impl Frogger {
     }
 }
 
-fn car_contains(car: &Car, column: u8) -> bool {
+pub fn car_contains(car: &Car, column: u8) -> bool {
     (0..car.length).any(|offset| (car.x + offset) % WIDTH == column)
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/frogger/tests.rs"]
-mod tests;

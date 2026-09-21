@@ -106,7 +106,3 @@ pub fn summary(state: &AppState, mode: BrowseMode) -> BrowseSummary {
         coming_soon,
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/favorites_data/tests.rs"]
-mod tests;

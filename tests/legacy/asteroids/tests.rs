@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::asteroids::*;
 
 #[test]
 fn default_field_is_ready_for_touch_play() {

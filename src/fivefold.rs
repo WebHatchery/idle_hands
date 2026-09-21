@@ -288,7 +288,7 @@ impl Fivefold {
         best
     }
 
-    fn counts(&self) -> [u8; 6] {
+    pub fn counts(&self) -> [u8; 6] {
         let mut counts = [0; 6];
         for value in self.dice {
             if (1..=6).contains(&value) {
@@ -299,14 +299,10 @@ impl Fivefold {
     }
 }
 
-fn has_straight(counts: &[u8; 6], length: usize) -> bool {
+pub fn has_straight(counts: &[u8; 6], length: usize) -> bool {
     (0..=6 - length).any(|start| (start..start + length).all(|index| counts[index] > 0))
 }
-fn next_seed(seed: u64) -> u64 {
+pub fn next_seed(seed: u64) -> u64 {
     seed.wrapping_mul(6364136223846793005)
         .wrapping_add(1442695040888963407)
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/fivefold/tests.rs"]
-mod tests;

@@ -57,7 +57,7 @@ pub fn needs_paging(total: usize, capacity: usize) -> bool {
 }
 
 impl ArchiveRow {
-    fn from_result(result: &DailyResult) -> Self {
+    pub fn from_result(result: &DailyResult) -> Self {
         Self {
             day: result.day,
             challenge: crate::daily_challenge::challenge_for_day(result.day),
@@ -67,7 +67,3 @@ impl ArchiveRow {
         }
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/daily_archive_data/tests.rs"]
-mod tests;

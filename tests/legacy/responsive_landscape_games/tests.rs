@@ -1,12 +1,14 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::responsive_landscape_games::*;
 
 #[test]
 fn landscape_nonogram_focus_maps_visible_cells_to_the_large_board() {
     let state = AppState {
-        games: crate::game_store::GameStore {
-            nonogram: crate::nonogram::Nonogram::new(crate::nonogram::NonogramPreset::Large),
+        games: idle_hands::testing::game_store::GameStore {
+            nonogram: idle_hands::testing::nonogram::Nonogram::new(
+                idle_hands::testing::nonogram::NonogramPreset::Large,
+            ),
             nonogram_zoomed: true,
             nonogram_focus: (6, 6),
             ..Default::default()

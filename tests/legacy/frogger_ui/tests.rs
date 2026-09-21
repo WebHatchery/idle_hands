@@ -1,6 +1,7 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::frogger::{Car, WIDTH};
+use idle_hands::testing::modules::frogger_ui::*;
 
 #[test]
 fn compact_header_and_board_leave_room_for_instruction_text() {

@@ -2,7 +2,7 @@
 
 use crate::ui::UiAction;
 
-pub(super) fn requires_new_confirmation(action: UiAction) -> bool {
+pub fn requires_new_confirmation(action: UiAction) -> bool {
     matches!(
         action,
         UiAction::Game2048Size(_)

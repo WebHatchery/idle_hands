@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::grid::*;
 
 #[test]
 fn grid_maps_cells_and_rejects_all_outer_edges() {

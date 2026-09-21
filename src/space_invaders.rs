@@ -4,10 +4,10 @@ use serde::{Deserialize, Serialize};
 
 pub const WIDTH: u8 = 20;
 pub const HEIGHT: u8 = 12;
-const TARGET_WAVE: u8 = 3;
-const STEP_INTERVAL: f32 = 0.10;
+pub const TARGET_WAVE: u8 = 3;
+pub const STEP_INTERVAL: f32 = 0.10;
 
-fn default_target_wave() -> u8 {
+pub fn default_target_wave() -> u8 {
     TARGET_WAVE
 }
 
@@ -42,19 +42,19 @@ pub struct Shot {
 }
 
 #[derive(Debug, Clone)]
-struct Snapshot {
-    ship_x: u8,
-    invaders: Vec<Invader>,
-    player_shot: Option<Shot>,
-    enemy_shot: Option<Shot>,
-    score: u16,
-    moves: u16,
-    lives: u8,
-    wave: u8,
-    status: SpaceInvadersStatus,
-    seed: u64,
-    paused: bool,
-    formation_direction: i8,
+pub struct Snapshot {
+    pub ship_x: u8,
+    pub invaders: Vec<Invader>,
+    pub player_shot: Option<Shot>,
+    pub enemy_shot: Option<Shot>,
+    pub score: u16,
+    pub moves: u16,
+    pub lives: u8,
+    pub wave: u8,
+    pub status: SpaceInvadersStatus,
+    pub seed: u64,
+    pub paused: bool,
+    pub formation_direction: i8,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -75,13 +75,13 @@ pub struct SpaceInvaders {
     #[serde(default)]
     pub mode: u8,
     #[serde(skip)]
-    formation_direction: i8,
+    pub formation_direction: i8,
     #[serde(skip)]
-    undo: Option<Box<Snapshot>>,
+    pub undo: Option<Box<Snapshot>>,
     #[serde(skip)]
-    elapsed: f32,
+    pub elapsed: f32,
     #[serde(skip)]
-    control: ShipDirection,
+    pub control: ShipDirection,
 }
 
 impl Default for SpaceInvaders {
@@ -212,7 +212,7 @@ impl SpaceInvaders {
         TARGET_WAVE
     }
 
-    fn advance_one(&mut self) {
+    pub fn advance_one(&mut self) {
         self.snapshot();
         self.moves = self.moves.saturating_add(1);
         match self.control {
@@ -239,7 +239,7 @@ impl SpaceInvaders {
         }
     }
 
-    fn advance_player_shot(&mut self) {
+    pub fn advance_player_shot(&mut self) {
         let Some(mut shot) = self.player_shot else {
             return;
         };
@@ -270,7 +270,7 @@ impl SpaceInvaders {
         }
     }
 
-    fn advance_enemy_shot(&mut self) {
+    pub fn advance_enemy_shot(&mut self) {
         let Some(mut shot) = self.enemy_shot else {
             return;
         };
@@ -289,7 +289,7 @@ impl SpaceInvaders {
         }
     }
 
-    fn move_formation(&mut self) {
+    pub fn move_formation(&mut self) {
         let edge = self
             .invaders
             .iter()
@@ -318,7 +318,7 @@ impl SpaceInvaders {
         }
     }
 
-    fn build_wave(&mut self) {
+    pub fn build_wave(&mut self) {
         self.invaders.clear();
         self.player_shot = None;
         self.enemy_shot = None;
@@ -336,7 +336,7 @@ impl SpaceInvaders {
         }
     }
 
-    fn snapshot(&mut self) {
+    pub fn snapshot(&mut self) {
         self.undo = Some(Box::new(Snapshot {
             ship_x: self.ship_x,
             invaders: self.invaders.clone(),
@@ -353,7 +353,3 @@ impl SpaceInvaders {
         }));
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/space_invaders/tests.rs"]
-mod tests;

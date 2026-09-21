@@ -1,7 +1,7 @@
 //! Regression coverage for the tests module.
 
-use super::*;
-use crate::state::GameId;
+use idle_hands::testing::modules::input::*;
+use idle_hands::testing::state::GameId;
 
 fn scope(screen: Screen, layer: PointerLayer) -> PointerScope {
     PointerScope { screen, layer }
@@ -97,7 +97,7 @@ fn state_scope_tracks_the_topmost_interaction_layer() {
     );
     state.tutorial = None;
     state.confirm_restart = true;
-    state.pending_restart = Some(crate::ui::UiAction::Restart);
+    state.pending_restart = Some(idle_hands::testing::ui::UiAction::Restart);
     assert_eq!(
         PointerScope::from_state(&state),
         scope(

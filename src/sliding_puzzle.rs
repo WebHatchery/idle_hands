@@ -2,8 +2,8 @@
 
 use serde::{Deserialize, Serialize};
 
-const CELLS: usize = 16;
-const SIDE: usize = 4;
+pub const CELLS: usize = 16;
+pub const SIDE: usize = 4;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum SlidingStatus {
@@ -30,7 +30,7 @@ impl SlidingVariant {
         }
     }
 
-    const fn scramble_steps(self) -> usize {
+    pub const fn scramble_steps(self) -> usize {
         match self {
             Self::Classic => 80,
             Self::Wanderer => 40,
@@ -48,7 +48,7 @@ pub struct SlidingPuzzle {
     #[serde(default)]
     pub variant: SlidingVariant,
     #[serde(skip)]
-    undo: Option<([u8; CELLS], u16, SlidingStatus)>,
+    pub undo: Option<([u8; CELLS], u16, SlidingStatus)>,
 }
 
 impl Default for SlidingPuzzle {
@@ -140,22 +140,22 @@ impl SlidingPuzzle {
         best
     }
 
-    fn blank(&self) -> usize {
+    pub fn blank(&self) -> usize {
         // All constructors and validated saves contain exactly one blank tile.
         self.cells.iter().position(|cell| *cell == 0).unwrap()
     }
 
-    fn swap_blank(&mut self, tile: usize) {
+    pub fn swap_blank(&mut self, tile: usize) {
         let blank = self.blank();
         self.cells.swap(blank, tile);
     }
 
-    fn is_solved(&self) -> bool {
+    pub fn is_solved(&self) -> bool {
         self.cells == [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0]
     }
 }
 
-fn neighbors(index: usize) -> Vec<usize> {
+pub fn neighbors(index: usize) -> Vec<usize> {
     let row = index / SIDE;
     let column = index % SIDE;
     let mut result = Vec::with_capacity(4);
@@ -174,12 +174,12 @@ fn neighbors(index: usize) -> Vec<usize> {
     result
 }
 
-fn next_seed(seed: u64) -> u64 {
+pub fn next_seed(seed: u64) -> u64 {
     seed.wrapping_mul(6364136223846793005)
         .wrapping_add(1442695040888963407)
 }
 
-fn board_distance(cells: &[u8; CELLS]) -> usize {
+pub fn board_distance(cells: &[u8; CELLS]) -> usize {
     cells
         .iter()
         .enumerate()
@@ -194,7 +194,3 @@ fn board_distance(cells: &[u8; CELLS]) -> usize {
         })
         .sum()
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/sliding_puzzle/tests.rs"]
-mod tests;

@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::block_stack_ui::*;
 
 fn assert_layout_is_clear(width: f32, height: f32) {
     let layout = layout();
@@ -29,7 +29,7 @@ fn assert_controls_are_clear(board: Rect, controls: &[Rect], width: f32, height:
 
 #[test]
 fn controls_stay_clear_of_the_board_in_every_layout() {
-    crate::ui::with_compact_landscape_layout(|| assert_layout_is_clear(844., 390.));
-    crate::ui::with_portrait_layout(|| assert_layout_is_clear(360., 780.));
-    crate::ui::with_desktop_layout(|| assert_layout_is_clear(1280., 720.));
+    idle_hands::testing::ui::with_compact_landscape_layout(|| assert_layout_is_clear(844., 390.));
+    idle_hands::testing::ui::with_portrait_layout(|| assert_layout_is_clear(360., 780.));
+    idle_hands::testing::ui::with_desktop_layout(|| assert_layout_is_clear(1280., 720.));
 }

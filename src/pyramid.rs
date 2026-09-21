@@ -26,7 +26,7 @@ impl PyramidDraw {
             Self::Three => "DRAW 3",
         }
     }
-    const fn count(self) -> usize {
+    pub const fn count(self) -> usize {
         match self {
             Self::One => 1,
             Self::Three => 3,
@@ -34,7 +34,7 @@ impl PyramidDraw {
     }
 }
 
-type Snapshot = (
+pub type Snapshot = (
     Vec<Option<Card>>,
     Vec<Card>,
     Vec<Card>,
@@ -67,7 +67,7 @@ pub struct Pyramid {
     #[serde(default = "default_redeals")]
     pub redeals_remaining: u8,
     #[serde(skip)]
-    history: Vec<Snapshot>,
+    pub history: Vec<Snapshot>,
 }
 
 impl Default for Pyramid {
@@ -270,7 +270,7 @@ impl Pyramid {
                 .sum::<usize>()
     }
 
-    fn card_at(&self, index: usize) -> Option<Card> {
+    pub fn card_at(&self, index: usize) -> Option<Card> {
         if index == WASTE_INDEX {
             self.waste.last().copied()
         } else {
@@ -278,7 +278,7 @@ impl Pyramid {
         }
     }
 
-    fn remove(&mut self, index: usize) {
+    pub fn remove(&mut self, index: usize) {
         if index == WASTE_INDEX {
             self.waste.pop();
         } else if let Some(card) = self.pyramid.get_mut(index) {
@@ -286,7 +286,7 @@ impl Pyramid {
         }
     }
 
-    fn resolve(&mut self) {
+    pub fn resolve(&mut self) {
         if self.pyramid.iter().all(Option::is_none) {
             self.status = PyramidStatus::Won;
         } else if self.stock.is_empty()
@@ -299,7 +299,7 @@ impl Pyramid {
         }
     }
 
-    fn has_move(&self) -> bool {
+    pub fn has_move(&self) -> bool {
         if self.waste.last().is_some_and(|card| card.rank == 13) {
             return true;
         }
@@ -329,7 +329,7 @@ impl Pyramid {
         })
     }
 
-    fn snapshot(&mut self) {
+    pub fn snapshot(&mut self) {
         self.history.push((
             self.pyramid.clone(),
             self.stock.clone(),
@@ -344,7 +344,7 @@ impl Pyramid {
         ));
     }
 
-    fn score_clear(&mut self, cards: u32) {
+    pub fn score_clear(&mut self, cards: u32) {
         self.combo = self.combo.saturating_add(1);
         self.best_combo = self.best_combo.max(self.combo);
         self.points = self.points.saturating_add(
@@ -355,18 +355,14 @@ impl Pyramid {
     }
 }
 
-const fn default_redeals() -> u8 {
+pub const fn default_redeals() -> u8 {
     1
 }
 
-fn row_start(row: usize) -> usize {
+pub fn row_start(row: usize) -> usize {
     row * (row + 1) / 2
 }
 
-fn row_for(index: usize) -> usize {
+pub fn row_for(index: usize) -> usize {
     (0..7).find(|&row| index < row_start(row + 1)).unwrap_or(6)
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/pyramid/tests.rs"]
-mod tests;

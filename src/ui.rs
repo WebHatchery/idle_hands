@@ -32,21 +32,28 @@ use crate::ui_game_routes;
 mod game_2048;
 #[path = "restart_modal.rs"]
 mod restart_modal;
-pub(crate) use game_2048::{draw_2048, game_clicks};
+
+#[doc(hidden)]
+pub mod testing {
+    pub mod restart_modal {
+        pub use super::super::restart_modal::*;
+    }
+}
+pub use game_2048::{draw_2048, game_clicks};
 #[path = "ui/help.rs"]
 mod help;
 use crate::{
     data::GameData,
     state::{AppState, Screen},
 };
-pub(crate) use help::draw_help;
+pub use help::draw_help;
 use macroquad::prelude::*;
 use macroquad_toolkit::ui::{
     end_frame_neighbours, note_neighbour, touch_area_for_scale, VirtualUi,
 };
 
 pub fn draw_rounded_panel(rect: Rect, radius: f32, fill: Color, border: Color) {
-    const CORNER_SEGMENTS: usize = 6;
+    pub const CORNER_SEGMENTS: usize = 6;
 
     let radius = radius.clamp(0., rect.w.min(rect.h) * 0.5);
     if radius == 0. {
@@ -96,11 +103,8 @@ thread_local! {
     static TOUCH_SCALE: Cell<f32> = const { Cell::new(1.0) };
 }
 
-#[cfg(test)]
-#[path = "../tests/legacy/ui/tests.rs"]
-mod tests;
 #[derive(Clone, Copy, PartialEq, Eq)]
-enum ForcedLayout {
+pub enum ForcedLayout {
     None,
     Desktop,
     CompactLandscape,
@@ -159,19 +163,19 @@ pub fn display_height() -> f32 {
     macroquad::prelude::screen_height()
 }
 
-pub(crate) fn with_desktop_layout<T>(run: impl FnOnce() -> T) -> T {
+pub fn with_desktop_layout<T>(run: impl FnOnce() -> T) -> T {
     with_forced_layout(ForcedLayout::Desktop, run)
 }
 
-pub(crate) fn with_compact_landscape_layout<T>(run: impl FnOnce() -> T) -> T {
+pub fn with_compact_landscape_layout<T>(run: impl FnOnce() -> T) -> T {
     with_forced_layout(ForcedLayout::CompactLandscape, run)
 }
 
-pub(crate) fn with_portrait_layout<T>(run: impl FnOnce() -> T) -> T {
+pub fn with_portrait_layout<T>(run: impl FnOnce() -> T) -> T {
     with_forced_layout(ForcedLayout::Portrait, run)
 }
 
-fn with_forced_layout<T>(layout: ForcedLayout, run: impl FnOnce() -> T) -> T {
+pub fn with_forced_layout<T>(layout: ForcedLayout, run: impl FnOnce() -> T) -> T {
     FORCED_LAYOUT.with(|forced| {
         let was_forced = forced.replace(layout);
         let result = run();
@@ -434,10 +438,10 @@ pub fn draw(
     let _ = actions_at(state, vec2(-10_000., -10_000.));
     end_frame_neighbours();
 }
-fn text(s: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(s: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(s, x, y, crate::ui::readable_text_size(size), color);
 }
-fn panel(r: Rect, fill: Color) {
+pub fn panel(r: Rect, fill: Color) {
     draw_rectangle(r.x, r.y, r.w, r.h, crate::theme::drawer_surface(fill));
     draw_rectangle_lines(r.x, r.y, r.w, r.h, 2., crate::theme::BORDER)
 }

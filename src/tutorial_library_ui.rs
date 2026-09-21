@@ -3,11 +3,7 @@
 use crate::{state::AppState, tutorial_library_data, ui::UiAction};
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/tutorial_library_ui/tests.rs"]
-mod tests;
-
-fn panel(state: &AppState, rect: Rect, fill: Color) {
+pub fn panel(state: &AppState, rect: Rect, fill: Color) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -29,7 +25,7 @@ fn panel(state: &AppState, rect: Rect, fill: Color) {
     );
 }
 
-fn text(state: &AppState, value: impl AsRef<str>, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(state: &AppState, value: impl AsRef<str>, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(
         value,
         x,
@@ -78,7 +74,7 @@ pub fn draw(state: &AppState) {
     }
 }
 
-fn draw_desktop(state: &AppState) {
+pub fn draw_desktop(state: &AppState) {
     panel(
         state,
         Rect::new(120., 40., 1040., 640.),
@@ -91,7 +87,7 @@ fn draw_desktop(state: &AppState) {
     draw_controls(state);
 }
 
-fn draw_compact(state: &AppState) {
+pub fn draw_compact(state: &AppState) {
     panel(
         state,
         Rect::new(20., 12., 804., 365.),
@@ -104,7 +100,7 @@ fn draw_compact(state: &AppState) {
     draw_controls(state);
 }
 
-fn draw_portrait(state: &AppState) {
+pub fn draw_portrait(state: &AppState) {
     panel(
         state,
         Rect::new(8., 16., 344., 688.),
@@ -117,12 +113,12 @@ fn draw_portrait(state: &AppState) {
     draw_controls(state);
 }
 
-fn heading(state: &AppState, x: f32, y: f32, subtitle: &str) {
+pub fn heading(state: &AppState, x: f32, y: f32, subtitle: &str) {
     text(state, "TUTORIALS", x, y, 32., accent(state));
     text(state, subtitle, x, y + 29., 15., secondary(state));
 }
 
-fn draw_summary(state: &AppState, x: f32, y: f32, size: f32) {
+pub fn draw_summary(state: &AppState, x: f32, y: f32, size: f32) {
     text(
         state,
         format!(
@@ -137,7 +133,7 @@ fn draw_summary(state: &AppState, x: f32, y: f32, size: f32) {
     );
 }
 
-fn draw_cards(state: &AppState) {
+pub fn draw_cards(state: &AppState) {
     let start = state
         .library_scroll
         .min(tutorial_library_data::scroll_limit(state));
@@ -196,7 +192,7 @@ fn draw_cards(state: &AppState) {
     }
 }
 
-fn draw_controls(state: &AppState) {
+pub fn draw_controls(state: &AppState) {
     let (previous, next, back) = control_rects();
     button(state, previous, "PREV");
     button(state, next, "NEXT");
@@ -216,7 +212,7 @@ fn draw_controls(state: &AppState) {
     );
 }
 
-fn draw_filter_button(state: &AppState) {
+pub fn draw_filter_button(state: &AppState) {
     button(
         state,
         filter_rect(),
@@ -228,7 +224,7 @@ fn draw_filter_button(state: &AppState) {
     );
 }
 
-fn button(state: &AppState, rect: Rect, label: &str) {
+pub fn button(state: &AppState, rect: Rect, label: &str) {
     panel(state, rect, crate::theme::MOSS_DARK);
     let width = crate::ui::measure_text(label, None, 12, 1.).width;
     text(
@@ -241,7 +237,7 @@ fn button(state: &AppState, rect: Rect, label: &str) {
     );
 }
 
-fn card_rect(index: usize) -> Rect {
+pub fn card_rect(index: usize) -> Rect {
     if crate::ui::is_compact_landscape() {
         Rect::new(
             40. + (index % 2) as f32 * 390.,
@@ -261,7 +257,7 @@ fn card_rect(index: usize) -> Rect {
     }
 }
 
-fn control_rects() -> (Rect, Rect, Rect) {
+pub fn control_rects() -> (Rect, Rect, Rect) {
     if crate::ui::is_compact_landscape() {
         (
             Rect::new(430., 320., 100., 44.),
@@ -283,7 +279,7 @@ fn control_rects() -> (Rect, Rect, Rect) {
     }
 }
 
-fn filter_rect() -> Rect {
+pub fn filter_rect() -> Rect {
     if crate::ui::is_compact_landscape() {
         Rect::new(650., 20., 150., 44.)
     } else if crate::ui::is_portrait() {
@@ -293,7 +289,7 @@ fn filter_rect() -> Rect {
     }
 }
 
-fn page_label_position() -> f32 {
+pub fn page_label_position() -> f32 {
     if crate::ui::is_portrait() {
         125.
     } else if crate::ui::is_compact_landscape() {
@@ -303,7 +299,7 @@ fn page_label_position() -> f32 {
     }
 }
 
-fn page_label_y() -> f32 {
+pub fn page_label_y() -> f32 {
     if crate::ui::is_portrait() {
         630.
     } else if crate::ui::is_compact_landscape() {
@@ -313,7 +309,7 @@ fn page_label_y() -> f32 {
     }
 }
 
-fn accent(state: &AppState) -> Color {
+pub fn accent(state: &AppState) -> Color {
     if state.high_contrast {
         WHITE
     } else {
@@ -321,7 +317,7 @@ fn accent(state: &AppState) -> Color {
     }
 }
 
-fn secondary(state: &AppState) -> Color {
+pub fn secondary(state: &AppState) -> Color {
     if state.high_contrast {
         WHITE
     } else {

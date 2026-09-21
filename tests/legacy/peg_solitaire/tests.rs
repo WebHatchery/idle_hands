@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::peg_solitaire::*;
 
 #[test]
 fn first_jump_removes_the_middle_peg_and_can_be_undone() {

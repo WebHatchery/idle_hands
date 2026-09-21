@@ -1,6 +1,7 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::word_ladder_ui::*;
+use idle_hands::testing::word_ladder::WordLadder;
 
 #[test]
 fn portrait_word_ladder_title_uses_a_narrow_header_size() {
@@ -11,9 +12,9 @@ fn portrait_word_ladder_title_uses_a_narrow_header_size() {
 
 #[test]
 fn portrait_word_ladder_controls_stay_inside_the_logical_width() {
-    crate::ui::with_portrait_layout(|| {
+    idle_hands::testing::ui::with_portrait_layout(|| {
         let layout = layout();
-        assert!(layout.mode.right() <= crate::responsive_ui::WIDTH);
+        assert!(layout.mode.right() <= idle_hands::testing::responsive_ui::WIDTH);
         assert!(layout.new_game.right() < layout.mode.x);
     });
 }

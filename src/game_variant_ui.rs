@@ -8,10 +8,6 @@ use crate::{
 };
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/game_variant_ui/tests.rs"]
-mod tests;
-
 pub fn button_rect() -> Rect {
     let (width, _) = crate::ui::layout_size();
     variant_card_data::layout(
@@ -94,7 +90,7 @@ pub fn draw(state: &AppState) {
     }
 }
 
-fn setup_panel_rect(game: GameId) -> Rect {
+pub fn setup_panel_rect(game: GameId) -> Rect {
     let (width, height) = crate::ui::layout_size();
     let compact = crate::ui::is_compact_landscape();
     let portrait = crate::ui::is_portrait();
@@ -125,11 +121,11 @@ fn setup_panel_rect(game: GameId) -> Rect {
     )
 }
 
-fn setup_next_rule_rect(panel: Rect) -> Rect {
+pub fn setup_next_rule_rect(panel: Rect) -> Rect {
     Rect::new(panel.x + 20., panel.y + 92., (panel.w - 52.) * 0.5, 46.)
 }
 
-fn setup_close_rect(panel: Rect) -> Rect {
+pub fn setup_close_rect(panel: Rect) -> Rect {
     Rect::new(
         setup_next_rule_rect(panel).right() + 12.,
         panel.y + 92.,
@@ -138,7 +134,7 @@ fn setup_close_rect(panel: Rect) -> Rect {
     )
 }
 
-fn setup_option_count(game: GameId) -> usize {
+pub fn setup_option_count(game: GameId) -> usize {
     match game {
         GameId::Game2048 => crate::game_2048::Game2048Size::ALL.len(),
         GameId::Sudoku => crate::sudoku::SudokuDifficulty::ALL.len(),
@@ -147,7 +143,7 @@ fn setup_option_count(game: GameId) -> usize {
     }
 }
 
-fn setup_option_rect(panel: Rect, index: usize) -> Rect {
+pub fn setup_option_rect(panel: Rect, index: usize) -> Rect {
     let gap = 12.;
     let width = (panel.w - 40. - gap) * 0.5;
     Rect::new(
@@ -158,7 +154,7 @@ fn setup_option_rect(panel: Rect, index: usize) -> Rect {
     )
 }
 
-fn setup_new_round_rect(panel: Rect, option_count: usize) -> Rect {
+pub fn setup_new_round_rect(panel: Rect, option_count: usize) -> Rect {
     let rows = option_count.div_ceil(2);
     Rect::new(
         panel.x + 20.,
@@ -168,7 +164,7 @@ fn setup_new_round_rect(panel: Rect, option_count: usize) -> Rect {
     )
 }
 
-fn setup_choice_action(
+pub fn setup_choice_action(
     state: &AppState,
     game: GameId,
     panel: Rect,
@@ -195,7 +191,7 @@ fn setup_choice_action(
     None
 }
 
-fn setup_new_round_action(
+pub fn setup_new_round_action(
     state: &AppState,
     game: GameId,
     panel: Rect,
@@ -213,7 +209,7 @@ fn setup_new_round_action(
     }
 }
 
-fn draw_setup(state: &AppState, game: GameId) {
+pub fn draw_setup(state: &AppState, game: GameId) {
     let panel = setup_panel_rect(game);
     let (width, height) = crate::ui::layout_size();
     draw_rectangle(0., 0., width, height, Color::new(0.02, 0.01, 0.04, 0.72));
@@ -332,7 +328,7 @@ fn draw_setup(state: &AppState, game: GameId) {
     }
 }
 
-fn new_round_label(game: GameId) -> Option<&'static str> {
+pub fn new_round_label(game: GameId) -> Option<&'static str> {
     match game {
         GameId::Game2048 => Some("NEW BOARD"),
         GameId::Solitaire => Some("NEW DEAL"),
@@ -341,7 +337,7 @@ fn new_round_label(game: GameId) -> Option<&'static str> {
     }
 }
 
-fn text_setup(value: &str, x: f32, y: f32, size: f32, color: Color, state: &AppState) {
+pub fn text_setup(value: &str, x: f32, y: f32, size: f32, color: Color, state: &AppState) {
     crate::ui::draw_text(
         value,
         x,
@@ -351,7 +347,7 @@ fn text_setup(value: &str, x: f32, y: f32, size: f32, color: Color, state: &AppS
     );
 }
 
-fn setup_button(rect: Rect, label: &str, fill: Color, state: &AppState) {
+pub fn setup_button(rect: Rect, label: &str, fill: Color, state: &AppState) {
     crate::ui::draw_rounded_panel(
         rect,
         6.,
@@ -373,7 +369,7 @@ fn setup_button(rect: Rect, label: &str, fill: Color, state: &AppState) {
     );
 }
 
-fn draw_icon(game: GameId, rect: Rect, high_contrast: bool) {
+pub fn draw_icon(game: GameId, rect: Rect, high_contrast: bool) {
     let center = vec2(rect.right() - 17., rect.y + rect.h * 0.52);
     let ink = if high_contrast {
         WHITE

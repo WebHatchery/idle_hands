@@ -9,24 +9,20 @@ use crate::{
 };
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/munch_maze_ui/tests.rs"]
-mod tests;
-
 #[derive(Clone, Copy)]
-struct Layout {
-    board: Rect,
-    cell: f32,
-    up: Rect,
-    left: Rect,
-    down: Rect,
-    right: Rect,
-    pause: Rect,
-    undo: Rect,
-    new_game: Rect,
+pub struct Layout {
+    pub board: Rect,
+    pub cell: f32,
+    pub up: Rect,
+    pub left: Rect,
+    pub down: Rect,
+    pub right: Rect,
+    pub pause: Rect,
+    pub undo: Rect,
+    pub new_game: Rect,
 }
 
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         let cell = 16.;
         Layout {
@@ -205,7 +201,7 @@ pub fn draw(state: &AppState) {
     button(l.new_game, "NEW MAZE", state.large_text);
 }
 
-fn status_text(game: &MunchMaze) -> String {
+pub fn status_text(game: &MunchMaze) -> String {
     match game.status {
         MunchStatus::Playing => "Tap a direction to clear the glowing pellets".into(),
         MunchStatus::Won => "Every pellet is yours — the maze is clear".into(),
@@ -213,7 +209,7 @@ fn status_text(game: &MunchMaze) -> String {
     }
 }
 
-fn button(rect: Rect, text_value: &str, large_text: bool) {
+pub fn button(rect: Rect, text_value: &str, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     let size = accessibility::text_size(11., large_text);
@@ -226,29 +222,29 @@ fn button(rect: Rect, text_value: &str, large_text: bool) {
     );
 }
 
-fn label(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn label(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
-fn title_size() -> f32 {
+pub fn title_size() -> f32 {
     if crate::ui::is_portrait() {
         24.
     } else {
         30.
     }
 }
-fn body_size() -> f32 {
+pub fn body_size() -> f32 {
     if crate::ui::is_portrait() {
         10.
     } else {
         12.
     }
 }
-fn accent() -> Color {
+pub fn accent() -> Color {
     crate::theme::BRASS
 }
-fn muted() -> Color {
+pub fn muted() -> Color {
     crate::theme::SECONDARY
 }
-fn back_rect() -> Rect {
+pub fn back_rect() -> Rect {
     Rect::new(0., 0., 115., 42.)
 }

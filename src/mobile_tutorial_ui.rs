@@ -3,10 +3,10 @@
 use crate::{content::GameContent, state::GameId, tutorial_data, ui::UiAction};
 use macroquad::prelude::*;
 
-const PORTRAIT_PANEL: Rect = Rect::new(15., 70., 330., 650.);
-const LANDSCAPE_PANEL: Rect = Rect::new(40., 24., 760., 354.);
+pub const PORTRAIT_PANEL: Rect = Rect::new(15., 70., 330., 650.);
+pub const LANDSCAPE_PANEL: Rect = Rect::new(40., 24., 760., 354.);
 
-fn continue_rect(compact_landscape: bool) -> Rect {
+pub fn continue_rect(compact_landscape: bool) -> Rect {
     if compact_landscape {
         Rect::new(584., 320., 150., 48.)
     } else {
@@ -14,7 +14,7 @@ fn continue_rect(compact_landscape: bool) -> Rect {
     }
 }
 
-pub(crate) fn replay_rect(compact_landscape: bool) -> Rect {
+pub fn replay_rect(compact_landscape: bool) -> Rect {
     if compact_landscape {
         Rect::new(700., 2., 130., 44.)
     } else {
@@ -69,7 +69,7 @@ pub fn draw_tutorial(
     }
 }
 
-fn draw_portrait(game: GameId, content: &GameContent, large_text: bool, high_contrast: bool) {
+pub fn draw_portrait(game: GameId, content: &GameContent, large_text: bool, high_contrast: bool) {
     panel(
         PORTRAIT_PANEL,
         Color::new(0.07, 0.045, 0.13, 0.98),
@@ -120,7 +120,7 @@ fn draw_portrait(game: GameId, content: &GameContent, large_text: bool, high_con
     draw_continue(false, large_text, high_contrast);
 }
 
-fn draw_landscape(game: GameId, content: &GameContent, large_text: bool, high_contrast: bool) {
+pub fn draw_landscape(game: GameId, content: &GameContent, large_text: bool, high_contrast: bool) {
     panel(
         LANDSCAPE_PANEL,
         Color::new(0.07, 0.045, 0.13, 0.98),
@@ -171,7 +171,7 @@ fn draw_landscape(game: GameId, content: &GameContent, large_text: bool, high_co
     draw_continue(true, large_text, high_contrast);
 }
 
-fn draw_continue(compact_landscape: bool, large_text: bool, high_contrast: bool) {
+pub fn draw_continue(compact_landscape: bool, large_text: bool, high_contrast: bool) {
     let rect = continue_rect(compact_landscape);
     panel(rect, crate::theme::MOSS_DARK, high_contrast);
     crate::ui::draw_text(
@@ -183,7 +183,7 @@ fn draw_continue(compact_landscape: bool, large_text: bool, high_contrast: bool)
     );
 }
 
-fn panel(rect: Rect, fill: Color, high_contrast: bool) {
+pub fn panel(rect: Rect, fill: Color, high_contrast: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
     draw_rectangle_lines(
         rect.x,
@@ -198,7 +198,3 @@ fn panel(rect: Rect, fill: Color, high_contrast: bool) {
         },
     );
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/mobile_tutorial_ui/tests.rs"]
-mod tests;

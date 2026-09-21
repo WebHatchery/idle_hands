@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::pipe_loop::*;
 
 #[test]
 fn symmetric_junctions_do_not_spend_rotations() {

@@ -8,23 +8,19 @@ use crate::{
 };
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/achievements_ui/tests.rs"]
-mod tests;
-
 #[derive(Clone, Copy)]
-struct Layout {
-    panel: Rect,
-    back: Rect,
-    columns: usize,
-    card_w: f32,
-    card_h: f32,
-    origin: Vec2,
-    gap_x: f32,
-    gap_y: f32,
+pub struct Layout {
+    pub panel: Rect,
+    pub back: Rect,
+    pub columns: usize,
+    pub card_w: f32,
+    pub card_h: f32,
+    pub origin: Vec2,
+    pub gap_x: f32,
+    pub gap_y: f32,
 }
 
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             panel: Rect::new(20., 12., 804., 365.),
@@ -265,11 +261,11 @@ pub fn draw(state: &AppState) {
     );
 }
 
-fn achievement_label(achievement: AchievementId, state: &AppState) -> String {
+pub fn achievement_label(achievement: AchievementId, state: &AppState) -> String {
     achievement.title_from(&state.content)
 }
 
-fn filter_button_label(filter: u8, state: &AppState) -> String {
+pub fn filter_button_label(filter: u8, state: &AppState) -> String {
     format!(
         "{} {}",
         achievements_data::filter_label(filter),
@@ -277,7 +273,7 @@ fn filter_button_label(filter: u8, state: &AppState) -> String {
     )
 }
 
-fn filter_rects(layout: Layout) -> [Rect; 3] {
+pub fn filter_rects(layout: Layout) -> [Rect; 3] {
     if crate::ui::is_compact_landscape() {
         [
             Rect::new(500., 2., 60., 44.),
@@ -299,7 +295,7 @@ fn filter_rects(layout: Layout) -> [Rect; 3] {
     }
 }
 
-fn fitted_label(achievement: AchievementId, portrait: bool, state: &AppState) -> String {
+pub fn fitted_label(achievement: AchievementId, portrait: bool, state: &AppState) -> String {
     let label = achievement_label(achievement, state);
     let limit = if portrait { 28 } else { 24 };
     if label.chars().count() <= limit {
@@ -315,7 +311,7 @@ fn fitted_label(achievement: AchievementId, portrait: bool, state: &AppState) ->
     }
 }
 
-fn fitted_description(
+pub fn fitted_description(
     achievement: AchievementId,
     portrait: bool,
     compact: bool,
@@ -342,7 +338,7 @@ fn fitted_description(
     }
 }
 
-fn card_rect(layout: Layout, slot: usize) -> Rect {
+pub fn card_rect(layout: Layout, slot: usize) -> Rect {
     Rect::new(
         layout.origin.x + (slot % layout.columns) as f32 * layout.gap_x,
         layout.origin.y + (slot / layout.columns) as f32 * layout.gap_y,
@@ -351,7 +347,7 @@ fn card_rect(layout: Layout, slot: usize) -> Rect {
     )
 }
 
-fn visible_rows(state: &AppState) -> Vec<AchievementRow> {
+pub fn visible_rows(state: &AppState) -> Vec<AchievementRow> {
     achievements_data::page_rows(
         state,
         state.achievement_filter,
@@ -360,7 +356,7 @@ fn visible_rows(state: &AppState) -> Vec<AchievementRow> {
     )
 }
 
-fn visible_capacity(state: &AppState) -> usize {
+pub fn visible_capacity(state: &AppState) -> usize {
     if crate::ui::is_portrait() {
         8
     } else if crate::ui::is_compact_landscape() {
@@ -370,7 +366,7 @@ fn visible_capacity(state: &AppState) -> usize {
     }
 }
 
-fn scroll_rects(state: &AppState) -> Option<(Rect, Rect)> {
+pub fn scroll_rects(state: &AppState) -> Option<(Rect, Rect)> {
     if achievements_data::filter_count(state, state.achievement_filter) <= visible_capacity(state) {
         return None;
     }
@@ -389,7 +385,7 @@ fn scroll_rects(state: &AppState) -> Option<(Rect, Rect)> {
     }
 }
 
-fn panel(rect: Rect, fill: Color, high_contrast: bool) {
+pub fn panel(rect: Rect, fill: Color, high_contrast: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, fill);
     draw_rectangle_lines(
         rect.x,

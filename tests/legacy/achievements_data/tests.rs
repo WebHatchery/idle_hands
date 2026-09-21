@@ -1,7 +1,8 @@
 //! Regression coverage for achievement data.
 
-use super::*;
-use crate::state::GameId;
+use idle_hands::testing::modules::achievements_data::*;
+use idle_hands::testing::progression::AchievementId;
+use idle_hands::testing::state::GameId;
 
 #[test]
 fn achievement_filters_partition_the_catalog() {
@@ -13,7 +14,7 @@ fn achievement_filters_partition_the_catalog() {
     assert_eq!(filter_count(&state, 1), 2);
     assert_eq!(filter_count(&state, 2), AchievementId::ALL.len() - 2);
     assert_eq!(
-        crate::collection_summary::from_state(&state).earned_achievements,
+        idle_hands::testing::collection_summary::from_state(&state).earned_achievements,
         2
     );
 }

@@ -2,7 +2,7 @@ use super::{panel, text};
 use crate::state::AppState;
 use macroquad::prelude::*;
 
-pub(crate) fn draw_help(state: &AppState) {
+pub fn draw_help(state: &AppState) {
     let paragraphs = crate::help_data::paragraphs(&state.content);
     let navigation = crate::help_data::navigation(&state.content);
     panel(

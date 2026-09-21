@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::word_grid::*;
 
 fn enter(game: &mut WordGrid, word: &str) {
     for letter in word.bytes() {

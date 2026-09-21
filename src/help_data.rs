@@ -9,7 +9,3 @@ pub fn paragraphs(content: &GameContent) -> &[String] {
 pub fn navigation(content: &GameContent) -> &[String] {
     &content.labels.help_navigation
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/help_data/tests.rs"]
-mod tests;

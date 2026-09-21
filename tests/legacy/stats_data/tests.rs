@@ -1,7 +1,7 @@
 //! Regression coverage for the tests module.
 
-use super::*;
-use crate::state::GameId;
+use idle_hands::testing::modules::stats_data::*;
+use idle_hands::testing::state::GameId;
 
 #[test]
 fn summary_derives_collection_and_daily_counts() {

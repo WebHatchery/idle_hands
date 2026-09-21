@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::storefront_data::*;
 
 #[test]
 fn full_build_keeps_every_active_drawer_playable() {

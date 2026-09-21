@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::potion_2048_ui::*;
 
 #[test]
 fn portrait_potion_status_uses_a_short_header_copy() {

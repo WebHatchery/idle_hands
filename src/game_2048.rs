@@ -37,7 +37,7 @@ pub struct Game2048 {
     pub best: u32,
     pub seed: u64,
     #[serde(skip)]
-    undo: Option<(Vec<u16>, u32, u64)>,
+    pub undo: Option<(Vec<u16>, u32, u64)>,
 }
 
 impl Default for Game2048 {
@@ -168,7 +168,7 @@ impl Game2048 {
         })
     }
 
-    fn spawn(&mut self) {
+    pub fn spawn(&mut self) {
         let empty: Vec<usize> = self
             .cells
             .iter()
@@ -190,7 +190,3 @@ impl Game2048 {
         self.cells[index] = if self.seed & 7 == 0 { 4 } else { 2 };
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/game_2048_tests.rs"]
-mod tests;

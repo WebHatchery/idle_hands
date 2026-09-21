@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::word_grid_ui::*;
 
 #[test]
 fn portrait_scoreline_sits_below_the_rule_card_and_above_the_board() {
@@ -24,9 +24,9 @@ fn compact_scoreline_stays_before_the_rule_card() {
 
 #[test]
 fn portrait_mode_button_stays_inside_the_logical_viewport() {
-    crate::ui::with_portrait_layout(|| {
+    idle_hands::testing::ui::with_portrait_layout(|| {
         let mode = layout().mode;
         assert!(mode.x >= 0.);
-        assert!(mode.right() <= crate::responsive_ui::WIDTH);
+        assert!(mode.right() <= idle_hands::testing::responsive_ui::WIDTH);
     });
 }

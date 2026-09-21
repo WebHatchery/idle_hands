@@ -38,7 +38,3 @@ pub fn display_name(name: &str) -> String {
     }
     display
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/profile_data/tests.rs"]
-mod tests;

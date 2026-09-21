@@ -8,22 +8,18 @@ use crate::{
 };
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/lights_out_ui/tests.rs"]
-mod tests;
-
 #[derive(Clone, Copy)]
-struct Layout {
-    board: Rect,
-    cell: f32,
-    reset: Rect,
-    undo: Rect,
-    hint: Rect,
-    guide: Rect,
-    difficulty: Rect,
+pub struct Layout {
+    pub board: Rect,
+    pub cell: f32,
+    pub reset: Rect,
+    pub undo: Rect,
+    pub hint: Rect,
+    pub guide: Rect,
+    pub difficulty: Rect,
 }
 
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             board: Rect::new(24., 48., 300., 300.),
@@ -203,7 +199,7 @@ pub fn draw(state: &AppState) {
     button(layout.difficulty, game.difficulty.label(), state.large_text);
 }
 
-fn back_rect() -> Rect {
+pub fn back_rect() -> Rect {
     if crate::ui::is_compact_landscape() {
         Rect::new(10., 8., 100., 30.)
     } else if crate::ui::is_portrait() {
@@ -213,7 +209,7 @@ fn back_rect() -> Rect {
     }
 }
 
-fn header_y() -> f32 {
+pub fn header_y() -> f32 {
     if crate::ui::is_compact_landscape() {
         35.
     } else if crate::ui::is_portrait() {
@@ -227,7 +223,7 @@ fn header_y() -> f32 {
     }
 }
 
-fn header_x(layout: Layout) -> f32 {
+pub fn header_x(layout: Layout) -> f32 {
     if crate::ui::is_compact_landscape() {
         layout.board.x + 108.
     } else {
@@ -235,11 +231,11 @@ fn header_x(layout: Layout) -> f32 {
     }
 }
 
-fn button(rect: Rect, label: &str, large_text: bool) {
+pub fn button(rect: Rect, label: &str, large_text: bool) {
     active_button(rect, label, false, large_text);
 }
 
-fn active_button(rect: Rect, label: &str, active: bool, large_text: bool) {
+pub fn active_button(rect: Rect, label: &str, active: bool, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(
         rect.x,
@@ -258,23 +254,23 @@ fn active_button(rect: Rect, label: &str, active: bool, large_text: bool) {
     );
 }
 
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
 
-fn accent() -> Color {
+pub fn accent() -> Color {
     crate::theme::BRASS
 }
 
-fn muted() -> Color {
+pub fn muted() -> Color {
     crate::theme::SECONDARY
 }
 
-fn guide_color() -> Color {
+pub fn guide_color() -> Color {
     Color::from_rgba(80, 224, 126, 255)
 }
 
-fn title_size() -> f32 {
+pub fn title_size() -> f32 {
     if crate::ui::is_portrait() {
         28.
     } else {
@@ -282,7 +278,7 @@ fn title_size() -> f32 {
     }
 }
 
-fn body_size() -> f32 {
+pub fn body_size() -> f32 {
     if crate::ui::is_portrait() {
         13.
     } else {

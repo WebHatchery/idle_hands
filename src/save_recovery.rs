@@ -2,8 +2,8 @@
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SaveRecoveryNotice {
-    damaged_slots: usize,
-    quarantined_slots: usize,
+    pub damaged_slots: usize,
+    pub quarantined_slots: usize,
 }
 
 impl SaveRecoveryNotice {
@@ -42,7 +42,3 @@ impl Default for SaveRecoveryNotice {
         Self::new()
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/save_recovery/tests.rs"]
-mod tests;

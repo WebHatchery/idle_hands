@@ -63,7 +63,3 @@ pub fn page_label(start: usize, total: usize) -> String {
     let end = (start + visible_count()).min(total);
     format!("{}–{} OF {}", start + 1, end, total)
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/tutorial_library_data/tests.rs"]
-mod tests;

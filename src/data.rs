@@ -7,13 +7,13 @@ use std::sync::Arc;
 
 use crate::content::GameContent;
 
-const GAME_CONFIG_JSON: &str =
+pub const GAME_CONFIG_JSON: &str =
     macroquad_toolkit::include_json_str!("../assets/data/game_config.json");
-const PUZZLE_CONFIG_JSON: &str =
+pub const PUZZLE_CONFIG_JSON: &str =
     macroquad_toolkit::include_json_str!("../assets/data/puzzle_config.json");
-const CONTENT_CONFIG_JSON: &str =
+pub const CONTENT_CONFIG_JSON: &str =
     macroquad_toolkit::include_json_str!("../assets/data/content_config.json");
-const TEXTURE_MANIFEST_JSON: &str =
+pub const TEXTURE_MANIFEST_JSON: &str =
     macroquad_toolkit::include_json_str!("../assets/data/texture_manifest.json");
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -191,7 +191,7 @@ impl Default for MatchThreeConfig {
 }
 
 impl PuzzleConfig {
-    fn validate(&self) -> Result<(), String> {
+    pub fn validate(&self) -> Result<(), String> {
         if self.color_sort.capacity == 0 {
             return Err("puzzle_config.color_sort.capacity must be positive".into());
         }
@@ -220,12 +220,12 @@ impl PuzzleConfig {
     }
 }
 
-fn validate_difficulties<T>(
+pub fn validate_difficulties<T>(
     name: &str,
     difficulties: &[T],
     valid: impl Fn(&T) -> bool,
 ) -> Result<(), String> {
-    const EXPECTED: usize = 3;
+    pub const EXPECTED: usize = 3;
     if difficulties.len() != EXPECTED {
         return Err(format!(
             "puzzle_config.{name}.difficulties must contain {EXPECTED} entries"
@@ -347,11 +347,7 @@ impl GameData {
         }
     }
 
-    pub(crate) fn default_content() -> Arc<GameContent> {
+    pub fn default_content() -> Arc<GameContent> {
         Arc::new(Self::fallback().content)
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/data/tests.rs"]
-mod tests;

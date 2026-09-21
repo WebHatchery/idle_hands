@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::spider_solitaire::*;
 
 #[test]
 fn same_suit_descending_run_moves_and_undoes() {

@@ -2,7 +2,7 @@ use super::{hit, panel, text, Direction};
 use crate::{palette_ui, state::AppState, ui_action::UiAction};
 use macroquad::prelude::*;
 
-pub(crate) fn draw_2048(state: &AppState) {
+pub fn draw_2048(state: &AppState) {
     let g = &state.games.game;
     text("‹ CABINET", 40., 55., 20., Color::new(0.78, 0.70, 0.92, 1.));
     text("2048", 40., 105., 52., crate::theme::BRASS);
@@ -117,7 +117,7 @@ fn action_button(rect: Rect, label: &str) {
         WHITE,
     );
 }
-pub(crate) fn game_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
+pub fn game_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     let mut out = vec![];
     if hit(Rect::new(20., 20., 180., 50.), p) {
         out.push(UiAction::Cabinet)

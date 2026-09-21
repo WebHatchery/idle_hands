@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::tic_tac_toe::*;
 
 #[test]
 fn a_player_move_is_followed_by_a_bounded_ai_move() {

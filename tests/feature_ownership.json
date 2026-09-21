@@ -1,11 +1,11 @@
 {
   "files": {
-    "src/capture_registry.rs": "capture scene routing",
-    "src/game_actions.rs": "platform runtime boundary",
     "tests/asset_registry.rs": "content loading and asset integrity",
+    "tests/capture_registry.rs": "capture scene routing",
     "tests/code_standards.rs": "repository standards",
     "tests/feature_budget.rs": "repository standards",
     "tests/game_2048_completion.rs": "2048 completion records",
+    "tests/game_actions.rs": "platform runtime boundary",
     "tests/game_harness/asteroids.rs": "game rules: asteroids",
     "tests/game_harness/battleship.rs": "game rules: battleship",
     "tests/game_harness/blackjack.rs": "game rules: blackjack",
@@ -255,5 +255,6 @@
     "tests/legacy/misc_games/tests.rs::patterns_vary_and_offer_four_distinct_answers": "game rules: pattern_vault",
     "tests/legacy/misc_games/tests.rs::orbit_boards_are_varied_and_need_more_than_four_swaps": "game rules: orbit_order",
     "tests/game_harness/host_contract.rs::every_variant_snapshot_survives_serialization_and_restore": "snapshot persistence"
-  }
+  },
+  "exceptions": {}
 }

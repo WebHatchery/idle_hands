@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::checkers::*;
 
 #[test]
 fn a_red_piece_can_step_and_promote() {

@@ -3,7 +3,7 @@
 use serde::{Deserialize, Serialize};
 
 pub const SIZE: usize = 5;
-const CELLS: usize = SIZE * SIZE;
+pub const CELLS: usize = SIZE * SIZE;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum LightsOutStatus {
@@ -26,7 +26,7 @@ impl LightsDifficulty {
         }
     }
 
-    const fn scramble_presses(self) -> usize {
+    pub const fn scramble_presses(self) -> usize {
         match self {
             Self::Classic => 12,
             Self::Dense => 20,
@@ -47,7 +47,7 @@ pub struct LightsOut {
     #[serde(default)]
     pub guide: bool,
     #[serde(skip)]
-    history: Vec<([bool; CELLS], u16, LightsOutStatus)>,
+    pub history: Vec<([bool; CELLS], u16, LightsOutStatus)>,
 }
 
 impl Default for LightsOut {
@@ -174,12 +174,12 @@ impl LightsOut {
         best.unwrap_or_default()
     }
 
-    fn toggle_pattern(&mut self, index: usize) {
+    pub fn toggle_pattern(&mut self, index: usize) {
         toggle_cells(&mut self.cells, index);
     }
 }
 
-fn toggle_cells(cells: &mut [bool; CELLS], index: usize) {
+pub fn toggle_cells(cells: &mut [bool; CELLS], index: usize) {
     let row = index / SIZE;
     let column = index % SIZE;
     for (row_delta, column_delta) in [(0, 0), (-1, 0), (1, 0), (0, -1), (0, 1)] {
@@ -192,11 +192,7 @@ fn toggle_cells(cells: &mut [bool; CELLS], index: usize) {
     }
 }
 
-fn next_seed(seed: u64) -> u64 {
+pub fn next_seed(seed: u64) -> u64 {
     seed.wrapping_mul(6364136223846793005)
         .wrapping_add(1442695040888963407)
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/lights_out/tests.rs"]
-mod tests;

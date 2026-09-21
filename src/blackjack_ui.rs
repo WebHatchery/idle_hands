@@ -4,15 +4,15 @@ use crate::{accessibility, blackjack::BlackjackStatus, state::AppState, ui::UiAc
 use macroquad::prelude::*;
 
 #[derive(Clone, Copy)]
-struct Layout {
-    hit: Rect,
-    stand: Rect,
-    hint: Rect,
-    undo: Rect,
-    new_round: Rect,
+pub struct Layout {
+    pub hit: Rect,
+    pub stand: Rect,
+    pub hint: Rect,
+    pub undo: Rect,
+    pub new_round: Rect,
 }
 
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             hit: Rect::new(430., 220., 110., 44.),
@@ -177,7 +177,7 @@ pub fn draw(state: &AppState) {
     button(l.new_round, "NEW ROUND", state.large_text);
 }
 
-fn draw_hand(
+pub fn draw_hand(
     hand: &[crate::cards::Card],
     origin: Vec2,
     reveal: bool,
@@ -227,7 +227,7 @@ fn draw_hand(
     }
 }
 
-fn status_text(status: BlackjackStatus, player: u8, dealer: u8) -> String {
+pub fn status_text(status: BlackjackStatus, player: u8, dealer: u8) -> String {
     match status {
         BlackjackStatus::Playing => format!("Your total {}  •  dealer shows one card", player),
         BlackjackStatus::Won => format!("You win — {} to {}", player, dealer),
@@ -236,7 +236,7 @@ fn status_text(status: BlackjackStatus, player: u8, dealer: u8) -> String {
     }
 }
 
-fn status_line_text(
+pub fn status_line_text(
     status: BlackjackStatus,
     player: u8,
     dealer: u8,
@@ -250,7 +250,7 @@ fn status_line_text(
     }
 }
 
-fn compact_status_text(status: BlackjackStatus, player: u8) -> String {
+pub fn compact_status_text(status: BlackjackStatus, player: u8) -> String {
     match status {
         BlackjackStatus::Playing => format!("Total {}", player),
         BlackjackStatus::Won => format!("You win • {}", player),
@@ -259,7 +259,7 @@ fn compact_status_text(status: BlackjackStatus, player: u8) -> String {
     }
 }
 
-fn round_summary_y(compact: bool, portrait: bool) -> f32 {
+pub fn round_summary_y(compact: bool, portrait: bool) -> f32 {
     if portrait {
         475.
     } else if compact {
@@ -269,8 +269,7 @@ fn round_summary_y(compact: bool, portrait: bool) -> f32 {
     }
 }
 
-#[cfg(test)]
-fn player_hand_bottom(compact: bool, portrait: bool) -> f32 {
+pub fn player_hand_bottom(compact: bool, portrait: bool) -> f32 {
     let origin_y = if compact {
         66.
     } else if portrait {
@@ -281,7 +280,7 @@ fn player_hand_bottom(compact: bool, portrait: bool) -> f32 {
     origin_y + if portrait { 202. } else { 170. } + 88.
 }
 
-fn button(rect: Rect, label: &str, large_text: bool) {
+pub fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     text(
@@ -292,33 +291,29 @@ fn button(rect: Rect, label: &str, large_text: bool) {
         WHITE,
     );
 }
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
-fn title_size() -> f32 {
+pub fn title_size() -> f32 {
     if crate::ui::is_portrait() {
         23.
     } else {
         29.
     }
 }
-fn body_size() -> f32 {
+pub fn body_size() -> f32 {
     if crate::ui::is_portrait() {
         11.
     } else {
         13.
     }
 }
-fn accent() -> Color {
+pub fn accent() -> Color {
     crate::theme::BRASS
 }
-fn muted() -> Color {
+pub fn muted() -> Color {
     crate::theme::SECONDARY
 }
-fn back_rect() -> Rect {
+pub fn back_rect() -> Rect {
     Rect::new(0., 0., 110., 42.)
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/blackjack_ui/tests.rs"]
-mod tests;

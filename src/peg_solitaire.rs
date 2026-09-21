@@ -2,9 +2,9 @@
 
 use serde::{Deserialize, Serialize};
 
-const SIZE: usize = 7;
-const CELLS: usize = SIZE * SIZE;
-const CENTER: usize = 3 * SIZE + 3;
+pub const SIZE: usize = 7;
+pub const CELLS: usize = SIZE * SIZE;
+pub const CENTER: usize = 3 * SIZE + 3;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Hole {
@@ -36,14 +36,14 @@ impl PegVariant {
         }
     }
 
-    const fn starting_empty(self) -> usize {
+    pub const fn starting_empty(self) -> usize {
         match self {
             Self::Classic => CENTER,
             Self::Corner => CENTER,
         }
     }
 
-    const fn winning_hole(self) -> usize {
+    pub const fn winning_hole(self) -> usize {
         match self {
             Self::Classic => CENTER,
             Self::Corner => 2 * SIZE + 2,
@@ -51,7 +51,7 @@ impl PegVariant {
     }
 }
 
-type Snapshot = (Vec<Hole>, PegSolitaireStatus, u16);
+pub type Snapshot = (Vec<Hole>, PegSolitaireStatus, u16);
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PegSolitaire {
@@ -63,7 +63,7 @@ pub struct PegSolitaire {
     #[serde(default)]
     pub variant: PegVariant,
     #[serde(skip)]
-    undo: Option<Snapshot>,
+    pub undo: Option<Snapshot>,
 }
 
 impl Default for PegSolitaire {
@@ -171,7 +171,7 @@ impl PegSolitaire {
         targets
     }
 
-    fn move_peg(&mut self, from: usize, to: usize) -> bool {
+    pub fn move_peg(&mut self, from: usize, to: usize) -> bool {
         if !self.targets(from).contains(&to) {
             return false;
         }
@@ -186,7 +186,7 @@ impl PegSolitaire {
         true
     }
 
-    fn resolve(&mut self) {
+    pub fn resolve(&mut self) {
         let pegs = self.cells.iter().filter(|hole| **hole == Hole::Peg).count();
         if pegs == 1 && self.cells[self.variant.winning_hole()] == Hole::Peg {
             self.status = PegSolitaireStatus::Won;
@@ -201,7 +201,3 @@ pub fn valid_hole(index: usize) -> bool {
     let column = index % SIZE;
     row < SIZE && column < SIZE && ((2..=4).contains(&row) || (2..=4).contains(&column))
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/peg_solitaire/tests.rs"]
-mod tests;

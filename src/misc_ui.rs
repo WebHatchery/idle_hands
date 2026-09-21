@@ -8,23 +8,19 @@ use crate::{
 };
 use macroquad::prelude::*;
 
-const COMPACT_METRICS_X: f32 = 310.;
-
-#[cfg(test)]
-#[path = "../tests/legacy/misc_ui/tests.rs"]
-mod tests;
+pub const COMPACT_METRICS_X: f32 = 310.;
 
 #[derive(Clone, Copy)]
-struct Layout {
-    panel: Rect,
-    hint: Rect,
-    undo: Rect,
-    clear: Rect,
-    submit: Rect,
-    new_game: Rect,
+pub struct Layout {
+    pub panel: Rect,
+    pub hint: Rect,
+    pub undo: Rect,
+    pub clear: Rect,
+    pub submit: Rect,
+    pub new_game: Rect,
 }
 
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             panel: Rect::new(270., 42., 300., 300.),
@@ -210,7 +206,7 @@ pub fn draw(state: &AppState) {
     button(l.new_game, "NEW ROUND", state.large_text);
 }
 
-fn metrics_text(game: &MiscGame, compact: bool) -> String {
+pub fn metrics_text(game: &MiscGame, compact: bool) -> String {
     if matches!(game.kind, MiscKind::WordForge | MiscKind::SumCircuit) {
         return if compact {
             format!("R{} / S{}", game.round.saturating_add(1), game.score)
@@ -235,7 +231,7 @@ fn metrics_text(game: &MiscGame, compact: bool) -> String {
     }
 }
 
-fn title_size() -> f32 {
+pub fn title_size() -> f32 {
     if crate::ui::is_portrait() {
         21.
     } else {
@@ -243,7 +239,7 @@ fn title_size() -> f32 {
     }
 }
 
-fn draw_panel(rect: Rect, game: &MiscGame, state: &AppState) {
+pub fn draw_panel(rect: Rect, game: &MiscGame, state: &AppState) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -272,7 +268,7 @@ fn draw_panel(rect: Rect, game: &MiscGame, state: &AppState) {
     }
 }
 
-fn draw_choices(rect: Rect, game: &MiscGame, state: &AppState) {
+pub fn draw_choices(rect: Rect, game: &MiscGame, state: &AppState) {
     for (index, option) in game.options.iter().enumerate() {
         let choice = choice_rects(rect)[index];
         let selected = game.selected.contains(&index);
@@ -308,7 +304,7 @@ fn draw_choices(rect: Rect, game: &MiscGame, state: &AppState) {
     }
 }
 
-fn draw_sum(rect: Rect, game: &MiscGame, state: &AppState) {
+pub fn draw_sum(rect: Rect, game: &MiscGame, state: &AppState) {
     let tile = Rect::new(rect.x + 30., rect.y + 120., rect.w - 60., 132.);
     for index in 0..12 {
         let col = index % 4;
@@ -351,7 +347,7 @@ fn draw_sum(rect: Rect, game: &MiscGame, state: &AppState) {
     }
 }
 
-fn draw_orbit(rect: Rect, game: &MiscGame, state: &AppState) {
+pub fn draw_orbit(rect: Rect, game: &MiscGame, state: &AppState) {
     for (index, planet) in game.board.iter().enumerate() {
         let card = orbit_rects(rect, game.board.len())[index];
         let x = card.x + card.w * 0.5;
@@ -386,7 +382,7 @@ fn draw_orbit(rect: Rect, game: &MiscGame, state: &AppState) {
     }
 }
 
-fn draw_word(rect: Rect, game: &MiscGame, state: &AppState) {
+pub fn draw_word(rect: Rect, game: &MiscGame, state: &AppState) {
     let chosen: String = game
         .selected
         .iter()
@@ -428,7 +424,7 @@ fn draw_word(rect: Rect, game: &MiscGame, state: &AppState) {
     }
 }
 
-fn choice_rects(panel: Rect) -> [Rect; 4] {
+pub fn choice_rects(panel: Rect) -> [Rect; 4] {
     [
         Rect::new(panel.x + 24., panel.y + 105., panel.w - 48., 42.),
         Rect::new(panel.x + 24., panel.y + 153., panel.w - 48., 42.),
@@ -437,7 +433,7 @@ fn choice_rects(panel: Rect) -> [Rect; 4] {
     ]
 }
 
-fn orbit_rects(panel: Rect, count: usize) -> Vec<Rect> {
+pub fn orbit_rects(panel: Rect, count: usize) -> Vec<Rect> {
     let width = (panel.w - 32.) / 4.;
     (0..count)
         .map(|index| {
@@ -451,7 +447,7 @@ fn orbit_rects(panel: Rect, count: usize) -> Vec<Rect> {
         .collect()
 }
 
-fn letter_rects(panel: Rect, count: usize) -> Vec<Rect> {
+pub fn letter_rects(panel: Rect, count: usize) -> Vec<Rect> {
     let width = (panel.w - 48.) / count.max(1) as f32;
     (0..count)
         .map(|index| {
@@ -465,7 +461,7 @@ fn letter_rects(panel: Rect, count: usize) -> Vec<Rect> {
         .collect()
 }
 
-fn game(state: &AppState) -> &MiscGame {
+pub fn game(state: &AppState) -> &MiscGame {
     match state.screen {
         crate::state::Screen::Game(GameId::RiddleRoom) => &state.games.riddle_room,
         crate::state::Screen::Game(GameId::PatternVault) => &state.games.pattern_vault,
@@ -476,13 +472,13 @@ fn game(state: &AppState) -> &MiscGame {
     }
 }
 
-fn button(rect: Rect, label: &str, large_text: bool) {
+pub fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., crate::theme::BRASS);
     center(label, rect, 11., large_text);
 }
 
-fn center(label: &str, rect: Rect, size: f32, large_text: bool) {
+pub fn center(label: &str, rect: Rect, size: f32, large_text: bool) {
     let mut size = accessibility::text_size(size, large_text);
     let width = crate::ui::measure_text(label, None, size as u16, 1.).width;
     if width > rect.w - 8. {
@@ -498,7 +494,7 @@ fn center(label: &str, rect: Rect, size: f32, large_text: bool) {
     );
 }
 
-fn text(label: &str, x: f32, y: f32, size: f32, color: Color, large_text: bool) {
+pub fn text(label: &str, x: f32, y: f32, size: f32, color: Color, large_text: bool) {
     crate::ui::draw_text(
         label,
         x,

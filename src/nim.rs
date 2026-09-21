@@ -26,7 +26,7 @@ impl NimRule {
     }
 }
 
-type Snapshot = ([u8; 3], u16, NimStatus);
+pub type Snapshot = ([u8; 3], u16, NimStatus);
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Nim {
@@ -46,7 +46,7 @@ pub struct Nim {
     pub last_ai_heap: Option<usize>,
     pub status: NimStatus,
     #[serde(skip)]
-    history: Vec<Snapshot>,
+    pub history: Vec<Snapshot>,
 }
 
 impl Default for Nim {
@@ -177,7 +177,7 @@ impl Nim {
         Some(!winning_position(next, self.rule))
     }
 
-    fn ai_move(&mut self) {
+    pub fn ai_move(&mut self) {
         let (heap, amount) = legal_moves(self.heaps)
             .find(|&(heap, amount)| {
                 let mut next = self.heaps;
@@ -200,15 +200,15 @@ impl Nim {
     }
 }
 
-fn legal_moves(heaps: [u8; 3]) -> impl Iterator<Item = (usize, u8)> {
+pub fn legal_moves(heaps: [u8; 3]) -> impl Iterator<Item = (usize, u8)> {
     (0..3).flat_map(move |heap| (1..=heaps[heap].min(3)).map(move |amount| (heap, amount)))
 }
 
-fn winning_position(heaps: [u8; 3], rule: NimRule) -> bool {
+pub fn winning_position(heaps: [u8; 3], rule: NimRule) -> bool {
     winning_position_cached(heaps, rule, &mut HashMap::new())
 }
 
-fn winning_position_cached(
+pub fn winning_position_cached(
     heaps: [u8; 3],
     rule: NimRule,
     memo: &mut HashMap<[u8; 3], bool>,
@@ -227,7 +227,3 @@ fn winning_position_cached(
     memo.insert(heaps, result);
     result
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/nim/tests.rs"]
-mod tests;

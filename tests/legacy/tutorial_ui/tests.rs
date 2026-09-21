@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::tutorial_ui::*;
 
 fn contains(outer: Rect, inner: Rect) -> bool {
     inner.x >= outer.x

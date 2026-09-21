@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::responsive_landscape_cards::*;
 
 #[test]
 fn compact_card_instruction_stays_before_the_rule_card() {

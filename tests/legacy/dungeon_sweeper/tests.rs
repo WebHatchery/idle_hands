@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::dungeon_sweeper::*;
 
 #[test]
 fn flag_and_first_reveal_generation_both_undo_cleanly() {

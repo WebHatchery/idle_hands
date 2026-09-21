@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::terrain_cannon::*;
 
 #[test]
 fn starts_with_adjustable_shot_and_terrain() {

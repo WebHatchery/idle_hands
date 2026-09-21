@@ -129,7 +129,7 @@ impl Reversi {
             )
         })
     }
-    fn apply_move(&mut self, index: usize, player: u8) -> bool {
+    pub fn apply_move(&mut self, index: usize, player: u8) -> bool {
         if index >= 64 || self.board[index] != 0 {
             return false;
         }
@@ -143,7 +143,7 @@ impl Reversi {
         }
         true
     }
-    fn captures(&self, index: usize, player: u8) -> impl Iterator<Item = usize> + '_ {
+    pub fn captures(&self, index: usize, player: u8) -> impl Iterator<Item = usize> + '_ {
         let mut captured = Vec::new();
         if index < 64 && self.board[index] == 0 {
             for (dr, dc) in DIRECTIONS {
@@ -173,11 +173,11 @@ impl Reversi {
         }
         captured.into_iter()
     }
-    fn move_value(&self, index: usize) -> usize {
+    pub fn move_value(&self, index: usize) -> usize {
         self.captures(index, 2).count() * 10
             + usize::from(index == 0 || index == 7 || index == 56 || index == 63) * 100
     }
-    fn finish_or_continue(&mut self) {
+    pub fn finish_or_continue(&mut self) {
         if self.board.iter().all(|piece| *piece != 0)
             || (self.legal_moves(1).is_empty() && self.legal_moves(2).is_empty())
             || self.passes >= 2
@@ -192,7 +192,7 @@ impl Reversi {
     }
 }
 
-const DIRECTIONS: [(isize, isize); 8] = [
+pub const DIRECTIONS: [(isize, isize); 8] = [
     (-1, -1),
     (-1, 0),
     (-1, 1),
@@ -202,7 +202,3 @@ const DIRECTIONS: [(isize, isize); 8] = [
     (1, 0),
     (1, 1),
 ];
-
-#[cfg(test)]
-#[path = "../tests/legacy/reversi/tests.rs"]
-mod tests;

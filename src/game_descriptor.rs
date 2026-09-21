@@ -55,7 +55,7 @@ pub struct GameDescriptor {
     pub has_variants: bool,
 }
 
-const fn entry(
+pub const fn entry(
     id: GameId,
     index: usize,
     title: &'static str,
@@ -77,7 +77,7 @@ const fn entry(
     }
 }
 
-const fn runtime_entry(
+pub const fn runtime_entry(
     id: GameId,
     index: usize,
     title: &'static str,
@@ -102,7 +102,3 @@ const fn runtime_entry(
 mod catalog;
 pub use catalog::{descriptor, is_demo_build, is_demo_game, ALL};
 pub const DEMO_GAMES_PER_CATEGORY: usize = 5;
-
-#[cfg(test)]
-#[path = "../tests/legacy/game_descriptor/tests.rs"]
-mod tests;

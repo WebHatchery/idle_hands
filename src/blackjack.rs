@@ -35,7 +35,7 @@ pub enum BlackjackHint {
     Stand,
 }
 
-type Snapshot = (
+pub type Snapshot = (
     Vec<Card>,
     Vec<Card>,
     Vec<Card>,
@@ -57,7 +57,7 @@ pub struct Blackjack {
     #[serde(default)]
     pub rule: BlackjackRule,
     #[serde(skip)]
-    undo: Option<Snapshot>,
+    pub undo: Option<Snapshot>,
 }
 
 impl Default for Blackjack {
@@ -180,7 +180,7 @@ impl Blackjack {
         self.total(&self.dealer)
     }
 
-    fn start_round(&mut self, seed: u64) {
+    pub fn start_round(&mut self, seed: u64) {
         let (mut deck, shuffled_seed) = shuffled_deck(seed, true);
         deck.reverse();
         // A fresh standard deck has enough cards for both opening hands.
@@ -204,7 +204,7 @@ impl Blackjack {
         }
     }
 
-    fn snapshot(&mut self) {
+    pub fn snapshot(&mut self) {
         self.undo = Some((
             self.player.clone(),
             self.dealer.clone(),
@@ -216,7 +216,7 @@ impl Blackjack {
         ));
     }
 
-    fn total(&self, hand: &[Card]) -> u8 {
+    pub fn total(&self, hand: &[Card]) -> u8 {
         let mut total = 0u8;
         let mut aces = 0u8;
         for card in hand {
@@ -232,14 +232,10 @@ impl Blackjack {
         total
     }
 
-    fn is_soft(&self, hand: &[Card]) -> bool {
+    pub fn is_soft(&self, hand: &[Card]) -> bool {
         let hard_total = hand
             .iter()
             .fold(0u8, |total, card| total.saturating_add(card.rank.min(10)));
         hand.iter().any(|card| card.rank == 1) && hard_total.saturating_add(10) <= 21
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/blackjack/tests.rs"]
-mod tests;

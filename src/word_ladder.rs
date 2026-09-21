@@ -50,7 +50,7 @@ pub struct WordLadder {
     #[serde(default)]
     pub puzzles: Vec<crate::content::WordLadderPuzzle>,
     #[serde(skip)]
-    history: UndoStack<Self>,
+    pub history: UndoStack<Self>,
 }
 
 impl Default for WordLadder {
@@ -210,7 +210,7 @@ impl WordLadder {
             .count()
     }
 
-    fn route(&self) -> Option<Vec<&str>> {
+    pub fn route(&self) -> Option<Vec<&str>> {
         let from = self
             .guesses
             .last()
@@ -223,13 +223,13 @@ impl WordLadder {
         shortest_path(&self.dictionary, from, objective)
     }
 
-    fn clone_without_history(&self) -> Self {
+    pub fn clone_without_history(&self) -> Self {
         let mut copy = self.clone();
         copy.history.clear();
         copy
     }
 
-    fn with_catalog(
+    pub fn with_catalog(
         &self,
         seed: u64,
         mode: LadderMode,
@@ -240,7 +240,11 @@ impl WordLadder {
     }
 }
 
-fn shortest_path<'a>(dictionary: &'a [String], start: &str, target: &str) -> Option<Vec<&'a str>> {
+pub fn shortest_path<'a>(
+    dictionary: &'a [String],
+    start: &str,
+    target: &str,
+) -> Option<Vec<&'a str>> {
     let start = dictionary
         .iter()
         .find(|word| word.as_str() == start)
@@ -277,14 +281,10 @@ fn shortest_path<'a>(dictionary: &'a [String], start: &str, target: &str) -> Opt
     None
 }
 
-fn one_away(a: &str, b: &str) -> bool {
+pub fn one_away(a: &str, b: &str) -> bool {
     a.bytes()
         .zip(b.bytes())
         .filter(|(left, right)| left != right)
         .count()
         == 1
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/word_ladder/tests.rs"]
-mod tests;

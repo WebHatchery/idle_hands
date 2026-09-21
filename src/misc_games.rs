@@ -46,7 +46,7 @@ pub struct MiscGame {
     #[serde(default)]
     pub hint_used: bool,
     #[serde(skip)]
-    history: Vec<Self>,
+    pub history: Vec<Self>,
 }
 
 impl Default for MiscGame {
@@ -246,7 +246,7 @@ impl MiscGame {
             .sum()
     }
 
-    fn answer_choice(&mut self, index: usize) -> bool {
+    pub fn answer_choice(&mut self, index: usize) -> bool {
         if index >= self.options.len() {
             return false;
         }
@@ -267,7 +267,7 @@ impl MiscGame {
         true
     }
 
-    fn toggle_sum_tile(&mut self, index: usize) -> bool {
+    pub fn toggle_sum_tile(&mut self, index: usize) -> bool {
         if index >= self.board.len() || self.board[index] == 0 {
             return false;
         }
@@ -280,7 +280,7 @@ impl MiscGame {
         true
     }
 
-    fn submit_sum(&mut self) -> bool {
+    pub fn submit_sum(&mut self) -> bool {
         if self.selected.is_empty() {
             return false;
         }
@@ -297,7 +297,7 @@ impl MiscGame {
         true
     }
 
-    fn swap_orbit(&mut self, index: usize) -> bool {
+    pub fn swap_orbit(&mut self, index: usize) -> bool {
         if index >= self.board.len() {
             return false;
         }
@@ -326,7 +326,7 @@ impl MiscGame {
         true
     }
 
-    fn pick_letter(&mut self, index: usize) -> bool {
+    pub fn pick_letter(&mut self, index: usize) -> bool {
         if index >= self.board.len() || self.selected.contains(&index) {
             return false;
         }
@@ -335,7 +335,7 @@ impl MiscGame {
         true
     }
 
-    fn submit_word(&mut self) -> bool {
+    pub fn submit_word(&mut self) -> bool {
         if self.selected.len() != self.board.len() {
             return false;
         }
@@ -357,7 +357,7 @@ impl MiscGame {
         true
     }
 
-    fn prepare(&mut self) {
+    pub fn prepare(&mut self) {
         self.selected.clear();
         self.solution.clear();
         self.options.clear();
@@ -372,7 +372,7 @@ impl MiscGame {
         }
     }
 
-    fn prepare_riddle(&mut self) {
+    pub fn prepare_riddle(&mut self) {
         let riddle = &self.riddles[(self.seed as usize + self.round as usize) % self.riddles.len()];
         self.prompt = riddle.question.clone();
         self.detail = riddle.clue.clone();
@@ -380,7 +380,7 @@ impl MiscGame {
         self.answer = riddle.answer;
     }
 
-    fn prepare_pattern(&mut self) {
+    pub fn prepare_pattern(&mut self) {
         use macroquad_toolkit::rng::SeededRng;
         let mut rng = SeededRng::new(pseudo(self.seed, self.round as usize));
         let start = 2 + rng.below(10) as i32;
@@ -416,7 +416,7 @@ impl MiscGame {
         self.options = options.iter().map(i32::to_string).collect();
     }
 
-    fn prepare_sum(&mut self) {
+    pub fn prepare_sum(&mut self) {
         self.prompt = "CONNECT THE TARGET".into();
         self.detail = "Tap any tiles to total the target; tap SUBMIT".into();
         let mut rng =
@@ -432,7 +432,7 @@ impl MiscGame {
             .sum();
     }
 
-    fn prepare_orbit(&mut self) {
+    pub fn prepare_orbit(&mut self) {
         self.prompt = "RESTORE THE ORBIT".into();
         self.detail = "Put the numbered planets in ascending order".into();
         let mut rng = macroquad_toolkit::rng::SeededRng::new(self.seed);
@@ -458,7 +458,7 @@ impl MiscGame {
         }
     }
 
-    fn prepare_word(&mut self) {
+    pub fn prepare_word(&mut self) {
         let mut rng =
             macroquad_toolkit::rng::SeededRng::new(pseudo(self.seed, self.round as usize + 9));
         let mut index = rng.below(self.word_list.len());
@@ -475,7 +475,7 @@ impl MiscGame {
         }
     }
 
-    fn push_history(&mut self) {
+    pub fn push_history(&mut self) {
         let mut snapshot = self.clone();
         snapshot.history.clear();
         self.history.push(snapshot);
@@ -485,21 +485,17 @@ impl MiscGame {
     }
 }
 
-fn default_round_target() -> u32 {
+pub fn default_round_target() -> u32 {
     5
 }
 
-fn default_orbit_size() -> usize {
+pub fn default_orbit_size() -> usize {
     8
 }
 
-fn pseudo(seed: u64, index: usize) -> u64 {
+pub fn pseudo(seed: u64, index: usize) -> u64 {
     seed.wrapping_add(index as u64)
         .wrapping_mul(6364136223846793005)
         .wrapping_add(1442695040888963407)
         ^ seed.rotate_left((index % 63) as u32 + 1)
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/misc_games/tests.rs"]
-mod tests;

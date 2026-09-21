@@ -2,12 +2,12 @@
 
 use serde::{Deserialize, Serialize};
 
-const WIDTH: usize = 7;
-const HEIGHT: usize = 5;
-const TARGET_WAVE: u8 = 8;
-const STARTING_GOLD: u16 = 12;
-const STARTING_LIVES: u8 = 3;
-const WAVE_INTERVAL: f32 = 0.4;
+pub const WIDTH: usize = 7;
+pub const HEIGHT: usize = 5;
+pub const TARGET_WAVE: u8 = 8;
+pub const STARTING_GOLD: u16 = 12;
+pub const STARTING_LIVES: u8 = 3;
+pub const WAVE_INTERVAL: f32 = 0.4;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Enemy {
@@ -100,7 +100,7 @@ pub enum TowerCellAvailability {
     },
 }
 
-type Snapshot = (
+pub type Snapshot = (
     Vec<u8>,
     Vec<TowerKind>,
     Vec<Enemy>,
@@ -133,9 +133,9 @@ pub struct TinyTowerDefence {
     #[serde(default)]
     pub selected_kind: TowerKind,
     #[serde(skip)]
-    history: Vec<Snapshot>,
+    pub history: Vec<Snapshot>,
     #[serde(skip)]
-    elapsed: f32,
+    pub elapsed: f32,
 }
 
 impl Default for TinyTowerDefence {
@@ -352,7 +352,7 @@ impl TinyTowerDefence {
         self.phase == TowerPhase::Won
     }
 
-    fn start_wave(&mut self) -> bool {
+    pub fn start_wave(&mut self) -> bool {
         self.snapshot();
         self.enemies.clear();
         for enemy_index in 0..self.wave.saturating_add(1) {
@@ -378,7 +378,7 @@ impl TinyTowerDefence {
         true
     }
 
-    fn advance_wave(&mut self, record_undo: bool) -> bool {
+    pub fn advance_wave(&mut self, record_undo: bool) -> bool {
         if self.enemies.is_empty() {
             return false;
         }
@@ -389,7 +389,7 @@ impl TinyTowerDefence {
         true
     }
 
-    fn advance_wave_state(&mut self) {
+    pub fn advance_wave_state(&mut self) {
         self.tick = self.tick.saturating_add(1);
         self.fire_towers();
         let mut remaining = Vec::with_capacity(self.enemies.len());
@@ -427,7 +427,7 @@ impl TinyTowerDefence {
         }
     }
 
-    fn fire_towers(&mut self) {
+    pub fn fire_towers(&mut self) {
         self.ensure_tower_kinds();
         for index in 0..self.towers.len() {
             let level = self.towers[index];
@@ -489,14 +489,14 @@ impl TinyTowerDefence {
         }
     }
 
-    fn valid_build_cell(&self, index: usize) -> bool {
+    pub fn valid_build_cell(&self, index: usize) -> bool {
         index < self.towers.len()
             && !index.is_multiple_of(WIDTH)
             && index % WIDTH != WIDTH - 1
             && self.towers[index] < 3
     }
 
-    fn next_random(&mut self) -> u64 {
+    pub fn next_random(&mut self) -> u64 {
         self.seed = self
             .seed
             .wrapping_mul(6364136223846793005)
@@ -504,7 +504,7 @@ impl TinyTowerDefence {
         self.seed
     }
 
-    fn snapshot(&mut self) {
+    pub fn snapshot(&mut self) {
         self.history.push((
             self.towers.clone(),
             self.tower_kinds.clone(),
@@ -521,13 +521,13 @@ impl TinyTowerDefence {
         ));
     }
 
-    fn ensure_tower_kinds(&mut self) {
+    pub fn ensure_tower_kinds(&mut self) {
         if self.tower_kinds.len() != self.towers.len() {
             self.tower_kinds = vec![TowerKind::Bolt; self.towers.len()];
         }
     }
 
-    fn recommended_kind(&self) -> TowerKind {
+    pub fn recommended_kind(&self) -> TowerKind {
         match self.wave {
             1..=2 => TowerKind::Bolt,
             3..=4 => TowerKind::Frost,
@@ -536,10 +536,6 @@ impl TinyTowerDefence {
     }
 }
 
-fn tower_cost(kind: TowerKind, level: u8) -> Option<u16> {
+pub fn tower_cost(kind: TowerKind, level: u8) -> Option<u16> {
     kind.cost_at_level(level)
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/tiny_tower_defence/tests.rs"]
-mod tests;

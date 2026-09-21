@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::tiny_tower_defence::*;
 
 #[test]
 fn leaking_enemies_cost_lives_and_can_lose() {

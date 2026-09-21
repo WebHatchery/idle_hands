@@ -7,10 +7,10 @@ use crate::{
 };
 use macroquad::prelude::*;
 
-const SIDEBAR_W: f32 = 220.;
-const MAIN: Rect = Rect::new(230., 10., 1040., 700.);
-const CONTINUE: Rect = Rect::new(260., 92., 912., 118.);
-const CATEGORY_RECTS: [Rect; 6] = [
+pub const SIDEBAR_W: f32 = 220.;
+pub const MAIN: Rect = Rect::new(230., 10., 1040., 700.);
+pub const CONTINUE: Rect = Rect::new(260., 92., 912., 118.);
+pub const CATEGORY_RECTS: [Rect; 6] = [
     Rect::new(260., 252., 292., 132.),
     Rect::new(570., 252., 292., 132.),
     Rect::new(880., 252., 292., 132.),
@@ -18,9 +18,6 @@ const CATEGORY_RECTS: [Rect; 6] = [
     Rect::new(570., 400., 292., 132.),
     Rect::new(880., 400., 292., 132.),
 ];
-#[cfg(test)]
-#[path = "../tests/legacy/cabinet_ui/tests.rs"]
-mod tests;
 
 pub fn draw(state: &AppState, loaded: usize, cabinet_texture: Option<&Texture2D>) {
     draw_wood_frame();
@@ -76,7 +73,7 @@ pub fn clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
 mod home;
 mod library;
 
-fn draw_sidebar(state: &AppState) {
+pub fn draw_sidebar(state: &AppState) {
     text("IDLE", 48., 61., 34., crate::theme::CREAM);
     text("HANDS", 48., 94., 34., crate::theme::CREAM);
     text("quiet games for", 48., 119., 12., crate::theme::SECONDARY);
@@ -132,7 +129,7 @@ fn draw_sidebar(state: &AppState) {
     text(&profile_name, 34., 650., 13., crate::theme::CREAM);
 }
 
-fn category_card(state: &AppState, rect: Rect, filter: u8) {
+pub fn category_card(state: &AppState, rect: Rect, filter: u8) {
     let sample = GameId::ALL
         .iter()
         .copied()
@@ -206,7 +203,7 @@ fn category_card(state: &AppState, rect: Rect, filter: u8) {
     crate::mascots::draw_for_filter(filter, vec2(rect.right() - 43., rect.y + 66.), 0.95);
 }
 
-fn home_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
+pub fn home_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(Rect::new(1030., 28., 92., 48.), p) {
         return vec![UiAction::Finder];
     }
@@ -226,7 +223,7 @@ fn home_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     vec![]
 }
 
-fn library_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
+pub fn library_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(Rect::new(760., 38., 180., 42.), p) {
         return vec![UiAction::CabinetSort];
     }
@@ -270,15 +267,15 @@ fn library_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     vec![]
 }
 
-fn recent_games(state: &AppState) -> Vec<GameId> {
+pub fn recent_games(state: &AppState) -> Vec<GameId> {
     state.recent_games.clone()
 }
-fn recent_rect(index: usize) -> Rect {
+pub fn recent_rect(index: usize) -> Rect {
     Rect::new(260. + index as f32 * 137., 576., 126., 58.)
 }
-fn fit_recent_title(title: &str, max_width: f32) -> String {
-    const SIZE: u16 = 12;
-    const ELLIPSIS: &str = "…";
+pub fn fit_recent_title(title: &str, max_width: f32) -> String {
+    pub const SIZE: u16 = 12;
+    pub const ELLIPSIS: &str = "…";
 
     if crate::ui::measure_text(title, None, SIZE, 1.).width <= max_width {
         return title.to_owned();
@@ -294,7 +291,7 @@ fn fit_recent_title(title: &str, max_width: f32) -> String {
     }
     ELLIPSIS.to_owned()
 }
-fn library_rect(index: usize) -> Rect {
+pub fn library_rect(index: usize) -> Rect {
     Rect::new(
         260. + (index % 4) as f32 * 246.,
         125. + (index / 4) as f32 * 47.,
@@ -302,11 +299,11 @@ fn library_rect(index: usize) -> Rect {
         40.,
     )
 }
-fn sidebar_rects() -> [Rect; 7] {
+pub fn sidebar_rects() -> [Rect; 7] {
     std::array::from_fn(|index| Rect::new(18., 160. + index as f32 * 54., 184., 44.))
 }
 
-fn draw_wood_frame() {
+pub fn draw_wood_frame() {
     draw_rectangle(0., 0., 1280., 720., crate::theme::BACKGROUND_DEEP);
     for y in (8..720).step_by(18) {
         draw_line(
@@ -320,7 +317,7 @@ fn draw_wood_frame() {
     }
     draw_line(SIDEBAR_W, 0., SIDEBAR_W, 720., 5., crate::theme::BORDER);
 }
-fn draw_paper_grain() {
+pub fn draw_paper_grain() {
     for y in (24..700).step_by(22) {
         draw_line(
             MAIN.x + 8.,
@@ -332,13 +329,13 @@ fn draw_paper_grain() {
         );
     }
 }
-fn small_button(rect: Rect, label: &str, fill: Color) {
+pub fn small_button(rect: Rect, label: &str, fill: Color) {
     panel(rect, fill, crate::theme::BORDER);
     text(label, rect.x + 13., rect.y + 29., 10., crate::theme::CREAM);
 }
-fn panel(rect: Rect, fill: Color, border: Color) {
+pub fn panel(rect: Rect, fill: Color, border: Color) {
     crate::ui::draw_rounded_panel(rect, 10., fill, border);
 }
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, size, color);
 }

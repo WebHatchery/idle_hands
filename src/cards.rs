@@ -37,11 +37,7 @@ pub fn shuffle_cards(mut cards: Vec<Card>, seed: u64) -> (Vec<Card>, u64) {
     (cards, rng)
 }
 
-fn next_seed(seed: u64) -> u64 {
+pub fn next_seed(seed: u64) -> u64 {
     seed.wrapping_mul(6364136223846793005)
         .wrapping_add(1442695040888963407)
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/cards/tests.rs"]
-mod tests;

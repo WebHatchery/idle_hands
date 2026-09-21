@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::snake::*;
 
 #[test]
 fn opposite_turns_are_rejected_and_wall_collisions_lose() {

@@ -419,7 +419,7 @@ pub fn rows(state: &AppState, filter: u8) -> Vec<RecordRow> {
         .collect()
 }
 
-fn add(rows: &mut Vec<RecordRow>, game: GameId, label: &'static str, score: String) {
+pub fn add(rows: &mut Vec<RecordRow>, game: GameId, label: &'static str, score: String) {
     rows.push(RecordRow {
         category: crate::cabinet_status::category_filter(game),
         game,
@@ -428,10 +428,6 @@ fn add(rows: &mut Vec<RecordRow>, game: GameId, label: &'static str, score: Stri
     });
 }
 
-fn value(value: Option<u32>) -> String {
+pub fn value(value: Option<u32>) -> String {
     value.map_or_else(|| "—".into(), |number| number.to_string())
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/records_data/tests.rs"]
-mod tests;

@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::asteroids_ui::*;
 
 #[test]
 fn compact_header_keeps_breadcrumb_title_status_and_board_separate() {

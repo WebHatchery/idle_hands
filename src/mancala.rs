@@ -2,9 +2,9 @@
 
 use serde::{Deserialize, Serialize};
 
-const PLAYER_STORE: usize = 6;
-const OPPONENT_START: usize = 7;
-const OPPONENT_STORE: usize = 13;
+pub const PLAYER_STORE: usize = 6;
+pub const OPPONENT_START: usize = 7;
+pub const OPPONENT_STORE: usize = 13;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum MancalaPhase {
@@ -45,16 +45,16 @@ pub struct MovePreview {
 }
 
 #[derive(Debug, Clone, Copy)]
-struct SowResult {
-    last: usize,
-    captured: u8,
+pub struct SowResult {
+    pub last: usize,
+    pub captured: u8,
 }
 
-fn default_ai_level() -> AiLevel {
+pub fn default_ai_level() -> AiLevel {
     AiLevel::Sharp
 }
 
-fn default_variant() -> MancalaVariant {
+pub fn default_variant() -> MancalaVariant {
     MancalaVariant::Classic
 }
 
@@ -73,7 +73,7 @@ pub struct Mancala {
     pub extra_turns: u16,
     pub phase: MancalaPhase,
     #[serde(skip)]
-    undo: Option<Box<Self>>,
+    pub undo: Option<Box<Self>>,
 }
 
 impl Default for Mancala {
@@ -189,13 +189,13 @@ impl Mancala {
         })
     }
 
-    fn clone_without_undo(&self) -> Self {
+    pub fn clone_without_undo(&self) -> Self {
         let mut copy = self.clone();
         copy.undo = None;
         copy
     }
 
-    fn sow(&mut self, pit: usize, player: bool) -> SowResult {
+    pub fn sow(&mut self, pit: usize, player: bool) -> SowResult {
         let mut stones = self.pits[pit];
         self.pits[pit] = 0;
         let store = if player { PLAYER_STORE } else { OPPONENT_STORE };
@@ -227,7 +227,7 @@ impl Mancala {
         }
     }
 
-    fn cpu_turn(&mut self) {
+    pub fn cpu_turn(&mut self) {
         loop {
             let available: Vec<usize> = (OPPONENT_START..OPPONENT_STORE)
                 .filter(|&pit| self.pits[pit] > 0)
@@ -260,7 +260,7 @@ impl Mancala {
         }
     }
 
-    fn cpu_move_value(&self, pit: usize, depth: u8) -> i32 {
+    pub fn cpu_move_value(&self, pit: usize, depth: u8) -> i32 {
         let mut trial = self.clone_without_undo();
         let before_store = trial.pits[OPPONENT_STORE];
         let result = trial.sow(pit, false);
@@ -281,7 +281,7 @@ impl Mancala {
         value
     }
 
-    fn best_player_reply_value(&self) -> i32 {
+    pub fn best_player_reply_value(&self) -> i32 {
         (0..PLAYER_STORE)
             .filter_map(|pit| self.move_preview(pit))
             .map(|preview| {
@@ -293,7 +293,7 @@ impl Mancala {
             .unwrap_or(0)
     }
 
-    fn side_empty(&self, player: bool) -> bool {
+    pub fn side_empty(&self, player: bool) -> bool {
         if player {
             self.pits[..PLAYER_STORE].iter().all(|&stones| stones == 0)
         } else {
@@ -303,7 +303,7 @@ impl Mancala {
         }
     }
 
-    fn finish(&mut self) {
+    pub fn finish(&mut self) {
         let player_remaining: u8 = self.pits[..PLAYER_STORE].iter().sum();
         let opponent_remaining: u8 = self.pits[OPPONENT_START..OPPONENT_STORE].iter().sum();
         self.pits[PLAYER_STORE] += player_remaining;
@@ -317,7 +317,3 @@ impl Mancala {
         };
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/mancala/tests.rs"]
-mod tests;

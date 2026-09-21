@@ -1,6 +1,7 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::notice_log_ui::*;
+use macroquad_toolkit::notifications::NotificationType;
 
 #[test]
 fn long_notice_messages_are_shortened_for_the_log() {
@@ -39,15 +40,15 @@ fn high_contrast_notice_rows_stop_relying_on_severity_color() {
 
 #[test]
 fn notice_log_controls_stay_inside_each_logical_viewport() {
-    crate::ui::with_desktop_layout(assert_layout_fits);
-    crate::ui::with_compact_landscape_layout(assert_layout_fits);
-    crate::ui::with_portrait_layout(assert_layout_fits);
+    idle_hands::testing::ui::with_desktop_layout(assert_layout_fits);
+    idle_hands::testing::ui::with_compact_landscape_layout(assert_layout_fits);
+    idle_hands::testing::ui::with_portrait_layout(assert_layout_fits);
 }
 
 fn assert_layout_fits() {
     let (card, close) = log_layout();
     let button = button_rect();
-    let (width, height) = crate::ui::layout_size();
+    let (width, height) = idle_hands::testing::ui::layout_size();
     let viewport = Rect::new(0., 0., width, height);
     assert!(contains(viewport, card));
     assert!(contains(card, close));

@@ -57,10 +57,10 @@ impl PointerScope {
 
 #[derive(Debug, Default)]
 pub struct PointerTracker {
-    start: Option<Vec2>,
-    scope: Option<PointerScope>,
-    cancelled: bool,
-    elapsed: f32,
+    pub start: Option<Vec2>,
+    pub scope: Option<PointerScope>,
+    pub cancelled: bool,
+    pub elapsed: f32,
 }
 
 impl PointerTracker {
@@ -104,7 +104,3 @@ impl PointerTracker {
         }
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/input/tests.rs"]
-mod tests;

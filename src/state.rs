@@ -207,7 +207,3 @@ impl Default for AppState {
         }
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/state/tests.rs"]
-mod tests;

@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::maze_walk::*;
 
 #[test]
 fn blocked_moves_do_not_change_position_or_count() {

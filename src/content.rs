@@ -190,7 +190,7 @@ impl GameContent {
     }
 }
 
-fn validate_games(games: &[GameEntry]) -> Result<(), String> {
+pub fn validate_games(games: &[GameEntry]) -> Result<(), String> {
     if games.len() != GameId::ALL.len() {
         return Err(format!(
             "content_config.games must contain {} entries",
@@ -242,7 +242,7 @@ fn validate_games(games: &[GameEntry]) -> Result<(), String> {
     Ok(())
 }
 
-fn validate_tutorials(
+pub fn validate_tutorials(
     tutorials: &BTreeMap<String, [String; 3]>,
     games: &[GameEntry],
 ) -> Result<(), String> {
@@ -266,7 +266,7 @@ fn validate_tutorials(
     Ok(())
 }
 
-fn validate_labels(labels: &Labels) -> Result<(), String> {
+pub fn validate_labels(labels: &Labels) -> Result<(), String> {
     if labels.help_paragraphs.len() != 4 || labels.help_navigation.len() != 4 {
         return Err("content_config.labels has an invalid help shape".into());
     }
@@ -285,7 +285,7 @@ fn validate_labels(labels: &Labels) -> Result<(), String> {
     Ok(())
 }
 
-fn validate_variants(
+pub fn validate_variants(
     variants: &BTreeMap<String, Vec<VariantEntry>>,
     games: &[GameEntry],
 ) -> Result<(), String> {
@@ -320,7 +320,7 @@ fn validate_variants(
     Ok(())
 }
 
-fn validate_words(words: &WordLists) -> Result<(), String> {
+pub fn validate_words(words: &WordLists) -> Result<(), String> {
     for (category, list) in &words.hangman {
         if list.len() < 3 || list.iter().any(|word| !is_upper_word(word, 4, 10)) {
             return Err(format!(
@@ -377,7 +377,7 @@ fn validate_words(words: &WordLists) -> Result<(), String> {
     Ok(())
 }
 
-fn validate_achievements(achievements: &[AchievementEntry]) -> Result<(), String> {
+pub fn validate_achievements(achievements: &[AchievementEntry]) -> Result<(), String> {
     if achievements.len() != GameId::ALL.len() + 2 {
         return Err("content_config.achievements must contain 62 entries".into());
     }
@@ -407,7 +407,10 @@ fn validate_achievements(achievements: &[AchievementEntry]) -> Result<(), String
     Ok(())
 }
 
-fn validate_hints(hints: &BTreeMap<String, HintCopy>, games: &[GameEntry]) -> Result<(), String> {
+pub fn validate_hints(
+    hints: &BTreeMap<String, HintCopy>,
+    games: &[GameEntry],
+) -> Result<(), String> {
     if hints.len() != games.len()
         || games.iter().any(|game| {
             hints.get(&game.id).is_none_or(|hint| {
@@ -420,7 +423,7 @@ fn validate_hints(hints: &BTreeMap<String, HintCopy>, games: &[GameEntry]) -> Re
     Ok(())
 }
 
-fn validate_balance(balance: &Balance) -> Result<(), String> {
+pub fn validate_balance(balance: &Balance) -> Result<(), String> {
     let positive = [
         u32::from(balance.arcade.snake_target_score),
         u32::from(balance.arcade.breakout_target_level),
@@ -452,11 +455,7 @@ fn validate_balance(balance: &Balance) -> Result<(), String> {
     Ok(())
 }
 
-fn is_upper_word(word: &str, min: usize, max: usize) -> bool {
+pub fn is_upper_word(word: &str, min: usize, max: usize) -> bool {
     let length = word.chars().count();
     length >= min && length <= max && word.chars().all(|character| character.is_ascii_uppercase())
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/content/tests.rs"]
-mod tests;

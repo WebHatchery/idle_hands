@@ -40,7 +40,7 @@ pub enum FreeSource {
     Cell(usize),
 }
 
-type FreeCellSnapshot = ([Option<Card>; 4], Vec<Vec<Card>>, [u8; 4], u32);
+pub type FreeCellSnapshot = ([Option<Card>; 4], Vec<Vec<Card>>, [u8; 4], u32);
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FreeCell {
@@ -54,7 +54,7 @@ pub struct FreeCell {
     #[serde(default)]
     pub variant: FreeCellVariant,
     #[serde(skip)]
-    history: Vec<FreeCellSnapshot>,
+    pub history: Vec<FreeCellSnapshot>,
 }
 
 impl Default for FreeCell {
@@ -239,7 +239,7 @@ impl FreeCell {
             false
         }
     }
-    fn source_card(&self, source: FreeSource) -> Option<Card> {
+    pub fn source_card(&self, source: FreeSource) -> Option<Card> {
         match source {
             FreeSource::Cell(cell) => self.cells.get(cell).copied().flatten(),
             FreeSource::Cascade(cascade, depth) => self
@@ -249,7 +249,7 @@ impl FreeCell {
                 .copied(),
         }
     }
-    fn can_place(&self, destination: usize, card: Card) -> bool {
+    pub fn can_place(&self, destination: usize, card: Card) -> bool {
         match self
             .cascades
             .get(destination)
@@ -260,7 +260,7 @@ impl FreeCell {
         }
     }
 
-    fn valid_moving_stack(&self, source: FreeSource) -> bool {
+    pub fn valid_moving_stack(&self, source: FreeSource) -> bool {
         let FreeSource::Cascade(cascade, depth) = source else {
             return true;
         };
@@ -268,7 +268,7 @@ impl FreeCell {
             .windows(2)
             .all(|pair| pair[0].rank == pair[1].rank + 1 && pair[0].red() != pair[1].red())
     }
-    fn capacity_allows(&self, source: FreeSource, destination: usize) -> bool {
+    pub fn capacity_allows(&self, source: FreeSource, destination: usize) -> bool {
         if !matches!(source, FreeSource::Cascade(_, _)) {
             return true;
         }
@@ -290,7 +290,7 @@ impl FreeCell {
             FreeSource::Cell(_) => true,
         }
     }
-    fn snapshot(&mut self) {
+    pub fn snapshot(&mut self) {
         self.history.push((
             self.cells,
             self.cascades.clone(),
@@ -299,6 +299,3 @@ impl FreeCell {
         ));
     }
 }
-#[cfg(test)]
-#[path = "../tests/legacy/freecell/tests.rs"]
-mod tests;

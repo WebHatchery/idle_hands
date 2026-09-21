@@ -9,16 +9,16 @@ use crate::{
 use macroquad::prelude::*;
 
 #[derive(Clone, Copy)]
-struct Layout {
-    board: Rect,
-    tile_w: f32,
-    tile_h: f32,
-    hint: Rect,
-    undo: Rect,
-    new_game: Rect,
+pub struct Layout {
+    pub board: Rect,
+    pub tile_w: f32,
+    pub tile_h: f32,
+    pub hint: Rect,
+    pub undo: Rect,
+    pub new_game: Rect,
 }
 
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             board: Rect::new(20., 48., 280., 240.),
@@ -174,7 +174,7 @@ pub fn draw(state: &AppState) {
     button(layout.hint, "HINT", state.large_text);
 }
 
-fn draw_tile(
+pub fn draw_tile(
     tile: Tile,
     index: usize,
     selected: Option<usize>,
@@ -216,7 +216,7 @@ fn draw_tile(
     );
 }
 
-fn tile_rect(tile: Tile, layout: Layout) -> Rect {
+pub fn tile_rect(tile: Tile, layout: Layout) -> Rect {
     Rect::new(
         layout.board.x + f32::from(tile.x) * layout.tile_w,
         layout.board.y + f32::from(tile.y) * layout.tile_h - f32::from(tile.layer) * 8.,
@@ -224,14 +224,14 @@ fn tile_rect(tile: Tile, layout: Layout) -> Rect {
         layout.tile_h - 3.,
     )
 }
-fn status_text(status: MahjongStatus) -> &'static str {
+pub fn status_text(status: MahjongStatus) -> &'static str {
     match status {
         MahjongStatus::Playing => "Find the matching pairs",
         MahjongStatus::Won => "The tiles are clear",
         MahjongStatus::Stuck => "No free pair remains",
     }
 }
-fn button(rect: Rect, label: &str, large_text: bool) {
+pub fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     text(
@@ -242,40 +242,36 @@ fn button(rect: Rect, label: &str, large_text: bool) {
         WHITE,
     );
 }
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
-fn title_size() -> f32 {
+pub fn title_size() -> f32 {
     if crate::ui::is_portrait() {
         17.
     } else {
         29.
     }
 }
-fn title_text() -> &'static str {
+pub fn title_text() -> &'static str {
     if crate::ui::is_portrait() {
         "MAHJONG"
     } else {
         "MAHJONG SOLITAIRE"
     }
 }
-fn body_size() -> f32 {
+pub fn body_size() -> f32 {
     if crate::ui::is_portrait() {
         11.
     } else {
         13.
     }
 }
-fn accent() -> Color {
+pub fn accent() -> Color {
     crate::theme::BRASS
 }
-fn muted() -> Color {
+pub fn muted() -> Color {
     crate::theme::SECONDARY
 }
-fn back_rect() -> Rect {
+pub fn back_rect() -> Rect {
     Rect::new(0., 0., 110., 42.)
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/mahjong_solitaire_ui/tests.rs"]
-mod tests;

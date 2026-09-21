@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::responsive_landscape_cabinet::*;
 
 #[test]
 fn compact_cards_expose_a_drawer_info_touch_zone() {

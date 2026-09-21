@@ -1,8 +1,8 @@
 //! Regression coverage for the tests module.
 
-use super::*;
-use crate::data::GameData;
-use crate::state::GameId;
+use idle_hands::testing::data::GameData;
+use idle_hands::testing::modules::tutorial_data::*;
+use idle_hands::testing::state::GameId;
 
 #[test]
 fn every_registered_game_has_three_touch_first_lines() {

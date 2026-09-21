@@ -26,7 +26,7 @@ impl TriPeaksRule {
     }
 }
 
-type Snapshot = (
+pub type Snapshot = (
     Vec<Option<Card>>,
     Vec<Card>,
     Vec<Card>,
@@ -60,7 +60,7 @@ pub struct TriPeaks {
     #[serde(default)]
     pub bridge_armed: bool,
     #[serde(skip)]
-    history: Vec<Snapshot>,
+    pub history: Vec<Snapshot>,
 }
 
 impl Default for TriPeaks {
@@ -205,7 +205,7 @@ impl TriPeaks {
         (0..28).filter(|&index| self.can_play(index)).count()
     }
 
-    fn resolve(&mut self) {
+    pub fn resolve(&mut self) {
         if self.tableau.iter().all(Option::is_none) {
             self.status = TriPeaksStatus::Won;
         } else if self.stock.is_empty()
@@ -218,7 +218,7 @@ impl TriPeaks {
         }
     }
 
-    fn snapshot(&mut self) {
+    pub fn snapshot(&mut self) {
         self.history.push((
             self.tableau.clone(),
             self.stock.clone(),
@@ -234,17 +234,17 @@ impl TriPeaks {
     }
 }
 
-fn adjacent(first: u8, second: u8, rule: TriPeaksRule) -> bool {
+pub fn adjacent(first: u8, second: u8, rule: TriPeaksRule) -> bool {
     first.abs_diff(second) == 1
         || (rule == TriPeaksRule::Wrap
             && ((first == 1 && second == 13) || (first == 13 && second == 1)))
 }
 
-const fn default_bridges() -> u8 {
+pub const fn default_bridges() -> u8 {
     1
 }
 
-fn children(index: usize) -> &'static [usize] {
+pub fn children(index: usize) -> &'static [usize] {
     match index {
         0 => &[3, 4],
         1 => &[5, 6],
@@ -267,7 +267,3 @@ fn children(index: usize) -> &'static [usize] {
         _ => &[],
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/tri_peaks/tests.rs"]
-mod tests;

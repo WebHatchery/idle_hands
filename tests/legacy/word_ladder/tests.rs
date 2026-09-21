@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::word_ladder::*;
 
 #[test]
 fn rejects_non_dictionary_and_invalid_steps() {

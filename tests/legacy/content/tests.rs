@@ -1,10 +1,10 @@
 //! Regression coverage for the authored content contract.
 
-use super::*;
+use idle_hands::testing::modules::content::*;
 
 #[test]
 fn embedded_catalog_covers_every_runtime_surface() {
-    let content = crate::data::GameData::load().unwrap().content;
+    let content = idle_hands::testing::data::GameData::load().unwrap().content;
 
     assert_eq!(content.games.len(), GameId::ALL.len());
     assert_eq!(content.tutorials.len(), GameId::ALL.len());
@@ -17,7 +17,7 @@ fn embedded_catalog_covers_every_runtime_surface() {
 
 #[test]
 fn achievement_order_is_semantically_validated() {
-    let mut content = crate::data::GameData::load().unwrap().content;
+    let mut content = idle_hands::testing::data::GameData::load().unwrap().content;
     content.achievements.swap(1, 2);
 
     let error = content.validate().unwrap_err();
@@ -26,7 +26,7 @@ fn achievement_order_is_semantically_validated() {
 
 #[test]
 fn variant_entries_reject_duplicate_ids() {
-    let mut content = crate::data::GameData::load().unwrap().content;
+    let mut content = idle_hands::testing::data::GameData::load().unwrap().content;
     content.variants.get_mut("solitaire").unwrap()[1].id = "default".into();
 
     let error = content.validate().unwrap_err();

@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::sliding_puzzle::*;
 
 #[test]
 fn only_adjacent_tiles_move_and_undo_restores_the_board() {

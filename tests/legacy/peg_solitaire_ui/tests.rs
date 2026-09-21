@@ -1,8 +1,8 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::peg_solitaire_ui::*;
 
 #[test]
 fn portrait_title_leaves_room_before_the_rule_card() {
-    crate::ui::with_portrait_layout(|| assert_eq!(title_size(), 24.));
+    idle_hands::testing::ui::with_portrait_layout(|| assert_eq!(title_size(), 24.));
 }

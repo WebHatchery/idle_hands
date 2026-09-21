@@ -117,7 +117,7 @@ pub fn suit_color(suit: u8, high_contrast: bool) -> Color {
     }
 }
 
-fn draw_club(center: Vec2, size: f32, color: Color) {
+pub fn draw_club(center: Vec2, size: f32, color: Color) {
     let lobe_radius = size * 0.22;
     draw_circle(center.x, center.y - size * 0.22, lobe_radius, color);
     draw_circle(
@@ -147,7 +147,7 @@ fn draw_club(center: Vec2, size: f32, color: Color) {
     );
 }
 
-fn draw_diamond(center: Vec2, size: f32, color: Color) {
+pub fn draw_diamond(center: Vec2, size: f32, color: Color) {
     let top = vec2(center.x, center.y - size * 0.50);
     let left = vec2(center.x - size * 0.38, center.y);
     let right = vec2(center.x + size * 0.38, center.y);
@@ -156,7 +156,7 @@ fn draw_diamond(center: Vec2, size: f32, color: Color) {
     draw_triangle(top, right, bottom, color);
 }
 
-fn draw_heart(center: Vec2, size: f32, color: Color) {
+pub fn draw_heart(center: Vec2, size: f32, color: Color) {
     let lobe_radius = size * 0.25;
     draw_circle(
         center.x - size * 0.19,
@@ -178,7 +178,7 @@ fn draw_heart(center: Vec2, size: f32, color: Color) {
     );
 }
 
-fn draw_spade(center: Vec2, size: f32, color: Color) {
+pub fn draw_spade(center: Vec2, size: f32, color: Color) {
     draw_triangle(
         vec2(center.x, center.y - size * 0.50),
         vec2(center.x - size * 0.43, center.y + size * 0.08),
@@ -229,7 +229,3 @@ pub fn selection_pulse(time: f32, selected: bool, reduced_motion: bool) -> f32 {
         ((time * 4.).sin() + 1.) * 0.5
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/card_render/tests.rs"]
-mod tests;

@@ -1,7 +1,7 @@
 //! Regression coverage for the tests module.
 
-use super::*;
-use crate::domain::Direction;
+use idle_hands::testing::domain::Direction;
+use idle_hands::testing::modules::frogger::*;
 
 #[test]
 fn touch_move_and_pause_are_available() {

@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::rules_data::*;
 
 #[test]
 fn filtered_rule_rows_cover_each_category_without_crossovers() {

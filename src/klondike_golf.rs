@@ -30,7 +30,7 @@ impl GolfRule {
     }
 }
 
-type Snapshot = (Vec<Vec<Card>>, Vec<Card>, Vec<Card>, u16, GolfStatus);
+pub type Snapshot = (Vec<Vec<Card>>, Vec<Card>, Vec<Card>, u16, GolfStatus);
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct KlondikeGolf {
@@ -43,7 +43,7 @@ pub struct KlondikeGolf {
     #[serde(default)]
     pub rule: GolfRule,
     #[serde(skip)]
-    history: Vec<Snapshot>,
+    pub history: Vec<Snapshot>,
 }
 
 impl Default for KlondikeGolf {
@@ -140,7 +140,7 @@ impl KlondikeGolf {
         *self = Self::new(seed);
     }
 
-    fn resolve(&mut self) {
+    pub fn resolve(&mut self) {
         if self.tableau.iter().all(Vec::is_empty) {
             self.status = GolfStatus::Won;
         } else if self.stock.is_empty()
@@ -154,7 +154,7 @@ impl KlondikeGolf {
         }
     }
 
-    fn can_play(&self, column: usize) -> bool {
+    pub fn can_play(&self, column: usize) -> bool {
         let Some(card) = self.tableau.get(column).and_then(|stack| stack.last()) else {
             return false;
         };
@@ -163,7 +163,7 @@ impl KlondikeGolf {
             .is_some_and(|waste| self.rank_is_playable(card.rank, waste.rank))
     }
 
-    fn rank_is_playable(&self, card: u8, waste: u8) -> bool {
+    pub fn rank_is_playable(&self, card: u8, waste: u8) -> bool {
         match self.rule {
             GolfRule::Classic => card.abs_diff(waste) == 1,
             GolfRule::Wrap => {
@@ -175,7 +175,7 @@ impl KlondikeGolf {
         }
     }
 
-    fn snapshot(&mut self) {
+    pub fn snapshot(&mut self) {
         self.history.push((
             self.tableau.clone(),
             self.stock.clone(),
@@ -185,7 +185,3 @@ impl KlondikeGolf {
         ));
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/klondike_golf/tests.rs"]
-mod tests;

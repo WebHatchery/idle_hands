@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::pyramid::*;
 
 fn card(rank: u8) -> Card {
     Card {

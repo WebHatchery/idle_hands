@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::mastermind::*;
 
 #[test]
 fn seeded_secret_repeats_and_feedback_counts_exact_and_partial_pegs() {

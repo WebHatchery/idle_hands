@@ -66,7 +66,3 @@ impl CollectionSummary {
             .unwrap_or(0)
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/collection_summary/tests.rs"]
-mod tests;

@@ -3,10 +3,6 @@
 use crate::{profile_data, state::AppState, ui::UiAction};
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/profile_ui/tests.rs"]
-mod tests;
-
 pub fn clicks(_state: &AppState, point: Vec2) -> Vec<UiAction> {
     for (index, rect) in name_rects().iter().copied().enumerate() {
         if crate::ui::hit(rect, point) {
@@ -29,7 +25,7 @@ pub fn draw(state: &AppState) {
     }
 }
 
-fn draw_desktop(state: &AppState) {
+pub fn draw_desktop(state: &AppState) {
     panel(state, Rect::new(180., 40., 920., 640.));
     heading(state, 230., 100., 38., "PROFILE");
     current_copy(state, 230., 132., 17.);
@@ -45,7 +41,7 @@ fn draw_desktop(state: &AppState) {
     button(state, back_rect(), "BACK", crate::theme::MOSS_DARK);
 }
 
-fn draw_compact(state: &AppState) {
+pub fn draw_compact(state: &AppState) {
     panel(state, Rect::new(20., 12., 804., 365.));
     heading(state, 40., 47., 25., "PROFILE");
     current_copy(state, 40., 72., 12.);
@@ -61,7 +57,7 @@ fn draw_compact(state: &AppState) {
     button(state, back_rect(), "BACK", crate::theme::MOSS_DARK);
 }
 
-fn draw_portrait(state: &AppState) {
+pub fn draw_portrait(state: &AppState) {
     panel(state, Rect::new(8., 16., 344., 688.));
     heading(state, 20., 60., 28., "PROFILE");
     current_copy(state, 20., 87., 12.);
@@ -77,11 +73,11 @@ fn draw_portrait(state: &AppState) {
     button(state, back_rect(), "BACK", crate::theme::MOSS_DARK);
 }
 
-fn heading(state: &AppState, x: f32, y: f32, size: f32, value: &str) {
+pub fn heading(state: &AppState, x: f32, y: f32, size: f32, value: &str) {
     text(state, value, x, y, size, accent(state));
 }
 
-fn current_copy(state: &AppState, x: f32, y: f32, size: f32) {
+pub fn current_copy(state: &AppState, x: f32, y: f32, size: f32) {
     text(
         state,
         format!(
@@ -95,7 +91,7 @@ fn current_copy(state: &AppState, x: f32, y: f32, size: f32) {
     );
 }
 
-fn draw_names(state: &AppState) {
+pub fn draw_names(state: &AppState) {
     let selected = profile_data::current_index(state);
     for (index, rect) in name_rects().iter().copied().enumerate() {
         let fill = profile_card_fill(state, selected == Some(index));
@@ -121,7 +117,7 @@ fn draw_names(state: &AppState) {
     }
 }
 
-fn button(state: &AppState, rect: Rect, label: &str, fill: Color) {
+pub fn button(state: &AppState, rect: Rect, label: &str, fill: Color) {
     panel_fill(state, rect, fill);
     let width = crate::ui::measure_text(label, None, 12, 1.).width;
     text(
@@ -134,11 +130,11 @@ fn button(state: &AppState, rect: Rect, label: &str, fill: Color) {
     );
 }
 
-fn panel(state: &AppState, rect: Rect) {
+pub fn panel(state: &AppState, rect: Rect) {
     panel_fill(state, rect, crate::theme::BACKGROUND_DEEP);
 }
 
-fn panel_fill(state: &AppState, rect: Rect, fill: Color) {
+pub fn panel_fill(state: &AppState, rect: Rect, fill: Color) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -160,7 +156,7 @@ fn panel_fill(state: &AppState, rect: Rect, fill: Color) {
     );
 }
 
-fn text(state: &AppState, value: impl AsRef<str>, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(state: &AppState, value: impl AsRef<str>, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(
         value,
         x,
@@ -170,7 +166,7 @@ fn text(state: &AppState, value: impl AsRef<str>, x: f32, y: f32, size: f32, col
     );
 }
 
-fn name_rects() -> [Rect; 8] {
+pub fn name_rects() -> [Rect; 8] {
     if crate::ui::is_portrait() {
         std::array::from_fn(|index| Rect::new(20., 125. + index as f32 * 50., 320., 42.))
     } else if crate::ui::is_compact_landscape() {
@@ -194,7 +190,7 @@ fn name_rects() -> [Rect; 8] {
     }
 }
 
-fn back_rect() -> Rect {
+pub fn back_rect() -> Rect {
     if crate::ui::is_portrait() {
         Rect::new(10., 602., 150., 44.)
     } else if crate::ui::is_compact_landscape() {
@@ -204,7 +200,7 @@ fn back_rect() -> Rect {
     }
 }
 
-fn accent(state: &AppState) -> Color {
+pub fn accent(state: &AppState) -> Color {
     if state.high_contrast {
         WHITE
     } else {
@@ -212,7 +208,7 @@ fn accent(state: &AppState) -> Color {
     }
 }
 
-fn secondary(state: &AppState) -> Color {
+pub fn secondary(state: &AppState) -> Color {
     if state.high_contrast {
         WHITE
     } else {
@@ -220,7 +216,7 @@ fn secondary(state: &AppState) -> Color {
     }
 }
 
-fn profile_card_fill(state: &AppState, selected: bool) -> Color {
+pub fn profile_card_fill(state: &AppState, selected: bool) -> Color {
     if state.high_contrast {
         if selected {
             Color::new(0.30, 0.30, 0.30, 1.)

@@ -1,7 +1,7 @@
 //! Regression coverage for the tests module.
 
-use super::{format_duration, CollectionRecords};
-use crate::state::GameId;
+use idle_hands::testing::modules::state_records::{format_duration, CollectionRecords};
+use idle_hands::testing::state::GameId;
 
 #[test]
 fn elapsed_time_slots_follow_the_catalog() {

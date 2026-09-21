@@ -2,8 +2,8 @@
 
 use serde::{Deserialize, Serialize};
 
-const SIZE: usize = 8;
-const CELLS: usize = SIZE * SIZE;
+pub const SIZE: usize = 8;
+pub const CELLS: usize = SIZE * SIZE;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Side {
@@ -12,7 +12,7 @@ pub enum Side {
 }
 
 impl Side {
-    fn other(self) -> Self {
+    pub fn other(self) -> Self {
         match self {
             Self::Red => Self::Yellow,
             Self::Yellow => Self::Red,
@@ -30,7 +30,7 @@ pub enum Piece {
 }
 
 impl Piece {
-    fn side(self) -> Option<Side> {
+    pub fn side(self) -> Option<Side> {
         match self {
             Self::RedMan | Self::RedKing => Some(Side::Red),
             Self::YellowMan | Self::YellowKing => Some(Side::Yellow),
@@ -38,7 +38,7 @@ impl Piece {
         }
     }
 
-    fn is_king(self) -> bool {
+    pub fn is_king(self) -> bool {
         matches!(self, Self::RedKing | Self::YellowKing)
     }
 }
@@ -57,11 +57,11 @@ pub enum AiLevel {
     Expert,
 }
 
-fn default_ai_level() -> AiLevel {
+pub fn default_ai_level() -> AiLevel {
     AiLevel::Sharp
 }
 
-type Snapshot = (Vec<Piece>, Side, CheckersStatus, u16, u64);
+pub type Snapshot = (Vec<Piece>, Side, CheckersStatus, u16, u64);
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Checkers {
@@ -74,9 +74,9 @@ pub struct Checkers {
     pub ai_level: AiLevel,
     pub selected: Option<usize>,
     #[serde(default)]
-    forced_capture: Option<usize>,
+    pub forced_capture: Option<usize>,
     #[serde(skip)]
-    undo: Option<Snapshot>,
+    pub undo: Option<Snapshot>,
 }
 
 impl Default for Checkers {
@@ -193,7 +193,7 @@ impl Checkers {
         }
     }
 
-    fn try_move(&mut self, from: usize, to: usize) -> bool {
+    pub fn try_move(&mut self, from: usize, to: usize) -> bool {
         if !self.targets(from).contains(&to) {
             return false;
         }
@@ -224,7 +224,7 @@ impl Checkers {
         true
     }
 
-    fn apply_move(&mut self, from: usize, to: usize) -> bool {
+    pub fn apply_move(&mut self, from: usize, to: usize) -> bool {
         let piece = self.cells[from];
         let from_row = from / SIZE;
         let to_row = to / SIZE;
@@ -243,7 +243,7 @@ impl Checkers {
         capture
     }
 
-    fn ai_turn(&mut self) {
+    pub fn ai_turn(&mut self) {
         while let Some((from, to)) = self.best_ai_move() {
             let capture = self.apply_move(from, to);
             self.moves = self.moves.saturating_add(1);
@@ -261,7 +261,7 @@ impl Checkers {
         }
     }
 
-    fn best_ai_move(&self) -> Option<(usize, usize)> {
+    pub fn best_ai_move(&self) -> Option<(usize, usize)> {
         let mut candidates = Vec::new();
         for from in 0..CELLS {
             if self.cells[from].side() == Some(Side::Yellow) {
@@ -285,7 +285,7 @@ impl Checkers {
         candidates.into_iter().next()
     }
 
-    fn targets_for(&self, side: Side, from: usize) -> Vec<usize> {
+    pub fn targets_for(&self, side: Side, from: usize) -> Vec<usize> {
         if from >= CELLS || self.cells[from].side() != Some(side) {
             return Vec::new();
         }
@@ -297,30 +297,30 @@ impl Checkers {
         }
     }
 
-    fn capture_available_for(&self, side: Side) -> bool {
+    pub fn capture_available_for(&self, side: Side) -> bool {
         (0..CELLS).any(|from| {
             self.cells[from].side() == Some(side)
                 && !self.capture_targets_for(side, from).is_empty()
         })
     }
 
-    fn capture_targets(&self, from: usize) -> Vec<usize> {
+    pub fn capture_targets(&self, from: usize) -> Vec<usize> {
         self.capture_targets_for(self.turn, from)
     }
 
-    fn capture_targets_for(&self, side: Side, from: usize) -> Vec<usize> {
+    pub fn capture_targets_for(&self, side: Side, from: usize) -> Vec<usize> {
         self.targets_in_directions(side, from, true)
     }
 
-    fn step_targets(&self, from: usize) -> Vec<usize> {
+    pub fn step_targets(&self, from: usize) -> Vec<usize> {
         self.step_targets_for(self.turn, from)
     }
 
-    fn step_targets_for(&self, side: Side, from: usize) -> Vec<usize> {
+    pub fn step_targets_for(&self, side: Side, from: usize) -> Vec<usize> {
         self.targets_in_directions(side, from, false)
     }
 
-    fn targets_in_directions(&self, side: Side, from: usize, capture: bool) -> Vec<usize> {
+    pub fn targets_in_directions(&self, side: Side, from: usize, capture: bool) -> Vec<usize> {
         let piece = self.cells[from];
         let row = from / SIZE;
         let column = from % SIZE;
@@ -362,7 +362,7 @@ impl Checkers {
         targets
     }
 
-    fn resolve(&mut self) {
+    pub fn resolve(&mut self) {
         let red = self
             .cells
             .iter()
@@ -382,13 +382,9 @@ impl Checkers {
         }
     }
 
-    fn has_any_move(&self, side: Side) -> bool {
+    pub fn has_any_move(&self, side: Side) -> bool {
         (0..CELLS).any(|from| {
             self.cells[from].side() == Some(side) && !self.targets_for(side, from).is_empty()
         })
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/checkers/tests.rs"]
-mod tests;

@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::number_match::*;
 
 #[test]
 fn rejects_non_adjacent_pairs_and_allows_reselection() {

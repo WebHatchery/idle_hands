@@ -1,6 +1,7 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::blackjack::BlackjackStatus;
+use idle_hands::testing::modules::blackjack_ui::*;
 
 #[test]
 fn compact_blackjack_status_is_short_enough_for_the_header_lane() {

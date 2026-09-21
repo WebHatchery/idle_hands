@@ -10,9 +10,9 @@ use crate::{
 };
 use macroquad::prelude::*;
 
-const COMPACT_CARD_INSTRUCTION_X: f32 = 250.;
+pub const COMPACT_CARD_INSTRUCTION_X: f32 = 250.;
 
-fn panel(rect: Rect, fill: Color) {
+pub fn panel(rect: Rect, fill: Color) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -22,19 +22,19 @@ fn panel(rect: Rect, fill: Color) {
     );
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., crate::theme::BORDER);
 }
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
-fn card_rect(x: f32, y: f32, w: f32, h: f32) -> Rect {
+pub fn card_rect(x: f32, y: f32, w: f32, h: f32) -> Rect {
     Rect::new(x, y, w, h)
 }
-fn card_x(column: usize) -> f32 {
+pub fn card_x(column: usize) -> f32 {
     8. + column as f32 * 117.
 }
-fn draw_card(rect: Rect, card: Card, selected: bool, back_style: u8, reduced_motion: bool) {
+pub fn draw_card(rect: Rect, card: Card, selected: bool, back_style: u8, reduced_motion: bool) {
     crate::card_render::draw_card(rect, card, selected, back_style, reduced_motion);
 }
-fn back() {
+pub fn back() {
     panel(Rect::new(0., 0., 110., 44.), crate::theme::SURFACE_DARK);
     text("< CABINET", 10., 29., 12., crate::theme::BRASS);
 }
@@ -276,9 +276,6 @@ pub fn draw_freecell(state: &AppState) {
     text("HINT", 346., 359., 12., WHITE);
 }
 
-#[cfg(test)]
-#[path = "../tests/legacy/responsive_landscape_cards/tests.rs"]
-mod tests;
 pub fn freecell_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(Rect::new(0., 0., 110., 44.), p) {
         return vec![UiAction::Cabinet];
@@ -319,7 +316,7 @@ pub fn freecell_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     vec![]
 }
 
-fn dice_rect(index: usize) -> Rect {
+pub fn dice_rect(index: usize) -> Rect {
     Rect::new(10. + index as f32 * 100., 44., 88., 88.)
 }
 pub fn draw_fivefold(state: &AppState) {
@@ -494,7 +491,7 @@ pub fn fivefold_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     vec![]
 }
 
-fn page_button(rect: Rect, label: &str) {
+pub fn page_button(rect: Rect, label: &str) {
     panel(rect, crate::theme::SURFACE_DARK);
     text(label, rect.x + 23., rect.y + 28., 11., WHITE);
 }

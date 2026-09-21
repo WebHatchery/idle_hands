@@ -7,11 +7,11 @@ use std::collections::VecDeque;
 
 pub const WIDTH: usize = 8;
 pub const HEIGHT: usize = 8;
-const CELLS: usize = WIDTH * HEIGHT;
+pub const CELLS: usize = WIDTH * HEIGHT;
 pub const LEVEL_COUNT: u8 = 6;
-const PAR_MOVES: [u16; LEVEL_COUNT as usize] = [10, 12, 20, 2, 8, 8];
+pub const PAR_MOVES: [u16; LEVEL_COUNT as usize] = [10, 12, 20, 2, 8, 8];
 
-const LEVELS: [[&str; HEIGHT]; LEVEL_COUNT as usize] = [
+pub const LEVELS: [[&str; HEIGHT]; LEVEL_COUNT as usize] = [
     [
         "########", "# .    #", "# $    #", "#   $ .#", "#      #", "#  @   #", "#      #",
         "########",
@@ -58,7 +58,7 @@ pub struct Sokoban {
     pub level: u8,
     pub phase: SokobanPhase,
     #[serde(skip)]
-    history: UndoStack<Self>,
+    pub history: UndoStack<Self>,
 }
 
 impl Default for Sokoban {
@@ -221,21 +221,21 @@ impl Sokoban {
         None
     }
 
-    fn clone_without_undo(&self) -> Self {
+    pub fn clone_without_undo(&self) -> Self {
         let mut copy = self.clone();
         copy.history.clear();
         copy
     }
 
-    fn is_crate(&self, index: usize) -> bool {
+    pub fn is_crate(&self, index: usize) -> bool {
         matches!(self.tiles[index], 3 | 4)
     }
 
-    fn is_target(&self, index: usize) -> bool {
+    pub fn is_target(&self, index: usize) -> bool {
         matches!(self.tiles[index], 2 | 4)
     }
 
-    fn neighbor(&self, index: usize, direction: Direction) -> Option<usize> {
+    pub fn neighbor(&self, index: usize, direction: Direction) -> Option<usize> {
         let row = index / WIDTH;
         let col = index % WIDTH;
         let (row, col) = match direction {
@@ -266,15 +266,11 @@ impl Sokoban {
         vertical_wall && horizontal_wall
     }
 
-    fn has_deadlock(&self) -> bool {
+    pub fn has_deadlock(&self) -> bool {
         (0..self.tiles.len()).any(|index| self.is_deadlocked_crate(index))
     }
 }
 
-fn level_from_seed(seed: u64) -> u8 {
+pub fn level_from_seed(seed: u64) -> u8 {
     ((seed ^ seed.rotate_left(23)) % u64::from(LEVEL_COUNT)) as u8
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/sokoban/tests.rs"]
-mod tests;

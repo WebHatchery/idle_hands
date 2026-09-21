@@ -9,21 +9,17 @@ use crate::{
 };
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/tiny_tower_defence_ui/tests.rs"]
-mod tests;
-
 #[derive(Clone, Copy)]
-struct Layout {
-    board: Rect,
-    wave: Rect,
-    hint: Rect,
-    undo: Rect,
-    new_game: Rect,
-    kinds: [Rect; 3],
+pub struct Layout {
+    pub board: Rect,
+    pub wave: Rect,
+    pub hint: Rect,
+    pub undo: Rect,
+    pub new_game: Rect,
+    pub kinds: [Rect; 3],
 }
 
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             board: Rect::new(220., 70., 560., 280.),
@@ -246,7 +242,7 @@ pub fn draw(state: &AppState) {
     }
 }
 
-fn wave_label(phase: TowerPhase, paused: bool) -> &'static str {
+pub fn wave_label(phase: TowerPhase, paused: bool) -> &'static str {
     match phase {
         TowerPhase::Build => "START WAVE",
         TowerPhase::Wave if paused => "RESUME",
@@ -256,7 +252,7 @@ fn wave_label(phase: TowerPhase, paused: bool) -> &'static str {
     }
 }
 
-fn status_text(phase: TowerPhase, score: u32) -> String {
+pub fn status_text(phase: TowerPhase, score: u32) -> String {
     match phase {
         TowerPhase::Build => format!("Prepare the lanes  •  Score {}", score),
         TowerPhase::Wave => format!("Stop the invaders  •  Score {}", score),
@@ -265,7 +261,7 @@ fn status_text(phase: TowerPhase, score: u32) -> String {
     }
 }
 
-fn cell_fill(index: usize, tower: u8, kind: TowerKind) -> Color {
+pub fn cell_fill(index: usize, tower: u8, kind: TowerKind) -> Color {
     if tower > 0 {
         match kind {
             TowerKind::Bolt => Color::new(0.16, 0.30, 0.27, 1.),
@@ -281,7 +277,7 @@ fn cell_fill(index: usize, tower: u8, kind: TowerKind) -> Color {
     }
 }
 
-fn kind_button(rect: Rect, kind: TowerKind, selected: bool, cost: u16) {
+pub fn kind_button(rect: Rect, kind: TowerKind, selected: bool, cost: u16) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -315,7 +311,7 @@ fn kind_button(rect: Rect, kind: TowerKind, selected: bool, cost: u16) {
     );
 }
 
-fn inspection_rect() -> Rect {
+pub fn inspection_rect() -> Rect {
     let (width, height) = crate::ui::layout_size();
     if crate::ui::is_compact_landscape() {
         Rect::new(18., 116., 185., (height - 126.).min(260.))
@@ -336,7 +332,7 @@ fn inspection_rect() -> Rect {
     }
 }
 
-fn inspection_build_rect(panel: Rect) -> Rect {
+pub fn inspection_build_rect(panel: Rect) -> Rect {
     if crate::ui::is_compact_landscape() {
         Rect::new(panel.x + 10., panel.bottom() - 104., panel.w - 20., 44.)
     } else {
@@ -345,7 +341,7 @@ fn inspection_build_rect(panel: Rect) -> Rect {
     }
 }
 
-fn inspection_cancel_rect(panel: Rect) -> Rect {
+pub fn inspection_cancel_rect(panel: Rect) -> Rect {
     if crate::ui::is_compact_landscape() {
         Rect::new(panel.x + 10., panel.bottom() - 54., panel.w - 20., 44.)
     } else {
@@ -354,7 +350,7 @@ fn inspection_cancel_rect(panel: Rect) -> Rect {
     }
 }
 
-fn draw_inspection(state: &AppState, game: &TinyTowerDefence) {
+pub fn draw_inspection(state: &AppState, game: &TinyTowerDefence) {
     let Some(index) = state.tower_inspection else {
         return;
     };
@@ -451,7 +447,7 @@ fn draw_inspection(state: &AppState, game: &TinyTowerDefence) {
     inspection_button(inspection_cancel_rect(panel), "CANCEL", true, state);
 }
 
-fn tower_effect(kind: TowerKind, level: u8) -> String {
+pub fn tower_effect(kind: TowerKind, level: u8) -> String {
     match kind {
         TowerKind::Bolt => format!("DAMAGE {}  •  RANGE 3", level),
         TowerKind::Frost => format!("DAMAGE 1  •  SLOW {} TICKS", 1 + level / 2),
@@ -459,7 +455,7 @@ fn tower_effect(kind: TowerKind, level: u8) -> String {
     }
 }
 
-fn inspection_button(rect: Rect, label: &str, enabled: bool, state: &AppState) {
+pub fn inspection_button(rect: Rect, label: &str, enabled: bool, state: &AppState) {
     draw_rectangle(
         rect.x,
         rect.y,
@@ -482,7 +478,7 @@ fn inspection_button(rect: Rect, label: &str, enabled: bool, state: &AppState) {
     center_text(label, rect, 10., if enabled { WHITE } else { muted() });
 }
 
-fn tower_glyph(kind: TowerKind) -> &'static str {
+pub fn tower_glyph(kind: TowerKind) -> &'static str {
     match kind {
         TowerKind::Bolt => "B",
         TowerKind::Frost => "F",
@@ -490,7 +486,7 @@ fn tower_glyph(kind: TowerKind) -> &'static str {
     }
 }
 
-fn tower_color(kind: TowerKind) -> Color {
+pub fn tower_color(kind: TowerKind) -> Color {
     match kind {
         TowerKind::Bolt => Color::new(0.62, 1., 0.78, 1.),
         TowerKind::Frost => Color::new(0.48, 0.82, 1., 1.),
@@ -498,7 +494,7 @@ fn tower_color(kind: TowerKind) -> Color {
     }
 }
 
-fn enemy_glyph(kind: EnemyKind) -> &'static str {
+pub fn enemy_glyph(kind: EnemyKind) -> &'static str {
     match kind {
         EnemyKind::Grunt => "G",
         EnemyKind::Swift => "S",
@@ -506,7 +502,7 @@ fn enemy_glyph(kind: EnemyKind) -> &'static str {
     }
 }
 
-fn enemy_color(kind: EnemyKind) -> Color {
+pub fn enemy_color(kind: EnemyKind) -> Color {
     match kind {
         EnemyKind::Grunt => Color::new(0.62, 0.22, 0.35, 1.),
         EnemyKind::Swift => Color::new(0.72, 0.38, 0.78, 1.),
@@ -514,13 +510,13 @@ fn enemy_color(kind: EnemyKind) -> Color {
     }
 }
 
-fn button(rect: Rect, label: &str) {
+pub fn button(rect: Rect, label: &str) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     center_text(label, rect, 11., WHITE);
 }
 
-fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
+pub fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
     let measured = crate::ui::measure_text(label, None, size as u16, 1.);
     crate::ui::draw_text(
         label,
@@ -531,11 +527,11 @@ fn center_text(label: &str, rect: Rect, size: f32, color: Color) {
     );
 }
 
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
 
-fn title_size() -> f32 {
+pub fn title_size() -> f32 {
     if crate::ui::is_compact_landscape() {
         19.
     } else if crate::ui::is_portrait() {
@@ -545,11 +541,11 @@ fn title_size() -> f32 {
     }
 }
 
-fn compact_status_x() -> f32 {
+pub fn compact_status_x() -> f32 {
     280.
 }
 
-fn body_size() -> f32 {
+pub fn body_size() -> f32 {
     if crate::ui::is_portrait() {
         10.
     } else {
@@ -557,7 +553,7 @@ fn body_size() -> f32 {
     }
 }
 
-fn cell_size() -> f32 {
+pub fn cell_size() -> f32 {
     if crate::ui::is_portrait() {
         19.
     } else {
@@ -565,7 +561,7 @@ fn cell_size() -> f32 {
     }
 }
 
-fn small_size() -> f32 {
+pub fn small_size() -> f32 {
     if crate::ui::is_portrait() {
         8.
     } else {
@@ -573,14 +569,14 @@ fn small_size() -> f32 {
     }
 }
 
-fn accent() -> Color {
+pub fn accent() -> Color {
     crate::theme::BRASS
 }
 
-fn muted() -> Color {
+pub fn muted() -> Color {
     crate::theme::SECONDARY
 }
 
-fn line_color() -> Color {
+pub fn line_color() -> Color {
     Color::new(0.45, 0.38, 0.65, 0.8)
 }

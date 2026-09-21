@@ -1,6 +1,7 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::solitaire_ui::*;
+use idle_hands::testing::solitaire::Solitaire;
 
 #[test]
 fn tableau_peek_maps_top_middle_and_last_cards() {

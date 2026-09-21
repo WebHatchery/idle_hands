@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::nim::*;
 
 #[test]
 fn misere_rule_makes_the_final_take_lose() {

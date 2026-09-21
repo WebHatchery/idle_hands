@@ -3,9 +3,9 @@
 use crate::cards::{shuffle_cards, shuffled_deck, Card};
 use serde::{Deserialize, Serialize};
 
-const COLUMNS: usize = 10;
-const RUNS: usize = 8;
-const RUN: usize = 13;
+pub const COLUMNS: usize = 10;
+pub const RUNS: usize = 8;
+pub const RUN: usize = 13;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum SpiderSolitaireStatus {
@@ -34,7 +34,7 @@ impl SpiderRule {
         }
     }
 
-    const fn suit_count(self) -> u8 {
+    pub const fn suit_count(self) -> u8 {
         match self {
             Self::FourSuit => 4,
             Self::TwoSuit => 2,
@@ -43,7 +43,7 @@ impl SpiderRule {
     }
 }
 
-type Snapshot = (Vec<Vec<Card>>, Vec<Card>, u8, u32, SpiderSolitaireStatus);
+pub type Snapshot = (Vec<Vec<Card>>, Vec<Card>, u8, u32, SpiderSolitaireStatus);
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SpiderSolitaire {
@@ -57,7 +57,7 @@ pub struct SpiderSolitaire {
     #[serde(default)]
     pub rule: SpiderRule,
     #[serde(skip)]
-    history: Vec<Snapshot>,
+    pub history: Vec<Snapshot>,
 }
 
 impl Default for SpiderSolitaire {
@@ -184,7 +184,7 @@ impl SpiderSolitaire {
         *self = Self::new(seed);
     }
 
-    fn can_place(&self, destination: usize, depth: usize, source: usize) -> bool {
+    pub fn can_place(&self, destination: usize, depth: usize, source: usize) -> bool {
         let Some(card) = self.tableau[source].get(depth) else {
             return false;
         };
@@ -194,7 +194,7 @@ impl SpiderSolitaire {
         top.face_up && top.rank == card.rank + 1
     }
 
-    fn remove_completed_run(&mut self, destination: usize) {
+    pub fn remove_completed_run(&mut self, destination: usize) {
         let stack = &mut self.tableau[destination];
         if stack.len() < RUN {
             return;
@@ -209,7 +209,7 @@ impl SpiderSolitaire {
         }
     }
 
-    fn snapshot(&mut self) {
+    pub fn snapshot(&mut self) {
         self.history.push((
             self.tableau.clone(),
             self.stock.clone(),
@@ -237,12 +237,8 @@ pub fn is_complete_run(cards: &[Card]) -> bool {
         && cards.last().is_some_and(|card| card.rank == 1)
 }
 
-fn flip_top(stack: &mut [Card]) {
+pub fn flip_top(stack: &mut [Card]) {
     if let Some(card) = stack.last_mut() {
         card.face_up = true;
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/spider_solitaire/tests.rs"]
-mod tests;

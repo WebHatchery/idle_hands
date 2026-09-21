@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::save_recovery::*;
 
 #[test]
 fn recovery_summary_distinguishes_preserved_and_unpreserved_saves() {

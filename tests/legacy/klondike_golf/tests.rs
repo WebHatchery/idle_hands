@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::klondike_golf::*;
 
 #[test]
 fn seeded_deals_repeat_with_seven_columns() {

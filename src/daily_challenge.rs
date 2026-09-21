@@ -1,7 +1,7 @@
 //! Stable calendar identity for the Daily Dungeon.
 
-const SECONDS_PER_DAY: f64 = 86_400.0;
-const SEED_VERSION: u64 = 1;
+pub const SECONDS_PER_DAY: f64 = 86_400.0;
+pub const SEED_VERSION: u64 = 1;
 
 pub fn current_day() -> u64 {
     (macroquad::miniquad::date::now().max(0.0) / SECONDS_PER_DAY).floor() as u64
@@ -63,7 +63,3 @@ pub fn preview_action(phase: crate::daily_dungeon::DailyPhase, best_score: Optio
         }
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/daily_challenge/tests.rs"]
-mod tests;

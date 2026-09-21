@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::hanoi::*;
 
 #[test]
 fn rejects_larger_disk_on_smaller_disk() {

@@ -24,7 +24,7 @@ impl ColorSortDifficulty {
         }
     }
 
-    fn index(self) -> usize {
+    pub fn index(self) -> usize {
         match self {
             Self::Standard => 0,
             Self::Hard => 1,
@@ -55,13 +55,13 @@ pub struct ColorSort {
     #[serde(default)]
     pub difficulty: ColorSortDifficulty,
     #[serde(default = "default_capacity")]
-    capacity: usize,
+    pub capacity: usize,
     #[serde(default = "default_colors")]
-    colors: u8,
+    pub colors: u8,
     #[serde(default = "default_tube_count")]
-    tube_count: usize,
+    pub tube_count: usize,
     #[serde(default = "default_scramble_steps")]
-    scramble_steps: usize,
+    pub scramble_steps: usize,
     #[serde(default)]
     pub last_poured: u8,
     #[serde(default)]
@@ -72,7 +72,7 @@ pub struct ColorSort {
     pub points: u32,
     pub phase: ColorSortPhase,
     #[serde(skip)]
-    history: UndoStack<Self>,
+    pub history: UndoStack<Self>,
 }
 
 impl Default for ColorSort {
@@ -110,7 +110,7 @@ impl ColorSort {
         )
     }
 
-    fn new_with_settings(
+    pub fn new_with_settings(
         mut seed: u64,
         difficulty: ColorSortDifficulty,
         capacity: usize,
@@ -307,11 +307,11 @@ impl ColorSort {
         best.map(|(_, source, destination)| (source, destination))
     }
 
-    fn is_solved(&self) -> bool {
+    pub fn is_solved(&self) -> bool {
         is_solved(&self.tubes, self.capacity)
     }
 
-    fn progress_score(&self) -> i32 {
+    pub fn progress_score(&self) -> i32 {
         let completed = self
             .tubes
             .iter()
@@ -328,14 +328,14 @@ impl ColorSort {
         completed * 10_000 + uniform * 100 + empty
     }
 
-    fn clone_without_undo(&self) -> Self {
+    pub fn clone_without_undo(&self) -> Self {
         let mut copy = self.clone();
         copy.history.clear();
         copy
     }
 }
 
-fn reverse_moves(tubes: &[Vec<u8>], capacity: usize) -> Vec<(usize, usize, usize)> {
+pub fn reverse_moves(tubes: &[Vec<u8>], capacity: usize) -> Vec<(usize, usize, usize)> {
     let mut moves = Vec::new();
     for source in 0..tubes.len() {
         let Some(&color) = tubes[source].last() else {
@@ -362,37 +362,33 @@ fn reverse_moves(tubes: &[Vec<u8>], capacity: usize) -> Vec<(usize, usize, usize
     moves
 }
 
-fn is_solved(tubes: &[Vec<u8>], capacity: usize) -> bool {
+pub fn is_solved(tubes: &[Vec<u8>], capacity: usize) -> bool {
     tubes
         .iter()
         .all(|tube| tube.is_empty() || (tube.len() == capacity && !is_mixed(tube)))
 }
 
-fn is_mixed(tube: &[u8]) -> bool {
+pub fn is_mixed(tube: &[u8]) -> bool {
     tube.windows(2).any(|pair| pair[0] != pair[1])
 }
 
-fn next_seed(seed: u64) -> u64 {
+pub fn next_seed(seed: u64) -> u64 {
     seed.wrapping_mul(6364136223846793005)
         .wrapping_add(1442695040888963407)
 }
 
-fn default_capacity() -> usize {
+pub fn default_capacity() -> usize {
     ColorSortConfig::default().capacity
 }
 
-fn default_colors() -> u8 {
+pub fn default_colors() -> u8 {
     ColorSortConfig::default().difficulties[0].colors
 }
 
-fn default_tube_count() -> usize {
+pub fn default_tube_count() -> usize {
     ColorSortConfig::default().difficulties[0].tubes
 }
 
-fn default_scramble_steps() -> usize {
+pub fn default_scramble_steps() -> usize {
     ColorSortConfig::default().difficulties[0].scramble_steps
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/color_sort/tests.rs"]
-mod tests;

@@ -7,11 +7,11 @@ use std::collections::VecDeque;
 use crate::domain::Direction;
 
 pub const SIDE: usize = 7;
-const CELLS: usize = SIDE * SIDE;
-const UP: u8 = 1;
-const RIGHT: u8 = 2;
-const DOWN: u8 = 4;
-const LEFT: u8 = 8;
+pub const CELLS: usize = SIDE * SIDE;
+pub const UP: u8 = 1;
+pub const RIGHT: u8 = 2;
+pub const DOWN: u8 = 4;
+pub const LEFT: u8 = 8;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum MazePhase {
@@ -54,7 +54,7 @@ pub struct MazeWalk {
     pub par: u16,
     pub phase: MazePhase,
     #[serde(skip)]
-    history: UndoStack<Self>,
+    pub history: UndoStack<Self>,
 }
 
 impl Default for MazeWalk {
@@ -217,20 +217,20 @@ impl MazeWalk {
         self.phase == MazePhase::Playing && self.walls[self.player] & direction_bit(direction) == 0
     }
 
-    fn ensure_visited_shape(&mut self) {
+    pub fn ensure_visited_shape(&mut self) {
         if self.visited.len() != CELLS {
             self.visited.resize(CELLS, false);
         }
     }
 
-    fn clone_without_history(&self) -> Self {
+    pub fn clone_without_history(&self) -> Self {
         let mut copy = self.clone();
         copy.history.clear();
         copy
     }
 }
 
-fn shortest_first(walls: &[u8], start: usize, target: usize) -> Option<Direction> {
+pub fn shortest_first(walls: &[u8], start: usize, target: usize) -> Option<Direction> {
     let mut queue = VecDeque::from([(start, None)]);
     let mut visited = [false; CELLS];
     while let Some((index, first)) = queue.pop_front() {
@@ -259,7 +259,7 @@ fn shortest_first(walls: &[u8], start: usize, target: usize) -> Option<Direction
     None
 }
 
-fn shortest_distance(walls: &[u8], start: usize, target: usize) -> usize {
+pub fn shortest_distance(walls: &[u8], start: usize, target: usize) -> usize {
     if start == target {
         return 0;
     }
@@ -290,7 +290,7 @@ fn shortest_distance(walls: &[u8], start: usize, target: usize) -> usize {
     usize::MAX / 2
 }
 
-fn route_par(walls: &[u8], beacons: &[usize], goal: usize) -> u16 {
+pub fn route_par(walls: &[u8], beacons: &[usize], goal: usize) -> u16 {
     let first = shortest_distance(walls, 0, beacons[0])
         + shortest_distance(walls, beacons[0], beacons[1])
         + shortest_distance(walls, beacons[1], goal);
@@ -300,7 +300,7 @@ fn route_par(walls: &[u8], beacons: &[usize], goal: usize) -> u16 {
     first.min(second).min(u16::MAX as usize) as u16
 }
 
-fn direction_bit(direction: Direction) -> u8 {
+pub fn direction_bit(direction: Direction) -> u8 {
     match direction {
         Direction::Up => UP,
         Direction::Right => RIGHT,
@@ -309,7 +309,7 @@ fn direction_bit(direction: Direction) -> u8 {
     }
 }
 
-fn neighbor(index: usize, direction: Direction) -> Option<usize> {
+pub fn neighbor(index: usize, direction: Direction) -> Option<usize> {
     let row = index / SIDE;
     let col = index % SIDE;
     match direction {
@@ -320,7 +320,7 @@ fn neighbor(index: usize, direction: Direction) -> Option<usize> {
     }
 }
 
-fn is_route_edge(first: usize, second: usize) -> bool {
+pub fn is_route_edge(first: usize, second: usize) -> bool {
     let first_row = first / SIDE;
     let first_col = first % SIDE;
     let second_row = second / SIDE;
@@ -328,11 +328,7 @@ fn is_route_edge(first: usize, second: usize) -> bool {
     (first_row == 0 && second_row == 0) || (first_col == SIDE - 1 && second_col == SIDE - 1)
 }
 
-fn next_seed(seed: u64) -> u64 {
+pub fn next_seed(seed: u64) -> u64 {
     seed.wrapping_mul(6364136223846793005)
         .wrapping_add(1442695040888963407)
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/maze_walk/tests.rs"]
-mod tests;

@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::lifecycle::*;
 
 #[test]
 fn long_or_invalid_frames_are_only_paused_when_the_gap_is_real() {

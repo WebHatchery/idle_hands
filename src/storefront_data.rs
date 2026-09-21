@@ -67,7 +67,7 @@ pub fn build_badge_for(demo_build: bool) -> Option<String> {
     demo_build.then(|| format!("DEMO · {} GAMES", playable_count_for_build(demo_build)))
 }
 
-fn playable_count_for_build(demo_build: bool) -> usize {
+pub fn playable_count_for_build(demo_build: bool) -> usize {
     GameId::ALL
         .iter()
         .filter(|game| availability_for_build(**game, demo_build).is_playable())
@@ -86,7 +86,3 @@ pub fn cabinet_label_for_build(game: GameId, demo_build: bool, compact: bool) ->
 pub fn cabinet_label(game: GameId, compact: bool) -> &'static str {
     cabinet_label_for_build(game, game_descriptor::is_demo_build(), compact)
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/storefront_data/tests.rs"]
-mod tests;

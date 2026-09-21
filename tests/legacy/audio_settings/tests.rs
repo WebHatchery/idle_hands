@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::audio_settings::*;
 
 #[test]
 fn levels_have_stable_labels_and_volumes() {

@@ -4,11 +4,11 @@ use serde::{Deserialize, Serialize};
 
 pub const WIDTH: i32 = 16;
 pub const HEIGHT: i32 = 12;
-const TARGET_SCORE: u16 = 20;
-const MOVE_INTERVAL: f32 = 0.20;
-const GARDEN_ROCKS: usize = 12;
+pub const TARGET_SCORE: u16 = 20;
+pub const MOVE_INTERVAL: f32 = 0.20;
+pub const GARDEN_ROCKS: usize = 12;
 
-fn default_target_score() -> u16 {
+pub fn default_target_score() -> u16 {
     TARGET_SCORE
 }
 
@@ -57,7 +57,7 @@ pub enum SnakeDirection {
 }
 
 impl SnakeDirection {
-    fn opposite(self, other: Self) -> bool {
+    pub fn opposite(self, other: Self) -> bool {
         matches!(
             (self, other),
             (Self::Up, Self::Down)
@@ -75,7 +75,7 @@ pub enum SnakeStatus {
     Lost,
 }
 
-type Snapshot = (
+pub type Snapshot = (
     Vec<u16>,
     SnakeDirection,
     u16,
@@ -106,9 +106,9 @@ pub struct Snake {
     #[serde(default)]
     pub paused: bool,
     #[serde(skip)]
-    undo: Option<Snapshot>,
+    pub undo: Option<Snapshot>,
     #[serde(skip)]
-    elapsed: f32,
+    pub elapsed: f32,
 }
 
 impl Default for Snake {
@@ -163,7 +163,6 @@ impl Snake {
         true
     }
 
-    #[cfg(test)]
     pub fn step(&mut self, direction: SnakeDirection) -> bool {
         if !self.set_direction(direction) {
             return false;
@@ -195,7 +194,7 @@ impl Snake {
         true
     }
 
-    fn advance_one(&mut self) -> bool {
+    pub fn advance_one(&mut self) -> bool {
         self.undo = Some((
             self.body.clone(),
             self.direction,
@@ -299,7 +298,7 @@ impl Snake {
         *self = Self::new_with_mode_and_target(seed, self.mode, self.win_score);
     }
 
-    fn next_food(&mut self) -> u16 {
+    pub fn next_food(&mut self) -> u16 {
         for _ in 0..(WIDTH * HEIGHT) {
             self.seed = self
                 .seed
@@ -313,7 +312,7 @@ impl Snake {
         0
     }
 
-    fn next_cell(&self, direction: SnakeDirection) -> Option<u16> {
+    pub fn next_cell(&self, direction: SnakeDirection) -> Option<u16> {
         let head = self.body.first().copied()? as i32;
         let row = head / WIDTH;
         let column = head % WIDTH;
@@ -334,14 +333,14 @@ impl Snake {
         Some((next_row * WIDTH + next_column) as u16)
     }
 
-    fn is_safe(&self, next: u16) -> bool {
+    pub fn is_safe(&self, next: u16) -> bool {
         let eating = next == self.food;
         !self.obstacles.contains(&next)
             && (!self.body.contains(&next)
                 || (!eating && !self.body[..self.body.len() - 1].contains(&next)))
     }
 
-    fn food_distance(&self, next: u16) -> i32 {
+    pub fn food_distance(&self, next: u16) -> i32 {
         let row = i32::from(next) / WIDTH;
         let column = i32::from(next) % WIDTH;
         let food_row = i32::from(self.food) / WIDTH;
@@ -363,7 +362,7 @@ impl Snake {
         self.score / 5 + 1
     }
 
-    fn move_interval(&self) -> f32 {
+    pub fn move_interval(&self) -> f32 {
         let base = match self.mode {
             SnakeMode::Classic => MOVE_INTERVAL,
             SnakeMode::Wrap => MOVE_INTERVAL - 0.02,
@@ -372,7 +371,7 @@ impl Snake {
         (base - f32::from(self.score / 5) * 0.015).max(0.10)
     }
 
-    fn place_obstacles(&mut self) {
+    pub fn place_obstacles(&mut self) {
         if self.mode != SnakeMode::Garden {
             return;
         }
@@ -399,7 +398,3 @@ impl Snake {
         }
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/snake/tests.rs"]
-mod tests;

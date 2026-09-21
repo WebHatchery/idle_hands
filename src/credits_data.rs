@@ -9,7 +9,3 @@ pub fn title(content: &GameContent) -> &str {
 pub fn paragraphs(content: &GameContent) -> &[String] {
     &content.labels.credits_paragraphs
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/credits_data/tests.rs"]
-mod tests;

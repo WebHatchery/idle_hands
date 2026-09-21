@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::continue_data::*;
 
 #[test]
 fn continue_falls_back_to_recent_playable_drawer_when_selection_is_locked() {

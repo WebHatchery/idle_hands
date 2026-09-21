@@ -49,7 +49,3 @@ impl GridLayout {
             .map(|index| (index % self.columns, index / self.columns))
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/grid/tests.rs"]
-mod tests;

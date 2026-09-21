@@ -4,17 +4,16 @@ use serde::{Deserialize, Serialize};
 
 pub const WIDTH: i8 = 16;
 pub const HEIGHT: i8 = 12;
-const BRICK_ROWS: i8 = 4;
-const BRICK_COUNT: usize = WIDTH as usize * BRICK_ROWS as usize;
-const TARGET_LEVEL: u8 = 3;
-const STARTING_LIVES: u8 = 3;
-const PHYSICS_STEP: f32 = 1. / 120.;
-#[cfg(test)]
-const LEGACY_STEP: f32 = 0.25;
-const PADDLE_SPEED: f32 = 7.;
-const BALL_SPEED: f32 = 5.;
+pub const BRICK_ROWS: i8 = 4;
+pub const BRICK_COUNT: usize = WIDTH as usize * BRICK_ROWS as usize;
+pub const TARGET_LEVEL: u8 = 3;
+pub const STARTING_LIVES: u8 = 3;
+pub const PHYSICS_STEP: f32 = 1. / 120.;
+pub const LEGACY_STEP: f32 = 0.25;
+pub const PADDLE_SPEED: f32 = 7.;
+pub const BALL_SPEED: f32 = 5.;
 
-fn default_target_level() -> u8 {
+pub fn default_target_level() -> u8 {
     TARGET_LEVEL
 }
 
@@ -34,21 +33,21 @@ pub enum BreakoutStatus {
 }
 
 #[derive(Debug, Clone)]
-struct Snapshot {
-    bricks: Vec<bool>,
-    brick_health: Vec<u8>,
-    paddle: i8,
-    ball_x: i8,
-    ball_y: i8,
-    velocity_x: i8,
-    velocity_y: i8,
-    score: u16,
-    moves: u16,
-    lives: u8,
-    level: u8,
-    status: BreakoutStatus,
-    paused: bool,
-    serve_ready: bool,
+pub struct Snapshot {
+    pub bricks: Vec<bool>,
+    pub brick_health: Vec<u8>,
+    pub paddle: i8,
+    pub ball_x: i8,
+    pub ball_y: i8,
+    pub velocity_x: i8,
+    pub velocity_y: i8,
+    pub score: u16,
+    pub moves: u16,
+    pub lives: u8,
+    pub level: u8,
+    pub status: BreakoutStatus,
+    pub paused: bool,
+    pub serve_ready: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -78,17 +77,17 @@ pub struct Breakout {
     #[serde(default)]
     pub serve_ready: bool,
     #[serde(skip)]
-    undo: Option<Box<Snapshot>>,
+    pub undo: Option<Box<Snapshot>>,
     #[serde(skip)]
-    elapsed: f32,
+    pub elapsed: f32,
     #[serde(skip)]
-    precise_paddle: f32,
+    pub precise_paddle: f32,
     #[serde(skip)]
-    precise_ball_x: f32,
+    pub precise_ball_x: f32,
     #[serde(skip)]
-    precise_ball_y: f32,
+    pub precise_ball_y: f32,
     #[serde(skip)]
-    runtime_initialized: bool,
+    pub runtime_initialized: bool,
 }
 
 impl Default for Breakout {
@@ -146,7 +145,6 @@ impl Breakout {
         true
     }
 
-    #[cfg(test)]
     pub fn step(&mut self, movement: PaddleMove) -> bool {
         if !self.set_control(movement) {
             return false;
@@ -268,7 +266,7 @@ impl Breakout {
             .unwrap_or_else(|| u8::from(self.bricks.get(index).copied().unwrap_or(false)))
     }
 
-    fn ensure_runtime(&mut self) {
+    pub fn ensure_runtime(&mut self) {
         self.ensure_brick_health();
         if self.runtime_initialized {
             if (f32::from(self.paddle) - self.precise_paddle).abs() > 0.6
@@ -287,7 +285,7 @@ impl Breakout {
         self.runtime_initialized = true;
     }
 
-    fn capture_undo(&mut self) {
+    pub fn capture_undo(&mut self) {
         self.sync_persisted();
         self.undo = Some(Box::new(Snapshot {
             bricks: self.bricks.clone(),
@@ -307,8 +305,7 @@ impl Breakout {
         }));
     }
 
-    #[cfg(test)]
-    fn simulate_for(&mut self, duration: f32) {
+    pub fn simulate_for(&mut self, duration: f32) {
         let mut remaining = duration;
         while remaining > 0. && self.status == BreakoutStatus::Playing {
             let step = remaining.min(PHYSICS_STEP);
@@ -317,7 +314,7 @@ impl Breakout {
         }
     }
 
-    fn simulate_step(&mut self, dt: f32) {
+    pub fn simulate_step(&mut self, dt: f32) {
         let paddle_delta = match self.control {
             PaddleMove::Left => -1.,
             PaddleMove::Stay => 0.,
@@ -384,7 +381,7 @@ impl Breakout {
         }
     }
 
-    fn damage_brick(&mut self, index: usize) {
+    pub fn damage_brick(&mut self, index: usize) {
         self.ensure_brick_health();
         let Some(health) = self.brick_health.get_mut(index) else {
             return;
@@ -394,7 +391,7 @@ impl Breakout {
         self.bricks[index] = *health > 0;
     }
 
-    fn complete_wall(&mut self) {
+    pub fn complete_wall(&mut self) {
         if self.level >= self.target_level {
             self.status = BreakoutStatus::Won;
             self.paused = false;
@@ -406,7 +403,7 @@ impl Breakout {
         self.prepare_serve();
     }
 
-    fn prepare_serve(&mut self) {
+    pub fn prepare_serve(&mut self) {
         self.paddle = WIDTH / 2;
         self.ball_x = WIDTH / 2;
         self.ball_y = HEIGHT - 3;
@@ -426,7 +423,7 @@ impl Breakout {
         self.runtime_initialized = true;
     }
 
-    fn build_wall(&mut self) {
+    pub fn build_wall(&mut self) {
         self.bricks.resize(BRICK_COUNT, false);
         self.brick_health.resize(BRICK_COUNT, 0);
         let offset = (self.seed % WIDTH as u64) as usize;
@@ -440,20 +437,20 @@ impl Breakout {
         }
     }
 
-    fn ensure_brick_health(&mut self) {
+    pub fn ensure_brick_health(&mut self) {
         if self.brick_health.len() == self.bricks.len() {
             return;
         }
         self.brick_health = self.bricks.iter().map(|brick| u8::from(*brick)).collect();
     }
 
-    fn sync_persisted(&mut self) {
+    pub fn sync_persisted(&mut self) {
         self.paddle = self.precise_paddle.round() as i8;
         self.ball_x = self.precise_ball_x.round() as i8;
         self.ball_y = self.precise_ball_y.round() as i8;
     }
 
-    fn projected_ball_x(&self) -> i8 {
+    pub fn projected_ball_x(&self) -> i8 {
         let mut x = self.ball_x;
         let mut velocity = self.velocity_x;
         let steps = (HEIGHT - 1 - self.ball_y).max(0);
@@ -468,7 +465,7 @@ impl Breakout {
     }
 }
 
-fn wall_health(level: u8, row: usize, column: usize, offset: usize) -> u8 {
+pub fn wall_health(level: u8, row: usize, column: usize, offset: usize) -> u8 {
     match level {
         1 => 1,
         2 => {
@@ -498,14 +495,10 @@ fn wall_health(level: u8, row: usize, column: usize, offset: usize) -> u8 {
     }
 }
 
-const fn default_lives() -> u8 {
+pub const fn default_lives() -> u8 {
     STARTING_LIVES
 }
 
-const fn default_level() -> u8 {
+pub const fn default_level() -> u8 {
     1
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/breakout/tests.rs"]
-mod tests;

@@ -8,9 +8,6 @@ use macroquad::prelude::*;
 
 #[path = "game_result_entries.rs"]
 mod entries;
-#[cfg(test)]
-#[path = "../tests/legacy/game_result_ui/tests.rs"]
-mod tests;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ResultKind {
@@ -38,17 +35,17 @@ pub fn info(state: &AppState) -> Option<ResultInfo> {
 }
 
 /// Named content contract for a terminal result surface.
-pub(crate) struct ResultSpec {
-    pub(crate) kind: ResultKind,
-    pub(crate) explanation: String,
-    pub(crate) stats: String,
-    pub(crate) primary_action: UiAction,
-    pub(crate) primary_label: &'static str,
-    pub(crate) secondary_action: UiAction,
-    pub(crate) secondary_label: &'static str,
+pub struct ResultSpec {
+    pub kind: ResultKind,
+    pub explanation: String,
+    pub stats: String,
+    pub primary_action: UiAction,
+    pub primary_label: &'static str,
+    pub secondary_action: UiAction,
+    pub secondary_label: &'static str,
 }
 
-pub(crate) fn make(state: &AppState, spec: ResultSpec) -> Option<ResultInfo> {
+pub fn make(state: &AppState, spec: ResultSpec) -> Option<ResultInfo> {
     let game = state.screen.game()?;
     Some(ResultInfo {
         kind: spec.kind,
@@ -66,7 +63,7 @@ pub(crate) fn make(state: &AppState, spec: ResultSpec) -> Option<ResultInfo> {
     })
 }
 
-fn with_time_stats(state: &AppState, game: GameId, stats: String) -> String {
+pub fn with_time_stats(state: &AppState, game: GameId, stats: String) -> String {
     let current = state.records.current_time(game.index());
     let best = state.records.best_time(game.index());
     if current == 0 && best.is_none() {
@@ -172,24 +169,24 @@ pub fn draw(state: &AppState) {
 }
 
 #[derive(Clone, Copy)]
-struct Layout {
-    width: f32,
-    height: f32,
-    panel: Rect,
-    primary: Rect,
-    secondary: Rect,
-    title_offset: f32,
-    context_offset: f32,
-    explanation_offset: f32,
-    stats_offset: f32,
-    title_size: f32,
-    context_size: f32,
-    body_size: f32,
-    stats_size: f32,
-    text_width: f32,
+pub struct Layout {
+    pub width: f32,
+    pub height: f32,
+    pub panel: Rect,
+    pub primary: Rect,
+    pub secondary: Rect,
+    pub title_offset: f32,
+    pub context_offset: f32,
+    pub explanation_offset: f32,
+    pub stats_offset: f32,
+    pub title_size: f32,
+    pub context_size: f32,
+    pub body_size: f32,
+    pub stats_size: f32,
+    pub text_width: f32,
 }
 
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     let (width, height) = crate::ui::layout_size();
     if crate::ui::is_portrait() {
         let panel = Rect::new(14., 94., width - 28., height - 150.);
@@ -266,13 +263,13 @@ fn layout() -> Layout {
     }
 }
 
-fn centered(value: &str, panel: Rect, y: f32, size: f32, color: Color) {
+pub fn centered(value: &str, panel: Rect, y: f32, size: f32, color: Color) {
     let readable = crate::ui::readable_text_size(size);
     let width = crate::ui::measure_text(value, None, readable as u16, 1.).width;
     crate::ui::draw_text(value, panel.center().x - width * 0.5, y, size, color);
 }
 
-fn centered_wrapped(value: &str, panel: Rect, y: f32, size: f32, color: Color, max_width: f32) {
+pub fn centered_wrapped(value: &str, panel: Rect, y: f32, size: f32, color: Color, max_width: f32) {
     let readable = crate::ui::readable_text_size(size);
     let lines = macroquad_toolkit::ui::wrap_text(value, max_width, readable);
     for (index, line) in lines.iter().take(2).enumerate() {
@@ -280,7 +277,7 @@ fn centered_wrapped(value: &str, panel: Rect, y: f32, size: f32, color: Color, m
     }
 }
 
-fn button(rect: Rect, label: &str, border: Color) {
+pub fn button(rect: Rect, label: &str, border: Color) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 2., border);
     let size = if crate::ui::is_portrait() { 13. } else { 16. };

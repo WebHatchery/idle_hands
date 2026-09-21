@@ -91,7 +91,7 @@ impl AchievementId {
         Self::FullCabinet,
     ];
 
-    fn content_id(self) -> String {
+    pub fn content_id(self) -> String {
         match self {
             Self::FirstFinish => "first_finish".into(),
             Self::Game(game) => format!("game:{}", game.key()),
@@ -99,7 +99,7 @@ impl AchievementId {
         }
     }
 
-    fn entry(self, content: &GameContent) -> Option<&AchievementEntry> {
+    pub fn entry(self, content: &GameContent) -> Option<&AchievementEntry> {
         let id = self.content_id();
         content.achievements.iter().find(|entry| entry.id == id)
     }
@@ -168,7 +168,7 @@ pub fn completed_games(records: &CollectionRecords) -> usize {
         .count()
 }
 
-pub(crate) fn game_complete(records: &CollectionRecords, game: GameId) -> bool {
+pub fn game_complete(records: &CollectionRecords, game: GameId) -> bool {
     match game {
         GameId::Solitaire => records.solitaire_best_moves.is_some(),
         GameId::FreeCell => records.freecell_best_moves.is_some(),
@@ -259,7 +259,3 @@ pub fn sync_with_content(
     }
     newly_earned
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/progression/tests.rs"]
-mod tests;

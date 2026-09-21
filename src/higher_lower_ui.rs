@@ -8,21 +8,17 @@ use crate::{
 };
 use macroquad::prelude::*;
 
-#[cfg(test)]
-#[path = "../tests/legacy/higher_lower_ui/tests.rs"]
-mod tests;
-
 #[derive(Clone, Copy)]
-struct Layout {
-    higher: Rect,
-    lower: Rect,
-    hint: Rect,
-    undo: Rect,
-    new_game: Rect,
-    cash_out: Rect,
-    rule: Rect,
+pub struct Layout {
+    pub higher: Rect,
+    pub lower: Rect,
+    pub hint: Rect,
+    pub undo: Rect,
+    pub new_game: Rect,
+    pub cash_out: Rect,
+    pub rule: Rect,
 }
-fn layout() -> Layout {
+pub fn layout() -> Layout {
     if crate::ui::is_compact_landscape() {
         Layout {
             higher: Rect::new(430., 210., 130., 44.),
@@ -230,7 +226,7 @@ pub fn draw(state: &AppState) {
         },
     );
 }
-fn status_text(game: &crate::higher_lower::HigherLower) -> String {
+pub fn status_text(game: &crate::higher_lower::HigherLower) -> String {
     match game.status {
         HigherLowerStatus::Playing => format!("Run {} / 10 • Pot {}", game.score, game.pot),
         HigherLowerStatus::Won if game.cashed_out => format!("Cashed out {}", game.banked),
@@ -238,7 +234,7 @@ fn status_text(game: &crate::higher_lower::HigherLower) -> String {
         HigherLowerStatus::Lost => "The next card slipped away".into(),
     }
 }
-fn choice_button(rect: Rect, label: &str, safer: bool, large_text: bool) {
+pub fn choice_button(rect: Rect, label: &str, safer: bool, large_text: bool) {
     button(rect, label, large_text);
     if safer {
         draw_rectangle_lines(
@@ -251,7 +247,7 @@ fn choice_button(rect: Rect, label: &str, safer: bool, large_text: bool) {
         );
     }
 }
-fn draw_run_meter(score: u16, x: f32, y: f32) {
+pub fn draw_run_meter(score: u16, x: f32, y: f32) {
     for step in 0..10 {
         let fill = if step < score as usize {
             safe()
@@ -261,7 +257,7 @@ fn draw_run_meter(score: u16, x: f32, y: f32) {
         draw_rectangle(x + step as f32 * 18., y, 14., 8., fill);
     }
 }
-fn button(rect: Rect, label: &str, large_text: bool) {
+pub fn button(rect: Rect, label: &str, large_text: bool) {
     draw_rectangle(rect.x, rect.y, rect.w, rect.h, crate::theme::SURFACE);
     draw_rectangle_lines(rect.x, rect.y, rect.w, rect.h, 1., accent());
     text(
@@ -272,39 +268,39 @@ fn button(rect: Rect, label: &str, large_text: bool) {
         WHITE,
     );
 }
-fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
+pub fn text(value: &str, x: f32, y: f32, size: f32, color: Color) {
     crate::ui::draw_text(value, x, y, crate::ui::readable_text_size(size), color);
 }
-fn title_size() -> f32 {
+pub fn title_size() -> f32 {
     if crate::ui::is_portrait() {
         20.
     } else {
         29.
     }
 }
-fn title_text() -> &'static str {
+pub fn title_text() -> &'static str {
     if crate::ui::is_portrait() {
         "HIGHER / LOWER"
     } else {
         "HIGHER OR LOWER"
     }
 }
-fn body_size() -> f32 {
+pub fn body_size() -> f32 {
     if crate::ui::is_portrait() {
         11.
     } else {
         13.
     }
 }
-fn accent() -> Color {
+pub fn accent() -> Color {
     crate::theme::BRASS
 }
-fn muted() -> Color {
+pub fn muted() -> Color {
     crate::theme::SECONDARY
 }
-fn safe() -> Color {
+pub fn safe() -> Color {
     Color::from_rgba(80, 224, 126, 255)
 }
-fn back_rect() -> Rect {
+pub fn back_rect() -> Rect {
     Rect::new(0., 0., 110., 42.)
 }

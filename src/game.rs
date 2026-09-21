@@ -32,32 +32,47 @@ mod game_navigation;
 #[path = "game_persistence.rs"]
 mod game_persistence;
 #[path = "game_progression.rs"]
-pub(crate) mod game_progression;
+pub mod game_progression;
 #[path = "game_realtime.rs"]
 mod game_realtime;
 #[path = "game_render.rs"]
 mod game_render;
 #[path = "game_restart.rs"]
 mod game_restart;
+
+#[doc(hidden)]
+pub mod testing {
+    pub mod game_capture_records {
+        pub use super::super::game_capture_records::*;
+    }
+
+    pub mod game_capture_rules {
+        pub use super::super::game_capture_rules::*;
+    }
+
+    pub mod game_restart {
+        pub use super::super::game_restart::*;
+    }
+}
 #[path = "game_settings.rs"]
 mod game_settings;
 #[path = "game_update.rs"]
 mod game_update;
 
 pub struct Game {
-    pub(crate) data: GameData,
-    pub(crate) state: AppState,
-    assets: AssetManager,
-    notifications: NotificationManager,
-    pointer: PointerTracker,
+    pub data: GameData,
+    pub state: AppState,
+    pub assets: AssetManager,
+    pub notifications: NotificationManager,
+    pub pointer: PointerTracker,
     pub(super) touch_was_active: bool,
     pub(super) capture_solitaire_peek: bool,
-    sounds: SoundBank,
-    transition: f32,
-    confirmation_bypass: bool,
+    pub sounds: SoundBank,
+    pub transition: f32,
+    pub confirmation_bypass: bool,
     pub(super) save_dirty: bool,
     pub(super) save_timer: f32,
-    analytics: crate::analytics::GameAnalytics,
+    pub analytics: crate::analytics::GameAnalytics,
 }
 impl Game {
     pub async fn new() -> Self {
@@ -99,7 +114,3 @@ impl Game {
         game
     }
 }
-
-#[cfg(test)]
-#[path = "../tests/legacy/game/tests.rs"]
-mod tests;

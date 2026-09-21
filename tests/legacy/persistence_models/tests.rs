@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::persistence_models::*;
 
 #[test]
 fn index_round_trips_shell_state_without_game_payloads() {

@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::higher_lower::*;
 
 #[test]
 fn an_incorrect_guess_ends_the_round() {

@@ -1,7 +1,7 @@
 //! Regression coverage for the tests module.
 
-use super::*;
-use crate::state::{AppState, GameId, Screen};
+use idle_hands::testing::modules::game_variant_ui::*;
+use idle_hands::testing::state::{AppState, GameId, Screen};
 
 #[test]
 fn rule_card_is_touchable_in_every_layout() {
@@ -10,13 +10,13 @@ fn rule_card_is_touchable_in_every_layout() {
         ..Default::default()
     };
 
-    crate::ui::with_desktop_layout(|| {
+    idle_hands::testing::ui::with_desktop_layout(|| {
         assert!(clicks(&state, button_rect().center()));
     });
-    crate::ui::with_portrait_layout(|| {
+    idle_hands::testing::ui::with_portrait_layout(|| {
         assert!(clicks(&state, button_rect().center()));
     });
-    crate::ui::with_compact_landscape_layout(|| {
+    idle_hands::testing::ui::with_compact_landscape_layout(|| {
         assert!(clicks(&state, button_rect().center()));
     });
 }
@@ -29,17 +29,17 @@ fn setup_disclosure_keeps_board_choices_and_close_touchable() {
         ..Default::default()
     };
 
-    crate::ui::with_desktop_layout(|| {
+    idle_hands::testing::ui::with_desktop_layout(|| {
         let panel = setup_panel_rect(GameId::Game2048);
         assert!(matches!(
             setup_clicks(&state, setup_option_rect(panel, 1).center()),
-            Some(crate::ui::UiAction::Game2048Size(
-                crate::game_2048::Game2048Size::Five
+            Some(idle_hands::testing::ui::UiAction::Game2048Size(
+                idle_hands::testing::game_2048::Game2048Size::Five
             ))
         ));
         assert!(matches!(
             setup_clicks(&state, setup_close_rect(panel).center()),
-            Some(crate::ui::UiAction::ToggleGameSetup)
+            Some(idle_hands::testing::ui::UiAction::ToggleGameSetup)
         ));
     });
 }

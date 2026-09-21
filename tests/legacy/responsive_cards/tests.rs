@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::responsive_cards::*;
 
 #[test]
 fn portrait_solitaire_routes_every_primary_tap_target() {
@@ -63,20 +63,20 @@ fn portrait_freecell_routes_every_primary_tap_target() {
 
 #[test]
 fn portrait_freecell_foundations_stay_inside_the_logical_width() {
-    crate::ui::with_portrait_layout(|| {
+    idle_hands::testing::ui::with_portrait_layout(|| {
         let last = free_card_rect(free_foundation_x(3), 112.);
-        assert!(last.right() <= crate::responsive_ui::WIDTH - 2.);
+        assert!(last.right() <= idle_hands::testing::responsive_ui::WIDTH - 2.);
         let last_cascade = free_card_rect(free_card_x(7), 205.);
-        assert!(last_cascade.right() <= crate::responsive_ui::WIDTH - 2.);
+        assert!(last_cascade.right() <= idle_hands::testing::responsive_ui::WIDTH - 2.);
     });
 }
 
 #[test]
 fn reversi_portrait_subtitle_is_short_enough_for_the_header_lane() {
-    crate::ui::with_portrait_layout(|| {
+    idle_hands::testing::ui::with_portrait_layout(|| {
         assert_eq!(reversi_subtitle(), "Tap a glowing square");
     });
-    crate::ui::with_desktop_layout(|| {
+    idle_hands::testing::ui::with_desktop_layout(|| {
         assert_eq!(
             reversi_subtitle(),
             "Turn the board, one careful move at a time"

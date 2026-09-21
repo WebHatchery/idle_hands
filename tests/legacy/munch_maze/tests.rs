@@ -1,7 +1,7 @@
 //! Regression coverage for the tests module.
 
-use super::*;
-use crate::domain::Direction;
+use idle_hands::testing::domain::Direction;
+use idle_hands::testing::modules::munch_maze::*;
 
 #[test]
 fn maze_starts_with_pellets_and_ghosts() {

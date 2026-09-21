@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::progression::*;
 
 #[test]
 fn first_finish_awards_once_and_full_cabinet_is_worth_two() {
@@ -11,7 +11,7 @@ fn first_finish_awards_once_and_full_cabinet_is_worth_two() {
     records.record_time(GameId::Game2048.index());
     let mut earned_flags = Vec::new();
     let mut stamps = 0;
-    let content = crate::data::GameData::load().unwrap().content;
+    let content = idle_hands::testing::data::GameData::load().unwrap().content;
     sync_with_content(&mut earned_flags, &mut stamps, &records, &content);
     assert_eq!(stamps, 2);
     assert_eq!(earned_flags.len(), AchievementId::ALL.len());
@@ -93,7 +93,7 @@ fn full_cabinet_counts_every_playable_game() {
 #[test]
 fn achievement_progress_explains_single_and_collection_goals() {
     let records = CollectionRecords::default();
-    let content = crate::data::GameData::load().unwrap().content;
+    let content = idle_hands::testing::data::GameData::load().unwrap().content;
     assert_eq!(
         AchievementId::FirstFinish.description_from(&content),
         "Finish any drawer"

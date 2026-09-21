@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::mancala::*;
 
 #[test]
 fn an_empty_side_finishes_and_player_can_win() {

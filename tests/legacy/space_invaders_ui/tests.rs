@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::space_invaders_ui::*;
 
 #[test]
 fn compact_header_keeps_breadcrumb_title_status_and_board_separate() {
@@ -16,5 +16,5 @@ fn compact_header_keeps_breadcrumb_title_status_and_board_separate() {
 
 #[test]
 fn portrait_title_leaves_room_before_the_rule_card() {
-    crate::ui::with_portrait_layout(|| assert_eq!(title_size(), 22.));
+    idle_hands::testing::ui::with_portrait_layout(|| assert_eq!(title_size(), 22.));
 }

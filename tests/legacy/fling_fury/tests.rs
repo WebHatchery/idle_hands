@@ -1,6 +1,6 @@
 //! Regression coverage for the tests module.
 
-use super::*;
+use idle_hands::testing::modules::fling_fury::*;
 
 #[test]
 fn impact_knocks_blocks_and_can_start_a_target_fall() {
