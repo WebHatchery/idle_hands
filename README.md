@@ -116,11 +116,11 @@ each of the 60 games owns its rules, state, commands, and board rendering.
 
 ### Analytics
 
-Gameplay analytics are disabled for the storefront release by
-`IDLE_HANDS_ANALYTICS_ENABLED = "false"` in `.cargo/config.toml`. The endpoint
-and write key remain as dormant preview configuration so analytics can be
-restored deliberately once production details are available; changing them
-alone does not enable collection.
+Gameplay analytics are disabled by default. Builds use the shared workspace
+configuration and require no game-local Cargo settings. An intentional analytics
+build must supply `IDLE_HANDS_ANALYTICS_ENABLED=true` together with nonempty
+`IDLE_HANDS_ANALYTICS_ENDPOINT` and `IDLE_HANDS_ANALYTICS_WRITE_KEY` environment
+values at compile time. Missing settings keep analytics disabled.
 
 ### Demo builds
 
@@ -131,14 +131,15 @@ locked drawer is tapped. The normal build remains the unrestricted 60-game
 edition.
 
 ```powershell
-cargo build --release --features demo --target-dir target-demo
-cargo build --release --features demo --target wasm32-unknown-unknown --target-dir target-demo
+..\rust_management\cargo.ps1 build --profile demo --features demo
+..\rust_management\cargo.ps1 build --profile demo --features demo --target wasm32-unknown-unknown
 ```
 
-The resulting Windows executable is
-`target-demo/release/idle_hands.exe`; the WebGL module is
-`target-demo/wasm32-unknown-unknown/release/idle_hands.wasm`. Keeping the demo
-in its own target directory prevents it from being mistaken for a full build.
+The launcher reports the selected shared slot. Its Windows executable is
+`target/pool/slot-N/demo/idle_hands.exe` under the workspace root; its WebGL
+module is `target/pool/slot-N/wasm32-unknown-unknown/demo/idle_hands.wasm`.
+The shared `demo` profile inherits release optimization and keeps demo output
+separate from the full release within the same bounded pool.
 
 From this directory, use the project publisher as the required validation path:
 
@@ -149,8 +150,8 @@ From this directory, use the project publisher as the required validation path:
 During implementation, focused checks may also use:
 
 ```powershell
-cargo test -p idle_hands
-cargo clippy -p idle_hands --all-targets --all-features -- -D warnings
+..\rust_management\cargo.ps1 test -p idle_hands
+..\rust_management\cargo.ps1 clippy -p idle_hands --all-targets --all-features '--' -D warnings
 .\scripts\test_game_suites.ps1
 npm ci
 npx playwright install chromium
@@ -158,8 +159,8 @@ npm run test:webgl
 ```
 
 `test_game_suites.ps1` runs the complete Rust test set once with
-`cargo test --all-targets`. Pass `-TargetDir target-codex` when a separate
-local Cargo target directory is needed. Test scope, style, placement, and the
+the shared launcher with `test --all-targets`. It does not create a private
+target directory. Test scope, style, placement, and the
 five-case feature target follow `CODE_STANDARDS.md` §11; remaining migration
 work is tracked in `TODO.md`.
 

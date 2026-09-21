@@ -1,4 +1,0 @@
-[env]
-IDLE_HANDS_ANALYTICS_ENABLED = "false"
-IDLE_HANDS_ANALYTICS_ENDPOINT = "http://127.0.0.1/game_analytics/api/v1/events"
-IDLE_HANDS_ANALYTICS_WRITE_KEY = "idle-hands-preview"

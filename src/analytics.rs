@@ -49,7 +49,7 @@ impl GameAnalytics {
     pub fn new(state: &AppState, enabled: bool) -> Self {
         let mut analytics = Self::disabled(state);
         if enabled && analytics_enabled() {
-            analytics.client = Some(AnalyticsClient::new(analytics_config()));
+            analytics.client = analytics_config().map(AnalyticsClient::new);
         }
         analytics
     }
@@ -142,22 +142,27 @@ fn analytics_enabled() -> bool {
     option_env!("IDLE_HANDS_ANALYTICS_ENABLED") == Some("true")
 }
 
-fn analytics_config() -> AnalyticsConfig {
-    let endpoint = env!("IDLE_HANDS_ANALYTICS_ENDPOINT");
-    let write_key = env!("IDLE_HANDS_ANALYTICS_WRITE_KEY");
+fn analytics_config() -> Option<AnalyticsConfig> {
+    // Ordinary catalog builds require no game-local Cargo environment. An
+    // explicitly enabled analytics build must also provide both settings.
+    let endpoint = option_env!("IDLE_HANDS_ANALYTICS_ENDPOINT")?;
+    let write_key = option_env!("IDLE_HANDS_ANALYTICS_WRITE_KEY")?;
+    if endpoint.trim().is_empty() || write_key.trim().is_empty() {
+        return None;
+    }
     #[cfg(target_arch = "wasm32")]
     {
-        AnalyticsConfig::web(
+        Some(AnalyticsConfig::web(
             endpoint,
             write_key,
             "idle_hands",
             env!("CARGO_PKG_VERSION"),
             "webhatchery",
-        )
+        ))
     }
     #[cfg(not(target_arch = "wasm32"))]
     {
-        AnalyticsConfig {
+        Some(AnalyticsConfig {
             endpoint: endpoint.to_owned(),
             write_key: write_key.to_owned(),
             game: "idle_hands".to_owned(),
@@ -166,7 +171,7 @@ fn analytics_config() -> AnalyticsConfig {
             source: "webhatchery".to_owned(),
             heartbeat_seconds: 60.0,
             flush_seconds: 30.0,
-        }
+        })
     }
 }
 
