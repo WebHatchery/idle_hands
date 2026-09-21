@@ -43,7 +43,7 @@ pub fn setup_clicks(state: &AppState, point: Vec2) -> Option<UiAction> {
     if let Some(action) = setup_new_round_action(state, game, panel, point) {
         return Some(action);
     }
-    Some(UiAction::ToggleGameSetup).filter(|_| !panel.contains(point))
+    (!panel.contains(point)).then_some(UiAction::ToggleGameSetup)
 }
 
 pub fn draw(state: &AppState) {
