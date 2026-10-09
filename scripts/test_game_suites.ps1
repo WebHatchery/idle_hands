@@ -1,4 +1,4 @@
-# Run the complete game suite once, including shared contracts and feature budgets.
+# Run retained solver, generator, and data-integrity checks plus the repository gates.
 
 param()
 
@@ -8,9 +8,8 @@ $launcher = Join-Path (Split-Path $projectDir -Parent) 'rust_management/cargo.ps
 
 Push-Location $projectDir
 try {
-    # All game-specific long sessions and shared input/host contracts are
-    # integration tests. Running their target includes them without fragile
-    # exact-name filters, then the other targets enforce the same feature cap.
+    # The reduced integration set and enforcement checks run together without
+    # fragile exact-name filters or a private target directory.
     if (Test-Path -LiteralPath $launcher) {
         & $launcher test --all-targets
     } else {
@@ -18,7 +17,7 @@ try {
         & cargo test --all-targets
     }
     if ($LASTEXITCODE -ne 0) {
-        throw "Complete Rust test set failed"
+        throw "Retained Rust checks failed"
     }
 }
 finally {

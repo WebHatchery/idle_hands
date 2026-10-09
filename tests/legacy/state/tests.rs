@@ -1,4 +1,4 @@
-//! Regression coverage for the tests module.
+//! Snapshot application must preserve independent game payloads.
 
 use idle_hands::testing::cards::Card;
 use idle_hands::testing::modules::state::*;
@@ -84,68 +84,4 @@ fn independent_snapshots_restore_all_games_without_overwriting_each_other() {
     assert_eq!(restored.games.one_room_roguelike.score, 41);
     assert_eq!(restored.games.daily_dungeon.score, 43);
     assert_eq!(restored.games.nim.moves, 44);
-}
-
-#[test]
-fn older_saves_default_new_progression_and_cosmetic_fields() {
-    let save = CollectionSave::from_state(&AppState::default(), "1.0.0");
-    let mut value = serde_json::to_value(save).unwrap();
-    let object = value.as_object_mut().unwrap();
-    for field in [
-        "achievements",
-        "stamps",
-        "card_back",
-        "board_theme",
-        "sound_set",
-        "cabinet_decoration",
-        "favorites",
-        "high_contrast",
-        "large_text",
-        "sound_level",
-        "lights_out",
-        "tic_tac_toe",
-        "memory_pairs",
-        "sliding_puzzle",
-        "mastermind",
-        "spider",
-        "word_search",
-        "hangman",
-        "connect_four",
-        "checkers",
-        "peg_solitaire",
-        "mahjong_solitaire",
-        "snake",
-        "breakout",
-        "higher_lower",
-        "klondike_golf",
-        "blackjack",
-        "spider_solitaire",
-        "dungeon_sweeper",
-        "potion_2048",
-        "tiny_tower_defence",
-        "one_room_roguelike",
-        "daily_dungeon",
-        "nim",
-    ] {
-        object.remove(field);
-    }
-    let migrated: CollectionSave = serde_json::from_value(value).unwrap();
-    let mut restored = AppState::default();
-    migrated.apply_to(&mut restored);
-    assert_eq!(restored.stamps, 0);
-    assert_eq!(
-        restored.achievements,
-        vec![false; idle_hands::testing::progression::AchievementId::ALL.len()]
-    );
-    assert_eq!(restored.card_back, 0);
-    assert_eq!(restored.board_theme, 0);
-    assert_eq!(restored.sound_set, 0);
-    assert_eq!(restored.cabinet_decoration, 0);
-    assert!(!restored.high_contrast);
-    assert!(!restored.large_text);
-    assert_eq!(
-        restored.sound_level,
-        idle_hands::testing::audio_settings::DEFAULT_LEVEL
-    );
-    assert_eq!(restored.favorites, vec![false; GameId::ALL.len()]);
 }

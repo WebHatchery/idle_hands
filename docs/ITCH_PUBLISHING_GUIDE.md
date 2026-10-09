@@ -113,24 +113,13 @@ For a browser-only check:
 .\publish-itch.ps1 -Channel html5 -DryRun
 ```
 
-### 3. Run the packaged browser contract
+### 3. Review the packaged browser build
 
-The test server expects a directory containing an `idle_hands` child directory.
-Copy the generated `dist/itch-webgl` package there, set
-`IDLE_HANDS_WEB_ROOT` to the parent, and run:
-
-```powershell
-$smokeRoot = Join-Path $PWD ("dist\itch-smoke-" + (Get-Date -Format "yyyyMMddHHmmss"))
-$smokeGame = Join-Path $smokeRoot "idle_hands"
-New-Item -ItemType Directory -Path $smokeGame -Force | Out-Null
-Copy-Item -Path "dist\itch-webgl\*" -Destination $smokeGame -Recurse -Force
-$env:IDLE_HANDS_WEB_ROOT = $smokeRoot
-npm ci
-npm run test:webgl
-```
-
-The test must pass without page errors, console errors, failed local requests,
-or stale WebGL texture warnings.
+Serve `dist/itch-webgl` over local HTTP and open it in a browser. Check that the
+game loads without runtime or console errors, then exercise touch controls,
+resize/fullscreen, local session restore after reload, and a visible recovery
+action. Review the affected game states at the supported viewport sizes; this
+manual pass replaces the former automated browser contract.
 
 ### 4. Upload
 

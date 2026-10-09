@@ -1,8 +1,7 @@
-//! Explicit ownership keeps a feature's strong five-case target intact across files.
+//! Keep every retained test assigned to one protected responsibility.
 //!
-//! The map is reviewed with changes: a new filename is not a new feature.
-//! Integration suites are the only test source; disabled or ignored cases still
-//! spend a slot. Any feature above five cases must carry a written exception.
+//! Five cases per responsibility is the hard ceiling in CODE_STANDARDS §11.2;
+//! it is not a target or a reason to add coverage.
 
 use serde::Deserialize;
 use std::{collections::BTreeMap, fs, path::Path};
@@ -11,13 +10,6 @@ use std::{collections::BTreeMap, fs, path::Path};
 struct Ownership {
     files: BTreeMap<String, String>,
     cases: BTreeMap<String, String>,
-    exceptions: BTreeMap<String, Exception>,
-}
-
-#[derive(Deserialize)]
-struct Exception {
-    max_cases: usize,
-    reason: String,
 }
 
 fn collect_cases(root: &Path, directory: &Path, cases: &mut Vec<(String, String)>) {
@@ -95,7 +87,7 @@ fn assert_source_file_has_no_tests(root: &Path, path: &Path) {
 }
 
 #[test]
-fn cohesive_features_have_no_more_than_five_test_cases() {
+fn retained_cases_stay_within_the_hard_responsibility_ceiling() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
     let ownership: Ownership = serde_json::from_str(
         &fs::read_to_string(root.join("tests/feature_ownership.json")).unwrap(),
@@ -110,40 +102,17 @@ fn cohesive_features_have_no_more_than_five_test_cases() {
             .cases
             .get(case)
             .or_else(|| ownership.files.get(file))
-            .unwrap_or_else(|| {
-                panic!("Assign {case} to its existing cohesive feature before adding a test")
-            });
-        assert!(!feature.trim().is_empty(), "{case} has no feature name");
+            .unwrap_or_else(|| panic!("Assign {case} to its existing protected responsibility"));
+        assert!(!feature.trim().is_empty(), "{case} has no responsibility");
         features.entry(feature).or_default().push(case);
     }
     for (feature, tests) in features {
-        let limit = ownership
-            .exceptions
-            .get(feature)
-            .map(|exception| {
-                assert!(
-                    exception.max_cases > 5,
-                    "{feature} exception must exceed five"
-                );
-                assert!(
-                    !exception.reason.trim().is_empty(),
-                    "{feature} exception needs a reason"
-                );
-                exception.max_cases
-            })
-            .unwrap_or(5);
         assert!(
-            tests.len() <= limit,
-            "{feature} has {} cases (target {limit}):\n{}",
+            tests.len() <= 5,
+            "{feature} has {} cases (hard ceiling 5):\n{}",
             tests.len(),
             tests.join("\n")
         );
-        if tests.len() > 5 {
-            assert!(
-                ownership.exceptions.contains_key(feature),
-                "{feature} exceeds five cases; document its distinct coverage in exceptions"
-            );
-        }
     }
     for file in ownership.files.keys() {
         assert!(

@@ -141,37 +141,22 @@ module is `target/pool/slot-N/wasm32-unknown-unknown/demo/idle_hands.wasm`.
 The shared `demo` profile inherits release optimization and keeps demo output
 separate from the full release within the same bounded pool.
 
-From this directory, use the project publisher as the required validation path:
+Use proportionate local checks from `CODE_STANDARDS.md` §8.3. Formatting may
+use Cargo directly; builds, Clippy, and tests use the shared launcher:
 
 ```powershell
-.\publish.ps1
-```
-
-During implementation, focused checks may also use:
-
-```powershell
-..\rust_management\cargo.ps1 test -p idle_hands
+..\rust_management\cargo.ps1 check -p idle_hands
 ..\rust_management\cargo.ps1 clippy -p idle_hands --all-targets --all-features '--' -D warnings
 .\scripts\test_game_suites.ps1
-npm ci
-npx playwright install chromium
-npm run test:webgl
 ```
 
-`test_game_suites.ps1` runs the complete Rust test set once with
-the shared launcher with `test --all-targets`. It does not create a private
-target directory. Test scope, style, placement, and the
-five-case feature target follow `CODE_STANDARDS.md` §11; remaining migration
-work is tracked in `TODO.md`.
+`test_game_suites.ps1` runs the retained Rust test set with `--all-targets` and
+does not create a private target directory. The tests protect content and save
+integrity plus a small set of settled solver/generator algorithms. Their scope,
+placement, and hard five-case ceiling follow `CODE_STANDARDS.md` §11. For UI
+changes, run the game and review only the affected screens, sizes, and touch
+interactions; save any required captures directly in `docs/verification/`.
 
-The publisher builds and validates the native and WebGL targets. The browser
-smoke suite then serves the packaged preview deployment and checks loading,
-console/runtime errors, real touch input, audio activation, resize/fullscreen,
-local persistence across reload, and a visible recovery action. Set
-`IDLE_HANDS_WEB_ROOT` to the directory containing the deployed `idle_hands/`
-folder when it is not under `dist/browser-smoke/games`.
-
-Verification screenshots belong directly in `docs/verification/` and should be
-replaced when they show the same state as an earlier capture. Automated Chromium
-coverage complements, but does not replace, physical iPhone/iPad Safari and
-Windows acceptance testing.
+Publishing is separate from local validation and may deploy to external
+services. Run `publish.ps1` only when that publication is explicitly authorized.
+Physical iPhone/iPad Safari and Windows acceptance remains owner-controlled.

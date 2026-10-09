@@ -20,14 +20,14 @@ already-paused round do not open a second sheet.
 The original proposed module tree below documents the architectural intent.
 The current implementation uses named Rust source files under `src/` with
 game-specific UI siblings; the enum-owned host remains the active integration
-boundary. Existing source-mounted test modules are migration work tracked in
-`TODO.md`, not a pattern for new tests.
+boundary. Retained integration checks live under `tests/` and follow the current
+test policy in `CODE_STANDARDS.md` §11.
 
 Proposed module boundaries:
 
 ```text
 src/
-  lib.rs                  intentional public game APIs for runtime and tests
+  lib.rs                  public library boundary used by the runtime
   main.rs                 runtime entry and capture harness
   app.rs                  top-level screen state and transitions
   collection.rs           game IDs, descriptors, availability
@@ -62,15 +62,15 @@ Each game should expose a small host-facing contract with these concepts:
 - normalized pointer/gesture input converted into game-specific commands;
 - tutorial steps expressed as visible-control or direct-gesture instructions;
 - summary data for the cabinet and records screen;
-- deterministic test construction from a seed.
+- deterministic puzzle construction from a seed.
 
 Rust traits should be introduced only after two concrete games reveal the
 shared shape. An enum-owned host is preferable initially because the collection
 is closed and it avoids object-safety and serialization complexity.
 
-Rule state must not depend on drawing APIs. Tests drive commands such as
-`RevealCell`, `MoveCards`, `SetDigit`, `Swipe`, `HoldDie`, or `PlaceDisc` and
-assert the resulting state.
+Rule state must not depend on drawing APIs. Game commands such as `RevealCell`,
+`MoveCards`, `SetDigit`, `Swipe`, `HoldDie`, or `PlaceDisc` remain independent of
+rendering.
 
 ## 3. Touch and Pointer Input
 
@@ -117,7 +117,7 @@ board. Boards preserve square cells where rules require them. Scroll is limited
 to menus, rules, records, and the cabinet—not active boards unless Nonogram
 explicitly enters pan/zoom mode.
 
-The shared UI test matrix begins with 320×568, 390×844, 568×320, 844×390,
+The shared UI review matrix begins with 320×568, 390×844, 568×320, 844×390,
 768×1024, 1024×768, and 1280×720 logical/CSS-pixel viewports. Device pixel ratio
 is varied separately. Screens must remain playable with 44-point targets and no
 clipped critical action.
@@ -335,30 +335,20 @@ incremental search across frames is preferred if deeper play is needed.
 
 ## 9. Testing and Verification
 
-Follow `CODE_STANDARDS.md` §11. Tests and test-only helpers belong under the
-crate's `tests/` directory and exercise intentional public APIs. Before
-expanding legacy suites, migrate their source declarations in a separate
-change. Strongly target no more than five cases per cohesive feature across
-all its files; consolidate related inputs, preserve useful regressions, and
-explain distinct coverage that needs more than five cases.
+Follow `CODE_STANDARDS.md` §§8.3 and 11. Do not add tests by default. Retain
+only tests that protect settled complex algorithms, data integrity, or a
+demonstrated recurring regression. UI layout, rendering, experimental rules,
+temporary balance values, and behavior already exercised by running the game
+do not need automated tests. Keep suites focused and within the hard five-case
+ceiling per protected responsibility.
 
-Prioritize simple behavior tests for:
-
-- pure rule legality, win/loss/end conditions, scoring, and undo invariants;
-- seeded replay stability and save round trips/migrations;
-- generated Sudoku uniqueness and Nonogram validity if generators ship;
-- Reversi AI legal output and bounded work;
-- asset registry consistency and the 800-line source limit.
-
-UI and rendering generally do not need unit tests. Verify touch controls,
-cancellation, layout bounds, and target sizes through the browser smoke pass
-and visual inspection at the supported viewport sizes. Keep any existing
-focused input regression that protects a distinct behavior.
-
-After meaningful work, `publish.ps1` is the required end-to-end path. Capture
-scenes should include cabinet portrait/landscape, every game’s initial/play/end
-states, settings at large text, and high contrast. Same-state screenshots replace
-their predecessors in `docs/verification/`.
+The retained checks cover authored content and asset integrity, saved-state
+round trips, and a small set of puzzle generation and solver algorithms. For UI
+work, review the affected screens and touch interactions at the relevant sizes
+and states, then replace equivalent captures directly in `docs/verification/`.
+Use proportionate local formatting, Clippy, source-size, and focused test checks.
+Publishing is separate from local validation and requires authorization when it
+may deploy externally.
 
 ## 10. Delivery Strategy
 
