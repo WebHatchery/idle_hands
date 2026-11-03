@@ -12,3 +12,7 @@
   recovery across the supported viewport matrix, including the dense-board
   sizes; verify CSS canvas scaling and touch-only paths; replace equivalent
   evidence in `docs/verification/`; and run `publish.ps1` after any fixes.
+
+## Settings and display
+
+- [ ] Add a visible Fullscreen toggle to Settings and persist the player's choice.
