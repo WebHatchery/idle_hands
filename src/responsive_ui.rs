@@ -263,6 +263,20 @@ pub fn draw_settings(state: &AppState) {
         Color::new(0.16, 0.11, 0.24, 1.),
     );
     text(&format!("Text: {}", labels.text), 200., 492., 12., WHITE);
+    panel(
+        Rect::new(22., 515., 316., 44.),
+        Color::new(0.16, 0.11, 0.24, 1.),
+    );
+    text(
+        &format!(
+            "Fullscreen: {}",
+            if state.fullscreen { "On" } else { "Off" }
+        ),
+        35.,
+        542.,
+        13.,
+        WHITE,
+    );
     for (rect, label) in [
         (Rect::new(22., 665., 76., 44.), "BACK"),
         (Rect::new(108., 665., 76., 44.), "SAVE"),
@@ -358,6 +372,9 @@ pub fn settings_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
         if rect.contains(p) {
             return vec![action];
         }
+    }
+    if Rect::new(22., 515., 316., 44.).contains(p) {
+        return vec![UiAction::ToggleFullscreen];
     }
     vec![]
 }

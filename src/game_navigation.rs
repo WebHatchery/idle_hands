@@ -132,6 +132,7 @@ impl Game {
             });
         if !has_saved_state {
             self.state = crate::state::AppState::new_random(&self.data, get_time().to_bits());
+            self.state.fullscreen = self.settings.fullscreen;
         }
     }
 

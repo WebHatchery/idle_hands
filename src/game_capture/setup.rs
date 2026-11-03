@@ -8,6 +8,7 @@ use macroquad_toolkit::notifications::NotificationManager;
 impl Game {
     pub fn begin_capture_scene(&mut self, scene: &str) {
         self.state = crate::state::AppState::new(&self.data);
+        self.state.fullscreen = self.settings.fullscreen;
         self.capture_solitaire_peek = false;
         self.notifications = NotificationManager::new();
         let scene = scene

@@ -116,6 +116,8 @@ pub struct AppState {
     pub profile_name: String,
     pub sound: bool,
     pub sound_level: u8,
+    /// Cached display preference for the Settings view; persisted separately by the toolkit.
+    pub fullscreen: bool,
     pub lifecycle_paused: bool,
     pub save_recovery: Option<crate::save_recovery::SaveRecoveryNotice>,
     pub notice_log_view: bool,
@@ -172,6 +174,7 @@ impl Default for AppState {
             profile_name,
             sound: true,
             sound_level: crate::audio_settings::DEFAULT_LEVEL,
+            fullscreen: false,
             lifecycle_paused: false,
             save_recovery: None,
             notice_log_view: false,

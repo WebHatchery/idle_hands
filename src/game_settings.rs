@@ -6,6 +6,24 @@ use crate::{audio_settings, cosmetics::CosmeticKind, settings_data, ui::UiAction
 impl Game {
     pub(super) fn apply_settings_action(&mut self, action: UiAction) {
         let message = match action {
+            UiAction::ToggleFullscreen => {
+                self.settings.toggle_fullscreen();
+                self.state.fullscreen = self.settings.fullscreen;
+                if let Err(error) = self.settings.save(&self.data.config.game_name) {
+                    self.notifications.warning(format!(
+                        "Fullscreen changed, but the setting could not be saved: {error}"
+                    ));
+                    return;
+                }
+                format!(
+                    "Fullscreen {}",
+                    if self.settings.fullscreen {
+                        "on"
+                    } else {
+                        "off"
+                    }
+                )
+            }
             UiAction::ToggleSound => {
                 self.state.sound = !self.state.sound;
                 format!(

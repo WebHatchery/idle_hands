@@ -99,25 +99,36 @@ pub fn draw_settings(state: &AppState) {
         WHITE,
     );
     panel(
-        Rect::new(230., 470., 350., 44.),
+        Rect::new(230., 470., 220., 44.),
         Color::new(0.16, 0.11, 0.24, 1.),
     );
     text(
-        &format!("High contrast: {}", labels.contrast),
-        250.,
+        &format!("FULLSCREEN {}", if state.fullscreen { "ON" } else { "OFF" }),
+        246.,
         496.,
-        15.,
+        13.,
         WHITE,
     );
     panel(
-        Rect::new(580., 470., 350., 44.),
+        Rect::new(460., 470., 220., 44.),
         Color::new(0.16, 0.11, 0.24, 1.),
     );
     text(
-        &format!("Large text: {}", labels.text),
-        600.,
+        &format!("HIGH CONTRAST {}", labels.contrast.to_uppercase()),
+        474.,
         496.,
-        15.,
+        12.,
+        WHITE,
+    );
+    panel(
+        Rect::new(690., 470., 240., 44.),
+        Color::new(0.16, 0.11, 0.24, 1.),
+    );
+    text(
+        &format!("LARGE TEXT {}", labels.text.to_uppercase()),
+        708.,
+        496.,
+        12.,
         WHITE,
     );
     text(
@@ -218,10 +229,13 @@ pub fn settings_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(Rect::new(590., 415., 340., 44.), p) {
         actions.push(UiAction::ToggleMotion);
     }
-    if crate::ui::hit(Rect::new(230., 470., 350., 44.), p) {
+    if crate::ui::hit(Rect::new(230., 470., 220., 44.), p) {
+        actions.push(UiAction::ToggleFullscreen);
+    }
+    if crate::ui::hit(Rect::new(460., 470., 220., 44.), p) {
         actions.push(UiAction::ToggleHighContrast);
     }
-    if crate::ui::hit(Rect::new(580., 470., 350., 44.), p) {
+    if crate::ui::hit(Rect::new(690., 470., 240., 44.), p) {
         actions.push(UiAction::ToggleLargeText);
     }
     if crate::ui::hit(Rect::new(770., 560., 210., 48.), p) {

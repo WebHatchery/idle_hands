@@ -31,6 +31,7 @@ impl Game {
             ui::UiAction::DismissSaveRecovery => self.dismiss_save_recovery(),
             ui::UiAction::ToggleNoticeLog => self.toggle_notice_log(),
             ui::UiAction::ToggleSound
+            | ui::UiAction::ToggleFullscreen
             | ui::UiAction::ToggleMotion
             | ui::UiAction::ToggleHighContrast
             | ui::UiAction::ToggleLargeText
@@ -42,6 +43,7 @@ impl Game {
             ui::UiAction::ResetData => self.state.confirm_reset = true,
             ui::UiAction::ConfirmResetData => {
                 self.state = AppState::new(&self.data);
+                self.state.fullscreen = self.settings.fullscreen;
             }
             ui::UiAction::CancelResetData => self.state.confirm_reset = false,
             _ => return ShellActionResult::Unhandled,

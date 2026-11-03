@@ -29,8 +29,16 @@ pub fn draw_settings(state: &AppState) {
         10.,
         crate::theme::SECONDARY,
     );
-    panel(Rect::new(450., 268., 160., 44.), crate::theme::SURFACE_DARK);
-    text("EDIT NAME", 500., 296., 11., WHITE);
+    panel(Rect::new(450., 20., 160., 44.), crate::theme::SURFACE_DARK);
+    text("EDIT NAME", 500., 48., 11., WHITE);
+    panel(Rect::new(630., 20., 160., 44.), crate::theme::SURFACE_DARK);
+    text(
+        &format!("FULLSCREEN {}", if state.fullscreen { "ON" } else { "OFF" }),
+        650.,
+        48.,
+        10.,
+        WHITE,
+    );
     for (index, row) in crate::settings_data::cosmetic_rows(state)
         .into_iter()
         .enumerate()
@@ -199,8 +207,11 @@ pub fn settings_clicks(state: &AppState, p: Vec2) -> Vec<UiAction> {
     if crate::ui::hit(Rect::new(220., 268., 160., 44.), p) {
         return vec![UiAction::ResetData];
     }
-    if crate::ui::hit(Rect::new(450., 268., 160., 44.), p) {
+    if crate::ui::hit(Rect::new(450., 20., 160., 44.), p) {
         return vec![UiAction::Profile];
+    }
+    if crate::ui::hit(Rect::new(630., 20., 160., 44.), p) {
+        return vec![UiAction::ToggleFullscreen];
     }
     vec![]
 }

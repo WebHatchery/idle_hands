@@ -6,6 +6,7 @@ use crate::{data::GameData, state::AppState};
 use macroquad::prelude::*;
 use macroquad_toolkit::assets::AssetManager;
 use macroquad_toolkit::notifications::NotificationManager;
+use macroquad_toolkit::settings::GameSettings;
 
 #[path = "game_action_dispatch.rs"]
 mod game_action_dispatch;
@@ -68,6 +69,7 @@ pub struct Game {
     pub(super) touch_was_active: bool,
     pub(super) capture_solitaire_peek: bool,
     pub sounds: SoundBank,
+    pub(super) settings: GameSettings,
     pub transition: f32,
     pub confirmation_bypass: bool,
     pub(super) save_dirty: bool,
@@ -88,7 +90,22 @@ impl Game {
         let placeholder = Image::gen_image_color(16, 16, crate::theme::SURFACE_DARK);
         assets.set_placeholder_texture_direct(Texture2D::from_image(&placeholder));
         assets.load_texture_configs(&data.texture_manifest).await;
-        let state = AppState::new(&data);
+        let mut settings = GameSettings::load(&data.config.game_name);
+        let capture_mode = macroquad_toolkit::capture::capture_requested("IDLE_HANDS");
+        #[cfg(target_arch = "wasm32")]
+        {
+            // Browsers require a user gesture to enter fullscreen after reload.
+            settings.fullscreen = false;
+        }
+        if capture_mode {
+            settings.fullscreen = false;
+        }
+        #[cfg(not(target_arch = "wasm32"))]
+        if !capture_mode && settings.fullscreen {
+            set_fullscreen(true);
+        }
+        let mut state = AppState::new(&data);
+        state.fullscreen = settings.fullscreen;
         let mut game = Self {
             analytics: crate::analytics::GameAnalytics::disabled(&state),
             state,
@@ -99,6 +116,7 @@ impl Game {
             touch_was_active: false,
             capture_solitaire_peek: false,
             sounds: SoundBank::load().await,
+            settings,
             transition: 0.,
             confirmation_bypass: false,
             save_dirty: false,
